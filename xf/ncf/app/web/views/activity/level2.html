@@ -1,0 +1,152 @@
+{include file="web/views/header.html"}
+<style>
+  .m_header .top{display:none;}
+  .m_header .my_account{display:none;}
+  .m_header nav{display:none;}
+  .layAppTopnew{display:none;}
+  .m_header{height: 88px;}
+  body{background:#fff;}
+  .p_level{}
+  .p_level .banner,.title{width:100%;display:block;}
+  .title_text{text-align: center;font-size:17px;;color:#fa7a0c;}
+  .p_level .contain{width:1100px;margin:0 auto;padding:0px 0 57px 0;text-align: center;}
+  .p_level .enter_contain{font-size:20px;margin-top: 50px;}
+  .p_level .enter_contain input{height:44px;margin:0 20px 0 10px;font-size:18px;padding-left: 15px;border: 1px solid #bababa;}
+  .span_mobile,.span_wx_mobile{width:168px;text-align: left;display: inline-block;}
+  .mobile_input,.mobile_wx_input{width:256px;}
+  .span_order{width:86px;text-align: left;display: inline-block;}
+  .span_wx_id{width:180px;text-align: left;display: inline-block;}
+  .order_input{width:410px;}
+  .id_wx_input{width:318px;}
+  .input_contain{margin-bottom:40px;}
+  .p_level .enter_contain input:focus{border: #32a0fe solid 1px;
+    box-shadow: 1px 0px 2px rgba(183,221,253,1), -1px 0px 2px rgba(183,221,253,1), 0px 1px 2px rgba(183,221,253,1), 0px -1px 2px rgba(183,221,253,1);}
+  .p_level .active_btn{cursor:pointer;}
+  .p_level .remind{width:1100px;background:#efefef;border-radius: 10px;padding:60px 0;margin-top: 25px;}
+  .p_level .remind .left{width:255px;border-right:1px #434343 solid;float:left;font-size: 28px;height: 106px;padding-top: 54px;}
+  .p_level .right{margin-left:256px;font-size:18px;text-align:left;padding-left:60px;}
+  .p_level .right p{margin-bottom: 5px;}
+</style>
+<div class="p_level">
+  <img class="banner" src="//event.ncfwx.com/upload/image/20180522/16-23-WechatIMG573_02.jpg" alt=""/>
+  <div class="contain">
+    <img class="title" src="//event.ncfwx.com/upload/image/20180424/14-37-2_02.jpg" alt=""/>
+    <div class="title_text">输入订单号及收货人手机号，立即激活优惠购权限</div>
+    <div class="enter_contain">
+      <div class="input_contain">
+        <span class="span_mobile">收货人手机号</span><input class="mobile_input" name="mobile" type="text">
+        <span class="span_order">订单号</span><input class="order_input" name="order_id" type="text">
+      </div>
+      <div class="input_contain">
+        <span class="span_wx_mobile">网信注册手机号</span><input class="mobile_wx_input" name="mobile_wx" type="text">
+        <span class="span_wx_id">网信认证身份证号</span><input class="id_wx_input" name="idno_wx" type="text">
+      </div>
+      <img class="active_btn" src="//event.ncfwx.com/upload/image/20180424/15-14-ss.png" alt=""/>
+    </div>
+    <div class="remind">
+      <div class="left">温馨提示</div>
+      <div class="right">
+        <p>1.必须是参与一阶活动注册的用户，才能参加二阶活动；</p>
+        <p>2.订单激活后，系统发放投资券到个人账户，请在有效期内完成优惠购投资；</p>
+        <p>3.完成优惠购条件，系统派发红包到“我的红包”，有效期30天；</p>
+        <p>4.订单核销后将不享受7天无理由退货</p>
+        <p>5.详情见商家活动说明</p>
+      </div>
+    </div>
+  </div>
+  <img class="banner" src="//event.ncfwx.com/upload/image/20180424/14-31-4-18-2.jpg" alt=""/>
+  <div class="copyright w1100" style="position:relative;text-align:center;margin-bottom: 30px;">
+    <p class="pt20">北京经讯时代科技有限公司</p>
+    <p>© 2019 网信 All rights reserved
+      <span class="s1">&nbsp;京ICP备16034138号-3 | 京ICP证140628号| <span class="s1"></span>
+      <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502033551" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="//static.firstp2p.com/attachment/201701/10/16/a7358ed1e0c3d9c7fd0d13eab0f1350b/index.jpg" style="float:left;"/>京公网安备 11010502033551号
+      </a></span>
+    </p>
+  </div>
+
+</div>
+<script>
+  $(".active_btn").click(function(){
+    var order_id = $(".order_input").val().trim()
+    var ncf_mobile = $(".mobile_wx_input").val().trim()
+    var rec_mobile = $(".mobile_input").val().trim()
+    var ncf_idno = $(".id_wx_input").val().trim()
+    if(!rec_mobile){
+      Firstp2p.alert({
+          text: '<div style="text-align:center;font-size: 18px;">请填写收货人手机号</div>',
+          ok: function(dialog) {
+              dialog.close();
+          },
+          width: 440,
+          okBtnName: '知道了'
+      });
+    }else if(!order_id){
+      Firstp2p.alert({
+          text: '<div style="text-align:center;font-size: 18px;">请填写订单号</div>',
+          ok: function(dialog) {
+              dialog.close();
+          },
+          width: 440,
+          okBtnName: '知道了'
+      });
+    }else if(!ncf_mobile){
+      Firstp2p.alert({
+          text: '<div style="text-align:center;font-size: 18px;">请填写网信注册手机号</div>',
+          ok: function(dialog) {
+              dialog.close();
+          },
+          width: 440,
+          okBtnName: '知道了'
+      });
+    }else if(!ncf_idno){
+      Firstp2p.alert({
+          text: '<div style="text-align:center;font-size: 18px;">请填写网信认证身份证号</div>',
+          ok: function(dialog) {
+              dialog.close();
+          },
+          width: 440,
+          okBtnName: '知道了'
+      });
+    }else{
+      $.ajax({
+        type: 'post',
+        url: '/activity/active',
+        dataType: 'json',
+        data: {
+          order_id:order_id,
+          ncf_mobile:ncf_mobile,
+          rec_mobile:rec_mobile,
+          ncf_idno:ncf_idno
+        },
+        success: function (data) {
+          if(data.errno == 0){
+            Firstp2p.alert({
+              title: '恭喜您，激活成功',
+              text: '<div style="text-align:center;font-size: 18px;">请前往网信，完成投资领取优惠购金额</div>',
+              ok: function(dialog) {
+                dialog.close();
+              },
+              width: 440,
+              okBtnName: '确定'
+            });
+          }else{
+            Firstp2p.alert({
+              title: '激活失败',
+              text: '<div style="text-align:center;font-size: 18px;">'+data.error+'</div>',
+              ok: function(dialog) {
+                dialog.close();
+              },
+              width: 440,
+              okBtnName: '知道了'
+            });
+          }
+        },
+        error: function (err) {
+          console.error(err)
+        }
+      })
+    }
+  })
+</script>
+</body>
+</html>

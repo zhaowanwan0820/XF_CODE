@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+    <meta name="format-detection" content="telephone=no" />
+    <title>全民瓜分百万红包</title>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/assistance/base.css?v=2017070501011');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/assistance/index.css?v=201707060206');?>">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/assistance/jquery.min.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/assistance/index.js');?>"></script>
+    <script>
+        window.zhuge = window.zhuge || [];
+        window.zhuge.methods = "_init debug identify track trackLink trackForm page".split(" ");
+        window.zhuge.factory = function (b) {
+            return function () {
+                var a = Array.prototype.slice.call(arguments);
+                a.unshift(b);
+                window.zhuge.push(a);
+                return window.zhuge;
+            }
+        };
+        for (var i = 0; i < window.zhuge.methods.length; i++) {
+            var key = window.zhuge.methods[i];
+            window.zhuge[key] = window.zhuge.factory(key);
+        }
+        window.zhuge.load = function (b, x) {
+            if (!document.getElementById("zhuge-js")) {
+                var a = document.createElement("script");
+                var verDate = new Date();
+                var verStr = verDate.getFullYear().toString() + verDate.getMonth().toString() + verDate.getDate().toString();
+                a.type = "text/javascript";
+                a.id = "zhuge-js";
+                a.async = !0;
+                a.src = 'https://stat.ncfwx.com/zhuge.js?v=' + verStr;
+                a.onerror = function () {
+                    window.zhuge.identify = window.zhuge.track = function (ename, props, callback) {
+                        if (callback && Object.prototype.toString.call(callback) === '[object Function]')
+                            callback();
+                    };
+                };
+                var c = document.getElementsByTagName("script")[0];
+                c.parentNode.insertBefore(a, c);
+                window.zhuge._init(b, x)
+            }
+        };
+        window.zhuge.load('6f33d6821b27439dae59698798ef81d6', {
+            debug: true,
+            superProperty: {
+                PlatformType: 'H5',
+                xinbao: 1
+            },
+            autoTrack: true,
+            singlePage: true
+        }); //配置应用的AppKey -->
+    </script>
+</head>
+<body>
+    <input type="hidden" value="{$role}" id="role">
+    <input type="hidden" value="{$pageType}" id="pageType">
+    <input type="hidden" value="{$acquireType}" id="acquireType">
+    <input type="hidden" value="{$newerBonus}" id="newerBonus">
+    <input type="hidden" value="{$assistanceUrl}" id="openUrl">
+    <input type="hidden" value="{$shareIcon}" id="shareIcon">
+    <input type="hidden" value="{$shareUrl}" id="shareUrl">
+    <input type="hidden" value="{$shareContent}" id="shareContent">
+    <input type="hidden" value="{$shareTitle}" id="shareTitle">
+    <input type="hidden" value="{$eventId}" id="eventId">
+    <input type="hidden" value="{$sn}" id="sn">
+    {include file="web/views/v3/activity/share_assistance.html"}
+    <div class="p_assistance">
+        <div class="loading">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/loading.gif');?>">
+        </div>
+        <div class="mask wxShareMask">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/wxShare.png');?>" class="wxShareImg">
+        </div>
+        {if $pageType eq 9}
+        <!-- 活动已结束 -->
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/balloon.png');?>" class="balloon">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/title.png');?>" class="mainTitle">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/dianzhui.png');?>" class="dianzhui">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/dianzhui2.png');?>" class="dianzhui2">
+            <div class="faqiBox">
+                <div class="openBox openHide">
+                    <p class="openBtn over"></p>
+                </div>
+            </div>
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/fenge.png');?>" class="fenge">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/leftPig.png');?>" class="leftPig">
+            <div class="ruleBox">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/rightPig.png');?>" class="rightPig">
+                <div class="title"></div>
+                <ul class="ruleList">
+                    {function name="get_adv" x="助力红包活动规则"}
+                </ul>
+            </div>
+            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/logo.png');?>" class="logo">
+            <span class="tip">市场有风险，投资需谨慎</span>
+        {else}
+            {if $isLogin eq 1}
+            <!-- 用户已登录 -->
+                <!-- 助力人页面 -->
+                {if $role eq 1}
+                <div class="mask zhuliMask">
+                    {if $pageType eq 3}
+                    <!-- 未助力 -->
+                    <div class="shareOpenBox shareMask openHide">
+                        <div class="openBox">
+                            <p class="openBtn isZhuli isOpen"></p>
+                        </div>
+                        <div class="shareOpenBottom"></div>
+                    </div>
+                    {elseif $pageType eq 4}
+                    <!-- 已助力 -->
+                    {if $acquireType>0}
+                    <div class="shareGetBox shareMask hasTip">
+                    {else}
+                    <div class="shareGetBox shareMask">
+                    {/if}
+                        <div class="shareGetTop"></div>
+                        <div class="openCon shareGet">
+                            <img src="{if $headimg}{$headimg}{else}<?php echo $this->asset->makeUrl('v3/images/assistance/avatar.png');?>{/if}" class="avatar">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/congratulation.png');?>" class="congratulation">
+                            <div class="getBox">
+                                {if $newerBonus>0}
+                                    <!-- 新用户 -->
+                                    {if $candyAmount>0}
+                                    <!-- 信宝 -->
+                                    <div class="item">
+                                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/xinbao.png');?>">
+                                        <span class="xinbao">{$candyAmount}</span>
+                                    </div>
+                                    {else}
+                                    <!-- 红包 -->
+                                    <div class="item">
+                                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/money.png');?>">
+                                        <span class="money">{$bonusAmount}</span>
+                                    </div>
+                                    {/if}
+                                    <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/newUserAdd.png');?>" class="addImg">
+                                    <div class="item">
+                                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/money.png');?>">
+                                        <span class="xinbao">{$newerBonus}</span>
+                                    </div>
+                                {elseif $candyAmount>0}
+                                <!-- 信宝 -->
+                                <div class="item">
+                                    <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/xinbao.png');?>">
+                                    <span class="xinbao">{$candyAmount}</span>
+                                </div>
+                                {else}
+                                <!-- 红包 -->
+                                <div class="item">
+                                    <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/money.png');?>">
+                                    <span class="money">{$bonusAmount}</span>
+                                </div>
+                                {/if}
+                            </div>
+                            <p class="account">奖励已放到您的“{$mobile}”网信账户</p>
+                            <a href="https://www.ncfwx.com/app">
+                                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/lookBtn.png');?>" class="lookBtn">
+                            </a>
+                            {if $acquireType eq 1}
+                            <!-- 助力人未发起  我要更多红包-->
+                            <a href="{$moreUrl}">
+                                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/getMore.png');?>" class="getMore bottomBigBtn">
+                            </a>
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/helpTip.png');?>" class="helpShareTip">
+                            {elseif $acquireType eq 2}
+                            <!-- 助力人已发起  看看我的专属红包-->
+                            <a href="{$moreUrl}">
+                                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/lookSelfBtn.png');?>" class="lookSelfBtn bottomBigBtn">
+                            </a>
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/helpTip.png');?>" class="helpShareTip">
+                            {else}
+                            <!-- 没有发起资格 -->
+                            {/if}
+                        </div>
+                    </div>
+                    {elseif $pageType eq 5 || $pageType eq 6}
+                    <!-- 给别人助力达到上限   此链接已到达上限-->
+                    {if $acquireType>0}
+                    <div class="reachLimitBox shareMask hasTip">
+                    {else}
+                    <div class="reachLimitBox shareMask">
+                    {/if}
+                        <img src="{if $headimg}{$headimg}{else}<?php echo $this->asset->makeUrl('v3/images/assistance/avatar.png');?>{/if}" class="avatar">
+                        {if $pageType eq 5}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/reachLimit.png');?>" class="reachLimit">
+                        <a href="https://www.ncfwx.com/app">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/lookBtn.png');?>" class="lookBtn">
+                        </a>
+                        {else}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/restNone.png');?>" class="restNone">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/comeLate.png');?>" class="comeLate">
+                        <a href="https://www.ncfwx.com/app">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/lookBtn.png');?>" class="lookBtn">
+                        </a>
+                        {/if}
+                        {if $acquireType eq 1}
+                        <!-- 助力人未发起  我要更多红包-->
+                        <a href="{$moreUrl}">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/getMore.png');?>" class="getMore bottomBigBtn">
+                        </a>
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/helpTip.png');?>" class="helpShareTip">
+                        {elseif $acquireType eq 2}
+                        <!-- 助力人已发起  看看我的专属红包-->
+                        <a href="{$moreUrl}">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/lookSelfBtn.png');?>" class="lookSelfBtn bottomBigBtn">
+                        </a>
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/helpTip.png');?>" class="helpShareTip">
+                        {else}
+                        <!-- 没有发起资格 -->
+                        {/if}
+                    </div>
+                    {elseif $pageType eq 8}
+                    <!-- 红包金额达上限 -->
+                    <div class="reachLimitBox">
+                        <img src="{if $headimg}{$headimg}{else}<?php echo $this->asset->makeUrl('v3/images/assistance/avatar.png');?>{/if}" class="avatar">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/restNone.png');?>" class="restNone">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/comeLate.png');?>" class="comeLate">
+                        <a href="https://www.ncfwx.com/app">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/lookBtn.png');?>" class="lookBtn">
+                        </a>
+                    </div>
+                    {/if}
+                </div>
+                {/if}
+                <a href="https://event.ncfwx.com/zt/269">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/ruleBtn.png');?>" class="ruleBtn">
+                </a>
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/balloon.png');?>" class="balloon">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/title.png');?>" class="mainTitle">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/dianzhui.png');?>" class="dianzhui">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/dianzhui2.png');?>" class="dianzhui2">
+                {if $role eq 1}
+                <div class="shareDefault"></div>
+                {/if}
+                <!-- 发起人页面 -->
+                {if $role eq 0}
+                <div class="faqiBox">
+                    {if $pageType eq 1}
+                    <!-- 发起人未领红包 -->
+                    <div class="openBox openHide">
+                        <p class="openBtn isFaqi isOpen"></p>
+                    </div>
+                    {elseif $pageType eq 2}
+                    <!-- 发起人已领红包 -->
+                    <div class="openCon openShow">
+                        <img src="{if $headimg}{$headimg}{else}<?php echo $this->asset->makeUrl('v3/images/assistance/avatar.png');?>{/if}" class="avatar">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/congratulation.png');?>" class="congratulation">
+                        <!-- 获得的奖励 红包、信宝 -->
+                        <div class="getBox">
+                            {if $bonusAmount>0 && $candyAmount>0}
+                            <!-- 红包和信宝 -->
+                            <div class="item">
+                                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/money.png');?>">
+                                <span class="money">{$bonusAmount}</span>
+                            </div>
+                            <div class="item">
+                                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/xinbao.png');?>">
+                                <span class="xinbao">{$candyAmount}</span>
+                            </div>
+                            {elseif $candyAmount>0}
+                            <!-- 信宝 -->
+                            <div class="item">
+                                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/xinbao.png');?>">
+                                <span class="xinbao">{$candyAmount}</span>
+                            </div>
+                            {else}
+                            <!-- 红包 -->
+                            <div class="item">
+                                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/money.png');?>">
+                                <span class="money">{$bonusAmount}</span>
+                            </div>
+                            {/if}
+                        </div>
+                        <p class="account">奖励已放到您的“{$mobile}”网信账户</p>
+                        <a href="https://www.ncfwx.com/app">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/lookBtn.png');?>" class="lookBtn">
+                        </a>
+                        <a href="javascript:void(0)" class="share">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/share.png');?>" class="shareBtn bottomBigBtn">
+                        </a>
+                        <p class="restTip">还可以邀请<span> {$remainTimes} </span>位好友助力得红包</p>
+                    </div>
+                    <!-- 助力小伙伴列表 -->
+                    <div class="helpBox openShow">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/helpTitle.png');?>" class="helpTitle">
+                        <ul class="helpList">
+                            {foreach from=$likerList item=item key=key}
+                            <li>
+                                {if $item.isNewer eq 1}
+                                <!-- 新用户 -->
+                                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/newUser.png');?>" class="newUser">
+                                {/if}
+                                <img src="{if $item.headimg}{$item.headimg}{else}<?php echo $this->asset->makeUrl('v3/images/assistance/avatar.png');?>{/if}" class="userAvatar">
+                                <span class="name ellipsis">{$item.nickname}</span>
+                                {if $item.rewardType eq 1}
+                                    <!-- 红包 -->
+                                    {if $item.extraReward eq 2}
+                                    <!-- 红包加倍 -->
+                                    <span class="helpTip">助你获得翻倍红包</span>
+                                    <span class="helpGet">￥{$item.amount}*2</span>
+                                    {else}
+                                    <!-- 红包不加倍 -->
+                                    <span class="helpTip">助你获得投资红包</span>
+                                    <span class="helpGet">￥{$item.amount}</span>
+                                    {/if}
+                                {else}
+                                    <!-- 信宝 -->
+                                    {if $item.extraReward eq 2}
+                                    <!-- 信宝加倍 -->
+                                    <span class="helpTip">助你获得翻倍信宝</span>
+                                    <span class="helpGet xinbao">{$item.amount}*2</span>
+                                    {else}
+                                    <!-- 信宝不加倍 -->
+                                    <span class="helpTip">助你获得信宝红包</span>
+                                    <span class="helpGet xinbao">{$item.amount}</span>
+                                    {/if}
+                                {/if}
+                            </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                    {elseif $pageType eq 7}
+                    <!-- 红包金额达上限 -->
+                    <div class="reachLimitBox">
+                        <img src="{if $headimg}{$headimg}{else}<?php echo $this->asset->makeUrl('v3/images/assistance/avatar.png');?>{/if}" class="avatar">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/restNone.png');?>" class="restNone">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/comeLate.png');?>" class="comeLate">
+                        <a href="https://www.ncfwx.com/app">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/lookBtn.png');?>" class="lookBtn">
+                        </a>
+                    </div>
+                    {/if}
+                </div>
+                {/if}
+                {if $role eq 0 && $pageType eq 1}
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/fenge.png');?>" class="fenge">
+                {/if}
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/leftPig.png');?>" class="leftPig">
+                {if ($role eq 0 && $pageType eq 2) || $role eq 1}
+                <div class="ruleBox openShow">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/rightPig.png');?>" class="rightPig openShow">
+                {else}
+                <div class="ruleBox">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/rightPig.png');?>" class="rightPig">
+                {/if}
+                    <div class="title"></div>
+                    <ul class="ruleList">
+                            {function name="get_adv" x="助力红包活动规则"}
+                    </ul>
+                </div>
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/logo.png');?>" class="logo">
+                <span class="tip">市场有风险，投资需谨慎</span>
+            {else}
+                <!-- 用户未登录，显示open -->
+                <div class="mask zhuliMask">
+                    <div class="shareOpenBox shareMask openHide">
+                        <div class="openBox">
+                            <p class="openBtn isZhuli isOpen"></p>
+                        </div>
+                        <div class="shareOpenBottom"></div>
+                    </div>
+                </div>
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/balloon.png');?>" class="balloon">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/title.png');?>" class="mainTitle">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/dianzhui.png');?>" class="dianzhui">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/dianzhui2.png');?>" class="dianzhui2">
+                <div class="shareDefault"></div>
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/leftPig.png');?>" class="leftPig">
+                <div class="ruleBox openShow">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/rightPig.png');?>" class="rightPig openShow">
+                    <div class="title"></div>
+                    <ul class="ruleList">
+                        {function name="get_adv" x="助力红包活动规则"}
+                    </ul>
+                </div>
+                <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/logo.png');?>" class="logo">
+                <span class="tip">市场有风险，投资需谨慎</span>
+            {/if}
+        {/if}
+    </div>
+</body>
+</html>

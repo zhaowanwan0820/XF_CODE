@@ -1,0 +1,269 @@
+{include file="web/views/v3/header.html"}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/feedback/index.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/feedback/do_answer.css');?>" />
+
+<div class="feedback-nav">
+    <a class="feedback-nav-link" href="/">网信普惠</a>
+    <span class="feedback-nav-gap">></span>
+    <a class="feedback-nav-link" href="/feedback/feedback">消费者纠纷解决中心</a>
+    <span class="feedback-nav-gap">></span>
+    <a class="feedback-nav-link" javascript:;>咨询答疑</a>
+</div>
+
+<section class="main">
+    <div class="request-answer-wrap">
+        <div class="request-answer-tips">
+            <p>
+                1. 工作时间内（8:00-20:00），拨打客服热线（400-890-9888），将由专业的客服人员为您进行实时解答。
+            </p>
+            <p>
+                2. 非工作时间内，您可通过“在线答疑”，输入相关问题，平台会在3个工作日内进行反馈，您也可登录后查看反馈内容。
+            </p>
+        </div>
+        <div class="answer-btn" id="answer-popout-btn">
+            在线答疑
+        </div>
+        <div class="answers">
+            <header class="answers-title">
+                我的提问
+
+                <!-- 为1为有未读数据， 为2为没有 -->
+                {if $is_all_read eq 1}
+                    <span class="has_new">（有新回复）</span>
+                    <strong id="store_is_allread" style="display: none">{$is_all_read}</strong>
+                {/if}
+            </header>
+            <ul class="answers-list">
+                <!-- <li class="answers-item">
+                    <p class="answers-item-request">问：为什么我的智多新转让不出去？</p>
+                    <p class="answers-item-answer">答：您可以尝试每日早晨8点进行赎回操作。
+                        <span class="has_new">NEW</span>
+                    </p>
+                    <p class="answers-time">2017-03-12</p>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+</section>
+<div class="answer-dialog-wrapper" id="answer-dialog">
+    <div class="answer-dialog">
+        <form id="request_form">
+            <header class="answer-dialog-header">
+                <div class="answer-dialog-title">
+                    在线答疑
+                </div>
+                <div class="answer-dialog-icon"></div>
+            </header>
+            <div class="answer-dialog-content">
+                <div class="answer-item clearfix consult-type">
+                    <div class="answer-item-title">咨询类型</div>
+                    <div class="answer-item-content">
+                        <div class="ui_select_box JS_select_box" data-name="event_type">
+                            <div class="j_select"></div>
+                            <ul class="select_ul j_selectContent none">
+                                <li data-value=''>请选择</li>
+                                {foreach from=$event_type item=type key=key}
+                                <li data-value="{$key}" {if $search.money_type eq $key}data-select="1" {/if}>{$type}</li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="answer-item clearfix question-desc">
+                    <div class="answer-item-title">问题描述</div>
+                    <div class="answer-item-content">
+                        <div class="input-wrapper" >
+                            <textarea class="user-answer-input" resize=none name="content"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="answer-item clearfix upload-img">
+                    <div class="answer-item-title">上传图片</div>
+                    <div class="answer-item-content">
+                        <div class="input-wrapper" >
+                            <button class="answer-upload-btn" id="uploadImage">点击上传图片</button>
+                            <input hidden name="image_url">
+                        </div>
+                        <ul id="filelist" class="filelist"></ul>
+                        <div id="errorbox" class="errorbox"></div>
+                    </div>
+                </div>
+            </div>
+            <footer class="answer-dialog-footer">
+                <button class="submit-btn" id="request-btn" type="submit">提交问题</button>
+            </footer>
+        </form>
+    </div>
+</div>
+<script id="answer_items" type="text/html">
+    <% for(var i = 0; i < list.length; i++){ %>
+        <li class="answers-item">
+            <p class="answers-item-request">问：<%= list[i].content %></p>
+            <p class="answers-item-answer">答：<%= list[i].reply %>
+                <span class="has_new">NEW</span>
+            </p>
+            <p class="answers-time"><%= list[i].time %></p>
+        </li>
+    <% } %>
+</script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/validator/validator.v1.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/plupload/plupload.full.min.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/plupload/i18n/zh_CN.js');?>"></script>
+<script>
+    // 弹框
+    $('#answer-popout-btn').on('click', function () {
+        $('#answer-dialog').show()
+    })
+    $('.answer-dialog-icon').on('click', function () {
+        $('#answer-dialog').hide()
+    })
+
+    // 初始化select选框
+    $('.JS_select_box').select()
+
+    // 验证
+    $("#request_form").validator({
+        fields: {
+            event_type: 'required',
+            image_url: 'required',
+            content: 'required',
+        },
+        messages: {
+            required: "不能为空"
+        },
+        msgWrapper: 'p',
+        msgMaker: function(opt){
+            return '<span class="valid-msg">' + opt.msg + '</span>';
+        },
+        valid: function() {
+            $.ajax({
+                method: 'POST',
+                url: '/feedback/answer',
+                data: getData('#request_form')
+            }).done(function (data) {
+                var res = JSON.parse(data);
+                $.weeboxs.open(res.msg, {
+                    boxid : null,
+                    contentType : 'text',
+                    showButton : true,
+                    showCancel : false,
+                    showOk : true,
+                    okBtnName: '确定',
+                    title : '提示',
+                    width : 430,
+                    type : 'wee',
+                    onclose : function() {
+                        null
+                    },
+                    onok : function() {
+                        res.data && (location.href="/feedback/feedback");
+                        $.weeboxs.close();
+                        window.location.reload();
+                    }
+                });
+            })
+        }
+    });
+    
+    //  生成提交对象
+    function getData(selector) {
+        var data = {}
+        $(selector).find('input, textarea').each(function (index, item) {
+            var key = $(item).attr('name')
+            var value = $(item).val()
+            key && (data[key] = value)
+
+            $(item).val('')
+        })
+        return data
+    }
+    
+
+    // 上传图片
+    var uploader = new plupload.Uploader({
+        browse_button: 'uploadImage', // this can be an id of a DOM element or the DOM element itself
+        url: '/feedback/uploadImage',
+        flash_swf_url: "<?php echo $this->asset->makeUrl('v3/js/widget/plupload/Moxie.swf');?>",
+        filters: {
+            mime_types : [
+                { title : "Image files", extensions : "jpg,jpeg,png,pjpeg"}
+            ],
+            max_file_size: '3mb'
+        },
+        multi_selection: false
+    });
+
+    // 绑定事件
+    uploader.init();
+    uploader.bind('FilesAdded', function(up, files) {
+        var html = '';
+        plupload.each(files, function(file) {
+            var fileName = file.name.length > 20 ? file.name.slice(0, 20) + '...' : file.name;
+            html += '<li id="' + file.id + '" class="filelist-item">' + fileName + ' (' + plupload.formatSize(file.size) + ') <b></b></li>';
+        });
+        document.getElementById('filelist').innerHTML += html;
+
+        uploader.start();
+    });
+
+    uploader.bind('UploadProgress', function(up, file) {
+        if (file.percent === 100) {
+            document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>上传完成</span>';
+        }
+    });
+    uploader.bind('Error', function(up, err) {
+        if (err.code == -600) {
+            $('#errorbox').html("文件大小不能超过3mb")
+        }
+        $('#filelist li').eq(0).remove()
+        $('[name=image_url]').val('')
+    });
+    uploader.bind('FileFiltered', function(up, file) {
+        $('#errorbox').html('')
+    });
+    uploader.bind('QueueChanged', function(up, err) {
+        if (up.files[1]) {
+            up.removeFile(up.files[0])
+            $('#filelist li').eq(0).remove()
+        }
+    });
+    uploader.bind('FileUploaded', function(up, file, result) {
+        var res = JSON.parse(result.response);
+        
+        // 将图片url防止到input里
+        var imgUrl = res.message.url;
+        $('[name=image_url]').val(imgUrl);
+
+        // 显示上传结果
+        var msgBox = $('#errorbox')
+        var errorCode = res.code
+        if (errorCode === '0000') {
+            msgBox.val('上传成功');
+        } else if (errorCode === '4001' || errorCode === '4000') {
+            msgBox.val(res.message);
+        }
+    });
+
+    // 列表展开
+    $('.answers-title').on('click', function () {
+
+        // 1有未读数据未读， 2已读
+        $.ajax({
+            url: '/feedback/answerList',
+            data: {
+                is_all_read: $('#store_is_allread').html()
+            }
+        }).done(function (data) {
+
+            // 渲染列表页
+            var data = {list: JSON.parse(data)};
+            var html = template('answer_items', data);
+            $('.answers-list').html(html);
+
+            $('.has_new').hide()
+        })
+    })
+
+</script> 
+{include file="web/views/v3/footer.html"}

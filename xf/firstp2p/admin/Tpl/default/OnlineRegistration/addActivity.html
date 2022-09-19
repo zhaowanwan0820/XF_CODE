@@ -1,0 +1,212 @@
+<tagLib name="html"/>
+<include file="Public:header"/>
+<load href='__TMPL__Common/js/jquery.min.js'/>
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<load href='__TMPL__Common/js/jquery.ui.widget.js'/>
+<load href='__TMPL__Common/js/jquery.weebox.js'/>
+<load href='__TMPL__Common/js/bootstrap.min.js'/>
+<load href='__TMPL__Common/js/user.js'/>
+<load href='__TMPL__Common/style/weebox.css'/>
+<load href='__TMPL__Common/style/bootstrap.min.css'/>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js"></script>
+<load href='__TMPL__Common/js/calendar/calendar.css'/>
+<load href='__TMPL__Common/js/calendar/calendar.js'/>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+<style>
+    body { background-color: #F0F0F0; }
+    .bodydiv{
+        margin:1% 3%;
+    }
+</style>
+<div class="main">
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <div><font size = "4" color="red"><B>| </B></font><font size = "4"><B>报名系统配置</B></font>
+        </div>
+
+        <div class=bodydiv >
+            <font size = "3">活动标题：
+                <input type="text" name="title" value="" id="title" des='活动标题' class="text require" style="width:460px;border-left:white ;padding: 5px; border:1px solid DarkGray;"/>
+            </font>
+        </div>
+
+        <div class=bodydiv >
+            <font size = "3">活动等级：
+            <select name="level" id="level" style="width:200px;height:35px;">
+                <foreach name="level" item="level_item" key="k">
+                    <option value="{$k}" >{$level_item}</option>
+                </foreach>
+            </select>
+            </font>
+        </div>
+        
+        <div class=bodydiv >
+            <font size = "3">活动时间：
+            <input type="text" class="text require" des='活动开始时间' style="width:200px;text-align:center;border-left:white ;padding: 5px; border:1px solid DarkGray;" name="start_time" id="Activity_start" value="" placeholder="年-月-日" onfocus="this.blur(); return showCalendar('Activity_start', '%Y-%m-%d', false, false, 'Activity_start');" />
+            <input type="button" style="outline:none;width:0.1px;border:none;background-color:transparent;" id=""/>
+            至 <input type="button" style="outline:none;width:0.1px;border:none;background-color:transparent;" />
+            <input type="text" class="text require" des='活动结束时间' style="width:200px;text-align:center;border-left:white ;padding: 5px; border:1px solid DarkGray;" name="end_time" id="Activity_end" value="" placeholder="年-月-日" onfocus="this.blur(); return showCalendar('Activity_end', '%Y-%m-%d', false, false, 'Activity_end');" />
+            <input type="button" style="border:none;background-color:transparent;" id="" />
+            </font>
+        </div>
+
+        <div class=bodydiv>
+            <font size="3">
+            <div style="display: flex;align-items: center">活动详情：
+                <textarea name="detail" id="detail" des='活动详情' value="" class="text require" style="width: 460px;height: 300px"></textarea>
+            </div>
+            </font>
+        </div>
+
+        <div class="bodydiv">
+            <font size = "3">分享图片：
+                <img id="conf_platform_pc_img" class="activity_home_img" src="" data-src="" style="width:150px"/>
+                <span class="zanwu_tips" style="display:inline-block;border:1px solid #ccc;">暂无图片</span>
+                <a href="javascript:;" class="file" style="width:150px;display: inline-block">
+                    <input type="file" class="textbox" onchange="tryUploadInput('conf_platform_pc')" value="" name="shared_icon" id="conf_platform_pc" class="file"/>
+                    <!--<span class="tip_span">( 限制大小200KB )</span>-->
+                </a>
+                <input id = "conf_platform_pc_src" class= "zhimg" des='配置图片' type="hidden" name = "shared_icon" value=""/>
+            </font>
+        </div>
+
+        <div class=bodydiv >
+            <font size = "3">分享文案：
+                <input type="text" name="shared_text" id="shared_text" des='活动文案' value="" class="text require" style="width:460px;border-left:white ;padding: 5px; border:1px solid DarkGray;"/>
+            </font>
+        </div>
+
+        <div class="bodydiv">
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="OnlineRegistration" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveActivity" />
+            <input type="submit" style="color:#FFFAFA;background:#4169E1;background-image: none;display: inline-block;font-size: 14px; font-weight: 400;padding: 6px 12px;border-radius: 4px;border:none" class="button" id="button_submit" value="保存设置" onclick="checktosubmit()"/>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    function checktosubmit() {
+        $("form").unbind();
+        init_word_box();
+        $("#info").ajaxStart(function(){
+            $(this).html(LANG['AJAX_RUNNING']);
+            $(this).show();
+        });
+        $("#info").ajaxStop(function(){
+
+            $("#info").oneTime(2000, function() {
+                $(this).fadeOut(2,function(){
+                    $("#info").html("");
+                });
+            });
+        });
+        $("form").bind("submit",function(){
+            var btn=$('form input[type="submit"]');
+            var $input = $('#hkop');
+            $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+            var doms = $(".require");
+            var check_ok = true;
+            $.each(doms,function(i, dom){
+                if($.trim($(dom).val())=='')
+                {
+                    var title = $(dom).attr('des');
+                    if(!title)
+                    {
+                        title = '';
+                    }
+                    if(title.substr(title.length-1,title.length)==':')
+                    {
+                        title = title.substr(0,title.length-1);
+                    }
+                    if($(dom).val()=='')
+                        TIP = LANG['PLEASE_FILL'];
+                    if($(dom).val()=='0')
+                        TIP = LANG['PLEASE_SELECT'];
+                    alert(TIP+title);
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    $(dom).focus();
+                    check_ok = false;
+                    return false;
+                }
+            });
+            if(!check_ok)
+                return false;
+            if($("form").attr("name")=="search"){
+                $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                return true;
+            }else{
+                if (confirm("确定此操作吗？")) {
+                    //$input.val(btn.val());
+//                    $(this).append($input);
+                    save();
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    return false;
+                } else {
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    return false;
+                }
+            }
+        });
+    }
+
+    //上传成功  图片显示 且赋值自定义属性
+    function tryUploadInput(img) {
+        var _id = img;
+        var img_id = _id+'_img';
+        var img_scr = _id+'_src';
+        var _hasSrc = $("#" + img_id).attr("data-src");
+        $.ajaxFileUpload({
+            url: '/m.php?m=NewUserPage&a=loadFile',
+            secureuri: false,
+            fileElementId:_id,
+            dataType: 'json',
+
+            success: function (data, status) {
+                if(data.code == 1){
+                    var src = data.imgUrl;
+                    if (src != '') {
+                        if(!_hasSrc){
+                            $("#" + img_id).show();
+                        }
+                        $("#" + img_id).attr("src",src);
+                        $("#" + img_id).attr("data-src",src);
+
+                        $("#" + img_id).siblings(".zanwu_tips").hide();
+                        $("#" + img_scr).val(src);
+                    }
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data, status, e) {
+                alert("上传错误");
+            }
+        })
+    }
+
+</script>
+<script type="text/javascript">
+    function save(){
+        $.ajax({
+            url: 'm.php?m=OnlineRegistration&a=saveActivity',
+            data: {
+                "title":$("#title").val(),
+                "level":$("#level").val(),
+                "start_time":$("#Activity_start").val(),
+                "end_time":$("#Activity_end").val(),
+                "shared_icon":$("#conf_platform_pc_src").val(),
+                "shared_text":$("#shared_text").val(),
+                "detail":$("#detail").val()
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data.status == 0) {
+                    window.location.href = '/m.php?m=OnlineRegistration&a=activityList';
+                } else {
+                    alert(data.info);
+                }
+            }
+        });
+    }
+</script>
+<include file="Public:footer"/>

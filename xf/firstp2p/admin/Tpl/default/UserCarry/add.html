@@ -1,0 +1,64 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">{%ADD} <a href="{:u("UserCarry/waitList")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<input type="hidden" name="user_id" value="{$uid}" />
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">用户名:</td>
+		<td class="item_input">{$userinfo.user_name}</td>
+	</tr>
+	<tr>
+		<td class="item_title">用户余额:</td>
+		<td class="item_input">{$userinfo.money}</td>
+	</tr>
+	
+	<tr>
+		<td class="item_title">提现金额:</td>
+		<td class="item_input"><input type="text" class="textbox require" name="money" value="0" /></td>
+	</tr>
+	<!--去掉会员列表-提现申请面板中的手续费编辑框 20140425-->
+	<!--tr>
+		<td class="item_title">手续费</td>
+		<td class="item_input"><input type="text" class="textbox" name="fee" value="0" /></td>
+	</tr-->
+	<tr>
+		<td class="item_title">备注</td>
+		<td class="item_input"><textarea name="desc"></textarea></td>
+	</tr>
+	<!--
+	<tr>
+        <td class="item_title">审核状态</td>
+        <td class="item_input">
+	        <select name="status">
+	            <option value="0" >{%CARRY_STATUS_0}</option>
+	            <option value="1" selected="selected">{%CARRY_STATUS_1}</option>
+	            <option value="2" >{%CARRY_STATUS_2}</option>
+	        </select>
+        </td>
+    </tr>
+	-->
+	<tr>
+		<td class="item_title"></td>
+		<td class="item_input">
+			<!--隐藏元素-->
+			<input type="hidden" name="{:conf("VAR_MODULE")}" value="UserCarry" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+			<!--隐藏元素-->
+			<input type="submit" class="button" value="{%ADD}" />
+			<input type="reset" class="button" value="{%RESET}" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>	 
+</form>
+</div>
+<include file="Public:footer" />

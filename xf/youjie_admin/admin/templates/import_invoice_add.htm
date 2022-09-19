@@ -1,0 +1,84 @@
+<!-- $Id: goods_batch_add.htm 16544 2009-08-13 07:55:57Z liuhui $ -->
+{include file="pageheader.htm"}
+<div class="main-div">
+    <form action="order.php?act=import_invoice_upload" method="post" enctype="multipart/form-data" name="theForm" onsubmit="return formValidate()">
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <tr>
+                <td class="label">上传批量xls文件</td>
+                <td><input name="file" type="file" size="40" accept="application/vnd.ms-excel">
+                    <br />
+                    <span class="notice-span" style="display:block">（xls文件中一次上传商品数量最好不要超过1000，文件大小最好不要超过500K.）</span>
+                    <span class="notice-span" style="display:block;color: red;font-weight: bold;font-size: 15px">（注：默认xls模板文件【多个快递单号用英文分号";"隔开】）</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label"></td>
+                <td>
+                    <span class="notice-span" style="display:block;color: red;font-weight: bold;font-size: 15px">
+                        （修复运单号说明：如需修复运单号，将修复数据按规定导入模板，文件名前缀必须为"hh_修复_"，
+                        <br> &nbsp; 例如：hh_修复_import_invoice.xls，然后正常操作上传即可
+                    <br> &nbsp;  进入修复的条件：文件名前缀符合，订单状态必须是已付款、已发货(及之后状态)）
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><a href="order.php?act=import_invoice_download">下载xls模版文件</a></td>
+            </tr>
+            <!--<tr>-->
+                <!--<td>&nbsp;</td>-->
+                <!--<td><a href="order.php?act=express_download">下载快递助手模版文件(一般无须下载，由导出方提供)</a></td>-->
+            <!--</tr>-->
+            <tr align="center">
+                <td colspan="2"><input name="submit" type="submit" id="submit" value="{$lang.button_submit}" class="button" /></td>
+            </tr>
+        </table>
+    </form>
+    <table width="100%">
+        <tr>
+            <td>&nbsp;</td>
+            <td width="80%">{$lang.use_help}</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+    var elements;
+    onload = function()
+    {
+        // 文档元素对象
+        elements = document.forms['theForm'].elements;
+
+        // 开始检查订单
+        startCheckOrder();
+    }
+
+    /**
+     * 检查是否底级分类
+     */
+    function checkIsLeaf(selObj)
+    {
+        if (selObj.options[selObj.options.selectedIndex].className != 'leafCat')
+        {
+            alert(goods_cat_not_leaf);
+            selObj.options.selectedIndex = 0;
+        }
+    }
+
+    /**
+     * 检查输入是否完整
+     */
+    function formValidate()
+    {
+        if (elements['file'].value == '')
+        {
+            alert(please_upload_file);
+            return false;
+        }
+        return true;
+    }
+</script>
+{/literal}
+{include file="pagefooter.htm"}

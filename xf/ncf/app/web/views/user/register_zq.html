@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="icon" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.ico');?>" type="image/x-icon" />
+        <link rel="shortcut icon" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.ico');?>" type="image/x-icon" />
+
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/oauth/common.css');?>" />
+        <link href="<?php echo $this->asset->makeUrl('v1/css/oauth/weebox.css');?>" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v1/css/oauth/register.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('skins/default/css/style.css');?>" />
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/jquery-1.10.2.min.js');?>"></script>
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/jquery.weebox.js');?>"></script>
+        <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v1/css/oauth2.css');?>">
+
+        <title>{if $page_title}{$page_title} - {/if}{if $show_site_titile eq 1}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+    </head>
+    <body>
+
+        <div id="reg-panel">
+            <h1><a href="/"></a>
+                <p>{$headerDoc}</p></h1>
+            <h3>注册会员</h3>
+            <form id="register-form" action="/user/doRegister" method="post">
+                <input type="hidden" name="action" value="add" />
+                <input type="hidden" name="type" value="{$type}" />
+                <input type="hidden" name="src" value="{$src}" />
+                <input type="checkbox" name="agreement" value="1" id="agree" style="display:none;" checked="checked"/>
+                <table id="register-form-table" width="90%" align="center">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input data-label="用户名" type="text" class="text" id="input-username" 
+                                       name="username" value="{$data.username}"  placeholder="用户名">
+                                <!--<i class='{if !empty($error.username)}icon_no{/if}'></i>-->
+                                <div class="errorDiv">{$error.username}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input data-label="登录密码" type="password" class="text" id="input-password"  name="password" placeholder="密码" >                
+                                <!--<i class='{if !empty($error.password)}icon_no{/if}'></i>-->
+                                <div class="errorDiv">{$error.password}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input data-label="确认密码" type="password" class="text" id="input-retype" 
+                                       name="retype" placeholder="确认密码">
+                                <div class="errorDiv"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input data-label="邮箱地址" type="text" class="text" id="input-email" 
+                                       name="email" value="{$data.email}" placeholder="邮箱">                  
+                                <!--<i class='{if !empty($error.email)}icon_no{/if}'></i>-->
+                                <div class="errorDiv">{$error.email}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="input-row yanzheng">
+                                <input type="text" placeholder="图形验证码" name="captcha" class="text input-short" width=100px id="input-captcha">
+                                <img align="absbottom" title="点击刷新" src="/verify.php?w=91&h=36&rb=0" id="captcha" onclick="refresh()">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <?php echo token_input(); ?>
+                                <input data-label="手机号" type="text" class="text" id="input-mobile" 
+                                       name="mobile" value="{$data.mobile}" placeholder="手机号">      
+                                <!--<i class='{if !empty($error.mobile)}icon_no{/if}'></i>-->
+                                <div class="errorDiv">{$error.mobile}</div>     
+                            </td>  
+                        </tr>
+                        <tr>
+                            <td><input data-label="手机验证码" type="text" class="text input-short " id="input-code" name="code" value=""  placeholder="手机验证码"><input type="button" id="action-send-code" class="btn" data-url="/user/MCode" data-url2="/user/MCode" value="获取手机验证码">
+                                <!--<i class='{if !empty($error.code)}icon_no{/if}'></i>-->
+                                <div style=" clear:both;"></div>
+                                <div class="errorDiv">{$error.code}</div>
+                            </td>
+                        </tr>
+                        {if $invite_money >= 0}
+                        <tr class="dis">
+                            <td>
+                                <input type="hidden" value="{$invite}" name="invite" id="input-invite" class="text" placeholder="邀请码（选填）" data-label="选填">
+                            </td>
+                        </tr>
+                        {/if}
+                        <tr id="form-action-row">
+                            <td>
+                                <input type="button" class="register-btn" id='register-btn' value="{$buttonDoc}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                点击上面的“注册”按钮，表示您同意<a href="{$agreement}" target="_blank">《网信用户协议》</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+            <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/reg.js');?>"></script>      
+        </div>
+        <script type="text/javascript">
+
+                                //邀请码提示
+                                //$.showErr_mobile = function(str,func,title)
+                                //{
+                                //	$.weeboxs.open(str, {boxid:'fanwe_error_box',okBtnName: '继续注册',cancelBtnName: '返回修改',contentType:'text',showButton:true, showCancel:true, showOk:true,title:title,width:250,type:'wee',onclose:func});
+                                //};
+                                //  $.showErr_mobile("您的邀请码无效，注册成功后无法获得邀请返利，是否要继续？", function() {}, "提示");
+        </script>
+
+
+
+
+        <script type='text/javascript'>
+                    var _ncf = {"prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "", "pck": {"channel": "channel", "fpid": "fpid"}, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": []};
+            (function(p, h, s) {
+                var o = document.createElement(h);
+                o.src = s;
+                p.appendChild(o)
+            })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+        </script>
+
+        <script type="text/javascript">
+            function refresh() {
+                document.getElementById("captcha").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+            }
+        </script>
+    </body>
+</html>

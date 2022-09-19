@@ -1,0 +1,66 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">VIP日志记录</div>
+<div class="blank5"></div>
+<!-- <div class="button_row">
+</div> -->
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        用户ID：<input type="text" class="textbox" id="user_id" name="user_id" value="{:trim($_REQUEST['user_id'])}" />
+        手机号：<input type="text" class="textbox" id="user_name" name="user_mobile" value="{:trim($_REQUEST['user_mobile'])}" />
+        经验值来源: <select id="source_type" name="source_type" style="padding:2px 5px;">
+            <option value="0" <if condition="intval($_REQUEST['source_type']) eq 0">selected="selected"</if>>全部</option>
+            <foreach name="sourceTypes" item="type" key="key">
+               <option value="{$key}" <if condition="intval($_REQUEST['source_type']) eq $key">selected="selected"</if>>{$type}</option>
+            </foreach>
+        </select>
+        <input type="hidden" value="VipPointLog" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="exportCSV()" />
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="vip_point_log"
+    checkbox="true"
+    datasource="list"
+    show="id:{%ID}|50px,user_id:用户ID,user_name:用户名称,user_mobile:用户手机号,point:经验值变动,expire_time:有效期至,info:详情"
+/>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+<script>
+/**
+ * CSV导出，构造下载链接
+ */
+function exportCSV()
+{
+    var idBox = $(".key:checked"),
+        id = '',
+        action = $("form [name=a]"),
+        curVal = action.val(),
+        params = '';
+
+    if(idBox.length > 0)
+    {
+        var idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+    } else {
+        params = '&user_id='+$("#user_id").val()+'&user_name='+$("#user_name").val()+'&source_type='+$("#source_type").val();
+    }
+    alert("/m.php?" + params + '&id=' + id);
+    action.val('export_csv');
+    params = $('form').serialize();
+    action.val(curVal);
+    location.href = "/m.php?m=VipPointLog&a=export_csv&" + params + '&ids=' + id;
+}
+</script>

@@ -1,0 +1,103 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+    function cont_type_add(){
+        $.weeboxs.open(ROOT+'?m=ContractService&a=contTypeAdd', {contentType:'ajax',showButton:false,title:'添加分类',width:420,height:210});
+    }
+    function cont_type_edit(id){
+        $.weeboxs.open(ROOT+'?m=ContractService&a=contTypeEdit&id='+id, {contentType:'ajax',showButton:false,title:'修改分类',width:420,height:210});
+    }
+    function cont_type_copy(id,typeName){
+        $.weeboxs.open(ROOT+'?m=ContractService&a=contTypeCopy&id='+id, {contentType:'ajax',showButton:false,title:'将复制“'+typeName+'”下的所有模板',width:450,height:150});
+    }
+
+</script>
+<div class="main">
+    <div class="main_title">合同模板分类</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <input type="button" class="button" value="{%ADD}" onclick="cont_type_add();" />
+    </div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            &nbsp;分类名称：<input type="text" class="textbox" name="type_name" value="{:trim($_REQUEST['type_name'])}" />
+            &nbsp;借款类型：
+            <select name="contract_type">
+                <option value="" <if condition="!is_numeric($_REQUEST['contract_type']) and $_REQUEST['contract_type'] eq ''">selected="selected"</if>>全部</option>
+                <option value="0" <if condition="is_numeric($_REQUEST['contract_type']) and $_REQUEST['contract_type'] eq 0">selected="selected"</if>>个人借款</option>
+                <option value="1" <if condition="$_REQUEST['contract_type'] eq 1">selected="selected"</if>>公司借款</option>
+            </select>
+            &nbsp;状态：
+            <select name="use_status">
+                <option value="" <if condition="!is_numeric($_REQUEST['use_status']) and $_REQUEST['use_status'] eq ''">selected="selected"</if>>全部</option>
+                <option value="1" <if condition="$_REQUEST['use_status'] eq 1">selected="selected"</if>>当下使用</option>
+                <option value="0" <if condition="is_numeric($_REQUEST['use_status']) and $_REQUEST['use_status'] eq 0">selected="selected"</if>>历史使用</option>
+            </select>
+            &nbsp;合同分类：
+            <select name="source_type">
+                <option value="0" <if condition="is_numeric($_REQUEST['source_type']) and $_REQUEST['source_type'] eq 0">selected="selected"</if>>网贷</option>
+                <option value="102" <if condition="is_numeric($_REQUEST['source_type']) and $_REQUEST['source_type'] eq 102">selected="selected"</if>>随心约普惠</option>
+            </select>
+            <input type="hidden" value="ContractService" name="m" />
+            <input type="hidden" value="getCategory" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="14" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th width="50px">编号</th>
+            <th>分类名称</th>
+            <th>分类标识</th>
+            <th>借款类型</th>
+            <th>状态</th>
+            <th>当前合同版本</th>
+            <th>分类类型</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+                <td>{$item.id}</td>
+                <td>{$item.typeName}</td>
+                <td>{$item.typeTag}</td>
+                <td>
+                    <if condition='$item.typeTag neq ""'>
+                        <if condition='$item.contractType eq 0'>个人借款<else />公司借款</if>
+                    </if>
+                </td>
+                <td><if condition='$item.useStatus eq 1'>当下使用<else />历史使用</if></td>
+                <td>{$item.contractVersion}</td>
+                <foreach name="dealType" item="type_item">
+                    <if condition="$item.sourceType eq $type_item['id']"> <td>{$type_item.name}</td></if>
+                </foreach>
+                <td>{$item.createTime|to_date}</td>
+                <td>
+                    <a href="javascript:void(0)" onclick="javascript:cont_type_edit('{$item.id}')">修改</a> &nbsp;
+                    <a href="/m.php?m=ContractService&a=showTemplates&typeId={$item.id}&contractVersion={$item.contractVersion}">查看模板</a> &nbsp;
+                    <a href="/m.php?m=ContractService&a=preview&typeId={$item.id}&contractVersion={$item.contractVersion}">预览合同</a> &nbsp;
+                    <a href="javascript:void(0)" onclick="javascript:cont_type_copy({$item.id},'{$item.typeName}')">复制模板</a> &nbsp;
+                    <a href="/m.php?m=ContractService&a=export&id={$item.id}&version={$item.contractVersion}">导出</a> &nbsp;
+                    <a href="/m.php?m=ContractService&a=delCategory&id={$item.id}" onclick="return confirm('确定要删除吗?')">删除</a>
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

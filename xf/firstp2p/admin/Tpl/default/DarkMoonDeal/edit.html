@@ -1,0 +1,306 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+    <div class="main_title"> 编辑 <a href="{:u("DarkMoonDeal/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" id='editform' method="post" enctype="multipart/form-data">
+        <div class="blank5"></div>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+
+            <tr>
+                <td class="item_title">交易所备案编号:</td>
+                <td class="item_input"> <input class="require" type="text" name="jys_record_number" value="{$deal.jys_record_number}" /></td>
+            </tr>
+
+            <tr>
+                <td class="item_title">交易所:</td>
+                <td class="item_input">
+                    <select id="jys_id" name="jys_id" class="require">
+                        <option value="">==请选择==</option>
+                        <foreach name="jys" key="jys_k" item="jys_v">
+                        <option value="{$jys_k}" <if condition="$deal.jys_id eq $jys_k">selected="selected"</if>>{$jys_v}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">发行人ID:</td>
+                <td class="item_input"> <input class="require" type="text" name="user_id" value="{$deal.user_id}" /></td>
+            </tr>
+
+            <tr>
+                <td class="item_title">担保机构:</td>
+                <td class="item_input">
+                    <select id="agency_id" name="agency_id" class="require">
+                    <option value="">==请选择==</option>
+                    <foreach name="deal_agency" item="agency_item">
+                    <option value="{$agency_item.id}" <if condition="$deal.agency_id eq $agency_item['id']">selected="selected"</if>><if condition="$agency_item['short_name'] neq ''">{$agency_item.short_name}({$agency_item.name})<else/>{$agency_item.name}</if></option>
+                    </foreach>
+                    </select>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="item_title">咨询机构:</td>
+                <td class="item_input">
+                    <select id='advisory_id' name="advisory_id" class="require">
+                    <option value="">==请选择==</option>
+                    <foreach name="deal_advisory" item="advisory_item">
+                    <option value="{$advisory_item.id}" <if condition="$deal.advisory_id eq $advisory_item['id']">selected="selected"</if>><if condition="$advisory_item['short_name'] neq ''">{$advisory_item.short_name}<else/>{$advisory_item.name}</if></option>
+                    </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">借款手续费率:</td>
+                <td class="item_input"> <input class="require" type="text" name="loan_fee_rate" value="{$deal.loan_fee_rate}" /> %</td>
+            </tr>
+            <tr>
+                <td class="item_title">借款手续费收取方式:</td>
+                <td class="item_input">
+                    <select id="loan_fee_rate_type" class="require" name="loan_fee_rate_type">
+                        <option value="" selected="selected">==请选择==</option>
+                        <option value="1" <if condition="$deal.loan_fee_rate_type eq 1">selected="selected"</if>>年化前收</option>
+                        <option value="2" <if condition="$deal.loan_fee_rate_type eq 2">selected="selected"</if>>年化后收</option>
+                        <option value="3" <if condition="$deal.loan_fee_rate_type eq 3">selected="selected"</if>>年化分期收</option>
+                        <option value="4" <if condition="$deal.loan_fee_rate_type eq 4">selected="selected"</if>>代销分期</option>
+                        <option value="5" <if condition="$deal.loan_fee_rate_type eq 5">selected="selected"</if>>固定比例前收</option>
+                        <option value="6" <if condition="$deal.loan_fee_rate_type eq 6">selected="selected"</if>>固定比例后收</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">借款咨询费率:</td>
+                <td class="item_input"> <input class="require" type="text" name="consult_fee_rate" value="{$deal.consult_fee_rate}" /> %</td>
+            </tr>
+            <tr>
+                <td class="item_title">借款咨询费收取方式:</td>
+                <td class="item_input">
+                    <select id="consult_fee_rate_type" class="require" name="consult_fee_rate_type">
+                        <option value="" selected="selected">==请选择==</option>
+                        <option value="1" <if condition="$deal.consult_fee_rate_type eq 1">selected="selected"</if>>前收</option>
+                        <option value="2" <if condition="$deal.consult_fee_rate_type eq 2">selected="selected"</if>>后收</option>
+                        <option value="3" <if condition="$deal.consult_fee_rate_type eq 3">selected="selected"</if>>分期收取</option>
+                    </select>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">借款担保费率:</td>
+                <td class="item_input"> <input class="require" type="text" name="guarantee_fee_rate" value="{$deal.guarantee_fee_rate}" /> %</td>
+            </tr>
+            <tr>
+                <td class="item_title">借款担保费收取方式:</td>
+                <td class="item_input">
+                    <select id="guarantee_fee_rate_type" class="require" name="guarantee_fee_rate_type">
+                        <option value="" selected="selected">==请选择==</option>
+                        <option value="1" <if condition="$deal.guarantee_fee_rate_type eq 1">selected="selected"</if>>前收</option>
+                        <option value="2" <if condition="$deal.guarantee_fee_rate_type eq 2">selected="selected"</if>>后收</option>
+                        <option value="3" <if condition="$deal.guarantee_fee_rate_type eq 3">selected="selected"</if>>分期收取</option>
+                    </select>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">借款金额:</td>
+                <td class="item_input"> <input class="require" type="text" name="borrow_amount" value="{$deal.borrow_amount}" />元</td>
+            </tr>
+
+            <tr>
+                <td class="item_title">还款方式:</td>
+                <td class="item_input">
+                    <select name="loantype" id="repay_mode" onchange="javascript:changeRepay();" >
+                        <foreach name="loan_type" key='type_key' item="type_item">
+                        <option value="{$type_key}" <if condition="$deal.loantype eq $type_key">selected="selected"</if>>{$type_item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">借款期限:</td>
+                <td class="item_input">
+                    <select id="repay_period" name="repay_time" onchange="javascript:changeRepay();">
+                    <foreach name="repay_time" key='time_key' item="time_item">
+                        <option value="{$time_key}" <if condition="$deal.repay_time eq $time_key">selected="selected"</if>>{$time_item}</option>
+                    </foreach>
+                    </select>
+                    <input type="text" class="changepmt textbox" SIZE="8" onchange="javascript:changeRepay();" name="repay_time" id="repay_period2" value="{$deal.repay_time}" /> <span id='tian'>天</span>
+                    <select id="repay_period3" name="repay_time" onchange="javascript:changeRepay();" >
+                    <foreach name="repay_time_month" key='time_key' item="time_item">
+                        <option value="{$time_key}"  <if condition="$deal.repay_time eq $time_key"> selected="selected"</if>>{$time_item}</option>
+                    </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">预期年化收益率:</td>
+                <td class="item_input"> <input class="require" type="text" name="rate" value="{$deal.rate}" /> %</td>
+            </tr>
+
+            <tr>
+                <td class="item_title">资金用途:</td>
+                <td class="item_input"> <input class="require" type="text" name="use_info" value="{$deal.use_info}" /></td>
+            </tr>
+
+            <tr>
+                <td class="item_title">锁定期:</td>
+                <td class="item_input"> <input class="require" type="text" name="prepay_days_limit" value="{$deal.prepay_days_limit}" /> 天</td>
+            </tr>
+
+            <tr>
+                <td class="item_title">最低起投金额:</td>
+                <td class="item_input"> <input class="require" type="text" name="min_loan_money" value="{$deal.min_loan_money}" />元</td>
+            </tr>
+
+            <tr>
+                <td class="item_title">违约金费率:</td>
+                <td class="item_input"> <input class="require" type="text" name="prepay_rate" value="{$deal.prepay_rate}" /> %</td>
+            </tr>
+
+            <tr>
+                <td class="item_title">合同类型:</td>
+                <td class="item_input">
+                    <select id="contract_tpl_type" name="contract_tpl_type" >
+                    <foreach name="contract_tpl_type" key='t_key' item="t_item">
+                        <option value="{$t_item.id}" <if condition="$deal.contract_tpl_type eq $t_item.id ">selected="selected"</if>>{$t_item.typeName}</option>
+                    </foreach>
+                    <option value="" >没有合同</option>
+                    </select>
+                </td>
+            </tr>
+
+
+        </table>
+        <div class="blank5"></div>
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+
+        <if condition="$deal.deal_status eq 0">
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="DarkMoonDeal" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="save" />
+
+                    <div id='button_ff'>
+                        <!--普通单-->
+                        <input type="submit" onclick="return confirmSubmit();" class="button" value="{%SAVE}" />
+                        <input type="reset" class="button" value="{%RESET}"/>
+                    </div>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </if>
+        </table>
+        <input name="id" value="{$deal.id}" type="hidden">
+    </form>
+
+    <script>
+
+    $(document).ready(function(){
+        changeRepay();
+        <if condition="$deal.deal_status gt 0">
+        $('input').attr("readonly", "readonly");
+        $('select').attr("disabled", "disabled");
+        </if>
+    });
+
+    function changeRepay(){
+        var repay_mode = $('#repay_mode').val();
+        changeRepay.is_index_rebate_days = changeRepay.is_index_rebate_days || 0;
+        // 自动填写返利天数
+        if (repay_mode !=5){
+            var repay_period_v = $("#repay_period3").val();
+            switch(repay_mode){
+                case '1':
+                case '6':
+                case '7':
+                    repay_period_v = $("#repay_period").val();
+                    break;
+                case '8': //固定日还款特殊算法
+                    repay_period_v = $("#repay_period3").val();
+                    break;
+            }
+
+            $("#rebate_days").val(repay_period_v*30);
+        }else if (repay_mode == 5){
+            repay_period_v = $("#repay_period2").val();
+            $("#rebate_days").val(repay_period_v);
+        }
+        changeLoantype();
+
+        //切换html
+        if(repay_mode == 5){
+            $('.xhsoi').hide();
+            $('.xhsot').show();
+
+            var repay_period = $('#repay_period2').val();
+            $('#repay_period').hide();
+            $('#repay_period').removeAttr('name');
+            $('#repay_period2,#tian').show();
+            $('#repay_period2').attr('name', 'repay_time');
+            $('#repay_period3').hide();
+            $('#repay_period3').removeAttr('name');
+            //change_lgl_time();
+        }else if(repay_mode == 4 || repay_mode == 3 || repay_mode == 2 || repay_mode == 8){
+            $('.xhsoi').show();
+            $('.xhsot').hide();
+
+            var repay_period = $("#repay_period3").val();
+            $('#repay_period3').show();
+            $('#repay_period3').attr('name', 'repay_time');
+            $('#repay_period2,#tian').hide();
+            $('#repay_period2').removeAttr('name');
+            $('#repay_period').hide();
+            $('#repay_period').removeAttr('name');
+        }else{
+            $('.xhsoi').show();
+            $('.xhsot').hide();
+
+            var repay_period = $("#repay_period").val();
+            $('#repay_period').show();
+            $('#repay_period').attr('name', 'repay_time');
+            $('#repay_period2,#tian').hide();
+            $('#repay_period2').removeAttr('name');
+            $('#repay_period3').hide();
+            $('#repay_period3').removeAttr('name');
+        }
+
+    }
+    function changeLoantype() {
+        var loantype = $("#repay_mode").val();
+        var deal_status = $("input[name='deal_status']:checked").val();
+        if((((loantype == 4 || loantype == 6) && deal_status == 4) || loantype == 8)) {
+            $("#first_repay_day_box").show();
+        } else {
+            $("#first_repay_day_box").hide();
+        }
+    }
+</script>
+
+</div>

@@ -1,0 +1,95 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+
+    <div class="main_title">任务管理</div>
+    <div class="blank5"></div>
+    <div class="search_row" style="background:none;color:black;">
+        <form name="search" action="__APP__" method="get">
+                    <select name="status" id="status" >
+                        <option value="-1">全部</option>
+                        <foreach name="statusList" key="key" item="item">
+                        <option value="{$key}" <if condition="$_REQUEST['status'] eq $key">selected="selected"</if>>{$item}</option>
+                        </foreach>
+                    </select>
+
+            <input type="hidden" value="{$role}"  name="role" />
+            <input type="hidden" value="VipPointResend" name="m" />
+            <input type="hidden" value="manage" name="a" /> &nbsp;
+            <input type="submit" class="button" value="{%SEARCH}"/>
+            <!--<input type="button" class="button" value="导出" onclick="exportCSV()" />-->
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <div class="button_row">
+        <if condition="$role neq 'b'">
+        <input type="button" class="button" value="{%ADD}" onclick="add();"/>
+        </if>
+    </div>
+    <div class="blank5"></div>
+
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>任务ID</th>
+            <th>发送方式</th>
+            <th>用户/用户组</th>
+            <th>经验值</th>
+            <th>来源名称</th>
+            <th>操作人</th>
+            <th>创建时间</th>
+            <th>审核人</th>
+            <th>审核时间</th>
+            <th>审核状态</th>
+            <th>发送状态</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td style="text-align:center;"><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td style="text-align:center;">{$item.id}</td>
+            <td style="text-align:center;">{$item.type_desc}</td>
+            <td style="text-align:center;">{$item.send_condition}</td>
+            <td style="text-align:center;">{$item.point}</td>
+            <td style="text-align:center;">{$item.source_name}</td>
+            <td style="text-align:center;">{$item.create_user}</td>
+            <td style="text-align:center;">{$item.create_time|format_date}</td>
+            <td style="text-align:center;">{$item.verify_user}</td>
+            <td style="text-align:center;">{$item.verify_time|format_date}</td>
+            <td style="text-align:center;">{$item.status_desc}</td>
+            <td style="text-align:center;">{$item.send_desc}</td>
+            <if condition="$item.status eq '1'">
+            <td style="padding-left:10px;text-align:center;">
+                <a href="/m.php?m=VipPointResend&a=verify&id={$item.id}">审核</a>
+                <a href="/m.php?m=VipPointResend&a=view&id={$item.id}">查看</a>
+            </td>
+            <else/>
+            <td style="padding-left:10px;text-align:center;">
+                <a href="/m.php?m=VipPointResend&a=view&id={$item.id}">查看</a>
+            </td>
+            </if>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

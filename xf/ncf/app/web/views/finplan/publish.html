@@ -1,0 +1,74 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v3/css/duotou/p_finplan_information.css');?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.1.css');?>" rel="stylesheet" type="text/css" />
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+
+<!--面包屑导航开始-->
+<section class="crumbs">
+  <div class="w1100">
+    <a href="/">首页</a>
+    <i></i>
+    <span>智多新</span>
+  </div>
+</section>
+<!--面包屑导航结束-->
+<div class="w1100 p_finplan_info p_info_common">
+  <div class="main ui-box mt20 clearfix">
+    <div class="h-title"><h2><i></i>信息披露规则</h2></div>
+    <div class="con_width">{function name="get_adv" x="智多新信息披露规则"}</div>
+  </div>
+  <div class="main ui-box mt20 clearfix">
+    <div class="h-title">
+      <h2><i></i>披露信息</h2>
+      {if $canCancel eq 1}
+        <div class="cancle"><a href="/finplan/CancelLoadlist">查看可取消项目</a></div>
+      {/if}
+    </div>
+    <div class="disclosure">
+      {foreach from=$p2pDeals item='p2pDeals' key='dealskey'}
+        <div class="info_box clearfix bg_whtie">
+          <div class="con_l">
+            <h3 class="f16 info_title">{$p2pDeals.name}</h3>
+            <div class="fl w360">
+              <p class="pb5">
+                <span class="gray">借款金额：</span>
+                <span class="red">{function name="number_format" v="$p2pDeals.borrow_amount" f="2"}元</span>
+              </p>
+              <p>
+                <span class="gray">最低出借金额：</span>
+                <span class="red">{if $p2pDeals.min_loan_money<1000}{$p2pDeals.min_loan_money}元{else}{$p2pDeals.is_float_min_loan}万{/if}</span>
+              </p>
+            </div>
+            <div class="fl w265 progress_rate">
+              <p class="pb5">
+                <span class="gray">借款期限：</span>
+                <span>{$p2pDeals.repay_time}{if $p2pDeals.loantype eq 5}天{else}个月{/if}</span>
+              </p>
+              <p>
+                <span class="gray">还款方式：</span>
+                <span>{$p2pDeals.loantype_show}</span>
+              </p>
+            </div>
+            <div class="fl w265 progress_rate" >
+              <p class="pb5">
+                <span class="gray">年化利率：</span>
+                <span>{function name="number_format" v="$p2pDeals.rate" f="2"}%</span>
+              </p>
+              <p>
+                <span class="gray">项目进度：</span>
+                <span>{if $p2pDeals.point_percent_show eq 0}{function name="number_format" v="$p2pDeals.point_percent_show" f="0"}{else}{function name="number_format" v="$p2pDeals.point_percent_show" f="2"}{/if}%</span>
+              </p>
+            </div>
+            <div class="fr">
+              <a class="info_details" href="/finplan/Publishptp?deal_id={$p2pDeals.id}&type=1">查看详情</a>
+            </div>
+          </div>
+        </div>
+      {/foreach}
+      {if $pages > 1}
+        <div class="pages">{$pagination}</div>
+      {/if}
+    </div>
+  </div>
+</div>
+{include file="web/views/footer.html"}

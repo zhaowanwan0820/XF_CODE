@@ -1,0 +1,43 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<script type="text/javascript">
+
+</script>
+<div class="main">
+<div class="blank5"></div>
+<form action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">xlsx文件</td>
+        <td class="item_input"><input type="file" class="textbox require" name="file" /></td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input"><input type="button" class="button" value="下载模板文件" onclick="download()" />
+        <br><span class='tip_span'>按指定列名编辑，不要有空行，’备注‘可空。2015年1月13日更新，每次导入不超过100条</span>
+        </td>
+    <tr>
+        <td class="item_title">&nbsp;</td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="m" value="UserRegisterBatch" />
+            <input type="hidden" name="a" value="import" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%OK}" onclick='return confirm("确认提交!？")'/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>     
+</form>
+<script>
+    function download(){
+        window.location.href = ROOT+'?m=UserRegisterBatch&a=download';
+    }
+</script>
+</div>

@@ -1,0 +1,32 @@
+<div class="ui-wx-cover"></div>
+<!-- JiaThis Button BEGIN -->
+<div class="ui-share">
+    <div class="jiathis_style_32x32">
+        <a class="jiathis_button_tsina"></a>
+        <a class="jiathis_button_tqq"></a>
+        <a class="jiathis_button_qzone"></a>
+        <a class="jiathis_button_renren"></a>
+    </div>
+</div>
+<script>
+    var jiathis_config = {
+        boldNum: 0,
+        showClose: false,
+        url: "{$linkUrl}",
+        summary: '{$desc}'
+    }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<script type="text/javascript">
+$('.ui-share,.ui-wx-cover').click(function(event) {
+    $(this).hide();
+});
+$('.share-btn').click(function(event) {
+    var ua = window.navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+        $('.ui-wx-cover').show();
+    }else{
+        $('.ui-share').show();
+    }
+});
+</script>

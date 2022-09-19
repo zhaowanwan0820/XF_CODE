@@ -1,0 +1,149 @@
+{include file="inc/header.html"}
+<?php
+$this->_var['dealcss'][] = $this->_var['APP_STATIC_PATH']."/css/deal.css";
+?>
+<link rel="stylesheet" type="text/css" href="{function name="parse_css" v="$dealcss"}" />
+<div class="blank"></div>
+	<div id="deal-default" class="clearfix">
+	<div class="page-navigation">
+		<a href="{url x="index" r="deals"}">返回借款列表</a>
+	</div>
+		<div class="deal_box">
+			<div class="deal_box_top"></div>
+			<div class="deal_box_data">
+				<div class="h_con">
+					<h3>借款申请修改项</h3>
+				</div>
+				<div class="con_box" style="padding-top:10px;">
+					<table class="deal-update-table">
+						<thead>
+							<tr>
+								<th>项目</th>
+								<th>修改内容</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							{foreach from=$deal.update_json key=key item=item}
+							<tr>
+								<td class="deal-update-cell-label">{$update_deal_lang.$key}</td>
+								<td class="deal-update-cell-content">{if $item}由 <b>{$item}</b> {/if}修改成 <b>{if $key eq 'rate'}{$deal.int_rate}%{else}{$deal.$key}{/if}</b></td>
+								<td class="deal-update-cell-actions">
+									<a href="#" class="actlb actlb-green item-approve">同意此修改</a>
+									<a href="#" class="actlb actlb-red item-deny">拒绝此修改</a>
+								</td>
+							</tr>
+							{/foreach}
+						</tbody>
+						<tfoot>
+							<tr>
+								<td></td>
+								<td></td>
+								<td class="deal-update-cell-actions">
+									<a id="deal-update-submit" href="#" class="btn btn-disabled"><span>重新提交</span></a>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+			<div class="deal_box_bot"></div>
+		</div>
+<script>
+(function($){
+	$(function() {
+		function checkAllApproved() {
+			var allApproved = true;
+			$('.item-approve').each(function() {
+				if ($(this).hasClass('actlb-green')) {
+					allApproved = false;
+				}
+			});
+			if (allApproved) {
+				$('#deal-update-submit').removeClass('btn-disabled');
+			} else {
+				$('#deal-update-submit').addClass('btn-disabled');
+			}
+		}
+		$('.item-approve').click(function(e) {
+			e.preventDefault();
+			$(this).removeClass('actlb-green').addClass('actlb-green-active');
+			checkAllApproved();
+		});
+		$('.item-deny').click(function(e) {
+			e.preventDefault();
+			$(this).prev('a').removeClass('actlb-green-active').addClass('actlb-green');
+			var r = confirm("若拒绝此项修改，我们将撤消该申请，需要的话您可以重新提交新的借款申请。您还要拒绝此项修改吗？");
+			if (r) {
+				window.location = '{url x="index" r="deal#update_deal_clear" p="id=$deal.id&del=1"}';
+			}
+			checkAllApproved();
+		});
+		$('#deal-update-submit').click(function(e) {
+			e.preventDefault();
+			if (!$(this).hasClass('btn-disabled')) {
+				window.location = '{url x="index" r="deal#update_deal_clear" p="id=$deal.id"}';
+			}
+		});
+	})
+})(jQuery)
+</script>
+		<div class="deal_box">
+			<div class="deal_box_top"></div>
+			<div class="deal_box_data">
+				<div class="h_con">
+					<h3>{$deal.deal_title}</h3>
+					<span class="r_txt fw">借款编号：<em>{$deal.id}</em></span>
+				</div>
+				<div class="con_box" style="padding-top:10px;">
+	        <table class="deal-info-table">
+
+	          <tr>
+	              <th>借款用途：</th>
+	              <td>{$deal.type_id}</td>
+	          </tr>
+	          <tr>
+	              <th>借款金额：</th>
+	              <td>{$deal.borrow_amount}</td>
+	          </tr>
+	          <tr>
+	              <th>借款期限：</th>
+	              <td>{$deal.repay_time}</td>
+	          </tr>
+	          <tr>
+	              <th>还款方式：</th>
+	              <td>{$deal.loantype}</td>
+	          </tr>
+	          <tr>
+	              <th>年化借款利率：</th>
+	              <td>{$deal.deal_rate}</td>
+	          </tr>
+	          <tr>
+	              <th>筹标期限：</th>
+	              <td>{$deal.enddate}</td>
+	          </tr>
+	          <tr>
+                  <th>借款标题：</th>
+                  <td>{$deal.name}</td>
+              </tr>
+	          <tr>
+	              <th>借款描述：</th>
+	              <td>{$deal.description|nl2br}</td>
+	          </tr>
+	          <tr>
+	              <th>推荐人姓名：</th>
+	              <td>{$deal.manager}</td>
+	          </tr>
+	          <tr>
+	              <th>推荐人联系电话：</th>
+	              <td>{$deal.manager_mobile}</td>
+	          </tr>
+	          
+	        </table>
+				</div>
+			</div>
+			<div class="deal_box_bot"></div>
+		</div>
+
+	</div>
+{include file="inc/footer.html"}

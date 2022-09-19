@@ -1,0 +1,92 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row">
+	<input type="button" class="button" value="{%ADD}" onclick="add();" />
+</div>
+<php>
+	function get_deal_channel_type($fee_status){
+		if($fee_status == 1){
+			return '网站';
+		}else{
+			return '顾问';
+		}
+	}
+	function get_channel_is_edit($type,$id){
+		if($type == 1){
+			return "<a href='javascript:edit(".$id.",this);'>编辑</a>";
+		}else{
+			return '&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+	}
+	function get_channel_is_delete($type,$id){
+		if($type == 1){
+			return "<a href='javascript:del(".$id.",this);'>删除</a>";
+		}else{
+			return '&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+	}
+	//渠道结算金额
+	function channel_clearing($id){
+		if(!$id){
+			return false;
+		}
+		//return $id;
+		$sql = "SELECT SUM(advisor_fee_rate * deal_load_money * pay_factor) FROM `".DB_PREFIX."deal_channel_log` WHERE channel_id = ".$id." AND deal_status=1 AND fee_status=0 and is_delete=0";
+		return format_price((float)($GLOBALS['db']->getOne($sql))*0.01);
+	}
+</php>
+
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            {%ID}：<input type="text" class="textbox" name="id" value="{$_REQUEST['id']}" />
+           	 渠道号：<input type="text" class="textbox" name="channel_value" value="{$_REQUEST['channel_value']}" />
+                                    名字：<input type="text" class="textbox" name="name" value="{$_REQUEST['name']}" />
+           	 渠道：
+            <select name="channel_type">
+                <option value="1" <if condition="intval($_REQUEST['channel_type']) eq 1">selected="selected"</if>>网站</option>
+                <option value="0" <if condition="intval($_REQUEST['channel_type']) eq 0">selected="selected"</if>>顾问</option>
+                <option value="" <if condition="$_REQUEST['channel_type'] eq ''">selected="selected"</if>>全部</option>
+            </select>
+            <input type="hidden" value="DealChannel" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+<!---->
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	action="true" 
+	name="item"
+	datasource="list" 
+	show="id:{%ID}|50px
+		,channel_value:渠道号
+		,channel_type|get_deal_channel_type:类型
+		,name:名字
+		,channel_value|get_user_name:{%USER_NAME}
+		,create_time|to_date:创建时间
+		,update_time|to_date:更新时间
+		"
+	actionlist="channel_type|get_channel_is_edit=$item['id']"
+/>
+
+    <!--,id|channel_clearing:待结算金额--> <!--该页面功能运维不用，不继续维护-->
+    <!--actionlist="channel_type|get_channel_is_edit=$item['id'],channel_type|get_channel_is_delete=$item['id']"-->
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+    function user_company(id){
+         $.weeboxs.open(ROOT+'?m=UserCompany&a=companyShow&id='+id, {contentType:'ajax',showButton:false,title:LANG['USER_COMPANY'],width:600,height:500});
+    }
+    
+</script>
+<include file="Public:footer" />

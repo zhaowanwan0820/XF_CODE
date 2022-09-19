@@ -1,0 +1,589 @@
+<div class="ui_user_right charge_pattern">
+  <div class="p_account_personalset">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_account_personalset.css');?>" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/weebox.css');?>">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/account/setup.js');?>"></script>
+
+    <!-- tooltip -->
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/tooltip/tooltip.v1.css');?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v3/js/common/jquery.ui.core.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/common/jquery.ui.widget.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/common/jquery.ui.position.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/button/button.v1.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/menu/menu.v1.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/tooltip/tooltip.v1.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/temp/passport.js')?>"></script>
+    <!-- 弹出框 -->
+    <script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.bgiframe.js');?>"></script>
+    <div id="riskTs" style="display:none;">
+      {if $siteId eq 1}
+        <adv adv_id="主站_风险测评提示文案"/>
+      {elseif $siteId eq 100}
+        <adv adv_id="普惠_风险测评提示文案"/>
+      {else}
+        <adv adv_id="分站_风险测评提示文案"/>
+      {/if}
+    </div>
+    <script>
+      var riskTs = $('#riskTs').html();
+      var svMaintainMessage = '{$svMaintainMessage}';
+    </script>
+    <div class="ui-box ui-box3">
+      <div class="h-title">
+        <h2><i></i>会员设置</h2>
+        <div class="h-line"></div>
+        <ul class="sub-nav clearfix">
+          <li class="select"><a href="{url x="index" r="account/setup"}">账户设置</a></li>
+          <li><a href="{url x="index" r="account/setmessage"}">消息设置</a></li>
+        </ul>
+        <div class="r-decs"></div>
+      </div>
+      <div class="r-cont">
+        <script type="text/javascript">
+          $(function() {
+            //判断用户名是否包含手机号
+            var userName = "{$user_info.user_name}";
+            var userMobile = "{$user_info.mobile}";
+            var isEnterprise = "{$isEnterprise}";
+            var userReg = /^0?m[\d]{11}$/;
+            //判断用户名那一行是否显示
+            if (isEnterprise != 1) {
+              if (userName.indexOf(userMobile) != -1 || userReg.test(userName)) {
+                $("#isShow").hide();
+              }else{
+                $("#isShow").show();
+              }
+            }
+          })
+          var gotoValidate = function(){
+            $('#bankcardValidateForm').submit();
+          }
+        </script>
+        <ul class="security-list">
+          <li>
+            {if $user_info.idcardpassed eq 1}
+              {if empty($ura.last_level_name)}<i class="no"></i>{else}<i class="yes"></i>{/if}
+            {else}
+              <i class="no"></i>
+            {/if}
+            <div>
+              <p class="topLine">
+                <label>问卷：</label>
+                {if $user_info.idcardpassed eq 1}
+                  {if empty($ura.last_level_name)}
+                    <span class="status wqst">未参与评估</span>
+                  {else}
+                    <span class="status wqst">评估结果：{$ura.last_level_name}</span>
+                    <span>评估结果有效期至{$ura.riskValid}</span>
+                  {/if}
+                {else}
+                  <span style="color: #606060;">请先完成身份认证</span>
+                {/if}
+              </p>
+              <p class="botLine">
+                <span class="sec-info gray">帮助您了解自身{if !$is_firstp2p}投资{else}{/if}风险承受能力</span>
+              </p>
+            </div>
+            {if $user_info.idcardpassed eq 1}
+              {if empty($ura.last_level_name)}
+                {if !empty($ura.ques)}
+                  <a id="wj_submit_button" href="javascript:void(0)"  data-type="0" class="newBtn">开始评估</a>
+                {/if}
+              {else}
+                <p class="confirm_donate_btn_yes">
+                  <a id="wj_submit_button" href="javascript:void(0)" class="newBtn">重新评估</a>
+                  {if $ura.ques.limit_type eq 1 and !empty($ura.ques)}
+                    <em class="remain_num">{$ura.ques.limit_period_desc}还可评估{$ura.remaining_assess_num}次</em>
+                  {/if}
+                </p>
+              {/if}
+            {/if}
+          </li>
+          <li>
+              <i class="yes"></i>
+              <div>
+                  <p class="topLine">
+                      <label>会员编号：</label><span class="status">已设置</span>
+                      <span>{function name="numTo32" value=$user_info.id}</span>
+                  </p>
+                  <p class="botLine">
+                      <span class="sec-info gray">您{if !$is_firstp2p}在网信{/if}的唯一身份标识</span>
+                  </p>
+              </div>
+          </li>
+            <!-- js判断是否显示用户名 -->
+            <li id="isShow">
+                <i class="yes"></i>
+                <div>
+                    <p class="topLine">
+                        <label>用户名：</label><span class="status">已设置</span>
+                        <span class="js_name">{$user_info.user_name}</span>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">您的{if !$is_firstp2p}网信{/if}账号，可用于登录</span>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <i class="yes"></i>
+                <div>
+                    <p class="topLine">
+                        <label>登录密码：</label><span class="status">已设置</span><span></span>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">为了您的账户安全，建议定期更换</span>
+                    </p>
+                </div>
+                {if !empty($noPassportPwdEdit)}
+                <a href="javascript:void(0)" class="newBtn newBtn2" id="editPwd">修改</a>
+                {else}
+                <a href="/user/editpwd" class="newBtn newBtn2">修改</a>
+                {/if}
+            </li>
+            <li>
+                <i class="yes"></i>
+                <div>
+                    <p class="topLine">
+                          <label>手机号码：</label> <span class="status">已认证</span>
+                          <span class="mobile_num">
+                            {if $isEnterprise eq 1}
+                                {$enterpriseReceiveMobile}
+                            {else}
+                                {function name="moblieFormat" value=$user_info.mobile mobile_code=$user_info.mobile_code}
+                            {/if}
+                        </span>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">用于接收验证码及账户通知，是您重要的身份凭证</span>
+                    </p>
+                </div>
+                {if $svData.isOpenAccount and $isSvDown}
+                <a href="javascript:void(0);" class="newBtn newBtn2 j_isSvDown">修改</a>
+                {else}
+                <a {if $isEnterprise eq 1}href="/account/baseinfoCompany" target="_blank"{else}href="/user/editmb"{/if} class="newBtn newBtn2">修改</a>
+                {/if}
+            </li>
+            <li>
+                {if $user_info.idcardpassed eq 1}
+                <i class="yes"></i>
+                {elseif $user_info.idcardpassed eq 3}
+                <i class="no"></i>
+                {else}
+                <i class="no"></i>
+                {/if}
+                <div>
+                    <p class="topLine">
+                        <label>证件信息：</label>
+                        {if $user_info.idcardpassed eq 1}
+                        <span class="status">已认证</span>
+                        {if $isEnterprise eq 1}
+                            <span class="newS">{$enterpriseInfo.credentials_type_cn}</span><span class="newS">{$enterpriseInfo.credentials_no_mask}</span>
+                        {else}
+                            {if $user_info.real_name}
+                                <span class="newS"> {$user_info.real_name}</span><span class="newS">{function name="idnoFormat" value=$user_info.idno}</span>
+                            {/if}
+                        {/if}
+                        {elseif $user_info.idcardpassed eq 3}
+                        <span class="status">审核中</span>
+                        {else}
+                        <span class="status">未认证</span>
+                        {/if}
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">身份认证是充值、{if !$is_firstp2p}投资{else}出借{/if}及提现的必要条件</span>
+                    </p>
+                </div>
+                {if $user_info.idcardpassed eq 1}
+                {elseif $user_info.idcardpassed eq 3}
+                {else}
+                <a href='{if $isEnterprise eq 1}/account/baseinfoCompany{else}/account/addbank{/if}' class="newBtn">设置</a>
+                {/if}
+            </li>
+
+            {if !$is_firstp2p}
+            {if $is_wxlc}
+            <!--新增理财和消费卡部分 start-->
+            <li style="height:100px;" id="bank_card_bind">
+            {if $bankcard.status && $bankcard.bind_consume}
+              <i class="yes"></i>
+            {elseif !$bankcard.status && !$bankcard.bind_consume}
+              <i class="no"></i>
+            {else}
+              <i class="sign"></i>
+            {/if}
+              <div>
+
+                <p class="topLine">
+                    <label>{if $isEnterprise eq 1}银行账号：{else}银行卡号：{/if}</label>
+                    {if $bankcard.status eq 1}
+                        <span class="status">已设置</span>
+                        <span>{$bankcard.name} {function name="bankNoFormat" value=$bankcard.bankcard}</span>
+                    {else}
+                        {if !$isEnterprise}
+                            {if $user_info.idcardpassed eq 1}
+                                <span class="status">未设置</span>
+                            {else}
+                                <span style="color: #606060;">请先实名认证再绑定银行卡</span>
+                            {/if}
+                        {else}
+                        <span class="status">未设置</span>
+                        {/if}
+                    {/if}
+                </p>
+                <p class="topLine">
+                  <label>消&nbsp;&nbsp;费&nbsp;卡：</label>
+                  {if $bankcard.bind_consume eq 0}
+                  <span class="status">未设置</span>
+                  {else}
+                  <span class="status">已设置</span>
+                  {/if}
+                </p>
+                <p class="botLine">
+                  <span class="sec-info gray">为保障资金安全，余额仅可提现至绑定银行卡中</span></p>
+              </div>
+              {if !$bankcard.status}
+              <a href="/life/card_list" class="newBtn">
+              设置
+              {else}
+              <a href="/life/card_list" class="newBtn newBtn2">
+              修改
+              {/if}
+              </a>
+
+              </li>
+            <!--新增理财和消费卡部分 end-->
+            {else}
+            <li>
+                {if $bankcard.status eq 1 }
+                    <i class="yes"></i>
+                {else}
+                    <i class="no"></i>
+                {/if}
+                <div>
+                    {$formString}
+                    {$bankcardValidateForm}
+                    <p class="topLine">
+                        <label>{if $isEnterprise eq 1}银行账号：{else}银行卡号：{/if}</label>
+                        {if $bankcard.status eq 1}
+                            <span class="status">已设置</span>
+                            <span>{$bankcard.name} {function name="formatBankcard" value=$bankcard.bankcard}</span>
+                        {else}
+                            {if !$isEnterprise}
+                                {if $user_info.idcardpassed eq 1}
+                                    <span class="status">未设置</span>
+                                {else}
+                                    <span style="color: #606060;">请先实名认证再绑定银行卡</span>
+                                {/if}
+                            {else}
+                            <span class="status">未设置</span>
+                            {/if}
+                        {/if}
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">为保障资金安全，余额仅可提现至绑定银行卡中</span>
+                    </p>
+                </div>
+                {if $bankcard.status eq 1}
+                    {if $is_audit neq 1}
+                        {if $svData.isOpenAccount and $isSvDown}
+                            <a href="javascript:void(0);" class="j_isSvDown newBtn newBtn2">修改</a>
+                        {else}
+                            <a {if $isEnterprise eq 1}
+                                        href="/account/baseinfoCompany" target="_blank"
+                                  {else}
+                                    href="javascript:gotoValidate();"
+                                  {/if} class="newBtn newBtn2">修改
+                            </a>
+                        {/if}
+                        {if !$isEnterprise}
+                            {if !$bankcard.is_valid}
+                            <a href="javascript:void(0);" class="newBtn mr10" id="yanzheng">验证</a>
+                            {/if}
+                            {if $canResetBank}
+                                {if $svData.isOpenAccount and $isSvDown}
+                                <a href="javascript:void(0);" class="j_isSvDown newBtn">解绑</a>&nbsp;&nbsp;
+                                {else}
+                                <a href="/account/removeBankcard" class="newBtn">解绑</a>&nbsp;&nbsp;
+                                {/if}
+                            {/if}
+                        {/if}
+                    {else}
+                        <a class="newBtn">审核中</a>
+                    {/if}
+                {else}
+                    {if !$isEnterprise}
+                        {if $user_info.idcardpassed eq 1}
+                            {if $hasPassport}
+                            <a href="/account/addbank" class="newBtn">设置</a>
+                            {else}
+                            <a href="javascript:void(0)" class="newBtn" id="shezhi">设置</a>
+                            {/if}
+                        {/if}
+                    {else}
+                    <a href="/account/baseinfoCompany" target="_blank" class="newBtn">设置</a>
+                    {/if}
+                {/if}
+            </li>
+
+            {if $bankcard.status eq 1 and $bankcard.bankzone neq ''}
+            {if not $hideExtra}
+            <li>
+                <i class="yes"></i>
+                <div>
+                    <p class="topLine">
+                        <label>开户网点：</label> <span class="status">已设置</span>
+                        <span>{$bankcard.bankzone}</span>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">您当前绑定理财卡的开户网点</span>
+                    </p>
+                </div>
+                <!-- 18家以外-->
+                {if $is_audit neq 1}
+                <a {if $isEnterprise eq 1}href="/account/baseinfoCompany" target="_blank"{else}href='/account/editdepositbank'{/if} class="newBtn newBtn2">修改</a>
+                {/if}
+            </li>
+            {/if}
+            {else}
+            {if $bankcard.status eq 1 and $bankcard.bankzone eq '' and not $hideExtra}
+            <li>
+                <i class="no"></i>
+                <div>
+                    <p class="topLine">
+                        <label>开户网点：</label><span class="status">未设置</span>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">您当前绑定理财卡的开户网点</span>
+                    </p>
+                </div>
+                <!-- 18家以外-->
+                {if $is_audit neq 1}
+                <a {if $isEnterprise eq 1}href="/account/baseinfoCompany" target="_blank"{else}href='/account/editdepositbank'{/if} class="newBtn">设置</a>
+                {/if}
+            </li>
+            {/if}
+            {/if}
+            {/if}
+            {/if}
+
+            {if $user_info.isCompliantUser neq 1}
+              {if $svData.isOpenSv eq 1}
+                <li>
+                  {if $svData.isOpenAccount eq 1}
+                    <i class="yes"></i>
+                  {else}
+                    <i class="no"></i>
+                  {/if}
+                  <div>
+                    <p class="topLine">
+                      <label>网贷存管账户：</label>
+                      {if $svData.isOpenAccount eq 1 and $user_info.idcardpassed eq 1 and $bankcard.status eq 1}
+                        <span class="status">已开通</span>
+                      {else}
+                        <span class="status">未开通</span>
+                      {/if}
+                    </p>
+                    <p class="botLine">
+                      <span class="sec-info gray">根据国家法律法规监管要求，出借人需在网贷平台合作的存管银行开设资金存管专用账户</span>
+                    </p>
+                  </div>
+                  {if $svData.isOpenAccount neq 1 and $user_info.idcardpassed eq 1 and $bankcard.status eq 1}
+                    <a href="/payment/transit?srv=register" class="newBtn JS_kt_p2p sv_setup_kaihu" target="_blank">开通</a>
+                  {/if}
+                </li>
+              {/if}
+            {/if}
+            {if  $user_info.payment_user_id and !$hasPassport and $usedQuickPay and app_conf('PAYMENT_ENABLE') eq '1' AND app_conf('UCF_PAY_STATUS') eq '1' and $isEnterprise neq 1}
+            <li style="display: none;">
+                <i class="yes"></i>
+                <div>
+                    <p class="topLine">
+                        <label>支付密码：</label>  <span class="status">已设置</span><span></span>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">用于在客户端开通快捷支付后的付款确认</span>
+                    </p>
+                </div>
+                <a href="{url x="index" r="payment/editPassword"}" target="blank" class="newBtn newBtn2">修改</a>
+            </li>
+            {/if}
+            <li>
+                {if $user_info.email neq ''}
+                <i class="yes"></i>
+                {else}
+                <i class="no"></i>
+                {/if}
+                <div>
+                    <p class="topLine">
+                        <label>电子邮箱：</label>
+                        {if $user_info.email neq ''}
+                        <span class="status">已设置</span> <span>{function name="mailFormat" value=$user_info.email}</span>
+                        {else}
+                        <span class="status">未设置</span>
+                        {/if}
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">用于接收月账单及账户通知，非必需设置</span>
+                    </p>
+                </div>
+                {if $user_info.email neq ''}
+                <a {if $isEnterprise eq 1}href="/account/baseinfoCompany" target="_blank"{else}href="{url x="index" r="user/editemail"}"{/if} class="newBtn newBtn2">修改</a>
+                {else}
+                <a {if $isEnterprise eq 1}href="/account/baseinfoCompany" target="_blank"{else}href="{url x="index" r="account/addemail"}"{/if} class="newBtn">设置</a>
+                {/if}
+            </li>
+            <li>
+                {if $delivery_infor neq ''}
+                <i class="yes"></i>
+                {else}
+                <i class="no"></i>
+                {/if}
+                <div>
+                    <p class="topLine">
+                        <label>收货地址：</label>
+                        {if $delivery_infor neq ''}
+                        <span class="status">已设置</span>
+                        <span>{$delivery_infor}</span>
+                        {else}
+                        <span class="status">未设置</span>
+                        {/if}
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">用于邮寄活动奖品或礼品</span>
+                    </p>
+                </div>
+                {if $delivery_infor neq ''}
+                <a {if $isEnterprise eq 1}href="/account/baseinfoCompany" target="_blank"{else}href="javascript:void(0)" id="add_submit_btn"{/if} class="newBtn newBtn2">修改</a>
+                {else}
+                <a {if $isEnterprise eq 1}href="/account/baseinfoCompany" target="_blank"{else}href="javascript:void(0)" id="add_submit_btn"{/if} class="newBtn">设置</a>
+                {/if}
+            </li>
+            {if !$isEnterprise}
+            <li>
+                {if $protect_pwd eq 1}
+                <i class="yes"></i>
+                {else}
+                <i class="no"></i>
+                {/if}
+                <div>
+                    <p class="topLine">
+                        <label>密保问题：</label>
+                        {if $protect_pwd eq 1}
+                        <span class="status">已设置</span>
+                        {else}
+                        <span class="status">未设置</span>
+                        {/if}
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">用于进行找回密码等关键操作，保证您账号安全</span>
+                    </p>
+                </div>
+                {if $protect_pwd eq 1}
+                <a href="javascript:void(0)" id="pw_submit_button_01" data-type="1" class="newBtn newBtn2">修改</a>
+                {else}
+                <a href="javascript:void(0)"id="pw_submit_button" data-type="0" class="newBtn">设置</a>
+                {/if}
+            </li>
+            {/if}
+
+            {if $coupon.invite_code neq ''}
+            <li class="inviter">
+              <div>
+                <p class="topLine">
+                  <label>我的邀请人：</label>{$coupon.invite_code}
+                </p>
+              </div>
+            </li>
+            {/if}
+            {if $coupon.short_alias neq ''}
+            <li class="inviter">
+              <div>
+                <p class="topLine">
+                  <label>我的专属客服：</label>
+                  <span class="status">
+                    {$coupon.short_alias}
+                  </span>
+                </p>
+              </div>
+            </li>
+            {/if}
+
+            {if $svData.isOpenSv eq 1 and $svData.isOpenAccount eq 1 and $accountAuthManageSwitch eq 1}
+            <li>
+                <i class="yes"></i>
+                <!--<i class="null" ></i>-->
+                <div>
+                    <p class="topLine">
+                        <label>授权管理</label>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">您的账户授权详情</span>
+                    </p>
+                </div>
+                <a href="/account/privileges" class="newBtn">设置</a>
+            </li>
+            {/if}
+            {if $svData.isOpenSv eq 1}
+            {if $svData.quickBidAuth eq 1}
+            <input class="isReserveValid" type="hidden" value={$svData.isReserveValid} />
+            <li class="JS_cancel_zdx">
+                <i class="yes"></i>
+                <div>
+                    <p class="topLine">
+                        <label>快捷投资服务：</label>
+                        <span class="status">已开通</span>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">包含《免密投资授权》、《免密划转至网信账户授权》</span>
+                    </p>
+                </div>
+                <a href="javascript:void(0);" class="newBtn newBtn2 j_mcancel sv_setup_cancel_mmservice">取消授权</a>
+            </li>
+            {/if}
+            {if $svData.yxtRepayAuth eq 1}
+            <input class="isYxtValid" type="hidden" value={$svData.isYxtValid} />
+            <li class="JS_cancel_yxt">
+                <i class="yes"></i>
+                <div>
+                    <p class="topLine">
+                        <label>免密银信通还款授权：</label>
+                        <span class="status">已开通</span>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">支持银信通回款后的自动还款</span>
+                    </p>
+                </div>
+                <a href="javascript:void(0);" class="newBtn newBtn2 j_ycancel sv_setup_cancel_creditloan">取消授权</a>
+            </li>
+            {/if}
+            {if $svData.isShowTransfer eq 1}
+            <li>
+                <i class="yes"></i>
+                <div>
+                    <p class="topLine">
+                        <label>余额划转</label>
+                    </p>
+                    <p class="botLine">
+                        <span class="sec-info gray">用于进行账户间资金划转</span>
+                    </p>
+                </div>
+                <a href="/account/transfer" class="newBtn newBtn2">立即划转</a>
+            </li>
+            {/if}
+
+            {/if}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    var doneBankOperate_url;
+</script>
+<script>
+$("#editPwd").click(function(){
+    var obj = {address:"{$passportBizInfo.platformName}", location:"{$passportBizInfo.url}"};
+    gochange(obj);
+});
+</script>
+<!-- 弹窗 -->

@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>{$deal.name}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <!--public js&css start-->
+    <link href="{$STATIC_PATH}/css/m-base.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_PATH}/css/m-common.css" rel="stylesheet" type="text/css" />
+     <script src="{$STATIC_PATH}/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <!--public js&css end-->
+</head>
+<body>
+    <link href="{$STATIC_PATH}/css/ytxiangqing.css" rel="stylesheet" type="text/css" />
+    <div class="bd_center">
+        <div class="bd_top">
+            <div class="bdt_left dsn">
+                <div style="height: 29%">
+                </div>
+                {if $deal.type_match_row}
+                <div class="bdt_ul">
+                    <ul>
+                        <li>{$deal.type_match_row}</li>
+                    </ul>
+                </div>
+                {/if}
+                <div style="height: 29%">
+                </div>
+            </div>
+            <div class="bdt_right">
+                <div class="bdt_title">
+                    <div class="xin_title">
+                        {$deal.old_name}</div>
+                </div>
+                <div class="bdt_message">
+                    <div class="yt_con">
+                    	 <div class="yt_biao"><img src="{$STATIC_PATH}/images/yt_state/yt_state{$deal.deal_status}.png" width="45" height="36" /></div>
+            
+                        <!--yt_biao_state4还款中-->
+                        <!--yt_biao_state3满标-->
+                        <!--yt_biao_state2投资中-->
+                        <!--yt_biao_state1已还清-->
+                        <table width="100%" class="bdt_tb2">
+                            <colgroup>
+                                <col width="50%" />
+                                <col width="50%" />
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {function name="number_format" v="$deal_load.money" f="2"}
+                                    </td>
+                                    <td>
+                                        {$deal.repay_time}{if $deal.loantype eq 5}天{else}个月{/if}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {$deal.loantype_name}
+                                    </td>
+                                    <td>
+                                        {$deal.rate}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        计息日: {function name="to_date" v="$deal_load.deal.repay_start_time" f="Y-m-d"}
+                                    </td>
+                                    <td>
+                                        {if $item.is_lease}融资方{else}借款人{/if}: {$deal.user_deal_name}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        应获收益 <span class="g-money">{function name="number_format" v="$deal_load.income" f="2"}元</span>
+                                    </td>
+                                    <td>
+                                        已获收益 {function name="number_format" v="$deal_load.real_income" f="2"}元
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td colspan="2">
+                                        起投金额: <span>{$deal.min_loan_money_format_yuan}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="huikuan">
+        {if $deal.is_crowdfunding eq 0}
+            <h3>
+                回款总额：<em class="g-money">{function name="number_format" v="$deal_load.total_income" f="2"}元</em></h3>
+                {/if}
+            {if $loan_repay_list}
+            <table width="100%" class="hk_list">
+                <colgroup>
+                     <col width="27%">
+                    <col width="23%">
+                    <col width="20%">
+                    <col width="30%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <td>
+                            <div class="ml10">
+                                日期</div>
+                        </td>
+                        <td>
+                            <div class="tc dsn">
+                                类型</div>
+                        </td>
+                        <td>
+                            <div class="tr dsn">
+                                金额</div>
+                        </td>
+                        <td>
+                            <div class="mr10 tr">
+                                金额(元)</div>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {foreach from=$loan_repay_list item="repay"}
+                    <tr>
+                        <td>
+                            <div class="ml10">
+                                {function name="to_date" v="$repay.time" f="Y-m-d"}</div>
+                        </td>
+                        <td>
+                            <div class="tc">
+                                {$repay.money_type}</div>
+                        </td>
+                            <td>
+                            <div class="mr10 tr color-state">
+                                {$repay.money_status}</div>
+                        </td>
+                        <td>
+                            <div class="tr g-money g-moneymar">
+                                {function name="number_format" v="$repay.money" f="2"}</div>
+                        </td>
+                    
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {/if}
+            <div>
+     {if $deal.is_crowdfunding eq 0}
+                <div class="bd_mid" style="clear: both">
+                	 <table>
+
+                        <tbody>
+                            <tr>
+                                <th>保障方式：</th>
+                                <td>{if $deal.warrant eq 1}担保本金{elseif $deal.warrant eq 2}担保本息{else}无担保{/if}</td>
+                            </tr>
+                            <tr>
+                                <th>担保方：</th>
+                                <td><p> {$deal.agency_info.name}</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {/if}
+            </div>
+            {foreach from=$contract_list item="contract" key="k"}
+            <div class="contract_btn">
+                <a href="/deals/contract/?id={$contract.id}&dealId={$contract.deal_id}&token={$token}" class="bd_mid"><i class="icon_arrow fr"></i>{$contract.title}</a>
+            </div>
+            {/foreach}
+
+            {include file="api/views/deals/load_list.html"}
+
+        </div>
+    </div>
+</body>
+</html>

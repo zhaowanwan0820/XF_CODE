@@ -1,0 +1,25 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'into_name',
+  2 => 'attach_name',
+  3 => 'out_name',
+  4 => 'money',
+  5 => 'attach_money',
+  6 => 'agency_name',
+  7 => 'agency_money',
+  8 => 'status',
+  9 => 'type',
+  10 => 'apply_user',
+  11 => 'deal_load_id',
+  12 => 'coupon_id',
+  13 => 'log',
+  14 => 'create_time',
+  15 => 'update_time',
+  16 => 'admin',
+  17 => 'info',
+  18 => 'extra',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

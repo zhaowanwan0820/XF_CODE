@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>注册</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <script src="{$STATIC_PATH}/v2/js/zepto.js" type="text/javascript"></script>
+    <link href="{$STATIC_PATH}/v2/css/login.css" rel="stylesheet" type="text/css" />
+    <script src="{$STATIC_PATH}/v2/js/validate.js" type="text/javascript"></script>
+    <script src="{$STATIC_PATH}/v2/js/oauth.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="dl_main">
+        <div class="dl_top">
+            注册<a href="login{$querystring}">登录</a>
+        </div>
+        <form name="register_form" action="doRegister{$querystring}" method="POST">
+        <div class="dl_center dl_regist">
+            <div class="dlc_list">
+                <span>用户名</span>
+                 <div class="regic_rc">
+                <input type="text" name="username" value="{$data.username}" placeholder="1-16个字符，英文或者数字" />
+                </div>
+            </div>
+            <div class="msg-wrapper  no-username">
+                <i class="icon-no fl"></i><span class="msg">{$error.username}</span>
+            </div>
+            <div class="dlc_list">
+                <span>登录密码</span>
+                <div class="regic_rc">
+                <input type="password" name="password" placeholder="请输入您的密码" />
+                 </div>
+            </div>
+            <div class="msg-wrapper  no-password">
+                <i class="icon-no fl"></i><span class="msg">{$error.password}</span>
+            </div>
+
+            <div class="dlc_list">
+                <span>邮箱地址</span>
+                <div class="regic_rc">
+                <input type="text" placeholder="请输入您的邮箱" name="email" value="{$data.email}"/>
+               </div>
+            </div>
+            <div class="msg-wrapper  no-email">
+                <i class="icon-no fl"></i>
+                <span class="msg">{$error.email}</span>
+            </div>
+            <div class="dlc_list">
+                <span>图形验证码</span>
+
+
+                <div class="dl_yanzhengma">
+                    <img align="absbottom" title="点击刷新" src="/verify.php?w=91&h=36&rb=0" id="captcha" onclick="refresh()">
+                </div>
+                 <div class="regicma_input">
+                <input class="img-yanzheng" type="text" placeholder="请填写验证码" name="captcha" />
+                </div>
+               
+            </div>
+            <div class="msg-wrapper  no-captcha">
+                <i class="icon-no fl"></i><span class="msg">{$error.captcha}</span>
+            </div>
+            <div class="dlc_list">
+                <?php echo token_input(); ?>
+                <span>手机号</span>
+                    <div class="dl_yanzhengma" >
+                     <input type="button" id="action-send-code" class="phonecode fr" data-url="/user/MCode" value="获取验证码">
+                </div>
+                 <div class="regicma_input">
+                <input type="text" name="mobile" id="mobile" placeholder="请输入您的手机号" value="{$data.mobile}"/> 
+                 </div>
+            </div>
+            <div class="msg-wrapper  no-mobile">
+                <i class="icon-no fl"></i><span class="msg">{$error.mobile}</span>
+            </div>
+            <div class="dlc_list">
+                <span>手机验证码</span>
+                <div class="regic_rc">
+                <input type="text" name="code"  placeholder="请填写手机验证码" />
+                </div>
+            </div>
+            <div class="msg-wrapper  no-code">
+                <i class="icon-no fl"></i>{$error.code}<span class="msg"></span>
+            </div>
+            <div class="dlc_list disbor">
+                <span>邀请码</span>
+                <div class="regic_rc">
+                <input type="text" placeholder="选填" name="invite" value="{$data.invite}"/>
+                </div>
+            </div>
+            <div class="msg-wrapper  no-invite">
+                <i class="icon-no fl"></i><span class="msg">{$error.invite}</span>
+            </div>
+        </div>
+        <div class="dl_footer">
+            <input type="submit" value="完成注册" />
+            <h3>
+                点击上面的"注册"按钮，即表示您同意</h3>
+            <p class="zc_xieyi">
+                <a href="{$agreement}">《第一P2P用户协议》</a></p>
+        </div>
+        </form>
+    </div>
+ <script type="text/javascript">
+        $(function () {
+             var validator = new FormValidator('register_form', [
+                    {
+                        name: 'username',
+                        rules: 'required|username2|min_length[4]|max_length[16]|numRegEx'
+                    }, {
+                        name: 'userpassword',
+                        rules: 'required|password'
+                    }, {
+                        name: 'useremail',
+                        rules: 'required|valid_email'
+                    }, {
+                        name: 'usercode',
+                        rules: 'required|captcha'
+                    }, {
+                        name: 'userphone',
+                        rules: 'required|phone'
+                    }, {
+                        name: 'userphonecode',
+                        rules: 'required|min_length[4]'
+                    }, {
+                        name: 'userinvitecode',
+                        rules: 'required|min_length[4]'
+                    }], function (errors, evt) {
+
+                    });
+        });
+    </script><script type="text/javascript">
+            function refresh() {
+            document.getElementById("captcha").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+            }
+    </script>
+    
+</body>
+</html>

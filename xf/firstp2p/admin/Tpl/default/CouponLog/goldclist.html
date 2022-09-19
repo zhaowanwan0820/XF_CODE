@@ -1,0 +1,110 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">黄金活期邀请返利结算</div>
+
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+        <table>
+	        <tr>
+	        <td>投资人检索：</td>
+	        <td>用户ID：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['consume_user_id']}" name="consume_user_id"></td>
+	        <td>会员名称：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['consume_user_name']}" name="consume_real_name"></td>
+	        <td>手机号：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['mobile']}" name="mobile"></td>
+	        <td></td>
+	        </tr>
+	        <tr>
+            <td>服务人检索：</td>
+            <td>用户ID：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['refer_user_id']}" name="refer_user_id"></td>
+            <td>会员名称：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['refer_real_name']}" name="refer_real_name"></td>
+            <td>服务人邀请码：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['short_alias']}" name="short_alias"></td>
+            <td>机构会员名称：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['agency_user_name']}" name="agency_user_name"></td>
+            </tr>
+            <td>其他条件：</td>
+            <td>结算状态：
+             <select name='pay_status'>
+                <option value="0" <if condition="intval($_REQUEST['pay_status']) eq 0">selected="selected"</if>>运营待审核</option>
+                <option value="3" <if condition="intval($_REQUEST['pay_status']) eq 3">selected="selected"</if>>财务待审核</option>
+                <option value="5" <if condition="intval($_REQUEST['pay_status']) eq 5">selected="selected"</if>>结算中</option>
+                <option value="2" <if condition="intval($_REQUEST['pay_status']) eq 2">selected="selected"</if>>已结算</option>
+                <option value="" <if condition="$_REQUEST['pay_status'] eq ''">selected="selected"</if>>全部</option>
+            </select>
+            </td>
+            <td>结算时间：<input type="text" class="textbox" style="width:140px;" name="pay_time_begin" id="pay_time_begin" value="{$_REQUEST['pay_time_begin']}" onfocus="this.blur(); return showCalendar('pay_time_begin', '%Y-%m-%d 00:00:00', false, false, 'btn_pay_time_begin');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_pay_time_begin" value="{%SELECT_TIME}" onclick="return showCalendar('pay_time_begin', '%Y-%m-%d %H:%M:00', false, false, 'btn_pay_time_begin');" /></td>
+            <td><input type="text" class="textbox" style="width:140px;" name="pay_time_end" id="pay_time_end" value="{$_REQUEST['pay_time_end']}" onfocus="this.blur(); return showCalendar('pay_time_end', '%Y-%m-%d 00:00:00', false, false, 'btn_pay_time_end');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_pay_time_end" value="{%SELECT_TIME}" onclick="return showCalendar('pay_time_end', '%Y-%m-%d %H:%M:00', false, false, 'btn_pay_time_end');" /></td>
+            </tr>
+            <tr><td></td><td cols="4"><input type="hidden" value="CouponLog" name="m" />
+            <input type="hidden" value="goldclist" name="a" />
+             <input type="submit" class="button" value="{%SEARCH}" />
+             </td></tr>
+        </table>
+          </form>
+    </div>
+
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    checkbox="true"
+    datasource="list"
+    pk="id"
+    show="deal_load_id:投资记录ID
+        ,create_time|to_date:创建时间
+        ,consume_user_id:投资人ID
+        ,consume_user_name:投资人会员名称
+        ,consume_real_name:投资人姓名
+        ,deal_id:标ID
+        ,deal_load_money:投资金额
+        ,refer_real_name:服务人姓名
+        ,agency_user_name:机构会员名称
+        ,short_alias:服务人邀请码
+        ,referer_rebate_ratio_factor:结算比例系数
+        ,discount_ratio:客户系数
+        ,rebate_ratio_amount:投资人返点金额比例
+         ,referer_rebate_ratio:服务人返点比例
+        ,referer_rebate_ratio_amount:服务人返点比例金额
+         ,agency_rebate_ratio:机构返点比例
+        ,agency_rebate_ratio_amount:机构返点比例金额
+        ,pay_status:结算状态
+        ,pay_time|to_date:结算时间"
+        actionwidth="120px"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />
+
+<script type="text/javascript">
+function weeboxs_edit(id){
+
+    $.get(ROOT+'?m=CouponLog&a=edit&id='+id+'&type=gold',
+    function(data){
+        if(data.indexOf('{"status":0')>-1&&data.indexOf("info")>-1&&data.indexOf("data")>-1)
+        {
+            var jsonobj=eval('('+data+')');
+            data = jsonobj.info;
+        }
+        $.weeboxs.open(data, {contentType:'none',showButton:false,title:LANG['EDIT'],width:700,height:420});
+        }
+    );
+
+}
+function pay_list(deal_load_id) {
+
+     $.weeboxs.open(ROOT+'?m=CouponPayLog&a=index&model=gold&deal_load_id='+deal_load_id, {contentType:'ajax',showButton:false,title:'返利明细',width:900,height:600});
+
+}
+ </script>

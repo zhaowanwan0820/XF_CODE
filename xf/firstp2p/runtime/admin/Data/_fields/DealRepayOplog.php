@@ -1,0 +1,28 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'deal_id',
+  2 => 'deal_name',
+  3 => 'borrow_amount',
+  4 => 'rate',
+  5 => 'repay_period',
+  6 => 'loantype',
+  7 => 'user_id',
+  8 => 'deal_repay_id',
+  9 => 'real_repay_time',
+  10 => 'repay_money',
+  11 => 'operation_type',
+  12 => 'operation_time',
+  13 => 'operation_status',
+  14 => 'operator',
+  15 => 'operator_id',
+  16 => 'audit_type',
+  17 => 'return_type',
+  18 => 'return_reason',
+  19 => 'submit_uid',
+  20 => 'repay_type',
+  21 => 'report_status',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

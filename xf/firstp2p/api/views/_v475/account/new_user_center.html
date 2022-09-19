@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>新手专区</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/new_user_center.css?v=wwwc');?>" rel="stylesheet" type="text/css" />
+    <script>
+        window["_isRegister_"] = "{$userStatus.isRegister}";
+        window["_isInvest_"] = "{$userStatus.isInvest}";
+        window['_isInvite_'] = "{$userStatus.isInvite}";
+        window["site_id"] = "{$site_id}"
+    </script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.75/js/new_user_center.js?v=ss');?>"></script>
+</head>
+{include file="api/views/_v492/common/zhugemaidian.html"}
+<body data-um-statistic="true">
+  <input type="hidden" value="{$domain}" id="domainHidden" /><!-- 当前主域名 用于拼接绝对地址 -->
+  <div class="newcomer">
+    <div class="new_register">
+      {if $imgList.conf_reg_wa}<img src="{$imgList.conf_reg_wa}" alt="" class="new_comer_img">{/if}
+      <div class="register_btn JS_register_btn" style="display:none;">
+        <a href="firstp2p://api?type=native&name=regist" class="go_register_btn MD_count_go_register">
+          <div class="go_register" data-u-key="newbie_registered">立即领取</div>
+        </a>
+        <div class="count_text">今日已有<span class="red"> {$registerCount} </span>人注册成功</div>
+      </div>
+      <div class="img_box_2">
+        {if $imgList.conf_bid_wa}<img src="{$imgList.conf_bid_wa}" alt="" class="new_comer_img">{/if}
+      </div>
+      <div class="list_box">
+        <div class="title">
+          <span class="middle">新手推荐项目</span>
+        </div>
+        <div class="list_cont">
+          <ul class="ui_p2p_list">
+            {foreach from=$duotouList item=item}
+              <li class="deal_reserve_li">
+                <a href="" class="link" data-id="{$item.id}"></a>
+                <div class="title clearfix">
+                  <span class="dealType new_hand">新手推荐</span>
+                  <span class="dealType sxy">智多新</span>
+                </div>
+                <div class="info">
+                  <div class="rate">
+                    {$item.min_rate}<em class="f11">%</em>~{$item.max_rate}<em class="f11">%</em>
+                    <p class="rate_text">往期年化</p>
+                  </div>
+                  <div class="time">
+                    {$item.lock_day}<em class="f11">天</em>
+                    <p class="rate_text">期限</p>
+                  </div>
+                  <div class="tz_btn" id="right_now">
+                    <a href="" class="ui_btn_h26 MD_count_bid_now">立即加入</a>
+                  </div>
+                </div>
+              </li>
+            {/foreach}
+          </ul>
+        </div>
+      </div>
+      <!-- end -->
+      <!-- 已投用户轮播部分 -->
+      <div class="have_deal">
+        <!-- 已投资轮播 -->
+       <!--  <div class="have_deal_list">
+          <div class="count_deal">今日已有<span class="red">{$loadUserCount}</span>位用户投资</div>
+          <div class="scroll_center">
+            <div class="scroll_list">
+              <ul class="scroll_list_ul">
+              </ul>
+            </div>
+          </div>
+        </div> -->
+        {if $imgList.conf_invite_wa}<img src="{$imgList.conf_invite_wa}" alt="" class="new_comer_img">{/if}
+        <div class="have_deal_list">
+          {if $imgList.conf_platform_wa}
+          <div class="new_platform">
+            <img src="{$imgList.conf_platform_wa}" alt="" class="new_comer_img">
+          </div>
+          {/if}
+          <a href="{$imgList.link_more_h5}" class="MD_learn_more" id="learnMoreLink"><div class="learn_more" data-u-key="newbie_more">了解更多</div></a>
+        </div>
+        <!-- end -->
+        <div class="copyright">
+          <p>北京经讯时代科技有限公司 京ICP备16034138号</p>
+          <p>公司总部：北京市朝阳区霄云路28号网信大厦A座</p>
+          <p> 客服电话：400-890-9888</p>
+          <div class="risk_tips">
+            <i class="tips_line left_line"></i>
+            <span>市场有风险 投资需谨慎</span>
+            <i class="tips_line right_line"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom_btn" id="JS_show">
+       <a class="btn" href="firstp2p://api?type=native&name=regist">立即领取新手大礼包</a>
+    </div>
+  </div>
+  <script type='text/javascript'>
+  var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"&uf=app","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+  (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","//assets.firstp2p.com/default/js/ncfpb.1.5.min.js?v=201503101911");
+  </script>
+{include file="api/views/_v32/footer.html"}

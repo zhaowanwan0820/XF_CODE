@@ -1,0 +1,54 @@
+{include file="inc/header.html"}
+<?php
+$this->_var['guaranteecss'][] = $this->_var['APP_STATIC_PATH']."/css/guarantee.css";
+?>
+<link rel="stylesheet" type="text/css" href="{function name="parse_css" v="$guaranteecss"}" />
+<div class="blank"></div>
+<div class="wrap clearfix">
+	
+	<div class="short_uc f_l">
+		<div class="c_top"></div>
+		<dl id="anquan">
+			{foreach from=$article_cate item="cate" key=key}
+			{if $cate.pid neq 0}
+			<dl class="nopad">
+				<dt {if $id eq $cate.id && $aid eq 0}class="cur"{/if} onclick="window.location.href='{url x="index" r="guarantee#detail" p="id=$cate.id"}'">
+				    <span>{$cate.title}</span>
+				</dt>
+				{foreach from=$cate.article.list item=aitem}
+				<dd {if $aid eq $aitem.id}class="cur"{/if} onclick="window.location.href='{url x="index" r="guarantee#detail" p="id=$cate.id&aid=$aitem.id"}#go{$aitem.id}'">
+				    <span>{$aitem.title}</span>
+				</dd>
+				{/foreach}		
+			</dl>
+			{/if}
+			{/foreach}
+		</dl>
+		<div class="c_bot"></div>
+	</div>
+	
+	<div class="long artinfo f_r">
+		<div class="clearfix" style=" padding:10px 12px">
+			{foreach from=$article_cate item="cate"}
+				{if $cate.id eq $id}
+					{if $cate.brief neq ''}
+					<div class="anquanbz_box">
+						 <p>{$cate.brief}</p>
+		            </div>
+					{/if}
+					{foreach from=$cate.article.list item=aitem}
+					<div class="anquanbz_box">
+					    <div class="bztitle" id="go{$aitem.id}" name="go{$aitem.id}">{$aitem.title}</div>
+						{$aitem.content}
+					</div>
+					{/foreach}	
+				{/if}
+			{/foreach}
+			<div class="clearfix gozcbox pt30 lh30">
+	        	  <div class="gozhuche"><span>信赖{function name="app_conf" v="SHOP_TITLE"}</span> 立刻注册</div><a class="zhuchea" target="_blank" href="{url x="index" r="user#register"}">注 册</a>
+	        </div>
+		</div>
+	</div>
+</div>
+<div class="blank"></div>
+{include file="inc/footer.html"}

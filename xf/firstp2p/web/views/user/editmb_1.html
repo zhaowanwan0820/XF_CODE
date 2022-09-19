@@ -1,0 +1,73 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v1/css/edit-safetyPhone.css');?>" rel="stylesheet" type="text/css">
+<link href="<?php echo $this->asset->makeUrl('v1/css/edit-safetyPhone_skin.css');?>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/edit-safeyphone/edit-safetyphone.js');?>"></script>
+
+<div class="w980 mauto clearfix">
+    <section>
+        <div class="shadow">
+            <div class="mess_title tc"><i class="phone-tip"></i>修改安全手机</div>
+            <div class="step1-img">
+            </div>
+            <div class="edit-step1">
+                <form id="password-form" action="/user/editmb" method="post">
+                    <input type="hidden" name="sp" value="2" />
+                    <div class="edt-tab">
+                        <table>
+                            <colgroup>
+                                <col width="30%" />
+                                <col width="70%" />
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th colspan="2">
+                                    您正在更换网信理财账号<span class="text-color">{$user_info.user_name}</span>的安全手机，为了您的账号安全，请验证原有的安全手机号
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th>
+                                    原手机号：
+                                </th>
+                                <td id="input-mobile">
+                                    <label id="labels-mobile">
+                                        {function name="moblieFormat" value=$user_info.mobile}</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <span class="red">*</span>验证码：
+                                </th>
+                                <td>
+                                    <input type="text" name="code" class="idbox w120 validate[required]" id="validNum" placeholder="请输入验证码" maxlength="22">
+                                    <input type="button" class="fd-btn-code" data-type="1" id="bt" value="获得手机验证码"  />
+                                    <div class="err-tip">
+                                        <span class="red step1-tips validNumformError"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="step1-btn">
+                        <input type="submit" class="but-yellow but-gray" id="step-one" value="下一步">
+                    </div>
+                </form>
+            </div>
+            <div class="edts-footer">
+                无法接收短信，请拨打客服热线&nbsp;400-890-9888</span>
+            </div>
+        </div>
+    </section>
+</div>
+{if $error}
+<script>
+    $(function() {
+        $.showErr('{$error}');
+    });
+</script>
+{/if}
+
+<span class="blank80"></span>
+{include file="web/views/footer.html"}

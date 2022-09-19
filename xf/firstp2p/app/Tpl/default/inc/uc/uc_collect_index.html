@@ -1,0 +1,73 @@
+<div class="inc">
+	<div id="dashboard" class="dashboard">
+		<ul>
+			<li class="current"><a href="{url x="shop" r="uc_collect#index"}">{$LANG.UC_COLLECT}</a></li>
+		</ul>
+	</div>
+	
+	<div class="inc_main uc_r_bl_box clearfix">
+		<div class="silverBg">
+		    <div class="f_dgray b tc lh30 pr15 pl15" style="height:30px;">
+		        <div class="f_l" style="width:80px">图片</div>
+		        <div class="f_l" style="width:110px">标题/借款人/所在地</div>
+		        <div class="f_l" style="width:110px">金额/期限/利率</div>
+		        <div class="f_l" style="width:120px">进度/剩余时间</div>
+		        <div class="f_l" style="width:50px">操作</div>
+		    </div>
+		</div>
+		<div class="clearfix pt10 pl15 pr15" id="my_favoriteLoan_list">
+			{foreach from=$list item="item"}
+			<div class="item">
+				<div class="clearfix pt5 tc">
+	                <div class="f_l" style="width:80px">
+	                    <a href="{url x="index" r="deal" p="id=$item.id"}">
+	                       <img src="{$item.icon}" width="50" height="50" class="img_b" alt="{$item.name}" title="{$item.name}">
+	                    </a>
+	                </div>
+	                <div class="f_l tl" style="width:110px">
+	                    <p style="font-weight: bold"><a href="{url x="index" r="deal" p="id=$item.id"}">{$item.name}</a></p>
+	                    <p><a href="{url x="index" r="space" p="id=$item.user_id"}">{$item.user_deal_name}</a> / {$item.user_location}</p>
+	                </div>
+	                <div class="f_l" style="width:80px">
+	                	{$item.type_match_row}
+	                </div>
+	                <div class="f_l f_red" style="width:110px">
+	                    <div>
+	                        {$item.borrow_amount_format}
+	                    </div>
+	                    <div>
+	                        {$item.repay_time}个月,
+	                        {function name="number_format" v="$item.rate" f="2"}%
+	                    </div>
+	                </div>
+	                <div class="f_l f_red" style="width:120px">
+	                    <div class="greenProcessBar progressBar">
+	                        <div class="p"><div class="c" style="width:{$item.progress_point}%;"></div></div>
+	                        
+	                    </div>
+	                    <div class="f_dgray" style="font-size:12px">
+	                        <p>{function name="intval" v="$item.progress_point"}% 已完成</p>
+	                        <p>
+	                            
+	                        </p>
+	                    </div>
+	                </div>
+	                <div class="f_l" style="width:50px">
+	                    <a href="{url x="shop" r="uc_collect#del" p="id=$item.cid"}">{$LANG.DELETE}</a>
+	                </div>
+	            </div>
+				<div style="border-bottom:1px dotted #9D9D9D;margin:5px 0 "></div>
+			</div>
+			{/foreach}
+		</div>
+		<div class="pages">{$pages}</div>
+	</div>
+	<div class="inc_foot"></div>
+</div>
+<script type="text/javascript">
+	$("#my_favoriteLoan_list .item").hover(function(){
+		$(this).css({"background":"#f7f7f7"});
+	},function(){
+		$(this).css({"background":"#fff"});
+	});
+</script>

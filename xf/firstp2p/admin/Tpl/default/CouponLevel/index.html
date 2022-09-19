@@ -1,0 +1,53 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">优惠码等级规则</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="导出所有记录" onclick="location.href='?m=CouponLevel&a=export_csv';" />
+</div>
+<div class="blank5"></div>
+<div>
+    <span style="color: red">
+        {%COUPON_TIPS_LEVEL_INDEX}
+    </span>
+</div>
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            {%USER_GROUP}：
+            <input type="text" class="textbox" name="group_name" value="{:trim($_REQUEST['group_name'])}" />
+            <input type="hidden" value="CouponLevel" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+<!---->
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    action="true"
+    datasource="list"
+    show="id:ID
+		,group:{%USER_GROUP}
+		,level:{%USER_COUPON_LEVEL}:edit
+		,money:投资交易额(元)
+		,valid_days:有效期(天)
+	    ,rebate_prefix_str:优惠码前缀
+		"
+    actionlist="opt_add_rebate, edit:{%EDIT}, foreverdel:{%FOREVERDEL}"
+    actionwidth="200px"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />

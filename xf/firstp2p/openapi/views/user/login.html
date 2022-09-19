@@ -1,0 +1,443 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>网信</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="apple-touch-icon-precomposed" href="<?php echo $this->asset->makeOpenApiUrl('v2/images/favicon.png');?>">
+        {if $appInfo.appLogo }
+            <link rel="shortcut icon" href="{$appInfo.appLogo}" type="image/x-icon" />
+        {else}
+            <link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.png" type="image/x-icon" />
+        {/if}
+
+        <!--public js&css start-->
+        <link href="<?php echo $this->asset->makeOpenApiUrl('v3/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeOpenApiUrl('v3/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeOpenApiUrl('v3/css/p-login-new.css');?>" rel="stylesheet" type="text/css" />
+        <script type="text/javascript">
+            var today = new Date();
+            var  year = today.getFullYear();
+            var month = today.getMonth() + 1;
+            var day= today.getDate();
+            var ymd = year +""+ month+"" + day;
+            var oHead = document.getElementsByTagName('HEAD').item(0); 
+            var oScript= document.createElement("script"); 
+            oScript.type = "text/javascript"; 
+            oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+            oHead.appendChild( oScript); 
+        </script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeOpenApiUrl('v3/js/zepto.min.js');?>"></script>
+        <!--public js&css end-->
+        <!--private js&css start-->
+        <script src="<?php echo $this->asset->makeOpenApiUrl('v3/js/common.js');?>" type="text/javascript"></script>
+        <script src="<?php echo $this->asset->makeOpenApiUrl('v3/js/iscroll.js');?>" type="text/javascript"></script>
+        <script>
+            window['_IS_WAP_FENZHAN_'] = "{$is_fenzhan}";
+            window['_SMLOGIN_'] = "{$smLogin}";
+            {if $regTempl and $regTempl.status eq 1}
+            window['_LOGIN_BANNER_'] = "{$regTempl.sign_in_banner}";
+            window['_PLATFORM_TEMPLATE_'] = {function name="json_encode" b="$regTempl"};
+            {/if}
+        </script>
+
+        {if isset($fzjs)}
+        <script type="text/javascript" src="{if $fzjs eq '/static/v3/js/login-tpl.js'}<?php echo $this->asset->makeOpenApiUrl('v3/js/login-tpl.js');?>{else}{$fzjs}{/if}"></script>
+        {/if}
+        <!--private js&css end-->
+    </head>
+    <body style="background:{$regTempl.sign_in_bg_color};">
+    <input type="hidden" class="smLoginToken" name="smLoginToken" value="{$smLoginToken}" />
+    <textarea style="display:none;" id="register_protocol">{function name="get_adv" x="wap网贷平台注册协议-2016"}</textarea>
+        <div class="p_login_new">
+            <div class="ui_title JS-title"><span class="JS-title_name">登录</span></div>
+
+            <div class="ui_register gray JS-main">
+                <form id="login_form" class="JS-form" name="login_form" action="doLogin{$querystring}" method="POST">
+                    <div class="form_box clearfix">
+                        <div class="border_b"><input id="account" name="account" type="text" class="ui_reg_input" placeholder="手机号" value="{$account}"></div>
+                        <div class="border_b"><input id="password" name="password" type="password" class="ui_reg_input" placeholder="登录密码"></div>
+                        {if $show_vcode == 1}
+                        <div class="border_b">
+                            <input id="verify" name="verify" type="tel" class="ui_reg_input" placeholder="右侧数字">
+                            <div class="yz_img"><img src="" class="JS-verifyimg1" width="80"></div>
+                        </div>
+                        {/if}
+                    </div>
+                    <div class="JS-submit_btn_box">
+                        <input id="login_btn" type="submit" class="reg_finish_btn JS-submit_btn" value="登录">
+                    </div>
+                </form>
+                {if $smLogin == 1}
+                <form id="login_msg_form" class="JS-msg-form" name="login_msg_form" action="" method="POST" style="display:none;">
+                    <div class="form_box mb10">
+                        <div class="border_b">
+                            <div class="ui_tel_tips">+86</div>
+                            <input type="hidden" value="{$oapi_uri}" name="oapi_sign" id="oapi_uri">
+                            <input type="hidden" value="{$oapi_sign}" name="oapi_uri" id="oapi_sign">
+                            <input type="tel" class="ui_reg_input JS-input_mobile" placeholder="手机号">
+                        </div>
+                        {if $show_vcode == 1}
+                        <div class="border_b JS_img">
+                            <input type="tel" class="ui_reg_input JS-input_captcha" placeholder="右侧数字">
+                            <div class="yz_img"><img class="JS-verifyimg" src="" width="80"></div>
+                        </div>
+                        {/if}
+                    </div>
+                    <div class="">未注册手机号将自动注册为网信用户</div>
+                    <a class="JS-regbtn reg_finish_btn reg_finish_btn_dis msg_get" href="javascript:void(0);">获取短信验证码</a>
+                    <p class="f14 JS-regterm gray pb20">阅读并接受<span class="blue">《注册协议》</span></p>
+                </form>
+                {/if}
+            </div>
+            {if $smLogin == 1}
+            <div id="JS-regverifypanel" class="ui_mask" style="display:none;">
+                <div class="ui_dialog">
+                    <div class="ui_dialog_close JS-closebtn"></div>
+                    <div class="dialog_con">
+                        <div class="title">填写短信验证码</div>
+                        <div class="dialog_text">
+                            <p class="JS-mobilelabel">已向186××××2168发送验证短信</p>
+                            <p>请输入其中6位数字</p>
+                        </div>
+                        <div class="ipt_box">
+                            <input class="ui_yz_input fl JS-input_vcode" placeholder="短信验证码" type="tel">
+                            <span class="reset_btn JS-mcodebtn">重新发送</span>
+                        </div>
+                        <input type="submit" value="确定" class="reg_finish_btn reg_finish_btn_dis JS-regbtn">
+                    </div>
+                </div>
+            </div>
+            {/if}
+        </div>
+        <script>
+        $(function(){
+            // 按钮disable状态逻辑
+            function upateSubmitButton() {
+                var disabled = $('#account').val() == '' || $('#password').val() == '' || ($('#verify').length != 0 && $('#verify').val() == '');
+                if (disabled) {
+                    $('.JS-submit_btn').attr('disabled', 'disabled');
+                } else {
+                    $('.JS-submit_btn').removeAttr('disabled');
+                }
+            }
+            $('#account').bind("input", upateSubmitButton);
+            $('#password').bind("input", upateSubmitButton);
+            $('#verify').bind("input", upateSubmitButton);
+            $(".JS-submit_btn").click(function(){
+                $('#login_form').submit();
+                $(this).attr("disabled","disabled").val('登录中');
+            });
+            var _upateSubmitButtonCount = 10;
+            var _upateSubmitButtonTimer = setInterval(function(){
+                upateSubmitButton();
+                _upateSubmitButtonCount--;
+                if (_upateSubmitButtonCount < 0) {
+                    clearInterval(_upateSubmitButtonTimer);
+                }
+            }, 300);
+
+            // 图片验证码逻辑
+            function updateCaptchaImg() {
+                $('.JS-verifyimg1').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+            }
+            $('.JS-verifyimg1').click(function() {
+                updateCaptchaImg();
+            });
+            updateCaptchaImg();
+
+
+            // 错误提示 php动态插入
+            {if isset($error)}
+            P2PWAP.ui.showErrorTip('{$error}');
+            {elseif $from_register}
+            P2PWAP.ui.showErrorTip('恭喜您注册成功！\<br\/\>为了您的账户安全，请重新登录');
+            {/if}
+
+            // 禁用微信分享
+            function onBridgeReady() {
+                WeixinJSBridge.call('hideOptionMenu');
+            }
+
+            if (typeof WeixinJSBridge == "undefined") {
+                if (document.addEventListener) {
+                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                } else if (document.attachEvent) {
+                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                }
+            } else {
+                onBridgeReady();
+            }
+            // 禁用微信分享 end
+            
+
+            // 验证码逻辑
+            function updateSMCaptchaImg() {
+                $('.JS-msg-form .JS-verifyimg').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+            }
+            $(document).on("click",".JS-verifyimg",function(){
+                updateSMCaptchaImg();
+            });
+            updateSMCaptchaImg();
+
+            // 点击注册时发送验证码逻辑
+            var _tmpRegData = {};
+            var _inMcodeRequest = false;
+
+            var _mcoderegbtnenable = false;
+            // 短信快捷登录时更新按钮状态
+            function _updateMcodeRegbtn() {
+                var disabled = $(".JS-msg-form .JS-input_mobile").val() == '' || $(".JS-msg-form .JS-input_mobile").val().length !=11 || ($('.JS-input_captcha').length != 0 && $('.JS-input_captcha').val() == '');
+                if (disabled) {
+                    $(".JS-msg-form .JS-regbtn").addClass("reg_finish_btn_dis");
+                } else {
+                    $(".JS-msg-form .JS-regbtn").removeClass("reg_finish_btn_dis");
+                }
+                _mcoderegbtnenable = disabled;
+            }
+            
+            $(".JS-msg-form .JS-input_mobile").bind("input", _updateMcodeRegbtn);
+            $(".JS-msg-form .JS-input_captcha").bind("input", _updateMcodeRegbtn);
+            $(".JS-msg-form .JS-regbtn").bind("click", function(){
+                if (_inMcodeRequest == true || _mcoderegbtnenable) return;
+                var mobile = $(".JS-msg-form .JS-input_mobile").val().trim();
+                var oapi_sign = $("#JS-regpanel #oapi_sign").val();
+                var oapi_uri = $("#JS-regpanel #oapi_uri").val();
+                var smLoginToken = $(".smLoginToken").val();
+                if (!P2PWAP.util.checkMobile(mobile)) {
+                    P2PWAP.ui.showErrorTip('手机号格式不正确');
+                    return;
+                }
+                if($(".JS-msg-form .JS-input_captcha").length != 0){
+                    var captcha = $(".JS-msg-form .JS-input_captcha").val().trim();
+                    if (!P2PWAP.util.checkCaptcha(captcha)) {
+                        P2PWAP.ui.showErrorTip('图形验证码不正确');
+                        return;
+                    }
+                    _tmpRegData['captcha'] = captcha;
+                }
+                
+                _tmpRegData['mobile'] = mobile;
+                _tmpRegData['oapi_sign'] = oapi_sign;
+                _tmpRegData['oapi_uri'] = oapi_uri;
+                _tmpRegData['type'] = 16;
+                _tmpRegData['smLoginToken'] = smLoginToken;
+
+                if ($("#token_id").length > 0) {
+                    _tmpRegData['token_id'] = $("#token_id").val();
+                    _tmpRegData['token'] = $("#token").val();
+                } else {
+                    _tmpRegData['active'] = 1;
+                }
+                _inMcodeRequest = true;
+                $(".JS-msg-form input").attr("readonly", "true");
+                _updateMcodeRegbtn();
+                
+                P2PWAP.util.ajax('/user/MCode', 'post', function(json) {
+                    _inMcodeRequest = false;
+                    _updateMcodeRegbtn();
+                    $(".JS-msg-form input").removeAttr("readonly");
+                    if (json['code'] == 1) {
+                        _showVerifyMobileDialog();
+                    } else {
+                        _tmpRegData = {};
+                        P2PWAP.ui.showErrorTip(json['message']);
+                        if($(".JS_img").length<=0){
+                            var html ='<div class="border_b JS_img"><input type="tel" class="ui_reg_input JS-input_captcha" placeholder="右侧数字"><div class="yz_img"><img class="JS-verifyimg" src="" width="80"></div></div>';
+                            $(".form_box").append(html);
+                            $('.JS-msg-form .JS-verifyimg').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+                        }
+                    }
+                }, function(msg) {
+                    _tmpRegData = {};
+                    _inMcodeRequest = false;
+                    _updateMcodeRegbtn();
+                    $(".JS-msg-form input").removeAttr("readonly");
+                    P2PWAP.ui.showErrorTip(msg);
+                }, _tmpRegData);
+            });
+            var _inRegRequest = false;
+            var _reMcodeAjax = null;
+            var _reMcodeTimer = null;
+            var _finishRegbtnenable = false;
+            // 重新获取验证码逻辑
+            var _reMcodeBtn = $("#JS-regverifypanel .JS-mcodebtn");
+            //域名
+            var _wapHost = P2PWAP.util.getWapHost('redirect_uri', 'http:\/\/(.*)');
+
+            function _updateFinishRegBtn() {
+                var enable = !_inRegRequest && $("#JS-regverifypanel .JS-input_vcode").val().trim() != "";
+                if (enable) {
+                    $("#JS-regverifypanel .JS-regbtn").removeClass("reg_finish_btn_dis");
+                } else {
+                    $("#JS-regverifypanel .JS-regbtn").addClass("reg_finish_btn_dis");
+                }
+                _finishRegbtnenable = enable;
+            }
+            $("#JS-regverifypanel .JS-input_vcode").bind("input", _updateFinishRegBtn);
+            function _cleanMcodeBtn() {
+                if (_reMcodeTimer == null) return;
+                clearInterval(_reMcodeTimer);
+                _reMcodeTimer = null;
+                _reMcodeBtn.removeClass('dis_reset').text('重新发送');
+            }
+            function _updateMcodeBtn() {
+                var timeRemained = 60;
+                _reMcodeBtn.addClass('dis_reset').text(timeRemained + '秒后可重发');
+                _reMcodeTimer = setInterval(function() {
+                    timeRemained--;
+                    if (timeRemained < 1) {
+                        _cleanMcodeBtn();
+                    } else {
+                        _reMcodeBtn.text(timeRemained + '秒后可重发');
+                    }
+                }, 1000);
+            }
+            _reMcodeBtn.bind("click", function() {
+                if (_reMcodeAjax != null || _reMcodeTimer != null) return;
+                _reMcodeBtn.addClass('dis_reset').text('正在发送');
+                _reMcodeAjax = P2PWAP.util.ajax('/user/MCode', 'post', function(obj) {
+                    _reMcodeAjax = null;
+                    if (obj.code == 1){
+                        _updateMcodeBtn();
+                    } else {
+                       P2PWAP.ui.showErrorTip(obj.message);
+                       _reMcodeBtn.removeClass('dis_reset').text('重新发送');
+                    }
+                }, function(msg) {
+                    _reMcodeAjax = null;
+                    P2PWAP.ui.showErrorTip(msg);
+                    _reMcodeBtn.removeClass('dis_reset').text('重新发送');
+                }, _tmpRegData);
+            });
+            function _showVerifyMobileDialog() {
+                $("#JS-regverifypanel .JS-mobilelabel").text("已向" + _tmpRegData['mobile'] + "发送短信验证码");
+                $("#JS-regverifypanel .JS-input_vcode").val("");
+                _updateMcodeBtn();
+                P2PWAP.ui.addModalView($("#JS-regverifypanel")[0]);
+                $("#JS-regverifypanel").show();
+            }
+            $("#JS-regverifypanel .JS-closebtn").bind("click", function() {
+                if (_inRegRequest) return;
+                if (_reMcodeAjax) {
+                    _reMcodeAjax.abort();
+                    _reMcodeAjax = null;
+                }
+                _cleanMcodeBtn();
+                updateSMCaptchaImg();
+                P2PWAP.ui.removeModalView($("#JS-regverifypanel")[0]);
+                $("#JS-regverifypanel").hide();
+            });
+            $("#JS-regverifypanel .JS-regbtn").bind("click", function(){
+                if (_inRegRequest || !_finishRegbtnenable) return;
+                if (_reMcodeAjax != null) return;
+                var vcode = $("#JS-regverifypanel .JS-input_vcode").val().trim();
+                if (!P2PWAP.util.checkMcode(vcode)) {
+                    P2PWAP.ui.showErrorTip('请填写6位数字验证码');
+                    return;
+                }
+                _inRegRequest = true;
+                _updateFinishRegBtn();
+                var regdata = {};
+                //添加活动附带参数
+                if (window['_eventRegisterAddParams']) {
+                    regdata = window['_eventRegisterAddParams'];
+                } else {
+                    regdata['cn'] = '';
+                }
+                regdata['mobile'] = _tmpRegData['mobile'];
+                regdata['captcha'] = _tmpRegData['captcha'];
+                regdata['code'] = vcode;
+                regdata['isAjax'] = 1;
+                regdata['country_code'] = 'cn';
+                regdata['smLoginToken'] = _tmpRegData['smLoginToken'];
+                
+                
+                
+                P2PWAP.util.ajax("/user/SmDoH5Login{$querystring}", 'post', function(json) {
+                    _inRegRequest = false;
+                    _updateFinishRegBtn();
+                    if (json['errorCode'] == 0) {
+                        // var url = "http://m.wangxinlicai.com"+ "/oauth?code=" + json['data']['oauth_code'];
+                        // window.location.href = url;
+                        //活动附带响应
+                        if (window['_eventRegisterCallback']) {
+                           $("#JS-regverifypanel").hide();
+                           window['_eventRegisterCallback'].call(null, json['data']);
+                        } else {
+                            if(json['data']['oapi_sign'] == 1){
+                                var temp  = json['data']['oapi_status'] == 1 ? 0 : 1;
+                                window.location.href= json['data']['oapi_uri'] + '?bak_code=' + temp;
+                                return;
+                            }
+                            var addr = decodeURIComponent(_wapHost);
+                            var query = '?';
+                            if(addr.indexOf('?') != -1){
+                                query = '&';
+                            }
+                            if (!!regdata['from_platform']) {
+                                var url = "http://" + addr + query + "code=" + json['data']['oauth_code'] + "&from_platform=" + encodeURIComponent(regdata['from_platform']);
+                            } else {
+                                var url = "http://" + addr + query + "code=" + json['data']['oauth_code'];
+                            }
+
+                            if (undefined != window['_REDIRECT_URI_'] && '' != window['_REDIRECT_URI_']) {
+                                url += ('&from_platform=authorize&redirect_uri=' + window['_REDIRECT_URI_']);
+                            }
+
+                            window.location.href = url;
+                        }
+                      
+                    } else {
+                        P2PWAP.ui.showErrorTip(json['errorMsg']);
+                    }
+                }, function(msg) {
+                    _inRegRequest = false;
+                    _updateFinishRegBtn();
+                    P2PWAP.ui.showErrorTip(msg);
+                }, regdata);
+            });
+
+            //注册协议
+            var rootDomain='{$rootDomain}';
+            {if $isMaster eq 1}
+            var explain = "备案号为：京ICP证130046号，以下简称网信",
+                isMaster = true;
+            {else}
+            var explain = "以下简称网信",
+                isMaster = false;
+            {/if}
+            $('.JS-msg-form .JS-regterm').click(function (event) {
+                var _rootDomain = 'firstp2p.com';
+                if (window['rootDomain'] && window['rootDomain'] != undefined && window['rootDomain'] != "") {
+                    _rootDomain = window['rootDomain'];
+                }
+                var _explain = '备案号为：京ICP证130046号，以下简称网信';
+                if (window['explain'] && window['explain'] != undefined && window['explain'] != "") {
+                    _explain = window['explain'];
+                }
+                P2PWAP.ui.showNoticeDialog('注册协议', $("#register_protocol").val());
+                $("#domain_name").html(rootDomain);
+                $("#explain").html(explain);
+
+            });
+
+            $("body").on("touchmove" , ".ui_mask,.ui_max_width" , function(event){
+                    event.preventDefault();
+            });
+
+        });
+        </script>
+        {include file="openapi/views/baidutongji.html"}
+        <script type='text/javascript'>
+        var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+        (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","//assets.firstp2p.com/default/js/ncfpb.1.5.min.js?v=201503101911");
+        </script>
+    </body>
+    {if $smLogin == 1}
+    <style type="text/css">
+        .JS-title_name{margin-left: 60px;}
+    </style>
+    {/if}
+</html>

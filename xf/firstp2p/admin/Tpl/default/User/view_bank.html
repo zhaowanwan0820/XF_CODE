@@ -1,0 +1,422 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<load href='__TMPL__widget/mulselect/cityData.js' />
+<load href='__TMPL__widget/mulselect/mulselect.v1.js' />
+
+<load href='__TMPL__chosen/js/chosen.jquery.min.js' />
+<load href='__TMPL__chosen/css/chosen.min.css' />
+
+<php>
+    function getUserSite($siteid)
+    {
+        $sitename = array_search($siteid,$GLOBALS['sys_config']['TEMPLATE_LIST']);
+        if($sitename)
+        {
+            return $sitename;
+        }
+        else
+        {
+            return '未知的';
+        }
+    }
+</php>
+<script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("User/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="uid" value="{:trim($_REQUEST['uid'])}" style="width:100px;" />
+        银行卡号：<input type="text" class="textbox" name="bankcard" value="{:trim($_REQUEST['bankcard'])}" style="width:100px;" />
+
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="view_bank" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<form name="edit"  id="Jcarry_From_2" action="__APP__" method="post" enctype="multipart/form-data">
+
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center;"><b>银行卡信息</b></td>
+    </tr>
+    <tr>
+        <td class="item_title">开户名:</td>
+        <td class="item_input">
+            <input type="hidden" id="_js_bankinfo_id" value="{$bankcard_info.id}">
+            <input type="hidden" id="_js_bankinfo_uid" value="{$bankcard_info.user_id}">
+            <input type="hidden" id="_js_bankinfo_bankcard" value="{$bankcard_info.bankcard}">
+            <input type="text" name="bank_card_name" class="textbox _js_bankinfo" value="{$bankcard_info.card_name}" disabled="disabled"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">账户类型:</td>
+        <td class="item_input">
+            借记卡
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">银行卡类型:</td>
+        <td class="item_input">
+        <select name="card_type" class="_js_bankinfo" disabled="disabled">
+                <foreach name="cardTypes" item="item">
+                <option <if condition="$item['id'] eq $bankcard_info['card_type']">selected="selected"</if> value="{$item.id}">{$item.card_type_name}</option>
+                </foreach>
+            </select>
+
+        </td>
+    </tr>
+    <tr>
+
+        <td class="item_title">银行:</td>
+        <td class="item_input">
+            <select name="bank_id" class="_js_bankinfo" disabled="disabled">
+                <option value="0">={%PLEASE_SELECT}=</option>
+                <foreach name="bank_list" item="item">
+                <option <if condition="$item['id'] eq $bankcard_info['bank_id']">selected="selected"</if> value="{$item.id}">{$item.name}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">开户行所在地:</td>
+        <td class="item_input">
+            <input type="hidden" value="{$bankcard_info.region_lv1}" id="deflv1">
+                <input type="hidden" value="{$bankcard_info.region_lv2}" id="deflv2">
+                <input type="hidden" value="{$bankcard_info.region_lv3}" id="deflv3">
+                <input type="hidden" value="{$bankcard_info.region_lv4}" id="deflv4">
+                <select name="c_region_lv1" class="_js_bankinfo" disabled="disabled">
+                    <option value="0">={%REGION_LV1}=</option>
+                    <foreach name="n_region_lv1" item="lv1">
+                    <option <if condition="$bankcard_info['region_lv1'] eq $lv1['id']">selected="selected"</if> value="{$lv1.id}">{$lv1.name}</option>
+                    </foreach>
+                </select>
+
+                <select name="c_region_lv2" class="_js_bankinfo" disabled="disabled">
+                    <option value="0">={%REGION_LV2}=</option>
+                </select>
+
+                <select name="c_region_lv3" class="_js_bankinfo" disabled="disabled">
+                    <option value="0">={%REGION_LV3}=</option>
+                </select>
+                <select name="c_region_lv4" id="Jcarry_region_lv4" class="_js_bankinfo" disabled="disabled">
+                    <option value="0">={%REGION_LV4}=</option>
+                </select>
+        </td>
+    </tr>
+    <script type="text/javascript">
+            $(document).ready(function(){
+                $("select[name='c_region_lv1']").bind("change",function(){
+                    load_select("1");
+                });
+                $("select[name='c_region_lv2']").bind("change",function(){
+                    load_select("2");
+                    clear_bank_site();
+                });
+                $("select[name='c_region_lv3']").bind("change",function(){
+                    load_select("3");
+                    bank_site();
+                });
+                $("select[name='c_region_lv4']").bind("change",function(){
+                    load_select("4");
+
+                });
+
+                // init region
+                var devlv1Option = $("select[name='c_region_lv1'] option[value='" + $("#deflv1").val() + "']")[0];
+                if (devlv1Option) {
+                    devlv1Option.selected = true;
+                    load_select("1");
+                    var devlv2Option = $("select[name='c_region_lv2'] option[value='" + $("#deflv2").val() + "']")[0];
+                    if (devlv2Option) {
+                        devlv2Option.selected = true;
+                        load_select("2");
+                        var devlv3Option = $("select[name='c_region_lv3'] option[value='" + $("#deflv3").val() + "']")[0];
+                        if (devlv3Option) {
+                            devlv3Option.selected = true;
+                            load_select("3");
+                            var devlv4Option = $("select[name='c_region_lv4'] option[value='" + $("#deflv4").val() + "']")[0];
+                            if (devlv4Option) {
+                                devlv4Option.selected = true;
+                            }
+                        }
+                    }
+                }
+            });
+            function load_select(lv)
+            {
+                if (lv == '0')
+                {
+                    lv = '1';
+                }
+                var name = "c_region_lv"+lv;
+                var next_name = "c_region_lv"+(parseInt(lv)+1);
+                var id = $("select[name='"+name+"']").val();
+
+                if(lv==1)
+                var evalStr="regionConf.r"+id+".c";
+                if(lv==2)
+                var evalStr="regionConf.r"+$("select[name='c_region_lv1']").val()+".c.r"+id+".c";
+                if(lv==3)
+                var evalStr="regionConf.r"+$("select[name='c_region_lv1']").val()+".c.r"+$("select[name='c_region_lv2']").val()+".c.r"+id+".c";
+
+                if(id==0)
+                {
+                    var html = "<option value='0'>="+LANG['PLEASE_SELECT']+"=</option>";
+                }
+                else
+                {
+                    var regionConfs=eval(evalStr);
+                    evalStr+=".";
+                    var html = "<option value='0'>="+LANG['PLEASE_SELECT']+"=</option>";
+                    for(var key in regionConfs)
+                    {
+                        html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+                    }
+                }
+                $("select[name='"+next_name+"']").html(html);
+            }
+        </script>
+    <tr>
+        <td class="item_title">开户网点:</td>
+        <td id="_js_bank_site">
+              {$bankcard_info.bankzone}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">联行号:</td>
+        <td><input type="text" id="branch_no" name="branch_no" class="textbox _js_bankinfo" style="width:200px;" value="<?php if(!empty($bankcard_info['branch_no'])){echo $bankcard_info['branch_no'];}?>" readonly="readonly" /><span id="bankIssue"></span></td>
+    </tr>
+
+    <tr>
+        <td class="item_title">卡号:</td>
+        <td class="item_input">
+            <input type="text" name="bank_bankcard" class="textbox _js_bankinfo" style="width:200px;" value="{$bankcard_info.bankcard}" disabled="disabled"/>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+
+    </script>
+
+<script type="text/javascript">
+jQuery(function(){
+    setTimeout("bank_site('{$bankcard_info.bankzone}');",1000);
+    //重置银行卡信息
+    $("#_js_reset_bankinfo").click(function(){
+        var id = $("#_js_bankinfo_id").val();
+        var uid = $("#_js_bankinfo_uid").val();
+        var bankcard = $('#_js_bankinfo_bankcard').val();
+        $("._js_bankinfo").val("");
+        if(id>0 && uid>0 && bankcard){
+            $.ajax({
+                  type: "POST",
+                  url: ROOT+'?m=User&a=resetbank',
+                  data: "id="+id+"&uid="+uid+"&bankcard="+bankcard,
+                  dataType:"json",
+                  success: function(msg){
+                      if(msg.code != '0000') {
+                        alert('重置银行卡失败');
+                        location.reload();
+                      }
+                  }
+               });
+        }
+        return false;
+    });
+
+    //重置绑卡状态
+    $("#_js_reset_status").click(function(){
+        var id = $("#_js_bankinfo_id").val();
+        var uid = $('#_js_bankinfo_uid').val();
+        var status = $('#status').val();
+        if(id == 0){
+            alert("没有银行信息！");
+            return false;
+        }
+           if(id>0 ){
+               $.ajax({
+                      type: "POST",
+                      url: ROOT+'?m=User&a=resetStatus',
+                      data: "id="+id+"&status="+status+"&uid="+uid,
+                      dataType:"json",
+                      success: function(msg){
+                        if (msg.code !== '0000')
+                        {
+                            return alert(msg.msg);
+                        }
+                        $('#status').val(msg.msg);
+                        var status_tips = msg.msg == 0 ? '未绑卡': '已绑卡';
+                        $('#status_tips').text(status_tips);
+                      }
+               });
+           }
+        return false;
+    });
+
+    //重置四要素验卡状态
+    $("#_js_reset_verify_status").click(function(){
+        var id = $("#_js_bankinfo_id").val();
+        var uid = $('#_js_bankinfo_uid').val();
+        var status = $('#verify_status').val();
+        if(id == 0){
+            alert("没有银行信息！");
+            return false;
+        }
+           if(id>0 ){
+               $.ajax({
+                      type: "POST",
+                      url: ROOT+'?m=User&a=resetVerifyStatus',
+                      data: "id="+id+"&verify_status="+status+"&uid="+uid,
+                      dataType:"json",
+                      success: function(msg){
+                        if (msg.code !== '0000')
+                        {
+                            return alert(msg.msg);
+                        }
+                        $('#verify_status').val(msg.msg);
+                        var status_tips = msg.msg == 0 ? '未验证': '已验证';
+                        $('#verify_status_tips').text(status_tips);
+                      }
+               });
+           }
+        return false;
+    });
+
+
+    //银行网点
+    $("select[name='bank_id']").bind("change",function(){
+        bank_site();
+    });
+    //手动填写
+    $("#_js_shoudong").live("click",function(){
+       //$("#_js_shoudong_input").show();
+    });
+
+    $("#_js_bankone").live("change",function(){
+        $("#_js_shoudong_input").val('');
+        $("#_js_shoudong_input").hide();
+    });
+
+});
+ //实例化编辑器
+UE.getEditor('editor');
+
+//清空银行网点
+function clear_bank_site() {
+    $("#_js_bank_site").html('<input name="bank_bankzone" value="" readonly="" />');
+    qIssue();
+}
+
+//银行网点
+function bank_site(bankzone = ''){
+    var c = $("select[name='c_region_lv3']").find("option:selected").text();
+    var p = $("select[name='c_region_lv2']").find("option:selected").text();
+    var b = $("select[name='bank_id']").find("option:selected").text();
+    var data = {c:c,p:p};
+
+    $.getJSON("{$wxlc_domain}/api/banklist?c="+c+"&p="+p+"&b="+b+"&jsonpCallback=?",function(rs){
+        $("#_js_bank_site").html(rs);
+        $("input[name='bank_bankzone']").attr("readonly","readonly");
+        $('#_js_bankone').val(bankzone);
+        qIssue($('#_js_bankone').val());
+        //开户网点下拉框
+        $("#_js_bankone").chosen();
+    });
+}
+
+function checkParams() {
+
+    var idno = $("input[name='idno']").val();
+    var id_type = $("#id_type").val();
+
+    if (idno == '' || idno == 'undefined') {
+        alert("证件号码不能为空!");
+    }
+
+    if (id_type == 1) {
+        if (!/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(idno)) {
+            alert("身份证格式不对！");
+            return false;
+        }
+    }
+
+
+    if (id_type == 4) {
+        var patt=new RegExp(/^[A-Z][A-Z]?\d{6}(\\((\\d|[A-Z])\\))?$/);
+        if (!patt.test(idno)) {
+            alert("香港身份证格式不对！");
+            return false;
+        }
+    }
+
+    if (id_type == 5) {
+        var patt = new RegExp(/^\d{7}\\(\\d\\)$/);
+        if (!patt.test(idno)) {
+            alert("澳门身份证格式不对！");
+            return false;
+        }
+    }
+
+    if (id_type == 6) {
+        if (!/^[A-Z]\d{9}$/.test(idno)) {
+            alert("台湾身份证格式不对！");
+            return false;
+        }
+    }
+
+    return true;
+}
+
+$('#_js_bankone').live('change', function(){
+    qIssue($(this).val());
+});
+
+
+function qIssue(issueName)
+{
+    if (issueName == '') {
+        $('#branch_no').val('');
+        $('#bankIssue').html('<span style="color:red;">查询不到联行号信息</span>');
+        return;
+    }
+    $.getJSON('/m.php?m=BankList&a=qIssue&bankIssueName='+encodeURI(issueName), function(data){
+        if (data.code == 0){
+            $('#branch_no').val(data.issue);
+            $('#bankIssue').html('');
+        }else{
+            $('#branch_no').val('');
+            $('#bankIssue').html('<span style="color:red;">查询不到联行号信息</span>');
+        }
+    });
+}
+
+qIssue('{$bankcard_info.bankzone}');
+//开户网点下拉框
+$("#bankIssueName").chosen();
+</script>
+
+<include file="Public:footer" />

@@ -1,0 +1,45 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+    <div class="main_title"><a href="/m.php?m=AdPub&amp;a=index&amp;" class="back_list">返回列表</a></div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <form action="/m.php?m=AdUnit&a=doEditAdTpl" method="post">
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;
+                <input type="hidden" name="id" value="{$adTpl.id}" />
+            </td>
+        </tr>
+
+        <tr class="row">
+            <td  style="width:150px;">广告类型</td>
+            <td><input type="text" name="name"  required="required" value="{$adTpl.name}" /></td>
+        </tr>
+        <tr class="row">
+            <td>广告尺寸</td>
+            <td><input type="text" name="size" value="{$adTpl.size}"  /> 格式:宽度x高度 eg:300x250,300x* (*代表不定长度)</td>
+        </tr>
+        <tr class="row">
+            <td>配色方案</td>
+            <td><input type="text" name="color" value="{$adTpl.color}"  /> 格式:classname=颜色代码  eg: title_color=FF6600,bg_color=FFFFFF,bg_color2=FF9900,btn_bg_color=EEEEEE</td>
+        </tr>
+        <tr class="row">
+            <td>数据条数</td>
+            <td><input type="text" name="rows" value="{$adTpl.rows}"  /> 广告单元展示的数据条数 eg: 3 (*代表可自定义条数)</td>
+        </tr>
+        <tr class="row">
+            <td>广告内容</td>
+            <td><textarea name="content" rows="10" cols="50">{$adTpl.content}</textarea></td>
+        </tr>
+
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <input type="submit" class="button" value="更新" >
+    <a href="javascript:history.go(-1);">取消</a>
+    </form>
+</div>
+<include file="Public:footer" />

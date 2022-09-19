@@ -1,0 +1,534 @@
+{include file="inc/header.html"} 
+<?php
+$this->_var['indexcss'][] = $this->_var['APP_STATIC_PATH']."/css/index.css";
+?>
+<link rel="stylesheet" type="text/css" href="{function name="parse_css" v="$indexcss"}" />
+
+<script src="<?php echo $this->_var['TMPL']; ?>/js/slides.min.jquery.js"></script>
+<script src="<?php echo $this->_var['TMPL']; ?>/js/jquery.cookie.js"></script>
+<script>
+  $(function(){
+    $('#slides').slides({
+      play: 5000,
+      pause: 2500,
+      hoverPause: true,
+      effect: 'slide',
+      generateNextPrev: true
+    });
+  });
+  ;(function($){
+      $(function(){
+            var $ad = $("#index-mid-ad");
+            if(!$.trim($ad.text())){
+            	$ad.css("display" , "none");
+            	$("#f_r_con").css("marginTop" , 0);
+            }
+            if(!!$.cookie("index-mid-ad-close")){
+                $("#f_r_con").css("marginTop" , 0);
+                $ad.remove();
+
+            }
+            $ad.on("click" , ".ad-delete" , function(){
+                $.cookie("index-mid-ad-close" , 1 , {expires : 10000})
+                $(this).parent().remove();
+                $("#f_r_con").css("marginTop" , 0);
+            });
+      });
+  })(jQuery);
+</script>
+
+<div id="slides">
+<div class="slides_container">
+    <adv adv_id="首页广告位1"/>
+</div>
+</div>
+
+
+<!-- 2013/7/6 xuxiaonan begin-->
+<script>
+/*function addMyEvent(obj,sEv,fn){
+
+    if(obj.attachEvent){
+        obj.attachEvent("on"+sEv,function(){
+            fn.call(obj);
+        })
+    }else{
+    
+        obj.addEventListener(sEv,fn,false);
+    }
+}
+
+function fnselected(obj){
+
+    this.obj=obj;
+    this.oSpan=this.obj.getElementsByTagName("span")[0];
+    this.oUl=this.obj.getElementsByTagName("ul")[0];
+    this.aLi=this.oUl.getElementsByTagName("li");
+    this.oInput=this.obj.getElementsByTagName("input")[0];
+    this.arr=[];
+    this.flag=true;
+    var _this=this;
+    this.oSpan.onclick=function(ev){
+    
+        var ev=ev||event;
+        ev.cancelBubble=true;
+        _this.oUl.style.display="block";
+    }
+    addMyEvent(document,"click",function(){
+    
+        _this.oUl.style.display = 'none';
+    });
+    for(var i=0;i<this.aLi.length;i++){
+        
+        this.aLi[i].onmouseover=function(){
+            this.className="active";
+        }
+        this.aLi[i].onmouseout=function(){
+            if (!this.selected) {
+                this.className = '';
+            }
+        }
+        this.aLi[i].onclick=function(ev){
+            var ev=ev||event;
+            _this.fnClk(ev,this);
+        };
+    }
+    
+}
+fnselected.prototype.fnClk=function(ev,t){
+    
+        for(var i=0;i<this.aLi.length;i++){
+            this.aLi[i].className="";
+            this.aLi[i].selected=false;
+        }
+        t.className="active";
+        t.selected=true;
+        var _this=this;
+        this.oSpan.innerHTML=t.children[0].innerHTML;
+        var jvalue=t.getAttribute("leo");
+        this.oInput.value=jvalue;
+        if(this.flag){
+            this.oLi=document.createElement("li");
+            this.oLi.innerHTML="<a href='javascript:;'>请选择</a>";
+            this.oUl.insertBefore(this.oLi,this.aLi[0]);
+            this.oLi.onmouseover=function(){
+                this.className="active";
+            }
+            this.oLi.onmouseout=function(){
+                if (!this.selected) {
+                    this.className = '';
+                }
+            }
+            this.oLi.onclick=function(){
+                for(var i=0;i<_this.aLi.length;i++){
+                    _this.aLi[i].className="";
+                    _this.aLi[i].selected=false;
+                }
+                this.className="active";
+                this.selected=true;
+                _this.oSpan.innerHTML=this.children[0].innerHTML;
+                _this.oInput.value="";
+            };
+        }
+        this.flag=false;
+}
+
+window.onload=function(){
+    var oSel=document.getElementById("sel_box");
+    var oSel2=document.getElementById("sel_box2");
+    new fnselected(oSel);
+    new fnselected(oSel2);
+    
+    var oBox=document.getElementById("money_area");
+    var oMoney=oBox.getElementsByTagName("input")[0];
+    var oTxt=oBox.getElementsByTagName("span")[1];
+    oMoney.value=20;
+    oMoney.onkeyup=function(){
+        var s1=this.value;
+        if(parseFloat(s1)!=s1 || parseFloat(s1)>{$max_money} || parseFloat(s1)<{$min_money}){
+            oTxt.style.color="red";
+        }else{
+            oTxt.style.color="gray";
+        }
+        
+    }
+}
+
+function checkform(){
+    var money = document.deal_form.amount.value;
+    if(isNaN(money) ||  money < {$min_money} || money > {$max_money}){
+        alert('请输入正确的金额');
+        document.deal_form.amount.focus();
+        return false;
+    }
+    document.deal_form.submit();
+}*/
+</script>
+<div class="cen_block clearfix">
+    <!-- <div class="sel_area">
+        <div class="comm3_top"></div>
+        <form action="{url x="index" r="borrow#stepone"}" method="post" id="deal_form" name='deal_form'>
+        <div class="comm3_con clearfix">
+            <div class="ros clearfix">
+                <div class="ty_txt">用途：</div>
+                
+                <div class="sel_box zvalue" id="sel_box">
+                    <input type='hidden' name='loantype' id='loantype' value='' />
+                    <span class="input_sel fw">请选择</span>
+                    <ul>
+                    {foreach from=$loantype key=lkey item=lval}
+                       <li leo='{$lval.id}'><a href="javascript:;">{$lval.name}</a></li>
+                    {/foreach}
+                    
+                    </ul>
+                </div>
+            </div>
+            <div class="ros clearfix">
+                <div class="ty_txt">金额：</div>
+                <div class="sel_box" id="money_area">
+                    <input type="text" value="20" name='amount' id='amount' class="input_sel input_sel2 fw" /><span class="money_value fw">万元</span><span class="txt_express">{$min_money}~{$max_money}万</span>
+                </div>
+            </div>
+            <div class="ros clearfix">
+                <div class="ty_txt">期限：</div>
+                
+                <div class="sel_box sel_box2" id="sel_box2">
+                    <input type='hidden' name='repaytime' id='repaytime' value='' />
+                    <span class="input_sel fw">请选择</span>
+                    <ul>
+
+                    {foreach from=$repay_time key=rkey item=rval}
+                       <li leo='{$rkey}'><a href="javascript:;">{$rval}</a></li>
+                    {/foreach}
+                    </ul>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="btn_jieqian">
+                <a href="javascript:;" onclick='javascript:checkform();' class="btn_money">我要借款</a>
+            </div>
+        </div>
+        </form>
+        <div class="comm3_bot"></div>
+    </div> 
+    <div class="dayang">
+        <div class="comm3_top"></div>
+        <div class="comm3_con rel">
+            <img width="463" height="231" alt="我要投资" src="{$TMPL}/images/img_dayang.jpg?v=3"> 
+            <a href="{$APP_ROOT}/deals" class="btn_licai"></a>
+        </div>
+        <div class="comm3_bot"></div>
+    </div>-->
+</div>
+<!-- 2013/7/6 xuxiaonan eng-->
+<div class="clearfix">
+     <div class="index-mid-ad" id="index-mid-ad">
+<span class="ad-delete"></span>
+<adv adv_id="首页投资提示"/>
+<!-- <div id="text-con">9.18-10.20%年化收益，1万起投，靠谱理财即刻开始！</div> -->
+</div>
+    <div class="long f_l">
+
+        <div class="box-plain-top">
+            
+        </div>
+
+        <div class="box-plain-title" style="border-bottom:0">
+            <a class="action" href="{$APP_ROOT}/deals">更多</a>
+            最新借款列表
+        </div>
+        <div class="box-plain-content">
+            {if $deal_list}
+          <table class="deal-list" id="index-deal-list">
+            <tbody>
+              {foreach from=$deal_list item="deal" key=key}
+              {if $deal.is_visible}
+                <tr>
+                  <td class="deal-cell-image gap_top" rowspan="2">
+                    <div class="ajax_count_{$key}" style="display:none" attr="{$deal.id},{$deal.repay_time},{$deal.loantype}"></div>
+                    <a href="{$deal.url}" target="_blank">
+                      <img src="{$deal.icon}" width="50" height="50" alt="{$deal.name}" title="{$deal.name}">
+                    </a>
+                  </td>
+                  <td class="deal-cell-title">
+                    <div class="deal-info-title">
+                      <a href="{$deal.url}" target="_blank" title='{$deal.name}'>{function name="cutstr" v=$deal.name}</a>
+                    </div>
+                    <div class="deal-info-user">
+                      <!--<a href="{$deal.user.url}" target="_blank">{$deal.user_deal_name}</a>-->
+                    </div>
+                    
+                  </td>
+                  <td class="deal-cell-money">
+                    <div>{$deal.need_money_detail}万 <span class="lesser">/ {$deal.borrow_amount_format_detail}万</span></div>
+                    {if $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                    {else}
+                      <div class="greenProcessBar progressBar prmar">
+                        <div class="p"><div class="c f_l clearfix" style="width:{function name="round" v=$deal.progress_point f=2}%;"></div></div>
+                      </div>
+                    {/if}
+                  </td>
+                  <td class="deal-cell-interest">
+                    <span>{$deal.rate}</span>
+                    <!--{function name="number_format" v="$deal.rate" f="2"}% -->
+                  </td>
+                  <td class="deal-cell-term">
+                    <div class="">{$deal.loantype_name}</div>
+                    {if $deal.loantype eq 5}
+                    <div class="lesser">{$deal.repay_time} 天</div>
+                    {else}
+                    <div class="lesser">{$deal.repay_time} 个月</div>
+                    {/if}
+                  </td>
+                  <td class="deal-cell-action">
+                        <p class="tc">
+                    {if $deal.is_update eq 1}
+                        <span>等待确认</span>
+                    {elseif $deal.deal_status eq 4}
+                        <span>还款中</span>
+                    {elseif $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                        <span class="f_red">流标</span>
+                    {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                        <span>等待确认</span>
+                    {elseif $deal.deal_status eq 2}
+                        <span>满标</span>
+                    {elseif $deal.deal_status eq 4}
+                        <span>还款中</span>
+                    {elseif $deal.deal_status eq 5}
+                        <span>已还清</span>
+                    {else}
+                        <a class="btn" href="{if $deal.is_update}{$deal.url}{else}{url x="index" r="deal#bid" p="id=$deal.id"}{/if}" target="_blank"><span>我要投资</span></a>
+                    {/if}
+                        </p>
+                  </td>
+                </tr>
+                <tr>
+                <td colspan="4">
+                    <div>
+                       {if $deal.agency_id gt 0}<span style="display:inline-block;"><span class="ico_danbao"></span><span class="ico_label">{$deal.agency_info.short_name}</span></span>{/if}
+                       {if $deal.agency_id gt 0 and $deal.warrant gt 0}<span style="display:inline-block;margin-left:6px;"><span class="ico_baoben"></span><span class="ico_label">{if $deal.warrant eq 1}保本金{else}担保本息{/if}</span></span>{/if}
+                       <span style="display:inline-block;margin-left:6px;"><span class="ico_money"></span><span class="ico_label">{$deal.min_loan_money_format}万起投</span></span>
+                    </div>
+                </td>
+                <td>
+                     {if $deal.is_update eq 1}
+          {elseif $deal.deal_status eq 4}
+                    {elseif $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                    {elseif $deal.deal_status eq 0}
+                    {elseif $deal.deal_status eq 2}
+                    {elseif $deal.deal_status eq 5}
+                    {else}
+                      <p class="time-remained">
+                        {$deal.remain_time_format}
+                      </p>
+                    {/if}
+                </td>
+                </tr>
+              {/if}
+              {/foreach}
+            </tbody>
+          </table>
+        {else}
+          <div class="empty-box">
+            没有记录
+          </div>
+        {/if}
+        </div>
+        <div class="box-plain-bottom"></div>
+
+    <div style="height:10px;background:#f4f4f4"></div>
+
+    {if $newslist}
+    <div class="box-plain-top"></div>
+    <div class="box-plain-title">
+      新闻中心
+    </div>
+    <div class="box-plain-content">
+      <table class="news-list-table">
+        <tr>
+          <td style="width:50%">
+            <ul class="dotted-list">
+              {foreach from=$newslist.left item=new}
+                <li><a href="{url x="index" r="article#news" p="id=$new.id"}" title='{$new.title}'>{function name="msubstr" v=$new.title s=0 e=20}</a> <span class="minor">({function name="to_date" v="$new.create_time" f="m-d"})</span></li>
+              {/foreach}
+            </ul>
+          </td>
+          <td style="width:50%">
+            <ul class="dotted-list">
+              {foreach from=$newslist.right item=new}
+                <li><a href="{url x="index" r="article#news" p="id=$new.id"}" title='{$new.title}'>{function name="msubstr" v=$new.title s=0 e=20}</a> <span class="minor">({function name="to_date" v="$new.create_time" f="m-d"})</span></li>
+              {/foreach}
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="box-plain-bottom"></div>
+    
+        <div style="height:10px;background:#f4f4f4"></div>
+    {/if}
+        <div class="box-plain-top"></div>
+        <div class="box-plain-title">
+            合作伙伴
+        </div>
+        <div class="box-plain-content">
+            <div class="partners-container">
+                {foreach from=$links item=link}
+                  {if $link.url}<a class="partner-item" href="http://{$link.url}" target='_blank'>{else}<span class="partner-item">{/if}<img src="{$link.img}" alt="{$link.name}" title='{$link.name}'>{if $link.url}</a>{else}</span>{/if}
+                {/foreach}
+            </div>
+        </div>
+        <div class="box-plain-bottom"></div>
+    </div>
+    <div class="f_r" style="width:230px;margin-top:-55px;" id="f_r_con">
+        <div class="box-side-plain-top"></div>
+        <div class="box-side-plain-content">
+            <table class="certificates-list" id="tb_img">
+        <tr>
+          <th><p><img src="{$TMPL}/img/certificates/zs3.jpg" width="45" height="32" alt=""><a href="javascript:;" class="btn_clse"></a></p></th>
+          <td>2013年中国网络借贷担保客户信赖首选品牌</td>
+        </tr>
+        <tr>
+          <th><p><img src="{$TMPL}/img/certificates/zs4.jpg" width="45" height="32" alt=""><a href="javascript:;" class="btn_clse"></a></p></th>
+          <td>2013年中国网络借贷平台最佳诚信品牌</td>
+        </tr>
+                <tr>
+                    <th><p><img src="{$TMPL}/img/certificates/zs1.jpg" width="45" height="32" alt=""><a href="javascript:;" class="btn_clse"></a></p></th>
+                    <td>中国小额信贷联盟会员</td>
+                </tr>
+                <tr class="last">
+                    <th><p><img src="{$TMPL}/img/certificates/zs2.jpg" width="45" height="32" alt=""><a href="javascript:;" class="btn_clse"></a></p></th>
+                    <td>2012年老龄委推荐金融服务机构</td>
+                </tr>
+            </table>
+        </div>
+        <div class="box-side-plain-bottom"></div>
+        <div class="blank10"></div>
+        <div class="box-side-plain-top"></div>
+        <div class="box-side-plain-title">常见问题</div>
+        <div class="box-side-plain-content">
+            <div class="box-side-plain-content-inner">
+                <ul class="dotted-list">
+                    <li><a href="/help/id-4">借款人必读</a></li>
+                    <li><a href="/help/id-69">投资人必读</a></li>
+                    <li><a href="/help/id-70">充值提现必读</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="box-side-plain-bottom"></div>
+    </div>
+</div>
+<div class="blank10"></div>
+<script>
+function startMove(obj, json, fn) {
+    clearInterval(obj.iTimer);
+    var iCur = 0;
+    var iSpeed = 0;
+    obj.iTimer = setInterval(function() {
+        var iBtn = true;
+        for (var attr in json) {
+            if (attr == 'opacity') {
+                iCur = Math.round(css(obj, 'opacity') * 100);
+            } else {
+                iCur = parseInt(css(obj, attr));
+            }
+            iSpeed = (json[attr] - iCur) / 8;
+            iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+            if (iCur != json[attr]) {
+                iBtn = false;
+                if (attr == 'opacity') {
+                    obj.style.opacity = (iCur + iSpeed) / 100;
+                    obj.style.filter = 'alpha(opacity='+(iCur + iSpeed)+')';
+                } else {
+                    obj.style[attr] = iCur + iSpeed + 'px';
+                }
+            }
+        }
+        if (iBtn) {
+            clearInterval(obj.iTimer);
+            fn && fn.call(obj);
+        }
+    }, 15);
+}
+function css(obj, attr) {
+    if (obj.currentStyle) {
+        return obj.currentStyle[attr];
+    } else {
+        return getComputedStyle(obj, false)[attr];
+    }
+}
+/** 以上为运动库 **/
+var oTb=document.getElementById("tb_img");
+var aImg=oTb.getElementsByTagName("img");
+var aA=oTb.getElementsByTagName("a");
+var bStop=true;
+var arrImg=[];
+var zIndex = 1;
+var zIndex2 = 5;
+var iNum=0;
+for(var i=0;i<aImg.length;i++){
+    arrImg[i]={left:aImg[i].offsetLeft,top:aImg[i].offsetTop}
+}
+for(var i=0;i<aImg.length;i++){
+    aImg[i].index=i;
+    aImg[i].style.position="absolute";
+    aImg[i].style.left=arrImg[i].left+"px";
+    aImg[i].style.top=arrImg[i].top+"px";
+}
+for(var i=0;i<aImg.length;i++){
+    aImg[i].onclick=function(){
+        iNum=this.index;
+        if(bStop){
+            bStop=false;
+            this.style.zIndex = zIndex++;
+            this.style.background ="#ddd";
+            this.style.padding ="5px";
+            startMove(this, {
+                width       :   354,
+                height      :   277,
+                left        :   -arrImg[iNum].left-280,
+                top         :   -arrImg[iNum].top-190
+            },function(){
+                aA[iNum].style.display="inline";
+                aA[iNum].style.zIndex=zIndex2++;
+                aA[iNum].style.top=-196+"px";
+                aA[iNum].style.left=73+"px";
+            });
+        }else{
+            aA[iNum].style.display="none";
+            aImg[iNum].style.background ="";
+            aImg[iNum].style.paddingTop ="20px";
+            aImg[iNum].style.paddingLeft ="10px";
+            startMove(aImg[iNum], {
+                width       :   45,
+                height      :   32,
+                left        :   arrImg[iNum].left,
+                top         :   arrImg[iNum].top
+            },function(){
+                bStop=true;
+            });
+            
+        }
+    }
+}
+for(var i=0;i<aA.length;i++){
+    aA[i].index=i;
+    aA[i].onclick=function(){
+        iNum=this.index;
+        this.style.display="none";
+        aImg[iNum].style.background ="";
+        aImg[iNum].style.paddingTop ="20px";
+        aImg[iNum].style.paddingLeft ="10px";
+        startMove(aImg[iNum], {
+            width       :   45,
+            height      :   32,
+            left        :   arrImg[iNum].left,
+            top         :   arrImg[iNum].top
+        },function(){
+            bStop=true;
+        });
+    }
+}
+
+</script>
+{include file="inc/footer.html"}

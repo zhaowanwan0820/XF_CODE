@@ -1,0 +1,167 @@
+<div class="ui_user_right">
+	<div class="p_account_personalset">
+        <link href="<?php echo $this->asset->makeUrl('v2/css/account_personalset.css');?>" type="text/css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/weebox.css');?>">
+        <script src="<?php echo $this->asset->makeUrl('v2/js/temp/jquery.bgiframe.js');?>"></script>
+        <script src="<?php echo $this->asset->makeUrl('v2/js/temp/jquery.weebox.js');?>"></script>
+		<script src="<?php echo $this->asset->makeUrl('v2/js/widget/p2p-ui-checkbox.js');?>"></script>
+        <script>
+        $(function() {
+            $('#modify').submit(function() {
+                var is_check_email = 1;
+                if ({$is_have_email}==1){
+                    is_check_email = 0;
+                }
+                var $checks_e =  $(".email-cont ul li");
+                if ($checks_e.find("a.check-select").length > 0 && is_check_email == 1) {
+                    var html = '请先绑定邮箱';
+                    $.weeboxs.open(html, {
+                        boxid: null,
+                        contentType: 'text',
+                        showButton: true,
+                        showOk: true,
+                        okBtnName: '去绑定',
+                        showCancel: false,
+                        title: '绑定邮箱',
+                        width: 270,
+                        height: 25,
+                        type: 'wee',
+                        onclose: function() {
+                            null
+                        },
+                          onok:function(){
+                            location.href='/account/addemail';
+                        $.weeboxs.close();
+                    } 
+                    });
+                    return false;
+                }
+            });
+
+            $(".p2p-ui-checkbox").p2pUiCheckbox();
+        });
+        </script>
+                <div class="ui-box">
+                    <div class="h-title">
+                        <h2><i></i>会员设置</h2>
+                        <div class="h-line"></div>
+                        <ul class="sub-nav clearfix">
+                            <li>
+                                <a href="{url x="index" r="account/setup"}">账户设置</a>
+                            </li>
+                            <li class="select">
+                                <a href="{url x="index" r="account/setmessage"}">消息设置</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="r-cont">
+                    <form method="post" action="" id="modify" >
+                        <?php echo token_input(); ?>
+                        <div class="sms-subs clearfix">
+                            <div class="subs-tit">短信通知：</div>
+                            <div class="subs-cont-wrap">
+                                <div class="subs-cont clearfix">
+                                    <span class="gray">信息变更：</span>
+                                    <ul>
+                                        <li>
+                                            <div class="p2p-ui-checkbox">
+                                                <span class="common-sprite checked-disable"></span>
+                                                <span class="cur-txt">密码变更</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p2p-ui-checkbox">
+                                                <span class="common-sprite checked-disable"></span>
+                                                <span class="cur-txt">手机号变更</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p2p-ui-checkbox">
+                                                <span class="common-sprite checked-disable"></span>
+                                                <span class="cur-txt">银行卡变更</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="subs-cont clearfix">
+                                    <span class="gray">资金变动：</span>
+                                    <ul>
+                                        <li>
+                                            <div class="p2p-ui-checkbox">
+                                            <span class="common-sprite checked-disable"></span>
+                                            <span class="cur-txt">提现申请</span>
+                                            </div>
+                                        </li>
+                                        {foreach from=$sms_config_list[1] item="s_config" key=key}
+                                        <li>
+                                            <div class="p2p-ui-checkbox">
+                                            <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal"></a>
+                                            <span>{$s_config}</span>
+                                            <input type="hidden" name="sms_config[{$key}]" value="{if (isset($user_config_sms_info[$key]))}{$user_config_sms_info[$key]}{else}{$sms_default_config}{/if}" >
+                                            </div>
+                                        </li>
+
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                                <div class="subs-cont clearfix">
+                                    <span class="gray">项目状态：</span>
+                                    <ul>
+                                        {foreach from=$sms_config_list[0] item="s_config" key=key}
+                                        <li>
+                                            <div class="p2p-ui-checkbox">
+                                            <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal"></a>
+                                            <span>{$s_config}</span>
+                                            <input type="hidden" name="sms_config[{$key}]" value="{if (isset($user_config_sms_info[$key]))}{$user_config_sms_info[$key]}{else}{$sms_default_config}{/if}">
+                                            </div>
+                                        </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sms-subs bor-b0  clearfix">
+                            <div class="subs-tit">邮件通知：</div>
+                            <div class="subs-cont-wrap">
+                                <div class="subs-cont email-cont clearfix">
+                                    <span class="gray">项目状态：</span>
+                                    <ul>
+                                        {foreach from=$email_config_list[0] item="e_config" key=key}
+                                        <li>
+
+                                            <div class="p2p-ui-checkbox">
+                                            <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal"></a>
+                                            <span>{$e_config}</span>
+                                            <input type="hidden" name="email_config[{$key}]" value="{if (isset($user_config_email_info[$key]))}{$user_config_email_info[$key]}{else}{$email_default_config}{/if}">
+                                            </div>
+                                        </li>
+                                        {/foreach}
+                                        
+                                    </ul>
+                                </div>
+                                <div class="subs-cont email-cont clearfix">
+                                    <span class="gray">其他：</span>
+                                    <ul>
+                                        {foreach from=$email_config_list[1] item="e_config" key=key}
+                                        <li>
+                                            <div class="p2p-ui-checkbox">
+                                            <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal"></a>
+                                            <span>{$e_config}</span>
+                                            <input type="hidden" name="email_config[{$key}]" value="{if (isset($user_config_email_info[$key]))}{$user_config_email_info[$key]}{else}{$email_default_config}{/if}">
+                                            </div>
+                                        </li>
+                                        {/foreach}
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sum-btn">
+                            <input class="common-sprite btn-red-h46" type="submit" id="submit_button" value="保存">
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+</div>

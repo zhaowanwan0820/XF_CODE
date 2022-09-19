@@ -1,0 +1,158 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+<script type="text/javascript">
+    function add(id, typeID) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealQueues&"+VAR_ACTION+"=addDeal&queue_id="+id;
+    }
+    function edit(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=GoldDeal&"+VAR_ACTION+"=edit&id="+id;
+    }
+   /*置顶功能
+   function moveTop(queue_id, deal_id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealQueues&"+VAR_ACTION+"=moveTop&queue_id="+queue_id+"&jump_id="+deal_id;
+    }*/
+    function jump(queue_id, deal_id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealQueues&"+VAR_ACTION+"=jump&queue_id="+queue_id+"&jump_id="+deal_id;
+    }
+    function del(queue_id, deal_id) {
+        if(!deal_id) {
+            idBox = $(".key:checked");
+            if(idBox.length == 0) {
+                alert(LANG['DELETE_EMPTY_WARNING']);
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            deal_id = idArray.join(",");
+        }
+        $.ajax({
+            url: ROOT+"?m=DealQueues&a=delete_deal&queue_id="+queue_id+"&deal_id="+deal_id,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                $("#info").html(obj.info);
+                if(obj.status==1) {
+                    location.href=ROOT+"?m=DealQueues&a=show&id="+queue_id;
+                }
+            }
+        });
+    }
+    function move(queue_id, deal_id, direction) {
+        $.ajax({
+            url: ROOT+"?m=DealQueues&a=move_deal&queue_id="+queue_id+"&deal_id="+deal_id+"&direction="+direction, 
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                $("#info").html(obj.info);
+                if(obj.status==1) {
+                    location.href=ROOT+"?m=DealQueues&a=show&id="+queue_id;
+                }
+            }
+        });
+    }
+
+
+</script>
+
+<div class="main">
+<div class="main_title">{$queueName} <a href="{:u("DealQueues/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add({$queueId});" />
+    <input type="button" class="button" value="{%DEL}" onclick="del({$queueId});" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        标的ID：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" />
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DealQueues" name="m" />
+        <input type="hidden" value="show" name="a" />
+        <input type="hidden" value="{$queueId}" name="id" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="16" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">队列次序</th>
+            <th width="50px">编号</th>
+            <th>标的产品名称</th>
+            <th>上线平台</th>
+            <th>单次上线克重</th>
+            <th>年化补偿率</th>
+            <th>期限</th>
+            <th>黄金及补偿交付方式</th>
+            <th>运营方id/姓名/手机号</th>
+            <th>投资状态</th>
+            <th>状态</th>
+            <th style="width:100px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="item" key="no">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$item.id}">
+            </td>
+            <td>&nbsp;{$no}</td>
+            <td>&nbsp;{$item.id}</td>
+            <td>
+                &nbsp;<a href="javascript:edit('{$item.id}')">{$item.name}</a>
+            </td>
+            <td>
+                &nbsp;{$item.siteId|get_gold_deal_domain='true'}
+            </td>
+            <td>&nbsp;{$item.borrow_amount}</td>
+            <td>&nbsp;{$item.rate}%</td>   
+            <td>&nbsp;{$item.repay_time}<if condition="$item.loantype eq 5">天<else/>个月</if></td>   
+            <td>&nbsp;{$item.loantype|get_loantype}</td>  
+            <td>&nbsp;{$item.user_id}/{$item.user_id|get_user_name="real_name"}/{$item.user_id|get_user_name="mobile"}</td>   
+            <td>&nbsp;
+            <if condition="$item.deal_status eq 0">等待确认
+            <elseif condition="$item.deal_status eq 1" />进行中
+
+            <elseif condition="$item.deal_status eq 2" /><span style="color:red">满标</span>
+            <elseif condition="$item.deal_status eq 3" />流标
+            <elseif condition="$item.deal_status eq 4" />还款中
+            <elseif condition="$item.deal_status eq 5" />已到期
+            </if>
+            </td>
+            <td>&nbsp;
+            <if condition="$item.is_effect eq 1">有效<else/>无效</if>
+            </td>
+            <td>
+                <a href="javascript:jump('{$queueId}', '{$item.id}')">插队</a>
+                &nbsp;
+               <!-- <a href="javascript:moveTop('{$queueId}', '{$item.id}')">置顶</a>
+                &nbsp;-->
+                <a href="javascript:move('{$queueId}','{$item.id}', 2)">上移</a>
+                &nbsp;
+                <a href="javascript:move('{$queueId}','{$item.id}', 1)">下移</a>
+                &nbsp;
+                <a href="javascript: del('{$queueId}','{$item.id}')">从队列删除</a>
+                &nbsp;
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+    

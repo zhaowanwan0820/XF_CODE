@@ -1,0 +1,64 @@
+{// 超额收益审核页面 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+             标的ID:<input type="text" class="textbox" name="deal_id" value="{$_REQUEST['deal_id']}" />
+            <input type="hidden" value="IncomeExcess" name="m" />
+            <input type="hidden" value="getIncomeExcessAuditList" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th width="50px">标的ID</th>
+        <th>贴息类型</th>
+        <th>所属分站</th>
+        <th>满标日</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    <tr>
+        <td colspan="20" class="bottomTd"> &nbsp;</td>
+    </tr>
+
+    <?php foreach($list as $k=>$v) :?>
+    <tr class="row">
+        <td><?= $v['deal_id']?></td>
+        <td>超额收益</td>
+        <td><?= $site_list[$v['site_id']]?></td>
+        <td><?= date('Y-m-d',$v['success_time'])?></td>
+        <td>
+          <?php if($v['status'] == -2):?> 删除无效<?php endif;?>
+          <?php if($v['status'] == -1):?> 被驳回<?php endif;?>
+          <?php if($v['status'] == 0):?> 待审批<?php endif;?>
+          <?php if($v['status'] == 1):?> 待结算<?php endif;?>
+          <?php if($v['status'] == 2):?> 已结算<?php endif;?>
+          <?php if($v['status'] == 3):?> 审核通过<?php endif;?>
+        </td>
+        <td>
+            <a href="javascript:weebox_showAudit({$v.deal_id});">审核</a>&nbsp;&nbsp;
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<script type="text/javascript">
+    function weebox_showAudit(id){
+        var dialogBox = $.weeboxs.open(ROOT+'?m=IncomeExcess&a=showAudit&id='+id, {contentType:'ajax',showButton:false,title:'超额收益审核',width:500,height:170});
+    }
+ </script>
+<include file="Public:footer" />

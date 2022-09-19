@@ -1,0 +1,71 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__chosen/css/chosen.min.css' />
+<load href='__TMPL__chosen/js/chosen.jquery.min.js' />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="search_row" style="background:none;color:black;">
+    <form name="search" action="__APP__" method="get">
+        管理员账号: <input type="text" name="adm_name" value="{:trim($_REQUEST['adm_name'])}"/> &nbsp;
+        管理员组: <input type="text" name="role_name" value="{:trim($_REQUEST['role_name'])}"/> &nbsp;
+
+        状态: <select name="effect_status" style="padding:2px 5px;">
+                    <foreach name="all_effect_status" item="type" key="key">
+                       <option value="{$key}" <if condition="intval($_REQUEST['effect_status']) eq $key">selected="selected"</if>>{$type}</option>
+                    </foreach>
+                  </select> &nbsp;
+
+        <input type="hidden" value="Admin" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}"/>
+        <if condition="$is_cn eq 0">
+            <input type="button" class="button" value="导出" onclick="exportCSV()" />
+        </if>
+    </form>
+</div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%DEL}" onclick="del();" />
+</div>
+<div class="blank5"></div>
+    <html:list
+            id="dataTable"
+            style="dataTable"
+            name="admin"
+            checkbox="true"
+            action="true"
+            datasource="list"
+            show="id:{%ID}|50px,adm_name:{%ADM_NAME}:edit,role_id|get_role_name:{%ROLE},is_effect|get_is_effect=$admin['id']:{%IS_EFFECT},name:姓名,mobile:手机号,login_time|to_date:{%LOGIN_TIME},login_ip:{%LOGIN_IP},password_update_time|to_date:最后修改密码时间"
+            actionlist="edit:{%EDIT}, del:{%DEL}" />
+    <div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+<script>
+/**
+ * CSV导出，构造下载链接
+ */
+function exportCSV()
+{
+    var idBox = $(".key:checked"),
+        id = '',
+        action = $("form [name=a]"),
+        curVal = action.val(),
+        params = '';
+
+    if(idBox.length > 0)
+    {
+        var idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+    }
+    action.val('index');
+    params = $('form').serialize();
+    action.val(curVal);
+    location.href = "/m.php?export=1&" + params + '&id=' + id;
+}
+</script>

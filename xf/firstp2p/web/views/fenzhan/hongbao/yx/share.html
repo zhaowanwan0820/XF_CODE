@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/yx.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+<div class="heihua"></div>
+<div class="text_fu"></div>
+<div class="main">
+<div class="he_text">
+    <a href="{$detailLink}" class="rule"></a>
+</div>
+<div class="ht_bg"></div>
+<div class="text_01" id="text_01"></div>
+<div class="dao-btn pt15">
+    <span class="btn"></span>
+</div>
+<div class="p_tips tc pt15">
+<p>新用户领取贺卡红包并投资后，您再获10元奖励红包。</p>
+</div>
+</div>
+<div class="mark"></div>
+<div class="pop_icon"></div>
+<script type="text/javascript">
+        window.onorientationchange = function(){
+            changeDivHeight();
+        }
+        function changeDivHeight(){
+            var bHeight= Math.max(document.documentElement.clientHeight, 420);
+            $('body').css({"background-size":"100% " + bHeight + "px", "height": bHeight});
+            $('.main').css({"top": (bHeight-420)/2+'px'});
+        }
+
+        //随机文案
+        var initIndex = {$gid};
+        var randLabelArr = [
+            "<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/yx/01.png', 1);?>",
+            "<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/yx/02.png', 1);?>",
+            "<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/yx/03.png', 1);?>",
+            "<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/yx/04.png', 1);?>",
+            "<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/yx/05.png', 1);?>",
+            "<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/yx/06.png', 1);?>",
+        ];
+        function showIndexLabel(index) {
+			index = index % randLabelArr.length;
+			var imagesrc = randLabelArr[index];
+			$("#text_01").css({"background-image":"url(" + imagesrc + ")"});
+		}
+		showIndexLabel(initIndex);
+		$('#text_01').click(function(){
+			initIndex++;
+			initIndex = initIndex % randLabelArr.length;
+			showIndexLabel(initIndex);
+		});
+
+    $(function(){
+		changeDivHeight();
+		// fix andorid keyborad change webview size bug.
+		var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "";
+		if (/android/i.test(userAgentString)) {
+			//hack for andorid
+			var _firstInit = true;
+			var resizecount = 0;
+			setInterval(function(){
+				if (resizecount > 10) {
+					return;
+				}
+				resizecount++;
+				changeDivHeight();
+			}, 1000);
+			
+			window.onresize = function() {
+				if (_firstInit) {
+					var bHeight= Math.max($(window).height(), 420);
+					$('body').css({"background-size":"100% " + bHeight + "px", "height": bHeight});
+					$('.main').css({"top": (bHeight-420)/2+'px'});
+				}
+			}
+		}
+        $('.btn').click(function(){
+            $('.mark,.pop_icon').addClass('dis_block');
+        })
+        $('.mark,.pop_icon').click(function(){
+            $('.mark,.pop_icon').removeClass('dis_block');
+        })
+    })
+</script>
+{include file="web/views/fenzhan/hongbao/yx/show_menu_js.html"}
+</body>
+</html>

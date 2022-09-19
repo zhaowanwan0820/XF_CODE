@@ -1,0 +1,76 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<PHP>
+    function showMoney($amount)
+    {
+        return number_format(bcdiv($amount, 100, 2),2);
+    }
+
+    function showDatetime($timestamp)
+    {
+        return date('Y-m-d H:i:s', $timestamp);
+    }
+
+    function showType($bizType, $record)
+    {
+        $bizTypeDesc = array(
+            1 => '新增',
+            2 => '回款',
+            3 => '置为无效',
+        );
+
+
+        if ($bizType == 3)
+        {
+            return $bizTypeDesc[$bizType].'('.$record['memo'].')';
+        }
+
+        return $bizTypeDesc[$bizType];
+    }
+
+    function showUserType($type)
+    {
+        switch ($type)
+        {
+            case 1: return '对私';
+            case 2: return '对公';
+        }
+    }
+</PHP>
+<div class="main">
+<div class="main_title">线下债权关系变更记录</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" id="search_form" action="__APP__" method="get">
+        出让方用户ID：<input type="text" class="textbox" name="transferor_user_id" value="{:trim($_REQUEST['transferor_user_id'])}" style="width:100px;" />
+        受让方银行账户：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['transferee_account'])}" name="transferee_account" />
+        创建时间：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['apply_time_start'])}" name="apply_time_start" id="apply_time_start"  onfocus="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        至 <input type="text" value="{:trim($_REQUEST['apply_time_end'])}" name="apply_time_end" id="apply_time_end" class="textbox" onfocus="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="WithdrawProxyDebitionLog" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="record"
+    datasource="list"
+    show="transferor_user_id:出让方用户ID,transferor_name:出让方名称,project_id:项目ID,transferee_name:受让方名称,transferee_user_type|showUserType:受让方账户类型,transferee_account|bankNoFormat:受让方账户卡号,transferee_bank_code:受让方账户银行编码,transferee_issuer:受让方联行号,amount|showMoney:变更债权金额(元),remain_amount|showMoney:剩余债权金额(元),type|showType=$record:变更类型,create_time|showDatetime:时间,create_admin_name:操作人"
+     />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

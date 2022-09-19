@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    {include file='web/views/hongbao/shareLogo.html'}
+    <title>修改手机号</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/common.css', 1);?>" rel="stylesheet" type="text/css" />
+   
+</head>
+<body>
+    <div class="bonus_box">
+    	<div class="tel_box">
+            <h2 class="f18 color_black pb10 tc" id='current_mobile'>当前手机号：{$mobile}</h2>
+            <form id="register-form" action="" onsubmit="return false;" method="post">
+                <?php echo token_input(); ?>
+                <div class="webkit_box">
+                    <input type="tel" class="JS_tel_input tel_input" style="" id="input-mobile" placeholder="输入新手机号" maxlength="11">
+                </div>
+                <div class="webkit_box"><input type="submit" value="确定" class="JS_tel_btn tel_btn" disabled></div>
+                <div class="pt10 tc f18">说明：下次领福利，自动放入新账户</div>
+        		<div id='msg_tip' class="pt10 none tc">修改成功<div>
+            </form>
+        </div>
+    </div>
+    {include file="web/views/hongbao/jsapi_config.html"}
+    <script>
+        wx.ready(function() {
+            wx.hideOptionMenu();
+        });
+    </script>
+    <script>
+        function onBridgeReady(){
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        }else{
+            onBridgeReady();
+        }
+    </script>
+    <script type="text/javascript">
+		$(function(){
+            var sn = '{$sn}';
+            var count = 1;
+            var mobileRegEx = /^0?(13[0-9]|15[0-9]|18[0-9]|17[0-9]|14[457])[0-9]{8}$/;
+			$('.JS_tel_btn').addClass('disabled_btn').attr('disabled','disabled');
+			$('.JS_tel_input').on('input propertychange', function(){
+                if (count > 1) {
+                    return false;
+                }
+				var tel= $('.JS_tel_input').val()
+				if(!tel || tel==null){
+					$('.JS_tel_btn').addClass('disabled_btn').attr('disabled','disabled');
+					//$('.tel-box').focus();
+					return false;
+				}else if(!mobileRegEx.test(tel)){
+					$('.JS_tel_btn').addClass('disabled_btn').attr('disabled','disabled');
+					//$('.tel-box').focus();
+					return false;
+				}else{
+					$('.JS_tel_btn').removeClass('disabled_btn').removeAttr('disabled');
+					return true;
+				}
+			});	
+            $('.JS_tel_btn').on('click', function() {
+                var changeMobile = $("#input-mobile").val();
+                var token_id = $("#token_id").val();
+                var token = $("#token").val();
+                $.post("ChangeMobile",{newMobile:changeMobile,sn:sn,token_id:token_id, token:token},function(result){
+                    $('#msg_tip').html(result.info).removeClass('none');
+                    if (result.status) {
+                        $('#current_mobile').html('当前手机号：'+changeMobile);
+                    }
+                    $('.JS_tel_btn').addClass('disabled_btn').attr('disabled','disabled');
+                    count++;
+                }, 'json');
+            });	
+		});
+    </script>
+</body>
+</html>

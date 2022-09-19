@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <title class="title">个人信息填写</title>
+    {include file="api/views/_v32/header.html"}
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/personal_infromation_filling.css');?>">
+    <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+  </head>
+<body>
+  <!-- 个人信息填写页面 -->
+  <div class="personal_information_filling">
+    <!-- 头部用户个人信息回填部分 -->
+    <div class="personal_information_input">
+      <div class="first_input">
+        <span>申请人姓名</span>
+        <span class="real_name">{$user_info.real_name}</span>
+      </div>
+      <div class="first_input">
+        <span>联系电话</span>
+        <span class="phone">{$user_info.phone}</span>
+      </div>
+      <div class="first_input">
+        <span>身份证号</span>
+        <span class="usercard_id">{$user_info.usercard_id}</span>
+      </div>
+    </div>
+    <!-- 身份证照片上传 -->
+    <div class="p_change_bankcard photo_upload_of_ID_card">
+      <div class="bg_white mt10 user_info j_user_info">
+        <h2 class="photo_upload_title">身份证照片上传</h2>
+        <div class="padd15 clearfix">
+          <div class="first">
+            <div class="upload_box j_uploadbox" data-img = "myimg_file1">
+              <div class="myimg_file1 mying">{if $user_info.usercard_front}<img src="{$user_info.usercard_front}"/>{/if}</div>
+              <div class="photo_img"></div>
+            </div>
+          <div class="img_text">身份证正面</div>
+        </div>
+        <div class="first">
+          <div class="upload_box j_uploadbox" data-img = "myimg_file2">
+            <div class="myimg_file2 mying">{if $user_info.usercard_back}<img src="{$user_info.usercard_back}"/>{/if}</div>
+            <div class="photo_img"></div>
+          </div>
+          <div class="img_text">身份证背面</div>
+        </div>
+        </div>
+      </div>
+      <div class="btn">
+        <input type="submit" class="change_btn ui_btn_disabled JS_submit_change" value="提交借款申请" disabled="disabled">
+      </div>
+    </div>
+    <!-- 添加借款记录页面点击时显示加载中遮罩层 -->
+    <div class="loan_record_popup" style="display:none">
+      <div class="loading1">
+        <div class="oninloading">申请提交中,请稍后...</div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+<script>
+  /* 使用源生方法，调用手机拍照和相册功能 */
+  /*firstp2p://api?type=photo&source=camera&callback=photoFn,自定义回调函数photoFn、albumFn */
+  var myimg_file1 = $(".myimg_file1 img").attr("src"),/* 身份证正面 */
+      myimg_file2 = $(".myimg_file2 img").attr("src"),/* 身份证反面 */
+      $imgEl/* 点击的拍照渲染的img parents（myimg_file） */
+  $(".photo_click_popup").height($(window).height())
+  /* 底部提示语 */
+  var personal_information_filling = $(".personal_information_filling"),
+  personal_information_filling_height = personal_information_filling.height()
+  _html(personal_information_filling[0],personal_information_filling_height,"0.2rem","none") 
+  /*数据完整性判断，定义方法*/
+  function _data_integrity(){
+    if(!myimg_file1 || !myimg_file2){
+      $('.JS_submit_change').attr('disabled', 'disabled').css("background-color","rgb(217,217,217)")
+    }else{
+      $('.JS_submit_change').removeAttr('disabled', 'disabled').css("background-color","rgb(23,127,222)")
+    }
+  }
+  _data_integrity()
+  // 点击身份证照片上传相机图片，控制拍照功能弹窗显示隐藏
+  $('.p_change_bankcard .j_uploadbox').click(function(){
+    $imgEl = $('.'+$(this).attr("data-img"))
+    _scheme_photo(document.body,_data_integrity)
+    return $imgEl
+  })
+  var usercard_front_id = "{$user_info.usercard_front_id}",
+      usercard_back_id = "{$user_info.usercard_back_id}"
+      first_img_id = usercard_front_id ? usercard_front_id : ''
+      second_img_id = usercard_back_id ? usercard_back_id : "",
+      loan_record_popup = $(".loan_record_popup")
+  $(".JS_submit_change").click(function(){
+    loan_record_popup.css("display","block")
+    $.ajax({
+      url:"/house/DoApply",
+      type:"post",
+      data:{
+        token:"{$token}",
+        usercard_front:first_img_id,
+        usercard_back:second_img_id,
+        borrow_money:P2PWAP.cache.get('_money_amount_'),
+        borrow_deadline_type:"{$apply_info.borrow_deadline_type}",
+        payback_mode:"{$apply_info.payback_mode}",
+        house_id:"{$apply_info.house_id}",
+        annualized:"{$apply_info.annualized}"
+      },
+      success:function(res){
+        loan_record_popup.css("display","none")
+        if(res.errno == 0){
+          $(".loan_record_popup").css("display","none")
+          window.location.href = "/house/Result?token={$token}&result="+res.data
+        }else{
+          P2PWAP.ui.toast(res.error)
+        }
+      },
+      error:function(err){
+        P2PWAP.ui.toast("error",err)
+      }
+    })
+  })
+</script>
+</html>

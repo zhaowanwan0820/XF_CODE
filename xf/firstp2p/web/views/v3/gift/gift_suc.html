@@ -1,0 +1,92 @@
+{include file="web/views/v3/header.html"}
+<script>
+   window.onbeforeunload = function(){
+      history.go(0);
+   }
+</script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/account_o2o_gift.css');?>">
+<div class="p_account_o2o_coupon_suc">
+        <span class="blank23"></span>
+        <div class="w1100"  style="min-height:520px;">
+            <div class="ui-box" style="min-height:410px;">
+            
+               {if $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                <div class="ui_suc_title">
+                <i class="ui_suc_icon mr10"></i>领取成功!
+                <div class="gray_bg">
+                   <h3 class="f16">您已成功领取{$coupon.productName}</h3>
+                    
+                        {if $extraParam.phone}
+                         <div class="tc f14 pt10 cunpon_bg ">已提交充值账户 <br><span class="format_mobile f22">{$extraParam.phone}</span></div>
+                        {elseif $extraParam.userName}
+                         <div class="tc f14 pt10 cunpon_bg">已提交充值账户 <br><span class="f22">{$extraParam.userName}</span></div>
+                        {elseif $extraParam.email}
+                         <div class="tc f14 pt10 cunpon_bg">已提交充值账户 <br><span class="f22">{$extraParam.email}</span></div>
+                        {else}
+                         <div class="tc f14 pt10 cunpon_bg">已提交充值账户<br><span class="f22">{$extraParam.idno}</span></div>
+                        {/if}
+                </div>
+                </div>
+                {/if}
+                {if $coupon.useRules eq 1 || $coupon.useRules eq 2 || $coupon.useRules eq 7 || $coupon.useRules eq 8 || $coupon.useRules eq 10}
+                <div class="ui_suc_title"><i class="ui_suc_icon mr10"></i>领取成功！
+                    <div class="gray_bg">
+                        <h3 class="f16">您已成功领取{$coupon.productName}</h3>
+                        {if $coupon.useRules eq 7 && $coupon.isShowCouponNumber}
+                        <div class="cunpon_bg">
+                            <div class="tc pt15 pb10">
+                                <p style="line-height:22px;"><span class="f14">券码：</span><span class="f22">{$coupon.couponNumber}</span></p>
+                            </div>
+                        </div>
+                        {/if}
+                        {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                        <div class="cunpon_bg">
+                            <p style="line-height:22px;"><span class="f14 color_gray">券码：</span><span class="f22">{$coupon.couponNumber}</span></p>
+                            <p class="color_gray f14">有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+                
+                {elseif $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                <div class="ui_suc_title"><i class="ui_suc_icon mr10"></i>领取成功</div>
+                <div class="detail_con">
+                    <div class="gray_bg">
+                    <h3 class="f16">您已成功领取{$coupon.productName},商品会尽快寄往以下地址</h3>
+                    <!-- <div class="title"><i class="circle"></i>商品会尽快寄往以下地址</div> -->
+                    <div class="con_text">
+                        <div class="receiverparam_box">
+                        {foreach from=$receiverParam item=item key=key}
+                        <p>{$item}</p>
+                        {/foreach}
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                
+                {elseif $coupon.useRules eq 9}
+                <div class="ui_suc_title"><i class="ui_suc_icon mr10"></i>领取成功
+                    <div class="gray_bg">
+                    <h3 class="f16">您已成功领取多人拼手气红包兑换券</h3>
+                    {if $code}
+                    
+                    {else}
+                    <h3 class="f16">请到账户中心->{$new_bonus_title}中查看</h3>
+                    {/if}
+                    
+                    {if $code}
+                     <div class="coupon_code">
+                        <img src="/deal/bonusQrcode?code={$code}" width="140" height="140">
+                    </div>
+                    <div class="f16 gray tc pb20">打开微信，使用“扫一扫”，扫描本页面中二维码即可获取{$new_bonus_title}</div>
+                    {/if}
+                    </div>
+                {/if}
+                <div class="tc"><a class="o2o_pc_btn_red_h38 mr50" href="/gift"><span class="right o2o_w95">查看礼券</span></a><a class="o2o_pc_btn_gray_h38" href="/deals"><span class="right o2o_w95">返回投资列表</span></a></div>
+                <span class="blank60"></span>
+            </div> 
+        <span class="blank60"></span>
+    </div>
+</div>
+
+{include file="web/views/v3/footer.html"}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提交预约</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <?php echo $this->asset->renderAppCssV2("reserve_v40"); ?>
+</head>
+<body>
+<div class="marquee">
+    <div class="marquee_con">
+        <div class="row" style="width: 1140px;">
+            <ul id="marquee1" class="marquee1" >
+                <li>
+                    <a href="#">预约期内请保证账户可用余额充足，以免预约失败</a>
+                </li>
+                <li>
+                    <a href="#">具体标的以及收益率以实际投资成功的标的为准</a>
+                </li>
+            </ul>
+            <ul id="marquee2" class="marquee2"></ul>
+        </div>
+    </div>
+</div>
+<div class="p_reservation p_reservation2">
+    <input type="hidden" name="authorizeAmountString" id="authorizeAmountString" value="{$authorizeAmountString}"/>
+    <input type="hidden" name="min_amount" id="min_amount" value="{$min_amount}"/>
+    <input type="hidden" name="max_amount" id="max_amount" value="{$max_amount}"/>
+    <input type="hidden" name="ketou_money" id="ketou_money" value="{$user_total_money}"/>
+    <input type="hidden" id="token" value="{$token}">
+    <input type="hidden" id="loantype" value="{$loantype}">
+    <input type="hidden" name="active_qx" id="active_qx" class="active_qx" value=""/>
+    <div class="bg-white">
+        <h2 style="padding-top:5px;padding-left:15px;">授权金额</h2>
+        <div class="input_box">
+            <input type="button" value="全投" id="quantou_all" class="quantou_all">
+            <div class="ui_input"></div>
+        </div>
+        <div class="tips clearfix">
+            <!-- 可用余额:{$user_total_money}元(含{$new_bonus_title}{$bonus_money}{$new_bonus_unit}) -->
+            <div class="remain_money_text fl">可用余额:{$user_total_money}元
+            {if $bonus_money > 0}
+                (含{$new_bonus_title}{$bonus_money}{$new_bonus_unit})
+            {/if}
+            </div>
+        </div>
+    </div>
+    <div class="bg_whtie mt15 reserve_list">
+        <div class="ditf_list JS_to_qixian">
+            <a href="javascript:void(0)" class='to_qixian'>期限/预期年化</a>
+            <div class="pop_qx_list change_stle_bg">
+                <div class="p_discount_friend need_change_po">
+                    {foreach from=$invest_conf item=data}
+                            <div class="item JS_item ht_item" data-projectrisk="{$data.is_check_project_risk}"  data-message="{$data.deadline_tag}" style="display:none;">
+                                <span class="icon_yes fr real_change"></span>
+                                <span class="qx_con rever_size">{$data.deadline}{$data.deadline_unit_string}/预期年化{$data.rate}%</span>
+                            </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+        <!-- <div class="sy_tips">具体标的以及收益率以实际投资成功标的为准</div> -->
+        <div class="ditf_list JS_to_yxq gold_need">
+            <a href="javascript:void(0)" class='to_yxq'>
+                <span class="fr">
+                    <span class="JS_yxq_selcet_text color_gray f13">请选择</span>
+                    <em class="active_yxq color_blue f13 change_main_colo"></em>
+                    <i class="icon_arrow"></i>
+                </span>预约有效期
+            </a>
+        </div>
+
+    </div>
+
+    <div class="box mt20 need_top">
+        <h3>您可能预约的项目类型</h3>
+        <h3>P2P<a href="/deal/reserveContractList?userClientKey={$userClientKey}&type=p2p" class="color_blue">《查看合同协议》</a></h3>
+        <h3>专享<a href="/deal/reserveContractList?userClientKey={$userClientKey}&type=zx" class="color_blue">《查看合同协议》</a></h3>
+        <input type="hidden" id="userClientKey" value="{$userClientKey}">
+        <input type="hidden" name="asgn" id="asgn" value="{$asgn}"/>
+    </div>
+    {if $needForceAssess eq 1}
+    <input type="hidden" class="needForceAssess" value="{$needForceAssess}">
+    <div class="needForceAssess_box tc">
+        <div class="group_icon"></div>
+        <h2 class="title">请您投资前先完成风险承受能力评估</h2>
+        <a href="#" class="needForceAssess_link">立即参与评估</a>
+        <a href="javascrpit:void(0)" class="needForceAssess_link_no">暂不评估</a>
+    </div>
+    {/if}
+
+    <!-- 点击“提交预约”后，如果个人会员投资人评级低于项目评级，弹窗提示。 -->
+    <div class="ui_conf_risk bid_conf" id="ui_conf_risk" style="display:none;">
+       <div class="opacity"></div>
+       <div class="confirm_donate">
+           <p class="confirm_donate_title">提示</p>
+           <p class="confirm_donate_text">
+           {if $user_risk.user_risk_assessment}
+           当前您的投资风险承受能力<br/>
+           为“{$user_risk.user_risk_assessment}”，暂不能预约此项目
+           {/if}
+           <span class="sy_num color_gray f13">本年度剩余评估{$user_risk.remaining_assess_num}次</span>
+           </p>
+           <div class="confirm_donate_but">
+               {if $user_risk.remaining_assess_num > 0}
+               <input type="button" class="confirm_donate_but_del" id="JS-cancel" value="暂不评估">
+               <a class="confirm_donate_but_yes"  id="JS-confirm" href="">重新评估</a>
+               {else}
+               <input type="button" class="confirm_donate_but_yes w240" id="JS-know" value="知道了">
+               {/if}
+               </div>
+       </div>
+    </div>
+    <h3 class="tc need_change_sty"><span class="real_change_two">查看</span><a href="/deal/reserveContractDetail?userClientKey={$userClientKey}&advid=reserve_contract&advtitle=预约协议" class="color_blue">《预约协议》</a></h3>
+    <div class="bg_cover" style="display:none"></div>
+    <div class="JS_assess" style="display:none"></div>
+    <!-- <div class="pop_qx_list">
+        <div class="ui_title"><a class="ui_back" id="back_but" href="javascript:void(0)"><i class="ui_icon_back"></i></a>投资期限</div>
+        <div class="p_discount_friend move_now">
+            {foreach from=$invest_conf item=data}
+                {if $data.can_reserve == 0}
+                    <div class="item gray">{$data.deadline}{$data.deadline_unit_string}/预期年化{$data.rate}%(已预约)</div>
+                {else}
+                    <div class="item JS_item delete_bor" data-projectrisk="{$data.is_check_project_risk}" data-message="{$data.deadline_tag}"><span class="icon_yes fr"></span><span class="qx_con">{$data.deadline}{$data.deadline_unit_string}/预期年化{$data.rate}%</span></div>
+                {/if}
+            {/foreach}
+        </div>
+    </div> -->
+    <div class="pop_yxq_list" id="pop_yxq_list">
+        <div class="ui_title"><a class="ui_back" id="back_but" href="javascript:void(0)"><i class="ui_icon_back"></i></a>选择有效期</div>
+        <div class="p_discount_friend move_now">
+            {foreach from=$reserve_conf item=data}
+                <div class="item JS_item" data-message="{$data.expire_tag}">
+                    <span class="icon_yes fr"></span>
+                    <span class="qx_con">{$data.expire}{$data.expire_unit_string}</span>
+                </div>
+            {/foreach}
+            <div class="sxy_tips">
+                1、预约有效期是指用户提交预约后系统自动进行匹配投资的有效期限，包含3天、5天、7天。<br/>
+                2、有效期内系统会一直进行匹配投资，预约金额全部投资完成本次预约结束，若未达到预约金额系统会一直匹配投资，有效期到期后（不管预约金额是否全部投资成功）本次预约结束。
+            </div>
+        </div>
+    </div>
+    <div class="btn btn2" id="btn">
+        <div class="plr15 mt10">
+            <input type="button" id="JS-pay_btn" class="reservation_btn disabled_btn" value="同意协议并提交预约" disabled="disabled" style="width:100%; margin:0px;" />
+        </div>
+    </div>
+</div>
+<?php echo $this->asset->renderAppJsV2("reserve_v40"); ?>
+<script>
+    //显示返回按钮  or 关闭按钮
+    //如果是从预约成功页面跳过来的显示关闭按钮or显示返回按钮
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+
+    }
+    var isShowClose = getQueryString("isShowClose");
+    if(isShowClose == 1){
+        WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=2");
+    }else{
+        WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+
+    }
+</script>
+</body>
+
+</html>

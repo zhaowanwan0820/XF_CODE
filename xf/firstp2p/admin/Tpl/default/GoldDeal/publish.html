@@ -1,0 +1,132 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+<script type="text/javascript">
+
+</script>
+
+<php>
+    function a_get_deal_type($type,$id)
+    {
+    $deal = M("Deal")->getById($id);
+    if($deal['is_coupon'])
+    return l("COUNT_TYPE_".$deal['deal_type']);
+    else
+    return l("NO_DEAL_COUPON_GEN");
+
+    }
+
+    function get_buy_type_title($buy_type)
+    {
+    return l("DEAL_BUY_TYPE_".$buy_type);
+    }
+
+    function get_is_update($is_update){
+    if($is_update == 1){
+    return '已修改，等待用户确认';
+    }else{
+    return '未修改';
+    }
+    }
+
+</php>
+<div class="main">
+    <div class="main_title">未审核黄金标的</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+       
+        <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="19" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">编号</th>
+            <th>标的名称</th>
+            <th>单次上线克重</th>
+            <th>延期提货补偿率</th>
+            <th>期限</th>
+            <th>黄金及支付补偿方式</th>
+            <th>用户类型</th>
+            <th>运营方ID/姓名/手机号</th>
+            <th>标的售卖状态</th>
+            <th>状态</th>
+            <th>运营方合同签署状态</th>
+            <th style="width:250px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="deal">
+            <tr class="row">
+                <td>
+                    <input type="checkbox" name="key" class="key" value="{$deal.id}"
+                </td>
+                <td>
+                    &nbsp;{$deal.id}
+                </td>
+                <td>
+                    &nbsp;
+                        {$deal.name}
+                    </a>
+                </td>
+                <td>
+                    &nbsp;{$deal.borrowAmount}
+                </td>
+                <td>
+                    &nbsp;{$deal.rate}%
+                </td>
+                <td>
+                    &nbsp;{$deal.repayTime}<if condition="$deal.loantype eq 5">天<else/>个月</if>
+                </td>
+                <td>
+                    &nbsp;<if condition="$deal.loantype eq 5">已购黄金及补偿克重到期一次性交付<else/>已购黄金到期交付，补偿克重按季度交付</if>
+                    <!--{$deal.loantype|get_loantype}-->
+
+                </td>
+                <td>
+                    &nbsp;{$deal.userId|getUserTypeName}
+                </td>
+                <td>
+                    &nbsp;
+                    {$deal['userId']}/
+                     {$listOfBorrower[$deal['userId']]['real_name']} /
+                    {$listOfBorrower[$deal['userId']]|getUserFieldUrl='mobile'}
+                </td>
+                <td>
+                    &nbsp;{$deal.dealStatus|a_get_buy_status=$deal.id}
+                </td>
+                <td>
+                    &nbsp;{$deal.isEffect|get_is_effect=$deal[id]}
+                </td>
+                <td>
+
+                </td>
+
+                <td>
+                    <a href="javascript:edit('{$deal.id}')">审核</a>
+                </td>
+            </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+    function open_coupon_list(id) {
+        window.location.href=ROOT+'?m=CouponLog&a=index&deal_id='+id;
+    }
+</script>
+<include file="Public:footer" />
+

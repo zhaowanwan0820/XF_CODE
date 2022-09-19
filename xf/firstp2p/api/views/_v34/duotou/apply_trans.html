@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>申请转让</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=no">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/p_apply_transfer.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="p_apply_transfer">
+        <div class="has-main">
+            <div class="already_details">
+                <ul class="details_list">
+                    <li><span>转让金额</span><span class="de_num color_black"><span class="color_red">{$data.money}元</span></span></li>
+                    <li><span class="font_13">至今日收益</span><span class="de_num font_13">{function name="number_format" v="$data.norepayInterest" f="2"}元</span></li>
+                    <li><span class="font_13">已获收益</span><span class="de_num font_13">{function name="number_format" v="$data.hasRepayInterest" f="2"}元</span></li>
+                    <li><span>到账时间</span><span class="de_num color_black">最快下一个工作日</span></li>
+                    <li><span class="disinb mrt21">手续费</span><span class="de_num tlr"><span class="color_black disinb mrt13">{function name="number_format" v="$data.mangeFee" f="2"}元&nbsp;</span><span class="tips">(以实际收取为准)</span><span class="disb tips">持有满{$data.feeDays}天免费，已持有<em>{$data.ownDay}</em>天</span></span></li>
+                </ul>
+            </div>     
+            <div class="inv-fbtn">
+                <a href="invest://api?type=transfer&deal_loan_id={$data.dealLoanId}&money={$data.money}" class="ui_red_btn j-errorMsgBtn" {if $errmsg }data-errmsg="{$errmsg}"{/if}>确认申请</a>
+            </div>
+            <div class="point_out">
+                <p>转让不可撤销，本金最快下一个工作日到账</p>
+                <p>利息每月{$data.date}日发放至您的网信账户</p>
+        </div> 
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/duotou/common.js');?>"></script>
+</body>
+</html>

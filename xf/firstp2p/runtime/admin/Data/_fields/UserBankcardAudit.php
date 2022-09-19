@@ -1,0 +1,28 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'bank_id',
+  2 => 'bankcard',
+  3 => 'bankzone',
+  4 => 'user_id',
+  5 => 'status',
+  6 => 'card_name',
+  7 => 'card_type',
+  8 => 'admin',
+  9 => 'create_time',
+  10 => 'audit_time',
+  11 => 'region_lv1',
+  12 => 'region_lv2',
+  13 => 'region_lv3',
+  14 => 'region_lv4',
+  15 => 'user_bank_id',
+  16 => 'image_id',
+  17 => 'description',
+  18 => 'fastpay_cert_status',
+  19 => 'fail_reason',
+  20 => 'auto_audit',
+  21 => 'total_assets',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

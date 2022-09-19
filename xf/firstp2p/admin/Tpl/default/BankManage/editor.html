@@ -1,0 +1,286 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<!-- style -->
+<link href="__ROOT__/static/admin/easyui/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+<link href="__ROOT__/static/admin/easyui/themes/icon.css" rel="stylesheet" type="text/css" />
+<link href="__ROOT__/static/admin/easyui/demo.css" rel="stylesheet" type="text/css" />
+<!-- edn -->
+<!-- js文件 start -->
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.form.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.json-2.3.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/Common/js/bankmanage.js"></script>
+<!--js end  	-->
+<load href='__TMPL__Common/js/deal.js' />
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("BankManage/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+	<form name="edit" id='companyForm' method="post" enctype="multipart/form-data">
+		<input type='hidden' name='id' value='{$vo.id}' id='id'>
+		<table class="form" cellpadding=0 cellspacing=0>
+			<tr>
+				<td colspan=2 class="topTd"></td>
+			</tr>
+		    <tr>
+		        <td class="item_title">银行名称:</td>
+		        <td class="item_input"><input type="text" class="textbox require" name="name" value="{$vo.name}" /></td>
+		    </tr>
+		    <tr>
+		        <td class="item_title">银行logo:</td>
+		        <td class="item_input">
+		        	<input type="file" class="textbox"   id="fileToUpload"  name="fileToUpload"  onchange="upload()">
+		        	<input type='hidden' name='img' id='hidden_previous_id' value='{$vo.img}' class="textbox require"> 
+		        	<span id='img_name'  {if $vo.img}{else}style='display:none;'{/if}><a href='{$vo.imgName}' id='img_href' target='_blank'>{$vo.imgName}</a></span>
+		        </td>
+		    </tr>
+			
+			<tr>
+				<td class="item_title">银行标示:</td>
+				<td class="item_input"><input type="text" class="textbox require" name="value" value="{$vo.value}" /></td>
+			</tr>
+		
+			<tr>
+				<td class="item_title">银行短标示:</td>
+				<td class="item_input"><input type="text" class="textbox require" name="short_name" value="{$vo.short_name}" /></td>
+			</tr>
+			
+			<tr>
+				<td class="item_title">快捷支付方式:</td>
+				<td class="item_input">
+					<select name='payment_id'>
+						<option >请选择支付方式</option>
+						<option value='0' <?php if(intval($vo['payment_id']) === 0){echo 'selected';}?> >无</option>
+					<?php 
+						if(!empty($payment_list)){
+							foreach($payment_list as $key=>$val){
+								$default = $vo['payment_id'] == $val['id'] ? 'selected' : '';
+								echo '<option value="'.$val['id'].'" '.$default.'>'.$val['name'].'</option>';	
+							}
+						}
+					?>
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="item_title">状态:</td>
+				<td class="item_input">
+					<lable><input type="radio" name="status" value="0" <if condition="$vo['status'] eq 0">checked="checked"</if> />有效</lable>
+					<lable><input type="radio" name="status" value="1" <if condition="$vo['status'] eq 1">checked="checked"</if> />无效</lable>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="item_title"></td>
+				<td class="item_input">
+					<input type="submit" class="button" onclick='return checkData()'  value="保存" />
+					<input type="reset" class="button" value="{%RESET}" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 class="bottomTd"></td>
+			</tr>
+			
+			<tr>
+				<td class="item_title">银行限额</td>
+				<td>
+					<div style='margin:20px 0px 50px 10px;float:left;'>
+					    <table id="tt" ></table>
+					</div>
+				</td>
+			</tr>
+			
+		</table>	 
+	</form>
+</div>
+<script>
+//easyui 插件
+$(document).ready(function() { 
+	var lock_form = 0,
+	$sub = $('#companyForm').find("input[type='submit']");
+    //ajaxForm
+    $('#companyForm').ajaxForm({
+        url: '/m.php?m=BankManage&a=saveCharge',
+        dataType:'json',
+        beforeSubmit: function(arr, $form, options) { 
+        	//加锁处理防止表单 多次请求服务器提交
+        	$sub.attr("disabled","disabled");
+        },
+        success: function(data) {
+        	lock_form = 1;
+           	if(data.code == '0000') {
+           		//$sub.removeAttr("disabled");
+           		alert('保存成功!');
+               	window.location.href="/m.php?m=BankManage&a=editor&id="+data.message;
+               	window.reload();
+           	}else{
+           		alert(data.message);
+           	}
+        } 
+    });  
+    var charge_id = $('#id').val();
+    var tips = charge_id ? '' : '(<font style="color:red;">填写银行限额前，请先提交上述银行信息</font>)'; 
+    //datagrid
+    $('#tt').datagrid({
+        title:'银行限额'+tips,
+        iconCls:'icon-edit',
+        url:'/m.php?m=BankManage&a=getAuxiliary&charge_id='+charge_id,
+        width:980,
+        height:'auto', 
+        idField:'id',
+        sortName: 'id',
+        sortOrder: 'asc',
+        remoteSort: true,
+        columns:[[ 
+                {field:'category',title:'客户类型',width:190,sortable:true,editor:'text'},
+                {field:'card_type',title:'卡种',width:220,sortable:true,editor:'text'},
+                {field:'one_money',title:'单笔限额(元)',width:210,sortable:true,editor:'text'},
+                {field:'date_norm',title:'每日限额(元)',width:210,sortable:true,editor:'text'},
+                {field:'edit',title:'操作',width:100,align:'center',sortable:false,formatter:function(value,row,index){
+                        if(!row.id) {
+                            row.id = 99999999;
+                        }               
+                        //按钮点击操作                
+                        if (row.editing){                           
+                            var s = '<a href="#tt" onclick="saverow('+index+')">保存</a> ';
+                            var c = '<a href="#tt" onclick="cancelrow('+index+')">取消</a>';
+                            return s+c;
+                        } else {                        
+                            var e = '<a href="#tt" onclick="editrow('+index+')">修改</a> ';
+                            var d = '<a href="#tt" onclick="deleterow('+index+')">删除</a>';
+                            return e+d;
+                        }                   
+                }}          
+        ]],
+        onBeforeEdit:function(index,row){
+            row.editing = true;
+            $('#tt').datagrid('refreshRow', index);
+            editcount++;
+        },
+        onAfterEdit:function(index,row){
+            row.editing = false;
+            $('#tt').datagrid('refreshRow', index);
+            editcount--;
+        },
+        onCancelEdit:function(index,row){
+            row.editing = false;
+            $('#tt').datagrid('refreshRow', index);
+            editcount--;
+        },
+        //工具栏
+        toolbar:[               
+            {
+	            text:'增加',
+	            iconCls:'icon-add',
+	            handler:addrow
+        	}
+        ]
+    }).datagrid('acceptChanges');
+}); 
+var editcount = 0;  //记录行数
+//添加一行
+function addrow(){
+  if (editcount > 0){
+      $.messager.alert('警告','当前还有'+editcount+'记录正在编辑，不能增加记录。');
+      return;
+  }
+  $('#tt').datagrid('appendRow',{
+	  	category:'',
+	  	card_type:'',
+        one_money:'',
+        date_norm:'',
+  });
+  var lastIndex = $('#tt').datagrid('getRows').length - 1;
+  $('#tt').datagrid('selectRow', lastIndex);
+  $('#tt').datagrid('beginEdit', lastIndex);
+}
+
+//开始编辑
+function editrow(index){    
+    $('#tt').datagrid('beginEdit', index);
+}
+//取消编辑
+function cancelrow(index){
+    $('#tt').datagrid('cancelEdit', index);
+    $('#tt').datagrid('reload');
+}
+
+/**
+* 编辑表格 提交数据处理
+*/
+function saverow(index){
+    $('#tt').datagrid('endEdit', index);
+    _do_au(index,'1');
+}
+
+//更新数据
+function _do_au(index,type){
+    var type = type || '1'; 
+    var row  = get_row_by_index(index); 
+    if(row ){
+        row.charge_id = $('#id').val();
+        if(row.charge_id) {
+            var saveData = $.toJSON(row);
+            $.ajax({
+                    type: "POST",
+                    url: "/m.php?m=BankManage&a=saveData",           
+                    data:{data:saveData,r:Math.random()},  
+                    dataType:"json",
+                    success: function(msg){
+                        if(msg.code == '0000') {
+                           $('#tt').datagrid('reload');  
+                        }else{
+                            alert(msg.message);
+                            $('#tt').datagrid('reload');
+                        }
+                   }
+            });
+        }else {
+            alert('请先添加银行信息!');
+            $('#tt').datagrid('reload');
+        }
+    }
+}
+
+//获取指定行内的数据
+function get_row_by_index(index){
+    var obj  = '';
+    var rows = $('#tt').datagrid('getRows');
+    $.each(rows,function(k,v){
+        if($('#tt').datagrid('getRowIndex',v) == index){
+            obj = v;
+            return false
+        }
+    })
+    return obj;
+}
+ 
+//删除
+function deleterow(index) {
+    var row  = get_row_by_index(index); 
+    if(confirm('确认删除?')) {
+    	if(row.id) {
+    		   $.ajax({
+                   type: "POST",
+                   url: "/m.php?m=BankManage&a=delChargeAuxiliary",
+                   data: "id="+row.id,
+                   dataType:"json",
+                   success: function(msg){
+                        if (msg.code == '0000'){
+                            $('#tt').datagrid('deleteRow', index);
+                            $('#tt').datagrid('reload');
+                        }else{
+                            alert(msg.message);
+                        }                               
+                   }
+           });
+    	}else{
+    		alert('参数id丢失');
+    		return false;
+    	}
+    }
+}
+</script>
+<include file="Public:footer" />

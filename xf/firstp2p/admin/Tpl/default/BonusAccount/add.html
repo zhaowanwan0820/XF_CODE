@@ -1,0 +1,76 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+    <div class="main_title">新增 <a href="{:u("BonusAccount/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_TITLE}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="title" value="{$vo.title}"/>
+                    &emsp;
+                    <span class="tip_span">配置文字说明</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包规则类型</td>
+                <td class="item_input">
+                    <select name="task_type" class='require'>
+                        <foreach name="taskTypes" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">规则id</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="task_id" value="{$vo.task_id}"/>
+                    &emsp;
+                    <span class="tip_span">对应的任务或者规则id</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_VALUE}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="account_id" value="{$vo.account_id}"/>
+                    &emsp;
+                    <span class="tip_span">账户id</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_TIP}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="tips" value="{$vo.tips}"/>
+                    &emsp;
+                    <span class="tip_span">可空</span>
+                </td>
+            </tr>
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusAccount" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="submit" class="button" value="{%ADD}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<include file="Public:footer" />

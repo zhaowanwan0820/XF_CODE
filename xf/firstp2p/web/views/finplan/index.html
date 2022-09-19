@@ -1,0 +1,100 @@
+{include file="web/views/header.html"}
+<script>
+var Duotou = true;
+</script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/investment_view_web2.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/duotou/p-finplan.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/widget/cookie/cookie.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/duotou/investment_view.js');?>"></script>
+<script>
+    var userInfo = {if $user_info}1{else}0{/if};
+</script>
+<div class="box p_finplan">
+    <section>
+        <div class="touzi_top clearfix">
+            <div class="tztop_left fl">
+                <div class="title_box">
+                    <h1 class="pr30"><span><em {if $deal.show_tips eq 1}title='{$deal.name}'{/if} class="tit">{function name="msubstr" v=$deal.name f=0 l=20}</em><em class="f14 pl15">编号: {$deal.id}
+                    {if isset($deal.tagBeforeName) && $deal.tagBeforeName != ''}
+                    <span class="icon_new" title="{$deal.tagBeforeDesc}">{$deal.tagBeforeName}</span>
+                    {/if}
+                    {if isset($deal.tagAfterName) && $deal.tagAfterName != ''}
+                    <span class="icon_new" title="{$deal.tagAfterDesc}">{$deal.tagAfterName}</span>
+                    {/if}
+                    </em></span><span class="w1"></span></h1>
+                </div>
+                <div class="tz_lilv fl">
+                    <dl class="clearfix">
+                        <dt>年化收益率：</dt>
+                        <dd> {function name="get_num_pic" v="$deal.rate_year" f="1"}<i class="ico_percent" alt="%"></i> </dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>每万元每日收益：</dt>
+                        <dd class="f14">
+                            <span>
+                                {$deal.earning_day}元
+                            </span>
+                        </dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>保障方式：</dt>
+                        <dd>
+                            <span class="f14">担保本息</span>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="tz_jine fl">
+                    <dl class="clearfix">
+                        <dt>已加入人次：</dt>
+                        <dd><span class="f14">{$deal.buyCount}人</span></dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>管理费：</dt>
+                        <dd><span class="f14">{if $deal.projectInfo.feeDays gt 0 && $deal.projectInfo.feeRate gt 0}年化{function name="number_format" v="$deal.projectInfo.feeRate" f="2"}%（持有满{$deal.projectInfo.feeDays}天免费）<i class="ico_sigh" title='管理费={function name="number_format" v="$deal.projectInfo.feeRate" f="2"}% *投资金额*实际持有天数 /360。实际持有天数=到帐日-计息日。持有满{$deal.projectInfo.feeDays}天免费'></i>{else}免费{/if}</span></dd>
+                    </dl>
+                </div>
+            </div>
+            <form id="computeForm" action="/finplan/bid/{$deal.id}" method="post" {if $user_info}data-login="1"{/if}>
+                <div class="tztop_right fr">
+                    <h2>
+                    <span class="text f14">账户余额：</span>{if $user_info}<span class="f18 color-yellow1" >{function name="number_format" v="$total_money" f="2"}</span>
+                    <span class="yellwo">元</span>
+                    {if $bonus gt 0}
+                    <i class="ico_sigh j_tooltip_top" title="现金余额：{function name="number_format" v="$user_info.money" f="2"}元 红包余额：{function name="number_format" v="$bonus" f="2"}元" ></i>
+                    {/if}
+                    <span class="f14"><a href="/account/charge" target="_blank">充值</a></span>
+                    {else}
+                    <span class="f14"><a href="{url x="index" r="user/login"}">登录后可见</a></span>
+                    {/if}
+                </h2>
+                    <p class="text">投资金额：
+                        {if $deal.isFull}
+                        <input type="text" name="money" value="0" class="text_box" disabled>
+                        {else}
+                        <input type="text" name="money" class="text_box" id="invest_input" data-min="{$deal.min_loan_money}" data-money="{$total_money}" autocomplete="off" data-max="{$deal.maxLoan}" data-age_check="{$age_check}" data-age_min="{$age_min}" value="{$deal.min_loan_money}" data-perpent="{$deal.rate_year}%" data-unit="{$deal.unit_loan_money}" data-accountmax="{$deal.projectInfo.accountMaxLoanMoney}"/> &nbsp;&nbsp;元 </p>
+                    {/if}
+                    <p>
+                        {if $deal.isFull}
+                        <button type="submit" class="button_touzi but-disabled" disabled="disabled">投资</button>
+                        {else}
+                        <button type="submit" class="button_touzi">投资</button>
+                        {/if}
+                    </p>
+                    <div class="shouyi "> <i class="ico_braces_l"></i>
+                        <span class="color-gray">每日收益：</span>
+                        <em id="income">0.00</em>元&nbsp;&nbsp;
+                        <span class="fceng color-red1 none" id="invest_tip"></span>
+                    </div>
+            </form>
+            </div>
+    </section>
+    <section>
+        <div class="main clearfix">
+            <div class="box_title"><i class="danbao"></i>产品介绍</div>
+            <div class="con_width">
+                {$deal.projectInfo.description}
+            </div>
+        </div>
+    </section>
+    </div>
+{include file="web/views/footer.html"}

@@ -1,0 +1,265 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<style type="text/css">
+    .fLeft{ float:left;}
+    .cBoth{clear:both}
+    .hMargin{margin-left:3px; margin-right:3px}
+    .vMargin{margin-top:3px; margin-bottom:3px}
+    #execSql{ font-size:12px; height:198px; width:450px; font-family:verdana,arial;}
+    #tableName{ font-size:12px; height:200px; font-family:verdana,arial;}
+</style>
+<script language="JavaScript">
+    <!--
+    function add_user() {
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=add_user",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('user_id').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+                location.reload();
+            }
+        });
+    }
+    function query_user(){
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=query_user",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('user_id').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+            }
+        });
+    }
+    function delete_user(){
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete_user",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('user_id').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+                location.reload();
+            }
+        });
+    }
+    //-->
+
+    <!--
+    function add_concurrency() {
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=add_concurrency",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('concurrency').value)+'&value='+encodeURIComponent(document.getElementById('concurrency_count').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+                location.reload();
+            }
+        });
+    }
+    function query_concurrency(){
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=query_concurrency",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('concurrency').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+            }
+        });
+    }
+    function delete_concurrency(){
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete_concurrency",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('concurrency').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+                location.reload();
+            }
+        });
+    }
+    //-->
+
+    <!--
+    function add_frequency() {
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=add_frequency",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('frequency').value)+'&value='+encodeURIComponent(document.getElementById('frequency_count').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+                location.reload();
+            }
+        });
+    }
+    function query_frequency(){
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=query_frequency",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('frequency').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+            }
+        });
+    }
+    function delete_frequency(){
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete_frequency",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('frequency').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+                location.reload();
+            }
+        });
+    }
+    //-->
+
+</script>
+<!-- 菜单区域  -->
+
+<!-- 主页面开始 -->
+<div id="main" class="main" >
+    <!-- 主体内容  -->
+    <div class="blank5"></div>
+    <!--  功能操作区域  -->
+    <div class="cBoth">
+        <div class="main_title">受限用户列表</div>
+        <div class="blank5"></div>
+        <!-- SQL执行器 -->
+        <form method=post action="" name="form1">
+            <fieldset id="querybox" >
+                <legend style="color:gray">用户查询
+                    <div class="fLeft"></div>
+                    用户ID:<input type="text" name="user_id" id="user_id" style="width:300px;" />
+                </legend>
+                <div class="cBoth vMargin" >
+                    <html:imageBtn name="button" value="查询"  click="query_user()" style="impBtn hMargin fLeft shadow" />
+                    <html:imageBtn name="button" value="添加"  click="add_user()" style="impBtn hMargin fLeft shadow" />
+                    <html:imageBtn name="button" value="删除"  click="delete_user()" style="impBtn hMargin fLeft shadow" />
+                </div>
+            </fieldset>
+        </form>
+
+        <!--用户列表.start-->
+        <div class="blank5"></div>
+        <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+            <tr class="row" >
+                <th width="50">用户ID</th>
+                <th width="200">用户名</th>
+                <th width="100">姓名</th>
+                <th></th>
+            </tr>
+            <?php foreach($userIds as $id) { ?>
+            <tr class="row orders">
+                <td><?php echo $id; ?></td>
+                <td><a href="?m=User&a=index&user_id=<?php echo $id; ?>" target="_blank"><?php echo $userData[$id]['user_name']; ?></a></td>
+                <td><?php echo $userData[$id]['real_name']; ?></td>
+                <td></td>
+            </tr>
+            <?php } //end foreach ?>
+        </table>
+        <div class="blank5"></div>
+        <!---用户列表.end-->
+
+        <div class="main_title">并发限制规则列表</div>
+        <div class="blank5"></div>
+        <form method=post action="" name="form2">
+            <fieldset id="querybox" >
+                <legend style="color:gray">并发规则限制
+                    <div class="fLeft"></div>
+                    限制并发访问的接口:<input type="text" name="concurrency" id="concurrency" placeholder="example: /account/summary" style="width:300px;" />
+                </legend>
+                <div class="cBoth"></div>
+                <div id="dbSql" class="cBoth vMargin">
+                    <div class="fLeft">并发访问数量:<br>
+                        <input type="text" id="concurrency_count" name="concurrency_count" style="width:300px;" />
+
+                    </div>
+                    <div id="dbSql" >
+                        <div class="fLeft" style="width:65px">
+                        </div>
+                    </div>
+                </div>
+                <br class="cBoth">
+                <div class="cBoth vMargin" >
+                    <html:imageBtn name="button" value="查询"  click="query_concurrency()" style="impBtn hMargin fLeft shadow" />
+                    <html:imageBtn name="button" value="添加"  click="add_concurrency()" style="impBtn hMargin fLeft shadow" />
+                    <html:imageBtn name="button" value="删除"  click="delete_concurrency()" style="impBtn hMargin fLeft shadow" />
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="blank5"></div>
+        <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+            <tr class="row" >
+                <th width="200">规则</th>
+                <th width="100">数量</th>
+                <th></th>
+            </tr>
+            <?php foreach($concurrencyRules as $key => $value) { ?>
+            <tr class="row orders">
+                <td><?php echo $key; ?></td>
+                <td><?php echo $value; ?></td>
+                <td></td>
+            </tr>
+            <?php } //end foreach ?>
+        </table>
+        <div class="blank5"></div>
+
+        <div class="main_title">频率限制规则列表</div>
+        <div class="blank5"></div>
+        <form method=post action="" name="form3">
+            <fieldset id="querybox" >
+                <legend style="color:gray">频率限制
+                    <div class="fLeft"></div>
+                    限制访问频率的接口:<input type="text" name="frequency" id="frequency" style="width:300px;" placeholder="example: /deals"/>
+                </legend>
+                <div class="cBoth"></div>
+                <div id="dbSql" class="cBoth vMargin">
+                    <div class="fLeft">1min中访问次数:<br>
+                        <input type="text" id="frequency_count" name="frequency_count" style="width:300px;" />
+                    </div>
+                    <div id="dbSql" >
+                        <div class="fLeft" style="width:65px">
+                        </div>
+                    </div>
+                </div>
+                <br class="cBoth">
+                <div class="cBoth vMargin" >
+                    <html:imageBtn name="button" value="查询"  click="query_frequency()" style="impBtn hMargin fLeft shadow" />
+                    <html:imageBtn name="button" value="添加"  click="add_frequency()" style="impBtn hMargin fLeft shadow" />
+                    <html:imageBtn name="button" value="删除"  click="delete_frequency()" style="impBtn hMargin fLeft shadow" />
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="blank5"></div>
+        <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+            <tr class="row" >
+                <th width="200">规则</th>
+                <th width="100">数量</th>
+                <th></th>
+            </tr>
+            <?php foreach($frequencyRules as $key => $value) { ?>
+            <tr class="row orders">
+                <td><?php echo $key; ?></td>
+                <td><?php echo $value; ?></td>
+                <td></td>
+            </tr>
+            <?php } //end foreach ?>
+        </table>
+        <div class="blank5"></div>
+
+    </div>
+    <!-- 列表显示区域结束 -->
+
+    <!-- 主体内容结束 -->
+</div>
+<!-- 主页面结束 -->
+<script language="JavaScript">
+    <!--
+    if ({$Think.get.run|default=0})    runSql();
+    //-->
+</script>
+<include file="Public:footer" />

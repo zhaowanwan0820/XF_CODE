@@ -1,0 +1,75 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script>
+function useredit(id){
+	window.location.href = ROOT +'?m=User&a=edit&id='+id;
+}
+</script>
+<php>
+	function get_user_group($group_id)
+	{
+		$group_name = M("UserGroup")->where("id=".$group_id)->getField("name");
+		if($group_name)
+		{
+			return $group_name;
+		}
+		else
+		{
+			return l("NO_GROUP");
+		}
+	}
+	function lock_money_func($money,$id){
+		return "<a href='javascript:eidt_lock_money(".$id.");'>".format_price($money)."</a>";
+	}
+    function money_func($money,$user_id){
+        return "<a href='/m.php?m=MoneyApply&a=add&user_id=".$user_id."'>".format_price($money)."</a>";
+    }
+</php>
+<div class="main">
+<div class="blank5"></div>
+<div class="button_row">
+</div>
+
+<div class="blank5"></div>
+<div class="search_row">
+	<form name="search" action="__APP__" method="get">	
+		{%USER_NAME}：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" style="width:100px;" />
+		会员编号：<input type="text" class="textbox" name="user_num" value="{:trim($_REQUEST['user_num'])}" style="width:100px;" />
+		姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" style="width:100px;" />
+		{%USER_EMAIL}：<input type="text" class="textbox" name="email" value="{:trim($_REQUEST['email'])}" style="width:100px;" />
+		{%USER_MOBILE}：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:100px;" />
+		{%REFERRALS_NAME}：<input type="text" class="textbox" name="pid_name" value="{:trim($_REQUEST['pid_name'])}" style="width:100px;" />
+		{%USER_GROUP}: 
+		<select name="group_id">
+				<option value="0" <if condition="intval($_REQUEST['group_id']) eq 0">selected="selected"</if>>{%ALL}</option>
+				<foreach name="group_list" item="group_item">
+					<option value="{$group_item.id}" <if condition="intval($_REQUEST['group_id']) eq $group_item['id']">selected="selected"</if>>{$group_item.name}</option>
+				</foreach>
+		</select>
+		
+		<input type="hidden" value="MoneyApply" name="m" />
+		<input type="hidden" value="addlist" name="a" />
+		<input type="submit" class="button" value="{%SEARCH}" />
+		<input type="button" class="button" value="{%EXPORT}" onclick="export_csv();" />
+	</form>
+</div>
+<div class="blank5"></div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="user" 
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|50px,user_name:{%USER_NAME}:useredit,real_name:姓名,id|numTo32:会员编号,email:{%USER_EMAIL},mobile:{%USER_MOBILE},money|money_func=$user['id']:{%USER_MONEY},lock_money|lock_money_func=$user['id']:{%USER_LOCK_MONEY},is_effect|get_is_effect=$user['id']:{%IS_EFFECT}"
+	actionlist="" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file='web/views/hongbao/shareLogo.html'}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/monkey_bonus.css', 1);?>" rel="stylesheet" type="text/css">
+</head>
+<body>
+   	<div class="main">
+    	<div class="top_bg"></div>
+        <div class="con view-main">
+            <div class="aa_con">
+                <h2 class="aa_amount">￥<em class="f52">{$bonusDetail.money}</em></h2>
+                <p class="color_white f15 pt5">有效期至：{function name='format_date' v=$bonusDetail.expired_at f="Y年m月d日H:i"}</p>
+                <!--<p class="aa_account">红包已存入<em class="color_yellow">{$mobile}</em>的账户 <a href="#" class="color_blue">更改 ></a></p>-->
+                <a href="http://<?=APP_HOST ?>/user/register?type=h5{$cn_and_source}" class="down_btn"><i class="tel_icon"></i>注册网信</a>
+    <!--            <span class="invite_btn f15">邀好友一起抢>></span>-->
+            </div>
+            <div class="aa_link tc">
+                <a href="###" class="p2p_logo"></a>
+                <!--<a href="###" class="hz_logo"></a>-->
+            </div>
+      	</div>
+    </div>
+    <div class="mark"></div>
+    <div class="pop_icon"></div>
+ <script type="text/javascript">
+   function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+	$('.invite_btn').click(function(){
+		$('.mark,.pop_icon').addClass('dis_block');
+	})
+	$('.mark,.pop_icon').click(function(){
+		$('.mark,.pop_icon').removeClass('dis_block');
+	})
+</script>
+</body>
+</html>

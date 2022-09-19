@@ -1,0 +1,74 @@
+<!-- $Id: privilege_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">
+  <form action="javascript:search()" name="searchForm">
+    &nbsp;&nbsp;&nbsp;用户名：<input type="text" name="user_name" size="25" />
+    <button type="submit" class="btn">{$lang.button_search}</button>
+  </form>
+</div>
+<script>
+    function search() {
+        listTable.filter['user_name'] = Utils.trim(document.forms['searchForm'].elements['user_name'].value);
+        listTable.filter['page'] = 1;
+
+        listTable.loadList();
+    }
+</script>
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellspacing='1' cellpadding='3' id='list-table'>
+  <tr>
+    {if $admin_type == 0}
+    <th>管理员类型</th>
+    {/if}
+    <th>{$lang.user_name}</th>
+    <th>角色</th>
+    {if $admin_type == 0}
+    <th>商家</th>
+    {/if}
+    <th>{$lang.email}</th>
+    <th>{$lang.join_time}</th>
+    <th>{$lang.last_time}</th>
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$admin_list item=list}
+  <tr>
+    {if $admin_type == 0}
+    <td class="first-cell" >{$list.type_name}</td>
+    {/if}
+    <td class="first-cell" >{$list.user_name}</td>
+    <td class="first-cell" >{$list.role_name}</td>
+    {if $admin_type == 0}
+    <td class="first-cell" >{$list.suppliers_name}</td>
+    {/if}
+    <td align="left">{$list.email}</td>
+    <td align="center">{$list.add_time}</td>
+    <td align="center">{$list.last_login|default:N/A}</td>
+    <td align="center">
+      {if $admin_type == 0}
+      <!--<a href="privilege.php?act=allot&id={$list.user_id}&user={$list.user_name}" title="{$lang.allot_priv}">{$lang.allot_priv}</a>&nbsp;-->
+      {/if}
+      <a href="admin_logs.php?act=list&id={$list.user_id}" title="{$lang.view_log}">{$lang.view_log}</a>&nbsp;
+      <a href="privilege.php?act=edit&id={$list.user_id}" title="{$lang.edit}">{$lang.edit}</a>&nbsp;
+      <a href="javascript:;" onclick="listTable.remove({$list.user_id}, '{$lang.drop_confirm}')" title="{$lang.remove}">{$lang.remove}</a></td>
+  </tr>
+  {/foreach}
+</table>
+
+{if $full_page}
+</div>
+<script type="text/javascript" language="JavaScript">
+  {literal}
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+  {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

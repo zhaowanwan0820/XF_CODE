@@ -1,0 +1,50 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<php>
+    function get_source_name($key)
+    {
+        switch($key){
+            case 'sina':
+                return '新浪-基金';
+            case 'alipay':
+                return '余额宝';
+            default:
+                return '其它';
+        }
+    }
+    function get_time($time)
+    {
+        return date('Y-m-d H;i:s',$time);
+    }
+</php>
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="search_row">
+	<form name="search" action="__APP__" method="get">	
+		利率时间：                
+            <input type="text" class="textbox <if condition="$vo['deal_status'] eq 4">require</if>" name="ratetime" id="ratetime" value="{$ratetime}" onfocus="this.blur(); return showCalendar('ratetime', '%Y-%m-%d', false, false, 'btn_ratetime');" />
+            <input type="button" class="button" id="btn_ratetime" value="{%SELECT_TIME}" onclick="return showCalendar('ratetime', '%Y-%m-%d', false, false, 'btn_ratetime');" />
+		<input type="hidden" value="CrawlerRate" name="m" />
+		<input type="hidden" value="index" name="a" />
+		<input type="submit" class="button" value="{%SEARCH}" />
+	</form>
+</div>
+<div class="blank5"></div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="crawlerRate" 
+	datasource="list" 
+	show="id:{%ID}|50px,point:利率(%),source|get_source_name:数据来源,ratetime:利率时间,updatetime|get_time:抓取时间" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

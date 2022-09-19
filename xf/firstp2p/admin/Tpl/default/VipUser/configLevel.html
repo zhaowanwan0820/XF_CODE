@@ -1,0 +1,70 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<style>
+    .vip_title_row{ font-size:14px;padding:10px 0px;;}
+    .vip_row{ font-size:12px; font-weight:bold; padding:10px 0px; }
+    .img_title_row {float:left;height:48px;line-height: 48px;}
+    .item_title {text-align:center;}
+</style>
+<script type="text/javascript">
+    var IMAGE_SIZE_LIMIT = '0.5';
+</script>
+<div class="main">
+    <div class="main_title">会员等级奖励配置</div>
+    <div class="blank5"></div>
+    <form id="formData" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <foreach name="vipLevels" key="vipLevel" item="vipData">
+                <tr>
+                    <input type="hidden" name="vipConfig[{$vipLevel}][vipGrade]" value="{$vipData.vipGrade}" />
+                    <input type="hidden" name="vipConfig[{$vipLevel}][name]" value="{$vipData.name}" />
+                    <td class="item_title">{$vipData.name}</td>
+                    <td class="item_input">
+                        <div>
+                            <div class="vip_row">
+                                <span>最低经验值</span>
+                                <input type="text" class="textbox" name="vipConfig[{$vipLevel}][minInvest]" value="{$vipData.minInvest}" placeholder="请输入最小投资额"/>
+                                <span>价值（单位元）</span>
+                                <input type="text" class="textbox" name="vipConfig[{$vipLevel}][giftValue]" value="{$vipData.giftValue}" placeholder="请输入价值"/>
+                            </div>
+                            <div class="vip_row">
+                                <span>等级特权</span>
+                                <foreach name="vipLevelPrivileges" key="privilegeKey" item="privilegeItem">
+                                    <input type="checkbox" class="textbox" name="vipConfig[{$vipLevel}][privilege][]" value="{$privilegeKey}" <if condition="in_array($privilegeKey, $vipData['privilege'])">checked</if>/>{$privilegeItem.name}
+                                </foreach>
+                            </div>
+                            <div class="vip_row">
+                                <span>加息利率</span>
+                                <input type="text" class="textbox" name="vipConfig[{$vipLevel}][raiseInterest]" value="{$vipData.raiseInterest}" placeholder="请输入加息利率"/>
+                            </div>
+                            <div class="vip_row">
+                                <span class="img_title_row">等级图片</span>
+                                <html:imgUpload name="vipConfig[{$vipLevel}][imgUrl]" id="img_gray_{$vipLevel}" value="$vipData.imgUrl" />
+                                <span class="tip_span">图片不超过500K</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </foreach>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="VipUser" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveLevelConfig" />
+                    <!--隐藏元素-->
+                    <input id="submitBut" type="submit" class="button" value="{%SAVE}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+    $(function(){
+    });
+</script>
+<include file="Public:footer" />

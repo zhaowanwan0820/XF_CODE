@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>2018年度账单</title>
+    <script src="<?php echo $this->asset->makeUrl('/activity/growth2018/js/flexible.js')?>"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/activity/growth2018/css/swiper.min.css')?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/activity/growth2018/css/animate.min.css')?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/activity/growth2018/css/growth2018.css')?>">
+</head>
+
+<body>
+    {include file="web/views/user/share.html"}
+    <img id="bg" style="display:none;" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/loading.png')?>" alt="">
+    <img id="img" style="display:none;" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/progressBar.jpg')?>" alt="">
+    <div class="loading" id="loading">
+        <canvas id="loadCanvas" width="300" height="300"></canvas>
+    </div>
+    {if $isInvestor}
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide one-slide">
+                <img class="slide_bg slide_spe_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_bg.png')?>" alt="">
+                <div class="star">
+                    <img class="slide1_star1" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_star.png')?>" alt="">
+                    <img class="slide1_star2" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_star.png')?>" alt="">
+                    <img class="slide1_star3" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_star.png')?>" alt="">
+                    <img class="slide1_star4" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_star.png')?>" alt="">
+                    <img class="slide1_star5" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_star.png')?>" alt="">
+                </div>
+                <div class="coin">
+                    <img class="slide1_coin1" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_coin1.png')?>" alt="">
+                    <img class="slide1_coin2" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_coin2.png')?>" alt="">
+                    <img class="slide1_coin3" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_coin3.png')?>" alt="">
+                </div>
+                <div class="slide1_data">
+                    <img class="slide1_text1" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide1_text1.png')?>" alt="">
+                    <span class="slide1_text2"><span>{$user_growth.total_days}</span>天</span>
+                </div>
+                <div class="slide1_text">
+                    <span>*注：仅包含网贷产品和尊享产品相关数据</span>
+                </div>
+            </div>
+            <div class="swiper-slide two-slide">
+                <img class="slide_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide2_bg.png')?>" alt="">
+                <div class="paper">
+                    <div class="show1" style="display:none;">
+                        <img class="slide_data" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide_data.png')?>" alt="">
+                        <div class="slide_text">
+                            <div class="slide_text1">2018年的第一笔投资</div>
+                            <div class="slide_text2 blue"><span>{$user_growth.first_bid_money}</span>元</div>
+                            {if $user_growth.first_bid_time neq 0}
+                            <div class="slide_text3">{$user_growth.first_bid_time}</div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide three-slide">
+                <img class="slide_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide3_bg.png')?>" alt="">
+                <div class="paper">
+                    <div class="show2" style="display:none;">
+                        <img class="slide_data" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide_data.png')?>" alt="">
+                        <div class="slide_text">
+                            <div class="slide_text1">2018年最大的一笔投资</div>
+                            <div class="slide_text2 blue"><span>{$user_growth.max_bid_money}</span>元</div>
+                            {if $user_growth.max_bid_time neq 0}
+                            <div class="slide_text3">{$user_growth.max_bid_time}</div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide four-slide">
+                <img class="slide_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide4_bg.png')?>" alt="">
+                <div class="paper">
+                    <div class="show3" style="display:none;">
+                        <img class="slide_data" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide_data.png')?>" alt="">
+                        <div class="slide_text">
+                            <div class="slide_text1">2018年最大的一笔收益</div>
+                            <div class="slide_text2 blue"><span>{$user_growth.max_income_money}</span>元</div>
+                            {if $user_growth.max_income_time neq 0}
+                            <div class="slide_text3">{$user_growth.max_income_time}</div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide five-slide">
+                <img class="slide_bg slide5_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide5_bg.png')?>" alt="">
+                <div class="slide5_text blue"><span>{$user_growth.times_bid}</span>笔</div>
+            </div>
+            <div class="swiper-slide six-slide">
+                <img class="slide_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide6_bg.png')?>" alt="">
+                <div class="slide6_text blue"><span>{$user_growth.total_bid_money}</span>元</div>
+                <div class="slide6_text2">年化投资额<span>{$user_growth.annualized_bid_money}</span>元</div>
+            </div>
+            <div class="swiper-slide seven-slide">
+                <img class="slide_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide7_bg.png')?>" alt="">
+                <div class="slide7_money moneybox" id="leafContainer"></div>
+                <div class="slide7_text blue"><span>{$user_growth.total_income}</span>元</div>
+            </div>
+            <div class="swiper-slide eight-slide">
+                <img class="slide_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/slide8_bg.png')?>" alt="">
+                <div class="slide8_text">{$user_growth.candy}个</div>
+            </div>
+            <div class="swiper-slide nine-slide">
+                {if $user_growth.level eq 1}
+                <img class="slide_bg share_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/0.jpg')?>" alt="">
+                {elseif $user_growth.level eq 2}
+                <img class="slide_bg share_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/1.jpg')?>" alt="">
+                {elseif $user_growth.level eq 3}
+                <img class="slide_bg share_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/2.jpg')?>" alt="">
+                {elseif $user_growth.level eq 4}
+                <img class="slide_bg share_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/3.jpg')?>" alt="">
+                {elseif $user_growth.level eq 5}
+                <img class="slide_bg share_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/4.jpg')?>" alt="">
+                {elseif $user_growth.level eq 6}
+                <img class="slide_bg share_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/5.jpg')?>" alt="">
+                {elseif $user_growth.level eq 7}
+                <img class="slide_bg share_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/6.jpg')?>" alt="">
+                {/if}
+                <div class="share_btn"></div>
+            </div>
+        </div>
+        <div class="top_btn">
+            <span class="top_btn1"></span>
+            <span class="top_btn2"></span>
+        </div>
+    </div>
+    {else}
+    <div class="not_user">
+        <img  class="slide_bg not_user_bg"  src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/not_user.png')?>" alt="">
+        <a class="see_onemore"></a>
+        <span class="erweima"></span>
+    </div>
+    {/if}
+
+    <script src="<?php echo $this->asset->makeUrl('/activity/growth2018/js/swiper.min.js')?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('/activity/growth2018/js/swiper.animate.min.js')?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('/activity/growth2018/js/jquery-2.0.3.js')?>"></script>
+    <script>
+         var day = "{$user_growth.total_days}";
+        var level = "{$user_growth.level}";
+        var isInvestor = "{$isInvestor}";
+        var WXP2P = {};
+        var is_App = (function () {
+          return /wx/i.test(navigator.userAgent);
+        })();
+        WXP2P.triggerScheme = function(scheme) {
+            var iframe = document.createElement("iframe");
+            iframe.src= scheme;
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+        };
+
+        if (!is_App) {
+            if(level == 1){
+              $(".share_bg").attr('src',"<?php echo $this->asset->makeUrl('/activity/growth2018/images/18bill_0.jpg');?>")
+            }else if(level == 2){
+              $(".share_bg").attr('src',"<?php echo $this->asset->makeUrl('/activity/growth2018/images/18bill_1.jpg');?>")
+            }else if(level == 3){
+              $(".share_bg").attr('src',"<?php echo $this->asset->makeUrl('/activity/growth2018/images/18bill_2.jpg');?>")
+            }else if(level == 4){
+              $(".share_bg").attr('src',"<?php echo $this->asset->makeUrl('/activity/growth2018/images/18bill_3.jpg');?>")
+            }else if(level == 5){
+              $(".share_bg").attr('src',"<?php echo $this->asset->makeUrl('/activity/growth2018/images/18bill_4.jpg');?>")
+            }else if(level == 6){
+              $(".share_bg").attr('src',"<?php echo $this->asset->makeUrl('/activity/growth2018/images/18bill_5.jpg');?>")
+            }else if(level == 7){
+              $(".share_bg").attr('src',"<?php echo $this->asset->makeUrl('/activity/growth2018/images/18bill_6.jpg');?>")
+            }
+          $('.share_btn').addClass('wx_save_btn');
+          $('.see_onemore').attr('href','https://m.ncfwx.com/');
+        }else{
+          $(".share_btn").click(function () {
+            var img_num = level - 1;
+            var img_url = "https://event.ncfwx.com/upload/image/20181220/11-03-18bill_"+img_num+".jpg";
+            WXP2P.triggerScheme('bonus://api?sharetype=image&face=' + encodeURIComponent(img_url));
+          })
+          $('.see_onemore').attr('href','firstp2p://api?type=native&name=markethome');
+          $('.erweima').css('display','none');
+          window.onload = function(){
+            window.location.href = "firstp2p://api?type=rightbtn&title=";
+          }
+        }
+    </script>
+    <script src="<?php echo $this->asset->makeUrl('/activity/growth2018/js/growth2018.js')?>"></script>
+</body>
+</html>

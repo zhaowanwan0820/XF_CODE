@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>黄金变现</title>
+    {include file="api/views/_v32/header.html"}
+    <meta name="format-detection" content="telephone=no" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/p2p_affirm.css?v=2');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/virtual.v1.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/format_money.css');?>" rel="stylesheet" />
+    <script>
+        console.log( '{$dealInfo_str}' );
+        window["_P2P_APPVERSION_"] = "{$appversion}";
+        window['_userid_'] = "{$userId}";
+        window['_needForceAssess_'] = "{$needForceAssess}";
+        window['siteId'] = "{$siteId}";
+    </script>
+</head>
+<body>
+<input type="hidden" value="{$dealInfo.feeMoney}" id="buyerFee"/>   
+<input type="hidden" value="{$usertoken}" id="usertoken">
+<input type="hidden" value="{$ticket}" id="ticket">
+<input type="hidden" value="{$goldPrice}" id="goldPrice">
+<input type="hidden" value="{$trad_flag}" id="tradFlag">
+    <div class="p2p_main m-main p_affirm pb20">
+        <div class="pa_center mb10 tc">
+                <p class="color_gray pt5 pr15">实时金价(元/克)</p>
+                <p class="f25 color_gold pr15">{$goldPrice}</p>
+        </div>
+        <div class="pa_center clearfix">
+            <div class="input_deal">
+                <div class="p2p_ipt clearfix">
+                    <div class="show_daxie"></div>
+                    <div class="ui_input clearfix"></div>
+                </div>
+                <span class="dit_yq f11"></span>
+            </div>
+            <!-- <div class="ditm_right fr">
+                <a class="a_lock to_recharge" href="invest://api?type=recharge">充值</a>
+            </div> -->
+            <div class="ditm_left">
+                <div class="ditm_top">
+                <!-- 当是公益标和通知贷的时候 -->
+                <!-- <a class="" id="quantou_all" href="invest://api?type=recharge">全部变现</a> -->
+                <input type="button" value="全部变现" id="quantou_all" class="charge color_blue fr bg-white">
+                <div class="remain_money clearfix"> 
+                    <div class="remain_money_text f13 fl">可变现<span class="tatal_realize">{$dealInfo.WithdrawGold}</span>克,今日可变现<span  class="day_realize">{$dealInfo.WithdrawGoldToday}</span>克</div>
+                </div>
+            </div>
+        </div>
+            <div class="dit_list">
+            </div>
+        </div>
+
+        <!-- 购买黄金提示 begin -->
+        <div class="goldTip">
+            <p>黄金价格实时波动，在<span>{$dealInfo.priceRate}元</span>的波动范围内成交，成交瞬间系统价格不低于<span>{$dealInfo.maxPrice}元/克</span>则立即为你变现</p>
+            <a href="javascript:;" id="chargeComputed" class="color_blue">变现提示</a>
+        </div>
+        
+        <!-- 购买黄金提示 end -->
+        <!-- 计算规则弹层 begin -->
+        <div class="goldComputedRuleBox" id="goldComputedRuleBox">
+            <div class="inner">
+                <h3>变现提示</h3>
+                <p class="ruleText">预计到账金额 = 实时金价(元/克) x 变现克重 - 变现手续费(元/克) x 变现克重</p>
+                <div class="valueInfor color_gray">
+                    <p>变现金价(元/克)</p>
+                    <p>页面金价仅供参考，具体以成交时金价为准</p>
+                </div>
+                <div class="chargeInfor color_gray">
+                    <p class="pt10">变现手续费(元/克)</p>
+                    <p class="tr">{$dealInfo.feeMoney}<br>单笔最低收取<span class="min_free">{$dealInfo.withdrawMinFee}</span>元</p>
+                </div>
+            </div>
+            <a href="javascript:;" class="closeA"></a>
+        </div>
+        <!-- 计算规则弹层 end -->
+
+        <div class="dit_btn">
+            <!--<input type="submit" class="sub_btn sub_gay" value="同意合同并投资" />-->
+            <!--<input type="submit" class="sub_btn sub_red" value="同意合同并投资" />-->
+            <a class="sub_btn sub_gay" href="javascript:void(0);">确认变现</a>
+        </div>
+        <div class="goldTip tc">
+            <p>工作日14:00点前变现，当日24:00前到账</p>
+            <p>14:00点后变现，T+1日24:00前到账</p>
+        </div> 
+    </div> 
+    <!-- <div class="ui_risk_tips"><em class="line"></em><span>市场有风险，购买需谨慎</span></div> -->
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/fastclick.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.6/js/gold/virtual.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.6/js/gold/formatMoney.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.v2.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.6/js/gold/p_withraw.js?v=8');?>"></script>
+    <script>
+        var discount_id = '{$dealId}',usertoken = '{$usertoken}',siteId = '{$siteId}',discountListNum = 0,remainNum= '{$deal.remainSrc}';
+    </script>
+{include file="api/views/_v32/footer.html"}

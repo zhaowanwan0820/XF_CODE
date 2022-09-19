@@ -1,0 +1,25 @@
+{include file="inc/header.html"}
+<div class="blank"></div>
+<div class="wrap clearfix">
+	<div class="clearfix">
+		<div class="rightlendstep">
+			{if $step eq 1}
+			<div id="dashboard" class="dashboard dashboard-traverse clearfix">
+				<ul>
+					<li {if $status eq 1}class="current"{/if}>
+						<a href="{url x="index" r="borrow#applyamount" p="status=1"}">个人信息</a>
+					</li>
+					{if $user_info.real_name neq ""&&$user_info.idno neq ""&&$user_info.mobile neq ""&&$user_info.marriage neq ""&&$user_info.address neq ""}		
+					<li {if $status eq 2}class="current"{/if}>
+						<a href="{url x="index" r="borrow#applyamount" p="status=2"}">工作信息</a>
+					</li>	
+					{/if}									
+				</ul>
+			</div>
+			{/if}
+			{include file="$inc_file"}
+		</div>
+    </div>
+</div>
+<div class="blank"></div>
+{include file="inc/footer.html"}

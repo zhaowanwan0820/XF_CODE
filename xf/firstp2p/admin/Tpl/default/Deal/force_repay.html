@@ -1,0 +1,390 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<form action="?m=Deal&a=do_force_repay" method="post" class="j-form-post">
+<input type="hidden" name="deal_id" id="deal_id" value="{$deal.id}"/>
+<input type="hidden" name="role" id="role" value="{$role}"/>
+<input type="hidden" id="today" value="{$today}">
+<input type="hidden" name="querystring" value="{$querystring}">
+<input type="hidden"  name="repay_user_type_by_a" id="repay_user_type_by_a" value="{$repay_user_type}">
+<input type="hidden" id="agency_money" value="{$agency_money}">
+<input type="hidden" id="advance_money" value="{$advance_money}">
+<input type="hidden" id="generation_recharge_money" value="{$generation_recharge_money}">
+<input type="hidden" id="indirect_agency_money" value="{$indirect_agency_money}">
+<input type="hidden" id="user_money" value="{$user_money}">
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+<div class="main_title">{$deal.name} 强制还款 <a href="{:u("Deal/yuqi?ref=1&$querystring")}" class="back_list">{%BACK_LIST}</a></div>
+<div id="edit_button">
+   <!-- <input type="button" class="button" value="编辑" onclick="edit_fee();" />-->
+    还款方
+    <select type="select" name="repay_user_type" id='repay_user'
+    <if condition="$role eq 'b'">
+        disabled = 'disabled'
+        </if>
+    >
+    <foreach name="repay_user" item="repay_user_item">
+        <option value="{$repay_user_item.type}"
+            <if condition="$repay_user_item.type eq $repay_user_type">
+                selected="selected"
+            <else />
+                <if condition="$role neq 'b' AND $repay_user_item.is_selected eq 1">
+                    selected="selected"
+                </if>
+            </if>
+        >{$repay_user_item.userName}</option>
+    </foreach>
+</select>
+
+</div>
+<div id="save_button" style="display:none"><input type="button" class="button" value="保存" onclick="save_fee();" /></div>
+<input type="hidden" name="deal_id" value="{$deal.id}"/>
+    <tr>
+        <td colspan="12" class="topTd" >&nbsp; </td>
+    </tr>
+    <tr class="row" >
+        <th>选择还款</th>
+        <th>还款日</th>
+        <th>已还金额</th>
+        <th>待还金额</th>
+        <th>待还本息</th>
+        <th>手续费</th>
+        <th>咨询费</th>
+        <th>担保费</th>
+        <th>支付服务费</th>
+        <th>渠道服务费</th>
+        <if condition="$deal.isDtb eq 1 ">
+            <th>管理服务费</th>
+        </if>
+        <th>逾期费用</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    <volist name="loan_list" id="loan" key="id">
+    <tr class="row">
+        <td><if condition="$loan.status neq 0">
+            <else />
+            <input type="checkbox" name="repay_to[]" value="{$loan.id}" data-day="{$loan.repay_day}" <if condition="in_array($loan['id'], $chk_ids)">checked="checked"</if> <if condition="$role eq 'b'">onclick="return false"</if> />
+            </if></td>
+        <td> {$loan.repay_day} </td>
+        <td> {$loan.month_has_repay_money_all} </td>
+        <td>{$loan.month_need_all_repay_money}</td>
+        <td> {$loan.month_repay_money} </td>
+
+        <td class="service_fee"> {$loan.loan_fee} </td>
+        <td class="service_fee"> {$loan.consult_fee} </td>
+        <td class="service_fee"> {$loan.guarantee_fee} </td>
+        <td class="service_fee"> {$loan.pay_fee} </td>
+        <td class="service_fee"> {$loan.canal_fee} </td>
+
+        <if condition="$deal.isDtb eq 1 ">
+            <td class="service_fee"> {$loan.management_fee} </td>
+        </if>
+
+        <td class="service_fee_input" style="display:none"><input type="text" name="loan_fee_arr[]" value="{$loan.loan_fee}" <if condition="$loan.status neq 0">disabled="disabled"</if> /></td>
+        <td class="service_fee_input" style="display:none"><input type="text" name="consult_fee_arr[]" value="{$loan.consult_fee}" <if condition="$loan.status neq 0">disabled="disabled"</if>/></td>
+        <td class="service_fee_input" style="display:none"><input type="text" name="guarantee_fee_arr[]" value="{$loan.guarantee_fee}" <if condition="$loan.status neq 0">disabled="disabled"</if>/></td>
+        <td class="service_fee_input" style="display:none"><input type="text" name="pay_fee_arr[]" value="{$loan.pay_fee}" <if condition="$loan.status neq 0">disabled="disabled"</if>/></td>
+        <td class="service_fee_inrepput" style="display:none"><input type="text" name="canal_fee_arr[]" value="{$loan.canal_fee}" <if condition="$loan.status neq 0">disabled="disabled"</if>/></td>
+
+        <if condition="$deal.isDtb eq 1 ">
+            <td class="service_fee_input" style="display:none"><input type="text" name="management_fee_arr[]" value="{$loan.management_fee}" <if condition="$loan.status neq 0">disabled="disabled"</if>/></td>
+        </if>
+
+        <td> {$loan.impose_money} </td>
+        <td> {$loan.status_text} </td>
+        <td>
+            <if condition="$loan.status eq 0 ">
+                <if condition="$role eq 'b'">
+                    <a href="javascript:part_user_repay('{$loan.id}')">查看详情</a>
+                <else/>
+                    <a href="javascript:part_user_repay('{$loan.id}')">部分用户还款</a>
+                </if>
+
+
+
+            </if>
+            <a href="javascript:export_repay_user_bank_list('{$loan.id}')">投资账户详情</a>
+            <a href="javascript:offline_repay('{$loan.id}')">线下还款</a>
+        </td>
+    </tr>
+    </volist>
+</table>
+<div style="maigin: 20px;">
+    <input type="checkbox" name="ignore_impose_money" id="ignore_impose_money"
+    <if condition="$ignore_impose_money">checked="checked"</if> value="1"
+    <if condition="$role eq 'b'">onclick="return false;"</if>><label for="ignore_impose_money">不执行逾期罚息</label>
+</div>
+<if condition="$role eq 'b'">
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="item_title">退回类型</td>
+            <td class="item_input">
+                <select name="return_type" id="return_type">
+                    <option value="0" <if condition="$_REQUEST['return_type'] eq 0">selected</if>>请选择</option>
+                    <foreach name="return_type_list" key="key" item="item">
+                        <option value="{$key}">{$item}</option>
+                    </foreach>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">退回意见</td>
+            <td class="item_input">
+                <textarea id="return_reason" name="return_reason" style="height:85px;width:450px;"></textarea>
+            </td>
+        </tr>
+    </table>
+    <input  class="button" id="submitAudit" onclick="audit('return')" value="退回">
+    <input type="submit" class="button" onclick="return confirmSubmit();" value="还款">
+<else/>
+    <input  class="button" id="submitAudit" onclick="audit('submit')" value="提交">
+</if>
+</form>
+
+<script type="text/javascript" charset="utf-8">
+    function confirmSubmit(){
+        var chk_value =[];
+        var is_beyond = false;
+        var money = 0;
+        $('input[name="repay_to[]"]:checked').each(function(){
+            var days = dateDiff($(this).attr('data-day'),$("#today").val());
+            if(days > 20) {
+                is_beyond = true;
+            }
+            repay_money = Number($(this).parent().next().next().next().text().split(",").join(""));
+            money=Number(Number(money+repay_money).toFixed(2));
+            chk_value.push($(this).val());
+        });
+
+        if(chk_value.length == 0){
+            alert("请选择还款");
+            return false;
+        }
+        res1 = true;
+        //if(is_beyond) {
+        //    res1 = confirm('所选择的还款日距今日大于20天，是否继续操作？');
+        //}
+        var repay_user = '借款人' ;
+        if( 1 == $('#repay_user_type_by_a').val()){
+            var repay_user = '代垫机构';
+        }
+        if( 2 == $('#repay_user_type_by_a').val()){
+            var repay_user = '担保机构';
+        }
+
+        if($("#repay_user").val() == 1){
+            if(res1 && money > Number($("#advance_money").val())){
+                return confirm('代垫账户余额不足，还款后代垫账户余额将为负数！');
+            }
+        }else if($("#repay_user").val() == 2){
+            if(res1 && money > Number($("#agency_money").val())){
+                return confirm('代偿账户余额不足，还款后代偿账户余额将为负数！');
+            }
+        }else if($("#repay_user").val() == 3){
+            if(res1 && money > Number($("#generation_recharge_money").val())){
+                return confirm('代充值账户余额不足，还款后代充值账户余额将为负数！');
+            }
+        }else if($("#repay_user").val() == 5){
+            if(res1 && money > Number($("#indirect_agency_money").val())){
+                return confirm('间接代偿账户余额不足，还款后间接代偿账户余额将为负数！');
+            }
+        }else{
+            if(res1 && money > Number($("#user_money").val())){
+                return confirm('借款人账户余额不足，还款后账户借款人账户余额将为负数！');
+            }
+        }
+
+        return res1 ? true : false;
+    }
+
+    function edit_fee() {
+        $("#save_button").show();
+        $("#edit_button").hide();
+        $("#dataTable").find(".service_fee_input").show();
+        $("#dataTable").find(".service_fee").hide();
+    }
+
+    function save_fee() {
+        $("#edit_button").show();
+        $("#save_button").hide();
+
+        var loan_fee = new Array();
+        $('input[name="loan_fee_arr[]"]').each(function(){
+            loan_fee.push($(this).val());
+        });
+
+        var consult_fee = new Array();
+        $('input[name="consult_fee_arr[]"]').each(function(){
+            consult_fee.push($(this).val());
+        });
+
+        var guarantee_fee = new Array();
+        $('input[name="guarantee_fee_arr[]"]').each(function(){
+            guarantee_fee.push($(this).val());
+        });
+
+        var pay_fee = new Array();
+        $('input[name="pay_fee_arr[]"]').each(function(){
+            pay_fee.push($(this).val());
+        });
+
+        var deal_id = {$deal.id};
+
+        var passData = {deal_id:deal_id,loan_fee:loan_fee,consult_fee:consult_fee,guarantee_fee:guarantee_fee,pay_fee:pay_fee,canal_fee:canal_fee};
+        var isDtb = {$deal.isDtb};
+        if(isDtb == 1) {
+            var management_fee = new Array();
+            $('input[name="management_fee_arr[]"]').each(function(){
+                management_fee.push($(this).val());
+            });
+            passData.management_fee = management_fee;
+        }
+
+        $.post("/m.php?m=Deal&a=save_service_fee", passData, function(result){
+            var rs = $.parseJSON(result);
+            if (rs.status) {
+                window.location.reload();
+            } else {
+                alert("操作失败！");
+                return false;
+            }
+        });
+    }
+    //sDate1和sDate2是2016-12-18格式
+    function  dateDiff(sDate1, sDate2){
+        var  aDate,  oDate1,  oDate2,  iDays
+        aDate  =  sDate1.split("-")
+        oDate1  =  new  Date(aDate[0],aDate[1]-1,aDate[2],0,0,0).getTime();
+        aDate  =  sDate2.split("-")
+        oDate2  =  new  Date(aDate[0],aDate[1]-1,aDate[2],0,0,0).getTime();
+        iDays  =  parseInt(Math.abs(oDate1  -  oDate2)/1000/86400)  //把相差的毫秒数转换为天数
+        return  iDays;
+    }
+
+    function audit(optype)
+    {
+        var chk_value =[];
+        var is_beyond = false;
+        var money = 0;
+        $('input[name="repay_to[]"]:checked').each(function(){
+            var days = dateDiff($(this).attr('data-day'),$("#today").val());
+            if(days > 20) {
+                is_beyond = true;
+            }
+            repay_money = Number($(this).parent().next().next().next().text().split(",").join(""));
+            money=Number(Number(money+repay_money).toFixed(2));
+            chk_value.push($(this).val());
+        });
+
+        if(chk_value.length == 0 && optype == 'submit'){
+            alert("请选择还款");
+            return false;
+        }
+        res1 = true;
+        <if condition="$role neq 'b'">
+            $("#repay_user").removeAttr("disabled");
+        if(is_beyond) {
+            res1 = confirm('所选择的还款日距今日大于20天，是否继续操作？');
+            if (res1 == false) {
+                return;
+            }
+        }
+        <else/>
+        var repay_user = '借款人' ;
+        if( 1 == $('#repay_user_type_by_a').val()){
+            var repay_user = '代垫机构';
+        }
+         if( 2 == $('#repay_user_type_by_a').val()){
+            var repay_user = '担保机构';
+        }
+        if(res1 && money > Number($("#user_money").val()) && optype == 'submit'){
+            if(!confirm(repay_user+'账户余额不足，还款后'+repay_user+'账户余额将为负数！')){
+                return false;
+            }else{
+                return confirm('是否确定将还款账户扣负？');
+            }
+        }
+        </if>
+        var type = 'GET';
+        var data = {
+                return_reason : $("#return_reason").val(),
+                return_type : $("#return_type").val(),
+                agree : $('#agree').val(),
+                id : $("#deal_id").val(),
+                deal_repay_id : chk_value.join(),
+                ignore_impose_money : $('#ignore_impose_money').is(':checked'),
+                repay_user_type : $('#repay_user').val(),
+        }
+        url = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=submitAudit&audit_type=4&role="+$("#role").val()+"&deal_id="+$("#deal_id").val();
+        if (optype == 'submit') {
+            var type = "POST";
+            var caution = confirm("确定提交");
+        } else if (optype == 'return') {
+            if ($("#return_type").val() == '0') {
+                alert("请选择回退类型");
+                return;
+            }
+            if ($("#return_reason").val() == '') {
+                alert("请填写回退原因");
+                return;
+            }
+            var type = "POST";
+            var caution = confirm("确认回退");
+        }
+        if (caution == true) {
+            $.ajax({
+                url: url,
+                data: data,
+                type: type,
+                dataType: "json",
+                success: function(obj) {
+                    if(obj.errCode != 0) {
+                        alert(obj.errMsg);
+                    } else {
+                        if (optype == 'submit') {
+                            alert('提交审核成功');
+                        }
+                        if (optype == 'return') {
+                            alert('回退成功');
+                        }
+                    }
+                    //location.href = '<?php echo $redirectUrl; ?>';
+                    location.href = 'm.php?m=Deal&a=yuqi&ref=1&role='+$("#role").val()+'&{$querystring}';
+                }
+            });
+        }
+
+    }
+
+    /**
+     * 部分用户还款
+     * @param dealRepayId
+     */
+    function part_user_repay(dealRepayId) {
+        url =  ROOT+'?m=Deal&a=part_user_repay&deal_repay_id='+dealRepayId+'&role='+$("#role").val();
+
+        window.open(url);
+    }
+
+    /**
+     * 线下还款
+     * @param dealRepayId
+     */
+    function offline_repay(dealRepayId) {
+        url =  ROOT+'?m=Deal&a=offline_repay&deal_repay_id='+dealRepayId+'&role='+$("#role").val();
+
+        window.open(url);
+    }
+
+    /**
+     * 导出用户账户
+     * @param dealRepayId
+     */
+    function export_repay_user_bank_list(dealRepayId) {
+        url =  ROOT+'?m=Deal&a=export_repay_user_bank_list&deal_repay_id='+dealRepayId+'&role='+$("#role").val();
+
+        window.open(url);
+    }
+
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/p_deal_detail.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/css/virtual.v1.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/css/format_money.v1.css');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_deal_detail">
+        <!-- mask -->
+        <div class="mask JS_dealDetail">
+            <div class="mask_cont">
+                <div class="cont_tit">{$deal.p2pAccountConfig.name}现金余额不足</div>
+                <div class="cont_cont">充值<span class="recharge JS_recharge"></span>元后可进行投资</div>
+                <a class="mask_btn" href="firstp2p://api?type=recharge&channel=cg" >充值</a>
+                <div class="mask_txt">您也可以将{$deal.wxAccountConfig.name}现金余额<span class="withdraw JS_withdraw"><a href="firstp2p://api?type=withdraw&channel=main">提现</a></span>至银行卡，提现到账后再充值到{$deal.p2pAccountConfig.name}</div>
+                <div class="mask_back JS_maskBack"><img src="<?php echo $this->asset->makeAppUrl('v4.83/images/btn_back.png');?>" /></div>
+            </div>
+        </div>
+        <div class="marquee">
+            <div class="marquee_con">
+                <div class="row">
+                    <ul id="marquee1" class="marquee1" >
+                        <li>
+                            温馨提示：您未能成功转让的债权需继续持有，通过智多新匹配的资产期限最长为36个月
+                        </li>
+                    </ul>
+                    <ul id="marquee2" class="marquee2"></ul>
+                </div>
+            </div>
+        </div>
+        <div class="detail_top">
+            <div class="dt_nhua clearfix">
+                <div class="nh_left">
+                    <div class="tit">{$deal.rateYearTag}</div>
+                    <div class="cont">
+                        <span class="f22">{$activityInfo.min_rate}</span>%<em>~</em><span class="f22">{$activityInfo.max_rate}</span>%
+                    </div>
+                    <div class="nh_line"></div>
+                </div>
+                <div class="nh_right">
+                    <div class="tit">期限</div>
+                    <div class="cont">
+                        <span class="f18">{$activityInfo.lock_day}</span>天可申请转让/退出
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail_data color_gray f12">
+            <div class="data_bot">
+                <ul class="data_list  clearfix">
+                    <li><img src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/jixi.png');?>" alt="" width="32" height="31"><span class="tc">按日<br/>计算
+</span> </li>
+                    <li><img src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/qitou.png');?>" alt="" width="31" height="32"><span class="tc">{$deal.investLimit}
+</span> </li>
+                    <li><img src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/renshu.png');?>" alt="" width="32" height="33"><span class="tc">当前加入
+<br/>
+<em class="color_red">{$deal.investUserNum}</em>人</span> </li>
+                </ul>
+            </div>
+        </div>
+        {if !$isFull && $deal.isOpen}
+        <div class="detail_invest mt10">
+            <!-- 开放 -->
+            <div class="input_deal">
+                <div class="p2p_ipt clearfix">
+                    <a href="javascript:void(0)" id="quantou_all" class="qtou_all">全部<br/>加入</a>
+                    <div class="show_daxie"></div>
+                    <div class="ui_input clearfix"></div>
+                </div>
+                <!-- 债权 -->
+                <span class="dit_yq j_dit_yq color_yellow f11"  style="display:none;">{$deal.creditRule}</span>
+            </div>
+            <div class="f12 pt10 clearfix">
+                <div class="fl">
+                    可用余额: <span class = "JS_ableMoney">{$avaliableBalance}</span>元
+                    {if $bnousMoney != 0}(含&nbsp{$bnousMoney}&nbsp{$new_bonus_unit}{$new_bonus_title}）{/if}
+                    <!-- {if $svInfo.status eq 1 && $site_id neq 100}
+                    <i class="point_open down_img"></i>
+                    {/if} -->
+                </div>
+                <div class="fr">
+                    <a href="javascript:void(0)" class="to_charge color_blue">充值</a>
+                </div>
+            </div>
+            {if $showBonusTips && $activityInfo.lock_day lte 1}
+            <div class="color_red mt5">(该期限不支持使用红包)</div>
+            {/if}
+            {if $svInfo.status eq 1 && $site_id neq 100}
+            <div class="account_money">
+                {if $svInfo.isSvUser neq 0}
+                <div>
+                    -{$deal.p2pAccountConfig.name}现金余额: <span class="val_svBalance">{$svInfo.svBalance}</span>元
+                    {if $isServiceDown eq 1}
+                    <span class="color_red">(海口联合农商银行系统维护，暂不可用)</span>
+                    {/if}
+                </div>
+                {else}
+                <div style="display:block;">-尚未开通{$deal.p2pAccountConfig.name}</div>
+                {/if}
+                <div>-{$deal.wxAccountConfig.name}现金余额: <span class="val_wxMoney">{$deal.money}</span>元</br><span class="val_tip">(该账户不适用于该产品)</span></div>
+            </div>
+            {/if}
+        </div>
+        <!-- 优惠券 -->
+        {if $o2oDiscountSwitch eq 1}
+        <div class="JS-youhuiquanpannel dit_footer new_guide_box">
+            <div class="ditf_list disn_border">
+                <div class="JS-touziyindao new_guide_icon" style="display:none;"></div>
+                <a {if $appVersion gte 473 }class="to_youhuiquanList" href="#" {else} class="JS-youhuiquanList"{/if} >
+                    <i class="icon_arrow fr"></i>
+                    <span class="JS-couponnum_label pr10 fr" style="font-size:13px;">未选择</span>
+                    优惠券<span class="can_use color_red" style="display:none;"><span class="JS_coupon_num num_canuse"></span>张可用</span>
+                </a>
+            </div>
+            <input type="hidden" name="isChoose" value="{$discount_id}">
+            <div class="ditf_list JS-selected_discount" style="display:none;" style="border-top:1px solid #d9d9d9;">
+                <div class="coupon_detail"><span class="icon_coupon fl"></span><i class="close_btn fr JS_close"></i><div class="con">计算中...</div></div>
+            </div>
+        </div>
+        {/if}
+        {/if}
+        <div class="detail_rules new_rule mt10">
+            <div class="dd_list">
+                <span class="dd_tit color_gray">管理服务费</span>
+                <span class="dd_cont">{$deal.feeRateText}</span>
+            </div>
+            <div class="dd_list">
+                <span class="dd_tit color_gray">顾问服务费</span>
+                <span class="dd_cont">{$advisorFee}</span>
+            </div>
+            <div class="dd_list">
+                <span class="dd_tit color_gray">转让/退出限额</span>
+                <span class="dd_cont">当日智多新可转让/退出额度{$deal.maxDayRedemptionText}万元</span>
+            </div>
+            <div class="dd_list">
+                <span class="dd_tit color_gray">底层资产募集期</span>
+                <span class="dd_cont">{$loanPeriod}</span>
+            </div>
+            <div class="dd_list">
+                <span class="dd_tit color_gray">加入限制</span>
+                <span class="dd_cont">{$deal.limitNum}</span>
+            </div>
+            <div class="dd_list">
+                <span class="dd_tit color_gray">结息日</span>
+                <span class="dd_cont">按加入资产还款日结算利息</span>
+            </div>
+            {if $isShowVip && $site_id neq 100}
+                {if $vipInfo.raiseInterest}
+                    <div class="dd_list">
+                        <span class="dd_tit color_gray">会员加息</span>
+                        <span class="dd_cont">您是{$vipInfo.vipGradeName}，享受{$vipInfo.raiseInterest}%加息</span>
+                    </div>
+                {/if}
+            {/if}
+        </div>
+        <div class="ui_common_list mt10">
+            <div class="common_btn">
+                <a class="to_common_ques" href="javascript:void(0)">常见问题<i class="icon_arrow fr"></i></a>
+            </div>
+        </div>
+        <div class="ui_common_list bot_border_none">
+            <div class="common_btn">
+                <a class="Contractpre to_contractpre" href="javascript:void(0)">顾问协议<i class="icon_arrow fr"></i></a>
+            </div>
+        </div>
+        <div class="ui_submit">
+            {if $isFull}<span class="color_red f15">今日额度已满，请明日再来</span>
+            {elseif !$deal.isOpen}<span class="color_red f15">{$deal.openTime}</span>
+            {else}
+            <input type="button" class="submit_but" value="同意合同和协议并加入" disabled="disabled" />
+            {/if}
+        </div>
+        {if $needForceAssess}
+        <div class="is_eval" style="display:none;"></div>
+        <div id="JS-is-evaluate" class="alert_evaluate" style="display:none;">
+            <img class="evaluate_img" src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/is_evaluate_pop.png');?>">
+            <p>请您先完成风险承受能力评估</p>
+            <a class="eval_btn" href="">立即参与评估</a>
+            <div class="no_eval">暂不评估</div>
+        </div>
+        {/if}
+        <!-- 点击“确认投资”后，如果个人会员投资人评级低于项目评级，弹窗提示。 -->
+        <div class="ui_conf_risk bid_conf" id="ui_conf_risk" style="display:none;">
+            <div class="opacity"></div>
+            <div class="confirm_donate">
+                <p class="confirm_donate_title">提示</p>
+                <p class="confirm_donate_text">
+                {if $riskLevel}
+                当前您的风险承受能力<br/>
+                为“{$riskLevel}”，与项目要求不符
+                {/if}
+                <span class="sy_num color_gray f13">本年度剩余评估{$remainAssessNum}次</span>
+                </p>
+                <div class="confirm_donate_but">
+                    {if $remainAssessNum > 0}
+                    <input type="button" class="confirm_donate_but_del" id="JS-cancel" value="暂不评估">
+                    <a class="confirm_donate_but_yes"  id="JS-confirm" href="">重新评估</a>
+                    {else}
+                    <input type="button" class="confirm_donate_but_yes w240" id="JS-know" value="知道了">
+                    {/if}
+                </div>
+            </div>
+        </div>
+        <!-- 验密余额划转 -->
+        {if $svInfo.isSvUser eq 1}
+        <div class="JS_is_transfer JS_open_box" style="display:none">
+            <div class="cunguan_bg"></div>
+            <div id="JS_balance_transfer" class="cunguan_box">
+                <div class="free_title">余额划转</div>
+                <div class="trans_money JS_trans_money">20000元</div>
+                <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/balance_img1.png');?>">
+                <div><span class="text_length">网信账户</span><span>网贷P2P账户</span></div>
+                <p class="free_text">网贷P2P账户现金余额不足，需从网信账户转账<span class="trans_m JS_trans_money">20,000</span>至网贷P2P账户，转账后网信账户现金余额为<span class="remain_m">40,000</span>元</p>
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="javascript:void(0)" class="a_left JS_close_transfer MD_trans_to_super_cancel">取消</a></div>
+                    <div class="left_div"><a href="" class="a_right JS_transfer_btn MD_trans_to_super_ok" style="margin-left:0px;">确定</a></div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <!-- 提示余额划转 -->
+        <div class="JS_is_transfer_tips JS_open_box" style="display:none;">
+            <div class="cunguan_bg"></div>
+            <div id="JS_balance_transfer" class="cunguan_box">
+                <div class="free_title">余额划转</div>
+                <div class="trans_money JS_trans_money">20000元</div>
+                <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/balance_img1.png');?>">
+                <div><span class="text_length">网信账户</span><span>网贷P2P账户</span></div>
+                <p class="free_text">网贷P2P账户现金余额不足，需从网信账户转账<span class="trans_m JS_trans_money">20,000</span>至网贷P2P账户，转账后网信账户现金余额为<span class="remain_m">40,000</span>元</p>
+
+                <div class="sc_footer clearfix">
+                    <input type="button" value="确定" class="a_right JS_transfer_btn" style="margin-left:0px;">
+                    <div class="pt20 color_gray"><span class="tips_icon"><input type="checkbox" class="no_tip_checkbox" value="0"></span>不再提示，下次自动划转</div>
+                </div>
+                <div class="JS_close_transfer_tips close_p2p_btn"></div>
+            </div>
+        </div>
+        {if ($svInfo.status eq 1 && $svInfo.isSvUser eq 0) || ($svInfo.status eq 1 && $svInfo.isSvUser eq 1 && $svInfo.isActivated eq 0)}
+        <!-- 开通存管账户 -->
+        <div class="JS_is_open_p2p" style="position: fixed;height: 100%;width: 100%;left: 0px;top: 0px;z-index: 1000;-webkit-transform-origin: 0px 0px 0px;-webkit-transform: translateZ(2px);">
+            <div class="cunguan_bg"></div>
+            <div class="cunguan_box">
+                <img class="open_p2p" src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/open_p2p.png');?>">
+                <div class="free_title">{if ($svInfo.isSvUser eq 0 && $isUpgradeAccount eq 1) || ($svInfo.isSvUser eq 1 && $isActivated eq 0)}升级{else}开通{/if}{$deal.p2pAccountConfig.name}</div>
+                <p class="free_text">根据国家法律法规和相关监管规定,为保障客户资金安全, 投资网贷P2P产品需在银行开设专门资金存管账户。</p>
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="firstp2p://api?type=local&action=closeself" class="a_left MD_open_p2p_cancel_btn">取消</a></div>
+                    <div class="left_div"><a href="javascript:void(0);" class="a_right JS_open_p2p_btn MD_open_p2p_next_btn">继续</a></div>
+                </div>
+            </div>
+        </div>
+        {elseif !$allowBid}
+        <!-- 非投资户不允许投资 -->
+        <div class="JS_can_not_bid">
+            <div class="not_bid_bg"></div>
+            <div class="not_bid_box">
+                <div class="title">提示</div>
+                <i class="sc_no_bid"></i>
+                <p>非投资户不允许投资</p>
+                <a href="firstp2p://api?type=native&name=home">返回首页</a>
+            </div>
+        </div>
+        {elseif $grantInfo}
+        <!-- 开通存管账户之后开通免密投资和免密缴费 -->
+        <div class="JS_open_free_psd">
+            <div class="mianmi_bg"></div>
+            <div class="mianmi_box">
+                <div class="title">提示</div>
+                <div class="remind">根据国家法律法规监管要求，办理该业务需在存管银行开通如下授权:</div>
+                <ul class="mianmi_list">
+                {foreach from=$grantInfo.needGrantArr item=list}
+                    <li>
+                        <i class="{if $list == 1}free_loan_icon{elseif $list == 2}free_loan_icon{elseif $list == 3}free_pay_icon{/if}"></i>
+                        <div class="">
+                            <p class="free_box_title">{if $list == 1}免密投标授权{elseif $list == 2}免密还款授权{elseif $list == 3}免密缴费授权{/if}</p>
+                            <p class="free_detail">{if $list == 1}用于投标时自动匹配标的{elseif $list == 2}{elseif $list == 3}用于收取智多新转让/退出时可能产生的费用{/if}</p>
+                        </div>
+                    </li>
+                {/foreach}
+                </ul>
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="firstp2p://api?type=local&action=closeself" class="a_left JS_open_free_close">取消</a></div>
+                    <div class="left_div"><a href="javascript:void(0);" class="a_right JS_open_free_btn">去开通</a></div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        {if $o2oDiscountSwitch eq 1 && !$isFull && $deal.isOpen}
+        <div class="JS-touziyindao ui_mask_touziyindao" style="display:none"></div>
+        <div class="JS-touziyindao ui_mask_white" style="display:none"></div>
+        {/if}
+    </div>
+    <script>
+        //强制测评(1 需要测评 0 不需要)
+        window['_needForceAssess_'] = {$needForceAssess};
+        window['allowBid'] = "{$allowBid}";
+        window['needGrantStr'] = "{$grantInfo.needGrantStr}";
+        window['allowBid'] = "{$allowBid}";
+        window['needReAssess'] = "{$needReAssess}";
+        window['isBankcard'] = "{$isBankcard}";
+    </script>
+    <div class="disnone">
+         <!-- 是否开放(1 开放时间 0 未开放 -->
+        <em class="isOpen">{$deal.isOpen}</em>
+         <!-- token -->
+        <em class="token">{$token}</em>
+        <!--项目ID-->
+        <em class="investmentID">{$deal.id}</em>
+        <!-- 可用余额 -->
+        <em class="deal_money">{$totalMoney}</em>
+        <!-- 单笔最高金额 -->
+        <em class="maxLoanMoney">{$deal.maxLoanMoney}</em>
+        <!-- 单笔最低金额 -->
+        <em class="minLoanMoney">{$activityInfo.min_invest_money}</em>
+        <!-- 是否为新用户 -->
+        <em class="isNewUser">{$isNewUser}</em>
+        <!-- 新用户单笔最低金额 -->
+        <em class="newUserMinLoanMoney">{$activityInfo.new_user_min_invest_money}</em>
+        <!-- 输入金额默认值 -->
+        <em class="val_money">{$defaultMoney}</em>
+        <!-- 强制测评返回url -->
+        <em class="backurl">{$backurl}</em>
+        <!-- 今日已满 -->
+        <em class="is_full">{if $isFull}1{else}0{/if}</em>
+        <!-- 活动id -->
+        <em class="activity_id">{$activityInfo.id}</em>
+        <!-- 当日剩余可投金额 -->
+        <em class="remain_money_day">{$deal.remainMoneyDay}</em>
+        <em class="val_mini">1.00元</em>
+        <!-- 优惠券 -->
+        <em class="user_id">{$userId}</em>
+        <em class="val_discount_id">{$discount_id}</em>
+        <em class="val_discount_group_id">{$discount_group_id}</em>
+        <em class="val_discount_type">{$discount_type}</em>
+        <em class="val_discount_sign">{$discount_sign}</em>
+        <em class="val_discount_bidAmount">{$discount_bidAmount}</em>
+        <em class="lock_day">{$activityInfo.lock_day}</em>
+        <!--总笔数 -->
+        <em class="loanCount">{$deal.loanCount}</em>
+        <!--已投笔数 -->
+        <em class="investCount">{$deal.investCount}</em>
+        <!-- 投资一天锁定期的持有笔数 -->
+        <em class="quickInvestCount">{$deal.quickInvestCount}</em>
+        <!-- 灵活投每人每天最多加入笔数 -->
+        <em class="quickLoanCount">{$deal.quickLoanCount}</em>
+        <em class="site_id">{$site_id}</em>
+        <em class="p2pMoney">{$svInfo.svBalance}</em>
+        <em class="bonusMoney">{$bnousMoney}</em>
+        <em class="wangxinMoney">{$deal.money}</em>
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/virtual.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/formatMoney.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.83/js/duotou/invest_confirm.js');?>"></script>
+
+    <script type='text/javascript'>
+    // 加埋点
+    var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"&uf=app","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+    (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","//assets.ncfwx.com/default/js/ncfpb.1.5.min.js?v=201503101911");
+    </script>
+</body>
+
+</html>

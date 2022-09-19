@@ -1,0 +1,105 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<div class="main">
+<div class="main_title">添加 <a href="{:u("CouponSpecial/index")}deal_id=0" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+    <tr>
+        <td class="item_title">优惠码:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="short_alias" maxlength="10"/>
+            &nbsp;&nbsp;<span style="color:red;">{%COUPON_TIPS_SPECIAL_SHORT_ALIAS}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">推荐人会员ID:</td>
+        <td class="item_input"><input type="text" class="textbox check_user_id" name="refer_user_id" maxlength="11"/>
+            &nbsp;&nbsp;<span class="check_user_name"></span>&nbsp;&nbsp;<a href="/m.php?m=User&a=index&" target="_blank">会员列表</a>
+            &nbsp;&nbsp;<span style="color:red;">{%COUPON_TIPS_SPECIAL_REFER_USER_ID}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">机构会员ID:</td>
+        <td class="item_input"><input type="text" class="textbox check_user_id" name="agency_user_id" maxlength="11"/>
+            &nbsp;&nbsp;<span class="check_user_name"></span>
+            &nbsp;&nbsp;<span style="color:red;">{%COUPON_TIPS_SPECIAL_AGENCY_USER_ID}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">绑定天数:</td>
+        <td class="item_input"><input type="text" class="textbox" name="fixed_days" maxlength="11"/>
+            &nbsp;&nbsp;<span>{%COUPON_TIPS_SPECIAL_FIXED_DAYS}</span>
+        </td>
+    </tr>
+    <!--tr>
+        <td class="item_title">投资人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="rebate_amount" maxlength="20"/>元</td>
+    </tr-->
+    <tr>
+        <td class="item_title">投资人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="rebate_ratio" maxlength="10"/>%</td>
+    </tr>
+    <!--tr>
+        <td class="item_title">推荐人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="referer_rebate_amount" maxlength="20"/>元</td>
+    </tr-->
+    <tr>
+        <td class="item_title">推荐人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="referer_rebate_ratio" maxlength="10"/>%</td>
+    </tr>
+    <!--tr>
+        <td class="item_title">机构返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="agency_rebate_amount" maxlength="20"/>元</td>
+    </tr-->
+    <tr>
+        <td class="item_title">机构返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="agency_rebate_ratio" maxlength="10"/>%</td>
+    </tr>
+    <tr>
+        <td class="item_title">有效期开始时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" style="width:150px;" name="valid_begin" id="valid_begin"  onfocus="this.blur(); return showCalendar('valid_begin', '%Y-%m-%d 00:00:00', false, false, 'btn_valid_begin');" />
+            <input type="button" class="button" id="btn_valid_begin" value="{%SELECT_TIME}" onclick="return showCalendar('valid_begin', '%Y-%m-%d %H:%M:00', false, false, 'btn_valid_begin');" />
+            <span>{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">有效期结束时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" style="width:150px;" name="valid_end" id="valid_end"  onfocus="this.blur(); return showCalendar('valid_end', '%Y-%m-%d 23:59:59', false, false, 'btn_valid_end');" />
+            <input type="button" class="button" id="btn_valid_end" value="{%SELECT_TIME}" onclick="return showCalendar('valid_end', '%Y-%m-%d %H:%M:59', false, false, 'btn_valid_end');" />
+            <span>{%COUPON_TIPS_LEVEL_REBATE_VALID_END}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">备注说明:</td>
+        <td class="item_input"><textarea id="remark" class="require" name="remark" style="width:500px;height:50px"></textarea></td>
+    </tr>
+
+    <input type="hidden" name="deal_id" value="0" />
+	<input type="hidden" name="{:conf("VAR_MODULE")}" value="CouponSpecial" />
+	<input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+	<tr>
+	<td class="item_title"></td>
+	<td>
+		<input type="submit" class="button" value="{%ADD}" />
+		<input type="reset" class="button" value="{%RESET}" />
+	</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+</form>
+
+<include file="Public:footer" />

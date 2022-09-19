@@ -1,0 +1,114 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/deal.js' />
+
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("DealQueue/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form id="addform" name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title"> 队列名称:</td>
+        <td class="item_input">   <!-- <span class="tip_span"></span> -->
+        <input type="text" class="textbox require" name="name" id="name" value="{$vo['name']}" size="100"/>
+        <span id="name_tip"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">备注:</td>
+        <td class="item_input">
+        <textarea  class="textarea" name="note" style="width:750px;height:90px;" />{$vo['note']}</textarea>
+
+          <span id="borrow_tip"></span>
+          </td>
+    </tr>
+    <tr>
+        <td class="item_title">预警值:</td>
+        <td class="item_input">
+            <input onkeyup="if(event.keyCode !=37 && event.keyCode != 39)value=value.replace(/\D/g,'')" name="alarm_value" value="{$vo['alarm_value']}"  style="width:50px" >
+            <span style="color: #e4a318" >&nbsp;&nbsp; 0代表没有设置预警值 </span>
+        </td>
+    </tr>
+    <!-- #JIRA 3404 消费贷自动上标 -->
+    <tr>
+        <td class="item_title">产品类别:</td>
+        <td class="item_input">
+            <input type='hidden' id='project_deal_type' value='{$vo['deal_type']}' />
+            <select name="type_id" id='type_id'>
+                <option value="0">无</option>
+                <foreach name="deal_type_tree" item="type_item">
+                    <option value="{$type_item.id}" type_tag='{$type_item.type_tag}' <if condition="$type_item.id eq $vo['type_id']">selected="selected"</if>>{$type_item.name}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">期限:</td>
+        <td class="item_input">
+            <input type='text' style="width:30px" name="invest_deadline" value="{$vo['invest_deadline']}"/>
+            <select name="invest_deadline_unit" id='invest_deadline_unit'>
+                <option value="0" <if condition="$vo['invest_deadline_unit'] eq 0">selected="selected"</if>>无</option>
+                <option value="1" <if condition="$vo['invest_deadline_unit'] eq 1">selected="selected"</if>>天</option>
+                <option value="2" <if condition="$vo['invest_deadline_unit'] eq 2">selected="selected"</if>>月</option>
+            </select>
+        </td>
+    </tr>
+    <tr id='start_time_box'>
+        <td class="item_title">开始时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="start_time" value="{$vo.start_time|to_date}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_start_time');" />
+            <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_start_time');" />
+            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />
+        </td>
+    </tr>
+    <!-- over -->
+    <tr>
+        <td class="item_title">{%IS_EFFECT}:</td>
+        <td class="item_input">
+            <lable><input type="radio" name="is_effect" value="1" <if condition="$vo['is_effect'] eq 1">checked="checked"</if> />{%IS_EFFECT_1}</lable>
+            <lable><input type="radio" name="is_effect" value="0" <if condition="$vo['is_effect'] eq 0">checked="checked"</if> />{%IS_EFFECT_0}</lable>
+            <!-- <span class="tip_span">您如果修改了除“借款状态”和“开始时间”之外的其他内容，该状态将保存为无效。</span> -->
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">关联参数配置方案:</td>
+        <td class="item_input">
+            <select name="deal_params_conf_id" id='deal_params_conf_id'>
+                <option value="0">无</option>
+                <foreach name="deal_params_conf_list" item="params_conf">
+                    <option value="{$params_conf.id}" <if condition="$params_conf.id eq $vo['deal_params_conf_id']">selected="selected"</if>>{$params_conf.name}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="id" id="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="DealQueue" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="save" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%SAVE}" id="submit"/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

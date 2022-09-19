@@ -1,0 +1,52 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<div class="main">
+    <div class="main_title">{%EDIT} <a href="{:u("UserCouponLevel/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">等级名称</td>
+                <td class="item_input"><input size="100" type="text" class="textbox require" name="name" value="{$vo.name}" /></td>
+            </tr>
+            <tr>
+                <td class="item_title">服务人返利系数:</td>
+                <td class="item_input"><input type="text" class="textbox require" disabled='true' name="rebate_ratio" value="{$vo.rebate_ratio}" />%
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态:</td>
+                <td class="item_input">
+                    <label><input type="radio" class="f-radio" value="1" name="is_effect"  <if condition="$vo['is_effect'] eq 1">checked="checked"</if>>有效</label>
+                    <label><input type="radio" class="f-radio" value="0" name="is_effect"  <if condition="$vo['is_effect'] eq 0">checked="checked"</if>>无效</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">备注说明:</td>
+                <td class="item_input"><input type="text" class="txt addarea int_placeholder" name="comment" value="{$vo.comment}" style="width:400px;height:50px;"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="id" value="{$vo.id}" />
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserCouponLevel" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+                    <!--隐藏元素-->
+                    <input type="submit" class="button" value="{%EDIT}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

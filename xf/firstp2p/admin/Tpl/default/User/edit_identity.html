@@ -1,0 +1,79 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<load href='__TMPL__widget/mulselect/cityData.js' />
+<load href='__TMPL__widget/mulselect/mulselect.v1.js' />
+
+<script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+<div class="main">
+<div class="main_title">{%EDIT}实名信息 <a href="{:u("User/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit"  id="Jcarry_From_2" action="__APP__" method="post" enctype="multipart/form-data">
+
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center;"><b>身份信息</b></td>
+    </tr>
+    <tr>
+        <td class="item_title">姓名:</td>
+        <td class="item_input"><input size="100" type="text" value="{$vo.real_name}" class="textbox" name="real_name" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">身份类型:</td>
+        <td class="item_input">
+        <select id="id_type" name="id_type">
+        <option value="0">请选择</option>
+        <foreach name="idTypes" item="type" key="key">
+        <option value="{$key}" <if condition="$vo.id_type eq $key">selected</if>>{$type}</option>
+        </foreach>
+        </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">证件号码:</td>
+        <td class="item_input">
+            <input type="text" value="{$vo.idno}" class="textbox" name="idno" <if condition="$stock eq 1"> disabled</if>/></td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+
+<div class="blank5"></div>
+    <table class="form" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan=2 class="topTd"></td>
+        </tr>
+        <tr>
+            <td class="item_title"></td>
+            <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="User" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="do_edit_identity" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%EDIT}" />
+            <input type="reset" class="button" value="{%RESET}" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2 class="bottomTd"></td>
+        </tr>
+    </table>
+</form>
+</div>
+
+<include file="Public:footer" />

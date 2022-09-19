@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>兑换详情</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_success.css');?>">
+        <script>
+            window['_MOBILE_'] = "{$userInfo.mobile}";
+            window['_ZMQStringWithSignature'] = "{$_ZMQStringWithSignature}";
+        </script>
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="sc_top">
+                <i class="sc_success"></i>
+                <p>兑换成功</p>
+            </div>
+            <div class="sc_list clearfix">
+                <div class="scl_show  ">
+                    <span>商品名称</span><p class="ts_color">{$coupon.productName}</p>
+                </div>
+                <div class="scl_show">
+                    <span>兑换时间</span>
+                    <p >{function name="format_date_by_type" b=$coupon.updateTime}</p>
+                </div>
+                <div class="suc_txt">
+                    {function name='htmlspecialchars_decode' v=$coupon.couponDesc}
+                </div>
+            </div>
+            {if $coupon.storeName neq '' || $coupon.storeName neq NULL}
+            <div class="sc_title">{if $coupon.titleName} {$coupon.titleName}{else}请至以下{$coupon.storeName}账户中查收相应券码{/if}</div>
+            <div class="sc_list clearfix">
+                {foreach from=$formConfig item=couponform key=key}
+                    <div class="scl_show">
+                        <span>{$couponform.displayName}</span>
+                        <p>{$couponform.value}</p>
+                    </div>
+                {/foreach}
+            </div>
+            {/if}
+            <div class="ui_h56"></div>
+            <div class="sc_footer">
+                <a href="coupon://api?type=native&name=coupontab&selectedtab=mine" class="a_btn">查看礼券</a>
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    </body>
+</html>

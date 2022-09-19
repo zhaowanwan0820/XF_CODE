@@ -1,0 +1,220 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>预约列表查询条件</p>
+    </div>
+    <div class="blank5"></div>
+    <div>
+        <form name="search" action="__APP__" method="get">
+            &nbsp;预约状态：
+            <select name="reserve_status" class="textbox selectW">
+                <option value="-1" <if condition="intval($_REQUEST['reserve_status']) eq -1">selected="selected"</if>>全部</option>
+                <option value="0" <if condition="intval($_REQUEST['reserve_status']) eq 0">selected="selected"</if>>预约中</option>
+                <option value="1" <if condition="intval($_REQUEST['reserve_status']) eq 1">selected="selected"</if>>预约结束</option>
+            </select>
+            &nbsp;投资期限：
+            <select name="invest_deadline_opt" class="textbox selectW">
+                <option value="">全部</option>
+                <foreach name="data.deadlineConf" key="key" item="invest_conf">
+                <option value="{$invest_conf['deadline']}|{$invest_conf['deadline_unit']}" <if condition="$_REQUEST['invest_deadline_opt'] eq $invest_conf['deadline'] . '|' . $invest_conf['deadline_unit']">selected="selected"</if>>{$invest_conf['deadline_format']}</option>
+                </foreach>
+            </select>
+
+            &nbsp;预约来源：
+            <select name="reserve_src" class="textbox selectW">
+                <option value="">全部</option>
+                <foreach name="data.reserve_src_list" key="key" item="reserve_src_item">
+                    <option value="{$reserve_src_item.srcId}" <if condition="intval($_REQUEST['reserve_src']) eq $reserve_src_item['srcId']">selected="selected"</if>>{$reserve_src_item.srcName}</option>
+                </foreach>
+            </select>
+
+            &nbsp;年化投资收益率:
+            <select name="invest_rate" class="textbox selectW">
+                <option value="">全部</option>
+                <foreach name="data.rateList" key="key" item="rate_item">
+                    <option value="{$rate_item}" <if condition="$_REQUEST['invest_rate'] eq $rate_item">selected="selected"</if>>{$rate_item}%</option>
+                </foreach>
+            </select>
+
+            &nbsp;还款方式：
+            <select name="loantype" id="repay_mode" onchange="javascript:changeRepay();">
+                <option value="0">全部</option>
+                <foreach name="loan_type" key='type_key' item="type_item">
+                <option value="{$type_key}" <if condition="$_REQUEST['loantype'] eq $type_key">selected="selected"</if> >{$type_item}</option>
+                </foreach>
+            </select>
+
+            &nbsp;贷款类型：
+            <select name="deal_type" class="textbox selectW">
+                <option value="0">全部</option>
+                <foreach name="dealTypeList" key="key" item="name">
+                    <option value="{$key}" <if condition="intval($_REQUEST['deal_type']) eq $key">selected="selected"</if>>{$name}</option>
+                </foreach>
+            </select>
+
+            <br />
+            预约结束时间:
+            <input type="text" class="textbox" style="width:120px;" name="end_from" id="end_from" value="{$_REQUEST['end_from']}" onfocus="this.blur(); return showCalendar('end_from', '%Y-%m-%d 00:00:00', false, false, 'btn_end_from');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}"/>
+            <input type="button" class="button" id="btn_end_from" value="{%SELECT_TIME}" onclick="return showCalendar('end_from', '%Y-%m-%d %H:%M:%S', false, false, 'btn_end_from');" />
+            － <input type="text" class="textbox" style="width:120px;" name="end_to" id="end_to" value="{$_REQUEST['end_to']}" onfocus="this.blur(); return showCalendar('end_to', '%Y-%m-%d 23:59:59', false, false, 'btn_end_to');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_end_to" value="{%SELECT_TIME}" onclick="return showCalendar('end_to', '%Y-%m-%d %H:%M:%S', false, false, 'btn_end_to');" />
+            <br />
+            预约提交时间:
+            <input type="text" class="textbox" style="width:120px;" name="start_from" id="start_from" value="{$_REQUEST['start_from']}" onfocus="this.blur(); return showCalendar('start_from', '%Y-%m-%d 00:00:00', false, false, 'btn_start_from');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}"/>
+            <input type="button" class="button" id="btn_start_from" value="{%SELECT_TIME}" onclick="return showCalendar('start_from', '%Y-%m-%d %H:%M:%S', false, false, 'btn_start_from');" />
+            － <input type="text" class="textbox" style="width:120px;" name="start_to" id="start_to" value="{$_REQUEST['start_to']}" onfocus="this.blur(); return showCalendar('start_to', '%Y-%m-%d 23:59:59', false, false, 'btn_start_to');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_start_to" value="{%SELECT_TIME}" onclick="return showCalendar('start_to', '%Y-%m-%d %H:%M:%S', false, false, 'btn_start_to');" />
+            <br />
+            预约金额:
+            <input type="text" class="textbox" name="start_reserve_amount" value="{:trim($_REQUEST['start_reserve_amount'])}" /> -
+            <input type="text" class="textbox" name="end_reserve_amount" value="{:trim($_REQUEST['end_reserve_amount'])}" />
+            <br />
+            预约ID:
+            <input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" />
+            用户ID:
+            <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" />
+            用户名:
+            <input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="10" />
+            用户手机号:<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" />
+            <input type="hidden" value="UserReservation" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <input type="button" class="button" value="导出" onclick="export_csv();" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>预约列表</p>
+    </div>
+    <table id="dataTable" class="dataTable reservationZone" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="19" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row textDecNone">
+            <th width="100px">预约ID</th>
+            <th>预约结束时间</th>
+            <th>预约提交时间</th>
+            <th>预约来源</th>
+            <th>用户ID</th>
+            <th>用户名</th>
+            <th>手机号</th>
+            <th>预约状态</th>
+            <th>预约金额</th>
+            <th>已投资金额</th>
+            <th>投资笔数</th>
+            <th>剩余投资金额</th>
+            <th>预约投资期限</th>
+            <th>贷款类型</th>
+            <th>年化投资收益率</th>
+            <th>还款方式</th>
+            <th>投资券ID</th>
+            <th>投资券状态</th>
+            <th>预约协议</th>
+        </tr>
+        <volist name="list" id="reservation">
+        <tr class="row">
+            <td>
+                &nbsp;{$reservation.id}
+            </td>
+            <td>
+                &nbsp;{$reservation.end_time|format_date}
+            </td>
+            <td>
+                &nbsp;{$reservation.start_time|format_date}
+            </td>
+            <td>
+                &nbsp;{$reservation.referer}
+            </td>
+            <td>
+                &nbsp;{$reservation.user_id}
+            </td>
+            <td>
+                &nbsp;{$reservation.real_name}
+            </td>
+            <td>
+                &nbsp;{$reservation.mobile}
+            </td>
+            <td>
+                &nbsp;{$reservation.reserve_status_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.reserve_amount_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.invest_amount_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.invest_count}
+            </td>
+            <td>
+                &nbsp;{$reservation.need_amount_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.invest_deadline_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.deal_type_desc}
+            </td>
+            <td>
+                &nbsp;{$reservation.invest_rate}%
+            </td>
+            <td>
+                &nbsp;{$reservation.loantype_name}
+            </td>
+            <td>
+                &nbsp;{$reservation.discount_id}
+            </td>
+            <td>
+                &nbsp;{$reservation.discount_status_desc}
+            </td>
+            <td>
+                <a href='javascript:void(0)' onclick="opencontract('{$reservation.id}')">查看</a>
+                <a href="/m.php?m=UserReservation&a=download&id={$reservation.id}">下载pdf</a>
+                <if condition='$reservation.contract_id neq 0'>
+                    <a href="/m.php?m=UserReservation&a=downloadTsa&contract_id={$reservation.contract_id}&id={$reservation.id}">下载TSA</a>
+                </if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+</div>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+<script>
+    function opencontract(id){
+        $.weeboxs.open(ROOT+'?m=UserReservation&a=openContract&id='+id,{contentType:'ajax',showButton:false,title:'合同内容',width:650,height:500});
+    }
+    function get_query_string(){
+        querystring = '';
+        querystring += "&reserve_status="+$("select[name='reserve_status']").val();
+        querystring += "&invest_deadline_opt="+$("select[name='invest_deadline_opt']").val();
+        querystring += "&reserve_src="+$("select[name='reserve_src']").val();
+        querystring += "&deal_type="+$("select[name='deal_type']").val();
+        querystring += "&end_from="+$("input[name='end_from']").val();
+        querystring += "&end_to="+$("input[name='end_to']").val();
+        querystring += "&start_from="+$("input[name='start_from']").val();
+        querystring += "&start_to="+$("input[name='start_to']").val();
+        querystring += "&start_reserve_amount="+$("input[name='start_reserve_amount']").val();
+        querystring += "&end_reserve_amount="+$("input[name='end_reserve_amount']").val();
+        querystring += "&id="+$("input[name='id']").val();
+        querystring += "&user_id="+$("input[name='user_id']").val();
+        querystring += "&real_name="+$("input[name='real_name']").val();
+        querystring += "&mobile="+$("input[name='mobile']").val();
+        querystring += "&invest_rate="+$("select[name='invest_rate']").val();
+        querystring += "&loantype="+$("select[name='loantype']").val();
+        return querystring;
+    }
+    function export_csv() {
+        window.location.href = ROOT+'?export=1&m=UserReservation&a=export_index'+get_query_string();
+    }
+</script>
+

@@ -1,0 +1,328 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<php>
+    function getUserSite($siteid)
+    {
+        $sitename = array_search($siteid,$GLOBALS['sys_config']['TEMPLATE_LIST']);
+        if($sitename)
+        {
+            return $sitename;
+        }
+        else
+        {
+            return '未知的';
+        }
+    }
+    function get_user_group($group_id)
+    {
+        $group_name = M("UserGroup")->where("id=".$group_id)->getField("name");
+        if($group_name)
+        {
+            return $group_name;
+        }
+        else
+        {
+            return l("NO_GROUP");
+        }
+    }
+    function get_user_level($id)
+    {
+        $level_name = M("UserLevel")->where("id=".$id)->getField("name");
+        if($level_name)
+        {
+            return $level_name;
+        }
+        else
+        {
+            return "没有等级";
+        }
+    }
+    function get_referrals_name($user_id)
+    {
+        $user_name = M("User")->where("id=".$user_id)->getField("user_name");
+        if($user_name)
+        return $user_name;
+        else
+        return l("NO_REFERRALS");
+    }
+    function f_to_date($date){
+        return to_date($date,"Y-m-d H:i");
+    }
+    function lock_money_func($money,$id){
+        //return "<a href='javascript:eidt_lock_money(".$id.");'>".format_price($money)."</a>";
+        return format_price($money);
+    }
+    function money_func($money,$user_id){
+        //return "<a href='/m.php?m=MoneyApply&a=add&user_id=".$user_id."'>".format_price($money)."</a>";
+        return format_price($money);
+    }
+</php>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <!-- <input type="button" class="button" value="{%DEL}" onclick="del();" /> -->
+</div>
+
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" id="searchForm" action="__APP__" method="get">
+        用户ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+        企业会员编号：<input type="text" class="textbox" name="member_sn" value="{:trim($_REQUEST['member_sn'])}" style="width:100px;" />
+        {%USER_NAME}：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" style="width:100px;" />
+        企业全称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" style="width:100px;" />
+        <!-- {%USER_EMAIL}：<input type="text" class="textbox" name="email" value="{:trim($_REQUEST['email'])}" style="width:100px;" /> -->
+        <!-- {%USER_MOBILE}：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:100px;" /> -->
+        邀请人：<input type="text" class="textbox" name="inviter_name" value="{:trim($_REQUEST['inviter_name'])}" style="width:100px;" />
+        邀请人电话：<input type="text" class="textbox" name="inviter_phone" value="{:trim($_REQUEST['inviter_phone'])}" style="width:100px;" /> <span style="color:gray;display:none;">只需要填写号码部分</span>
+        企业联络手机号码：<input type="text" class="textbox" name="consignee_phone" value="{:trim($_REQUEST['consignee_phone'])}" style="width:100px;" /> <span style="color:gray;display:none;">只需要填写号码部分</span>
+        注册时间：<input type="text" class="textbox" id="create_time" name="create_time" value="{:trim($_REQUEST['create_time'])}" onclick="return showCalendar('create_time', '%Y-%m-%d', false, false, 'create_time');" style="width:100px;" />
+        审核状态:
+        <select name="verify_status" id="verify_status">
+            <option value="-1">==请选择==</option>
+            <foreach name="verify_status" key="verify_id" item="verify_name">
+                <option value="{$verify_id}" <if condition="isset($_REQUEST['verify_status']) and intval($_REQUEST['verify_status']) eq $verify_id">selected="selected"</if>>{$verify_name}</option>
+            </foreach>
+        </select>
+        <br />
+        <input type="hidden" value="EnterpriseRegister" name="m" />
+        <input type="hidden" value="index" id='actionInput' name="a" />
+        <input type="button" class="button" value="{%SEARCH}" onclick="do_search();"/>
+        <input type="button" class="button" value="{%EXPORT}" onclick="export_csv();" />
+    </form>
+</div>
+<div class="blank5"></div>
+<!--<html:list-->
+    <!--id="dataTable"-->
+    <!--style="dataTable"-->
+    <!--name="user"-->
+    <!--checkbox="true"-->
+    <!--datasource="list"-->
+    <!--show="user_id:用户ID|30px,user_id|numTo32Enterprise:企业会员编号,user_name:企业会员名称,name:企业全称,isbind_bankcard:支付账户状态,user_bankcard:银行账户,consignee_phone:企业联络手机号,sms_phone:接收短信通知手机号,create_time|to_date:注册时间,inviter_name:邀请人姓名,inviter_phone:邀请人手机号,verify_status:审核状态,operate:操作"-->
+<!--/>-->
+
+    <table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+        <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+        <tr class="row">
+            <th width="8"><input id="check" onclick="CheckAll('dataTable')" type="checkbox"></th>
+            <th width="30px">用户ID</th>
+            <th>企业会员编号</th>
+            <th>企业会员名称</th>
+            <th>企业全称</th>
+            <th>支付账户状态</th>
+            <th>银行账户</th>
+            <th>企业联络手机号</th>
+            <th>接收短信通知手机号</th>
+            <th>注册时间</th>
+            <th>邀请人所属网站</th>
+            <th>邀请人姓名</th>
+            <th>邀请人邀请码</th>
+            <th>审核状态</th>
+            <th>操作</th>
+        </tr>
+        <tr>
+            <td colspan="20" class="bottomTd"> &nbsp;</td>
+        </tr>
+
+        <?php foreach($list as $k=>$v) :?>
+        <tr class="row">
+            <?php if($v['verify_stat'] < $pass):?>
+                <td><input name="key" class="key" value="<?= $v['user_id'] ?>" type="checkbox"></td>
+                <td><?= $v['user_id']?></td>
+                <td><?= numTo32Enterprise($v['user_id'])?></td>
+                <td><?= $v['user_name']?></td>
+                <td><?= $v['name']?></td>
+                <td><?= $v['isbind_bankcard']?></td>
+                <td><?= $v['user_bankcard']?></td>
+                <td><?= $v['consignee_phone']?></td>
+                <td><?= $v['sms_phone']?></td>
+                <td><?= to_date($v['create_time'])?></td>
+                <td><?= $v['inviter_group']?></td>
+                <td><?= $v['inviter_name']?></td>
+                <td><?= $v['invite_code']?></td>
+                <td><?= $v['verify_status']?></td>
+                <td>
+                    <?php if($v['verify_stat'] == $has_info):?>
+                        <a href="javascript:showOperate({$v.user_id});">审核</a>
+                        <a href="/m.php?m=EnterpriseRegister&a=info&id={$v.user_id}">查看</a>
+                    <?php else:?>
+                        <a href="/m.php?m=EnterpriseRegister&a=info&id={$v.user_id}">查看</a>
+                    <?php endif;?>
+                </td>
+            <?php endif;?>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+<div style="display:none;">
+    <div id="withdraw_limit">
+        <input type="hidden" id="withdraw_limit_user_id" value =""/>
+        限制提现/投资金额:<br/><input type="TEXT" size="12" name="withdraw_limit_amount" id="withdraw_limit_amount" /><br/>
+        限制提现/投资类型:<br/><select name="withdraw_limit_type" id="withdraw_limit_type">
+            <option value="-1">请选择</option>
+            <foreach name="limit_types" item="item" key="value">
+                <option value="{$value}" <if condition="intval($_REQUEST['withdraw_limit_type']) eq $value">selected="selected"</if>>{$item}</option>
+            </foreach>
+        </select>
+        <br/>
+        备注:<br/>
+        <textarea cols="35" rows="3" name="memo" id="memo"></textarea>
+    </div>
+</div>
+</div>
+<script>
+//企业会员-修改状态
+function set_effect_enterprise(id,domobj) {
+  if (!confirm('确认要重置用户状态吗?'))
+  {
+      return false;
+  }
+  $.ajax({
+      url: ROOT+"?"+VAR_MODULE+"=User&"+VAR_ACTION+"=set_effect&id="+id,
+      data: "ajax=1",
+      dataType: "json",
+      success: function(obj){
+          if(obj.data=='1')
+          {
+              $(domobj).html(LANG['IS_EFFECT_1']);
+          }
+          else if(obj.data=='0')
+          {
+              $(domobj).html(LANG['IS_EFFECT_0']);
+          }
+          else if(obj.data=='')
+          {
+          }
+          $("#info").html(obj.info);
+      }
+  });
+}
+
+function withdraw_limit(id) {
+    var html = $('#withdraw_limit').html();
+    var title = '提交限制提现/投资';
+    $.weeboxs.open(html, {contentType:'html',showButton:true,title:title,width:300,height:150, onok:function(h){
+        $.post('/m.php?m=User&a=commit_withdraw_limit', {uid:id, limit_amount:$.weeboxs.find('#withdraw_limit_amount').val(), type:$.weeboxs.find('#withdraw_limit_type').val(), memo:$.weeboxs.find('#memo').val()},
+        function(d){
+            if (d.code == 0) {
+                alert('提交限制提现申请成功');
+                $.weeboxs.close();
+            }
+            else {
+                alert(d.msg);
+            }
+        },'json');
+    },
+    oncancel:function(){
+        $.weeboxs.close();
+    }
+    });
+}
+
+function edit_tag(id) {
+    window.location.href = "/m.php?m=UserTag&a=edit_relation&uid="+id;
+}
+
+function user_carry_wait(id){
+    window.location.href = "/m.php?m=UserCarry&a=add&uid="+id;
+}
+
+function user_balance(id){
+    window.location.href = "/m.php?m=User&a=balance&uid="+id;
+}
+
+function user_summary(id) {
+    window.open("/m.php?m=User&a=user_summary&uid="+id);
+}
+
+function edit_bank_account(id){
+    $.weeboxs.open(ROOT+'?m=EnterpriseRegister&a=editBankAccount&s=index&uid='+id, {contentType:'ajax',showButton:false,title:'编辑银行账户',modal:true,overlay:5,width:600,height:500,onopen: function(){}});
+}
+function changeLevelSelect(){
+    var url = "/m.php?m=CouponLevel&a=get_level_select";
+    var current_coupon_level_id = '{$_REQUEST["coupon_level_id"]}';
+    $.getJSON(url,{group_id:$("#group_id").val()},function(json){
+        var coupon_level_id = $("#coupon_level_id");
+        $("option",coupon_level_id).remove(); //清空原有的选项
+        var option = "<option value=''>==请选择==</option>";
+        coupon_level_id.append(option);
+        $.each(json,function(index,array){
+            var selected_str = '';
+            if(array['id'] == current_coupon_level_id){
+                selected_str = 'selected="selected"';
+            }
+            option = "<option value='"+array['id']+"' "+selected_str+">"+array['level']+"</option>";
+            coupon_level_id.append(option);
+        });
+    });
+}
+
+changeLevelSelect();
+$("#group_id").change(function(){
+    $("#group_factor_text").html($(this).find("option:selected").attr("factor"));
+    changeLevelSelect();
+});
+
+function update_user_coupon_level(id){
+    if(confirm("确定要更新全部{%USER_COUPON_LEVEL}吗？")){
+        var url = "/m.php?m=CouponLevel&a=update_user_coupon_level";
+        $.getJSON(url,'',function(json){
+            var msg = "更新"+json.update+"条,不变"+json.keep+"条.";
+            if(json.error > 0){
+                alert("更新失败\n"+msg+"\n失败:"+json.error);
+            }else{
+                alert("更新成功\n"+msg);
+            }
+            window.location.reload();
+        });
+    }
+}
+function view_remote_tag(id) {
+    window.location.href = '/m.php?m=RemoteTag&a=edit_user_tag&uid='+id;
+}
+
+function export_csv() {
+    $('#actionInput').val('export_csv');
+    $('#searchForm').submit();
+}
+function do_search() {
+    $('#actionInput').val('index');
+    $('#searchForm').submit();
+}
+
+function showOperate(id){
+    var dialogBox = $.weeboxs.open(ROOT+'?m=EnterpriseRegister&a=showOperate&id='+id, {contentType:'ajax',showButton:true,title:'资料审核',width:600,height:200,
+        onok:function(){
+            var reason = dialogBox.find('#reason').val();
+            var verify_status = dialogBox.find('#verify_status').val();
+            $.post("/m.php?m=EnterpriseRegister&a=operation", { userId: id, status: verify_status, reason: reason }, function(rs) {
+                var rs = $.parseJSON(rs);
+                if (rs.code == 1) {
+                    alert("操作成功！");
+                } else {
+                    alert("操作失败！" + rs.msg);
+                }
+            });
+
+            dialogBox.close();
+            location.href="/m.php?m=EnterpriseRegister&a=index";
+        },
+        oncancel:function(box){
+            dialogBox.close();
+        }
+    });
+}
+
+</script>
+<include file="Public:footer" />

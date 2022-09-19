@@ -1,0 +1,37 @@
+<div class="main">
+    <if condition="$path">
+        <div class="main_title">{$path}</div>
+    </if>
+    <form name="edit" id="_js_form" action="/m.php?m=List&a=nodeedit" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <input type="hidden" name="id" value="{$node.id}">
+            <input type="hidden" name="parent_id" value="{$node.parent_id}">
+            <tr class="_jsedit">
+                <td class="item_title">名称：</td>
+                <td class=""><input type="text" class="textbox require" name="name" value="{$node.name}"/></td>
+            </tr>
+            <tr class="_jsedit">
+                <td class="item_title">分类应用状态：</td>
+                <td class="">启用<input type="radio" class="textbox require" name="status" value="1"
+                    <if condition="$node.status eq 1">checked</if>
+                    />停用<input type="radio" class="textbox require" name="status" value="0"
+                    <if condition="$node.status eq 0">checked</if>
+                    />
+                </td>
+            </tr>
+            <tr class="_jsedit">
+                <td class="item_title">产品风险评分:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="score" value="<if condition="
+                                              $node.score neq 0">{$node.score}</if>"/>
+                </td>
+            </tr>
+            <tr class="_jsedit">
+                <td class="item_title">出借限额:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="limitation"
+                                              value="<if condition=" $node.limitation neq 0">{$node.limitation}</if>
+                    "/>万元
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

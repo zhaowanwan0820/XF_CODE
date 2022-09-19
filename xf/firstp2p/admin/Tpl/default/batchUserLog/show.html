@@ -1,0 +1,47 @@
+<tagLib name="html" />
+<include file="Public:header" />
+
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+    <div class="main_title">批量锁定/解锁详细记录<a href="/m.php?m=batchUserLog&a=index" style="float:right">返回上级</a></div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+
+        <tr class="row">
+            <th>用户id</th>
+            <th>状态</th>
+            <th>标签</th>
+            <th>完成时间</th>
+        </tr>
+
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td>{$item.user_id}</td>
+            <td>{$item.status}</a></td>
+            <td>{$item.tags}</td>
+            <td>{$item.complete_time|to_date}</a></td>
+        </tr>
+        </foreach>
+
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+
+    <div class="page">{$page}</div>
+
+</div>
+
+<include file="Public:footer" />

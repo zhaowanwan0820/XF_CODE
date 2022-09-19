@@ -1,0 +1,73 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">客户端配置</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form  name="search" action="__APP__" method="get">
+        <input type="hidden" value="ApiAdvConf" name="m" />
+        <input type="hidden" value="index" name="a" />
+        广告类型：
+        <select name="name">
+         <option value="">-全部-</option>
+            <foreach name="advType" key="key" item="value">
+                <option value="{$key}" <if condition="$_REQUEST['name'] eq $key">selected="selected"</if>>
+                {$value}
+                </option>
+            </foreach>
+        </select>
+        状态：
+        <select name="status"  style="width:130px">
+         <option value="" <if condition="$_REQUEST['status'] eq 0">selected="selected"</if>>-全部-</option>
+         <option value="1" <if condition="$_REQUEST['status'] eq 1">selected="selected"</if>>有效</option>
+         <option value="2" <if condition="$_REQUEST['status'] eq 2">selected="selected"</if>>无效</option>
+        </select>
+        &nbsp;
+        <input id ="q" type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<!-- Think 系统列表组件开始 -->
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="9" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <th width="50px"><a>编号</a></th>
+        <th width="120px"><a>广告类型</a></th>
+        <th width=""><a>广告内容</a></th>
+        <th width="50px"><a>状态</a></th>
+        <th width="50px">操作</th>
+    </tr>
+    <foreach name="list" key="key" item="item">
+    <tr class="row">
+        <td>&nbsp;{$key + 1}</td>
+        <td>&nbsp;{$item.title}</td>
+        <td>
+            <foreach name="item['value']" key="key" item="value"></br>
+                &nbsp;广告位<php>echo $key < 9 ?  "0".($key+1) : ($key+1);</php> ：
+                                图片地址：<a href = "{$value['imageUrl']}" target="_blank"><php>echo strlen($value['imageUrl'])>35 ? substr($value['imageUrl'],0,35)."..." : $value['url'];</php></a>
+                &nbsp;,&nbsp;跳转 ：{$turnType[$value['type']]}，
+                <if condition="$value['type'] eq 0 || $value['type'] eq 30"><a href = "{$value['url']}"  target="_blank"><php>echo strlen($value['url'])>35 ? substr($value['url'],0,35)."..." : $value['url'];</php></a>
+                <if condition="$value['needLogin'] eq 0">不需要登录，<else/>需要登录， </if></if>
+                <if condition="$value['moreText']">按钮文案:{$value['moreText']}，</if>
+                <if condition="$value['userType'] eq 0">全部用户<elseif condition="$value['userType'] eq 2" />黄金白名单用户<else/>登录用户</if>可看，
+                <if condition="$value['startTime']">开始时间:{$value['startTime']}，</if>
+                <if condition="$value['endTime']">结束时间:{$value['endTime']} </if>
+                </br>
+            </foreach></br>
+        </td>
+        <td>&nbsp;<if condition="$item['is_effect'] eq 1 && $item['value'] neq ''">有效 <else/>无效</if> </td>
+        <td><a href="javascript:edit('{$item.name}')"><?php echo L("EDIT");?></td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="9" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<!-- Think 系统列表组件结束 -->
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />

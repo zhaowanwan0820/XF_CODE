@@ -1,0 +1,55 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/activity/ph_activity_zone.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/activity/ph_activity_zone.js');?>"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.css');?>">
+<script src="/static/v1/js/oauth/jquery-1.10.2.min.js"></script>
+<script src="../static/v2/js/widget/paginate/paginate.v1.js" type="text/javascript"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+
+<html>
+<div class="ph_activity_zone_wap w1100">
+  <input type="hidden" value="{$totalPage}" id="JS_totalPage">
+  <input type="hidden" value="{$count}" id="JS_count">
+  <section class="activity_link">
+    <span><a href="/">首页</a></span><span class="icon">活动专区</span>
+  </section>
+  <!-- 导航部分 -->
+  <section class="activity_nav">
+    <ul id="home">
+      <li class="active JS_state_all">全部</li>
+      <li class="JS_state_1">进行中</li>
+      <li class="JS_state_0">已结束</li>
+    </ul>
+  </section>
+  <!-- 列表部分 -->
+  <section class="activity_content">
+    {if $count eq 0}
+      <div class="empty">
+        <span class="txt1">没有相应的活动哦！</span></br>
+        <span class="txt2">请耐心等待～</span>
+      </div>
+    {else}
+      {foreach from=$actInfo item="item" key=key}
+      <a href="{$item.url}" class="item_href">
+        <div class="item">
+          <div class="active_img"><img src="{$item.imageUrl}" /></div>
+          <div class="active_tit">
+            <span>{$item.moreText}</span>
+          </div>
+          {if $item.isExpire eq 1}
+          <span class="active_state active_state_0">已结束</span>
+          {else}
+          <span class="active_state active_state_1">进行中</span>
+          {/if}
+        </div>
+      </a>
+      {/foreach}
+    {/if}
+    <!-- 分页 -->
+    <div id="pagination" class="pagination">
+      {$pagination}
+    </div>
+  </section>
+</div>
+{include file="web/views/footer.html"}
+</html>

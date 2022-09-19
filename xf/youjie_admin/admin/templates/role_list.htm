@@ -1,0 +1,62 @@
+<!-- $Id: role_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">
+  <form action="javascript:search()" name="searchForm">
+    &nbsp;&nbsp;&nbsp;角色名：<input type="text" name="role_name" size="25" />
+    <button type="submit" class="btn">{$lang.button_search}</button>
+  </form>
+</div>
+<script>
+    function search() {
+        listTable.filter['role_name'] = Utils.trim(document.forms['searchForm'].elements['role_name'].value);
+        listTable.filter['page'] = 1;
+
+        listTable.loadList();
+    }
+</script>
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellspacing='1' cellpadding='3' id='list-table'>
+  <tr>
+    {if $admin_type==0}
+    <th>角色类型</th>
+    {/if}
+    <th>{$lang.user_name}</th>
+    <th>{$lang.role_describe}</th>
+      <th>创建人</th>
+      <th>创建时间</th>
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$admin_list item=list}
+  <tr>
+    {if $admin_type==0}
+    <td class="first-cell" >{$list.type_format}</td>
+    {/if}
+    <td class="first-cell" >{$list.role_name}</td>
+    <td class="first-cell" >{$list.role_describe}</td>
+      <td class="first-cell" >{$list.create_user_name}</td>
+      <td class="first-cell" >{$list.create_time_format}</td>
+    <td align="center">
+      <a href="role.php?act=edit&id={$list.role_id}" title="{$lang.edit}">{$lang.edit}</a>&nbsp;&nbsp;
+      <a href="javascript:;" onclick="listTable.remove({$list.role_id}, '{$lang.drop_confirm}')" title="{$lang.remove}">{$lang.remove}</a></td>
+  </tr>
+  {/foreach}
+</table>
+
+{if $full_page}
+</div>
+<script type="text/javascript" language="JavaScript">
+  {literal}
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+  {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

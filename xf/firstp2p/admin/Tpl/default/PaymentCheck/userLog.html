@@ -1,0 +1,87 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<div class="main">
+<div class="main_title">用户资金记录检查</div>
+<div class="blank5"></div>
+
+<!--统计-->
+<br />
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="11" class="topTd" >&nbsp; </td></tr>
+    <tr class="row" >
+        <th width="60">用户ID</th>
+        <th width="120">用户名</th>
+        <th width="100">姓名</th>
+        <th width="100">用户冻结余额</th>
+        <th width="100">用户可用余额</th>
+        <th></th>
+    </tr>
+    <tr class="row" >
+        <td><?php echo $userInfo['id']; ?></td>
+        <td><a href="?m=User&a=index&user_id=<?php echo $userInfo['id']; ?>" target="_blank"><?php echo $userInfo['user_name']; ?></a></td>
+        <td><?php echo $userInfo['real_name']; ?></td>
+        <td><?php echo $userInfo['lock_money']; ?></td>
+        <td><?php echo $userInfo['money']; ?></td>
+        <td></td>
+    </tr>
+    <tr> <td colspan="11" class="bottomTd">&nbsp; </td> </tr>
+</table>
+<br />
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="11" class="topTd" >&nbsp; </td></tr>
+    <tr class="row" >
+        <th width="120">资金记录冻结总和</th>
+        <th width="120">资金记录可用总和</th>
+        <th width="100">充值成功总和</th>
+        <th width="100">提现成功总和</th>
+        <th width="100">提现申请中笔数</th>
+        <th width="100">提现申请中总额</th>
+        <th></th>
+    </tr>
+    <tr class="row" >
+        <td><b><?php echo round($lockMoneySum, 2); ?></b></td>
+        <td><b><?php echo round($moneySum, 2); ?></b></td>
+        <td><?php echo round($chargeSuccess['total_money'], 2); ?></td>
+        <td><?php echo round($withdrawSuccess['total_money'], 2); ?></td>
+        <td><a href="?m=UserCarry&a=index&user_name=<?php echo $userInfo['user_name']; ?>" target="_blank"><?php echo $withdrawDoing['total']; ?></a></td>
+        <td><?php echo round($withdrawDoing['total_money'], 2); ?></td>
+        <td></td>
+    </tr>
+    <tr> <td colspan="11" class="bottomTd">&nbsp; </td> </tr>
+</table>
+
+<!--资金记录概览-->
+<?php foreach ($stat as $type => $data) { ?>
+<div style="margin:10px;"> <b><?php echo $type; ?>统计</b> </div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="13" class="topTd" >&nbsp; </td></tr>
+    <tr class="row" >
+        <th width="150">类型</th>
+        <th width="50">数量</th>
+        <th width="120">涉及冻结</th>
+        <th width="120">涉及可用</th>
+        <th>备注</th>
+    </tr>
+    <?php foreach($data as $logInfo => $item) { ?>
+    <tr class="row orders">
+        <td><a href="?log_info=<?php echo $logInfo; ?>&id=<?php echo $userInfo['id']; ?>&m=User&a=account_detail" target="_blank"><?php echo $logInfo; ?></td>
+        <td><b><?php echo count($item['money']); ?></b></td>
+        <td><?php echo array_sum($item['lock_money']); ?></td>
+        <td><?php echo array_sum($item['money']); ?></td>
+        <td></td>
+    </tr>
+    <?php } //end foreach ?>
+    <tr> <td colspan="12" class="bottomTd">&nbsp; </td> </tr>
+</table>
+<?php } //end foreach ?>
+
+<div class="blank5"></div>
+</div>
+
+<include file="Public:footer" />

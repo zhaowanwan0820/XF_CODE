@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>信宝中心</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/js/swipeslider/swipeslider.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/summary.css?v=9');?>" rel="stylesheet" />
+    <!--public js&css start-->
+    {include file="api/views/_v48/candy/candy_header.html"}
+</head>
+
+<body>
+    <input type="hidden" class="JS_token" value="{$token}">
+    <input type="hidden" id="candy_amount" value="{$userSummary.candy}" data-explain="信宝总额度" />
+    <input type="hidden" class="agreementCheck" value="{$agreementCheck}">
+    <input type="hidden" class="shopUrl" value="{$shopUrl}">
+    <input type="hidden" class="gameUrl" value="{$gameUrl}">
+    <!-- tit解释弹窗 -->
+    <div class="mask">
+        <div class="bg"></div>
+        <div class="cont">
+            <div class="tit">什么是信宝？</div>
+            <div class="deatail">
+                <p class="deatail1">信宝是网信全新推出的数字激励体系，总量恒定、逐年减半、永不增发！</br> 首年投放1亿信宝，次年减半。1亿信宝平均投放到每天(约27万)，所有用户都可以参与获得。</br>每日24:00根据用户当日持有信力在信力池中占比为用户分配相应数量的信宝。</p>
+                <p class="deatail2">目前用户可以通过出借、投资、签到等日常任务获得信力。邀请好友更会获得大量信力，快来邀请你的好友吧！</br> 后续会推出更多信力获取的任务，敬请期待！</br>每日24:00根据用户当日持有信力在信力池中占比为用户分配相应数量的信宝。</p>
+            </div>
+            <div class="btn">
+                我知道了
+            </div>
+        </div>
+    </div>
+    <!-- 抽奖弹窗 -->
+    <div class="mask_price">
+        <div class="bg"></div>
+        <div class="price_mask fs32" style="z-index: 1001;">
+            <span class="num">1000</span>
+            <div class="JS_back back"></div>
+        </div>
+    </div>
+    <!-- 第一部分 -->
+    <div class="p_candy_summary ff_4100">
+        <div class="top_bg">
+            <div class="content_top JS_xinbao">
+                <a href="" class="JS_to_mine">
+                    <div class="name f14">我的信宝<span class="icon_arrow"></span></div>
+                </a>
+                <div class="num fw ff_41000">{$userSummary.candy}</div>
+            </div>
+            <div class="content_top_deatail">
+                <div class="left">
+                    <div class="b_img1 now_yusuan">今日信力池</div>
+                    <span class="fs18 fw ff_41000">{$userSummary.activityPool}</span>
+                </div>
+                <div class="center">
+                    <div class="b_img now_strong">今日已获信力</div>
+                    <span class="fs18 fw ff_41000">{$userSummary.userActivity}</span>
+                </div>
+                <div class="rigth">
+                    <div class="b_img now_strong">今日可获信宝估算</div>
+                    <span class="fs18 fw ff_41000">{$userSummary.estimateCandy}</span>
+                </div>
+            </div>
+        </div>
+    
+    <!-- 快捷入口 -->
+    <div class="entrance_new clearfix">
+        <div class="entrance_a mall">
+            <div class="entrance_wrap e_img1">
+                <span class="entrance_txt">信宝商城</span>
+            </div>
+        </div>
+        <a class="entrance_a candy_snatch" href="javascript:;">
+            <div class="entrance_wrap e_img2">
+                <div class="snatch_top">夺宝</div>
+                <span class="entrance_txt">信宝夺宝</span>
+            </div>
+        </a>
+        <a href="javascript:;" class="entrance_a gameAll">
+            <div class="entrance_wrap e_img3">
+                <span class="entrance_txt">信宝游戏</span>
+            </div>
+        </a>
+        <a href="javascript:;" class="entrance_a JS_go_shop">
+            <div class="entrance_wrap e_img4">
+                <span class="entrance_txt">虚拟商品</span>
+            </div>
+        </a>
+    </div>
+    <!-- 信力任务 -->
+    <div class="task clearfix task_4100">
+        <div class="tit">
+            <div class="h4"><a class="JS_task_tips task_tips JS_xlrwsm" href=""></a><span class="task_tips_4100">信力任务</span><span class="f13 color_gray">做任务得信力</span></div>
+        </div>
+        <div class="cont clearfix">
+            <a href="firstp2p://api?type=native&name=other&pageno=4">
+                <div class="list list5">
+                    <div class="icon_fanbei"></div>
+                    <div class="left">
+                        <div class="left_tit JS_xlrw">
+                            加入智多新
+                        </div>
+                        <div class="left_cont fs13">
+                            {if $userSummary.stat.DT neq 0}<span>今日已获<e>+{$userSummary.stat.DT}</e></span>{/if}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="firstp2p://api?type=native&name=other&pageno=2">
+                <div class="list list3">
+                    {if $showConfig.ACTIVITY_INVEST_RATIO}
+                    <div class="icon_fanbei"></div>
+                    {/if}
+                    <div class="left">
+                        <div class="left_tit JS_xlrw">
+                            网贷-网信普惠
+                        </div>
+                        <div class="left_cont fs13">
+                            {if $userSummary.stat.P2P neq 0}<span>今日已获<e>+{$userSummary.stat.P2P}</e></span>{/if}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {if $showConfig.ZHUANXIANG}
+            <a href="firstp2p://api?type=native&name=home">
+                <div class="list list4">
+                    {if $showConfig.ACTIVITY_INVEST_RATIO}
+                    <div class="icon_fanbei"></div>
+                    {/if}
+                    <div class="left">
+                        <div class="left_tit JS_xlrw">
+                            投资尊享
+                        </div>
+                        <div class="left_cont fs13">
+                            {if $userSummary.stat.ZHUANXIANG neq 0}<span>今日已获<e>+{$userSummary.stat.ZHUANXIANG}</e></span>{/if}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {/if}
+            <a href="{if $userSummary.stat.CHECKIN eq 0}firstp2p://api?type=native&name=other&pageno=28{else}javascript:void(0){/if}"
+                class="JS_clear_refresh">
+                <div class="list list1">
+                    <div class="left">
+                        <div class="left_tit JS_xlrw">
+                            每日签到
+                        </div>
+                        <div class="left_cont fs13">
+                            {if $userSummary.stat.CHECKIN neq 0}<span>今日已获<e>+{$userSummary.stat.CHECKIN}</e></span>{/if}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <div class="list list_price" {if $userSummary.stat.LOTTERY eq 0} id="JS_price" {/if}> <div class="left">
+                <div class="left_tit JS_xlrw">
+                    每日抽奖
+                </div>
+                <div class="left_cont fs13">
+                    {if $userSummary.stat.LOTTERY neq 0}<span>今日已获<e>+{$userSummary.stat.LOTTERY}</e></span>{/if}
+                </div>
+            </div>
+        </div>
+        {if $showConfig['BONUS_ON']}
+        <a href="/candy/bonus?token={$token}">
+            <div class="list list2">
+                <div class="left">
+                    <div class="left_tit JS_xlrw">
+                        分享任务
+                    </div>
+                    <div class="left_cont fs13">
+                        {if $userSummary.stat.BONUS neq 0}<span>今日已获<e>+{$userSummary.stat.BONUS}</e></span>{/if}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {/if}
+        <a href="firstp2p://api?type=native&name=invite">
+            <div class="list yaoqing">
+                <div class="left">
+                    <div class="left_tit JS_xlrw">
+                        邀请好友
+                    </div>
+                    <div class="left_cont fs13">
+                        {if $userSummary.stat.INVITE neq 0}<span>今日已获<e>+{$userSummary.stat.INVITE}</e></span>{/if}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {if $showConfig.BALANCE}
+        <div class="list list_yue JS_yue_tips">
+            <div class="left">
+                <div class="left_tit JS_xlrw">
+                    余额得信力
+                </div>
+                <div class="left_cont fs13">
+                    {if $userSummary.stat.BALANCE neq 0}<span>今日已获<e>+{$userSummary.stat.BALANCE}</e></span>{/if}
+                </div>
+            </div>
+        </div>
+        {/if}
+        <a href="firstp2p://api?type=native&name=other&pageno=10">
+            <div class="list list_activity">
+                <div class="left">
+                    <div class="left_tit JS_xlrw">
+                        活动奖励
+                    </div>
+                    <div class="left_cont fs13">
+                        {if $userSummary.stat.SHARE neq 0}<span>今日已获<e>+{$userSummary.stat.SHARE}</e></span>{/if}
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+    <!-- 商场 -->
+    <div class="shop shop_4100">
+        {if $showConfig.GAME_ON}
+        <div class="swiper-container game_banner">
+            <ul class="peak_night_banner swiper-wrapper JS_banner">
+            </ul>
+            <!-- 如果需要分页器 -->
+            <div class="swiper-pagination"></div>
+        </div>
+        {/if}
+        <div class="tit tip_4100">
+            <a href="" class="clearfix JS_go_shop">
+                <span class="name task_tips_4100">虚拟商品</span>
+                <span class="f12 color_gray">爆款产品超值购</span>
+                <span class="fr f14 JS_xnsp">更多<span class="ant_icon"></span></span>
+            </a>
+        </div>
+        <div class="loadbox loadbox01 clearfix">
+            {if $couponList}
+            {foreach from=$couponList.yogaCoupon item=couponItem}
+            <a class="JS_to_product" href="" data-id="{$couponItem.id}">
+                <div class="house_card" style="margin-top:18px;">
+                    <div class="quan_bg _quan_bg" style="background:url({$couponItem.couponGroup.pic}) no-repeat; background-size: 100%">
+                    </div>
+                    <div class="f13">{$couponItem.couponGroup.productName}</div>
+                    <div><span class="color_red f14">{$couponItem.price}信宝{if $couponItem.market_price neq 0} <span
+                                class="color_gray line_through">{$couponItem.market_price}信宝</span>{/if}</div>
+                </div>
+            </a>
+            {/foreach}
+            {/if}
+            {foreach from=$suggestProductList item=suggestProductList}
+            {if $suggestProductList.product_type eq 1}
+            <a class="JS_to_product" href="" data-id="{$suggestProductList.id}">
+                <div class="card">
+                    <div class="quan_bg">
+                        {if $suggestProductList.couponGroup.givenType neq 1}
+                        <div class="given_icon">可赠送</div>
+                        {/if}
+                        <span class="f20">{$suggestProductList.couponGroup.goodsPrice}</span>元
+                        <p>满{$suggestProductList.couponGroup.bidAmount}元<br>满{$suggestProductList.couponGroup.bidDayLimit}天可用</p>
+                    </div>
+                    <div class="f13">{$suggestProductList.couponGroup.goodsPrice}元返现券</div>
+                    <div><span class="color_red f14">{$suggestProductList.price}信宝</div>
+                </div>
+            </a>
+            {/if}
+            {/foreach}
+        </div>
+        {if $topLifeProductList}
+        <div class="tit tip_4100">
+            <a href="" class="clearfix JS_go_shop">
+                <span class="name task_tips_4100">精选商品</span>
+                <span class="f12 color_gray">高颜值品质甄选</span>
+                <span class="fr f14 JS_jxsp">更多<span class="ant_icon"></span>
+            </a>
+        </div>
+        <div class="loadbox loadbox01 clearfix JS_jxshqy">
+            {foreach from=$topLifeProductList item=suggestProductList}
+            {if $suggestProductList.product_type eq 2}
+            {if $agreementCheck}
+            <a class="list clearfix entityList" data-url="{$suggestProductList.url}" href="storemanager://api?type=webview&gobackrefresh=true&url=">
+                {else}
+                <a class="list clearfix" data-url="{$suggestProductList.url}" href="/candy/shop?token={$token}">
+                    {/if}
+                    <div class="left_img"><img src="{$suggestProductList.product_info.img_url}"></div>
+                    <div class="middle">
+                        <p class="cont f13">{$suggestProductList.product_info.name}</p>
+                        <p class="f14">
+                            <span class="num color_red">{$suggestProductList.price}信宝</span>
+                        </p>
+                    </div>
+                </a>
+                {/if}
+                {/foreach}
+        </div>
+        {/if}
+    </div>
+    <div class="f12 tc ios_tips end_tip"><span class="heng"></span><span>商城服务由第三方服务商提供与苹果公司无关</span><span class="heng"></span></div>
+    </div>
+    <div class="JS_pop" style="display: none">
+        <div class="JS_pop_content">
+            <div class="tc fb zcxy_title">信宝商城注册协议</div>
+            <div class="ui_messagebox_close JS_close"></div>
+                <div class="p_shop_agreement">
+                        <div class="tc fb fw_bold">注册协议</div>
+                        <div class="f15 fb fw_bold">成都长隆合久科技有限公司作为互联网商城（以下统称为“本平台”）的经营者，依据本注册协议（以下简称“本协议”）为您提供服务。</div>
+                        <div class="f15 fb fw_bold">特别提醒：请您务必审慎阅读、充分理解各条款内容，特别是免除或者限制责任的条款、法律适用和争议解决条款。免除或者限制责任的条款将以粗体下划线标识，您应重点阅读。当您按照注册页面提示填写信息、阅读并同意本协议且完成全部注册程序后，即表示您已充分阅读、理解并接受本协议的全部内容，并与平台达成一致，成为本平台的“用户”。阅读本协议的过程中，如果您不同意本协议或其中任何条款约定，您应立即停止注册程序。</div>
+                        <div class="f15 fb fw_bold">一、协议内容及签署</div>
+                        <div>1.1 本协议内容包括协议正文及所有本平台已经发布的或将来可能发布的各类规则。所有规则为本协议不可分割的组成部分，与协议正文具有同等法律效力。除另行明确声明外，任何本平台及其关联实体提供的服务（以下称为本平台服务）均受本协议约束。</div>
+                        <div>1.2 用户应当在使用本平台服务之前认真阅读全部协议内容。如用户对协议有任何疑问的，应向本平台咨询。<span class="fb">一旦用户注册或使用本平台服务，则本协议即对用户产生约束，届时用户不应以未阅读本协议的内容或者未获得本平台对用户问询的解答等理由主张本协议无效，或要求撤销本协议。</span></div>
+                        <div>1.3 用户承诺接受并遵守本协议的约定。如果用户不同意本协议的约定，则用户应立即停止注册、使用本平台服务。<span class="fb">一旦用户注册或使用本平台服务即视为对本服务协议的充分理解和接受，如有违反而导致任何法律后果的发生，用户将独立承担相应的法律责任。</span></div>
+                        <div class="fb">1.4 在本协议履行过程中，本平台有权根据情况对本协议及各类规则进行修改或制订。一旦本协议的内容发生变动，本平台将通过网站或APP等方式公布最新的服务协议。变更后的协议和规则一经在本平台公布即立即生效。</div>
+                        <div>1.5 本平台有权依据自主判断暂时停止提供、限制或改变具体服务内容。</div>
+                        <div>1.6 若用户不同意相关变更，则应立即停止使用本平台服务。用户继续使用本平台服务的，则视为用户已接受本平台对本服务协议所做的修改，并受修改后的协议约束。</div>
+                        <div class="fb f15 fw_bold">二、用户</div>
+                        <div>2.1 用户资格</div>
+                        <div>2.1.1 用户确认，在用户完成注册程序或以其他本平台允许的方式实际使用本平台服务时，用户应当是具备完全民事权利能力和完全民事行为能力的自然人、法人或非法人组织。若用户不具备前述主体资格，则用户及用户的监护人应承担因此而导致的一切后果，且本平台有权随时注销或永久冻结用户的账户，若因此给本平台或第三方造成损失，用户及用户的监护人需承担全部赔偿责任。</div>
+                        <div>2.2 用户账户</div>
+                        <div>2.2.1 用户可以使用用户提供或确认的邮箱、手机号码或者本平台允许的其它方式作为登录手段进入本平台。</div>
+                        <div>2.2.2 除非有法律规定或司法裁定，或者符合本平台公布的条件，否则用户的登录名、昵称和密码不得以任何方式转让、赠与或继承，并且转让、赠与或继承需提供本平台要求的合格的文件材料并根据本平台制定的操作流程办理。</div>
+                        <div>2.3 用户信息</div>
+                        <div>2.3.1用户必须依本平台要求提示提供个人真实、最新、有效及完整的资料。用户有义务维持并更新用户的资料，确保其为真实、最新、有效及完整。若用户提供任何错误、虚假、过时或不完整的资料，或者本平台依其独立判断怀疑资料为错误、虚假、过时或不完整，本平台有权暂停或终止用户的用户资格，并拒绝用户使用本平台服务的部份或全部功能。在此情况下，本平台不承担任何责任，并且用户同意承担因此所产生的直接或间接的任何支出或损失。</div>
+                        <div>2.3.2 用户应当准确填写并及时更新用户提供的电子邮件地址、联系电话、联系地址、邮政编码等联系方式，以便本平台或其他用户与用户进行有效联系，因通过这些联系方式无法与用户取得联系，导致用户在使用本平台服务过程中产生任何损失或增加费用的，本平台亦不承担任何责任，所有后果应由用户个人单独承担。用户了解并同意，用户有义务保持其提供的联系方式的有效性，如有变更或需要更新的，用户应按本平台要求的步骤进行相关操作。</div>
+                        <div>2.3.3 用户了解本平台展示的信息系第三方商家自行发布，且可能存在风险和瑕疵。本平台仅作为交易地点。本平台仅作为用户获取物品或服务信息、选择交易对象，就物品和/或服务的交易进行协商及开展交易的场所，但本平台无法控制交易所涉及的物品的质量、安全或合法性，商贸信息的真实性或准确性，以及交易各方履行其在贸易协议中各项义务的能力。用户应自行谨慎判断确定相关物品及/或信息的真实性、合法性和有效性，并自行承担因此产生的责任与损失。</div>
+                        <div class="f15 fb fw_bold">三、平台服务</div>
+                        <div>3.1 本平台向用户提供服务，主要包括：交易信息发布、交易管理服务、咨询服务等 ，具体服务以本平台当时提供的服务内容为准。因未能完成认证而无法享受本平台服务造成的损失，本平台不承担任何责任。</div>
+                        <div>3.2 若用户在本平台交易途中与商家发生纠纷时，任意一方或双方共同提交本平台要求调处，则本平台有权根据单方判断做出调处决定，用户了解并同意接受本平台的判断和调处决定。</div>
+                        <div>3.3 用户了解并同意本平台有权应政府部门（包括司法及行政部门）的要求，向其提供用户向本平台提供的用户信息和交易记录等必要信息。如用户涉嫌侵犯他人知识产权等合法权益，则本平台亦有权在初步判断涉嫌侵权行为存在的情况下，保证权利人对该情况知悉的权利。</div>
+                        <div>3.4 用户在使用本平台服务过程中，所产生的应纳税赋，以及一切硬件、软件、服务及其它方面的费用，均由用户独自承担。</div>
+                        <div>3.5 服务可包含对其他网站或内容或资源的超级链接。本平台可能并不控制由本平台以外的公司或个人提供的任何网站或资源。</div>
+                        <div>3.6 用户认知并同意，本平台不对该等外部网站或资源的可用性负责，亦不对该等网络或资源上的或从该等网站或资源获得的任何广告、产品或其他材料加以认可。</div>
+                        <div>3.7 用户认知并同意，本平台不对用户由于第三方网站或资源的可用性或用户对第三方网站或资源上的或从第三方网站或资源获得的任何广告、产品或其他材料的完整性、准确性或存在的信赖而发生的任何损失或损害承担责任。用户在使用过程中应注意仔细辨别，保护自我权益，由此导致的用户的所有损失，本平台亦不承担任何责任。同时，经由本平台服务的使用下载或取得任何资料，应由用户自行考量且自负风险，因资料的下载而导致的任何损失由用户自行承担。</div>
+                        <div class="fb f15 fw_bold">四、隐私条款及授权条款</div>
+                        <div>4.1 本平台对于用户提供的、本平台自行收集的、经认证的个人信息将按照本协议予以保护、使用或者披露。未经本平台事先书面同意，用户不得转让其在本协议项下的任何权利和义务。</div>
+                        <div class="f15 fb">4.2 用户同意，对于用户所提供的全部信息与资料以及用户在使用本平台提供的服务的过程中平台搜集整理后形成的有关数据，用户授予本平台及本平台关联实体独家的、全球通用的、永久的、免费的许可使用权利。</div>
+                        <div class="f15 fb">4.3 为方便用户使用本平台相关服务或其他组织的服务（以下称其他服务），用户同意并授权本平台将用户在账户注册、使用服务过程中提供、形成的信息传递给向用户提供其他服务的组织，或从提供其他服务的组织获取用户在注册、使用其他服务期间提供、形成的信息。用户同意不会因此追究本平台或其关联实体的责任。</div>
+                        <div>4.4 本平台采用行业标准惯例以保护用户的资料。用户因履行本协议提供给本平台的信息，本平台不会恶意出售或免费共享给任何第三方，以下情况除外：</div>
+                        <div>4.4.1 提供独立服务且仅要求服务相关的必要信息的供应商，如印刷厂、邮递公司等；</div>
+                        <div>4.4.2 具有合法调阅信息权限并从合法渠道调阅信息的政府部门或其他机构，如公安机关、人民法院；</div>
+                        <div>4.4.3 经用户或用户授权代表同意的第三方。</div>
+                        <div class="f15 fb fw_bold">五、知识产权的保护</div>
+                        <div>5.1 本平台上所有内容，包括但不限于著作、图片、档案、资讯、资料、平台架构、平台画面的安排、网页设计，均由本平台或其他权利人依法拥有其知识产权，包括但不限于商标权、专利权、著作权、商业秘密等。</div>
+                        <div>5.2 非经本平台或其他权利人书面同意，任何人不得擅自使用、修改、复制、公开传播、改变、散布、发行或公开发表本平台程序或内容。</div>
+                        <div>5.3 用户未经本平台的明确书面同意不许下载（除了页面缓存）或修改平台或其任何部分。用户不得对本平台或其内容进行转售或商业利用；不得收集和利用产品目录、说明和价格；不得对本平台或其内容进行任何衍生利用；不得为其他商业利益而下载或拷贝账户信息或使用任何数据采集、Robots或类似的数据收集和摘录工具。未经本平台的书面许可，严禁对本平台的内容进行系统获取以直接或间接创建或编辑文集、汇编、数据库或人名地址录（无论是否通过Robots、Spiders、自动仪器或手工操作）。另外，严禁为任何未经本使用条件明确允许的目的而使用本平台上的内容和材料。</div>
+                        <div>5.4 禁止反向工程、反向编译和反向汇编：用户不得对本软件产品进行反向工程（ReverseEngineer）、反向编译（Decompile）或反向汇编（Disassemble），同时不得改动编译在程序文件内部的任何资源。除法律、法规明文规定允许上述活动外，用户必须遵守此协议限制。</div>
+                        <div>&nbsp;5.5 尊重知识产权是用户应尽的义务，如有违反，用户应对本平台承担损害赔偿等法律责任。本条款的有效期为法律规定的最高期限。</div>
+                        <div class="f15 fb fw_bold">六、权利限制</div>
+                        <div>6.1在下列情况下用户不可使用服务且不能接受本条款：</div>
+                        <div>6.1.1 用户未达到与本平台订立有约束力的合同的法定年龄。</div>
+                        <div>6.1.2 根据中国或其他国家（包括用户居住的或用户从那里使用服务的国家）的法律，用户是被禁止接受服务的人。</div>
+                        <div class="f15 fb fw_bold">七、用户的义务及承诺</div>
+                        <div>7.1 用户承诺绝不为任何非法目的或以任何非法方式使用本平台服务，并承诺遵守中国相关法律、法规及一切使用互联网之国际惯例，遵守所有与本平台服务有关的网络协议、规则和程序。</div>
+                        <div>7.2 用户同意并保证不得利用本平台服务从事侵害他人权益或违法之行为，若有违反者应负所有法律责任。上述行为包括但不限于：</div>
+                        <div>7.2.1反对宪法所确定的基本原则，危害国家安全、泄漏国家秘密、颠覆国家政权、破坏国家统一的。</div>
+                        <div>7.2.2 侵害他人名誉、隐私权、商业秘密、商标权、著作权、专利权、其他知识产权及其他权益。</div>
+                        <div>7.2.3 违反依法律或合约所应负之保密义务。</div>
+                        <div>7.2.4 冒用他人名义使用本平台服务。</div>
+                        <div>7.2.5 从事任何可能含有电脑病毒或是可能侵害本平台服务系統、资料等行为。</div>
+                        <div>7.2.6 利用本平台服务系统进行可能对互联网或移动网正常运转造成不利影响之行为。</div>
+                        <div>7.2.7 侵犯本平台的商业利益，包括但不限于发布非经本平台许可的商业广告。</div>
+                        <div>7.2.8 其他本平台有正当理由认为不适当之行为。</div>
+                        <div class="f15 fb fw_bold">八、服务中断或故障</div>
+                        <div>&nbsp;8.1 用户同意，基于互联网的特殊性，本平台不担保服务不会中断，也不担保服务的及时性和/或安全性。系统因相关状况无法正常运作，使用户无法使用任何本平台服务或使用任何本平台服务时受到任何影响时，本平台对用户或第三方不负任何责任，前述状况包括但不限于：</div>
+                        <div>8.1.1本平台系统停机维护期间。</div>
+                        <div>8.1.2电信设备出现故障不能进行数据传输的。</div>
+                        <div>8.1.3 由于黑客攻击、网络供应商技术调整或故障、网站升级等原因而造成的本平台服务中断或延迟。</div>
+                        <div>8.1.4 因台风、地震、海啸、洪水、停电、战争、恐怖袭击等不可抗力之因素，造成本平台系统障碍不能执行业务的。</div>
+                        <div class="f15 fb fw_bold">九、 法律适用及争端解决</div>
+                        <div>9.1 本协议是由用户与本平台共同签订的，适用于用户在本平台的全部活动。本协议内容包括但不限于协议正文条款及已经发布的或将来可能发布的各类规则，所有条款和规则为协议不可分割的一部分，与协议正文具有同等法律效力。</div>
+                        <div>9.2 本协议不涉及用户与本平台的其他会员之间，因网上交易而产生的法律关系及法律纠纷。但用户在此同意将全面接受并履行与本平台其他会员在本平台签订的任何电子法律文本，并承诺按照该法律文本享有和/或放弃相应的权利、承担和/或豁免相应的义务。</div>
+                        <div>9.3 如本协议中的任何条款无论因何种原因完全或部分无效或不具有执行力，则应认为该条款可与本协议相分割，并可被尽可能接近各方意图的、能够保留本协议要求的经济目的的、有效的新条款所取代，而且，在此情况下，本协议的其他条款仍然完全有效并具有约束力。</div>
+                        <div>9.4 本协议及其修订的有效性、履行与本协议及其修订效力有关的所有事宜，将受中国法律管辖，任何争议仅适用中国法律。</div>
+                        <div>9.5 因本协议所引起的会员与本平台的任何纠纷或争议，首先应友好协商解决。<span class="fb">协商不成的，用户在此完全同意将纠纷或争议提交本平台所在地有管辖权的人民法院诉讼解决。</span></div>
+                        <div class="f15 fb fw_bold">十、其他</div>
+                        <div>10.1用户自本平台及本平台工作人员或经由本平台服务取得的建议或资讯，无论其为书面或口头，均不构成本平台对本平台服务的任何保证。</div>
+                        <div>10.2 用户同意，用户服务的暂停、中断或终止不代表用户责任的终止，用户仍应对使用本平台服务期间的行为承担可能的违约或损害赔偿责任，同时本平台仍可保有用户的相关信息。</div>
+                        <div>10.3本平台对于用户的通知及任何其他的协议、告示或其他关于用户使用个人账号及服务的通知，用户同意本平台可通过本平台公告、电子邮件、手机短信、无线通讯装置等电子方式或常规的信件传递等方式进行，该等通知于发送之日视为已送达收件人。因信息传输等原因导致用户未在前述通知发出当日收到该等通知的，本平台不承担任何责任。</div>
+                        <div>
+                    </div>
+                </div>
+            <div class="agreement">
+              <div class="agreement_btn_box">
+                <span class="JS_authorization authorization_btn">同意并授权</span>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('v4.8/js/swipeslider/swipeslider.js?v=2');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/summary.js?v=6552');?>"></script>
+    <script type="text/javascript">
+        /*轮播*/
+        if (p2pBrowser.iosApp) {
+            $(".ios_tips").show();
+        }
+        /*end*/
+        //诸葛埋点
+        /*webViewDidFinishLoad: 4.10.1版本才有的方法，等到强升版本至少到4.10.1时再将埋点延时window.onload方法换成webViewDidFinishLoad  */
+        // function webViewDidFinishLoad() {
+        //   zhuge.track('进入信宝中心');
+        // }
+        $(function(){
+            zhuge.track('进入信宝中心');
+        })
+        /* end */
+        
+        P2PWAP.app.triggerScheme("firstp2p://api?type=rightbtn&title=" + encodeURIComponent("信宝说明") + "&callback=gotoIntrction");
+        if (!p2pBrowser.iosApp) {
+            P2PWAP.app.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+        }
+        function gotoIntrction() {
+            $(".JS_to_intrction").remove();
+            $("body").append('<a class="JS_to_intrction"></a>');
+            $("body .JS_to_intrction").attr("href", "http://event.ncfwx.com/zt/xinbao_intrction");
+            $("body .JS_to_intrction").click();
+        }
+        function gobackjsfunc() {
+            P2PWAP.app.triggerScheme("firstp2p://api?type=local&action=refresh");
+        }
+        $('.JS_back').click(function () {
+            $('.mask_price').hide();
+            P2PWAP.app.triggerScheme("firstp2p://api?type=local&action=refresh");
+        })
+    </script>
+</body>
+
+</html>

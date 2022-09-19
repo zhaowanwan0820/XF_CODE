@@ -1,0 +1,140 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.1.css');?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/account_o2o_gift.css');?>">
+<script src="<?php echo $this->asset->makeUrl('v3/js/o2o/acquire_detail.js?v=20161205');?>" type="text/javascript"></script>
+<div class="account_o2o_coupon">
+    <div class="ui_action_title">
+        <span class="icon_line"></span>礼券
+    </div>
+
+    <div class="ui-box">
+        <div class="ui_action_tab_nav">
+            <ul class="clearfix j_sub_nav">
+                <li class="select">
+                    <a href="javascript:;">已领取的礼券</a>
+                </li>
+                <li>
+                    <a href="javascript:;" >获得的领券资格</a>
+                </li>
+            </ul>
+        </div>
+        <div class="cunpon_tab">
+            <div class="cunpon_tab_con">
+                <div class="ling_coupon" id="picklist_coupon"> </div>  
+                <script>
+                    template.helper('nowTime', function(){
+                        return Date.parse(new Date());
+                    });
+                </script>
+                <script id="o2o_picklist" type="text/html">
+                    <div class="no_list" id="no_list1" style ="display:none;">
+                        已兑换礼券仅显示最近30天内的记录
+                    </div>
+                    <div class="no_list" id="no_list2" style ="display:none;">
+                        没有更多了
+                    </div>
+                    <% if(list.length > 0 ) { %>
+                        <table>
+                        <colgroup>
+                            <col width="130">
+                            <col width="170">
+                            <col width="100">
+                            <col width="170">
+                            <col width="140">
+                            <col width="125">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th colspan="2"><div class="tl pl30">礼券名称</div></th>
+                                <th>价值</th>
+                                <th>有效期</th>
+                                <th><div style="text-align:center;">说明</div></th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="j_table_tr_changeColor">
+                        <% for(var i = 0 ; i < list.length ; i++){%>
+                            <tr>
+                                <td><div class="pro_img tl"><img src="<%= list[i].pcPic %>"></div></td>
+                                <td class="td_align_left0"><%= list[i].productName %></td>
+                                <td><% if(!!list[i].goodPrice){ %>
+                                    <span class="color_red">￥<%= list[i].goodPrice %></span>
+                                 <% } %>   
+                                 </td>
+                                
+                                <td><span class="j_time_format"><%= list[i].useStartTime %></span><br><span class="j_time_format"><%= list[i].useEndTime %></span></td>
+                                <% if(list[i].status == 1 && (list[i].useEndTime *1000 > nowTime())) {%>
+                                    <td style="text-align:center"><span class="color_green">未使用</span></td>
+                                <% } else if(list[i].status == 2) { %>
+                                    <td style="text-align:center"><span><%= list[i].couponExchangedPcDesc %></span></td>
+                                <% } else {%>
+                                    <td style="text-align:center"><span>已过期</span></td>
+                                <% }%>
+                                <% if(list[i].useRules==12){ %>
+                                    <td><a href="javascript:;" class="see_btn" onclick="Firstp2p.alert({text:'精彩游戏请去app礼券，领取玩哦。',ok:function(dialog){dialog.close()}});">详情</a></td>
+                                <% } else{ %>
+                                    <td><a href="/gift/mineDetail?couponId=<%= list[i].id %>" class="see_btn">详情</a></td>
+                                <% } %>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                    
+                 <% } %>
+                </script> 
+                <div id="status2_last" style="text-align:center;margin:35px 0 35px;line-height:25px;color:#888;font-size:16px; display:none;">
+                    已兑换礼券仅显示最近30天内的记录
+                </div> 
+               <div id="pickListPage" class="pagination pb30"></div>
+            </div>
+            <div class="cunpon_tab_con" style="display:none;">
+                <div class="ling_coupon" id="unpicklist_coupon"></div>  
+                <script id="o2o_unpicklist" type="text/html">
+                 <% if(list.length <= 0 || !list) { %>
+                    <div class="no_list">
+                        没有更多领券资格
+                    </div>
+                 <% } else { %>
+        
+                    <table>
+                        <colgroup>
+                            <col width="300">
+                            <col width="200">
+                            <col width="200">
+                            <col width="120">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th><div class="th_resources_tc">资格来源</div></th>
+                                <th>资格获得时间</th>
+                                <th>领券截止时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="j_table_tr_changeColor">
+                        <% for(var i = 0 ; i < list.length ; i++){%>
+                            <tr>
+                                <td><div class="tl pl30"><%= list[i].deal_name %></div></td>
+                                <td class="j_time_format"><%= list[i].create_time %></td>
+                                <td class="j_time_format"><%= list[i].expire_time %></td>
+                                <td>
+                                <% if(list[i].expired == 0){ %>
+                                    <a href="/gift/pickList?action=<%= list[i].trigger_mode %>&load_id=<%= list[i].deal_load_id %>&deal_type=<%= list[i].deal_type %>" class="see_btn">查看</a>
+                                <% }else { %> 
+                                    <a href="javascript:;" class="disabled_btn">已过期</a>
+                                <% } %> 
+                                </td>
+                            </tr>
+
+                        <% } %>
+                       
+                        </tbody>
+                    </table>
+                  
+                 <% } %>
+                </script>
+                <div id="unpickListPage" class="pagination pb30"></div> 
+            </div>
+            
+        </div>
+    </div>                           
+</div>

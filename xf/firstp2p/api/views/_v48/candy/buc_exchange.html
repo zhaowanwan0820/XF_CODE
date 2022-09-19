@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title>去兑换</title>
+    {include file="api/views/_v48/candy/candy_header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/exchange.css?v=159');?>" rel="stylesheet"/>
+</head>
+<body>
+<div class="m-main">
+    <input type="hidden" class="JS_candy" value="{$userSummary.amount}">
+    <input type="hidden" class="JS_token" value="{$token}">
+    <!-- 顶部banner begin -->
+    <div class="bannerBox">
+        <div class="title">BUC</div>
+        {if $isShowTotalLimit}
+        <div class="totalLimit" id="totalLimit">BUC可兑换库存：<span id="totalLimitNum">{$bucExchageTotalLimit}</span> BUC</div>
+        {/if}
+    </div>
+    <!-- 顶部banner end -->
+    <div class="p_pick_discount">
+        <div class="ui_tab_box">
+            <div class="ex_wrapper">
+                <div class="exchange">
+                    <input class="input exchange_num" type="number" placeholder="请输入兑换数量">
+                    <div class="exchange_right">
+                        <span class="unit">BUC</span>
+                        <p class="button allIn">满额兑换</p>
+                    </div>
+                </div>
+               <p class="tip" style="display:none"><span class="border">您有<i>{$accountInfo.amount}</i>个信宝</span>最多可兑换<i id="bucAmount" class="red">{$bucAmount}</i>个
+                </p>
+                {if $isShowUserLimit}
+                <p class="userLimit color_gray" id="userLimit">您今日可兑额度：<span id="userLimitNum">{$bucExchageUserLimit}</span> BUC</p>
+                {/if}
+                <p class="color_gray pl20">温馨提示：由于信宝商城供应商对商品进行调整，虚拟商品BUC于2018年9月3日 18 时停止兑换，不影响已兑商品的提取，可以通过点击我的信宝，正常提取已兑换的 BUC。</p>
+            </div>
+        </div>
+        <input type="button" class="confirm_exchange" value="确认兑换">
+    </div>
+    <script type="text/javascript" charset="utf-8">
+
+        var totalLimitNum = $('#totalLimitNum').length ? Number($('#totalLimitNum').text().replace(/,/g,'')) : -1;
+        var userLimitNum = $('#userLimitNum').length ? Number($('#userLimitNum').text().replace(/,/g,'')) : -1;
+        var bucAmount = Number($("#bucAmount").text().replace(/,/g,''));
+
+        P2PWAP.app.triggerScheme("firstp2p://api?type=rightbtn&title=");
+        $('.confirm_exchange').click(function () {
+            var valStr = $(".exchange_num").val();
+            if (!valStr || valStr == 0) {
+                P2PWAP.ui.toast("请输入正确的兑换数量")
+                return;
+            }
+            valStr=Number(valStr);
+            if(!limitVerify(valStr)){
+                return;
+            }
+            $.ajax({
+                url: "/candy/BucDoExchange",
+                type: "post",
+                dataType: "json",
+                data: {
+                    token: $(".JS_token").val(),
+                    bucAmount: $(".exchange_num").val(),
+                },
+                beforeSend: function () {
+                    $(".confirm_exchange").attr("disabled", "disabled")
+                },
+                success: function (json) {
+                    if (json.errno == 0) {
+                        P2PWAP.ui.toast("兑换成功")
+                        setTimeout(function () {
+                            window.location.href = "/candy/mine?token={$token}"
+                        }, 2000)
+                        setTimeout(function () {
+                            $(".confirm_exchange").removeAttr("disabled");
+                        }, 2500)
+                    } else {
+                        P2PWAP.ui.toast(json.error)
+                        $(".confirm_exchange").removeAttr("disabled");
+                    }
+                },
+                error: function () {
+                    $(".confirm_exchange").removeAttr("disabled");
+                }
+            })
+        });
+
+        /**
+         * 额度限制
+         */
+        function limitVerify(valStr) {
+            if(totalLimitNum>=0){
+                if (valStr>totalLimitNum){
+                    P2PWAP.ui.toast("您申请兑换BUC数量超出当前库存");
+                    return false;
+                }
+            }
+            if(valStr>bucAmount){
+                P2PWAP.ui.toast("您的信宝额度不足");
+                return false;
+            }
+            if(userLimitNum>=0){
+                if (valStr>userLimitNum){
+                    P2PWAP.ui.toast("您申请兑换BUC数量超出今日用户可兑额度");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        $('.allIn').click(function () {
+            var amount = 0;
+            if(userLimitNum < 0 && totalLimitNum < 0){
+                amount=bucAmount;
+            }else if(userLimitNum < 0 && totalLimitNum > 0){
+                amount=Math.min(bucAmount,totalLimitNum);
+            }else if (userLimitNum > 0 && totalLimitNum < 0) {
+                amount=Math.min(bucAmount,userLimitNum);
+            }else{
+                amount=Math.min(bucAmount,userLimitNum,totalLimitNum);
+            }
+            $(".exchange_num").val(amount);
+        });
+
+    </script>
+</div>
+</body>
+
+</html>

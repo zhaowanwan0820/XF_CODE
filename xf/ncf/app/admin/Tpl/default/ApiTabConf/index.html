@@ -1,0 +1,213 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<style>
+    .file {position: relative;display: inline-block;
+        border: 0px solid #FFFFFF;padding: 0px 12px;overflow: hidden;color: #1E88C7;padding-top:10px;padding-bottom: 20px;top:19px;
+        text-decoration: none;text-indent: 0;line-height: 20px;text-decoration: underline; }
+    .file input {position: absolute;font-size: 100px;right: 0;top: 0;opacity: 0;}
+    .changeWord{text-decoration: none;width: 100px;display: block;margin-left: 10px;cursor: pointer;}
+    .textbox{display: inline-block!important;}
+    .moveBtn{text-decoration: none;background: #8ba9c0;color:#fff;margin:10px 5px 15px 60px;padding:5px;border-radius: 4px;}
+    .moveBtn:hover{color:#fff;text-decoration: none;}
+    .img_center{width: 100px;height:100px;min-height: 60px;}
+    .img_center:hover{text-decoration: none;}
+    img.tab_img{width:80px;height: 80px;}
+
+</style>
+<link rel="stylesheet" href="__TMPL__Common/style/bootstrap.min.css">
+
+<script type="text/javascript" src="/static/admin/Common/js/conf.js"></script>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<script src="__TMPL__Common/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script type="text/javascript">
+
+
+  //上传并验证图片
+    function tryUploadInput(tab_img_id,conf) {
+            var _id = tab_img_id;
+            var img_id = _id+'_img';
+            var _hasSrc = $("#" + img_id).attr("data-src");
+            if(conf == 'tab'){
+                var turnUrl = '/m.php?m=ApiTabConf&a=tabLoadFile';
+            }else if(conf == 'back'){
+                var turnUrl = '/m.php?m=ApiTabConf&a=backLoadFile';
+            }
+            $.ajaxFileUpload({
+                url: turnUrl,
+                secureuri: false,
+                fileElementId:_id,
+                dataType: 'json',
+
+                success: function (data, status) {
+                    if(data.code == 1){
+                        var src = data.imgUrl;
+                        if (src != '') {
+                            if(!_hasSrc){
+                                $("#" + img_id).show();
+                            }
+                            $("#" + img_id).attr("src",src);
+                            $("#" + img_id).attr("data-src",src);
+                        }
+                    }else{
+                        alert(data.message);
+                    }
+                },
+                error: function (data, status, e) {
+                    alert("上传错误");
+                }
+            })
+        }
+
+    //重置图片
+    $(function(){
+        $(".btn_clear").on("click",function(){
+            var dataClear = $(this).attr("data-sortList");
+            $("."+dataClear).find(".tab_img").attr("data-src","").hide();
+        });
+
+    })
+</script>
+<div class="main">
+    <div class="main_title">TAB配置 </div>
+    <div class="blank5"></div>
+    <form autocomplete="off">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <php>
+                for($i = 0; $i < 10; $i+=2){
+                    $j = $i/2;
+            </php>
+            <tr class="sortList1">
+                <td class="item_title">{$tabIcon[$j]}</td>
+                <td class="item_input">
+                    <php>  if(count($tabImg) > 0) { $tabDefault = $tabImg[$j]['tab0'];   $tabSelect = $tabImg[$j]['tab1'];}</php>
+                    <img id="tab_{$i}_img" class="tab_img conf tab_default _" src="{$tabDefault}" data-src="{$tabDefault}" <if condition="$tabDefault eq ''" > height="100" width="100" style="display:none;</if>"/>
+                    <a href="javascript:;" class="file">
+                        <span class="changeWord">默认图片</span>
+                        <input type="file" class="textbox"  onchange="tryUploadInput('tab_{$i}','tab')" name="tab_{$i}" id="tab_{$i}" class="file"/>
+                    </a>
+
+                    <img id="tab_{$i+1}_img" class="tab_img conf  tab_select" src="{$tabSelect}" data-src="{$tabSelect}" <if condition="$tabSelect eq ''" > height="100" width="100" style="display:none;</if>"/>
+                    <a href="javascript:;" class="file">
+                        <span class="changeWord">选中图片</span>
+                        <input  type="file" class="textbox"   onchange="tryUploadInput('tab_{$i+1}','tab')" name="tab_{$i+1}" id="tab_{$i+1}" class="file"/>
+                    </a>
+
+                    <if condition="$i eq 8" >
+                        <span class="tip_span">( 限制大小50KB )</span>
+                        <a href="javascript:;" class="moveBtn btn_clear" data-sortList="sortList1">重置</a>
+                    </if>
+                </td>
+            </tr>
+            <php>
+                }
+            </php>
+            <tr class=" sortList2">
+                <td class="item_title">背景图配置</td>
+                <td class="item_input">
+                    <php>$backimg = $backImg ? $backImg : '';</php>
+                    <img id="back_10_img" class="tab_img conf back_img" src="{$backimg}" data-src="{$backimg}" <if condition="$backimg eq ''" > height="100" width="100" style="display:none;</if>"/>
+                    <a href="javascript:;" class="file">
+                        <span class="changeWord">选中图片</span>
+                        <input  type="file" class="textbox"  class="textbox" onchange="tryUploadInput('back_10','back')" name="backImg" id="back_10" class="file"/>
+                    </a>
+                    <span class="tip_span">( 限制大小150KB )</span>
+                    <a href="javascript:;" class="moveBtn btn_clear" data-sortList="sortList2">重置</a>
+                </td>
+            </tr>
+           <tr>
+                <td class="item_title">有效期:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="startTime" id="startTime" value="<php> if($startTime)  echo date('Y-m-d H:i:s',$startTime);</php>" onfocus="this.blur(); return showCalendar('startTime', '%Y-%m-%d %H:%M:%S', true,true, 'startTime');" />
+                                          至
+                    <input type="text" class="textbox require" name="endTime" id="endTime" value="<php> if($endTime)  echo date('Y-m-d H:i:s',$endTime);</php>" onfocus="this.blur(); return showCalendar('endTime', '%Y-%m-%d %H:%M:%S', true,true, 'endTime');"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%IS_EFFECT}:</td>
+                <td class="item_input">
+                    <lable>{%IS_EFFECT_1}<input type="radio" name="status" value="1" <if condition="$status eq 1">checked="checked"</if>/></lable>
+                    <lable>{%IS_EFFECT_0}<input type="radio" name="status" value="0"  <if condition="$status eq 0">checked="checked"</if>/></lable>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="button" class="button" value="{%SAVE}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    $(function(){
+        //表单提交
+        $(".button").bind('click', function() {
+            var total =[];//tab图片
+            $(".sortList1").each(function(index, el) {
+                var arr_obj = {};
+                var tabDefault = $(this).find(".tab_default").attr("data-src");
+                var tabSelect = $(this).find(".tab_select").attr("data-src");
+
+                if(!!tabDefault && !!tabSelect){
+                    arr_obj['tab0'] = tabDefault;
+                    arr_obj['tab1'] = tabSelect;
+                    total.push(arr_obj);
+                }
+            });
+            if(total.length != 5){
+                total = '';
+            }
+
+            var backImg = $("img[id='back_10_img']").attr("data-src");//背景图片
+
+            var sTime = $("input[name='startTime']").val();
+            var eTime = $("input[name='endTime']").val();
+
+            var startTime = Date.parse(new Date(sTime)) / 1000;
+            var endTime = Date.parse(new Date(eTime)) / 1000;
+
+            var flag = 1;
+            if(!startTime || !endTime){
+                flag = 0;
+                alert("请输入时间");
+            }else if(startTime > endTime){
+                flag = 0;
+                alert("有效期结束时间不能小于开始时间");
+            }
+            var status = $("input[name='status']:checked").val();
+
+            if((!!backImg || !!total ) && flag == 1){
+                $.ajax({
+                    url: "/m.php?m=ApiTabConf&a=update",
+                    type: "POST",
+                    dataType: 'JSON',
+                    data: {
+                        "tabImg":total,
+                        "backImg":backImg,
+                        "startTime":startTime,
+                        "endTime":endTime,
+                        "status":status,
+                    },
+                    success: function(data){
+                        alert(data.info);
+                        window.location.href = "/m.php?m=ApiTabConf&a=index";
+                    }
+                });
+            }
+        });
+    })
+</script>
+<include file="Public:footer" />

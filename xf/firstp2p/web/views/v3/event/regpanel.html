@@ -1,0 +1,174 @@
+        <div id="JS-regpanel" class="ui_register">
+                <div class="form_box">
+                    <div class="border_b">
+                        <div class="ui_tel_tips">+86</div>
+                        <input type="hidden" value="{$oapi_uri}" name="oapi_sign" id="oapi_uri">
+                        <input type="hidden" value="{$oapi_sign}" name="oapi_uri" id="oapi_sign">
+                        <input type="tel" class="ui_reg_input JS-input_mobile" placeholder="手机号码（用于接收验证码）" value="{$mobile}">
+                    </div>
+                    <div class="border_b"><input value="" type="password" class="ui_reg_input JS-input_pwd" placeholder="登录密码（6-20位数字/字母/标点）"></div>
+                    {if $event_cn_hidden != 1}
+                        {if !$is_fenzhan || $setParmas.CodeNotHidden}
+                            <div class="border_b">
+                                <input {if $event_cn_lock == 1}readonly="readonly"{/if} value="{$cn}" type="text" class="ui_reg_input JS-input_invite" placeholder="邀请码（选填）"/>
+                            </div>
+                        {else /}
+                            <input value="{if $appInfo.inviteCode}{$appInfo.inviteCode}{else /}{$cn}{/if}" type="hidden" class="ui_reg_input JS-input_invite"/>
+                        {/if}
+                    {/if}
+                    <div class="border_b">
+                        <input type="tel" class="ui_reg_input JS-input_captcha" placeholder="右侧数字">
+                        <div class="yz_img"><img class="JS-verifyimg" src="" width="80"></div>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    {assign var=website value="注册协议"}
+
+                    {if $is_fenzhan}
+                        <p class="f14 JS-regterm gray pb20" style="float:left;width:50%">我同意<span class="blue">《{$website}》</span></p>
+                        <div class="JS-loginbtn reg_top tr f14" style="display:none;margin:0;"><a href="http://m.wangxinlicai.com/account/login">已有账号？立即登录</a></div>
+                    {else}
+                        <p class="f14 JS-regterm gray pb20">我同意<span class="blue">《{$website}》</span></p>
+                    {/if}
+                    <a class="JS-regbtn reg_finish_btn reg_finish_btn_dis" href="javascript:void(0);" style="clear:both">点击注册 开启投资之旅</a>
+
+                    {if $isMaster != 1 && !empty($downloadURL)}
+                    <p class="tc pt10 f14"><a href='{$downloadURL}'>直接下载App</a></p>
+                    {/if}
+                </div>
+
+                <div class="f14 tc gray risk_tips"><em class="line"></em><span>市场有风险,投资需谨慎</span></div>
+
+            </div>
+            {if $is_fenzhan}
+                {$wap_templ_public_foot.value}
+            {/if}
+            <div id="JS-regverifypanel" class="ui_mask" style="display:none;">
+                <div class="ui_dialog">
+                    <div class="ui_dialog_close JS-closebtn"></div>
+                    <div class="dialog_con">
+                        <div class="title">填写短信验证码</div>
+                        <div class="dialog_text">
+                            <p class="JS-mobilelabel">已向186××××2168发送验证短信</p>
+                            <p>请输入其中6位数字</p>
+                        </div>
+                        <div class="ipt_box">
+                            <input class="ui_yz_input fl JS-input_vcode" placeholder="短信验证码" type="tel">
+                            <span class="reset_btn JS-mcodebtn">重新发送</span>
+                        </div>
+                        <input type="submit" value="完成注册" class="reg_finish_btn reg_finish_btn_dis JS-regbtn">
+                    </div>
+                </div>
+                <?php echo token_input(); ?>
+
+            </div>
+            {if $is_fenzhan}
+            <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+            <script>
+                var _wxShareApiInit = false;
+                var _weixinshareTitle = "{$appInfo.appName}";
+                var _weixinshareContent = "{$share_msg}";
+                var _weixinshareLink = "{$share_url}";
+                var _weixinshareImg = "http:{$appInfo.appLogo}";
+
+                function _changeWeixinshareLink() {
+                    if (!_wxShareApiInit) return;
+                    wx.onMenuShareAppMessage({
+                        title: _weixinshareTitle,
+                        desc: _weixinshareContent,
+                        link: _weixinshareLink, // 分享链接
+                        imgUrl: _weixinshareImg
+                    });
+
+                    wx.onMenuShareTimeline({
+                        title: _weixinshareTitle,
+                        link: _weixinshareLink,
+                        imgUrl: _weixinshareImg
+                    });
+                }
+
+                function _onBridgeReady() {
+                    WeixinJSBridge.call('showOptionMenu');
+                }
+
+                if (typeof WeixinJSBridge == "undefined") {
+                  if (document.addEventListener) {
+                     document.addEventListener('WeixinJSBridgeReady', _onBridgeReady, false);
+                  } else if (document.attachEvent) {
+                     document.attachEvent('WeixinJSBridgeReady', _onBridgeReady);
+                     document.attachEvent('onWeixinJSBridgeReady', _onBridgeReady);
+                  }
+               } else {
+                _onBridgeReady();
+               }
+
+
+
+               function weixinFacility() {
+                   var userAgentString = window.navigator ? window.navigator.userAgent : "";
+                   var weixinreg = /MicroMessenger/i;
+                   return weixinreg.test(userAgentString);
+               };
+               var wHeight = $(window).height();
+               $('body').append('<div class="share_wrap"><div class="share_cover"></div><div class="share_box"></div></div>');
+                   if(weixinFacility()){
+                     $('.share_wrap').append('<div class="wx_tip"></div>');
+                     $('.share_box').append('<div class="line"><div class="part"><a class="wx_hy">微信好友</a></div><div class="part"><a class="wx_pyq">朋友圈</a></div><div class="part"><a class="jiathis_button_tsina">新浪微博</a></div><div class="part"><a class="jiathis_button_tqq">腾讯微博</a></div></div><div class="line"><div class="part"><a class="jiathis_button_qzone">QQ空间</a></div><div class="part"><a class="jiathis_button_douban">豆瓣</a></div><div class="part"></div><div class="part"></div></div>');
+                     $('.wx_hy,.wx_pyq').click(function(event) {
+                       $('.share_icon ,.ui_mask_new').show();
+                       $('.share_wrap').removeClass('show');
+                     });
+                     $('body').on("tap" , ".share_icon" ,function(){
+                       $('.ui_mask_new , .share_icon').hide();
+                     });
+                   } else {
+                     $('.share_box').append('<div class="line"><div class="part"><a class="jiathis_button_tsina">新浪微博</a></div><div class="part"><a class="jiathis_button_tqq">腾讯微博</a></div><div class="part"><a class="jiathis_button_qzone">QQ空间</a></div><div class="part"><a class="jiathis_button_douban">豆瓣</a></div></div>');
+                   }
+                   $('.JS-share_btn').click(function(event) {
+                     $('.share_wrap').addClass('show');
+                   });
+                   $('.share_wrap .share_cover').click(function(event) {
+                     $('.share_wrap').removeClass('show');
+                });
+                // _weixinshareLink = 'http://m.firstp2p.com/';
+                // _weixinshareTitle = 'title';
+                // _weixinshareImg = 'img';
+                // _weixinshareContent = 'content';
+                var title = _weixinshareTitle;
+                var url = _weixinshareLink;
+                var img = _weixinshareImg;
+                var sinalink = "http://service.weibo.com/share/share.php?title=" + title + "&url=" + url + "&pic=" + img;
+                var qqlink = "http://share.v.t.qq.com/index.php?c=share&a=index&title=" + title + "&url=" + url + "&pic=" + img;
+                var qzonelink = "http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=" + url + "&title=" + title + "&pics=" + img;
+                var doubanlink = "http://www.douban.com/share/service?href=" + url + "&text=" + title + "&image=" + img;
+                $(".jiathis_button_tsina").attr("href", sinalink).attr("target", "_blank");
+                $(".jiathis_button_tqq").attr("href", qqlink).attr("target", "_blank");
+                $(".jiathis_button_qzone").attr("href", qzonelink).attr("target", "_blank");
+                $(".jiathis_button_douban").attr("href", doubanlink).attr("target", "_blank");
+
+
+
+            </script>
+            {/if}
+
+            <script>
+            var rootDomain='{$rootDomain}';
+            {if $isMaster == 1}
+            var explain = "备案号为：京ICP证130046号，以下简称网信",
+                isMaster = true;
+            {else}
+            var explain = "以下简称网信",
+                isMaster = false;
+            // 注册成功跳转下载页，分站逻辑
+            function _eventRegisterCallback(data)
+            {
+                var downloadURL = data['downloadURL'];
+                if (downloadURL) {
+                    window.location.href = downloadURL;
+                } else {
+                    window.location.href = rootDomain;
+                }
+            }
+            {/if}
+            </script>
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/event/registerpanel.js');?>"></script>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeUrl('game/roulette/css/dazhuanpan.css?version=1539937283428');?>">
+    <title>幸运大转盘</title>
+</head>
+<body class="dzp_body">
+<div id="mainBox">
+    <div class="paddingPopBox">
+        <div class="paddingPopInner">
+            <img src="<?php echo $this->asset->makeUrl('game/roulette/images/topBg.jpg?version=1539937283428');?>" />
+        </div>
+    </div>
+    <div class="paddingPopBox middle" style="margin-top:-1px;">
+        <div class="paddingPopInner">
+            <img src="<?php echo $this->asset->makeUrl('game/roulette/images/middleBg.jpg?version=1539937283428');?>"/>
+            <div class="rotateDiskWrap" id="rotateDiskWrap">
+                <div class="rotateDisk paddingPopBox">
+                    <div class="paddingPopInner" style="overflow: hidden;">
+                        <ul class="contUl" id="contUl">
+                            <li class="item" v-for="item in list">
+                                <div class="imgBox">
+                                    <img :src="item.prizePic" />
+                                </div>
+                                <p v-text="item.prizeName"></p>
+                                <p v-text="item.prizePrice"></p>
+                            </li>
+                        </ul>
+                        <input type="button" class="gameBtn" :class="{disabled:isDisable}" @click="runGame" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="paddingPopBox bottom" style="margin-top:-1px;">
+        <div class="paddingPopInner">
+            <img src="<?php echo $this->asset->makeUrl('game/roulette/images/bottomBg.jpg?version=1539937283428');?>"/>
+            <div class="infor">
+                <p v-if="eventStatus==1" >剩余抽奖机会:<span v-cloak>{{userLeftTimes}}次</span></p>
+                <p v-if="eventStatus==0"><span>游戏未开始</span></p>
+                <p v-if="eventStatus==2"><span>游戏已结束</span></p>
+                <div class="gameRuleWrap">
+                    {if !$isApp }
+                    <a class="goToGame" href="https://m.wangxinlicai.com/">我要抽奖</a>
+                    {/if}
+                    <a class="gameRule" @click="showGameRule=true">游戏规则</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="maskBox" id="maskBox" v-show="showMaskDiv"></div>
+    <!-- 中奖弹层 begin -->
+    <div class="winPop" id="winPop" v-show="showWinPop">
+        <div class="title">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/title.jpg');?>" />
+                </div>
+            </div>
+        </div>
+        <div class="sector">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/winContBg.jpg');?>" />
+                    <div class="winInfor">
+                        <div class="winImgWrap">
+                            <div class="paddingPopBox">
+                                <div class="paddingPopInner">
+                                    <div class="imgBox">
+                                        <img :src="winItem.prizePic" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p v-text="winItem.prizeName"></p>
+                        <p v-text="winItem.prizePrice"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="winTextInfor">
+            <p>恭喜您获得</p>
+            <p v-text="winItem.prizeName"></p>
+            <p>可前往<span>我的-礼券或投资券</span>中查看</p>
+        </div>
+        {if $isShare }
+        <div class="loginBtnBox">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/btnBg.jpg');?>" />
+                    {if $isApp }
+                    <a class="shareBtn"><input type="button" class="loginBtn" value="点击分享"/></a>
+                    {else}
+                    <a class="shareBtn" @click="shareFn('win')"><input type="button" class="loginBtn" value="点击分享"/></a>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {/if}
+        <div class="logoLight">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/logoLight.png');?>" />
+                </div>
+            </div>
+        </div>
+        <a href="javascript:;" class="closeLink" @click="showWinPop=false;">关闭</a>
+    </div>
+    <!-- 中奖弹层 end -->
+    <!-- 分享弹层 begin -->
+    <div class="sharePop" v-show="showSharePop" @click="closeShareFn">
+        <img src="<?php echo $this->asset->makeUrl('game/roulette/images/shareTopBg.png');?>" class="shareTopBg" />
+        <div class="closeTip">
+            <p>点击屏幕任意处取消</p>
+        </div>
+    </div>
+    <!-- 分享弹层 end -->
+    <!-- 中奖规则弹层 begin -->
+    <div class="gameRulePop" v-show="showGameRule">
+        <div class="title">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/title.jpg');?>" />
+                </div>
+            </div>
+        </div>
+        <div class="textCont">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/gameRuleContBg.jpg');?>" />
+                </div>
+                <div class="textPre">
+                    <div class="scrollDiv">{$event.eventDesc}</div>
+                </div>
+            </div>
+        </div>
+        <div class="loginBtnBox">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/btnBg.jpg');?>" />
+                    <input type="button" class="loginBtn" value="我已了解" @click="showGameRule=false;"/>
+                </div>
+            </div>
+        </div>
+        <div class="logoLight">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/logoLight.png');?>" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 中奖规则弹层 end -->
+    <!-- 没有中奖提示框 begin -->
+    <div class="noWinPop" v-show="showNoWinPop">
+        <div class="title">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/title.jpg');?>" />
+                </div>
+            </div>
+        </div>
+        <div class="tipInfor">
+            <p>谢谢您的参与，未中奖</p>
+            <p>下次再来哦</p>
+        </div>
+        {if $isShare }
+        <div class="loginBtnBox">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/btnBg.jpg');?>" />
+                    {if $isApp }
+                    <a class="shareBtn"><input type="button" class="loginBtn" value="点击分享"/></a>
+                    {else}
+                    <a class="shareBtn" @click="shareFn('noWin')"><input type="button" class="loginBtn" value="点击分享"/></a>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {/if}
+        <div class="logoLight">
+            <div class="paddingPopBox">
+                <div class="paddingPopInner">
+                    <img src="<?php echo $this->asset->makeUrl('game/roulette/images/logoLight.png');?>" />
+                </div>
+            </div>
+        </div>
+        <a href="javascript:;" class="closeLink" @click="showNoWinPop=false;">关闭</a>
+    </div>
+</div>
+<!-- loading效果 begin -->
+<div class="loadingBox" id="loadingBox" v-show="showLoading">
+    <div class="timerLoader"></div>
+    <p class="text">正在加载</p>
+</div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.6/vue.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('game/roulette/js/lib/base.js');?>"></script>
+{include file="web/views/v3/game/share_js.html"}
+</body>
+</html>

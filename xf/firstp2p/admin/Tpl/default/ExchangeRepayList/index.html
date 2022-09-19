@@ -1,0 +1,111 @@
+<tagLib name="html" />
+
+<include file="Public:header" />
+
+<link rel="stylesheet" type="text/css" href="/static/admin/Common/js/calendar/calendar.css" />
+<script type="text/javascript" src="/static/admin/Common/js/calendar/calendar_lang.js" ></script>
+<script type="text/javascript" src="/static/admin/Common/js/calendar/calendar.js"></script>
+
+<style>
+#dataTable th { text-align: left; }
+</style>
+
+<div class="main">
+    <div class="main_title">
+        <label>待还款列表</label>
+    </div>
+    <div class="blank5"></div>
+
+    <div class="search_row">
+        <form name="search" action="/m.php" method="get">
+            批次编号：<input type="text" class="textbox" name="batch_id" value="{:trim($_REQUEST['batch_id'])}" style="width:100px;"/>
+            项目名称：<input type="text" class="textbox" name="pro_name" value="{:trim($_REQUEST['pro_name'])}" style="width:150px;"/>
+            交易所备案产品编号：<input type="text" class="textbox" name="jys_num" value="{:trim($_REQUEST['jys_num'])}" style="width:150px;"/>
+            最近一期还款日开始：<input type="text" class="textbox" name="repay_time_start" id="repay_time_start" value="{:trim($_REQUEST['repay_time_start'])}"
+                                       onclick="return showCalendar('repay_time_start', '%Y-%m-%d', false, false, 'repay_time_start');" style="width:80px;"/>
+            最近一期还款日结束：<input type="text" class="textbox" name="repay_time_end" id="repay_time_end" value="{:trim($_REQUEST['repay_time_end'])}"
+                                       onclick="return showCalendar('repay_time_end', '%Y-%m-%d', false, false, 'repay_time_end');" style="width:80px;"/>
+            发行人名称：<input type="text" class="textbox" name="fx_name" value="{:trim($_REQUEST['fx_name'])}" style="width:150px;"/>
+            发行人id：<input type="text" class="textbox" name="fx_uid" value="{:trim($_REQUEST['fx_uid'])}" style="width:100px;"/>
+            还款方式：<select name="repay_type">
+                        <option value="">全部</option>
+                        <option value="1" <if condition="$_REQUEST['repay_type'] eq 1">selected="selected"</if>>到期支付本金收益(天)</option>
+                        <option value="2" <if condition="$_REQUEST['repay_type'] eq 2">selected="selected"</if>>到期支付本金收益(月)</option>
+                        <option value="3" <if condition="$_REQUEST['repay_type'] eq 3">selected="selected"</if>>按月支付收益到期还本</option>
+                        <option value="4" <if condition="$_REQUEST['repay_type'] eq 4">selected="selected"</if>>按季支付收益到期还本</option>
+                     </select>
+            咨询机构：<input type="text" class="textbox" name="consult_name" value="{:trim($_REQUEST['consult_name'])}" /> 
+            交易所: <select name="jys_id">
+                    <option value=""></option>
+                    <foreach name="jysList" key="id_value" item="item_value">
+                      <option value="{$item_value['id']}" <if condition="$item_value['id'] eq $_REQUEST['jys_id']">selected="selected"</if>>{$item_value['name']}</option>
+                    </foreach>
+                    </select> &nbsp;
+            <input type="hidden" value="index" name="a" />
+            <input type="hidden" value="ExchangeRepayList" name="m" />
+            <input type="submit" id="submit_btn" value="搜索" class="button"/>
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable">
+        <tr class="row">
+            <th>序号</th>
+            <th>项目名称</th>
+            <th>交易所备案产品编号</th>
+            <th>期限</th>
+            <th>咨询机构</th>
+            <th>发行人/发行人id</th>
+            <th>交易所</th>
+            <th>期数</th>
+            <th>还款方式</th>
+            <th>批次金额（元）</th>
+            <th>本期还款金额（元）</th>
+            <th>最近一期还款日</th>
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="item" key="index">
+        <tr class="row">
+            <td>{$pageSize * ($nowPage - 1) + $index}</td>
+            <td>{$projectList[$item['pro_id']]['name']}</td>
+            <td>{$projectList[$item['pro_id']]['jys_number']}</td>
+            <td>
+                <if condition="$projectList[$item['pro_id']]['repay_type'] eq 1">
+                    {$projectList[$item['pro_id']]['repay_time']}天
+                <else />
+                    {$projectList[$item['pro_id']]['repay_time']}月
+                </if>
+            </td>
+            <td>{$agencyList[$projectList[$item['pro_id']]['consult_id']]['name']}</td>
+            <td>{$publishList[$projectList[$item['pro_id']]['fx_uid']]['real_name']} / {$projectList[$item['pro_id']]['fx_uid']}</td>
+            <td>{$jysList[$projectList[$item['pro_id']]['jys_id']]['name']}</td>
+            <td>{$item['batch_number']}期</td>
+            <td>
+                <if condition="$projectList[$item['pro_id']]['repay_type'] eq 1">
+                到期支付本金收益(天)
+                <elseif condition="$projectList[$item['pro_id']]['repay_type'] eq 2" />
+                到期支付本金收益(月)
+                <elseif condition="$projectList[$item['pro_id']]['repay_type'] eq 3" />
+                按月支付收益到期还本
+                <else />
+                按季支付收益到期还本
+                </if>
+            </td>
+            <td>{$item['amount'] / 100}</td>
+            <td>{$repayList[$item['id']]['repay_money'] / 100}</td>
+            <td>{:date("Y-m-d", $repayList[$item['id']]['repay_time'])}</td>
+            <td>
+                <a href="{:u('ExchangeRepayList/normalPay?batch_id=' . $item['id'])}">强制还款</a>
+                <a href="{:u('ExchangeRepayList/prePay?batch_id=' . $item['id'])}">提前还款</a>
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+
+    <div class="page">{$page}</div>
+    <div class="blank5"></div>
+</div>
+
+<include file="Public:footer" />

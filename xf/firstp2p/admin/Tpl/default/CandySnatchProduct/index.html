@@ -1,0 +1,60 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">信宝夺宝
+    <a href="m.php?m=CandySnatchProduct&a=index" class="back_list">返回列表</a></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get" enctype="multipart/form-data">
+            商品名称： <input type="text" class="textbox" name="product_name" value="{$productName}" />
+            所需信宝： <input type="text" class="textbox" name="code_total" value="{$codeTotal}" />
+            <input type="hidden" value="CandySnatchProduct" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <input type="button" class="button" value="新增" onclick="location.href='/m.php?m=CandySnatchProduct&a=add'">
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr class="row">
+            <th>商品编号</th>
+            <th>今日剩余数量</th>
+            <th>商品名称</th>
+            <th>所需信宝</th>
+            <th>商品种类</th>
+            <th>排序</th>
+            <th>状态</th>
+            <th style="width:">操作</th>
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td>&nbsp;{$item.id}</td>
+                <td>&nbsp;{$item.number}</td>
+                <td>&nbsp;{$item.short_title}</td>
+                <td>&nbsp;{$item.price}</td>
+                <td>&nbsp;
+                    <if condition = "$item.type eq 0">
+                        普通商品
+                        <elseif condition = "$item.type eq 1"/>
+                        双十一商品
+                        <else/>
+                        邀请专享商品
+                    </if>
+                </td>
+                <td>&nbsp;{$item.sort}</td>
+                <td>&nbsp;{$item.status}</td>
+                <td>
+                    <a href="/m.php?m=CandySnatchProduct&a=detail&id={$item.id}&short_title={$item.short_title}">详情</a>
+                    <a href="/m.php?m=CandySnatchProduct&a=edit&id={$item.id}" >修改</a>
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="9" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

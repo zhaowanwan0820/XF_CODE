@@ -1,0 +1,166 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_help.css');?>" />
+<div class="p_help">
+<div class="blank"></div>
+<div class="clearfix">
+    <div class="short_uc fl">
+        <div class="comm2_top"></div>
+        <div class="comm2_con"><div class="nav-aside">
+                {foreach from=$cate_list key=key item=cate}
+                <span class="nav-aside-lv1{if $key eq 0} first{/if}">{$cate.title}</span>
+                {foreach from=$cate.sub item=item}
+                <a class="nav-aside-lv2 {if $item.id eq $article.id or $item.id eq $cate_id}active{/if}" href="{$item.url}">{$item.title}</a>
+                    {if $item.is_end eq 0}
+                    {foreach from=$item.sub item=item_2}
+                    <a class="nav-aside-lv3 {if $item_2.id eq $cate_id}active{/if}" href="{$item_2.url}">{$item_2.title}</a>
+                    {/foreach}
+                    {/if}
+                {/foreach}
+                {/foreach}
+            </div></div>
+        <div class="comm2_bot"></div>
+    </div>
+    <div class="inc_box fr">
+        <div class="comm_top"></div>
+        <div class="comm_con">
+            <div class="inc">
+                <div class="inc_main" style="padding:0 40px">
+                    <div class="article_title">
+                        {if $is_ph_college neq 1}{$article.title}{else}{$cate.title}{/if}
+                    </div>
+                    <div class="article_info">
+                        {if $is_ph_college neq 1}
+                        <!-- 通用模板 -->
+                        {$article.content}
+                        {elseif $cate_id neq 1501}
+                        <!-- 行业观察 和 热点解读 -->
+                        <div class="article_industry_observe">
+                            {foreach from=$articles item=item}
+                            <a href="{$item.url}">
+                            <div class="article_item clearfloat">
+                                {if $item.image_url}
+                                <div class="article_img" data-img = 'null'><img src="{$item.image_url}" /></div>
+                                {/if}
+                                <div class="article_txt">
+                                    <div class="article_tit">{$item.title}</div>
+                                    <div class="article_date">{$item.date}</div>
+                                </div>
+                            </div>
+                            </a>
+                            {/foreach}
+                       </div>
+                        <div class="load_more JS_load_more">点击查看更多</div>
+                        {else}
+                        <!-- 常见名词 -->
+                            <div class="common_noun_wap">
+                                <div class="noun_tit">
+                                    {foreach from=$articles item=item}
+                                    <span class="shadow">{$item.title}</span>
+                                    {/foreach}
+                                </div>
+                                {foreach from=$articles item=item}
+                                <div class="noun_content">
+                                    {$item.content}
+                                </div>
+                                {/foreach}
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="inc_foot"></div>
+            </div>
+        </div>
+        <div class="comm_bot"></div>
+    </div>
+</div>
+<div class="blank"></div>
+</div>
+<script>
+    //埋点
+    $(function(){
+        zhuge.track('进入媒体报道页')
+    });
+    var content_top_nav = ''
+    function zhugeTrack(place, name, id, content){
+        $('html').on('click',place,function(){
+            content_top_nav = $(this).attr('data-top-nav')
+            if(!!content_top_nav){
+              content = content_top_nav
+            }
+            var data = {};
+            data[id] = content;
+            zhuge.track(name, data)
+        })
+    }
+    zhugeTrack('.new_logo','媒体报道页_导航点击情况','位置','网站logo')
+    zhugeTrack('#top_nav a','媒体报道页_导航点击情况','位置',content_top_nav)
+    zhugeTrack('.login_btn','媒体报道页_导航点击情况','位置','登录')
+    zhugeTrack('.reg_btn','媒体报道页_导航点击情况','位置','免费注册')
+    zhugeTrack('.my_account a','媒体报道页_导航点击情况','位置','我的账户(登录状态下)')
+    zhugeTrack('.JS_phone','媒体报道页_导航点击情况','位置','手机客户端')
+    zhugeTrack('.JS_ph_class','媒体报道页_导航点击情况','位置','网信普惠学院')
+    zhugeTrack('.isNewUser_11626','媒体报道页_浮动新手专区','', '')
+    $('html').on('click','.nav-aside .nav-aside-lv2',function(){
+        var nav_aside_lv2 = this.innerHTML
+        zhuge.track('媒体报道页_点击情况',{
+            '位置': nav_aside_lv2
+        })
+    })
+    //常见名词解释
+    $('.noun_tit span:eq(0)').addClass('fw')
+    $('.noun_content:eq(0)').show()
+    $('html').on('click','.noun_tit span',function(){
+        $('.noun_tit span').removeClass('fw')
+        $(this).addClass('fw')
+        index = $(this).index();
+        $(".common_noun_wap .noun_content").hide()
+        $(".common_noun_wap .noun_content:eq("+index+")").show()
+    })
+
+    //行业观察分页
+    var page_id = 1;
+    var res_see;
+    var page_count = {$page_count};
+    if(page_count <= page_id){
+        $('.JS_load_more').text('没有更多了~')
+    }
+    $('.JS_load_more').click(function() {
+        page_id++;
+        $.ajax({
+            type: "post",
+            url: "/help/id-" + '{$cate_id}',
+            data: {
+                page_id : page_id
+            },
+            dataType:"json",
+            success: function(res) {
+                res_see = res
+                page_id = res.result.page_id;
+                if(page_id >= page_count){
+                    $('.JS_load_more').text('没有更多了~').unbind('click')
+                }
+                var html =''
+                for(var i=0; i<res.result.article.length; i++){
+                    var art = res.result.article[i];
+                    html+= ' <a href="'+art.url+'">'
+                            +'<div class="article_item clearfloat">'
+                            +'    <div class="article_img" >'
+                            + ( art.image_url.length > 0 ? ('<img src="'+art.image_url+'" />') : "")
+                            +'</div>'
+                            +'    <div class="article_txt">'
+                            +'        <div class="article_tit">'+ art.title +'</div>'
+                            +'        <div class="article_date">'+ art.date +'</div>'
+                            +'    </div>'
+                            +'</div>'
+                            +'</a>'
+                }
+                $('.article_industry_observe').append(html)
+
+            },
+            error: function() {
+                alert("未知错误");
+            }
+        })
+    });
+</script>
+{include file="web/views/footer.html"}

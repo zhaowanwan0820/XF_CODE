@@ -1,0 +1,76 @@
+<div class="p_news_repaydetail">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_news_repaydetail.css');?>">
+
+                <div class="ui-box">
+                    <div class="h-title">
+                        <h2><i></i>还款公告</h2>
+                    </div>
+                    <div class="repay-r">
+                        <h1>{$day}平台项目还款公告</h1>
+                        <div class="repay-cont">
+                            <p>尊敬的{if $is_firstp2p}网信普惠{else}网信{/if}用户,以下为今日（<span class="color_red">{$day}</span>）的还款公告：
+                            </p>
+                            <div class="datatable">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <colgroup>
+                                        <col width="87">
+                                            <col width="117">
+                                                <col width="340">
+                                                            <col width="177">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>序号</th>
+                                            <th style="width:50%">项目名称</th>
+                                            <th>还款状态</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="6" class="h15"></td>
+                                        </tr>
+                                        {foreach from=$list item=one name=d}
+                                            <tr>
+                                                <td>{$smarty.foreach.d.iteration}</td>
+                                                <td>{$one.name}</td>
+                                                <td><span class="f16">{$one.type}</span></td>
+                                            </tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                        <!-- //分页 -->
+                        <div  class="new-page">
+                            <div class="ui-pages">
+                            {$pages}
+                            </div>
+                        </div>
+                        <!-- //分页 -->
+                            </div>
+                            <p class="pt20">请项目投资人登陆账户查看明细
+                                <br/> 借款人在此委托{if $is_firstp2p}网信普惠{else}网信{/if}向所有投资人表示感谢，感谢各位投资人在借款人急需帮助的时候提供了资金支持。
+                                <br/> 对资金信息有疑问的投资用户，欢迎致电详询：400-890-9888（工作时间 7:00-23:00）。
+                                <br/> 祝您赚钱体验愉快。
+                            </p>
+                            <p class="tr">{if $is_firstp2p}网信普惠{else}网信{/if}运营团队
+                                <br/> {$day_read}
+                            </p>
+                            <div class="color_gray" style="font-size:12px;">
+                             <p>
+                            注：还款状态是指项目最终还本付息的实际情况，分为以下三种情况 ——
+                        </p>
+
+                                    <p style="text-indent:24px;">
+    1.“正常还款”包含到期还款和提前足额还款，其中到期还款是指借款人按照项目计划回款日足额支付本金及利息；提前足额还款是指借款人在项目计划回款日之前足额支付本金及利息； </p>
+    <p style="text-indent:24px;">
+    2.“提前还款”指借款人在项目计划回款日之前按实际使用天数支付本金及利息； </p>
+    <p style="text-indent:24px;">
+    3.“逾期还款”指因借款人或其他不可抗因素在项目计划回款日之后足额支付本金及利息。 </p>
+    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <script>
+    document.title = "{$day}还款公告-网信ncfwx.com";
+    </script>
+

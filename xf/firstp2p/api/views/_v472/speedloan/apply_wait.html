@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>授信审核</title>
+</head>
+<body class="sfzlsh_body">
+<div class="fixBox">
+    <!-- 身份资料审核成功信息 begin -->
+    <div class="loanSucInfor">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.72/images/speedloan/loanSuccessLogo.png');?>"/>
+        <div class="title">资料提交成功</div>
+        <div class="tipText">正在为您进行授信审核！<br/>一个自然日内完成授信审批及额度评估，请注意短信提醒。</div>
+    </div>
+    <!-- 身份资料审核成功信息 end -->
+    <div class="btnBox">
+        <a href="javascript:;" class="completeBtn" id="completeBtn">完成</a>
+    </div>
+</div>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script type="text/javascript">
+    triggerScheme('firstp2p://api?method=updatebacktype&param=2');
+    triggerScheme('firstp2p://api?type=rightbtn&title=""');
+    $('#completeBtn').on('click',function () {
+        triggerScheme('firstp2p://api?type=local&action=closeself');
+    });
+</script>
+{include file="api/views/_v32/footer.html"}

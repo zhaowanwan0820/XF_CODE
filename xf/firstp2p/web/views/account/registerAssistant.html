@@ -1,0 +1,141 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/pact.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user_v2.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/js/widget/ui/jquery-ui-1.10.3.custom.min.css');?>">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/pact/pact.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/widget/ui/jquery-ui-1.10.3.custom.js');?>"></script>
+<style>
+    input {border:1px solid; padding:5px 2px;}
+</style>
+<div class="user_right">
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1 class="fl">
+                <i class="ico_huankuan"></i>辅助注册
+            </h1>
+            <div class="fg_line"></div>
+        </div>
+        <div class="pact-list">
+            <div class="pact-main" style="height:400px;">
+      <form method='post' id="form" name="form" action="/account/registerAssistant">
+        <table cellpadding="4" cellspacing="1" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">用户名称</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="user_name" />
+                    选填，不填默认H+手机号
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">手机号码</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="mobile" />
+                    必填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">姓名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" />
+                    必填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">身份证号</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="idno" />
+                    必填
+                </td>
+            </tr>
+            <!--<tr>
+                <td class="item_title">用户组ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="group_id" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">Coupon Level ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="coupon_level_id" />
+                </td>
+            </tr>-->
+            <tr>
+                <td class="item_title">邮箱</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="email" />
+                    必填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行名称</td>
+                <td class="item_input">
+                    <select name="bank" id="bank">
+                        <option value="">请选择</option>
+                        {foreach from=$bank_list item="bank_item"}
+                            <option value="{$bank_item.id}">{$bank_item.name}</option>
+                        {/foreach}
+                    </select>
+                    必选
+                    <!--<input type="text" class="textbox" name="bank" />-->
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行卡号</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="acno" />
+                    必填
+                </td>
+            </tr>
+            <!---
+            <tr>
+                <td class="item_title">转出账户</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="transfer_ac" value="{$transfer_ac}" />
+                    选填，用户名称
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">转账金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="transfer_money" value="{$transfer_money}" />
+                    选填，0~30元
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">备注</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="transfer_comment" value="{$transfer_comment}" />
+                    选填
+                </td>
+            </tr>
+            -->
+            <tr>
+                <td class="item_title">注册邀请码</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" readonly="readonly" name="invite" value="{$invite}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="idtype" value="0" />
+                <input type="hidden" name="group_id" value="1" />
+                <input type="hidden" name="coupon_level_id" value="0" />
+                <input type="submit" class="button" value="添加" />
+                <input type="reset" class="button" value="重置" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="pact-dialog" style="display: none"></div>

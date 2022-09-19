@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>风险评测</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/user/risk_assess.css');?>" rel="stylesheet" />
+</head>
+<body class="bg_gray">
+    <div id="adv_answer" style="display:none;">{$question.defaultAnswer}</div>
+    <div class="risk_assessment">
+        <div class="remind" style="">
+            {if $siteId eq 1}
+                <adv adv_id="主站_风险测评提示文案"/>
+            {elseif $siteId eq 100}
+                <adv adv_id="普惠_风险测评提示文案"/>
+            {else}
+                <adv adv_id="分站_风险测评提示文案"/>
+            {/if}
+        </div>
+
+        <!-- <adv adv_id="主站_风险测评提示文案"/>
+        <adv adv_id="分站_风险测评提示文案"/>
+        <adv adv_id="普惠_风险测评提示文案"/> -->
+        <div class="stem">请仔细阅读下面的题目，选出每个题目中最适合您的选项。</div>
+        <input type="hidden" name="id" value="{$question.id}">
+        <input type="hidden" id="hiddenToken" value="{$token}">
+        <input type="hidden" id="backurl" value="{$backurl}">
+        <input type="hidden" id="siteId" value="{$siteId}">
+        {foreach from=$question.subjects item=subject key=subject_key}
+        <div class="QA">
+            <div class="question">{$subject.no}、{$subject.title}</div>
+            <ul class="choice">
+            {foreach from=$subject.items item=item key=item_key}
+                <li><input style="display:none;" type="radio" name="input{$subject.no}" value="{$item.score}" />{$item.alphabet}.{$item.content}</li>
+            {/foreach}
+            </ul>
+        </div>
+        {/foreach}
+        <div class="statement"><span class="red">本人声明：</span>在风险承受能力测试过程中，本人提供的全部信息、资料是真实、准确和完整的，测试结果真实、准确地反映了本人的风险承受程度。</div>
+        <div class="sub_but"><input type="submit" name="" class="but" value="提交" disabled="disabled"></div>
+        <div class="ui_risk_tips" style="margin-bottom:60px;">
+          <!-- <em class="line"></em><span>市场有风险，投资需谨慎</span> -->
+        </div>
+        <div class="pop display_none">
+            <div class="opacity"></div>
+            <div class="assessment_finish">
+                <p class="title">评估完成</p>
+                <p class="type">您的风险承受能力为<span class="test_type">安全型</span></p>
+                <a class="sure" href="">确定</a>
+            </div>       
+        </div>
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+    <script type="text/javascript">
+    $(function(){
+        //点击时打钩
+        $(".QA").children(".choice").children("li").click(function(){
+            $(this).addClass('mark').siblings().removeClass('mark');
+            $(this).children('input').attr('checked', 'checked').parent().siblings().children('input').removeAttr('checked');
+        });
+        //判断十个选择题是否都选了
+        function IsAllSelected(){
+            var a = 0;
+            var obj = $(".QA").length;
+            $(".QA").each(function() {
+                if($(this).find('li').hasClass('mark')){
+                    a = a+1;
+                }
+            });
+            if(a==obj){
+                $(".but").addClass('active').removeAttr('disabled');
+            }
+        }
+        //选择的内容放到一个数组里面
+        function PushInArray(){
+            var score = 0;
+            var obj = $("input[type='radio']");
+            var question_id = $("input[type='hidden']").val();
+            var token = $("#hiddenToken").val();
+            var siteId = $("#siteId").val();
+            if($("#backurl").val()){
+                var backurl = $("#backurl").val(); 
+            }
+            for(var i = 0;i<obj.length;i++){
+                if(obj[i].checked){
+                    score += Number(obj[i].value);
+                }
+            }
+            console.log(score);
+            var mydate = new Date();
+            var mytime=mydate.toLocaleString( );
+            console.log(mytime);
+            var data = {};
+            data['score']=score;
+            data['question_id']=question_id;
+            data['token']=token;
+            data['backurl']=backurl;
+            data['site_id']=siteId;
+            function getQueryString(name) { 
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+                var r = window.location.search.substr(1).match(reg); 
+                if (r != null) return unescape(r[2]); return null; 
+                
+            }
+            var from_confirm = getQueryString("from_confirm");
+            P2PWAP.util.request('/user/do_assess',
+                    function(json){
+                        $('.risk_assessment .pop .test_type').html(json.name);
+                        $('.risk_assessment .pop').removeClass('display_none');
+                        if(from_confirm==1){
+                            $('.risk_assessment .pop .sure').attr("href","firstp2p://api?type=local&action=closeself").click(function() {
+                                $(".needForceAssess_box , .bg_cover").hide();
+                                $('.risk_assessment .pop').addClass('display_none');
+                                location.reload();
+                            });
+                        }else{
+                            $('.risk_assessment .pop .sure').attr("href","firstp2p://api?type=closeall").click(function() {
+                                $(".needForceAssess_box , .bg_cover").hide();
+                                $('.risk_assessment .pop').addClass('display_none');
+                                location.reload();
+                            });
+                        }
+                        $(".sub_but input").removeAttr("disabled");
+                    },
+                    function(errorMsg){
+                        P2PWAP.ui.toast(errorMsg);
+                        $(".sub_but input").addAttr("disabled");
+                    },
+                    'post', data);
+        }
+        //被点击时验证是否已全部选完
+        $(".QA li").on('click', function(){
+            IsAllSelected();
+        });
+        //点击提交时验证
+        $(".but").click(function(){
+            IsAllSelected();
+            PushInArray();
+        });
+
+        
+        //预设答案进行勾选
+        if($("#siteId").val() != 100){//普惠不勾选默认答案
+            var adv_answer = $("#adv_answer").html();
+            if(adv_answer){
+                var obj = eval('(' + adv_answer + ')');
+                var li_length = $(".QA ul.choice").length;
+                var obj_length = obj.question.length;
+                if(obj_length >= li_length){
+                    for(var j = 0;j<li_length;j++){
+                        var select = obj.question[j].answer;//第j个答案
+                        $t = $(".QA ul.choice").eq(j).find('li').eq(select-1);
+                        $t.addClass('mark').siblings().removeClass('mark');
+                        $t.find('input').attr("checked",true);
+                    }
+                    IsAllSelected();
+                }else{
+                    for(var j = 0;j<obj_length;j++){
+                        var select = obj.question[j].answer;//第j个答案
+                        $t = $(".QA ul.choice").eq(j).find('li').eq(select-1);
+                        $t.addClass('mark').siblings().removeClass('mark');
+                        $t.find('input').attr("checked",true);
+                    }
+                    IsAllSelected();
+                }
+            }
+        }
+    })
+    </script>
+</body>

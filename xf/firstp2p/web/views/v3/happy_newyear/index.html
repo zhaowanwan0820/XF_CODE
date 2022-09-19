@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>新年礼包大派送</title>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/happy_newyear/base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/happy_newyear/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/happy_newyear/jquery.fullPage.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/happy_newyear/newyear.css');?>" />
+    <script src="<?php echo $this->asset->makeUrl('v3/js/happy_newyear/jquery-1.10.2.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/happy_newyear/jquery.fullPage.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/happy_newyear/jquery.easings.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/happy_newyear/login.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('/v3/js/event/common.js')?>"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.mc_center').fullpage({
+                'verticalCentered': false,
+                'sectionsColor': ['#f1f1f1', '#f1f1f1', '#f1f1f1', '#fff'],
+                'navigation': false,
+                'resize':true,
+                'navigationPosition': 'right',
+                'continuousVertical':false,
+                'loopHorizontal':false,
+                afterLoad: function (anchorLink, index) {
+                    if (index == "2") {
+                        $(".p1_img03_01").removeClass("pulse");
+                        $(".p1_img03_01").removeClass("animated");
+                        $(".p1_img03_02").removeClass("fadeIn");
+                        $(".p1_img02_01").removeClass("fadeIn");
+                        $(".p1_img02_02").removeClass("pulse1");
+                        $(".p1_text01").removeClass("fadeInUp")
+                    }
+                },
+                onLeave: function (index, nextindex, direction) {
+                    var JS_pick_layer = $('.JS_pick_layer').length;
+
+                    if (nextindex == "1") {
+                        $(".p1_img02_01").addClass("fadeIn");
+                        $(".p1_img02_02").addClass("pulse1");
+                        $(".p1_text01").addClass("fadeInUp");
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+    <body>
+    {include file="web/views/v3/happy_newyear/share_js.html"}
+    
+        <div class="audio_box" onclick="playPause(this)">
+        <audio class="bgmusic" id="bgmusic" controls="controls" loop="loop" autoplay="autoplay"></audio>
+        </div>
+        <div class="mc_center">
+            <div class="icon_arrow"></div>
+            {if $fromLogin neq 1}
+            <div class="section page01">
+                <div class="p1_img01"></div>
+                <div class="p1_img02">
+                    <div class="p1_img02_01 animated fadeIn delay"></div>
+                    <div class="p1_img02_02 pulse1 animated"></div>
+                </div>
+                <div class="p1_img03">
+                    <div class="p1_img03_01 animated pulse"></div>
+                    <div class="p1_img03_02 fadeIn animated"></div>
+                </div>
+                <div class="p1_text01 animated fadeInUp">寒暑更迭,网信与您携手走过又一载年华。<br>
+   年底啦,我们特意为颜值财商都超高的你<br>
+准备了一份大礼哟～</div>
+                <div class="tc rule_btn"><span>活动规则</span></div>
+                <div class="arrow_icon"></div>
+            </div>
+            {/if}
+            <div class="section page03">
+                <div class="p3_img01">
+                    <!-- <div class="p3_img01_01"></div>
+                    <div class="p3_img01_02"></div> -->
+                </div>
+                <div class="p3_img02"></div>
+                <div class="p3_text">
+                    <div class="p3_text01">{function name="date" v="Y年m月" b=$regTime}与你初相遇, </div>
+                    <div class="p3_text02">网信陪你走过了<span class="f24 color_green">{$regDays}</span><span class="color_green">天</span></div>
+                    {if $investAmount > 0}
+                    <div class="p3_text03">共为您管理财富<span class="f24 color_red">{function name="format_price" v=$investAmount b=0}</span><span class="color_red">元</span></div>
+                    {/if}
+                </div>
+                <div class="arrow_icon"></div>
+            </div>
+            {if $medalCount}
+            <div class="section page04">
+                <div class="p4_img01"></div>
+                <div class="p4_text01"><p>您共获得<span class="f24 color_red">{$medalCount}</span>枚勋章<br>
+他们见证了你在网信的荣耀征程</p></div>
+                <div class="medal">
+                    <?php for ($i=0; $i<$GLOBALS['medalCount']; $i=$i+2): ?>
+                    <div class="slide">
+                        <div class="medal_list">
+                            <div class="medal_img" style="background:url(<?php echo $GLOBALS['medals'][$i]['icon']['iconSmall'] ?>) no-repeat center top;background-size:auto 100%;"></div>
+                            <span class="medal_time"><?php echo date('Y年m月', $GLOBALS['medals'][$i]['grantTime']) ?> 荣获勋章</span>
+                            <p class="f24"><?php echo $GLOBALS['medals'][$i]['name'] ?></p>
+                        </div>
+                        <?php if (isset($GLOBALS['medals'][$i+1])): ?>
+                        <div class="medal_list">
+                            <div class="medal_img" style="background:url(<?php echo $GLOBALS['medals'][$i+1]['icon']['iconSmall'] ?>) no-repeat center top;background-size:auto 100%;"></div>
+                            <span class="medal_time"><?php echo date('Y年m月', $GLOBALS['medals'][$i+1]['grantTime']) ?> 荣获勋章</span>
+                            <p class="f24"><?php echo $GLOBALS['medals'][$i+1]['name'] ?></p>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endfor; ?>
+                </div>
+                <div class="arrow_icon"></div>
+            </div>
+            {/if}
+            <div class="section page05">
+            {if $rewards.isOver && !$rewards.isAcquired}
+                <div class="coupon_ylw_bg">
+                    <div class="icon_ylw"></div>
+                    <a class="shear_btn" href="javascript:void(0)">分享给好友</a>
+                    <div class="rule_btn"><span>活动规则</span></div>
+                </div>
+            {else}
+                {if !$rewards.isAcquired}
+                <div class="pick_layer JS_pick_layer">
+                    <div class="open_box">
+                        <div class="open_btn pulse2 JS_open_btn"></div>
+                        <div class="pick_img01"></div>
+                    </div>
+                </div>
+                {/if}
+                <div class="p5_text01">奖励已存入账户{$mobile}</div>
+                <div class="coupon_list fanxian">
+                    <dl>
+                        <dt>
+                            <p><span class="f34">{$rewards.discount.goodsPrice}</span>元</p>
+                            {if $rewards.discount.type eq 2}
+                            <span class="border">加息券</span>
+                            {else}
+                            <span class="border">返现券</span>
+                            {/if}
+                        </dt>
+                        <dd>
+                            <div class="bg_wihte">
+                                <div class="v_middle">
+                                    <p>投资满{$rewards.discount.bidAmount}元，期限满{$rewards.discount.bidDayLimit}天可用</p>
+                                    <p>{$rewards.discount.useDayLimit}天有效期</p>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+                {if $rewards.coupon }
+                <div class="coupon_list bonus delay1">
+                    <dl>
+                        <dt>
+                            <p><span class="f34">{$rewards.coupon.goodPrice}</span>元</p>
+                            <span class="border">{$rewards.coupon.productName}</span>
+                        </dt>
+                        <dd>
+                            <div class="bg_wihte">
+                                <div class="v_middle">
+                                    <p>可用于投资</p>
+                                    <p>{$rewards.coupon.useDayLimit}天有效期</p>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+                {/if}
+                <a class="shear_btn" href="javascript:void(0)">分享给好友</a>
+                <div class="rule_btn"><span>活动规则</span></div>
+            {/if}
+            </div>
+        </div> 
+        <div class="ui_mask"></div>
+        <div class="ui_mask_wihte"></div>
+        <div class="rule_con_box">
+            <div class="rule_con">
+                <h2>[活动规则]</h2>
+                <ul>
+                    <li>用户进入活动页面后，可领取网信感恩礼包，每名用户仅可领取一次礼包；</li>
+                    <li>参与活动即视为同意遵守本活动规则；</li>
+                    <li>在依法合规的前提下，网信对本活动拥有修改、调整和终止的权利。</li>
+                </ul>
+                <div class="close_btn"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+        var myAudio = document.getElementById('bgmusic');
+        function playPause(e){
+            if(myAudio.paused){
+                myAudio.play();
+                console.log('0.0');                
+            }else{
+                myAudio.pause(); 
+                console.log('1.0');
+            }
+        }
+        $(function () {
+            $('.audio_box').click(function(event) {
+                $('.bgmusic_img').toggleClass('change');
+            });
+            setTimeout(function(){
+               $('.page02,.page03,.page04,.page05').css('display','block'); 
+            },100);
+            $('.ui_mask').click(function(){
+                $('.ui_mask').hide();
+            });
+            $('.rule_btn').click(function(event) {
+                $('.rule_con_box').show();
+                $('.ui_mask_wihte').show();
+            });
+            $('.close_btn,.ui_mask_wihte').click(function(event) {
+                $('.rule_con_box').hide();
+                $('.ui_mask_wihte').hide();
+            });
+            $('.JS_open_btn').click(function(){
+                $.ajax({
+                    dataType:'json',
+                    type: 'POST',
+                    url: "/activity/acquire_new_year_prize?token={$token}",//领取接口地址
+                    beforeSend:function(){
+                        $(this).addClass('flipinY');
+                    },
+                    success: function(data) {
+                        if (data.error != 0) {
+                            P2PWAP.ui.showErrorTip(data.msg);
+                        } else {
+                            $('.pick_layer').hide().removeClass('JS_pick_layer');
+                            $(".page05 .coupon_list").addClass('a-rotateineftB');
+                            $(this).removeClass('flipinY');
+                        }
+                    },
+                    error: function(){
+                        // alert("error");
+                        P2PWAP.ui.showErrorTip("网络连接错误，请检查网络");
+                    }
+                });               
+            });
+            var browser = {
+                versions: function() {
+                    var u = navigator.userAgent,
+                        app = navigator.appVersion;
+                    return { //移动终端浏览器版本信息 
+                        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端 
+                        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器 
+                        iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器 
+                        iPad: u.indexOf('iPad') > -1, //是否iPad 
+                    };
+                }()
+            };
+            if(browser.versions.ios){
+                var audio = '<div class="bgmusic_img"></div>'
+                $(audio).appendTo(".audio_box");
+            }
+            if (browser.versions.iPhone || browser.versions.iPad || browser.versions.ios) {
+                function log(info) {
+                    console.log(info);
+                    // alert(info);
+                }
+                function forceSafariPlayAudio() {
+                    audioEl.load(); // iOS 9   还需要额外的 load 一下, 否则直接 play 无效
+                    audioEl.play(); // iOS 7/8 仅需要 play 一下
+                }
+
+                var audioEl = document.getElementById('bgmusic');
+                audioEl.addEventListener('loadstart', function() {
+                    log('loadstart');
+                }, false);
+                audioEl.addEventListener('loadeddata', function() {
+                    log('loadeddata');
+                }, false);
+                audioEl.addEventListener('loadedmetadata', function() {
+                    log('loadedmetadata');
+                }, false);
+                audioEl.addEventListener('canplay', function() {
+                    log('canplay');
+                }, false);
+                audioEl.addEventListener('play', function() {
+                    log('play');
+                    // 当 audio 能够播放后, 移除这个事件
+                    $('.bgmusic_img').addClass('change');
+                    window.removeEventListener('touchstart', forceSafariPlayAudio, false);
+                }, false);
+                audioEl.addEventListener('playing', function() {
+                    log('playing');
+                }, false);
+                audioEl.addEventListener('pause', function() {
+                    log('pause');
+                }, false);
+
+                // 由于 iOS Safari 限制不允许 audio autoplay, 必须用户主动交互(例如 click)后才能播放 audio,
+                // 因此我们通过一个用户交互事件来主动 play 一下 audio.
+                window.addEventListener('touchstart', forceSafariPlayAudio, false);
+                audioEl.click(function(event) {
+                    /* Act on the event */
+                    alert('0.0');
+                });
+
+                audioEl.src = '<?php echo $this->asset->makeUrl('v3/images/happy_newyear/Christmas.mp3');?>';
+            }
+        });
+        </script>
+    </body>
+</html>

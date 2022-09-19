@@ -1,0 +1,64 @@
+{include file="web/views/v3/wxinvest/common/header.html"}
+
+            <div class="discount_box">
+                <div class="discount_box_top discount_box_top2">
+                    <form id="register-form" action="" onsubmit="return false;" method="post">
+                        <div class="account" id='current_mobile'>当前领取手机号{$mobile}</div>
+                        <div class="import">
+                            <?php echo token_input(); ?>
+                            <input type="tel" maxlength="11" name="mobile" id="input-mobile" class=" tel-box change-tel" value="" placeholder="请输入手机号">
+                        </div>
+                        <div class="pick_but">
+                            <input type="button" name="" value="确定" class="tel-btn change-btn">
+                        </div>
+                        <div class="account">说明 : 下次领福利,自动放入新账户</div>
+
+                    </form>
+                </div>
+
+            </div>
+            <script type="text/javascript">
+                var sn = '{$sn}';
+                var count = 1;
+                $(function(){
+                    var mobileRegEx = /^1[3456789]\d{9}$/;
+                    $('.tel-btn').addClass('no-change').attr('disabled','disabled');
+                    $('.tel-box').on('input propertychange', function() {
+                        if (count > 1) {
+                            return false;
+                        }
+                        var tel= $('.tel-box').val();
+                        if(!tel || tel==null){
+                            $('.tel-btn').addClass('no-change').attr('disabled','disabled');
+                            //$('.tel-box').focus();
+                            return false;
+                        }else if(!mobileRegEx.test(tel)){
+                            $('.tel-btn').addClass('no-change').attr('disabled','disabled');
+                            //$('.tel-box').focus();
+                            return false;
+                        }else{
+                            $('.tel-btn').removeClass('no-change').removeAttr('disabled','disabled');
+                            return true;
+                        }
+                    });
+                    $('.tel-btn').on('click', function() {
+                        var changeMobile = $("#input-mobile").val();
+                        var token_id = $("#token_id").val();
+                        var token = $("#token").val();
+                        $.post("ChangeMobile",{newMobile:changeMobile,sn:sn,token_id:token_id, token:token},function(result){
+                            if (result.status) {
+                                $('#current_mobile').html('当前手机号：'+changeMobile);
+                            }
+                            P2PWAP.ui.showErrorTip('<span class="ui_suc_icon"></span><p>修改成功</p>');
+                            setTimeout(function(){
+                                window.location.href = "GetDiscount?sn={$sn}";
+                            },2000);
+                            $('.tel-btn').addClass('no-change').attr('disabled','disabled');
+                            count++;
+                        }, 'json');
+                    });
+                })
+            </script>
+        </div>
+    </body>
+</html>

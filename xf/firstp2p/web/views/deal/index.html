@@ -1,0 +1,681 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/investment_view_web2.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/widget/cookie/cookie.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/investment/investment_view.js');?>"></script>
+<div class="box">
+    <section>
+        <div class="touzi_top clearfix">
+            <div class="tztop_left fl">
+                <div     class="title_box">
+                    <h1 class="pr30"><span><em {if $deal.show_tips eq 1}title='{$deal.old_name}'{/if}>{$deal.show_name}</em><em class="f14 pl15">
+                                {if $deal.deal_tag_name != ''}
+                                    <span class="icon_new j_tips" title="{$deal.deal_tag_name}">{$deal.deal_tag_name}</span>
+                                {/if}
+
+                                    </em></span><span class="w1"></span></h1>
+                </div>
+                <div class="tz_lilv fl">
+                    <dl class="clearfix">
+                        <dt>年化收益率：</dt>
+                        {if $deal.income_ext_rate eq 0 }
+                            {if $deal.isBxt eq 1}
+                                {if $deal.income_fee_rate_format eq $deal.max_rate }
+                                    <dd> {function name="get_num_pic" v="$deal.income_fee_rate_format" f="1"}<i class="ico_percent" alt="%"></i><span class="pzh">                                {else}
+                                    <dd> {function name="get_num_pic" v="$deal.income_fee_rate_format" f="1"}<i class="ico_percent" alt="%"></i><span class="pzh">~</span>{function name="get_num_pic" v="$deal.max_rate" f="1"}<i class="ico_percent" alt="%"></i></dd>
+                                {/if}
+                            {else}
+                                <dd> {function name="get_num_pic" v="$deal.income_fee_rate_format" f="1"}<i class="ico_percent" alt="%"></i> </dd>
+                            {/if}
+                        {if $deal.deal_type eq 1}
+                        <dd class="f14">
+                            <span>起
+                            </span>
+                        </dd>
+                        {/if}
+                        {else}
+                        <dd>
+                            <span class="color-yellow1 f18 tc">{$deal.income_base_rate}<span class="gray">%+</span>{$deal.income_ext_rate}<span class="gray">%</span> {function name="get_rate_tips"}</span>
+                        </dd>
+                        {/if}
+                    </dl>
+                    {if $deal.deal_type eq 0 ||  $deal.deal_type eq 3}
+                    <dl class="clearfix">
+                        <dt>收益方式：</dt>
+                        <dd class="f14">
+                            <span>
+                                {if $deal.loantype eq 5}
+                                {$deal.repay_time}天
+                                {else}
+                                {$deal.repay_time}个月
+                                {/if}
+                            </span>
+                            {$deal.loantype_name}</dd>
+                    </dl>
+                    {else}
+                    <dl class="clearfix">
+                        <dt>收益方式：</dt>
+                        <dd class="f14">
+                            <span>
+                                {function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{$deal.repay_time}天 提前{$deal.redemption_period}天申请赎回
+                            </span>
+                        </dd>
+                    </dl>
+                    {/if}
+                    <dl class="clearfix">
+                        <dt>保障方式：</dt>
+                        <dd>
+                            <span class="f14">{if $deal.warrant eq 1}担保本金{elseif $deal.warrant eq 2}担保本息{elseif $deal.warrant eq 3}有担保{else}无担保{/if}</span>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="tz_jine fl">
+                    <dl class="clearfix">
+                        <dt>可投金额：</dt>
+                        <dd><em class="f20 yellwo">{if $deal.deal_status eq 3}0.00{else}{$deal.need_money_detail}{/if}</em>&nbsp;<span class="f16">元</span></dd>
+                    </dl>
+
+                    <div class="ketou">
+                    投资总额：{$deal.borrow_amount_format_detail}万元 / 已投：{function name="format_price" v="$deal.load_money"} / {if $deal.min_loan_money<1000}{$deal.min_loan_money}元{else}{$deal.min_loan}万{/if}起投
+                     {if $deal.deal_status eq 1 || $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                         <i class="ico_progress">
+                             <i class="ico_bace"></i>
+                             <i class="ico_yitou" style="width:{$deal.loan_rate}%"></i>
+                         </i>
+                     {elseif $deal.deal_status eq 3}
+                         <i class="ico_progress">
+                             <i class="ico_bace"></i>
+                             <i class="ico_yitou" style="width:0%"></i>
+                         </i>
+                     {else}
+                         <i class="ico_progress">
+                             <i class="ico_bace"></i>
+                             <i class="ico_yitou" style="width:100%"></i>
+                         </i>
+                     {/if}
+                    </div>
+
+                    <dl class="clearfix">
+                        <dt>{if isset($deal.start_loan_time_format) && $deal.start_loan_time_format}开标时间{else}剩余时间{/if}：</dt>
+                        <dd>
+                            <span class="f14">
+                            {if $deal.is_crowdfunding eq 0}
+                                {if isset($deal.start_loan_time_format) && $deal.start_loan_time_format}{$deal.start_loan_time_format}
+                                {elseif $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}等待确认
+                                {elseif $deal.deal_status eq 2}满标
+                                {elseif $deal.deal_status eq 3}流标
+                                {elseif $deal.deal_status eq 4}还款中
+                                {elseif $deal.deal_status eq 5}已还清
+                                {else}{$deal.remain_time_format}{/if}
+                            {elseif $deal.is_crowdfunding eq 1}
+                                     {if isset($deal.start_loan_time_format) && $deal.start_loan_time_format}{$deal.start_loan_time_format}
+                                {elseif $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}等待确认
+                                {elseif $deal.deal_status eq 2}已成功
+                                {elseif $deal.deal_status eq 3}流标
+                                {elseif $deal.deal_status eq 4}已成功
+                                {elseif $deal.deal_status eq 5}已成功
+                                {else}{$deal.remain_time_format}{/if}
+                            {/if}
+
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <form id="computeForm" action="/deal/bid/{$deal.ecid}" method="post" {if $user_info}data-login="1"{/if}>
+            <div class="tztop_right fr">
+                <h2>
+                    <span class="text f14">账户余额：</span>{if $user_info}<span class="f18 color-yellow1" >{function name="number_format" v="$total_money" f="2"}</span>
+                    <span class="yellwo">元</span>
+                    {if $bonus gt 0}
+                    <i class="ico_sigh j_tooltip_top" title="现金余额：{function name="number_format" v="$user_info.money" f="2"}元 红包余额：{function name="number_format" v="$bonus" f="2"}元" ></i>
+                    {/if}
+                    <span class="f14"><a href="/account/charge" target="_blank">充值</a></span>
+                    {else}
+                    <span class="f14"><a href="{url x="index" r="user/login"}">登录后可见</a></span>
+                    {/if}
+                </h2>
+                <p class="text">投资金额：
+                    {if $invest_value eq 1}
+                    <input type="text" name="money" class="text_box" id="invest_input" data-min="{$deal.min_loan_money}" data-money="{$total_money}" autocomplete="off" data-max="{$deal.max_loan}" data-age_check="{$age_check}" data-age_min="{$age_min}" value="{$invest_money}" data-perpent="{$deal.expire_rate}%" {if $deal.deal_status neq 1 || $deal.guarantor_status != 2}disabled="disabled"{/if}/>
+                    {else}
+                        {if $deal.deal_type eq 0 ||  $deal.deal_type eq 3}
+                        <input type="text" name="money" class="text_box" id="invest_input" data-min="{$deal.min_loan_money}" data-money="{$total_money}" autocomplete="off" data-max="{$deal.max_loan}" data-age_check="{$age_check}" data-age_min="{$age_min}" value="{if $deal.deal_crowd eq 1}{$deal.crowd_min_loan}{else}{$deal.max_loan}{/if}" data-perpent="{$deal.expire_rate}%" {if $deal.deal_status neq 1 || $deal.guarantor_status != 2}disabled="disabled"{/if}/>
+                        {else}
+                        <input type="text" name="money" class="text_box" id="invest_input" data-min="{$deal.min_loan_money}" data-money="{$total_money}" autocomplete="off" data-max="{$deal.max_loan}" data-age_check="{$age_check}" data-age_min="{$age_min}" value="{if $deal.deal_crowd eq 1}{$deal.crowd_min_loan}{else}{$deal.max_loan}{/if}" data-perpent="{$deal.expire_rate}%" {if $deal.deal_status neq 1 || $deal.guarantor_status != 2}disabled="disabled"{/if}/>
+                        {/if}
+                    {/if}
+                    &nbsp;&nbsp;元 </p>
+                {if $deal.max_loan_money neq 0}
+                <span class="pl63 ml15 pt5 color-gray1">
+                    总额限投<em class="color-yellow1">{$deal.max_loan_money}</em>元</span>
+                {/if}
+                <p {if $deal.isBxt eq 0} {else} style="padding-top:16px;"{/if}><button type="submit"
+                    {if $deal.deal_status neq 1 || $deal.guarantor_status != 2}disabled="disabled"{/if}
+                    class="button_touzi
+                    {if $deal.deal_status neq 1 || $deal.guarantor_status != 2} but-disabled{/if}">
+                    {if $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}等待确认
+                    {elseif $deal.deal_status eq 1 }
+                    	{if  $deal.type_id eq 25}
+                        	捐赠
+                        {else}
+                        	投资
+                        {/if}
+                    {elseif $deal.deal_status eq 2}满标
+                    {elseif $deal.deal_status eq 3}流标
+                    {elseif $deal.deal_status eq 4}还款中
+                    {elseif $deal.deal_status eq 5}已还清{/if}
+                </button></p>
+                {if $deal.deal_type eq 1}
+                <div class="shouyi"><span>日利率：{$deal.rate_day}%(复利计息)</span></div>
+                {/if}
+                <div  class="shouyi {if $deal.deal_type eq 1} none {/if}">
+                    <span class="color-gray">{if $deal.isBxt eq 0}净收益：{else}预期净收益：{/if}</span>
+                    <em  id="income">{if $deal.money_earning eq 0}0.00{/if}</em>元&nbsp;&nbsp;
+                    {if $deal.isBxt eq 0}<span class="color-gray">净收益率：</span>{else}<br/><span class="color-gray">预期收益率：</span>{/if}
+                    {function name="number_format" v="$deal.expire_rate" f="2"}% <i class="ico_sigh" title="{if $deal.isBxt eq 0}净收益率=净收益{else}预期收益率=预期净收益{/if}/投资金额"></i> <i class="ico_braces_r"></i> </div>
+                    <span class="fceng color-red1 none" id="invest_tip"></span>
+                </div>
+
+            </form>
+
+        </div>
+    </section>
+    {if ($deal.isBxt neq 1) or ( $deal.isBxt eq 1 and $deal.warrant eq 3)}
+    {if $deal.is_crowdfunding eq 0}
+    <section>
+        <div  class="main clearfix">
+            <div class="box_title"><i class="danbao"></i>担保方介绍</div>
+            <div class="con_width">
+                <h2><i class="ico_jianjie"></i>机构简介</h2>
+                <p>
+                    {$deal.agency_info.brief}
+                </p>
+
+                {if $deal.agency_info.mechanism}
+                <h2 class="line_bg"><i class="ico_faq"></i>
+                    <span>担保机制常见问题</span>
+                </h2>
+                    {$deal.agency_info.mechanism}
+                {/if}
+            </div>
+        </div>
+    </section>
+    {/if}
+
+
+    <!--添加贷后信息披露-->
+    {if $deal.deal_type == 0 && in_array($deal.deal_status, array(4,5)) && $post_loan_message}
+    <section>
+        <div  class="main clearfix">
+            <div class="box_title"><i class="ico_jiedai"></i>
+                贷后信息
+            </div>
+            <div class="con_width">
+                <div class="border_b pb10">
+                    {$post_loan_message}
+                </div>
+            </div>
+        </div>
+    </section>
+    {/if}
+    <!--end-->
+
+
+
+    {/if}
+    <section>
+        <div  class="main clearfix">
+            <div class="box_title"><i class="ico_jiedai"></i>
+            {if $deal.isBxt eq 0}
+                融资方信息
+            {else}
+                受托人信息
+            {/if}
+            </div>
+            <div class="con_width">
+                <h2><i class="ico_jiben"></i>基本信息</h2>
+                <div class="border_b pb10">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="tab_jiben tab_jiben1">
+                        <colgroup>
+                        <col width="108">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>简介：</th>
+                                <td>
+                                {if $project_intro}
+                                    {$project_intro}
+                                {elseif $company.is_company eq 1}
+                                    {if $company.company_description_html}
+                                        {$company.company_description_html}
+                                    {else}
+                                        -
+                                    {/if}
+                                {elseif $deal.is_crowdfunding eq 1 || $company.is_company eq 0}
+                                    {if $deal_user_info.info}
+                                        {$deal_user_info.info}
+                                    {else}
+                                        -
+                                    {/if}
+                                {else}
+                                    -
+                                {/if}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h2><i class="ico_shenhe"></i>审核记录</h2>
+                <div class="">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="tab_jiben">
+                        <colgroup>
+                        <col width="470">
+                        <col width="410">
+                        <col width="144">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <td class="pl30">审核项目</td>
+                                <td class="">状态</td>
+                                <td class="">通过时间</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {if $deal_user_info.idcardpassed eq 1 || ($deal_user_info.idcardpassed eq 0 && $credit_file.credit_identificationscanning.file_list)}
+                            <tr>
+                                <td class="pl30">身份证认证</td>
+                                <td class="">
+                                {if $deal_user_info.idcardpassed eq 1}
+                                    <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.idcardpassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.idcardpassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.workpassed eq 1 || ($deal_user_info.workpassed eq 0 && $credit_file.credit_contact.file_list)}
+                            <tr>
+                                <td class="pl30">工作认证</td>
+                                <td class="">
+                                {if $deal_user_info.workpassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.workpassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.workpassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.creditpassed eq 1 || ($deal_user_info.creditpassed eq 0 && $credit_file.credit_credit.file_list)}
+                            <tr>
+                                <td class="pl30">信用报告</td>
+                                <td class="">
+                                {if $deal_user_info.creditpassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.creditpassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.creditpassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.incomepassed eq 1 || ($deal_user_info.incomepassed eq 0 && $credit_file.credit_incomeduty.file_list)}
+                            <tr>
+                                <td class="pl30">收入认证</td>
+                                <td class="">
+                                {if $deal_user_info.incomepassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.incomepassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.incomepassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.housepassed eq 1 || ($deal_user_info.housepassed eq 0 && $credit_file.credit_house.file_list)}
+                            <tr>
+                                <td class="pl30">房产认证</td>
+                                <td class="">
+                                {if $deal_user_info.housepassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.housepassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.housepassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.carpassed eq 1 || ($deal_user_info.carpassed eq 0 && $credit_file.credit_car.file_list)}
+                            <tr>
+                                <td class="pl30">购车证明</td>
+                                <td class="">
+                                {if $deal_user_info.carpassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.carpassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.carpassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.marrypassed eq 1 || ($deal_user_info.marrypassed eq 0 && $credit_file.credit_marriage.file_list)}
+                            <tr>
+                                <td class="pl30">结婚认证</td>
+                                <td class="">
+                                {if $deal_user_info.marrypassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.marrypassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.marrypassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.edupassed eq 1 || ($deal_user_info.edupassed eq 0 && $credit_file.credit_graducation.file_list)}
+                            <tr>
+                                <td class="pl30">学历认证</td>
+                                <td class="">
+                                {if $deal_user_info.edupassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.edupassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.edupassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.skillpassed eq 1 || ($deal_user_info.skillpassed eq 0 && $credit_file.credit_titles.file_list)}
+                            <tr>
+                                <td class="pl30">技术职称认证</td>
+                                <td class="">
+                                {if $deal_user_info.skillpassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.skillpassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.skillpassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.videopassed eq 1 || ($deal_user_info.videopassed eq 0 && $deal_user_info.has_send_video eq 1)}
+                            <tr>
+                                <td class="pl30">视频认证</td>
+                                <td class="">
+                                {if $deal_user_info.videopassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.videopassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.videopassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.mobiletruepassed eq 1 || ($deal_user_info.mobiletruepassed eq 0 && $credit_file.credit_mobilereceipt.file_list)}
+                            <tr>
+                                <td class="pl30">手机实名认证</td>
+                                <td class="">
+                                {if $deal_user_info.mobiletruepassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.mobiletruepassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.mobiletruepassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal_user_info.residencepassed eq 1 || ($deal_user_info.residencepassed eq 0 && $credit_file.credit_residence.file_list)}
+                            <tr>
+                                <td class="pl30">居住地证明</td>
+                                <td class="">
+                                {if $deal_user_info.residencepassed eq 1}
+                                <div class="yanzheng"><i></i>已验证</div>
+                                {else}
+                                    资料已上传，待审核
+                                {/if}
+                                </td>
+                                <td class="">
+                                    {if $deal_user_info.residencepassed eq 1}
+                                    {function name="to_date" v="$deal_user_info.residencepassed_time" f="Y-m-d"}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+
+                            {if $deal.isBxt neq 1}
+                            {if $deal.agency_id gt 0}
+                            <tr>
+                                <td class="pl30">
+                                    机构担保
+                                </td>
+                                <td class=""><div class="yanzheng"><i></i>已验证</div></td>
+                                <td class=""></td>
+                            </tr>
+                            {/if}
+                            {/if}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {if isset($deal_repay_list) && $deal_repay_list}
+    <section>
+        <div  class="main clearfix">
+            <div class="box_title"><i class="ico_huankuan"></i>回报计划表</div>
+            <div class="con_width">
+                <table class="con_hk f14 mt10" width="100%">
+                    <colgroup>
+                    <col width="115">
+                    <col width="290">
+                    <col width="185">
+                    <col width="200">
+                    <col width="75">
+                    </colgroup>
+                    <thead class="border_b">
+                        <tr class="text1">
+                            <td><span class="pl10">回报日期</span></td>
+                            <td><div class="algin_c">类型</div></td>
+                            <td>回报金额</td>
+                            <td>实际回报日期</td>
+                            <td><div class="algin_c">状态</div></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {foreach from=$deal_repay_list item="repay" key="key"}
+                        {if $repay.principal gt 0}
+                        <tr{if $key %2 eq 1} class="trbg"{/if}>
+                            <td><span>{function name="to_date" v="$repay.repay_time" f="Y-m-d"}</span></td>
+                            <td><div class="algin_c text1">本金</div></td>
+                            <td><span class="yellwo">{function name="number_format" v="$repay.principal" f="2"}</span></td>
+                            <td>{if $repay.true_repay_time gt 0}{function name="to_date" v="$repay.true_repay_time" f="Y-m-d"}{/if}</td>
+                            <td><div class="algin_c text1">{if $repay.status eq 0}未还款{else}已还款{/if}</div></td>
+                        </tr>
+                        <tr{if $key %2 eq 1} class="trbg"{/if}>
+                            <td><span></span></td>
+                            <td><div class="algin_c text1">利息</div></td>
+                            <td><span class="yellwo">{function name="number_format" v="$repay.interest" f="2"}</span></td>
+                            <td></td>
+                            <td><div class="algin_c text1"></div></td>
+                        </tr>
+                        {else}
+                        <tr{if $key %2 eq 1} class="trbg"{/if}>
+                            <td><span>{function name="to_date" v="$repay.repay_time" f="Y-m-d"}</span></td>
+                            <td><div class="algin_c text1">利息</div></td>
+                            <td><span class="yellwo">{function name="number_format" v="$repay.interest" f="2"}</span></td>
+                            <td>{if $repay.true_repay_time gt 0}{function name="to_date" v="$repay.true_repay_time" f="Y-m-d"}{/if}</td>
+                            <td><div class="algin_c text1">{if $repay.status eq 0}未还款{else}已还款{/if}</div></td>
+                        </tr>
+                        {/if}
+                        {/foreach}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    {/if}
+
+    {if $deal.deal_status neq 3}
+    <section>
+        <div  class="shadow clearfix pb20">
+            <div class="box_title"><i class="ico_huankuan"></i>投资记录</div>
+            <div class="con_width">
+                <table class="con_hk f14" width="100%">
+                    <colgroup>
+                    <col width="314">
+                    <col width="344">
+                    <col width="222">
+                    <col width="180">
+                    </colgroup>
+                    <thead class="">
+                        <tr class="text1">
+                            <td>
+                                <h4><span>目前投资总额（元）</span></h4>
+                                <span class="color-yellow1 f20">{function name="format_price" v="$deal.load_money" b=0}</span>
+                            </td>
+                            <td>
+                                <h4>剩余投资总额（元）</h4>
+                                <span class="color-yellow1 f20">{$deal.need_money_detail}</span>
+                            </td>
+                            <td>
+                                <h4>剩余投资时间</h4>
+                                <span class="color-black f20">
+                                {if $deal.is_crowdfunding eq 0}
+                                    {if $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}等待确认
+                                    {elseif $deal.deal_status eq 2}满标
+                                    {elseif $deal.deal_status eq 3}流标
+                                    {elseif $deal.deal_status eq 4}还款中
+                                    {elseif $deal.deal_status eq 5}已还清
+                                    {else}{$deal.remain_time_format}{/if}
+
+                                 {elseif $deal.is_crowdfunding eq 1}
+                                    {if $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}等待确认
+                                    {elseif $deal.deal_status eq 2}已成功
+                                    {elseif $deal.deal_status eq 3}流标
+                                    {elseif $deal.deal_status eq 4}已成功
+                                    {elseif $deal.deal_status eq 5}已成功
+                                    {else}{$deal.remain_time_format}{/if}
+                                 {/if}
+                                </span>
+                            </td>
+                            <td valign="middle">
+                            {if $deal.is_crowdfunding eq 0 }
+                                {if $deal.deal_status eq 1 && $deal.guarantor_status eq 2}
+                                    {if $deal.type_id neq 25}
+                                    <a href="javascript:void(0)" class="but-gray but-yellow pt5 pb5 w65 j_scroll">投资</a>
+                                    {else}
+                                    <a href="javascript:void(0)" class="but-gray but-yellow pt5 pb5 w65 j_scroll">捐赠</a>
+                                    {/if}
+                                {else}
+                                    <span class="but-gray but-disabled pt5 pb5 w65">
+                                    {if $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}等待确认
+                                    {elseif $deal.deal_status eq 2}满标
+                                    {elseif $deal.deal_status eq 3}流标
+                                    {elseif $deal.deal_status eq 4}还款中
+                                    {elseif $deal.deal_status eq 5}已还清
+                                {/if}
+                                </span>
+                                {/if}
+
+                            {elseif $deal.is_crowdfunding eq 1}
+                                {if $deal.deal_status eq 1 && $deal.guarantor_status eq 2}
+                                    <a href="javascript:void(0)" class="but-gray but-yellow pt5 pb5 w65 j_scroll">捐赠</a>
+                                {else}
+                                    <span class="but-gray but-disabled pt5 pb5 w65">
+                                    {if $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}等待确认
+                                    {elseif $deal.deal_status eq 2}已成功
+                                    {elseif $deal.deal_status eq 3}流标
+                                    {elseif $deal.deal_status eq 4}已成功
+                                    {elseif $deal.deal_status eq 5}已成功
+                                {/if}
+                                </span>
+                                {/if}
+                            {/if}
+                            </td>
+                        </tr>
+                    </thead>
+                    {if $load_list}
+                    <tbody>
+                        <tr class="text1">
+                            <td class="border_b"><span>投资人</span></td>
+                            <td class="border_b">投资金额（元）</td>
+                            <td class="border_b">投资时间</td>
+                            <td class="border_b"></td>
+                        </tr>
+                        {foreach from=$load_list item="loan" key="k"}
+                        <tr  class="{if $k%2==1}trbg {/if}f16">
+                            <td><span>{function name="user_name_format" v="$loan.user_name"}（{$loan.user_deal_name}）</span></td>
+                            <td><span class="color-yellow1">{function name="format_price" v="$loan.money" b=0}</span></td>
+                            <td>{function name="to_date" v="$loan.create_time" f="Y-m-d"} {function name="to_date" v="$loan.create_time" f="H:i"}</td>
+                            <td></td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                    {/if}
+                </table>
+            </div>
+        </div>
+    </section>
+    {/if}
+</div>
+{include file="web/views/footer.html"}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>申请成功</title>
+</head>
+<body class="sqcg_body">
+<!-- 申请成功信息 begin -->
+<div class="loanSucInfor">
+    <img src="<?php echo $this->asset->makeAppUrl('v4.72/images/speedloan/loanSuccessLogo.png');?>"/>
+    <div class="title">申请成功</div>
+    <div class="tipText">预计1个自然日内完成放款，请注意短信通知及借款状态变化</div>
+</div>
+<!-- 申请成功信息 end -->
+
+<!-- 还款的投资标 begin -->
+<div class="repayBox">
+    <p class="tip">投资标的回款本金会优先用于本次借款还款：</p>
+    <ul class="repayUl">
+        <?php if (!empty($this->_var['repayItems'])):?>
+        <?php foreach ($this->_var['repayItems'] as $item):?>
+        <li class="repayItem">
+            <div><?php echo $item['dealInfo']['name']?></div>
+            <div>
+                <p>参考金额(元）</p>
+                <p>回款时间</p>
+            </div>
+            <div>
+                <p><?php echo $item['money'];?></p>
+                <p><?php echo $item['repayDate'];?><span>(<?php echo $item['untilDays'];?>天后)</span></p>
+            </div>
+        </li>
+        <?php endforeach; ?>
+        <?php else: ?>
+            <p class="moreInfor">近期暂无回款记录</p>
+        <?php endif;?>
+    </ul>
+    <p class="moreInfor">更多标的投资记录请查看<a href="firstp2p://api?type=native&name=myinvested">已投项目</a></p>
+</div>
+<!-- 还款的投资标 end -->
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script type="text/javascript">
+    triggerScheme('firstp2p://api?method=updatebacktype&param=2');
+    triggerScheme('firstp2p://api?type=rightbtn&title=""');
+</script>
+{include file="api/views/_v32/footer.html"}

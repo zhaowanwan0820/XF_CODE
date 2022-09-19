@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>授权绑定</title>
+
+    <link rel="apple-touch-icon-precomposed" href="{$APP_SKIN_PATH}images/favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.png" type="image/x-icon" />
+    <meta name="keywords" content="{if isset($page_keyword) && $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+    <meta name="description" content="{if isset($page_description) && $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+    <!-- 压缩输出 -->
+    <?php echo $this->asset->renderCssV2("common_v3"); ?>
+    <?php echo $this->asset->renderJsV2("common_v3"); ?>
+
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/validator/validator.v1.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/artdialog/artDialog.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/artdialog/artDialog.source.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/artdialog/iframeTools.source.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/js/artdialog/skins/simple.css');?>" rel="stylesheet" />
+
+    <!--[if lte IE 9]>      
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/html5shiv.js');?>"></script>     
+        <![endif]-->
+
+    <style type="text/css">
+         body { background-image: none; }
+        .h700 { height: 700px; }
+        .ms_center { background-color: #ffffff; margin-top: 30px; }
+        .w1100 { width: 1100px; margin: 0 auto; }
+        .tc { text-align: center; }
+        .bd_title { text-align: left; height: 50px; line-height: 50px; padding-left: 30px; color: #000000; font-size: 18px; padding-top: 10px; border-bottom: 1px solid #ddd; }
+            .bd_title a { text-decoration: underline; margin-left: 5px; }
+        .m_step .cjs_tip { text-align: center; padding: 150px 0px; font-size: 24px; color: #333; }
+        .wx_img { padding: 50px !important; padding-bottom: 120px !important; }
+        .wx_center p { margin-bottom: 20px; }
+        .ym_input { width: 450px; height: 48px; line-height: 48px; border: 1px solid #e0e0e0; padding-left: 10px; font-size: 14px; }
+        .ym_span { font-size: 15px; color: #000; margin-right: 20px; }
+        .wx_tip { font-size: 18px; color: #333333; margin-top: -90px; margin-bottom: 60px; }
+        .wx_center { width: 600px; margin: 0 auto; text-align: left; }
+        .wx_submit { margin-top: 70px; display: inline-block; background-color: #72c5f9; width: 400px; height: 50px; line-height: 50px; text-align: center; color: #fff; font-size: 18px; border-radius: 5px; border: none; }
+        .link_kaifa { text-align: center; color: #72c5f9; padding-top: 20px; display: inline-block; font-size: 16px; }
+        .seach_btn { margin-left: 10px; display: inline-block; background-color: #72c5f9; width: 120px; height: 50px; line-height: 50px; text-align: center; color: #fff; font-size: 16px; border-radius: 5px; border: none; }
+        .wx_submit { margin-top: 70px; display: inline-block; background-color: #72c5f9; width: 400px; height: 50px; line-height: 50px; text-align: center; color: #fff; font-size: 18px; border-radius: 5px; border: none; }
+        .wx_input { width: 322px !important; }
+        .wx_center .msg-box { margin-top: 18px; float: none; position: absolute; display: inline-block; }
+        .wx_center .ts_msg_code .msg-wrap { left: 130px!important; }
+        .wx_center .msg-wrap { top: -11px;left: 0px; }
+        .wx_disable { background-color: #b9cfdd; }
+        .error_msg { color: #c33; margin-bottom: 0px !important; }
+        .wx_center p { position: relative; }
+        .wx_center .n-ok { display: none; }
+        .wx_center .ts_msg_phone .n-error{ width: 140px;}
+        .wxlc_img { width: 38px; vertical-align: top; margin: 26px 20px 0px;}
+        .wbcr_img { width: 80px; height: 80px; }
+        .wx_center .ts_msg_code .msg-box{ height: 0px;}
+        /*重新定义弹出窗口*/
+        .ms_box { background-color: #fff; min-height: 350px; min-width: 500px; border-radius: 5px; font-family: "微软雅黑"; }
+            .ms_box .msb_title { height: 40px; line-height: 40px; padding-left: 20px; color: #000; font-size: 16px; background-color: #f9f9f9; border-bottom: 1px solid #dddddd; border-radius: 5px 5px 0px 0px; }
+        .msb_center { padding: 20px; }
+        .msb_text { font-size: 22px; margin-top: 10px; }
+        .dis_none{ display: none;}
+    </style>
+</head>
+<body>
+    <div style="height: 100px;"></div>
+    <div class="ms_center w1100 h700 m_step tc">
+        <p class="bd_title">
+            快速注册绑定账号{if !$setParmas.bonusTaskId}或<a href="{$bindUrl}">绑定已有网信账户</a>{/if}
+        </p>
+        <div class="cjs_tip wx_img">
+            <img class="wbcr_img" src="{$appInfo.appLogo}" />
+            <img class="wxlc_img" src="<?php echo $this->asset->makeUrl('v3/images/common/wx_arrow.png');?>" />
+            <img class="wbcr_img" src="<?php echo $this->asset->makeUrl('skins/default/images/favicon.png');?>" />
+        </div>
+        <p class="wx_tip">
+            {if $mobile}
+                该手机号已是网信<span style="color:#ee4634">老用户</span>，请继续绑定并登录
+            {else}
+                立刻创建理财账号
+            {/if}
+        </p>
+        <form action="#" id="wx_form">
+            <div class="wx_center">
+                <p class="ts_msg_phone">
+                    <span class="ym_span">手机号</span><input class="ym_input" name="user_phone" id="mobile" value="{$mobile_sc}"
+                                                           data-mobile="{$mobile}" type="text" {if $mobile || $setParmas.bonusTaskId } disabled="disabled" readonly="readonly" {/if}/>
+                </p>
+                <p class="ts_msg_code">
+                    <span class="ym_span">验证码</span><input class="ym_input wx_input" id="wx_input" name="ma_code" data-id="1" data-rule="验证码:required;digits;length[6];" data-type="2" type="text" /><input type="button" class="seach_btn JS_codema" value="发送验证码" />
+                </p>
+                <p class="error_msg"></p>
+            </div>
+
+            <p style="margin-top:20px;">
+                <input id="check_protocol" checked="checked" type="checkbox" value="default">
+                <a href="javascript:void(0)" class="link_kaifa kf_xieyi"><span style="color:#333">我已阅读并同意遵守</span>《绑定服务协议》</a>
+            </p>
+            <input type="submit" value="同意协议并绑定" class="wx_submit" style="margin-top: 30px;">
+        </form>
+        <div class="xieyi_show ms_box dis_none">
+            <div class="msb_title">
+                网信账号绑定服务协议
+            </div>
+            <div class="msb_center">
+                <p>在您申请创建{$appInfo.appName}账户或申请将您的{$appInfo.appName}账户与网信帐号绑定之前，
+                请仔细阅读本确认书，并同意本确认书。一旦点击“创建帐号并绑定”或“同意协议并绑定”按钮，即默认您充分了解并同意本确认书所有内容。</p>
+                <p>一、账号绑定后实现的功能 </p>
+                <p>1.您的{$appInfo.appName}账户是已登录状态，进入网信提供的理财频道，同意授权页面后，网信会获取您的{$appInfo.appName}账户的相关注册信息</p>
+                <p>2.首次进入理财频道，网信会自动帮您创建或者您自行绑定已有的网信账户。</p>
+                <p>3.账号绑定完成后，您可以在理财频道进行投资等相关操作。</p>
+                <p>二、授权 </p>
+                <p>为实现上述功能，您同意并授权网信通过技术方式实现如下操作： 您的{$appInfo.appName}账户的相关注册信息
+                    （包括唯一用户编号、手机号、身份证、银行卡）同步给网信。 </p>
+                <p>三、账号绑定解除</p>
+                <p>若您不想继续使用上述功能，在符合账号解除绑定条件的前提下，您可主动申请解除账号绑定。 </p>
+                <p>此外，在以下情形下您的账户绑定关系也将被解除：</p>
+                <p>（1） 因账户安全等安全因素考虑，网信强制解除您账号绑定关系；</p>
+                <p>（2） 建立绑定关系的两个账号中，任一方账号注销成功，绑定关系将自动解除； </p>
+                <p>（3） 用户违反法律法规国家政策的； </p>
+                <p>（4） 用户违反本确认书、网信服务协议、微博用户协议或其相关规定的；</p>
+                <p>（5） 其他需要解除绑定的。</p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $("#check_protocol").bind("click",function(){
+                var $t = $(".wx_submit");
+                if(!$(this).prop("checked")){
+                    $t.attr("disabled", true);
+                    $t.css('background','#e0e0e0');
+                }else{
+                    $t.attr("disabled", false);
+                    $t.css('background','#72c5f9');
+                }
+            });  
+            $(".kf_xieyi").bind("click", function () {
+                art.dialog({
+                    padding: 0,
+                    content: $(".xieyi_show")[0],
+                    id: 'kf_885',
+                    title: '',
+                    width: 800,
+                    height: 387,
+                    lock: true,
+                    background: '#000', // 背景色
+                    opacity: 0.6, // 透明度
+                    drag: false,
+                });
+            });
+            var wx_lock = true;
+            $('#wx_form').validator({
+                rules: {
+                    hidmobile: function(el) {
+                        var mobileRegEx = /^0?(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/;
+                        var hidval = $(el).attr("data-mobile") || $(el).val();
+
+                        if (!mobileRegEx.test(hidval)) {
+                            return '手机号格式不正确';
+                        }
+                    }
+                },
+                fields: {
+                    user_phone: {
+                        rule: "required;hidmobile;"
+                    }
+                },
+                valid: function(form) {
+                    if (wx_lock) {
+                        wx_lock = false;
+                        var mobileObj = $('#mobile');
+                        var mobile = mobileObj.attr('data-mobile') || mobileObj.val()
+                        $.ajax({
+                            url: '/bind/done',
+                            type: 'post',
+                            dataType: 'json',
+                            async: false,
+                            data: { 'mobile': mobile, 'code': $('#wx_input').val() },
+                            success: function(data) {
+                                wx_lock = true;
+                                if (data.code != 0) {
+                                    $(".error_msg").empty().html(data.msg).show();
+                                    return false;
+                                } else {
+                                    window.location.href = data.data.jump;
+                                }
+                            },
+                            error: function(data) {
+                                $(".error_msg").empty().html('网络错误请重试').show();
+                            }
+                        });
+                    } else {
+                        return false;
+                    }
+                }
+            });
+
+            $(".JS_codema").bind("click", function () {
+                settime($(this));
+                var mobileObj = $('#mobile');
+                var mobile = mobileObj.attr('data-mobile') || mobileObj.val()
+                //发送获取验证码请求
+                $.ajax({
+                    url: '/user/MCode',
+                    type: 'post',
+                    dataType: 'json',
+                    async: false,
+                    data:{'mobile' : mobile, 'type' : 14, 'active' : 1},
+                    success: function (data) {
+                        if (data.code != 0) {
+                             $(".error_msg").empty().html(data.message).show();
+                        }
+                    }, error: function (data) {
+                        console.log(data)
+                    }
+                });
+            });
+            var countdown = 60;
+            var t;
+            function settime(elem) {
+                if (countdown == 0) {
+                    $(elem).attr("disabled", false).removeClass("wx_disable").val("发送验证码");
+                    clearTimeout(t);
+                    countdown = 60;
+                    return;
+                } else {
+                    $(elem).attr("disabled", true).addClass("wx_disable").val(countdown + "秒后重新发送");
+                    countdown--;
+                }
+                t = setTimeout(function () {
+                    settime(elem);
+                }, 1000);
+            }
+        })
+    </script>
+</body>
+</html>

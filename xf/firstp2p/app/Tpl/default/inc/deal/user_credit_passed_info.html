@@ -1,0 +1,260 @@
+<div style="background: #FFF8D9; border: 1px solid #FEBF8F; padding: 10px; font-size:12px; margin: 0;">
+    {function name="app_conf" v="SHOP_TITLE"} 将以客观、公正的原则，最大程度地核实借款者信息的真实性。但{function name="app_conf" v="SHOP_TITLE"} 不保证审核信息100%真实。如果借款者长期逾期，借款者提供的信息将被公布
+</div>
+<div class="blank"></div>
+<table border="0" cellspacing="1" style="width: 600px;background:#CCC">
+    <tbody>
+        <tr style="height: 30px;background: #F6F6F6;">
+            <td width="40%" class="tc">
+            	审核项目
+            </td>
+            <td width="20%" class="tc">
+				状态
+            </td>
+            <td width="20%" class="tc">
+				通过时间
+            </td>
+        </tr>
+		{if $u_info.idcardpassed eq 1 || ($u_info.idcardpassed eq 0 && $credit_file.credit_identificationscanning.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+            	身份证认证
+            </td>
+            <td class="tc pl5 pr5">
+                {if $u_info.idcardpassed eq 1}
+                <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.idcardpassed eq 1}
+                {function name="to_date" v="$u_info.idcardpassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+		{/if}
+		{if $u_info.workpassed eq 1 || ($u_info.workpassed eq 0 && $credit_file.credit_contact.file_list)}
+		<tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				工作认证
+            </td>
+            <td class="tc pl5 pr5">
+               {if $u_info.workpassed eq 1}
+                <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.workpassed eq 1}
+                {function name="to_date" v="$u_info.workpassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+		{/if}
+		{if $u_info.creditpassed eq 1 || ($u_info.creditpassed eq 0 && $credit_file.credit_credit.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				信用报告
+            </td>
+            <td class="tc pl5 pr5">
+                {if $u_info.creditpassed eq 1}
+                <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.creditpassed eq 1}
+                {function name="to_date" v="$u_info.creditpassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+        {/if}
+		{if $u_info.incomepassed eq 1 || ($u_info.incomepassed eq 0 && $credit_file.credit_incomeduty.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				收入认证
+            </td>
+            <td class="tc pl5 pr5">
+                {if $u_info.incomepassed eq 1}
+                <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.incomepassed eq 1}
+               {function name="to_date" v="$u_info.incomepassed_time" f="Y-m-d"}
+			   {/if}
+            </td>
+        </tr>
+		{/if}
+		{if $u_info.housepassed eq 1 || ($u_info.housepassed eq 0 && $credit_file.credit_house.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				房产认证
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.housepassed eq 1}
+                <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.housepassed eq 1}
+               {function name="to_date" v="$u_info.housepassed_time" f="Y-m-d"}
+			   {/if}
+            </td>
+        </tr>
+		{/if}
+		{if $u_info.carpassed eq 1 || ($u_info.carpassed eq 0 && $credit_file.credit_car.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				购车证明
+            </td>
+            <td class="tc pl5 pr5">
+                {if $u_info.carpassed eq 1}
+                <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.carpassed eq 1}
+            	{function name="to_date" v="$u_info.carpassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+        {/if}
+		{if $u_info.marrypassed eq 1 || ($u_info.marrypassed eq 0 && $credit_file.credit_marriage.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				结婚认证
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.marrypassed eq 1}
+                <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.marrypassed eq 1}
+            	{function name="to_date" v="$u_info.marrypassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+        {/if}
+		{if $u_info.edupassed eq 1 || ($u_info.edupassed eq 0 && $credit_file.credit_graducation.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				学历认证
+            </td>
+            <td class="tc pl5 pr5">
+                {if $u_info.edupassed eq 1}
+				 <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.edupassed eq 1}
+            	{function name="to_date" v="$u_info.edupassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+        {/if}
+		{if $u_info.skillpassed eq 1 || ($u_info.skillpassed eq 0 && $credit_file.credit_titles.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				技术职称认证
+            </td>
+            <td class="tc pl5 pr5">
+                {if $u_info.skillpassed eq 1}
+				 <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.skillpassed eq 1}
+            	{function name="to_date" v="$u_info.skillpassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+        {/if}
+		{if $u_info.videopassed eq 1 || ($u_info.videopassed eq 0 && $u_info.has_send_video eq 1)}
+		<tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				视频认证
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.videopassed eq 1}
+				 <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.videopassed eq 1}
+            	{function name="to_date" v="$u_info.videopassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+		{/if}
+		{if $u_info.mobiletruepassed eq 1 || ($u_info.mobiletruepassed eq 0 && $credit_file.credit_mobilereceipt.file_list)}
+		<tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+            	手机实名认证
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.mobiletruepassed eq 1}
+				 <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.mobiletruepassed eq 1}
+            	{function name="to_date" v="$u_info.mobiletruepassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+		{/if}
+		{if $u_info.residencepassed eq 1 || ($u_info.residencepassed eq 0 && $credit_file.credit_residence.file_list)}
+        <tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				居住地证明
+            </td>
+            <td class="tc pl5 pr5">
+				{if $u_info.residencepassed eq 1}
+				 <img src="{$TMPL}/images/answer_success.jpg" alt="通过">
+				{else}
+				资料已上传，待审核
+				{/if}
+            </td>
+            <td class="tc pl5 pr5">
+            	{if $u_info.residencepassed eq 1}
+            	{function name="to_date" v="$u_info.residencepassed_time" f="Y-m-d"}
+				{/if}
+            </td>
+        </tr>
+        {/if}
+		{if $deal.agency_id gt 0}
+		<tr style="height: 30px;" class="wb">
+            <td class="tl pl5 pr5">
+				<a href="{url x="index" r="agency" p="id=$deal.agency_id"}">机构担保--{$deal.agency_info.name}</a>
+            </td>
+            <td class="tc pl5 pr5">
+				 <img src="{$TMPL}/images/answer_success.jpg" alt="有">
+            </td>
+            <td class="tc pl5 pr5">
+            	&nbsp;
+            </td>
+        </tr>
+		{/if}
+    </tbody>
+</table>

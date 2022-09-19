@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="format-detection" content="telephone=no">
+        <title>兑换详情</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/o2o/o2o_success.css');?>">
+        <script>
+            window['_MOBILE_'] = "{$userInfo.mobile}";
+            window['_ZMQStringWithSignature'] = "{$_ZMQStringWithSignature}";
+            window['_O2O_COUPONID_'] = "{$coupon.id}";
+            window['_O2O_FRONTEND_SIGN_'] = "{$o2o_frontend_sign}";
+        </script>
+        <style>
+            ._O2O_COUPON_GROUP_DETAIL{display:none !important}
+            ._O2O_COUPON_ACQUIRE_SUC{}
+            ._O2O_MY_COUPON_DETAIL{display:none !important;}
+        </style>
+    </head>
+    <body>
+        <div class="m-main p_sc">
+            <div class="sc_result"><i class="sc_success"></i>操作成功</div>
+
+            <div class="sc_tip">
+                {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                    {if $coupon.isShowCouponNumber eq 1 }
+                <div class="sc_line f18">券码：<span class="Js-coupon_num">{$coupon.couponNumber}</span></div>
+                    {/if}
+                <div class="sc_line f12">有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</div>
+                {elseif $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                <div class="sc_line f14">我们会尽快安排邮寄给您</div>
+                {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                    {foreach from=$extraParam item=item key=key}
+                        {if $key eq 'phone'}
+                        <div class="sc_line f14">已提交充值账户 <span class="format_mobile">{$item}</span></div>
+                        {elseif $key eq 'userName'}
+                        <div class="sc_line f14">已提交充值账户 {$item}</div>
+                        {else}
+                        <div class="sc_line f14">已提交充值账户<br/>{$item}</div>
+                        {/if}
+                    {/foreach}
+                {elseif $coupon.useRules eq 7 || $coupon.useRules eq 8 || $coupon.useRules eq 10}
+                <div class="sc_line f14">请尽快使用</div>
+                {if $coupon.useRules eq 7 && $coupon.isShowCouponNumber eq 1}
+                    <div class="online_coupon_num">券码：<span class="Js-coupon_num">{$coupon.couponNumber}</span></div>
+                {/if}
+                {elseif $coupon.useRules eq 9}
+                <div class="sc_line f14">您可以进入“红包”页面进行分享</div>
+                {/if} 
+            </div>
+            <div class="sc_done">
+            {if $appVersion gte 340 && $o2oViewAccess eq 'pick'}
+            <a href="coupon://api?type=native&name=home" class="btn_red">完成</a>
+            {elseif $o2oViewAccess eq 'mine' }
+            <a href="coupon://api?type=native&name=coupontab&selectedtab=mine" class="btn_red">完成</a>
+            {else}
+            <a href="coupon://api?type=native&name=coupontab&selectedtab=unpickList" class="btn_red">完成</a>
+            {/if}
+            </div>
+            {if $coupon.useRules eq 12}
+            <div class="suc_txt">{function name='htmlspecialchars_decode' v=$coupon.couponDesc}</div>
+            {/if}
+            {if $coupon.useRules eq 9}
+            <a class="btn_red JS-wx_share_session none">分享至微信好友</a>
+            <a class="btn_white JS-wx_share_timeline none">分享至朋友圈</a>
+            {/if}
+        </div>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    <script type="text/javascript">
+    var $couponNumList = $('.Js-coupon_num');
+    $couponNumList.each(function(k,v){
+        var str = $(v).html();
+        $(v).html(str.replace(/(.{4})/g, '$1 '));
+    });
+    var $mobileList = $('.format_mobile');
+    $mobileList.each(function(k,v){
+        var str = $(v).html();
+        $(v).html(str.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3'));
+    });
+    
+    if($('_O2O_COUPON_ACQUIRE_SUC').length > 0) {
+        $('.sc_done').addClass('none');
+        $('.suc_txt').removeClass('none');
+    }
+    {if $coupon.useRules eq 9}
+    var _loopPullWeixinMax = 3;
+    function _loopPullWeixinshare() {
+        _loopPullWeixinMax--;
+        if (_loopPullWeixinMax < 0) return;
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/gift/GetBonusGroupInfo?token={$token}&load_id={$load_id}&site_id={$site_id}",
+            success: function (result) {
+                var newdata = result.data;
+                if (newdata != undefined && newdata.load_id != null && newdata.load_id != "") {
+                    $('.JS-wx_share_session').attr('href', 'wechat://api?type=session&title=' + encodeURIComponent(newdata.bonus_title) + '&content=' + encodeURIComponent(newdata.bonus_content) + '&face=' + encodeURIComponent(newdata.bonus_face) + '&url=' + encodeURIComponent(newdata.bonus_url));
+                    $('.JS-wx_share_timeline').attr('href', 'wechat://api?type=timeline&title=' + encodeURIComponent(newdata.bonus_title) + '&content=' + encodeURIComponent(newdata.bonus_content) + '&face=' + encodeURIComponent(newdata.bonus_face) + '&url=' + encodeURIComponent(newdata.bonus_url));
+                    $('.sc_done').remove();
+                    $('.JS-wx_share_session').removeClass('none');
+                    $('.JS-wx_share_timeline').removeClass('none');
+                } else {
+                    setTimeout(function(){
+                        _loopPullWeixinshare();
+                    }, 300);
+                }
+            },
+            error: function(){
+                setTimeout(function(){
+                    _loopPullWeixinshare();
+                }, 300);
+            }
+        });
+    }
+    _loopPullWeixinshare();
+    {/if}
+    </script>
+    </body>
+</html>

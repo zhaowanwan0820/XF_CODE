@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$deal.title}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/account_investment.css');?>" rel="stylesheet"
+        type="text/css" />
+</head>
+<body>
+    <div class="m-main">
+        <div class="p_account_investment">
+            <div class="inh-title">
+                {if $deal.type}<span>{$deal.type}</span>{/if}<h2>{$deal.title}</h2>
+            </div>
+            <div class="ai_center">
+                <p>
+                <span>年化收益率：</span><span>{$deal.income_base_rate}%</span>{if $deal.deal_type == 1}起{/if}</p>
+                <p>
+                <span>期限：</span><span>{$deal.timelimit}</span></p>
+                <p>
+                <span>可投：</span><span>{$deal.avaliable}元</span></p>
+                <p>
+                <span>可用余额：</span><span><i class="ai_color ai_balance">{$deal.remain}</i>元 <a class="a_lock" href="invest://api?type=recharge">
+                        充值</a></span></p>
+                <p>
+                {if $deal.bonus>0}<span class="ai_tip"><em></em>含红包<i class="ai_color">{$deal.bonus}元</i>，{if $deal.isNew == 1}新手标不可使用{else}投满100元方可使用{/if}</span>{/if}
+                </p>
+            </div>
+            <div class="ai_merry">
+                <span class="ai_all">全投</span>
+                <div class="ai_rl">
+                    <input class="int_merry ts_input" type="number" placeholder="{$deal.mini}起投" />
+                </div>
+            </div>
+            <div class="ai_yuqi disnone">
+                预期收益：<i class="ai_color"></i>
+            </div>
+             <div class="ai_merry_cuowu disnone">
+                        投资金额输入错误,请重新输入！
+              </div>
+            <div class="ai_merry ai_ma">
+             <label>优惠码</label>
+                <div class="right disnone">
+                    <i></i>
+                </div>
+             <div class="ai_rl">
+                   <input class="int_ma ts_input" type="text" placeholder="请输入优惠码" value="{$deal.couponStr}"
+                   {if $deal.couponIsFixed == 1}readonly{/if}/>
+                 </div>
+
+            </div>
+            <div class="ai_cuowu disnone">
+                优惠码输入错误,请重试！
+            </div>
+            <div class="ai_mashow disnone">
+                <a class="a_lock" href="invest://api?type=coupon&name=如何获取优惠码&url={$deal.getCouponUrl}">如何获取优惠码 </a>
+            </div>
+            <div class="ai_footer disnone ">
+                <p>
+                    有效期：2014年06月01日至2018年06月01日</p>
+                <p>
+                    项目起息后获年化0.25%返利，15个工作日内发放至平台账户。</p>
+            </div>
+        </div>
+        <div class="ai_touzi">
+        <div class="ai_xieyi">
+            我同意
+            {foreach from=$deal.contract item=contract }
+            <a class="a_lock" href="invest://api?type=contract&name={$contract.name}&url={$contract.url}">《{$contract.nameSrc}》</a>
+            {/foreach}
+        </div>
+        <div class="ft_btn">
+            <a class="btn_from" href="#">投资</a>
+        </div>
+    </div>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/jquery-1.10.2.min.js');?>" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var dealcookie = "wx_touzi_phone_cookie" + "{$deal.productID}";
+            /***************** 添加cookie *********************/
+            function _addCookie(name, value, second) {
+                var exdate = new Date((new Date()).getTime() + second * 1000);
+                document.cookie = name + "=" + escape(value) + ";path=/" +
+                    ((second == null) ? "" : ";expires=" + exdate.toGMTString());
+            }
+
+            /***************** 获取cookie *********************/
+
+            function _getCookie(c_name) {
+                if (document.cookie.length > 0) {
+                    var c_start = document.cookie.indexOf(c_name + "=");
+                    if (c_start != -1) {
+                        c_start = c_start + c_name.length + 1;
+                        var c_end = document.cookie.indexOf(";", c_start);
+                        if (c_end == -1) c_end = document.cookie.length;
+                        return unescape(document.cookie.substring(c_start, c_end));
+                    }
+                }
+                return "";
+            }
+
+            /***************** value值保持 *********************/
+            if (_getCookie(dealcookie) != null) {
+                $(".int_merry").val(_getCookie(dealcookie));
+            }
+            /***************** 可滚动 *********************/
+            $(".ts_input").bind("focus", function () {
+                $(".p_account_investment").css("height", $(window).height() + 50);
+            });
+            $(".ts_input").bind("blur", function () {
+                $(".p_account_investment").css("height", 'auto');
+            });
+            /***************** 锁逻辑，防止重复点击 *********************/
+            var chongLock = false;
+            var focusLock = false;
+            $(".a_lock").bind("click", function () {
+                if (!chongLock && !focusLock) {
+                    chongLock = true;
+                    return true;
+                }
+                return false;
+            });
+            $(".btn_from").bind('click', function () {
+                if (chongLock) {
+                    return false;
+                } else {
+                    var merry = $(".int_merry").val();
+                    var ma = $(".int_ma").val();
+                    var newhref;
+                    if (merry.length >= 0 && /^(\d+|\d+\.|\d+\.\d{1,2})$/.test(merry)) {
+                        chongLock = true;
+                        //设置coocie
+                        _addCookie(dealcookie, merry, 120);
+                        newhref = "invest://api?type=invest&id={$deal.productID}&money=" + merry + "&coupon=" + ma + "&use_bonus=1";
+                        $(this).attr("href", newhref);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+
+            var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "";
+
+            /******************** 三星手机数字键盘 ****************************/
+            var is_samsung = /(samung)|(gt\-)|(sm\-)/i.test(userAgentString);
+            if (is_samsung) {
+                $(".int_merry").attr('type', 'text');
+            }
+
+            /******************** reset for ios 7 and below ****************************/
+            var iosVersion = 0;
+            var iosmatches = userAgentString.match(/IPHONE OS ([0-9_]*)/i);
+            if (iosmatches && iosmatches.length > 1) {
+                iosVersion = parseInt(iosmatches[1].substring(0, 1), 10);
+            }
+            if (iosVersion == 7) {
+                $('.ft_btn').css("background", "none");
+                $('.ai_touzi').addClass("ai_touzistatic");
+
+                var focusLockTimer = null;
+                function lockFocus(lock) {
+                    if (focusLockTimer != null) {
+                        clearTimeout(focusLockTimer);
+                        focusLockTimer = null;
+                    }
+                    if (lock) {
+                        focusLock = true;
+                    } else {
+                        focusLockTimer = setTimeout(function () {
+                            focusLock = false;
+                            clearTimeout(focusLockTimer);
+                            focusLockTimer = null;
+                        }, 500);
+                    }
+                }
+                $(".ts_input").bind("focus", function () {
+                    lockFocus(true);
+                });
+                $(".ts_input").bind("blur", function () {
+                    lockFocus(false);
+                });
+                $(".a_lock").bind("click", function (e) {
+                    var target = e.target;
+                    if (focusLock) {
+                        setTimeout(function () {
+                            target.click();
+                        }, 500);
+                        return false;
+                    }
+                    return true;
+                });
+            }
+
+            /***************** position fixed logic ****************************/
+            var isIos = /(iphone)|(ipod)/i.test(userAgentString);
+            var fixedTimer = null;
+            function addZaitouFix(fixed) {
+                if (fixedTimer != null) {
+                    clearTimeout(fixedTimer);
+                    fixedTimer = null;
+                }
+                if (fixed) {
+                    fixedTimer = setTimeout(function () {
+                        $(".ts_input").blur();
+                        $('.ai_touzi').removeClass("ai_touziabs");
+                        window.scrollTo(0, 0);
+                        clearTimeout(fixedTimer);
+                        fixedTimer = null;
+                    }, isIos ? 1 : 1000);
+                } else {
+                    $('.ai_touzi').addClass("ai_touziabs");
+                }
+            }
+            jQuery.focusblur = function (focusid) {
+                var focusblurid = $(focusid);
+                focusblurid.focus(function () {
+                    addZaitouFix(false);
+                });
+                focusblurid.blur(function () {
+                    addZaitouFix(true);
+                });
+            };
+
+            var initHeight = $(window).height();
+            $(window).bind("resize", function () {
+                if (initHeight > ($(window).height() + 50)) {
+                    $('.ai_touzi').addClass("ai_touzinone");
+                } else {
+                    $('.ai_touzi').removeClass("ai_touzinone");
+                }
+            });
+        });
+
+       $(function () {
+
+        if ('{$deal.couponStr}' != '') {
+            $('.ai_footer').empty().append('{$deal.couponRemark}');
+            $('.ai_footer').removeClass("disnone");
+            $('.right').removeClass("disnone");
+        } else {
+            $('.ai_cuowu').addClass("disnone");
+            $('.ai_footer').addClass("disnone");
+            $('.right').addClass("disnone");
+            $('.ai_mashow').removeClass("disnone");
+        }
+        $(".int_merry").bind("blur", function () {
+            getshouyi();
+        });
+        $(".int_ma").bind("blur", function () {
+            if ($(this).val().length > 0) {
+                var ma = $(".int_ma").val();
+                //请求接口
+                $.ajax({
+                    url: '/deal/coupon?id=' + ma + "&pid={$deal.productID}",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        var newdata = eval(data);
+                        if (newdata.errno != 0) {
+                            $('.ai_footer').addClass("disnone");
+                            $('.right').addClass("disnone");
+                            $('.ai_cuowu').removeClass("disnone");
+                            $('.ai_mashow').removeClass("disnone");
+                        } else {
+                            var html = "<p>有效期：" + newdata.data.valid_begin + "至" + newdata.data.valid_end + "</p>";
+                            html += "<p>" + newdata.data.remark + "</p>";
+                            $('.ai_cuowu').addClass("disnone");
+                            $('.ai_mashow').addClass("disnone");
+                            $('.ai_footer').empty().append(html);
+                            $('.ai_footer').removeClass("disnone");
+                            $('.right').removeClass("disnone");
+                        }
+                    }
+                });
+            } else {
+                $('.ai_cuowu').addClass("disnone");
+                $('.ai_footer').addClass("disnone");
+                $('.right').addClass("disnone");
+                $('.ai_mashow').removeClass("disnone");
+            }
+        });
+
+        //全投
+        $(".ai_all").bind("click", function () {
+            $(".int_merry").val("{$deal.remainSrc}");
+            getshouyi();
+            return false;
+        });
+
+        //计算预期收益
+
+        function getshouyi() {
+            {if $deal.deal_type == 1}
+            return;
+            {/if}
+            var int_merry = $(".int_merry").val();
+            if (int_merry > 0 && /^(\d+|\d+\.|\d+\.\d{1,2})$/.test(int_merry)) {
+                $.ajax({
+                    url: "/deal/expireEarning?id={$deal.productID}&money=" + int_merry,
+                    type: 'POST',
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        $(".ai_yuqi .ai_color").html(data.data.earning + '元');
+                    }
+                });
+                $(".ai_yuqi").removeClass("disnone");
+                $(".ai_merry_cuowu").addClass("disnone");
+            } else {
+                $(".ai_yuqi").addClass("disnone");
+                $(".ai_merry_cuowu").removeClass("disnone");
+            }
+        }
+    });
+    </script>
+</body>
+</html>

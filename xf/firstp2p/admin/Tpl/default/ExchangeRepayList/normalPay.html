@@ -1,0 +1,105 @@
+<tagLib name="html" />
+
+<include file="Public:header" />
+
+<style>
+#dataTable th { text-align: left; }
+</style>
+
+<div class="main">
+    <div class="main_title">
+        <span>批次编号：{$batchInfo['id']}； 交易所备案产品编号：{$projectInfo['jys_number']}； {$batchInfo['batch_number']}期</span>
+        <label>强制还款</label>
+        <a href="{:u("ExchangeRepayList/index")}" class="back_list">{%BACK_LIST}</a>
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <form name="search" action="/m.php" method="post">
+    <table id="dataTable" class="dataTable">
+        <tr class="row">
+            <th style="width:60px; text-align:center">选择还款</th>
+            <th>还款日</th>
+            <th>已还金额</th>
+            <th>待还金额</th>
+            <th>待还本息</th>
+            <th>投资顾问费</th>
+            <th>发行服务费</th>
+            <th>咨询费</th>
+            <th>担保费</th>
+            <th>挂牌服务费</th>
+            <th>状态</th>
+        </tr>
+        <volist name="repayList" id="item" key="index">
+        <tr class="row">
+            <td style="width:60px; text-align:center">
+                <if condition="$item['status'] eq 1"> <input type="checkbox" name="repay_ids[]" class="repay_ids" value="{$item['id']}"/> </if>
+            </td>
+            <td>{:date('Y-m-d', $item['repay_time'])}</td>
+            <td><if condition="$item['status'] gt 1">{$item['repay_money'] / 100}<else/>0</if></td>
+            <td><if condition="$item['status'] gt 1">0<else/>{$item['repay_money'] / 100}</if></td>
+            <td><if condition="$item['status'] gt 1">0<else/>{$item['principal'] / 100 + $item['interest'] / 100}</if></td>
+            <td>{$item['invest_adviser_fee'] / 100}</td>
+            <td>{$item['publish_server_fee'] / 100}</td>
+            <td>{$item['consult_fee'] / 100}</td>
+            <td>{$item['guarantee_fee'] / 100}</td>
+            <td>{$item['hang_server_fee'] / 100}</td>
+            <td>
+                <if condition="$item['status'] eq 1">
+                    待还
+                <elseif condition="$item['status'] eq 2"/>
+                    准时还款
+                <elseif condition="$item['status'] eq 3"/>
+                    已提前还款
+                <else />
+                    逾期还款
+                </if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+
+    <input type="hidden" value="doNormalPay" name="a" />
+    <input type="hidden" value="ExchangeRepayList" name="m" />
+    <input type="hidden" value="{$batchInfo['id']}" name="batch_id" />
+    <input type="submit" id="submit_btn" value="提交" class="button"/>
+    <div class="blank5"></div>
+    </form>
+
+    <div class="page">{$page}</div>
+    <div class="blank5"></div>
+</div>
+
+<script>
+    $(function() {
+        $('#submit_btn').click(function() {
+            var allCheckboxStr = '';
+            $('.repay_ids').each(function() {
+                allCheckboxStr += $(this).val()
+                })
+
+            var checkedCheckboxStr = '';
+            $('.repay_ids:checked').each(function() {
+                checkedCheckboxStr += $(this).val()
+                })
+
+            if (!checkedCheckboxStr) {
+                alert("请选择还款项目!");
+                return false;
+            }
+
+            var reg = new RegExp("^" + checkedCheckboxStr);
+            if (!reg.test(allCheckboxStr)) {
+                alert("选择还款项目之前存在未还项目!");
+                return false;
+            }
+
+            if (!confirm("确定强制还款么?")) {
+                return false;
+            }
+        })
+    })
+</script>
+
+<include file="Public:footer" />

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>红包详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <!--public js&css start-->
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/m-base.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/m-common.css" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/envelopes-details.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    {if $group}
+    <div class="package-img">
+        {if $site_id eq 1}
+        <img src="{$STATIC_SITE}/mobile/app/v2/images/envelopes/red-01.png" width="44%">
+        {else}
+        <img src="{$STATIC_SITE}/mobile/app/v2/images/envelopes/red-01-sub.png" width="44%">
+        {/if}
+    </div>
+    <div class="package-title">
+        <h3>{$group.sendNum}个红包已被拆开</h3>
+        <span>还剩<em>{$group.leftNum}</em>个</span>
+    </div>
+    <table class="package-con mt20">
+        <tr>
+            <th>获得时间：</th>
+            <td>{$group.createdAt}</td>
+        </tr>
+        <tr>
+            <th>有效期限：</th>
+            <td>{$group.expiredAt}</td>
+        </tr>
+        <tr>
+            <th>红包来源：</th>
+            <td>{$group.bonusInfo}</td>
+        </tr>
+    </table>
+    {if $sendFlag eq 1}
+    <div class="package-btn"><a href="bonus://api?title={$title}&content={$content}&face={$face}&url={$url}">发红包</a></div>
+    {/if}
+    {else}
+    您要查看的不存在
+    {/if}
+    <script src="{$STATIC_SITE}/mobile/app/v2/js/zepto.min.js" type="text/javascript"></script>
+    <script src="{$STATIC_SITE}/mobile/app/v2/js/sea.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        // 加载入口模块
+        seajs.use("{$STATIC_SITE}/mobile/app/v2/js/m-common");
+
+    </script>
+</body>
+</html>
+

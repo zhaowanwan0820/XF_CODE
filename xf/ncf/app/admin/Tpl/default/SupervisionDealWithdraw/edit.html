@@ -1,0 +1,98 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<div class="main">
+<div class="main_title">{$vo.user_id|get_user_name}的提现申请</div>
+<div class="blank5"></div>
+<php>
+    function get_carry_status($status, $id)
+    {
+        $str = L("CARRY_STATUS_".$status);
+        return $str;
+    }
+</php>
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">用户ID</td>
+        <td class="item_input">
+            {$vo.user_id}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">用户名</td>
+        <td class="item_input">
+            {$vo.user_id|get_user_name}
+        </td>
+    </tr>
+    <?php if ($trusteePay) { ?>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <span class="tip_span">以下为受托支付收款人信息</span>
+        </td>
+    </tr>
+    <?php } ?>
+    <tr>
+        <td class="item_title">开户行</td>
+        <td class="item_input">
+            {$vo.bank_name}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">开户行所在地</td>
+        <td class="item_input">
+            {$vo.region_lv1_name} &nbsp;{$vo.region_lv2_name} &nbsp;{$vo.region_lv3_name} &nbsp;{$vo.region_lv4_name}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">开户行网点</td>
+        <td class="item_input">
+            {$vo.bankzone}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">银行卡卡号</td>
+        <td class="item_input">
+            {$vo.bankcard}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">银行卡类型</td>
+        <td class="item_input">
+            <if condition="$vo['card_type'] eq 0">个人账户
+            <elseif condition="$vo['card_type'] eq 1"/>公司账户
+            </if>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">开户名</td>
+        <td class="item_input">
+            {$vo.real_name}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">提现消息</td>
+        <td class="item_input">
+            {$vo.remark}
+        </td>
+    </tr>
+
+    <!--
+    <tr>
+        <td class="item_title">操作备注:</td>
+        <td class="item_input"><textarea class="textbox" name="desc" <if condition="$vo['status'] neq 0">disabled="true"</if> style="width:400px;height:80px" >{$vo.desc}</textarea>
+        </td>
+    </tr>
+    -->
+
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<script type="text/javascript">
+
+</script>

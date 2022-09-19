@@ -1,0 +1,72 @@
+{include file="web/views/header.html"}
+<style type="text/css">
+  .p_passporttype .newn_2 li {line-height: 28px;}
+</style>
+<div class="p_passporttype">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_passporttype.css');?>">
+<div class="blank"></div>
+<div class="w980 clearfix">
+  <div class="deal_box_top"></div>
+  <div class="deal_box_data">
+    <div class="con">
+      <div class="contentn">
+        <h1></h1>
+        <h2>选择您的认证方式：</h2>
+        <div class="contentn_1">
+          <ul class="passport-type-list">
+            <li class="first" data-type="1"><span>军官证</span></li>
+            <li data-type="2"><span>护照</span></li>
+
+          </ul>
+          <input id="passport-type-input" type="hidden" name="passport_type" value="0">
+        </div>
+        <h4>请准备以下材料：</h4>
+         <div class="contentn_2">
+            <div class="newn">
+              <span><b>1.   以下证件的正反两面照片或彩色扫描件：</b></span><br />
+
+              <span class="gio"><b id="text_1"></b></span>
+              <span class="gio"><b id="text_2"></b></span>
+              <span class="gio"><b id="text_3"></b></span>
+            </div>
+            <div class="newn_2">
+
+              <ul>
+                  <li>您必须同时持有以上证件，且每个证件的有效期至少有两个月有效，身份证件超过有效期后您将不能进行身份认证。</li>
+                  <li id="cai">资料要求：</li>
+                  <li> 图片清晰、证件文字易识别</li>
+                  <li> 图片格式仅限JPG</li>
+                  <li> 图片大小不超过1.5MB </li>
+              </ul>
+            </div>
+            <div class="newn_4">
+                    <span><b>2.  内地以下任一银行正常可用的借记卡，且该卡开户姓名与您的证件姓名一致： </b></span><br />
+                    <div class="gio"><b> 中国工商银行、招商银行、中国建设银行、中国农业银行、中信银行、中国光大银行、平安银行、兴业银行、交通银行、 中国银行、中国邮政储蓄银行、北京银行、广发银行、浦发银行、海口联合农商银行、上海银行等。
+                    </b></div>
+                  </div>
+                <div class="newn_5" style="margin:30px 0"><a id="possport" href="###" class="pp-btn-lg">继续认证</a></div>
+            </div>
+       </div>
+    </div>
+  </div>
+  <div class="deal_box_bot"></div>
+</div>
+</div>
+<script>
+var text_html = {$text};
+$("#possport").click(function(){
+     if(!$(".passport-type-list li").hasClass("active")){
+        $.showErr("请选择认证方式后再继续！");
+     }
+});
+$('.passport-type-list li').on('click', function(event){
+  $(this).addClass('active').siblings().removeClass('active');
+  $('#possport').attr('href','/account/specialuser?type=' + $(this).data('type'));
+  var type = $(this).data('type');
+  $("#text_1").html(text_html[type][0]);
+  $("#text_2").html(text_html[type][1]);
+  //$("#img_example").attr('href',text_html[type][2]);
+
+});
+</script>
+{include file="web/views/footer.html"}

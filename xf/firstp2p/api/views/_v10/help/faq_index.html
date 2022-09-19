@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>帮助中心</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=no">
+  <!--public js&css start-->
+  <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-base.css');?>" rel="stylesheet" type="text/css"/>
+  <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-common.css');?>" rel="stylesheet" type="text/css"/>
+  <link href="<?php echo $this->asset->makeAppUrl('v2/css/deal_help.css');?>" rel="stylesheet"/>
+  <!--public js&css end-->
+  <link href="<?php echo $this->asset->makeAppUrl('v2/css/swiper-4.3.2.min.css');?>" rel="stylesheet"/>
+</head>
+<style>
+  .swiper-slide{height: 140px;margin: 15px 0 0;transform: scale(0.95)!important;-webkit-transform: scale(0.95)!important;-ms-transform: scale(0.95)!important;-moz-transform: scale(0.95)!important;-o-transform: scale(0.95)!important;}
+  .swiper-slide.swiper-slide-active{transform: scale(1)!important;-webkit-transform: scale(1)!important;-ms-transform: scale(1)!important;-moz-transform: scale(1)!important;-o-transform: scale(1)!important;}
+  .swiper-slide a{display: block;width: 100%;height: 100%;}
+  .swiper-slide img{height: 100%;width: 100%;}
+</style>
+<body>
+  <section>
+    <div class="m-mian">
+      <div class="swiper-container" style="display: none;">
+        <div class="swiper-wrapper"></div>
+      </div>
+      <adv adv_id="客户端常见问题首页"/>
+    </div>
+  </section>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v2/js/lib/lib.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v2/js/help/swiper-4.3.2.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v2/js/help/index.js');?>"></script>
+
+<script>
+  $(function(){
+    var swiperContainer = $('.swiper-container');
+    $.ajax({
+      type: 'get',
+      url: '/common/adv?advid=客户端常见问题首页轮播',
+      dataType: 'json',
+      beforeSend: function(request){
+        request.setRequestHeader('version', '{$app_version}')
+      },
+      success: function(res){
+        if(!!res.data) {
+          swiperContainer.show();
+          res.data.map(function(v,i){
+            var html='';
+            var className = i == 0 ? "swiper-slide swiper-slide-center none-effect" : "swiper-slide"
+            var adUrl = v.adUrl ? v.adUrl : "javascript:;"
+            html += '<div class="'+className+'">'
+                  + '<a href="'+adUrl+'">'
+                  +   '<img src="'+ v.imageUrl+'"/>'
+                  + '</a>'
+                  + '</div>'
+            $(".swiper-wrapper").append(html)
+          })
+          if(res.data.length > 1) {
+            var swiper = new Swiper('.swiper-container',{
+              autoplay: true,
+              loop: true,
+              loopAdditionalSlides: 1,//loop为true的时候设置loopAdditionalSlides：1则在前后添加一个子元素，形成循环
+              speed: 1300,
+              autoplay: {
+                disableOnInteraction: false//该属性设置后，滑动轮播后，轮播自动滑动不会失效
+              },
+              slidesPerView: 1.1,
+              centeredSlides: true//图片居中
+            });
+          }
+        } else {
+          swiperContainer.hide();
+          console.log('暂未配置') }
+      }
+    })
+  })
+</script>
+</html>

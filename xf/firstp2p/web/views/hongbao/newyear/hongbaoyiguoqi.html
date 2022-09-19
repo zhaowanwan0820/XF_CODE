@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file='web/views/hongbao/shareLogo.html'}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/newyear.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+{include file="web/views/hongbao/newyear/logo.html"}
+    <div class="top finish">
+       <div class="dao-btn pt280">
+            <a href="{$downloadUrl}" class="down-btn">{$downloadDesc}</a>
+        </div>
+    </div>
+<script>
+    function onBridgeReady() {
+        WeixinJSBridge.call('hideOptionMenu');
+    }
+
+    if (typeof WeixinJSBridge == "undefined") {
+        if (document.addEventListener) {
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        } else if (document.attachEvent) {
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    } else {
+        onBridgeReady();
+    }
+</script>
+<script type="text/javascript">
+        $(function(){
+            var bHeight=document.documentElement.clientHeight-380;
+            $('.top').css({"margin-top":(bHeight/2)+'px'});
+        })
+    </script>
+</body>
+</html>

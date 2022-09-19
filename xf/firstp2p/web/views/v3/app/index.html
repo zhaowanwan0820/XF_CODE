@@ -1,0 +1,121 @@
+{include file="web/views/v3/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_download.css?v=115');?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/lib/fullPage/jquery.fullPage.css');?>">
+<style>
+.m_header {
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+}
+</style>
+<section id="j_fullpage">
+    <section class="section first-sc">
+        <div class="shade-first"></div>
+        <div id="j_first_sc_adv">
+        </div>
+    </section>
+    <!--<section class="section second-sc">
+        <div class="shade-second"></div>
+        <div class="int-abstract2">
+            <div class="int-item-box2">
+                <div class="abstract-s2-left"></div>
+                <div class="abstract-s2-right">
+                    <div class="as2-pop"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+     <section class="section third-sc">
+        <div class="shade-third"></div>
+        <div class="int-abstract3">
+            <div class="int-item-box3">
+                <div class="abstract-s3-left"></div>
+                <div class="abstract-s3-right"></div>
+            </div>
+        </div>
+    </section>
+    <section class="section fourth-sc">
+        <div class="shade-fourth"></div>
+        <div class="int-abstract4">
+            <div class="int-item-box4">
+                <div class="abstract-s4-left"></div>
+                <div class="abstract-s4-right">
+                    <div class="as4_left"></div>
+                    <div class="as4_right"></div>
+                    <div class="as4_top"></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            北京经讯时代科技有限公司
+            <br/> © 2019 网信 All rights reserved 京ICP备16034138号-3 | 京ICP证140628号
+        </div>
+    </section> -->
+</section>
+<div class="j_video_guanggao" style="display:none">
+    <adv adv_id="app广告位_2017"/>
+</div>
+<!-- jquery.easings.min.js 是必须的，用于 easing 参数，也可以使用完整的 jQuery UI 代替 -->
+<script src="<?php echo $this->asset->makeUrl('v3/js/lib/fullPage/jquery.easings.min.js');?>"></script>
+<!-- 如果 scrollOverflow 设置为 true，则需要引入 jquery.slimscroll.min.js，一般情况下不需要 -->
+<script src="<?php echo $this->asset->makeUrl('v3/js/lib/fullPage/jquery.slimscroll.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/lib/fullPage/jquery.fullPage.js');?>"></script>
+<script>
+$(function() {
+    $('#j_fullpage').fullpage({
+        'paddingTop': 126, // 与顶部的距离
+        'verticalCentered': true,
+        'scrollOverflow': true,
+        'sectionsColor': ['#FFF', '#FFF', '#FFF', '#FFF'], //section背景颜色
+        'navigation': false,
+        'navigationPosition': 'right',
+        afterLoad: function(anchorLink, index) {}
+    });
+
+    var video_text = $('.j_video_guanggao').html();
+    $('#j_first_sc_adv').append(video_text);
+
+    // 安卓下载
+    var _parammatch = window.location.search.match(/[?&]cn=([A-Z0-9]*)/i);
+    if (_parammatch) {
+        $(".btn_android").attr("href", "http://www.firstp2p.com/down/apk?cn=" + _parammatch[1]);
+        return;
+    }
+    var _cookiematch = document.cookie.match(/(|; )link_coupon=([A-Z0-9]*)/);
+    if (_cookiematch) {
+        $(".btn_android").attr("href", "http://www.firstp2p.com/down/apk?cn=" + _cookiematch[2]);
+        return;
+    }
+
+    // 增加埋点
+    var _ncf = {
+        "prd": "firstp2p",
+        "pstr": "",
+        "pfunc": null,
+        "pcon": "&uf=pc",
+        "pck": {
+            "channel": "channel",
+            "fpid": "fpid"
+        },
+        "trid": "",
+        "channel": ['pubid', 'mediumid', 'adid', 'adsize'],
+        "rfuniq": [],
+        "rfmuti": []
+    };
+    (function(p, h, s) {
+        var o = document.createElement(h);
+        o.src = s;
+        p.appendChild(o)
+    })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+
+});
+</script>
+<?php
+    //灰度标签
+    if(get_cfg_var('p2p_rc') == 1){
+        echo "RC";
+    }
+?>
+    </body>
+
+    </html>

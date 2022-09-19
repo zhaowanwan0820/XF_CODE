@@ -1,0 +1,95 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+    <div class="main_title">{$main_title} <a href="{:u("Related/index_user",array('channel'=>$channel))}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">身份证号</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="idno" value="{$data.idno}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">姓名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="name" value="{$data.name}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">所属公司</td>
+                <td class="item_input">
+                    <select name="related_company" >
+                        <option value="0">=={%NO_SELECT_CATE}==</option>
+                        <foreach name="related_companys" key="related_company_key" item="related_company">
+                            <option value="{$related_company_key}" <if condition="$data['related_company'] eq $related_company_key"> selected="selected"</if>> {$related_company}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">职务</td>
+                <td class="item_input">
+                    <select name="post" >
+                        <option value="0">=={%NO_SELECT_CATE}==</option>
+                        <foreach name="posts" key="post_key" item="post">
+                            <option value="{$post_key}" <if condition="$data['post'] eq $post_key"> selected="selected"</if>> {$post}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">任职开始时间:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="begin_time" id="begin_time" value="{$data.begin_time}" onfocus="this.blur(); return showCalendar('begin_time', '%Y-%m-%d', false, false, 'btn_begin_time');">
+                    <input type="button" class="button" id="btn_begin_time" value="选择时间" onclick="return showCalendar('begin_time', '%Y-%m-%d', false, false, 'btn_begin_time');">
+                    <input type="button" class="button" value="清空时间" onclick="$('#begin_time').val('');">
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">任职结束时间:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="end_time" id="end_time" value="{$data.end_time}" onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d', false, false, 'btn_end_time');">
+                    <input type="button" class="button" id="btn_end_time" value="选择时间" onclick="return showCalendar('end_time', '%Y-%m-%d', false, false, 'btn_end_time');">
+                    <input type="button" class="button" value="清空时间" onclick="$('#end_time').val('');">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">备注</td>
+                <td class="item_input"><textarea class="textarea" name="remark" >{$data.remark}</textarea></td>
+            </tr>
+            <tr>
+                <td class="item_title">是否启用</td>
+                <td class="item_input">
+                    <lable><input type="radio" name="status" value="1"  <if condition="$data['status'] eq 1">checked="checked"</if> />是</lable>
+                    <lable><input type="radio" name="status" value="2"  <if condition="$data['status'] eq 0">checked="checked"</if> />否</lable>
+                </td>
+            </tr>
+            <input type="hidden" name="id" id="id" value="{$data.id}" />
+            <input type="hidden" name="user_type" value="{$user_type}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Related" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="submit" class="button" value="{%EDIT}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

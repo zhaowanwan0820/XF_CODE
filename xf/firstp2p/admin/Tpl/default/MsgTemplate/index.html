@@ -1,0 +1,158 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+function gotoUrl(str){
+    var type_id = {$type_id};
+    var url ="m.php?m=MsgTemplate&a=load_template&edit_id="+str;
+    if(type_id){
+        url += "&type_id="+type_id;
+    }
+    location.href=url;
+}
+
+function check_tpl_name(id){
+    var name = $('#name').val();
+    if(id){
+        if(name.length > 0){
+            url = "/m.php?m=MsgTemplate&a=check_tpl_name";
+            $.getJSON(url, { tpl_name: name, tag: "edit", id:id },function(data){
+                if(data.status == 0){
+                    $('#checktplname').html(data.data);
+                }else{
+                    $('#checktplname').html('模板标识可以使用');
+                }
+            });     
+        }else{
+            $('#checktplname').html('不可以为空');
+        }
+    }
+}
+function copy_tpl(id){
+    $.weeboxs.open(ROOT+'?m=MsgTemplate&a=copy_tpl&id='+id, {contentType:'ajax',showButton:false,title:'复制模板',width:550,height:265});
+}
+</script>
+<div class="main">
+<div class="main_title">
+    <if condition="$type_name neq ''">{$type_name}分类 &gt; </if>
+            消息模板管理
+    <if condition="$type_name neq ''"> &nbsp;&nbsp;<a href='m.php?m=MsgTemplate&a={$from}' class="back_list">返回分类列表</a></if>        
+    </div>
+<div class="blank5"></div>
+<input type="button" class="button" value="{%ADD}" onclick="add();" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+选择模板进行编辑：
+<select name="name" onChange="javascript:gotoUrl(this.value);">
+    <option value="">{%SELECT_MSG_TPL}</option>
+    <foreach name="tpl_list" item="tpl_item">
+        <option value="{$tpl_item.id}" <if condition="$tpl['id'] eq $tpl_item['id']">selected="selected"</if>>{$tpl_item.msg_title}</option>
+    </foreach>  
+</select>
+<form name="updateCache" action="__APP__" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="{:conf("VAR_MODULE")}" value="MsgTemplate" />
+    <input type="hidden" name="{:conf("VAR_ACTION")}" value="updateCache" />
+    <input type="hidden" name="id" value="{$tpl.id}">
+    <input type="submit" class="button" value="更新缓存" /><b style="color:red">（模板修改后需要更新缓存才可立即生效）</b>
+</form>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">模板名称:</td>
+        <td class="item_input">
+            <input type='text' id='msg_title' name='msg_title' value='{$tpl.msg_title}' size='30'>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">模板标识:</td>
+        <td class="item_input">
+            <input type='text' id='name' name='name' value='{$tpl.name}' size='30' onchange='check_tpl_name({$tpl.id})'> <font id='checktplname' color='red'></font>
+        </td>
+    </tr>   
+    <tr>
+        <td class="item_title">合同标题:</td>
+        <td class="item_input">
+            <input type='text' id='contract_title' name='contract_title' value='{$tpl.contract_title}' size='30' />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">发送类型:</td>
+        <td class="item_input">
+            <select name="type">
+                <option value="0" <if condition="$tpl['type'] eq 0">selected="selected"</if>>短信</option>
+                <option value="1" <if condition="$tpl['type'] eq 1">selected="selected"</if>>邮件</option>
+            </select>
+        </td>
+    </tr>
+    <tr id="html_row">
+        <td class="item_title">{%IS_HTML}:</td>
+        <td class="item_input">
+            <select name="is_html">
+                <option value="0" <if condition="$tpl['is_html'] eq 0">selected="selected"</if>>{%IS_HTML_0}</option>
+                <option value="1" <if condition="$tpl['is_html'] eq 1">selected="selected"</if>>{%IS_HTML_1}</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">所属模板分类:</td>
+        <td class="item_input">
+        <select name='msg_typeid' id='type_list_option' >
+              <option value='0'>=顶级分类=</option>
+              <foreach name="msg_type_list" item="item">
+              <option value="{$item.id}" <if condition="$tpl['msg_typeid'] eq $item['id']">selected="selected"</if>>{$item.type_name}</option>
+              </foreach>
+        </select>
+        </td>
+    </tr>  
+    <tr>
+        <td class="item_title">{%CONTENT}:</td>
+        <td class="item_input">
+
+            <table class="two-columns" style='width:100%;'>
+            <tr>
+            <td>            
+            <if condition="$tpl['is_html'] eq 1">
+                <html:editor id="editor" name="content" type="KINDEDITOR" content="{$tpl.content}" style="width:700px; height:450px;"/>
+            <else/>
+                <textarea class="textarea" name="content" style="width:700px; height:250px;" >{$tpl.content}</textarea>
+            </if>
+            </td>
+            <td style='font-size:13px;'><if condition="$tpl['id'] gt 0"> 
+            <foreach name="param" item="lang">
+            {$key}: {$lang}<br />
+            </foreach>
+            </if></td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    <tr id="content_tip">
+        <td colspan="2">
+            
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="MsgTemplate" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+            <input type="hidden" name="id" value="{$tpl.id}">
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%EDIT}" />
+            <if condition="$tpl['id'] neq ''"><input type="button" class="button" value="复制" onclick='copy_tpl({$tpl.id})'/></if>
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

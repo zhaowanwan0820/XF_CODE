@@ -1,0 +1,32 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form method="post"  action="__APP__" enctype="multipart/form-data">
+        变更源文件（csv）：<input type="file" name="batch_update_file" id="batch_update_file" accept=".csv"/>
+        <input type="submit" class="button" value="批量导入" />
+
+        <input type="hidden" value="Deal" name="m" />
+        <input type="hidden" value="do_batch_update" name="a" />
+    </form>
+    <span>
+    表格说明：<br />
+    表头：<br />
+('标id', '管理机构', 'tag', '借款金额', '最低金额', '年化基本利率', '借款年利率', '年化出借人利率', '年化借款平台手续费', '年化借款咨询费', '年化借款担保费', '年化支付服务费', '年化管理服务费', '年化管理服务费收取方式', '合同类型', '借款状态', '状态', '所属网站') <br /><br />
+    内容填写说明：<br />
+    所属队列：当字段值为空白时，不对标的所属队列进行变更；当字段值为0时，将标的由现有队列里移出；当字段为某一队列id时，对标的所属队列进行变更。
+    管理机构：机构id，参考[机构列表]编号<br />
+    年化管理服务费收取方式：填写数值，参考：1前收，2后收；3分期收，如：前收 填写 1<br />
+    合同类型：合同id，参考[合同模板分类]编号<br />
+    借款状态：填写数值，参考：0等待确认，1进行中，2满标，3流标，4还款中，5已还清，如：进行中 填写 1<br />
+    状态：填写数值，参考：0无效，1有效，如：有效 填写 1<br />
+    所属网站：填写对应站点的名字，参考[标的编辑页]所属网站，如：firstp2p<br />
+    </span>
+    <a href="/m.php?m=Deal&a=get_batch_update_csv_tpl">获取 csv 模板</a>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,46 @@
+<!--private js&css start-->
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/charge/index.js');?>"></script>
+<!--private js&css end-->
+
+<form name="chargeForm" id="chargeForm" action='{url x="index" r="account/docharge"}' method="post">
+    <div class="user_right">
+        <div class="user_right_box" id="chargeSelect">
+            <div class="user_title"><h1><i class="ico_chongzhi"></i>充值</h1></div>
+             <div class="bank-tip">您在充值过程中可能会出现5-10分钟延迟，请耐心等待。</div>
+            <?php echo token_input(); ?>
+            <input type="hidden" name="payment" value="4">
+
+
+            <div class="take">
+                <div>
+                    <dl class="clearfix">
+                        <dt>充值账户：</dt>
+                        <dd>{$user_info.real_name}</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>账户余额：</dt>
+                        <dd>{function name="number_format" v=$user_info.money f="2"}元</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>充值金额：</dt>
+                        <dd><input type="text" class="user_name validate[required,funcCall[X.V.checkCrash]]" id="charge" name="money" data-int="10" data-xiaoshu="2" /> 元</dd>
+                        <dd class="chargeformError"></dd>
+                    </dl>
+                </div>
+
+            </div>
+            <div class="tc p20 f14">
+                <button class="user_button mt10 mb20" id="incharge_done" type="submit">充值</button>
+            </div>
+
+            <div class="user_tip">
+                <p>1、所有投资保证金将由第三方平台托管。</p>
+
+                <p>2、请注意您的银行卡的充值限制，以免造成不便。</p>
+
+                <p>3、如果充值金额没有及时到账，请拨打 <span class="color-yellow1">400-890-9888</span> 与客服联系。</p>
+            </div>
+        </div>
+    </div>
+</form>

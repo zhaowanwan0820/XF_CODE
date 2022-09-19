@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" Content="text/html; charset=utf-8;" />
+<title>我的成长轨迹</title>
+<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0;">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v2/growth/css/base.css')?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v2/growth/css/login.css')?>">
+<script src="<?php echo $this->asset->makeUrl('/v2/growth/js/jquery-2.1.1.min.js')?>"></script>
+<script src="<?php echo $this->asset->makeUrl('/v2/growth/js/login.js')?>"></script>
+<script type="text/javascript">
+    function refresh() {
+        document.getElementById("codeImg").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+    }
+</script>
+<script text="text/javascript">
+    //分享控制
+    var shareOpt={//分享信息json对象
+        'title':'hey！这是你的成长轨迹~',
+        'content':'快去看看你在网信理财的成长轨迹吧~',
+        'url':location.protocol+'//'+location.hostname+'/user/growth',
+        'img':'http://fp1.ncfstatic.com/attachment/201512/25/17/25497b54f732b4b5b27c3306555c20a5/index.jpg'
+    }
+</script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    var appid = '{$appid}';
+    var nonceStr = '{$nonceStr}';
+    var timeStamp = '{$timeStamp}';
+    var signature = '{$signature}';
+    wx.config({
+        appId:appid,
+        timestamp:timeStamp,
+        nonceStr:nonceStr,
+        signature:signature,
+        jsApiList:[
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'hideOptionMenu',
+            'showOptionMenu',
+            'closeWindow'
+        ],
+    });
+    wx.ready(function(){
+        wx.onMenuShareAppMessage({
+            title: shareOpt.title,
+            desc: shareOpt.content,
+            link: shareOpt.url, // 分享链接
+            imgUrl: shareOpt.img
+        });
+        wx.onMenuShareTimeline({
+            title: shareOpt.title,
+            link: shareOpt.url,
+            imgUrl: shareOpt.img
+        });
+    });
+</script>
+</head>
+
+<body>
+    <div class="imgWrap">
+        <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/login_bg.jpg')?>"/>
+        <div class="imgInner">
+            <form class="loginForm" id="loginForm" method="post" action="/user/doLogin{$querystring}">
+                <?php echo token_input(); ?>
+                <input type="hidden" name="tpl" value="growth"/>
+                <div class="inputBox">
+                    <input type="text" class="account" name="username" id="accountInput" placeholder="请输入手机号/用户名" autoComplete="off"/>
+                </div>
+                <div class="inputBox">
+                    <input type="password" class="password" name="password" id="pasInput" placeholder="请输入登录密码" autoComplete="off"/>
+                </div>
+                {if isset($show_vcode) && $show_vcode eq '1'}
+                <div class="inputBox inlbBox">
+                    <input type="text" class="code" name="captcha" id="codeInput" placeholder="请输入验证码" autoComplete="off"/>
+                    <img class="codeImg" id="codeImg" src="/verify.php?w=91&h=36&rb=0" onclick="refresh()"/>
+                </div>
+                {/if}
+            </form>
+            <div class="imgWrap">
+                <img class="login_submitImg" src="<?php echo $this->asset->makeUrl('/v2/growth/images/login_submitBg.png')?>"/>
+                <div class="imgInner">
+                    <input type="button" class="submitBtn" id="submitBtn"/>
+                </div>
+            </div>
+            <!--<p class="register_p"><a href="/account/register">免费注册</a></p>-->
+        </div>
+    </div>
+    <div class="formTip" id="formTip"><span></span></div>
+    {if isset($error)}<p class="preErrorTip" id="preErrorTip">{$error}</p>{else if}{/if}
+</body>
+
+</html>

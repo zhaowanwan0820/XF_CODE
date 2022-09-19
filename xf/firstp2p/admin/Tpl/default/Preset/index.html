@@ -1,0 +1,49 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<php>
+	function f_to_date($date){
+		return to_date($date,"Y-m-d H:i");
+	}
+	function staff_str($date){
+        if($date == 1)
+            return '是';
+        else
+            return '否';
+    }
+    function f_user_id($user_name){
+        $user_id = $GLOBALS['db']->getOne("select id from ".DB_PREFIX."user where user_name = '".$user_name."'");
+        return $user_id;
+    }
+    function get_from($from){
+    	$pro_name = $GLOBALS['db']->getOne("select program_name from ".DB_PREFIX."preset_program where id = '".$from."'");
+    	return $pro_name;
+    }
+</php>
+<div class="main">
+<div class="main_title">预约列表</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="search_row" >
+	<input type="button" class="button" value="{%DEL}" onclick="del();" />
+	<input type="button" class="button" value="{%EXPORT}" onclick="export_csv();" />
+	<a href="{:u("Preset/preset_program")}" class="back_list">{%BACK_LIST}</a>
+</div>
+<div class="blank5"></div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="Preset" 
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|50px,real_name:姓名,email:邮箱,mobile:手机,money:金额,user_name:用户名,user_name|f_user_id=$preset_list['user_name']:用户ID,user_area:地址,create_time|f_to_date=$preset_list['create_time']:预约时间,is_staff|staff_str:内部员工,user_money:帐户余额,program_id|get_from:预约项目" 
+	actionlist="del:{%DEL}" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

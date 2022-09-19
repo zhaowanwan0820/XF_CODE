@@ -1,0 +1,317 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<title>编辑预约入口</title>
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+<style>
+    .item_title{text-align: center;background: #f2f2f2;width: 160px;}
+    .require{border-left: none;}
+    table.form td{padding: 12px;}
+    .project_id{width: 170px;padding: 3px;}
+    .button{padding: 7px 21px;}
+    .text_bold{width: 100px;}
+
+    .classgradename{float: left; height: 27px; line-height: 27px; margin-right: 20px}
+    .classgradelist{float: left;}
+    .reserve_product_box{margin-bottom: 10px;}
+    .JS_class_GradeName{display: block; margin-bottom: 10px;}
+</style>
+<div class="main reservationContent">
+    <div class="main_title">新增预约入口 <a href="{:u("UserReservation/reservecard")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form id="formid" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr style="display:none">
+                <td class="item_title"><i class="requireI">*</i>贷款类型</td>
+                <td>
+                <select name="deal_type">
+                    <foreach name="dealTypeList" key="dealType" item="dealTypeName">
+                    <option value="{$dealType}" <if condition="$entra['deal_type'] eq $dealType">selected</if> >{$dealTypeName}</option>
+                    </foreach>
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>年化借款利率</td>
+                <td>
+                    <input type="input" id="invest_rate" name="invest_rate" value="{$entra.invest_rate}" > %
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>还款方式</td>
+                <td>
+                <select name="loantype" id="repay_mode" onchange="javascript:changeRepay(true);">
+                    <option value="0" <if condition="$entra.loantype eq 0">selected</if> >全部</option>
+                    <foreach name="loan_type" key='type_key' item="type_item">
+                    <option value="{$type_key}" <if condition="$entra.loantype eq $type_key">selected</if> >{$type_item}</option>
+                    </foreach>
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>出借期限</td>
+                <td>
+                    <input type="text" class="changepmt textbox" SIZE="8" name="repay_time" id="repay_period4" value="{$entra.invest_line}"/>
+                    <select name="invest_unit" id="unit">
+                        <option value="1" <if condition="$entra.invest_unit eq 1">selected="selected"</if> >天</option>
+                        <option value="2" <if condition="$entra.invest_unit eq 2">selected="selected"</if>  >月</option>
+                    </select>
+
+                    <select id="repay_period" name="repay_time">
+                    <foreach name="repay_time" key='time_key' item="time_item">
+                        <option value="{$time_key}" <if condition="$time_key eq $entra['invest_line']">selected="selected"</if>>{$time_item}</option>
+                    </foreach>
+                    </select>
+                    <input type="text" class="changepmt textbox" SIZE="8" name="repay_time" id="repay_period2" value="{$entra.invest_line}"/> <span id='tian'>天</span>
+                    <select id="repay_period3" name="repay_time">
+                    <foreach name="repay_time_month" key='time_key' item="time_item">
+                        <option value="{$time_key}" <if condition="$time_key eq $entra['invest_line']">selected="selected"</if>>{$time_item}</option>
+                    </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>最低预约金额</td>
+                <td>
+                    <input type="input" id="min_amount" name="min_amount" value="{$entra.min_amount_yuan}" > 元
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">最高预约金额</td>
+                <td>
+                    <input type="input" id="max_amount" name="max_amount"  value="{$entra.max_amount_yuan}" > 元 <span class="requireI">若不填写系统默认不限制最高预约金额，最高预约金额配置最大长度7位数字</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>年化利息折算系数</td>
+                <td>
+                    <input type="input" id="rate_factor" name="rate_factor"  value="{$entra.rate_factor}" >
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>每万元出借利息</td>
+                <td>
+                    <input type="input" id="invest_interest" name="invest_interest" value="{$entra.invest_interest_yuan}" > 元
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">可见组配置</td>
+                <td>
+                    <input type="input" id="visiable_group_ids" name="visiable_group_ids" value="{$entra.visiable_group_ids}" > <span class="requireI">多个可见组使用半角逗号隔开</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>产品结构化配置</td>
+                <td>
+                    <div class="reserve_product_box clearfix">
+                        <div class="classgradename">一级产品名称</div>
+                        <div class="classgradelist">
+                            <if condition="empty($entra['product_grade_conf']['firstGradeName'])">
+                            <span class="JS_class_GradeName">
+                                <select name="first_grade_name[]" class="class_first_grade">
+                                    <option value="">无</option>
+                                    <foreach name="firstLayerGradeList" item="firstLayerGrade">
+                                    <option value="{$firstLayerGrade['name']}">{$firstLayerGrade['name']}</option>
+                                    </foreach>
+                                </select>
+                                <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                            </span>
+                            </if>
+                            <foreach name="entra['product_grade_conf']['firstGradeName']" key="key1" item="firstGradeName">
+                            <span class="JS_class_GradeName">
+                                <select name="first_grade_name[]" class="class_first_grade">
+                                    <option value="">无</option>
+                                    <foreach name="firstLayerGradeList" item="firstLayerGrade">
+                                    <option value="{$firstLayerGrade['name']}" <if condition="$firstLayerGrade['name'] eq $firstGradeName">selected=selected</if> >{$firstLayerGrade['name']}</option>
+                                    </foreach>
+                                </select>
+                                <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                            </span>
+                            </foreach>
+                        </div>
+                    </div>
+                    <div class="reserve_product_box clearfix">
+                        <div class="classgradename">二级产品名称</div>
+                        <div class="classgradelist">
+                            <if condition="empty($entra['product_grade_conf']['secondGradeName'])">
+                            <span class="JS_class_GradeName">
+                                <select name="second_grade_name[]" class="class_second_grade">
+                                    <option value="">无</option>
+                                    <foreach name="secondLayerGradeList" item="secondLayerGrade">
+                                    <option value="{$secondLayerGrade['name']}">{$secondLayerGrade['name']}</option>
+                                    </foreach>
+                                </select>
+                                <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                            </span>
+                            </if>
+                            <foreach name="entra['product_grade_conf']['secondGradeName']" key="key2" item="secondGradeName">
+                            <span class="JS_class_GradeName">
+                                <select name="second_grade_name[]" class="class_second_grade">
+                                    <option value="">无</option>
+                                    <foreach name="secondLayerGradeList" item="secondLayerGrade">
+                                    <option value="{$secondLayerGrade['name']}" <if condition="$secondLayerGrade['name'] eq $secondGradeName">selected=selected</if> >{$secondLayerGrade['name']}</option>
+                                    </foreach>
+                                </select>
+                                <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                            </span>
+                            </foreach>
+
+                        </div>
+                    </div>
+                    <div class="reserve_product_box clearfix">
+                        <div class="classgradename">三级产品名称</div>
+                        <div class="classgradelist">
+                            <if condition="empty($entra['product_grade_conf']['thirdGradeName'])">
+                            <span class="JS_class_GradeName">
+                                <select name="third_grade_name[]" class="class_third_grade">
+                                    <option value="">无</option>
+                                    <foreach name="thirdLayerGradeList" item="thirdLayerGrade">
+                                    <option value="{$thirdLayerGrade['name']}">{$thirdLayerGrade['name']}</option>
+                                    </foreach>
+                                </select>
+                                <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                            </span>
+                            </if>
+                            <foreach name="entra['product_grade_conf']['thirdGradeName']" key="key3" item="thirdGradeName">
+                            <span class="JS_class_GradeName">
+                                <select name="third_grade_name[]" class="class_third_grade">
+                                    <option value="">无</option>
+                                    <foreach name="thirdLayerGradeList" item="thirdLayerGrade">
+                                    <option value="{$thirdLayerGrade['name']}" <if condition="$thirdLayerGrade['name'] eq $thirdGradeName">selected=selected</if> >{$thirdLayerGrade['name']}</option>
+                                    </foreach>
+                                </select>
+                                <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                            </span>
+                            </foreach>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                 <td class="item_title">标签</td>
+                 <td>
+                 前标签：<input type="text" id="label_before" name="label_before" class="textbox" value="{$entra.label_before}" ><br /><br />
+                 后标签：<input type="text" id="label_after" name="label_after" class="textbox" value="{$entra.label_after}" ></td>
+            </tr>
+            <tr>
+                 <td class="item_title"><i class="requireI">*</i>累计预约显示</td>
+                 <td>
+                     <input type="radio" class="display_total" name="display_total" value="1" <if condition="$entra.display_total eq 1">checked</if> > 显示累计预约金额
+                     <input type="radio" class="display_total" name="display_total" value="2" <if condition="$entra.display_total eq 2">checked</if> > 显示累计预约人次
+                     <input type="radio" class="display_total" name="display_total" value="0" <if condition="$entra.display_total eq 0">checked</if> > 不启用
+                 </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>产品详情:</td>
+                <td class="item_input">
+                    <html:editor id="description" name="description" type="KINDEDITOR"  content="{$entra.description}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约入口状态</td>
+                <td><input name="status" type="radio" value="1" class="invest" <if condition="$entra.status eq 1">checked</if> />有效 <input name="status" type="radio" value="0" <if condition="$entra.status eq 0">checked</if> />无效</td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserReservation" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="reservecard_edit" />
+                    <input type="hidden" name="id" value="{$entra.id}" />
+                    <input type="submit"  id="publish" class="button" value="编辑" />
+                    <input type="reset"  id="reset" class="button" value="重置" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+$(document).ready(function(){
+    changeRepay(false);
+    $(".grademinusBtn").click(function(){
+        var length =  $(this).parents("div.reserve_product_box").find("span").length;
+        if(length>1){
+            $(this).parent().remove();
+        }
+    });
+
+    $(".gradeplusBtn").click(function(){
+        gradeName = $(this).parent("span").clone(true);
+        gradeName.find("select option").removeAttr("selected");
+        $(this).parent("span").parent("div.classgradelist").append(gradeName);
+    });
+
+});
+
+var rebateRateMap = <?php echo json_encode($rebateRateMap)?>;
+function changeRepay(changeRate){
+    var repay_mode = $('#repay_mode').val();
+
+    //变更折算系数
+    if (changeRate) {
+        var rebateRate = 1;
+        if (rebateRateMap.hasOwnProperty(repay_mode)) {
+            rebateRate = rebateRateMap[repay_mode];
+        }
+        $('#rate_factor').val(rebateRate);
+    }
+
+    //切换html
+    if(repay_mode == 5){
+        var repay_period = $('#repay_period2').val();
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+        $('#repay_period2,#tian').show();
+        $('#repay_period2').attr('name', 'repay_time');
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+        $('#repay_period4').hide();
+        $('#repay_period4').removeAttr('name');
+        $('#unit').hide();
+        $('#unit').val(1);
+    }else if(repay_mode == 4 || repay_mode == 3 || repay_mode == 2 || repay_mode == 8){
+        var repay_period = $("#repay_period3").val();
+        $('#repay_period3').show();
+        $('#repay_period3').attr('name', 'repay_time');
+        $('#repay_period2,#tian').hide();
+        $('#repay_period2').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+        $('#repay_period4').hide();
+        $('#repay_period4').removeAttr('name');
+        $('#unit').hide();
+        $('#unit').val(2);
+    }else if(repay_mode == 0){
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+        $('#repay_period2').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period2,#tian').hide();
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+        $('#repay_period4').show();
+        $('#repay_period4').attr('name', 'repay_time');
+        $('#unit').show();
+    }else{
+        var repay_period = $("#repay_period").val();
+        $('#repay_period').show();
+        $('#repay_period').attr('name', 'repay_time');
+        $('#repay_period2').hide();
+        $('#repay_period2,#tian').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+        $('#repay_period4').hide();
+        $('#repay_period4').removeAttr('name');
+        $('#unit').hide();
+        $('#unit').val(2);
+    }
+}
+</script>

@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="format-detection" content="telephone=no">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+                <title>优惠码</title>
+                <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-base.css');?>" rel="stylesheet" />
+                <link href="<?php echo $this->asset->makeAppUrl('v2/css/deal_codeshow.css');?>" rel="stylesheet" />
+                </head>
+                <body>
+                    <div class="p_deal_codeshow">
+                        <div class="pcs_main">
+                            <div class="pcs_top">
+                                <div class="pcst_center clearfix">
+                                    <div class="pcst_btn fr">
+                                        <a class="btn_gray" href="javascript:void(0);" id="sub_btn">确定</a>
+                                    </div>
+                                    <div class="pcst_left">
+                                        <input id="inp_code" type="text" maxlength="16"{if $data.couponIsFixed == 1} readonly = 'readonly'{/if} value="{$data.code}" placeholder="请输入优惠码"/>
+                                               <i class="code_right"></i>
+                                            <span class="code_text error_color">优惠码错误</span>
+                                    </div>
+                                </div>
+                                <p class="msg_tip"></p>
+                            </div>
+                            <!-- <div class="pcs_top">
+                                <div class="pcst_center clearfix">
+                                    <div class="pcst_btn fr">
+                                        <a class="a_gay" href="#">确定</a>
+                                    </div>
+                                    <div class="pcst_left">
+                                        <input type="text" placeholder="请输入优惠码" />
+                                        <i class="code_right">√</i>
+                                    </div>
+                                </div>
+                                <p> 投资成功额外获年化<em class="sy_color">0.25%</em>收益，15个工作日内发放至您的平台账户。有效期：2014-12-12~2018-12-12</p>
+                            </div>
+                
+                            <div class="pcs_top">
+                                <div class="pcst_center clearfix">
+                                    <div class="pcst_btn fr">
+                                        <a class="a_gay" href="#">确定</a>
+                                    </div>
+                                    <div class="pcst_left">
+                                        <input type="text" placeholder="请输入优惠码" />
+                                        <span class="code_text error_color">优惠码错误</span>
+                                    </div>
+                                </div>
+                                <p>投资放款后，您的收益将以红包形式发放到好友账户。</p>
+                            </div> -->
+
+                            <div class="pcs_tip">
+                                <h1>什么是优惠码，怎么获取？</h1>
+                                <p>您可以关注网信官方微信公众号“Firstp2p”，我们会不定期推出各种优惠活动，您可以使用活动中所提供的优惠码进行投资，获得额外的收益
+                                    。同时您也可以询问已在网信注册过的好友，使用他们的“邀请优惠码”进行投资，您和您的好友都可以获得额外的奖励。</p>
+                                <h1>如何获取我的投资邀请码？</h1>
+                                <p>具体获取方式为：进入App底部导航“我的”，点击“邀请好友得返利”查看详细内容。</p>
+                                <div class="pcs_help">>解决不了您的疑惑？<a href="telprompt:4008909888">致电客服</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.js');?>"></script>
+                    <script>
+                        $(function() {
+                            var $rightTip = $('.code_right');
+                            var $errorTip = $('.code_text');
+                            var $btn = $('#sub_btn');
+                            var req;
+                            var reqAbort = false;
+                            $('#inp_code').blur(function() {
+                                validCode('#inp_code');
+                            });
+                            $('#inp_code').focus(function() {
+                                disableHref();
+                            });
+
+                            validCode('#inp_code');
+
+                            function validCode(el) {
+                                var val = $.trim($(el).val());
+                                $(el).val(val);
+                                if (val.length == 0) {
+                                    enableHref(true);
+                                    $errorTip.hide();
+                                    $rightTip.hide();
+                                    $('.msg_tip').html('');
+                                } else if (!/^[a-zA-Z0-9]+$/.test(val)) {
+                                    errMsgShow('格式错误');
+                                } else {
+                                    $errorTip.hide();
+                                    if (req) {
+                                        reqAbort = true;
+                                        req.abort();
+                                    }
+                                    reqAbort = false;
+                                    req = $.ajax({
+                                        url: '/deal/coupon?id=' + val + "&pid={$data.id}",
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        success: function(data) {
+                                            req = null;
+                                            var newdata = data;
+                                            if (newdata.errno != 0) {
+                                                errMsgShow('输入错误');
+                                                $rightTip.hide();
+                                            } else {
+                                                var msg = newdata.data.remark;
+                                                $('.msg_tip').html(msg);
+                                                $rightTip.show();
+                                                enableHref();
+                                            }
+                                        },
+                                        error: function(msg) {
+                                            req = null;
+                                            disableHref();
+                                            if (!reqAbort) {
+                                                alert('网络错误');
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+
+                            function errMsgShow(html) {
+                                $errorTip.show().html(html);
+                                disableHref();
+                                $rightTip.hide();
+                            }
+
+                            function enableHref(flag) {
+                                var newhref = "invest://api?type=confirm&id={$data.id}&money={$data.money}&code=" + $('#inp_code').val() + '&forceCodeEmpty=' + (flag ? 1 : 0);
+                                $btn.removeClass("btn_gray").attr("href", newhref);
+                            }
+
+                            function disableHref() {
+                                $rightTip.hide();
+                                $btn.addClass("btn_gray").attr("href", 'javascript:void(0);');
+                            }
+                        });
+                    </script>
+                </body>
+                </html>

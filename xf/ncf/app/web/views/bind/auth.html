@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+        <title>授权绑定</title>
+        <link href="<?php echo $this->asset->makeUrl('v3/css/p_userbind_auth.css');?>" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/jquery-1.10.2.min.js');?>"></script>
+    </head>
+        <style type="text/css">
+            .ag_explain{
+                position: absolute;
+                left: 17px;
+                top: 0px;
+                display: none;
+                z-index: 99999;
+            }
+        </style>
+    <body>
+        <section>
+        <div class="top_content">
+            <div class="middle_content">
+                <div class="left_double">
+                    <img src="{$appInfo.appLogo}" alt="" class="left_photo">
+                    <span>{$appInfo.appName}</span>
+                </div>
+                <p class="middle_photo"></p>
+                <div class="right_double">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/common/auth_wx_logo.png');?>" alt="" class="right_photo">
+                    <span>网信</span>
+                </div>
+            </div>
+            <div class="clearfix push_this"></div>
+            <div class="explain">验证即登陆,未注册用户将自动创建网信账号。</div>
+        </div>
+        </section>
+        <section class="second_content">
+        <a href="javascript:;" class="argument">同意协议并绑定</a>
+        <div class="bottom_content">我同意<a href="javascript:;">《绑定授权协议》</a></div>
+        </section>
+
+        <div class="ag_boor">
+        </div>
+
+        <div class="ag_explain">
+            <div class="explain_header">网信账号绑定服务协议</div>
+            <div class="explain_content">
+                <p>在您申请创建{$appInfo.appName}账户或申请将您的{$appInfo.appName}账户与网信帐号绑定之前，
+                请仔细阅读本确认书，并同意本确认书。一旦点击“创建帐号并绑定”或“同意协议并绑定”按钮，即默认您充分了解并同意本确认书所有内容。
+                <p>一、账号绑定后实现的功能 </p>
+                <p>1.您的{$appInfo.appName}账户是已登录状态，进入网信提供的理财频道，同意授权页面后，网信会获取您的{$appInfo.appName}账户的相关注册信息</p>
+                <p>2.首次进入理财频道，网信会自动帮您创建或者您自行绑定已有的网信账户。</p>
+                <p>3.账号绑定完成后，您可以在理财频道进行投资等相关操作。</p>
+                <p>二、授权 </p>
+                <p>为实现上述功能，您同意并授权网信通过技术方式实现如下操作： 您的{$appInfo.appName}账户的相关注册信息
+                （包括唯一用户编号、手机号、身份证、银行卡）同步给网信。 </p>
+                <p>三、账号绑定解除</p>
+                <p>若您不想继续使用上述功能，在符合账号解除绑定条件的前提下，您可主动申请解除账号绑定。 </p>
+                <p>此外，在以下情形下您的账户绑定关系也将被解除：</p>
+                <p>（1） 因账户安全等安全因素考虑，网信强制解除您账号绑定关系；</p>
+                <p>（2） 建立绑定关系的两个账号中，任一方账号注销成功，绑定关系将自动解除； </p>
+                <p>（3） 用户违反法律法规国家政策的； </p>
+                <p>（4） 用户违反本确认书、网信服务协议、微博用户协议或其相关规定的；</p>
+                <p>（5） 其他需要解除绑定的。</p>
+            </div>
+            <div class="know"><a href="javascript:;">我知道了</a></div>
+        </div>
+
+    </body>
+    <script type="text/javascript">
+
+         $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+        var new_height = window.screen.height;
+        if ($.getUrlParam("app_height") != null) {
+            new_height = $.getUrlParam("app_height");
+        }
+        $("body,.ag_boor").height(new_height + "px");
+        $(".ag_explain").height(new_height*0.5 + "px");
+
+
+        $('.bottom_content').on('click',function(){
+        $('.ag_explain,.ag_boor').show();
+                });
+        $('.know').on('click',function(){
+            $('.ag_explain,.ag_boor').hide();
+        });
+        var url = location.href;
+        $('.argument').on('click',function(){
+            location.href = url + '&isAgreed=1';
+        });
+</script>
+                                                                                                                                                                                                                                                                                                                   </html> 

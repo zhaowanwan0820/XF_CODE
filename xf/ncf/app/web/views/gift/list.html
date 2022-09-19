@@ -1,0 +1,71 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/account_o2o_gift.css');?>">
+<div class="p_account_o2o_gift">
+        <span class="blank23"></span>
+        <div class="w1100" style="min-height:500px;">
+            <div class="ui-box"  style="min-height:458px;">
+              <div class="h-title">
+                    <h2><i></i>礼券详情</h2>
+                    <a href="/gift" class="fr mr30">返回上一页 ></a>
+                </div>
+                {if $countList eq 0}
+                     <div class="gray_bg mlr100 pt30">
+                         <div class="no_coupon_icon mt20"></div>
+                         <div class="tc f16 color_gray pb30">礼券均已被抢光</div>
+                     </div>
+                {else}
+                <div class="gift_list">
+                    <h2 class="list_title pick_list_title">以下礼券只能选择领取其一，礼券库存有限，请及时领取</h2>
+                    <div class="gift_tab">
+                        <ul class="gift_thead">
+                            <!-- <li class="gift_name">礼券名称</li>
+                            <li class="gift_money">价值</li>
+                            <li class="gift_operation">操作</li> -->
+                        </ul>
+                        {foreach from=$couponGroupList item=coupon key=key}
+                        <ul class="gift_tbody {if $key mod 2 eq  0} tr_bg{/if}">
+                            <li class="one">
+                               <div class="gift_product">
+                                   <dl>
+                                       <dt><img src="{$coupon.pcPic}"></dt>
+                                       <dd>
+                                            <div class="v_middle">
+                                               <h2>{$coupon.productName}</h2>
+                                               {if $coupon.useEndTime neq 0}
+                                                   {if $coupon.useTimeType eq 2}
+                                                    <p class="color_gray f13">有效期至：{function name="date" v="Y.m.d" b=$coupon.useEndTime}</p>
+                                                   {/if}
+                                                {/if}
+
+                                            </div>
+                                       </dd>
+                                   </dl>
+                               </div>
+                            </li>
+
+                            <li class="two">
+                            {if $coupon.goodPrice neq 0 || $coupon.useRules eq 1}
+                            {if $coupon.goodPrice neq 0}&yen;{$coupon.goodPrice}{/if}
+                            {/if}
+                            </li>
+
+                            <li class="three">
+                                {if $coupon.useRules eq 12}
+                                <a href="javascript:;" class="operation_btn" onclick="Firstp2p.alert({text:'精彩游戏请去app礼券，领取玩哦。',ok:function(dialog){dialog.close()}});">详情</a>
+                                {else}
+                                <a href="/gift/acquireDetail?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&deal_type={$deal_type}" class="operation_btn">详情</a>
+                                {/if}
+                            </li>
+                        </ul>
+                         {/foreach}
+
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+        <span class="blank60"></span>
+    </div>
+
+
+{include file="web/views/footer.html"}

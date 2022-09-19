@@ -1,0 +1,164 @@
+{include file="web/views/v3/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/jiathis_share.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/share.v1.css');?>" />
+<link href="<?php echo $this->asset->makeUrl('v3/css/activity/newUserPage_fz.css');?>" type="text/css" rel="stylesheet">
+<script src="<?php echo $this->asset->makeUrl('v3/js/vendor/ZeroClipboard.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/share/share.v1.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/qrcode/qrcode.v1.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/activity/newUserPage_fz.js');?>" type="text/javascript"></script>
+<div class="p_new_user_page main">
+    <input type="hidden" value="{$userStatus.isRegister}" id="isRegister"/>
+    <input type="hidden" value="{$userStatus.isInvest}" id="isInvest"/>
+    <input type="hidden" value="{$userStatus.isInvite}" id="isInvite"/>
+
+    <!-- banner图 begin -->
+    <div class="bannerBox">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/activity/new_user_page/banner.jpg');?>" class="new_comer_img"/>
+        <div class="step_box">
+            <ul class="step_ul clearfix" id="stepUl">
+                <li class="item">
+                    <div class="num">1</div>
+                    <div class="desc">注册</div>
+                </li>
+                <li class="line"></li>
+                <li class="item">
+                    <div class="num">2</div>
+                    <div class="desc">投资赚钱</div>
+                </li>
+                <li class="line"></li>
+                <li class="item">
+                    <div class="num">3</div>
+                    <div class="desc">邀请好友</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- banner图 end -->
+
+    <!-- 去注册 begin -->
+    <div class="new_register">
+        <img src="{$imgList.conf_reg_pc}" alt="" class="new_comer_img">
+        <div class="register_btn">
+            {if $userStatus.isRegister !=1 }
+                <a href="/user/register" class="go_register_btn">去注册</a>
+            {else}
+                <div class="register_success"><i class="mark_img"></i>恭喜您注册成功！</div>
+            {/if}
+        </div>
+        <div class="count_text">今日已有<span class="red">{$registerCount}</span>人注册成功</div>
+    </div>
+    <!-- 去注册 end -->
+
+    <!-- 投资赚钱 begin -->
+    <div class="new_deal">
+        <div class="contentBox">
+            <img src="{$imgList.conf_bid_pc}" alt="" class="new_comer_img">
+            <div class="list_cont">
+                <ul class="ui_p2p_list">
+                    {foreach from=$newUserDealsList item=dealItem}
+                    <li>
+                        <a href="{$dealItem.url}" class="title">{$dealItem.name}</a>
+                        <div class="info clearfix">
+                            <div class="rate">
+                                <p class="text">预期年化</p>
+                                <p class="data">{$dealItem.rate}<span>%</span></p>
+                            </div>
+                            <div class="time">
+                                <p class="text">期限</p>
+                                <p class="data">{$dealItem.repayTime}<span>{if $dealItem.loanType eq 5}天{else}个月{/if}</span></p>
+                            </div>
+                            <a href="{$dealItem.url}" class="invest_btn newbie_invest">立即投资</a>
+                        </div>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="have_deal">
+                <div class="count_deal">今日已有<span class="red">{$loadUserCount}</span>位用户投资</div>
+                <div class="scroll_center">
+                    <div class="bg_linear_top"></div>
+                    <div class="bg_linear_bottom"></div>
+                    <div class="scroll_list">
+                        <ul class="scroll_list_ul" id="scrollListUl" data-list='{$loadList}'>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 投资赚钱 end -->
+
+    <!-- 邀请好友 begin -->
+    <div class="new_fcode">
+        <div class="contentBox">
+            <img src="{$imgList.conf_invite_pc}" alt="" class="new_comer_img">
+        </div>
+        {if $uid==false}
+        <div class="inviteToLogin">
+            <a class="toLogin" href="/user/login" id="toInvite">去邀请</a>
+            <p class="tip">可进入“个人中心”使用“邀请好友”功能进行邀请</p>
+        </div>
+        {else}
+        <div class="inviteWay">
+            <div class="title">分享邀请链接</div>
+            <div class="info">将带有邀请码的注册链接发送给好友 ，好友完成注册且投资，您将获得返利。</div>
+            <div class="inviteUrl clearfix">
+                <span id="clipTar" class="clipTar">{$share_url}</span>
+                <a class="copyLink" href="javascript:;" data-clipboard-target="clipTar" id="copyLink">复制链接</a>
+            </div>
+            <div class="shareTo clearfix" id="jiaThisShareBox" data-share-data='{"url":"{$share_url}","summary":"{$share_msg}"}'>
+                <div class="fl shareTitle">分享到：</div>
+                <div class="jiathis_style_32x32 clearfix fl">
+                    <a class="jiathis_button_weixin j-jiathis" title="分享到微信" data-platname="weixin"
+                    ><div id="share32"></div><!-- <span class="jiathis_txt jtico jtico_weixin"></span> --></a>
+                    <a class="jiathis_button_tsina j-jiathis" title="分享到微博" data-platname="sinaminiblog"><span class="jiathis_txt jtico jtico_tsina"></span></a>
+                    <a class="jiathis_button_qzone j-jiathis" title="分享到QQ空间" data-platname="qzone"><span class="jiathis_txt jtico jtico_qzone"></span></a>
+                    <a class="jiathis_button_renren j-jiathis" title="分享到人人网" data-platname="renren"><span class="jiathis_txt jtico jtico_renren"></span></a>
+                    <a class="jiathis_button_tqq j-jiathis" title="分享到腾讯微博" data-platname="qqmb"><span class="jiathis_txt jtico jtico_tqq"></span></a>
+                    <a title="分享到QQ好友" class="jiathis_button_cqq j-jiathis" data-platname="qqim"><span class="jiathis_txt jtico jtico_cqq"></span></a>
+                </div>
+            </div>
+        </div>
+        {/if}
+    </div>
+    <!-- 邀请好友 end -->
+
+    <!-- 平台介绍 begin -->
+    <div class="new_platform contentBox">
+        <div class="statementBox">
+            <!-- <div class="title">特别申明</div>
+            <ul class="statementUl">
+                <li>1.以上活动讲奖品由网信提供，与设备生产商Apple Inc.公司无关</li>
+                <li>2.以上活动均限投资P2P和专享产品</li>
+                <li>3.具体活动请关注网信官方微信</li>
+                <li>4.客服热线：400-890-9888</li>
+            </ul> -->
+        </div>
+        <img src="{$imgList.conf_platform_pc}" alt="" class="new_comer_img">
+        <a href="{$imgList.link_more_pc}" class="knowMore newbie_more">了解更多</a>
+        <div class="QR_code">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/activity/new_user_page/QR_code.jpg');?>" class="code"/>
+            <div class="tip">扫描二维码下载网信APP</div>
+            <img src="<?php echo $this->asset->makeUrl('v3/images/activity/new_user_page/logo.png');?>" alt="" class="logo">
+        </div>
+    </div>
+    <!-- 平台介绍 end -->
+
+    <script id="scrollUl_tpl" type="text/html">
+        <% var item=null; %>
+        <% for( var i=0,max=arr.length;i<max;i++){ %>
+        <% item=arr[i]; %>
+            <li>用户<%= item.mobile %> 刚刚投资了<%= item.money %>元</li>
+        <% } %>
+        <% for( var i=0;i<4;i++){ %>
+        <% item=arr[i]; %>
+        <li>用户<%= item.mobile %> 刚刚投资了<%= item.money %>元</li>
+        <% } %>
+    </script>
+    <script type='text/javascript'>
+        var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"&uf=pc","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+        (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+    </script>
+
+</div>

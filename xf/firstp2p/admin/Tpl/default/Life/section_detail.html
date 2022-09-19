@@ -1,0 +1,119 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<!-- js文件 start -->
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.form.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.json-2.3.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/Common/js/bank.js"></script>
+<!--js end      -->
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("Life/sectionList?$nowParam")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <if condition="$data['sec_id'] neq ''">
+            <tr>
+                <td class="item_title">版块编号：</td>
+                <td class="item_input">{$data.sec_id}</td>
+            </tr>
+            </if>
+            <tr>
+                <td class="item_title">版块名称：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" style="width:220px" name="secName" value="{$data.sec_name}"/>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">版块简称：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" style="width:220px" name="shortname" value="{$data.shortname}"/>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            <if condition="$data['sec_id'] neq ''">
+            <tr>
+                <td class="item_title">版块密钥：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" style="width:220px" name="secSecret" value="{$data.sec_secret}"/>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            </if>
+            <tr>
+                <td class="item_title">状态：</td>
+                <td class="item_input">
+                    <select name="status" id="status" class="textbox require" style="width:230px;">
+                        <option value="0" <if condition="$data['status'] eq 0">selected="selected"</if>>禁用</option>
+                        <option value="1" <if condition="$data['status'] eq 1">selected="selected"</if>>启用</option>
+                    </select>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">结算账户名：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="settleName" value="{$data.settle_name}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">结算卡号：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="settleAccount" value="{$data.settle_account}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开户名：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="openName" value="{$data.open_name}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开户行：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="openBank" value="{$data.open_bank}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">联行号码：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="branchNo" value="{$data.branch_no}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">版块logo:</td>
+                <td class="item_input">
+                    <input id="secLogoFile" type="file" size="20" name="secLogoFile" class="input">
+                    <button class="button" id="buttonUpload" onclick="return upload('secLogoFile');">上传</button>
+                    <input type='hidden' name='secLogo' id='hidden_secLogoFile' value='{$data.sec_logo}' class="textbox"> 
+                    <span id='img_name_secLogoFile' <if condition="$data.secLogoName eq ''">style='display:none;'</if>><a href='{$data.secLogoName}' id='img_href_secLogoFile' target='_blank'>{$data.secLogoName}</a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">版块介绍：</td>
+                <td class="item_input">
+                    <textarea name="secDesc" id="secDesc" class="txt addarea int_placeholder" placeholder=""  style="width:400px;height:100px;" data-placeholder="商户简介" >{$data.sec_desc}</textarea >
+                </td>
+            </tr>
+            <input type="hidden" name="secId" value="{$data.sec_id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveSection" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="submit" class="button" value="{%EDIT}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

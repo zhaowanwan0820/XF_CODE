@@ -1,0 +1,302 @@
+<!-- $Id: category_list.htm 17019 2010-01-29 10:10:34Z liuhui $ -->
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+<form method="post" action="" name="listForm">
+<!-- start ad position list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+<table width="100%" cellspacing="1" cellpadding="2" id="list-table">
+  <tr>
+    <th>{$lang.cat_name}</th>
+    <th>分类ID</th>
+    <th>{$lang.goods_number}</th>
+    <th>分类图片</th>
+    <th>{$lang.measure_unit}</th>
+    <th>{$lang.nav}</th>
+    <th>{$lang.is_show}</th>
+    <th>{$lang.short_grade}</th>
+    <th>{$lang.sort_order}</th>
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$cat_info item=cat}
+  {if !$cat.level}
+  <tr align="center" class="{$cat.level}" id="{$cat.level}_{$cat.cat_id}" >
+    <td style="text-align: left" class="first-cell" >
+      {if $cat.is_leaf neq 1}
+      <img src="images/menu_plus.gif" id="icon_{$cat.level}_{$cat.cat_id}" width="9" height="9" border="0" style="background-color:black;margin-left:{$cat.level}em" onclick="rowClicked(this)" />
+      {else}
+      <img src="images/menu_arrow.gif" width="9" height="9" border="0" style="margin-left:{$cat.level}em" />
+      {/if}
+      <span><a href="goods.php?act=list&cat_id={$cat.cat_id}">{$cat.cat_name}</a></span>
+    </td>
+    <td width="10%">{$cat.cat_id}</td>
+    <td width="10%">{$cat.goods_num}</td>
+    <td><img src="../../images/cat_image/{$cat.cat_image}" target="_blank" height="50" alt=""></td>
+    <td width="10%"><span onclick="listTable.edit(this, 'edit_measure_unit', {$cat.cat_id})"><!-- {if $cat.measure_unit} -->{$cat.measure_unit}<!-- {else} -->&nbsp;&nbsp;&nbsp;&nbsp;<!-- {/if} --></span></td>
+    <td width="10%"><img src="images/{if $cat.show_in_nav eq '1'}yes{else}no{/if}.svg" width="20" onclick="listTable.toggle(this, 'toggle_show_in_nav', {$cat.cat_id})" /></td>
+    <td width="10%"><img src="images/{if $cat.is_show eq '1'}yes{else}no{/if}.svg" width="20" onclick="listTable.toggle(this, 'toggle_is_show', {$cat.cat_id})" /></td>
+    <td><span onclick="listTable.edit(this, 'edit_grade', {$cat.cat_id})">{$cat.grade}</span></td>
+    <td width="10%" align="right">
+      <a onclick="removeEle(this, 'edit_sort_order', {$cat.cat_id}, -1)">上移</a>
+      <a onclick="removeEle(this, 'edit_sort_order', {$cat.cat_id}, 1)">下移</a>
+    </td>
+    <td width="24%" align="center">
+      <a href="attribute.php?act=list&category_id={$cat.cat_id}">属性列表</a> |
+      <a href="category.php?act=move&cat_id={$cat.cat_id}">{$lang.move_goods}</a> |
+      <a href="category.php?act=edit&amp;cat_id={$cat.cat_id}">{$lang.edit}</a> |
+      <a href="javascript:;" onclick="listTable.remove({$cat.cat_id}, '{$lang.drop_confirm}')" title="{$lang.remove}">{$lang.remove}</a>
+    </td>
+  </tr>
+  {else}
+  <tr align="center" class="{$cat.level}" id="{$cat.level}_{$cat.cat_id}" style="display: none">
+    <td style="text-align: left" class="first-cell" >
+      {if $cat.is_leaf neq 1}
+      <img src="images/menu_minus.gif" id="icon_{$cat.level}_{$cat.cat_id}" width="9" height="9" border="0" style="background-color:black;margin-left:calc({$cat.level}em * 2)" onclick="rowClicked(this)" />
+      {else}
+      <img src="images/menu_arrow.gif" width="9" height="9" border="0" style="margin-left:{$cat.level}em" />
+      {/if}
+      <span><a href="goods.php?act=list&cat_id={$cat.cat_id}">{$cat.cat_name}</a></span>
+    </td>
+    <td width="10%">{$cat.cat_id}</td>
+    <td width="10%">{$cat.goods_num}</td>
+    <td><img src="../../images/cat_image/{$cat.cat_image}" target="_blank" height="50" alt=""></td>
+    <td width="10%"><span onclick="listTable.edit(this, 'edit_measure_unit', {$cat.cat_id})"><!-- {if $cat.measure_unit} -->{$cat.measure_unit}<!-- {else} -->&nbsp;&nbsp;&nbsp;&nbsp;<!-- {/if} --></span></td>
+    <td width="10%"><img src="images/{if $cat.show_in_nav eq '1'}yes{else}no{/if}.svg" width="20" onclick="listTable.toggle(this, 'toggle_show_in_nav', {$cat.cat_id})" /></td>
+    <td width="10%"><img src="images/{if $cat.is_show eq '1'}yes{else}no{/if}.svg" width="20" onclick="listTable.toggle(this, 'toggle_is_show', {$cat.cat_id})" /></td>
+    <td><span onclick="listTable.edit(this, 'edit_grade', {$cat.cat_id})">{$cat.grade}</span></td>
+    <td width="10%" align="right">
+      <a onclick="removeEle(this, 'edit_sort_order', {$cat.cat_id}, -1)">上移</a>
+      <a onclick="removeEle(this, 'edit_sort_order', {$cat.cat_id}, 1)">下移</a>
+    </td>
+    <td width="24%" align="center">
+      <a href="attribute.php?act=list&category_id={$cat.cat_id}">属性列表</a> |
+      <a href="category.php?act=move&cat_id={$cat.cat_id}">{$lang.move_goods}</a> |
+      <a href="category.php?act=edit&amp;cat_id={$cat.cat_id}">{$lang.edit}</a> |
+      <a href="javascript:;" onclick="listTable.remove({$cat.cat_id}, '{$lang.drop_confirm}')" title="{$lang.remove}">{$lang.remove}</a>
+    </td>
+  </tr>
+
+  {/if}
+
+  {/foreach}
+</table>
+{if $full_page}
+</div>
+</form>
+
+{literal}
+<script language="JavaScript">
+<!--
+
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+var imgPlus = new Image();
+imgPlus.src = "images/menu_plus.gif";
+
+/**
+ * 折叠分类列表
+ */
+function rowClicked(obj)
+{
+  // 当前图像
+  img = obj;
+  // 取得上二级tr>td>img对象
+  obj = obj.parentNode.parentNode;
+  // 整个分类列表表格
+  var tbl = document.getElementById("list-table");
+  // 当前分类级别
+  var lvl = parseInt(obj.className);
+  // 是否找到元素
+  var fnd = false;
+  var sub_display = img.src.indexOf('menu_minus.gif') > 0 ? 'none' : (Browser.isIE) ? 'block' : 'table-row' ;
+  // 遍历所有的分类
+  for (i = 0; i < tbl.rows.length; i++)
+  {
+      var row = tbl.rows[i];
+      if (row == obj)
+      {
+          // 找到当前行
+          fnd = true;
+          //document.getElementById('result').innerHTML += 'Find row at ' + i +"<br/>";
+      }
+      else
+      {
+          if (fnd == true)
+          {
+              var cur = parseInt(row.className);
+              var icon = 'icon_' + row.id;
+              if (cur > lvl)
+              {
+                  row.style.display = sub_display;
+                  if (sub_display != 'none')
+                  {
+                      var iconimg = document.getElementById(icon);
+                      iconimg.src = iconimg.src.replace('plus.gif', 'minus.gif');
+                  }
+              }
+              else
+              {
+                  fnd = false;
+                  break;
+              }
+          }
+      }
+  }
+
+  for (i = 0; i < obj.cells[0].childNodes.length; i++)
+  {
+      var imgObj = obj.cells[0].childNodes[i];
+      if (imgObj.tagName == "IMG" && imgObj.src != 'images/menu_arrow.gif')
+      {
+          imgObj.src = (imgObj.src == imgPlus.src) ? 'images/menu_minus.gif' : imgPlus.src;
+      }
+  }
+}
+
+/*
+ * 移动商品分类发起请求
+ */
+
+function removeEle(obj, act, id, status) {
+  var val = status == -1 ? 1 : 0
+  Ajax.call(listTable.url, "act="+act+"&val=" + val + "&id=" +id, function(res){
+    warnMsg(res.content)
+    if(!res.error_code){
+      remove(obj, status)
+    }
+  }, "POST", "JSON", false);
+}
+
+/*
+ *  移动商品分类（html部分）
+ */
+function remove(obj, status) {
+  var obj_tr = obj.parentNode.parentNode  //当前行
+  var obj_table = obj.parentNode.parentNode.parentNode  // 整个table标签
+  var trs = obj_table.children //所有行
+  var index_from = [].indexOf.call(trs,obj_tr)  // 当前行下标
+
+  if(level(obj_tr) === 3){
+    if(index_from+status < trs.length && level(trs[index_from+status]) === 3){
+      var new_table = document.createElement("table")
+      var new_tr = document.createElement("tr")
+      new_tr = trs[index_from].cloneNode(true)
+      new_table.appendChild(new_tr)
+      new_tr = trs[index_from+status].cloneNode(true)
+      new_table.appendChild(new_tr)
+      obj_table.replaceChild(new_table.children[0],trs[index_from+status])
+      obj_table.replaceChild(new_table.children[0],trs[index_from])
+    }else{
+      // warnMsg()
+    }
+  }else{
+    var index_end = getNextEle(trs,index_from,status) // 目标行下标
+    if(!index_end){
+      // warnMsg()
+      return
+    }
+
+    if(index_from === index_end || index_end === trs.length){
+      warnMsg()
+      return
+    }
+
+    // 获取对调行开始和结束的下标
+    var start,middle,end;
+    if(status>0){ // 下移
+      start = index_from
+      middle = index_end
+      end = getTargetEle(trs,middle,1)
+    }else{  // 上移
+      start = index_end
+      middle = index_from
+      end = getTargetEle(trs,middle,1)
+    }
+
+    // 将middle上下两侧的 行 对调，放入新的table标签，然后替换原table内的标签
+    var new_table = document.createElement("table")
+    var new_tr = document.createElement("tr")
+    for (var j = middle; j < end; j++) {
+      new_tr = trs[j].cloneNode(true)
+      new_table.appendChild(new_tr)
+    }
+    for (var k = start; k < middle; k++) {
+      new_tr = trs[k].cloneNode(true)
+      new_table.appendChild(new_tr)
+    }
+
+    for (var n = start; n < end; n++) {
+      obj_table.replaceChild(new_table.children[0],trs[n])
+    }
+  }
+}
+
+function level(obj) { //获取分类等级（1/2/3）
+  if(obj.getAttribute('id')){
+    return obj.getAttribute('id').charAt(0)-0+1
+  }else{
+    return 0
+  }
+}
+
+/**
+ * @param    {[type]} trs [需要查询的行]
+ * @param    {[type]} index [当前行下标]
+ * @param    {[type]} status [上/下移]
+ * @return   {[type]} [在同级分类下，获取上/下一个同分类tr下标]
+ */
+function getNextEle(trs, index, status) {
+  var cur_level = level(trs[index])
+  for (var i = index+status; i>=0 && i<trs.length; i=i+status) {
+    if(level(trs[i]) == cur_level){
+      return i
+      break
+    }else if(level(trs[i]) < cur_level){
+      return  0
+      break
+    }
+  }
+}
+
+/**
+ * @param    {[type]} trs [需要查询的行]
+ * @param    {[type]} index [当前行下标]
+ * @param    {[type]} status [上/下移]
+ * @return   {[type]} [获取上/下一个同分类tr下标]
+ */
+function getTargetEle(trs, index, status) {
+  if(!index) return 0
+
+  var cur_level = level(trs[index])
+  for (var i = index+status; i>=0 && i<trs.length; i=i+status) {
+    if(level(trs[i]) == cur_level){
+      return i
+      break
+    }else if(level(trs[i]) < cur_level){
+      return  status > 0 ? i : i - status
+      break
+    }
+    if(i === 0) {
+      return 0
+    }
+    if(i == trs.length-1) {
+      return trs.length
+    }
+  }
+}
+function warnMsg(msg = '移动失败') {
+  alert(msg)
+}
+//-->
+</script>
+{/literal}
+
+{include file="pagefooter.htm"}
+{/if}

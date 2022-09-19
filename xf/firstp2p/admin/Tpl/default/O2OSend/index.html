@@ -1,0 +1,48 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="main_title">直接发送兑换机会</div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">券组id</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="couponGroupId" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">用户ID列表</td>
+                <td class="item_input">
+                    <input type="file" name="userIds" />
+                    <br>
+                    <span class="tip_span">一行一个用户ID</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="O2OSend" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="doSend" />
+                <input type="submit" class="button" value="提交" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript" charset="utf-8">
+
+</script>
+<include file="Public:footer" />

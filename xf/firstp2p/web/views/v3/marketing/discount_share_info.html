@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$tplTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-base.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/discount.css');?>">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/zepto.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/base.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/discount_pick.js');?>"></script>
+</head>
+<body>
+{include file="web/views/v3/marketing/share_js.html"}
+{include file="web/views/v3/marketing/top.html"}
+	<div class="discount_box">
+		<div class="discount_box_top">
+            <div class="import">
+                <input type="tel" maxlength="11" name="phone_number" id="phone_number" value="" placeholder="请输入手机号">
+            </div>        
+            <div class="import mb10">
+                <input type="tel" id="identify_code" name="identify_code" value="" placeholder="右侧数字">
+                <div class="yz_img">
+                    <img id="identify_img" width="80" height="40" src="/verify.php?w=50&h=36&rb=0&rand=1467888705851">  
+                </div>   
+            </div>
+            <div class="pick_but">
+                <?php echo token_input(); ?>
+                <input type="hidden" id="event_id" name="event_id" value="{$ec_id}">
+                <input type="hidden" id="cn" name="cn" value="{$cn}">
+                <input type="hidden" id="code" name="code" value="{$code}">
+                <input type="button" id="JS-submit_btn" name="pick_but" value="{$buttonText}">
+            </div>    
+        </div>	
+		<div class="line">
+			<div class="line_right">
+				<div class="line_center"></div>
+			</div>
+		</div>
+    	<div class="discount_box_bottom">
+			{include file="web/views/v3/marketing/rules.html"}
+			{include file="web/views/v3/marketing/list.html"}
+		</div>
+	</div>
+    </div>
+{if !empty($errorMsg)}
+<script>
+        P2PWAP.ui.showErrorTip("{$errorMsg}");
+</script>
+{/if}
+<script type="text/javascript">
+var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "",is_ios = /iPhone|iPad|iPod/i.test(userAgentString),is_android = /android/i.test(userAgentString),iosVersion = 0;            
+var iosmatches = userAgentString.match(/IPHONE OS ([0-9_]*)/i);           
+if (iosmatches && iosmatches.length > 1) {                
+        iosVersion = parseInt(iosmatches[1].substring(0, 1), 10); 
+
+}
+function weixinFacility() {
+    var userAgentString = window.navigator ? window.navigator.userAgent : "";
+    var weixinreg = /MicroMessenger/i;
+    return weixinreg.test(userAgentString);
+};            
+if (iosVersion<8 && weixinFacility()) {              
+    $('.top_img').css("position","absolute");             
+}
+</script>
+</body>
+</html>

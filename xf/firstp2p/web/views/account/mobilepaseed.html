@@ -1,0 +1,138 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/identity.css');?>" />
+<link href="<?php echo $this->asset->makeUrl('v1/css/register_skin.css');?>" rel="stylesheet" type="text/css">
+<style>
+</style>
+<script>
+    var Firstp2p = {
+        "staticUrl": "<?php echo $this->asset->makeUrl();?>".replace(/\/?\?[\w=]+/, ''),
+        "seajsUri": '/v2/js/widget'
+    };
+</script>
+<script src="<?php echo $this->asset->makeUrl('v2/js/widget/seajs/pc/common/js/sea.js');?>" type="text/javascript"></script>
+<script src="<?php echo $this->asset->makeUrl('v1/js/mobilepaseed/mobilepaseed_new.js');?>" type="text/javascript"></script>
+<div class="w980 mauto clearfix w1100 mb40">
+    <div class="reg_box  mb20" id="step2">
+        <div class="reg_title">
+            <h2>完善信息</h2>
+        </div>
+        <div class="reg_con">
+            <h3 class="step2">完善信息</h3>
+            <!--step2-->
+            <div>
+                <form id="mobilepaseed" method="post" action="/account/registerWithBank" >
+                    <?php echo token_input(); ?>
+                    <input type="hidden" name="id" value="">
+                    <div class="m_title">
+                        <h4>身份验证:</h4>
+                        <span class="m_tis">请务必准确填写本人的身份信息，设置后不能更改。</span><span class="nor_text">港澳台用户</span><a href="/account/passporttype/" class="text_line">点击这里</a>
+                    </div>
+                    <table class="reg_tab_step4">
+                        <colgroup>
+                            <col width="200">
+                            <col width="720">
+                        </colgroup>
+                        <tbody class="idtab">
+                            <tr>
+                                <th>用户名：</th>
+                                <td>{$user.user_name}</td>
+                            </tr>
+                            <tr>
+                                <th>证件类型：</th>
+                                <td>
+                                    内地居民身份证
+                                </td>
+                            </tr>
+                            {if !$idCheckPassed}
+                            <tr>
+                                <th>姓名:</th>
+                                <td><input type="text" class="idbox w173 new_idbox" name="realName" id="name" value="{$user_info.real_name}" data-rule="姓名:required;name"></td>
+                            </tr>
+                            <tr>
+                                <th>证件号:</th>
+                                <td><input type="text" class="idbox w173 new_idbox" name="cardNo" data-rule="证件号:required;ID_card" /></td>
+                            </tr>
+                            {else}
+                            <tr>
+                                <th>姓名:</th>
+                                <td>{$user.real_name}</td>
+                            </tr>
+                            <tr>
+                                <th>证件号:</th>
+                                <td>{$user.idno}</td>
+                            </tr>
+                            {/if}
+                        </tbody>
+                    </table>
+                    <div class="m_jiangeline"></div>
+                    <div class="m_title">
+                        <h4>绑定银行卡</h4>
+                        <span class="m_tis">请务必填写本人名下的储蓄卡(不支持信用卡)</span>
+                    </div>
+                    <table class="reg_tab_step4">
+                        <colgroup>
+                            <col width="200">
+                            <col width="720">
+                        </colgroup>
+                        <tbody class="idtab">
+                            <tr>
+                                <th>选择银行：</th>
+                                <td>
+                                    <select class="select_box w173 new_select_box" id="Jcarry_bank_id" name="bankName">
+                                    <option value="">请选择</option>
+                                    {foreach from="$bank_list" item="item"}
+                                        <option value="{$item.id}" day="{$item.day}" {if $item.id eq $bankcard_info.bank_id}selected="selected"{/if}>{$item.name}</option>
+                                    {/foreach}
+                                    </select>
+                                </td>
+
+
+                            </tr>
+                            <tr>
+                                <th>银行卡号：</th>
+                                <td><input type="text" class="idbox w173 new_idbox" name="bankCardNo" id="Jcarry_bankcard" value="" data-rule="银行卡号:required"></td>
+                            </tr>
+                            <tr>
+                                <th>确认卡号:</th>
+                                <td><input type="text" class="idbox w173 new_idbox" name="reBankCardNo" id="Jcarry_rebankcard" value="" data-rule="确认卡号:required;match(bankCardNo);"></td>
+                            </tr>
+                            <tr id="form-agreement-row">
+                                <th colspan="2">
+                                    <input type="checkbox" data-label="支付协议" class="" name="agreement" value="1" id="agree" style="display:none;" checked>
+                                    <label>
+                                        <a name="control_checkbox" class="checkbox current_checkbox pp_checkbox" data-for="agree" href="javascript:;">同意</a>
+                                    </label>  <a href="/register_payment.html" target="_blank">支付协议</a>
+                                    <i class="{if !empty($error.agreement)}icon_no{/if}"></i>
+                                    <span class="errorDiv pp_error">{$error.agreement}</span>
+                                </th>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="reg_tab_step4_btn">
+                        <input type="submit" value="提交" id="licaiuser"
+                               class="but-gray but-yellow new_submit register-btn fl">&nbsp;
+                        <a href="/" class="fl pt10 ml15">逛逛再说</a>
+                    </div>
+                </form>
+            </div>
+            <!--/step2-->
+        </div>
+    </div>
+
+    <!--推荐项目-->
+    <div class="reg_box  mb20" id="good_item" style="display:none;">
+        <div class="reg_title">
+            <h2>推荐项目</h2>
+        </div>
+        <script>
+            var _firstp2pData = { "pubId": "6", "adId": "1", "w": "1100", "h": 315, "ref": "http://www.firstp2p.com", "cn": "XF8888", "rows": "3", "title_color": "4f4f4f", "bg_color": "fff9f3", "bg_color2": "ffffff", "btn_bg_color": "f75e3e" };
+        </script>
+        <script src="http://u.firstp2p.com/static/js/wm.js" _firstp2padtag="_firstp2pData"></script>
+    </div>
+    <!--/推荐项目-->
+</div>
+<script>$("#Jcarry_rebankcard,#Jcarry_bankcard").on("paste copy" , function(){
+                                  return false;
+                                                              });</script> 
+{include file="web/views/footer.html"}

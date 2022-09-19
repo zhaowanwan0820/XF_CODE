@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>网信新手礼包</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no,email=no">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <!--public js&css end-->
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-base.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-common.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/invite.css', 1);?>" rel="stylesheet" type="text/css">
+    {else}
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-base_pc.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-common_pc.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/invite_pc.css', 1);?>" rel="stylesheet" type="text/css">
+    {/if}
+    <!--[if lte IE 9]>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/html5shiv.js', 1);?>"></script>
+    <![endif]-->    
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/zepto.js', 1);?>"></script>
+    {else}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/jquery-1.10.2.min.js', 1);?>"></script>
+    {/if}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common.js', 1);?>"></script>
+</head>
+<body class="p-invite">
+<header class="m-head p-invite">
+    <a href="" class="logo"></a>
+    <div class="banner"></div>
+</header>
+<section  class="m-main p-invite"> 
+<p align="center" class="inv-tit"><img src="<?php echo $this->asset->makeUrl('v2/images/cash_coupon/invite_tit_new.png', 1);?>" alt="" width="238" height="18"></p>
+        <p align="center" class="inv-con">
+            <img src="<?php echo $this->asset->makeUrl('v2/images/cash_coupon/invite_con.png', 1);?>" alt="" width="272" height="202">
+            <span class="reward01 red">5元奖励</span>
+            <span class="reward02 red">100元奖励</span>
+        </p>
+
+   
+    <div class="ui-form">
+                <div class="form-footer">
+                    <input type="submit" id="register-btn" class='share-btn' value="马上邀请" class="mar-t15"/>
+                </div>
+        </div>
+
+    <div class="ui-loading">
+            <img src="<?php echo $this->asset->makeUrl('v2/images/cash_coupon/common/list_loading.gif', 1);?>" />
+        </div>
+    </section>
+    <footer class="m-foot p-invite mar-t-8">
+        <span>网信 www.firstp2p.com</span>
+    </footer>
+    <div class="ui-tab p-invite">
+        <div class="bg-white clearfix">
+            <div class="tabs_nav_box">
+                <ul>
+                    <li class="select" data-url='CashNewList?cn={$cn}'>领取列表</li>
+                    <li>活动规则</li>
+                    <li data-url='CashInviteList?cn={$cn}'>查看奖励</li>
+                </ul>
+            </div>
+            <div class="tab_box">
+                <div class="con">
+                    {include file="web/views/hongbao/cash_coupon/list_new.html"}
+                </div>
+                <div class="con">
+                    <div class="tab-cont">
+                        <p>邀请人邀请新用户在网信投资任一P2P理财产品（非私募和基金）,满足以下条件即可获得奖励：</p>
+                        <br/>
+                        <p><b>注册奖励红包</b></p>
+                        <p>邀请新用户注册网信账户：</p>
+                        <p>1、新用户奖励5元投资红包（有效期15天）</p>
+                        <p>2、邀请人奖励5元投资红包（有效期24小时)</p>
+                        <br/>
+                        <p><b>投资奖励红包</b></p>
+                        <p>1、新用户首次投资满100元：邀请人得20元投资红包，新用户得30元投资红包；</p>
+                        <p>2、新用户首次投资满500元：邀请人得40元投资红包，新用户得60元投资红包；</p>
+                        <p>3、新用户首次投资满5000元：邀请人得80元投资红包，新用户得100元投资红包；</p>
+                        <p>4、新用户首次投资满10000元：邀请人得100元投资红包，新用户得150元投资红包。</p>
+                        <p>以上投资红包有效期均为24小时</p>
+                        <br/>
+                        <p><b>规则说明</b></p>
+                        <p>1、投资过两次以上（含两次）P2P理财产品（非私募和基金）的用户均有邀请资格；</p>
+                        <p>2、每位邀请人一天内最多可获得3个投资奖励红包；但注册奖励红包获得个数不受限制；</p>
+                        <p>5、如新用户未填写满足邀请资格的邀请人的邀请码，则新用户无法获得5元现金奖励；</p>
+                        <br/>
+                        <p><b>备注</b></p>
+                        <p>注册奖励红包和投资奖励红包发放时间：将于新用户首次投资后的24小时之内进行发放。</p>
+                    </div>
+                </div>
+                <div class="con">
+                    <div class="invite_con">
+                        <div class="accept-instroution"> 我已累积获得奖励 <span class="red">10</span>元</div>
+                        <ul class="accept-list clearfix">
+                            <!-- 循环 -->
+                            <li>
+                                <div class="list-left">186****5556</div>
+                                <div class="list-mid"><span class="black">已完成绑卡</span></div>
+                                <div class="list-right">获得奖励<span class="red">10元</span></div>
+                            </li>
+                            <!-- //循环 -->
+                            <li>
+                                <div class="list-left">186****5556</div>
+                                <div class="list-mid">已实名认证</div>
+                                <div class="list-right">获得奖励<span class="red">10元</span>现金</div>
+                            </li>
+                            <li>
+                                <div class="list-left">186****5556</div>
+                                <div class="list-mid">已注册成功</div>
+                                <div class="list-right">获得奖励<span class="red">10元</span>现金</div>
+                            </li>
+                            <li>
+                                <div class="list-left">186****5556</div>
+                                <div class="list-mid">已注册成功</div>
+                                <div class="list-right">获得奖励<span class="red">10元</span>现金</div>
+                            </li>
+                            <li>
+                                <div class="list-left">186****5556</div>
+                                <div class="list-mid">已注册成功</div>
+                                <div class="list-right">获得奖励<span class="red">10元</span>现金</div>
+                            </li>
+                        </ul>
+                        <div class="accept-see">登录www.firstp2p.com“我的红包”查看全部</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{include file="web/views/hongbao/cash_coupon/jsapi_config.html"}
+{include file="web/views/hongbao/cash_coupon/share.html"}
+</body>
+</html>

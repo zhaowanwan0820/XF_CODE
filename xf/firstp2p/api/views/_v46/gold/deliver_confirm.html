@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>提取实物黄金</title>
+    {include file="api/views/_v32/header.html"}
+    <meta name="format-detection" content="telephone=no" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/p_extraction.css?v=2');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/virtual.v1.css');?>" rel="stylesheet" />
+</head>
+<body> 
+<input type="hidden" value="{$usertoken}" id="usertoken">
+<input type="hidden" value="{$ticket}" id="ticket">
+<input type="hidden" value="{$fee}" id="gold_fee">
+    <div class="p_extraction">
+      <div class="pa_center tc">
+        <p class="color_gray">可提取克重(克)</p>
+        <p class="f25 color_gold">{$user_gold}</p>
+      </div>
+      <div class="gold_list">
+        <div class="list_title"><span class="line_icon"></span>优金金条</div>
+        <div class="list_box">
+          {foreach from=$goods_list item=item key=key}
+            <dl class="list_item clearfix">
+                <a href="" data-url="{$item.url}" class="good_url"></a>
+                <dt><img src="{$item.imagPath}" width="80" height="80"></dt>
+                <dd>
+                  <p class="item_title"><span class="weight">{$item.size}</span>克{$item.name}</p>
+                  <p class="item_fee color_gray">手续费：{$item.fee}元/克</p>
+                  <div class="num_box">
+                    <span class="btn J_jia"></span>
+                    <label class="label" style="display:none">
+                      <input type="tel" data-name="{$item.name}" data-model="{$item.size}" data-unit="克" maxLength="3" class="num gold_num" value="" data-fee="{$item.fee}" data-id="{$item.id}" onkeyup="value=value.replace(/[\W]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))"/>
+                      <input type="hidden" class="item_total" value="">
+                    </label>
+                    <span class="btn J_jian" style="display:none"></span>
+                  </div>
+                </dd>
+            </dl>
+          {/foreach}
+        </div>
+      </div>
+      <div class="gold_total_box">
+        <div class="gold_total">
+          <p class="gold_wei">已选<span class="total_num">0.000</span>克</p>
+          <p class="gold_wei_free color_gray">手续费<span class="JS_fee">0.00</span>元</p>
+          <div class="comfirm_box">
+            <input type="button" value="下一步" class="comfirm_btn JS_comfirm_btn" disabled="disabled">
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="JS_is_transfer JS_open_box" style="display:none">
+          <div class="cunguan_bg"></div>
+          <div id="JS_balance_transfer" class="alert_evaluate">
+              <div class="free_title">余额划转</div>
+              <div class="trans_money JS_trans_money">20000元</div>
+              <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.5/images/balance_img.png');?>">
+              <div><span class="text_length">网贷P2P账户</span><span>网信账户</span></div>
+              <p class="free_text">网信账户现金余额不足，需从网贷P2P账户转账<span class="trans_m JS_trans_money">20,000</span>至网信账户，转账后网贷P2P账户现金余额为<span class="remain_m">40,000</span>元</p>
+              <div class="sc_footer clearfix">
+                  <div class="left_div"><a href="javascript:void(0)" class="a_left JS_close_transfer">取消</a></div>
+                  <div class="left_div"><a href="" class="a_right JS_transfer_btn" style="margin-left:0px;">确定</a></div>
+              </div>
+          </div>
+      </div>
+      <!-- 投资专享标，未开通存管账户，余额划转时显示 -->
+        <div class="JS_is_open_p2p" style="display:none;">
+            <div class="cunguan_bg"></div>
+            <div class="alert_evaluate">
+                <img class="open_p2p" src="<?php echo $this->asset->makeAppUrl('v4.5/images/open_p2p.png');?>">
+                <div class="free_title">升级网贷P2P账户</div>
+                <p class="free_text">根据国家法律法规和相关监管规定,为保障客户资金安全, 需在银行开设专门资金存管账户。</p>
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="javascript:void(0);" class="a_left MD_open_p2p_cancel_btn JS_close_open_p2p">取消</a></div>
+                    <div class="left_div"><a href="javascript:void(0);" class="a_right JS_open_p2p_btn MD_open_p2p_next_btn">继续</a></div>
+                </div>
+            </div>
+        </div>
+      <!-- 提示余额划转 -->
+      <div class="JS_is_transfer_tips JS_open_box" style="display:none;">
+          <div class="cunguan_bg"></div>
+          <div id="JS_balance_transfer" class="alert_evaluate">
+              <div class="free_title">余额划转</div>
+              <div class="trans_money JS_trans_money">20000元</div>
+              <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.5/images/balance_img.png');?>">
+              <div><span class="text_length">网贷P2P账户</span><span>网信账户</span></div>
+              <p class="free_text">网信账户现金余额不足，需从网贷P2P账户转账<span class="trans_m JS_trans_money">20,000</span>至网信账户，转账后网贷P2P账户现金余额为<span class="remain_m">40,000</span>元</p>
+              <div class="sc_footer clearfix">
+                  <!-- <div class="left_div"><a href="javascript:void(0)" class="a_left JS_close_transfer">取消</a></div> -->
+                  <!-- <a href="javascript:void(0)" class="a_right JS_transfer_btn" style="margin-left:0px;">确定</a> -->
+                  <input type="button" value="确定" class="a_right JS_transfer_btn" style="margin-left:0px;">
+                  <div class="pt20 color_gray"><span class="tips_icon"><input type="checkbox" class="no_tip_checkbox" value="0"></span>不再提示，下次自动划转</div>
+              </div>
+              <div class="JS_close_transfer_tips close_p2p_btn"></div>
+          </div>
+      </div>
+      <!-- 短信验证码弹窗 -->
+      <div class="mobile_code_box_mask" style="display:none;">
+        <div class="mobile_code_box">
+          <div class="mobile_code_close"></div>
+          <div class="mobile_num">
+            <p>验证码短信已发送至</p>
+            <p><span class="mobile_num JS_mobile_num">{$mobile}</span></p>
+            <div class="send_code">
+              <div class="countdown">
+                  <canvas id="canvas" width="80" height="80"></canvas>
+              </div>
+              <input type="button" value="重新发送" class="again_send JS_again_send" autofocus="autofocus">
+              <p class="error_tips">验证码错误</p>
+            </div>
+            <div class="code_box">
+              <div class="input_default">
+                <div class="input_focus"></div>
+                <div class="input_error"></div>
+                <input type="tel" class="code_input" maxlength="6">
+                <div class="input_mask"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 余额不足提示 -->
+      <div class="JS_balance_tips" style="display:none">
+        <div class="cunguan_bg"></div>
+        <div class="balance_tips">
+          <div class="title">余额不足</div>
+          <div class="context">
+            您的账户余额不足以支持提取黄金手续费，请充值
+          </div>
+          <div class="tip_btn">
+            <span class="no_charge charge_btn">暂不充值</span>
+            <a href="invest://api?type=recharge" class="yes_charge charge_btn">充值</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.v2.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.6/js/gold/p_extraction.js?v=8');?>"></script>
+{include file="api/views/_v32/footer.html"}

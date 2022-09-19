@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>授权管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.5/css/privileges.css');?>" />
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.5/js/privileges.js');?>"></script>
+    <script type="text/javascript">
+        window['token'] = "{$token}";
+    </script>
+</head>
+<body>
+    <div class="p_privileges">
+        <div class="ui_page_title">
+            <div class="ui_page_title_con">
+                <a class="backbutton" href="firstp2p://api?type=local&action=closeself"><span class="back_arrow"></span>返回</a>
+                <div class="page_middle_title">授权管理</div>
+            </div>
+        </div>
+        {if $isSvOpen}
+        <div class="account_list">
+            {foreach from=$privileges item=list}
+            <div class="account_name">{$list.accountPurposeName}</div>
+            <ul>
+                {foreach from=$list.authList item=authList}
+                <li>{$authList.grantName}
+                    <div class="common_btn {if $authList.isOpen}cancle_authorize_btn{else}authorize_btn{/if}" data-accountid="{$list.accountId}" data-grant="{$authList.grant}" data-granttype="{$authList.grantType}">{if $authList.isOpen}取消授权{else}<a class="JS_authorize_btn" href="javascript:void(0);">授权</a>{/if}</div>
+                    <div class="disnone auth_msg">{foreach from=$authList.msg item=msgList}<p>{$msgList}</p>{/foreach}</div>
+                    <div class="disnone confirm_msg">{foreach from=$authList.confirmMsg item=confirmMsgList}<p>{$confirmMsgList}</p>{/foreach}</div>
+                </li>
+                {/foreach}
+            </ul>
+            {/foreach}
+        </div>
+        <!-- 一个按钮的弹框，不能取消授权 -->
+        <div class="privileges_remind JS_remind_no_cancle disnone">
+            <div class="bg_remind"></div>
+            <div class="remind_box">
+                <div class="remind_title">提示</div>
+                <div class="remind_detail">随心约有未完成的预约，无法取消授权</div>
+                <div class="know_btn">知道了</div>
+            </div>
+        </div>
+        <!-- 两个按钮的弹窗，可以取消授权 -->
+        <div class="privileges_remind JS_remind_can_cancle disnone">
+            <div class="bg_remind"></div>
+            <div class="remind_box">
+                <div class="remind_title">提示</div>
+                <div class="remind_detail">取消授权后，将无法使用随心约、投资智多鑫</div>
+                <div class="btn_contain">
+                    <div class="button_common remind_cancle">取消</div>
+                    <div class="button_common remind_confirm">确定</div>
+                </div>
+            </div>
+        </div>
+        {else}
+        <!-- 未开通存管显示空白页 -->
+        <div class="no_coupon"><p>这里空空如也</p></div>
+        {/if}
+    </div>
+</body>
+</html>

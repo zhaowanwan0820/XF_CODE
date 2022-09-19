@@ -1,0 +1,38 @@
+{include file="web/views/v3/header.html"}
+<div class="p_riskbear_evaluation">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_riskbear_evaluation.css');?>" />
+    <link href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.1.2.css');?>" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/account/riskbear_evaluation.js');?>"></script>
+    <div id="adv_answer" style="display:none;">{$question.defaultAnswer}</div>
+    <input type="hidden" id="isFirstp2pHidden" value="{$is_firstp2p}"/>
+    <div class="mt23"></div>
+    <div class="ui-box w1100 mb30">
+        <div class="h-title">
+            <h2>
+                <i></i>风险承受能力评估
+            </h2>
+        </div>
+        <div class="pg_cont">
+            <form action="/account/assess" method="post" id="j_wqForm">
+                <input type="hidden" name="id" value="{$question.id}">
+                <input type="hidden" name="backurl" value="{$backurl}">
+                <input type="hidden" name="site_id" value="{$siteId}">
+                <ul class="wq_list">
+                    {foreach from=$question.subjects item=subject key=subject_key}
+                    <li>
+                        <h2>{$subject.no}、{$subject.title}</h2>
+                        {foreach from=$subject.items item=item key=item_key}
+                        <div>
+                            <input type="radio" name="input{$subject.no}" value="{$item.score}" data-rule="选项:checked" id="" class="wq_radio">{$item.alphabet}.{$item.content}</div>
+                        {/foreach}
+                    </li>
+                    {/foreach}
+                </ul>
+                <div class="tc mt54">
+                    <input type="submit" value="提交问卷" class="btn-sub">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{include file="web/views/v3/footer.html"}

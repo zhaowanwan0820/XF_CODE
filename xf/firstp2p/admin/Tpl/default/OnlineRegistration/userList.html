@@ -1,0 +1,61 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__searchselect/jquery.searchableselect.js' />
+<load href='__TMPL__searchselect/searchableselect.css' />
+<load href='__TMPL__widget/mulselect/cityData.js' />
+<load href='__TMPL__widget/mulselect/mulselect.v1.js' />
+
+<div class="main">
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            所在城市:
+            <div class="item_input" style="display: inline-block">
+                <div class="cityDom" id="cityDom" data-selectname="province:city" data-defaultdata='{$province}:{$city}' ></div>
+            </div>
+            <script>
+                // 多重下拉列表
+                new Firstp2p.mulselect(".cityDom", {
+                    mulDom: ".cityDom",
+                    defaultdata: !!$("#cityDom").attr("data-defaultdata") ? $("#cityDom").attr("data-defaultdata").split(":") : ["请选择省", "请选择市", "请选择县"],
+                    firstTitle: '--请选择省--:--请选择市--:--请选择区县--',
+                    selectsClass: "select",
+                    url: json,
+                    jsonsingle: "n",
+                    jsonmany: "s",
+                    selectName : $("#cityDom").data("name")
+                });
+            </script>
+            亲友类型:
+            <select name="relation_type" style="width:100px;">
+                <option value="" <if condition="intval($_REQUEST['relation_type']) eq ''">selected="selected"</if>>==请选择==</option>
+                <foreach name="relation" item="relation_item" key="k">
+                    <option value="{$k}" <if condition="intval($_REQUEST['relation_type']) eq $k">selected="selected"</if>>{$relation_item}</option>
+                </foreach>
+            </select>
+            活动标题：<input type="text" class="textbox" name="title" value="{$title}" style="width:100px;" />
+            <input type="hidden" value="OnlineRegistration" name="m" />
+            <input type="hidden" value="userList" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <button type="submit" name="export" value="1" class="button">导出</button>
+        </form>
+    </div>
+
+    <div class="blank5"></div>
+    <html:list
+            id="dataTable"
+            style="dataTable"
+            name="onlineRegistration"
+            checkbox="true"
+            datasource="list"
+            show="user_id:{%ID}|50px,name:用户姓名,sex:用户性别,age:用户年龄,phone:用户手机号,service_level:服务等级,actual_level:实际等级,money:待收本金,province:所在省份,city:所在城市,relation_type:亲友类别,relation_name:亲友姓名,relation_sex:亲友性别,relation_age:亲友年龄,relation_phone:亲友手机号,relation_status:亲友网信账户状态,apply_time:提交时间,title:活动标题"
+    />
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

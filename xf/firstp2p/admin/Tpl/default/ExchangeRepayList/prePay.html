@@ -1,0 +1,172 @@
+<tagLib name="html" />
+
+<include file="Public:header" />
+
+<link rel="stylesheet" type="text/css" href="/static/admin/Common/js/calendar/calendar.css" />
+<script type="text/javascript" src="/static/admin/Common/js/calendar/calendar_lang.js" ></script>
+<script type="text/javascript" src="/static/admin/Common/js/calendar/calendar.js"></script>
+
+<style>
+#dataTable th { text-align: left; }
+</style>
+
+<div class="main">
+    <div class="main_title">
+        <span>批次编号：{$batchInfo['id']}； 交易所备案产品编号：{$projectInfo['jys_number']}； {$batchInfo['batch_number']}期</span>
+        <label>提前还款</label>
+        <a href="{:u("ExchangeRepayList/index")}" class="back_list">{%BACK_LIST}</a>
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <fieldset>
+      <legend>贷款管理</legend>
+      <table id="dataTable" class="dataTable">
+         <tr class="row">
+            <td colspan="2">项目名称：{$projectInfo['name']}</td>
+         </tr>
+         <tr class="row">
+            <td>剩余本金：{$batchStat['total_principal'] / 100} 元</td>
+            <td>借款期限：{$projectInfo['repay_time']}<if condition="$projectInfo['repay_type'] eq 1">天<else/>个月</if></td>
+         </tr>
+         <tr class="row">
+            <td>出借人年化收益率：{$projectInfo['expect_year_rate'] / 100000}%</td>
+            <td>提前还款锁定期：{$projectInfo['lock_days']}天</td>
+         </tr>
+         <tr class="row">
+            <td>
+                还款方式：
+                <if condition="$projectInfo['repay_type'] eq 1">
+                到期支付本金收益(天)
+                <elseif condition="$projectInfo['repay_type'] eq 2" />
+                到期支付本金收益(月)
+                <elseif condition="$projectInfo['repay_type'] eq 3" />
+                按月支付收益到期还本
+                <else />
+                按季支付收益到期还本
+                </if>
+            </td>
+            <td>提前还款违约金系数：{$projectInfo['ahead_repay_rate'] / 100000}%</td>
+         </tr>
+     </table>
+   </fieldset>
+   <div class="blank5"></div>
+
+    <form name="search" action="/m.php" method="get">
+    <fieldset>
+      <table id="dataTable" class="dataTable">
+         <tr class="row" style="text-align:center">
+            <td>到期还款明细</td>
+            <td>提前还款明细</td>
+         </tr>
+         <tr class="row">
+            <td>到期日期：{:date("Y-m-d", $endBatchRepayTime)}</td>
+            <td>
+                计息结束日：
+                <input type="text" class="textboxe" name="repay_time" id="repay_time" value="{$calculate['selectedRepayDay']}" style="width:85px;"/>
+                <input type="button" class="button" id="btn_repay_time" value="选择时间" onclick="return showCalendar('repay_time', '%Y-%m-%d', false, false, 'btn_repay_time');" />
+                <input type="button" class="button" id="clr_repay_time" value="清空时间" />
+            </td>
+         </tr>
+         <tr class="row">
+            <td>放款日期：{:date("Y-m-d", $batchInfo['repay_start_time'])}</td>
+            <td>放款日期：{:date("Y-m-d", $batchInfo['repay_start_time'])}</td>
+         </tr>
+         <tr class="row">
+            <td>借款期限：{$projectInfo['repay_time']}<if condition="$projectInfo['repay_type'] eq 1">天<else/>个月</if></td>
+            <td>利息天数：<span class="text_span">{$calculate['remainDay']}</span> 天</td>
+         </tr>
+         <tr class="row">
+            <td>应还本金：{$batchStat['total_principal'] / 100} 元</td>
+            <td>应还本金：<span class="text_span">{$calculate['principal'] / 100}</span> 元</td>
+         </tr>
+         <tr class="row">
+            <td>应还利息：{$batchStat['total_interest'] / 100} 元</td>
+            <td>应还利息：<span class="text_span">{$calculate['interest'] / 100}</span> 元</td>
+         </tr>
+         <tr class="row">
+            <td>提前还款违约金：0.00 元</td>
+            <td>提前还款违约金：<span class="text_span">{$calculate['penaltyFee'] / 100}</span> 元</td>
+         </tr>
+         <tr class="row">
+            <td>投资顾问费：{$batchStat['total_invest_adviser_fee'] / 100} 元</td>
+            <td>投资顾问费：<span class="text_span">{$calculate['investAdviserFee'] / 100}</span> 元</td>
+         </tr>
+         <tr class="row">
+            <td>发行服务费：{$batchStat['total_publish_server_fee'] / 100} 元</td>
+            <td>发行服务费：<span class="text_span">{$calculate['publishServerFee'] / 100}</span> 元</td>
+         </tr>
+         <tr class="row">
+            <td>担保费：{$batchStat['total_guarantee_fee'] / 100} 元</td>
+            <td>担保费：<span class="text_span">{$calculate['guaranteeFee'] / 100}</span> 元</td>
+         </tr>
+         <tr class="row">
+            <td>咨询费：{$batchStat['total_consult_fee'] / 100} 元</td>
+            <td>咨询费：<span class="text_span">{$calculate['consultFee'] / 100}</span> 元</td>
+         </tr>
+         <tr class="row">
+            <td>挂牌服务费：{$batchStat['total_hang_server_fee'] / 100} 元</td>
+            <td>挂牌服务费：<span class="text_span">{$calculate['hangServerFee'] / 100}</span> 元</td>
+         </tr>
+         <tr class="row">
+            <td>还款总额：{$batchStat['total_repay_money'] / 100} 元</td>
+            <td>还款总额：<span class="text_span">{$calculate['repayMoney'] / 100}</span> 元</td>
+         </tr>
+         <tr>
+            <td colspan="2" style="text-align:right; padding-right:300px;">
+                <input type="hidden" value="prePay" name="a" />
+                <input type="hidden" value="ExchangeRepayList" name="m" />
+                <input type="hidden" value="{$batchInfo['id']}" name="batch_id" />
+                <input type="hidden" name="startTime" id="startTime" value="{$startTime}"/>
+                <input type="submit" id="calculate_btn" name="calculate" value="计算" class="button"/>
+                <input type="submit" id="download_btn" name="download" value="回款明细下载" class="button"/>
+                <input type="submit" id="preRepay_btn" name="preRepay" value="提前还款" class="button"/>
+           </td>
+         </tr>
+     </table>
+    </fieldset>
+    </form>
+    <div class="blank5"></div>
+
+    <div class="page">{$page}</div>
+    <div class="blank5"></div>
+</div>
+
+<script>
+    $(function() {
+        $('#clr_repay_time').click(function() {
+            $('#repay_time').val('');
+        })
+
+        $('#calculate_btn, #download_btn').click(function() {
+            var repay_time = $('#repay_time').val().trim();
+            if (repay_time == '') {
+                alert("计息结束日不能为空!");
+                return false;
+            }
+        })
+
+        $('#preRepay_btn').click(function() {
+            var repay_time = $('#repay_time').val().trim();
+            if (repay_time == '') {
+                alert("计息结束日不能为空!");
+                return false;
+            }
+
+            var  startTime= $('#startTime').val();
+            let d = new Date(repay_time);
+            var search_repay_time = d.valueOf(d) / 1000 - 8*3600;
+            if (search_repay_time <= startTime){
+                if (!confirm("选择此日期后将在提前还款锁定期前还款，确定此操作吗?")) {
+                    return false;
+                }
+            }
+
+            if (!confirm("请确定是否提前还款(请下载提前还款回款计划)?")) {
+                return false;
+            }
+        })
+    })
+
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>分享列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base_v32.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common_v32.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-bonus.css');?>" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .pageInfor{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .pageInfor .nextPage{
+            border: 1px solid #ee4634;
+            width: 150px;
+            height: 30px;
+            line-height: 30px;
+            display: inline-block;
+            border-radius: 5px;
+            color: #ee4634;
+        }
+        .pageInfor .noMore{
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+     {include file="api/views/_v492/candysnatch/snatch_zhuge.html"}
+    <input type="hidden" id="token_hidden" value="{$token}" data-explain="token值"/>
+    <input type="hidden" id="title_hidden" value="{$title}" data-explain="title值"/>
+    <input type="hidden" id="face_hidden" value="{$face}" data-explain="face值"/>
+    <div class="p_bonus" id="mainBox">
+    </div>
+    <script type="text/html" id="bonus_record_tpl">
+        <dl>
+            <dt>
+                <% if(flag==1){ %>
+                <a class="bonus_btn JS_bonus" href="<%= shareHref(shareContent,url) %>">
+                    去分享
+                </a>
+                <% }else if(flag==0){ %>
+                <a class=" bonus_btn bonus_gay">
+                    发光了
+                </a>
+                <% }else if(flag==2){ %>
+                <a class="bonus_btn bonus_gay" >
+                    已过期
+                </a>
+                <% } %>
+            </dt>
+            <a href="javascript:;">
+                <dd>
+                    <% if(flag!=2){ %>
+                    <h3 class="ts_color">
+                        <% if(flag==0){ %>
+                        <%= count %>个已被全部领取
+                        <% }else { %>
+                        <%= sendNum %>个已被领取，还剩<%= leftNum %>个
+                        <% } %>
+                    </h3>
+                    <p >有效期至：<%= expiredAt %></p>
+                    <% }else{ %>
+                    <h3 class="ts_gaycolor">
+                        <% if(flag==0){ %>
+                        <%= count %>个已被全部领取
+                        <% }else { %>
+                        <%= sendNum %>个已被领取，还剩<%= leftNum %>个
+                        <% } %>
+                    </h3>
+                    <p class="ts_gaycolor">有效期至：<%= expiredAt %></p>
+                    <% } %>
+                </dd>
+            </a>
+        </dl>
+    </script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/fastclick.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/lib/template-native-debug.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/base.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/candy_base.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/bonus.js');?>" type="text/javascript"></script>
+{include file="api/views/_v32/footer.html"}

@@ -1,0 +1,111 @@
+<?php
+
+namespace openapi\controllers\account;
+
+use libs\rpc\Rpc;
+use libs\web\Form;
+use openapi\controllers\BaseAction;
+use openapi\conf\Error;
+/**
+ * 合同列表
+ */
+class ContractSignAll extends BaseAction {
+
+    public function init() {
+        parent::init();
+        $this->form = new Form();
+        $this->form->rules = array(
+            'id' => array('filter' => 'int'),//借款id
+        );
+
+        $this->form->rules = array_merge($this->sys_param_rules, $this->form->rules);
+        if(!$this->form->validate()) {
+            $this->setErr("ERR_PARAMS_ERROR", $this->form->getErrorMsg());
+            return false;
+        }
+    }
+
+    public function invoke() {
+
+        $return = array();
+        $data = $this->form->data;
+        $dealId = $data['id'];
+
+        $userName = $data['userName'];
+        $userInfo = $this->getUserByAccessToken();
+        if (!$userInfo) {
+            $this->setErr('ERR_GET_USER_FAIL');
+            return false;
+        }
+
+        $dealInfo = $this->rpc->local('DealService\getDeal',array($dealId, true, false));
+        if(empty($dealInfo)){
+            $this->setErr('ERR_CONTRACT_SIGN_FAILED');
+            return false;
+        }
+
+        $userId = $userInfo->userId;
+        $userName = $userInfo->userName;
+
+        //判断用户角色，包括 担保公司用户、普通用户（借款人、出借人）
+        $params = array(array('id' => $userId, 'user_name' => $userName));
+        $user_role = $this->rpc->local('UserService\getUserAgencyInfoNew', $params);
+        $advisory_role = $this->rpc->local('UserService\getUserAdvisoryInfo', $params);
+        $entrust_role = $this->rpc->local('UserService\getUserEntrustInfo', $params);
+        $is_agency = intval($user_role['is_agency']);
+        $is_advisory = intval($advisory_role['is_advisory']);
+        $is_entrust = intval($entrust_role['is_entrust']);
+        $is_borrower = ($userId == $dealInfo['user_id']) ? 1 : 0;
+
+        if($is_agency){
+            $agency_id = $user_role['agency_info']['agency_id'];
+        }elseif($is_advisory){
+            $agency_id = $advisory_role['advisory_info']['agency_id'];
+        }elseif($is_entrust){
+            $agency_id = $entrust_role['entrust_info']['agency_id'];
+        }
+
+        //判断是否已经签署
+        if($is_agency || $is_borrower || $is_advisory || $is_entrust){
+            // 有资格签
+            if($is_borrower){
+                $sign_info = $this->rpc->local('ContractService\getContSignNum',array($dealId, $userId,0, 0));
+            }else{
+                $sign_info = $this->rpc->local('ContractService\getContSignNum',array($dealId, $userId,1, $agency_id));
+            }
+            if (!$sign_info || $sign_info['status'] != 0) {
+                $this->setErr('ERR_CONTRACT_SIGNED');
+                return false;
+            }
+        }else{
+            // 木有资格签署
+            $this->setErr('ERR_CONTRACT_EMPTY');
+            return false;
+        }
+
+        if(is_numeric($dealInfo['contract_tpl_type'])){
+            if($is_borrower){
+                $role = 1;
+            }elseif($is_agency){
+                $role = 2;
+            }elseif($is_advisory){
+                $role = 3;
+            }elseif($is_entrust){
+                $role = 5;
+            }
+
+            $sign_info = $this->rpc->local('ContractNewService\signAll',array($dealId, $role, $userId));
+        }else{
+            $sign_info = $this->rpc->local('ContractService\signAll',array($dealId, $userId,$is_agency?$is_agency:$is_advisory, $agency_id));
+        }
+
+        if(!empty($sign_info)){
+            $ret = 'success';
+        }else{
+            $ret = 'failed';
+            $this->setErr('ERR_CONTRACT_SIGN_FAILED');
+            return false;
+        }
+        $this->json_data = $ret;
+    }
+}

@@ -1,0 +1,26 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'deal_id',
+  2 => 'user_id',
+  3 => 'prepay_time',
+  4 => 'status',
+  5 => 'remark',
+  6 => 'remain_days',
+  7 => 'prepay_money',
+  8 => 'prepay_interest',
+  9 => 'prepay_compensation',
+  10 => 'remain_principal',
+  11 => 'loan_fee',
+  12 => 'consult_fee',
+  13 => 'guarantee_fee',
+  14 => 'pay_fee',
+  15 => 'management_fee',
+  16 => 'canal_fee',
+  17 => 'repay_type',
+  18 => 'pay_fee_remain',
+  19 => 'deal_type',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

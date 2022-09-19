@@ -1,0 +1,118 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+    <div class="main_title">标的放款批量查询</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="post" id="batch">
+
+        标的编号：
+        <textarea name="deal_ids" rows="3" cols="25">{$_REQUEST['deal_ids']}</textarea>
+
+        放款审批单号：
+        <textarea name="approve_numbers" rows="3" cols="25">{$_REQUEST['approve_numbers']}</textarea>
+
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DealLoan" name="m" />
+        <input type="hidden" value="batchQuery" name="a" />
+        <input type="hidden" value="0" name="export" id="export" />
+        <input type="button" class="button" value="{%SEARCH}" onclick="batch_search();" />
+        <input type="button" class="button" value="导出" onclick="export_csv();" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="22" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th>借款编号</th>
+            <th>贷款类型</th>
+            <th>放款审批单号</th>
+            <th>借款标题</th>
+            <th>标的状态</th>
+            <th>标的创建时间</th>
+            <th>提现外部订单号</th>
+            <th>提现金额</th>
+            <th>提现状态</th>
+            <th>提现创建时间</th>
+            <th>提现更新时间</th>
+            <th>提现备注</th>
+        </tr>
+        <volist name="list" id="deal">
+        <tr class="row">
+            <td>
+                &nbsp;{$deal.id}
+            </td>
+            <td>
+                <if condition="$deal.deal_type eq 3">&nbsp;专享</if>
+                <if condition="$deal.deal_type eq 0">&nbsp;网贷</if>
+            </td>
+            <td>
+                &nbsp;{$deal.approve_number}
+            </td>
+            <td>
+                &nbsp;{$deal.name}
+            </td>
+            <td>
+                &nbsp;{$deal.deal_status|a_get_buy_status=$deal.id}
+                <if condition="($deal.deal_status eq 4) && ($deal.is_has_loans eq 2)"> - 正在放款</if>
+                <if condition="$deal.is_during_repay eq 1"> - 正在还款</if>
+                <if condition="($deal.deal_status eq 3) && ($deal.is_doing eq 1)"> - 正在流标</if>
+            </td>
+            <td>
+                &nbsp;{:to_date($deal['create_time'])}
+            </td>
+            <td>
+                &nbsp;{$deal.withdraw_out_order_id}
+            </td>
+            <td>
+                <if condition="$deal.withdraw_amount gt 0">
+                &nbsp;{$deal.withdraw_amount}元
+                </if>
+            </td>
+            <td>
+                <if condition="$deal.withdraw_status neq ''">
+                    <if condition="$deal.withdraw_status eq 0">&nbsp;未处理</if>
+                    <if condition="$deal.withdraw_status eq 1">&nbsp;提现成功</if>
+                    <if condition="$deal.withdraw_status eq 2">&nbsp;提现失败</if>
+                    <if condition="$deal.withdraw_status eq 3">&nbsp;提现处理中</if>
+                </if>
+            </td>
+            <td>
+                &nbsp;{:date('Y-m-d H:i:s', $deal['withdraw_create_time'])}
+            </td>
+            <td>
+                &nbsp;{:date('Y-m-d H:i:s', $deal['withdraw_update_time'])}
+            </td>
+            <td>
+                &nbsp;{$deal.withdraw_remark}
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+function batch_search() {
+    $('#export').attr('value', 0);
+    $('#batch').submit();
+}
+function export_csv(){
+    $('#export').attr('value', 1);
+    $('#batch').submit();
+}
+</script>
+<include file="Public:footer" />
+

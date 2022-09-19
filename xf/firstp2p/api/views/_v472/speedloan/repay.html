@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>在线还款</title>
+</head>
+<body class="zxhk_body">
+<input type="hidden" value="{$token}" id="tokenHidden"/>
+<input type="hidden" value="{$id}" id="idHidden"/>
+<input type="hidden" value="{$creditLoanInfo.repayAmount}" id="repayAmountHidden"/>
+<input type="hidden" value="{$balance}" id="balanceHidden"/>
+<!-- 还款金额banner begin -->
+<div class="repayBanner">
+    <div class="top">
+        <div class="title">还款金额(元)</div>
+        <div class="num">{$creditLoanInfo.repayAmountFormat}</div>
+    </div>
+    <!--<div class="bottom">
+        <div>
+            <p>含平台服务费(元)</p>
+            <p>{$creditLoanInfo.serviceFeeWaitingFormat}</p>
+        </div>
+        <div></div>
+        <div>
+            <p>含利息(元)</p>
+            <p>{$creditLoanInfo.interestWaitingFormat}</p>
+        </div>
+    </div>-->
+</div>
+<!-- 还款金额banner end -->
+<div class="remainMoney">账户可用余额：{$balanceFormat}元<!--<span>将从您尾号4839卡中划扣还款</span>--><a href="firstp2p://api?type=recharge&channel=main&token={$token}" class="chargeLink">充值</a></div>
+
+<!-- 借款明细 begin -->
+<div class="loanDetailBox">
+    <div class="title">借款明细</div>
+    <ul class="detailData">
+        <li>
+            <p>借款金额</p>
+            <p>{$creditLoanInfo.totalAmountFormat}元</p>
+        </li>
+        <li>
+            <p>已还本金</p>
+            <p>{$creditLoanInfo.principalRepayFormat}元</p>
+        </li>
+        <li>
+            <p>待还本金</p>
+            <p>{$creditLoanInfo.principalWaitingFormat}元</p>
+        </li>
+        <li>
+            <p>借款发放人</p>
+            <p>{$creditLoanInfo.loanProviderDes}</p>
+        </li>
+        <li>
+            <p>申请时间</p>
+            <p>{$creditLoanInfo.applyTimeFormat}</p>
+        </li>
+        <li>
+            <p>放款时间</p>
+            <p>{$creditLoanInfo.loanTimeFormat}</p>
+        </li>
+        <li>
+            <p>使用天数（截止本日）</p>
+            <p>{$creditLoanInfo.borrowedDays} 天</p>
+        </li>
+        <li>
+            <p>待还利息 / 日利率</p>
+            <p>{$creditLoanInfo.interestWaitingFormat}元 / {$creditLoanInfo.dailyRateFormat}%</p>
+        </li>
+        <li>
+            <p>待还服务费</p>
+            <p>{$creditLoanInfo.serviceFeeWaitingFormat}元</p>
+        </li>
+    </ul>
+</div>
+<!-- 借款明细 end -->
+
+<div class="repayBtnBox">
+    {if $balance >= $creditLoanInfo.repayMoney }
+    <a href="javascript:;" class="loanBtn" id="loanBtn">立即还款</a>
+    {else}
+    <a href="javascript:;" class="loanBtn noValid" id="loanBtn">立即还款</a>
+    {/if}
+</div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_zaixianhuankuan.js');?>"></script>
+{include file="api/views/_v32/footer.html"}

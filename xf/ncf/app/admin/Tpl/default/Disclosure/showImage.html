@@ -1,0 +1,140 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+
+<load href='__TMPL__Common/js/conf.js'/>
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<script src="__TMPL__Common/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+
+<div class="main">
+    <div class="main_title">项目逾期</div>
+    <div class="blank5"></div>
+    <form id="valid_form" autocomplete="off">
+        <table class="form" cellpadding=0 cellspacing=0 id="conftable">
+            <tr>
+                <td class="item_title" width="8%">
+                    逾期数据列表
+                </td>
+                <td class="item_input" width="92%">
+                    <span class="img_title">图片上传:</span>
+                    <a class="img_center">
+                        <img id="overdue_data_list_img" class="overdue_data_list_img"
+                             src="{$data.overdue_data_list_attachment}" data-src="{$data.overdue_data_list_attachment}"/>
+                    </a>
+
+                    <a href="javascript:;" class="file">
+                        <span class="changeWord">选择文件</span>
+                        <input type="file" class="textbox require" onchange="tryUploadInput('overdue_data_list')"
+                               name="overdue_data_list" id="overdue_data_list" class="file"/>
+                        <span class="tip_span">( 限制大小600KB )</span>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title" width="8%">
+                    逾期曲线图
+                </td>
+                <td class="item_input" width="92%">
+                    <span class="img_title">图片上传:</span>
+                    <a class="img_center">
+                        <img id="overdue_chart_img" class="overdue_chart_img"
+                             src="{$data.overdue_chart_attachment}" data-src="{$data.overdue_chart_attachment}"/>
+                    </a>
+                    <a href="javascript:;" class="file">
+                        <span class="changeWord">选择文件</span>
+                        <input type="file" class="textbox require" onchange="tryUploadInput('overdue_chart')"
+                               name="overdue_chart" id="overdue_chart" class="file"/>
+                        <span class="tip_span">( 限制大小600KB )</span>
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <div class="blank5"></div>
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="button" class="dis_button" value="{%SAVE}"/>
+                    <input type="button" class="button" onclick="preview()" value="预览"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        //表单提交
+        $(".dis_button").bind('click', function () {
+            var total = [];
+            var flag = 1;
+            var dataImageUrl = $("#overdue_data_list_img").attr("data-src");
+            var chartImageUrl = $("#overdue_chart_img").attr("data-src");
+            if (flag) {
+                $.ajax({
+                    url: "/m.php?m=Disclosure&a=uploadImage",
+                    type: "POST",
+                    dataType: 'JSON',
+                    data: {
+                        "dataImageUrl": dataImageUrl,
+                        "chartImageUrl": chartImageUrl,
+                    },
+                    success: function (data) {
+                        alert(data.info);
+                        if (data.status == 1) {
+                            window.location.href = jumpUrl;
+                        }
+                    }
+                });
+            }
+        });
+    })
+
+    function tryUploadInput(sign_up_banner_id) {
+        var _id = sign_up_banner_id;
+        var img_id = _id+'_img';
+        var _hasSrc = $("#" + img_id).attr("data-src");
+        $.ajaxFileUpload({
+            url: '/m.php?m=Disclosure&a=loadFile',
+            secureuri: false,
+            fileElementId: _id,
+            dataType: 'json',
+            data: {
+                "id":_id,
+            },
+
+
+            success: function (data, status) {
+                if (data.code == 1) {
+                    var src = data.imgUrl;
+                    if (src != '') {
+                        if (!_hasSrc) {
+                            $("#").show();
+                        }
+
+                        $("#" + img_id).attr("src", src);
+                        $("#" + img_id).attr("data-src", src);
+                        $("#" + img_id).siblings(".zanwu_tips").hide();
+                    }
+                } else {
+                    alert(data.message);
+                }
+            },
+            error: function (data, status, e) {
+                alert("上传错误");
+            }
+        })
+    }
+
+    function preview() {
+        var dataImageUrl = $("#overdue_data_list_img").attr("data-src");
+        var chartImageUrl = $("#overdue_chart_img").attr("data-src");
+        window.open("{:get_www_url('','cn')}disclosure/showData?overdue_data_list_attachment="+dataImageUrl+"&overdue_chart_attachment="+chartImageUrl);
+    }
+
+</script>
+<include file="Public:footer"/>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <title>房产材料选择</title>
+    {include file="api/views/_v32/header.html"}
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/net_loan.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/house_material_selection.css');?>">
+    <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+</head>
+<body>
+  <!-- 房产资料选择页面 -->
+  <div class="house_material_selection_container">
+    <!-- 房产资料选择页面房产列表 -->
+    {if $houseList}
+      {foreach from=$houseList item="house"}
+      <div class="house_material_lists">
+        <a href="/house/PreApply?token={$token}&house_id={$house.id}&selectedCity={$house.house_city}" class="cover">    
+          <!-- 房产信息头部部分 -->
+          <div class="house_material_list_top clearfix">{$house.house_city}{$house.house_district}{$house.house_address}</div>
+        </a>
+          <!-- 房产申请时间及评估价值部分 -->
+        {if $house.house_value}
+        <a href="/house/PreApply?token={$token}&house_id={$house.id}&selectedCity={$house.house_city}" class="cover">
+          <table>
+            <thead>
+              <tr><td>申请时间</td><td>房产评估价值</td></tr>
+            </thead>
+            <tbody>
+              {foreach from=$house.house_value item="value"}
+              <tr><td>{function name="to_date" v="$value.time" f="Y-m-d"}</td><td>{function name="number_format" v=$value.value f="2"}元</td></tr>
+              {/foreach}
+            </tbody>
+          </table>
+        </a>
+        {else}
+        <!-- 用户房产评估状态 -->
+        <div class="user_evaluation_status clearfix">
+          {if $house.status}
+          <span class="house_evaluation_status">房产价值评估中</span>
+          {else}
+          <span class="house_evaluation_status">房产价值未评估</span>
+          <!-- 判断用户的房产状态，当房产未评估时用户方可编辑房产信息 -->
+          <span class="user_house_property_edit"><a href="/house/EditHouse?token={$token}&id={$house.id}&selectedCity={$house.house_city}"><i></i>编辑</a></span>
+          {/if}
+        </div>
+        {/if}
+      </div>
+      {/foreach}
+    {else}
+    <!-- 用户未添加房产 -->
+    <div class="house_material_null_content">
+      <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/house_material_null.png');?>"/>
+      <p>暂无房产材料</p>
+      <p>点击下方按钮添加新房产吧~</p>
+    </div>
+    {/if}
+    <div class="bottom_tips1"></div>
+    <!-- 添加新房产 -->
+    <div class="fixed_brother"></div>
+    <div class="add_new_house_material">
+      <div class="fixed_container">
+        <a href="/house/AddHouse?token={$token}"><input type="button" value="添加新房产"></a>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+<script>
+  var houseList = "{$houseList}"
+  var house_material_selection_container = $(".house_material_selection_container"),
+  house_material_selection_height = house_material_selection_container.height()
+  _html($(".bottom_tips1")[0],house_material_selection_height,"0.75rem","none")
+  if(P2PWAP.cache.get("_second_text_val_") || P2PWAP.cache.get("_myimg_file1_src_") || P2PWAP.cache.get("_myimg_file1_id_") || P2PWAP.cache.get("_myimg_file2_src_") || P2PWAP.cache.get("_myimg_file2_id_")){
+    P2PWAP.cache.del("_second_text_val_")
+    P2PWAP.cache.del("_myimg_file1_src_")
+    P2PWAP.cache.del("_myimg_file1_id_")
+    P2PWAP.cache.del("_myimg_file2_src_")
+    P2PWAP.cache.del("_myimg_file2_id_")
+  }
+</script>
+</html>

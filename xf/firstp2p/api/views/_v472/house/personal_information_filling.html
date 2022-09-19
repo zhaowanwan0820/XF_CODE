@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="HandheldFriendly" content="true">
+  <title class="title">个人信息填写</title>
+  {include file="api/views/_v32/header.html"}
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/upload.v1.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/personal_infromation_filling.css');?>">
+  <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+</head>
+<body>
+  <!-- 个人信息填写页面 -->
+  <div class="personal_information_filling">
+    <form action="javascript:;" id="form" method="post" enctype="multipart/form-data">
+      <!-- 头部用户个人信息回填部分 -->
+      <div class="personal_information_input">
+        <div class="first_input">
+          <span>申请人姓名</span>
+          <span class="real_name">{$user_info.real_name}</span>
+        </div>
+        <div class="first_input">
+          <span>联系电话</span>
+          <span class="phone">{$user_info.phone}</span>
+        </div>
+        <div class="first_input">
+          <span>身份证号</span>
+          <span class="usercard_id">{$user_info.usercard_id}</span>
+        </div>
+      </div>
+      <!-- 身份证上传 -->
+      <div class="p_change_bankcard photo_upload_of_ID_card">
+        <div class="bg_white mt10 user_info j_user_info">
+          <h2 class="photo_upload_title">身份证照片上传</h2>
+          <div class="padd15 clearfix">
+            <div class="first">
+              <div class="upload_box j_uploadbox">
+                <div class="myimg_file1 mying1 person"></div>
+                <div class="content_h5 file1" data-img="myimg_file1"></div>
+                <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/wx_house_material_phone.png');?>" class="photo_img"/>
+              </div>
+            <div class="img_text">身份证正面</div>
+          </div>
+          <div class="first">
+            <div class="upload_box j_uploadbox">
+              <div class="myimg_file2 mying2 person"></div>
+              <div class="content_h5 file2" data-img="myimg_file2"></div>
+              <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/wx_house_material_phone.png');?>" class="photo_img"/>
+            </div>
+            <div class="img_text">身份证背面</div>
+          </div>
+          </div>
+        </div>
+        <div class="btn">
+          <input type="submit" class="change_btn ui_btn_disabled JS_submit_change" value="提交借款申请" disabled="disabled">
+        </div>
+      </div>
+    </form>
+    <!-- 添加借款记录页面点击时显示加载中遮罩层 -->
+    <div class="loan_record_popup" style="display:none">
+      <div class="loading1">
+        <div class="oninloading">申请提交中,请稍后...</div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/upload.v1.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/p_change_bankcard.js');?>"></script>
+<script>
+  var token1 = "{$token}",
+      borrow_deadline_type = "{$apply_info.borrow_deadline_type}",
+      payback_mode = "{$apply_info.payback_mode}",
+      house_id = "{$apply_info.house_id}",
+      annualized = "{$apply_info.annualized}",
+      id_page1 = "{$user_info.usercard_front}",
+      id_page2 = "{$user_info.usercard_back}",
+      usercard_front_id = "{$user_info.usercard_front_id}",
+      usercard_back_id = "{$user_info.usercard_back_id}"
+  var personal_information_filling = $(".personal_information_filling"),
+  personal_information_filling_height = personal_information_filling.height()
+  _html(personal_information_filling[0],personal_information_filling_height,"0.2rem","none") 
+</script>
+</html>

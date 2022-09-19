@@ -1,0 +1,111 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        标的编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+        标的名称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" style="width:100px;" />
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DtDeal" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th width="8"><!-- <input id="check" onclick="CheckAll('dataTable')" type="checkbox"> --></th>
+        <th width="50px">编号</th>
+        <th>标的名称</th>
+        <th>标的限额</th>
+        <th>投标开始时间</th>
+        <th>投标结束时间</th>
+        <th>已投资金额</th>
+        <th>前台显示</th>
+        <th>是否可以投资</th>
+        <th>操作</th>
+    </tr>
+    <tr>
+        <td colspan="20" class="bottomTd"> &nbsp;</td>
+    </tr>
+
+    <?php foreach($data as $k=>$v) :?>
+    <tr class="row">
+        <td><!-- <input name="key" class="key" value="<?= $v['id']?>" type="checkbox"> --></td>
+        <td><?= $v['id']?></td>
+        <td><?= $v['name']?></td>
+        <td><?= $v['moneyLimitDay']?></td>
+        <td><?= date('Y-m-d H:i:s',$v['startTime'])?></td>
+        <td><?= date('Y-m-d H:i:s',$v['endTime'])?></td>
+        <td><?= $v['hasLoanMoney']?></td>
+        <td>
+            <if condition="$v['isShow'] eq 1">有效</if>
+            <if condition="$v['isShow'] eq 0">无效</if>
+        </td>
+        <td>
+            <if condition="$v['isEffect'] eq 1">开启</if>
+            <if condition="$v['isEffect'] eq 0">关闭</if>
+        <td>
+            <a href="m.php?m=DtDeal&a=edit&deal_id=<?php echo $v['id']?>">编辑</a>&nbsp;&nbsp;
+            <a href="m.php?m=DtDealLoan&a=index&deal_id=<?php echo $v['id']?>">投资人列表</a>&nbsp;&nbsp;
+            <a href="javascript:weebox_showInvest({$v.id});">投资认购</a>&nbsp;&nbsp;
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<script>
+    function weebox_showInvest(id){
+        var dialogBox = $.weeboxs.open(ROOT+'?m=DtDeal&a=showInvest&id='+id, {draggable: false,contentType:'ajax',showButton:true,title:'投资认购列表',width:500,height:170,
+            onok:function(){
+                var investMoney = parseFloat(dialogBox.find('#investMoney').val());
+                var canUseMoney = parseFloat(dialogBox.find('#canUseMoney').val());
+                var user_name   = dialogBox.find('#user_name').val();
+
+                if(investMoney <= 0 || (investMoney > canUseMoney)) {
+                    dialogBox.find('#investMoney').focus();
+                    alert('请正确填写认购金额！');
+                    return false;
+                }
+                var html = '<html>';
+                html += '<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">';
+                html += '<tr>';
+                html += '<td colspan=2 class="topTd"></td>';
+                html += '</tr>';
+                html += '<tr>';
+                html += '<td class="item_title">账户名称:</td>';
+                html += '<td class="item_input">'+user_name+'</td>';
+                html += '</tr>';
+                html += '<tr>';
+                html += '<td class="item_title">本次认购金额：</td>';
+                html += '<td class="item_input">'+investMoney+'元</td>';
+                html += '</tr>';
+                html += '<tr>';
+                html += '<td colspan=2 class="bottomTd"></td>';
+                html += '</tr>';
+                html += '</table>';
+                html += '</html>';
+                var sureBox = $.weeboxs.open(html,{type:'warning',draggable: false,contentType:'html',showButton:true,title:'确认投资认购？',
+                    onok:function(){
+                        location.href="/m.php?m=DtDeal&a=invest&id="+id+"&investMoney="+investMoney+"&user_name="+user_name;
+                        sureBox.close();
+                    },
+                    oncancel:function(box){
+                        sureBox.close();
+                    }});
+                dialogBox.close();
+            },
+            oncancel:function(box){
+                dialogBox.close();
+            }});
+    }
+</script>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

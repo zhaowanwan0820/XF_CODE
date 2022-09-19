@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统</title>
+    <style>
+        .warp{width:100%;font-size:12px;font-family:SimSun;}
+        .warp .list{height:30px; width:80%; margin:0 auto; margin-top:6px; position:relative; line-height:30px;}
+        .warp .list .box{background:#f0ecec; height:100%; border:1px solid #c5c2c2; -moz-box-sizing:border-box; /* Firefox */ -webkit-box-sizing:border-box; /* Safari */ margin-left:166px; border-radius:5px; padding-left:10px;}
+        .warp .list span{line-height:36px; width:146px; display:inline-block; text-align:right; float:left;}
+        .warp .list input{border:1px solid #ccc; height:36px; border-radius:5px;; box-sizing:border-box; -moz-box-sizing:border-box; /* Firefox */
+            -webkit-box-sizing:border-box; /* Safari */ width:calc(100% - 166px); float:left; margin-left:20px;}
+        .warp .list .search{position:absolute; height:30px; border-left:1px solid #ccc;float:left; width:120px; padding-left: 10px;}
+        .warp .list .btn_reset{position:absolute; width:50px; height:30px; background:#7dd1f8; border-radius:5px; left:370px; color:#fff;outline: none; -webkit-appearance: none; border:0px;}
+        .warp .list .btn_submit{position:absolute; width:50px; height:30px; background:#7dd1f8; border-radius:5px; left:300px; color:#fff;outline: none; -webkit-appearance: none; border:0px;}
+    </style>
+</head>
+
+<body>
+<if condition="!empty($error)">
+<h1>{$error}</h1>
+</if>
+<if condition="!empty($response)">
+<form id="searchForm" class="warp" action="" method="post">
+    <div class="list">
+        <span>搜索用户ID</span>
+        <input type="text" class="search" name="searchUserId" id="searchUserId" value="{$response['userId']}"/>
+        <input type="submit" class="btn_submit" value = "查询"/>
+        <input type="button" class="btn_reset" value = "重置" onclick="document.getElementById('searchUserId').setAttribute('value', ''); document.getElementById('searchForm').submit();"/>
+    </div>
+</form>
+<div class="warp">
+    <div class="list">
+        <span>用户Id</span>
+        <div class="box">{$response['userId']}</div>
+    </div>
+    <div class="list">
+        <span>用户名</span>
+        <div class="box">{$response['userName']}</div>
+    </div>
+    <div class="list">
+        <span>姓名</span>
+        <div class="box">{$response['realName']}</div>
+    </div>
+    <div class="list">
+        <span>生日</span>
+        <div class="box">{$response['birthday']}</div>
+    </div>
+    <div class="list">
+        <span>注册时间</span>
+        <div class="box">{$response['createTime']}</div>
+    </div>
+    <div class="list">
+        <span>客户状态</span>
+        <div class="box">{$response['is_effect']}</div>
+    </div>
+    <div class="list">
+        <span>账户状态</span>
+        <div class="box">{$response['invest']}</div>
+    </div>
+    <div class="list">
+        <span>当前账户余额</span>
+        <div class="box">{$response['money']}</div>
+    </div>
+    <div class="list">
+        <span>资产总额</span>
+        <div class="box">{$response['totalMoney']}</div>
+    </div>
+    <div class="list">
+        <span>待还本金</span>
+        <div class="box">{$response['corpus']}</div>
+    </div>
+    <div class="list">
+        <span>实际等级</span>
+        <div class="box">{$response['actualGradeName']}</div>
+    </div>
+    <div class="list">
+        <span>服务等级</span>
+        <div class="box">{$response['gradeName']}</div>
+    </div>
+    <div class="list">
+        <span>本人渠道</span>
+        <div class="box">{$response['selfChannel']}</div>
+    </div>
+    <div class="list">
+        <span>邀请人渠道</span>
+        <div class="box">{$response['inviterChannel'] }</div>
+    </div>
+    <div class="list">
+        <span>未来一周内回款总额</span>
+        <div class="box">{$response['repayMoney']}</div>
+    </div>
+    <div class="list">
+        <span>最后一次充值时间</span>
+        <div class="box">{$response['userLastChargeTime']}</div>
+    </div>
+    <div class="list">
+        <span>最后一次提现时间</span>
+        <div class="box">{$response['userLastCarryTime']}</div>
+    </div>
+    <div class="list">
+        <span>最后一次回款时间</span>
+        <div class="box">{$response['lastRepayTime']}</div>
+    </div>
+    <div class="list">
+        <span>保级剩余时间</span>
+        <div class="box">{$response['remainRelegatedTime']}</div>
+    </div>
+    <div class="list">
+        <span>末笔投资时间</span>
+        <div class="box">{$response['lastInvestTime']}</div>
+    </div>
+</div>
+</if>
+</body>
+</html>

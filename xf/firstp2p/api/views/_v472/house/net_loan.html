@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="HandheldFriendly" content="true">
+  <title class="title">网信房贷</title>
+  {include file="api/views/_v32/header.html"}
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/net_loan.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/virtual.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/format_money.v1.css');?>">
+  <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+</head>
+<body>
+  <!-- 网信房贷申请房贷 -->
+  <div class="wx_loan_container">
+    <!-- 申请房贷tab部分 -->
+    <div class="apply_mortgage">
+      <a href="#" class="selected select_first">借款申请</a>
+      <a href="#" class="select_second">借款记录</a>
+    </div>
+    <div class="load_more_container"></div>
+    <div class="apply_mortgage_content">
+      <!-- 添加提示语 -->
+      <div class="add_tips">借款用途提示：不得用于购房、炒股、投资等。</div>
+      <!-- 期望借款金额部分-->
+      <div class="expected_loan_amount">
+        <span class="loan_amount_first">期望借款金额</span>
+        <div class="expected_loan_amount_input">
+          <div class="show_daxie"></div>
+          <div class="ui_input clearfix"></div>
+          <i class="money_unit" style="display:none">万元</i>
+        </div>
+      </div>
+      <!-- 期望借款期限、还款方式等内容部分 -->
+      <ul class="expected_loan_date">
+        <li class="date_inner">
+          <a href="#"><span>期望借款期限</span><span><i class="date_number">请选择</i><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/arrow_right_gray.png');?>"/></span>
+          </a>
+        </li>
+        <li class="second_li"><span>还款方式</span><span class="style_inner">{$conf.paybackModeInfo}
+          <!-- <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/arrow_right_gray.png');?>"/> -->
+        </span></li>
+        <li class="house_material_li">
+          <a href="/house/HouseList?token={$token}">
+            {if $house}
+            <span><i>房产资料</i><i style="color:#000;">已选择<img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/arrow_right_gray.png');?>"/></i></span>
+            <span style="margin-top:0.05rem;min-height:0.18rem;max-height:0.36rem;overflow:hidden;" class="house_mater_inner">{$house.house_city}{$house.house_district}{$house.house_address}</span>
+            {else}
+            <span><i>房产资料</i><i>请选择<img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/arrow_right_gray.png');?>"/></i></span>
+            {/if}
+          </a>
+        </li>
+      </ul>
+      <!--融资成本 -->
+      <div class="finance_cost">
+        <span>融资成本（预计年化）</span>
+        <span class="finance_rate">
+          {if $house}{$conf.annualized}%
+          {else}{$conf.annualized.min}% ~{$conf.annualized.max}%
+          {/if}
+        <a href="#"><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/wx_help.png');?>"></a></span>
+      </div>
+      <!--立即申请 -->
+      <div class="btn_apply_immediately">
+        <a href="#"><button disabled>立即申请</button></a>
+      </div>  
+      <!-- 融资成本遮罩层 -->
+      <div class="finance_cost_popup" style="display:none">
+        <!-- 融资成本内容 -->
+        <div class="finance_popup">
+          <div class="finance_popup_top">
+            <span>融资成本</span>
+            <span>
+              <i>借款利息</i>
+              <i>借款服务费</i>
+              <i>保险费(如有)</i>
+            </span>
+          </div>
+          <div class="finance_popup_bottom">
+            <p>注意:</p>
+            <p>1. 融资成本不包括评估机构、公证处、建委等外部机构收取的相关手续费。</p>
+            <p>2. 如果借款申请期限低于3个月，则另外收取1%的手续费。</p>
+            <p>3. 具体的融资成本会根据市场行情、客户资质、房产情况产生相对应的浮动。</p>
+          </div>
+        </div>
+        <!-- 关闭按钮 -->
+        <div class="finance_popup_close">
+          <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/wx_loan_close.png');?>">
+        </div>
+      </div>
+    </div>
+    <!-- 用户借款记录列表页面 -->
+    <div class="loan_record_container">
+      <div class="loan_record_list">
+        <div class="loan_record_content">
+        </div>
+        <div class="load_more_container1"></div>
+      </div>
+      <div class="loan_record_null_content" style="display:none">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/loan_record_null.png');?>"/>
+        <p>暂无记录</p>
+        <p>快去申请借款吧~</p>
+      </div>
+      <!-- 添加借款记录页面点击时显示加载中遮罩层 -->
+      <div class="loan_record_popup" style="display:none">
+        <div class="loading">
+          <div class="loading_img"><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/loading.jpg');?>" width="0.38rem" height="0.38rem"/></div>
+          <div class="oninloading">加载中</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+  <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/virtual.v1.js');?>"></script>
+  <script>
+    var money_amount = P2PWAP.cache.get("_money_amount_"),
+        excepted_date = P2PWAP.cache.get("_date_number_selected_"),
+        house_mater_inner =$(".house_material_li .house_mater_inner").html(),
+        // date_number_selected,
+        loan_list_data = [];
+    /* 显示首页借款、借款记录页面底部提示部分样式 */
+    function _bottom_tipsfn(){
+      var apply_mortgage = $(".apply_mortgage").height(),
+          apply_mortgage_content = $(".apply_mortgage_content"),
+          loan_container_height = apply_mortgage_content.height() + apply_mortgage + 10,
+          loan_record_content = $(".loan_record_list"),
+          container_height = loan_record_content.height() + apply_mortgage + 10
+          if($(".apply_mortgage .select_first").hasClass("selected")){
+           _html(apply_mortgage_content[0],loan_container_height,"0.2rem","block")            
+          }else{
+          _html(loan_record_content[0],container_height,"0.2rem","none")            
+          }
+    }
+    _bottom_tipsfn()
+    /* 借款记录调取接口封装函数 */
+    var page = 1
+   function _interface(){
+    $.ajax({
+        url:'/house/LoanList',
+        type:"post",
+        data:{token:'{$token}',page: page},
+        dataType:"json",
+        success:function(data){
+          $(".load_more_container").hide()
+          $(".loan_record_container").css("margin-top","0.1rem")
+          /* 判断返回的数据是否大于十 */
+          var load_more_container1 = $(".load_more_container1")
+          if(load_more_container1.find(".ui_loadmore").length >= 1){
+            load_more_container1.children().remove()
+          }
+          if(data.data.length >= 10){
+            _load_more(load_more_container1[0],1)
+            /* 点击加载更多时 */
+            $(".ui_loadmore a").click(function(){
+              page += 1
+              if(load_more_container1.find(".ui_loadmore").length >= 1){
+                load_more_container1.children().remove()
+              }
+              _load_more(load_more_container1[0],2)
+              _interface()
+            })
+          }else if(data.data.length <10 && data.data.length != 0){
+            _load_more(load_more_container1[0],3)
+          }
+          loan_list_data = loan_list_data.concat(data.data)
+          $(".loan_record_popup").css("display","none")
+          if (loan_list_data.length > 0) {
+            $(".loan_record_list").css({
+              "display":"block"
+            })
+            $(".loan_record_null_content").css({
+              "display":"none"
+            })
+            // 使用data渲染数据
+            var loanList = loan_list_data
+            $(".loan_record_content").html("");
+            for (index in loanList) {
+                var loanHtml = "<ul class=\"loan_record_list\">\n" +
+                    "          <a href=\"/house/LoanDetail?token={$token}&order_id="+loanList[index].order_id+"\">\n" +
+                    "            <li class=\"list_first_li\">\n" +
+                    "                <span class=\"list_first_span\"><i style=\"font-size:0.17rem\">"+loanList[index].borrow_money+"</i>万元</span>\n" +
+                    "                <span class=\"list_second_span\">"+loanList[index].create_time+"申请</span>\n" +
+                    "            </li>\n" +
+                    "            <li class=\"list_second_li\"><span>"+loanList[index].status_info+"</span></li>\n" +
+                    "          </a>\n" +
+                    "        </ul>"
+                $(".loan_record_content").html($(".loan_record_content").html() + loanHtml)
+            }
+          } else {
+            $(".loan_record_content").css({
+              "display":"none"
+            })
+            $(".loan_record_null_content").css({
+              "display":"block"
+            })
+          }
+          /* 底部提示语方法调用 */
+          if($(".bottom_tips_container").length >= 1){
+              $("body .bottom_tips_container").remove()
+              _bottom_tipsfn()
+          }
+        }
+    })
+   }
+   /* 页面数据完整性判断封装函数 */
+   var downMoney = "{$conf.downMoney}",
+       upMoney = "{$conf.upMoney}"
+   function _data_integrity(){
+    if(!money_amount || !excepted_date || !house_mater_inner){
+      $(".btn_apply_immediately button").css({"background-color":"rgba(217,217,217,1)"}).attr("disabled",true)
+    }else{
+      $(".btn_apply_immediately button").css({"background-color":"rgba(23,127,222,1)"}).removeAttr("disabled").click(function(){
+        if(parseFloat(money_amount)>parseFloat(upMoney)){
+          P2PWAP.ui.toast("最高可借"+"{$conf.upMoney}"+"万元")
+        }else if(parseFloat(money_amount)<parseFloat(downMoney)){
+          P2PWAP.ui.toast("最低起借"+"{$conf.downMoney}"+"万元")
+        }else{
+            var repay_mode = "{$conf.paybackModes}";
+            {if $house}
+            var house_id = "{$house.id}";
+            {else}
+            var house_id = "";
+            {/if}
+            var annualized = "{$conf.annualizedDesc}";
+            var deadline = parseInt(excepted_date.split("个月")[0])
+            var url = "/house/CheckUser?token={$token}&borrow_money="+money_amount+"&borrow_deadline_type="+deadline+"&payback_mode="+repay_mode+"&house_id="+house_id+"&annualized="+annualized;
+            $(".btn_apply_immediately a").attr("href", url);
+        }
+      })
+    }
+   }
+   /* 点击借款记录列表每一条数据时记录状态，封装函数,详情页返回时还是回到借款记录页 */
+   function _loan_record_status(){
+    $(".loan_record_content").click(function(){
+      P2PWAP.cache.set("_loan_record_status_","click",60000)
+    })
+   }
+   if(P2PWAP.cache.get("_loan_record_status_")){
+      $(".apply_mortgage .select_second").addClass('selected')
+      $(".apply_mortgage .select_first").removeClass("selected")
+      $(".apply_mortgage_content").css("display","none")
+      $(".loan_record_container").css("display","block")
+      var load_more_container = $(".load_more_container")
+      if(load_more_container.find(".ui_loadmore").length >= 1){
+        load_more_container.children().remove()
+      }
+      P2PWAP.cache.del("_loan_record_status_")
+      _load_more($(".load_more_container")[0],2)
+      _interface()
+   }
+  /* 页面中不点击金额、期限和资料时 */
+    _data_integrity()
+  /* 判断用户是否是从提交借款申请成功页面跳转过来的 */
+  if(P2PWAP.cache.get("_record_list_status_")){
+    $(".loan_record_popup").css("display","none")
+    $(".apply_mortgage .select_second").addClass('selected')
+    $(".apply_mortgage .select_first").removeClass("selected")
+    $(".apply_mortgage_content").css("display","none")
+    $(".loan_record_container").css("display","block")
+    P2PWAP.cache.del("_record_list_status_")
+    _interface()
+    _loan_record_status()
+  }
+  /* 当用户点击首页tab时 */
+  $(".apply_mortgage .select_first").click(function(){
+    $(this).addClass('selected')
+    P2PWAP.cache.del("_loan_record_status_")
+    if(P2PWAP.cache.get("_money_amount_")){
+      var left = parseFloat(P2PWAP.cache.get('_money_amount_left_')) + 0.15 + "rem"
+      P2PWAP.cache.get("_money_amount_left_") ? $(".money_unit").css({"display":"block","left":left}) : ""
+    }
+    $(".apply_mortgage .select_second").removeClass("selected")
+    $(".apply_mortgage_content").css({
+      "display":"block"
+    })
+    $('.loan_record_list').css({
+      "display":"none"
+    })
+    $('.loan_record_null_content').css({
+      "display":"none"
+    })
+    if($(".bottom_tips_container").length >= 1){
+      $("body .bottom_tips_container").remove()
+      setTimeout(function(){_bottom_tipsfn()},500)
+    }
+  })
+  $(".apply_mortgage .select_second").click(function(){
+    $(".loan_record_popup").css("display","block")
+    $(".apply_mortgage .select_second").addClass('selected')
+    
+    $(".apply_mortgage .select_first").removeClass("selected")
+    $(".apply_mortgage_content").css({
+      "display":"none"
+    })
+    page = 1,
+    loan_list_data = [];
+    var load_more_container = $(".load_more_container")
+    load_more_container.show()
+    if(load_more_container.find(".ui_loadmore").length >= 1){
+      load_more_container.children().remove()
+    }
+    _load_more($(".load_more_container")[0],2)
+    _interface()
+    _loan_record_status()
+  })
+  /* 虚拟键盘 */
+  var placeholder_test = '{$conf.downMoney}万元起借，单笔最高{$conf.upMoney}万元'
+  var vir_input = new virtualKey($(".ui_input"), {
+    placeholder: placeholder_test,
+    delayHiden: function() {
+      money_amount = $(".ui_input .btn_key").html()
+      P2PWAP.cache.set("_money_amount_",money_amount,60000)
+      _data_integrity()
+      document.body.removeEventListener('touchmove', function(e){e.preventDefault()});
+      var ipt_val = $(".ui_input .btn_key").html();
+      if(ipt_val == ''){
+        $('.expected_loan_amount_input').removeClass('borer_yellow');
+
+      }
+    },
+    focusFn: function() {
+      $('.expected_loan_amount_input').addClass('borer_yellow');
+    },
+    changeFn: function() {
+      $.iptChangeFn();
+    }
+    })
+    var money_unit_left;
+  $.getformatMoney = function (_nowMoney, formatClass, activeClass) {
+    var html="";
+    var MoneyArr =[ '个', '十', '百', '千'];
+    if (_nowMoney != "" && !isNaN(_nowMoney)) {
+        _nowMoney=Number(_nowMoney);
+        html = '<ul class="' + formatClass + ' clearfix">';
+        //转换
+        var _intlength = parseInt(_nowMoney).toString().length;
+        if (_intlength > 4) {
+            _intlength = 4;
+        }
+        for (var i = _intlength-1; i >=0; i--) {
+            if (i == _intlength - 1) {
+                html += '<li class="'+ activeClass +' money_li'+ i +'">'+ MoneyArr[i] +'</li>';
+            } else {
+                html += '<li class=' +' money_li'+ i +'>' + MoneyArr[i] + '</li>';
+            }
+        }
+        html += '</ul>';
+    }else {
+        html="";
+    }
+    return html;
+  }
+  $.iptChangeFn = function() {
+    money_amount = $(".ui_input .btn_key").html()
+    P2PWAP.cache.set("_money_amount_",money_amount,60000)
+    P2PWAP.cache.set("_money_amount_left_",money_unit_left,60000)
+    _data_integrity()
+    var ipt_val = $(".ui_input .btn_key").html()
+    $(".ui_input .btn_key").addClass("btn_key_size")
+    if(ipt_val.length > 0 && ipt_val != ""){
+      $(".money_unit").css("display","block")
+    }else{
+      $(".money_unit").css("display","none")
+      placeholder_test = '{$conf.downMoney}万元起借，单笔最高{$conf.upMoney}万元'
+    }
+    money_unit_left = $(".btn_key").width()/100 + 0.4 +'rem'
+    $(".expected_loan_amount_input .money_unit").css("left",money_unit_left)
+    $(".show_daxie").empty().append($.getformatMoney(ipt_val, "show_money_ul", "active"));
+  }
+  /* 点击融资成本弹出遮罩层 */
+  $('.finance_cost').click(function(){
+    $('.finance_cost_popup').css("display","block")
+    $(".finance_cost_popup .finance_popup_close img").click(function(){
+      $('.finance_cost_popup').css("display","none")
+    })
+  })
+  /* 当页面存在_money_amount_、_date_number_selected_时 */
+  if(P2PWAP.cache.get("_money_amount_")){
+    $(".ui_input .btn_key").html(P2PWAP.cache.get("_money_amount_"))
+    $(".inp_text").html("")
+    $(".ui_input .btn_key").addClass("btn_key_size")
+    money_unit_left = $(".btn_key").width()/100 + 0.4 +'rem'
+    $(".money_unit").css({"display":"block","left":money_unit_left})
+    money_amount = P2PWAP.cache.get("_money_amount_")
+  }
+  if(P2PWAP.cache.get("_date_number_selected_")){
+    excepted_date = P2PWAP.cache.get("_date_number_selected_")
+    $(".expected_loan_date .date_inner .date_number").html(P2PWAP.cache.get("_date_number_selected_")).css("color","#000")
+  }
+  /* 点击期望借款期限时 */
+  $(".expected_loan_date .date_inner").click(function(){
+    var selectedDate = excepted_date ? parseInt(excepted_date.split("个月")[0]) :"";
+    {if $house}
+    $(".date_inner a").attr("href","/house/LoanDateList?token={$token}&selectedDate="+selectedDate+"&house_id={$house.id}&selectedCity={$selectedCity}")
+    excepted_date = "{$date_number}"
+    {else}
+    $(".date_inner a").attr("href","/house/LoanDateList?token={$token}&selectedDate="+selectedDate+"&house_id=&selectedCity=")
+    excepted_date = "{$date_number}"
+    {/if}
+    _data_integrity()
+  })
+  /* 点击房产资料时 */
+  $(".house_material_li a").click(function(){
+    house_mater_inner = $(".house_material_li .house_mater_inner").html()
+    _data_integrity()
+  })
+  </script>
+</body>
+</html>

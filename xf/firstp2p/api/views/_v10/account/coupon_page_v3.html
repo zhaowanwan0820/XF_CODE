@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>邀请好友</title>
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/deal_invite.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="m-main">
+        <div class="invite_main">
+            <div class="inv_img">
+                <img width="100%" src="<?php echo $this->asset->makeAppUrl('v2/images/inv_top.jpg');?>" />
+            </div>
+            {if $is_not_code}
+            <div class="inv_top">
+                <h3>完成身份验证，开启邀请返利</h3>
+                <p>投资人的返利<em>{$newRegisterInviteRebateDefault}%</em>，您的返利<em>{$newRegisterRebateDefault}%</em></p>
+            </div>
+            <div class="inv_title">邀请返利计算示例：</div>
+            <div class="inv_tcenter">
+                <div class="invc_pspan clearfix">
+                    <p>
+                        <span>单笔投资</span>
+                        <span>年化返利</span>
+                        <span>投资期限</span>
+                        <span>返利</span>
+                    </p>
+                    <p class="p_disnone">
+                        <span>100万</span>
+                        <span>{$newRegisterRebateDefault}%</span>
+                        <span>12</span>
+                        <span><em>{$rebateProfit}</em></span>
+                    </p>
+                </div>
+            </div>
+            <div class="inv_title">（计算公式:单笔投资金额*年华返利利率／12*投资期限）</div>
+            <div class="list_text">
+                <adv adv_id="我的邀请码说明"/>
+            </div>
+            <div class="inv_fbtn">
+                <a href="invite://api?type=identify">身份验证</a>
+            </div>
+            {else}
+            <div class="inv_top bg_gray inv_top1">
+                <!--<i class="invt_img"></i>-->
+                <div class="int_center clearfix">
+                    <div>
+                        <p>邀请人数<em>(人)</em></p>
+                        <span>{$coupon_log.consume_user_count}</span>
+                    </div>
+                    <div>
+                        <p>已返金额<em>(元)</em></p>
+                        <span>{function name="number_format" v=$coupon_log.referer_rebate_amount f="2"}</span>
+                    </div>
+                    <div>
+                        <p>待返金额<em>(元)</em></p>
+                        <span>{function name="number_format" v=$coupon_log.referer_rebate_amount_no f="2"}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="inv_center">
+                {foreach from=$coupons item="coupon" key="couponId" }
+                <div class="i-list clearfix">
+                    <dl class="clearfix">
+                        <dt>
+                        <h3>您的邀请码:{$couponId}</h3>
+                        <!--<h4>好友用邀请码注册/投资获返利</h4>好友获{$coupon.rebate_ratio}%，-->
+                        <h4>您可获{$coupon.referer_rebate_ratio}%</h4>
+                        </dt>
+                        <dd>
+                        <a href="invite://api?coupon={$couponId}&msg={$coupon.shareMsg}{$siteid}">邀请</a>
+                        </dd>
+                    </dl>
+                </div>
+                {/foreach}
+                <div class="list_text">
+                    {if !$isO2O}
+                    <adv adv_id="我的邀请码说明"/>
+                    {else}
+                    <adv adv_id="O2O我的邀请码说明"/>
+                    {/if}
+                </div>
+                <div class="list_arrow ">
+                    <a href="#"></a>
+                </div>
+            </div>
+            <div class="inv_footer">
+            {if $coupon_log.list}
+            {foreach from=$coupon_log.list item='log' key='key'}
+                <div class="invf_list">
+                    <div class="inf_top">
+                        <span>{$log.consume_user_name}<br/>{$log.consume_real_name}</span>
+                        <span>{$log.pay_status_text}</span>
+                        <span>{if $log.pay_time}{$log.pay_time}{else}--{/if}</span>
+                    </div>
+                    <p>
+                    {if $log.type eq 1}
+                    <i class="zhu">注</i>
+                    {elseif $log.type eq 3}
+                    <i class="huo">活</i>
+                    {else}
+                    <i class="tou">投</i>
+                    {/if}
+                    {if $log.is_not_tesla}
+                    该笔邀请不符合活动规则
+                    {else}
+                    {$log.note}
+                    {/if}
+                    </p>
+                </div>
+            {/foreach}
+            {/if}
+            </div>
+            {/if}
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/jquery-1.10.2.min.js');?>"></script>
+    <script type="text/javascript">
+        $(function() {
+            $(".list_arrow>a").bind("click", function() {
+                $(".list_text").slideToggle();
+                $(".list_arrow").toggleClass("list_arrow_down");
+            });
+        });
+    </script>
+</body>
+</html>

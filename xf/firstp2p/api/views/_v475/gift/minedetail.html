@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>优惠券详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <!--public js&css start-->
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/o2o/o2o_coupon.css');?>">
+    <script>
+        window['_MOBILE_'] = "{$userInfo.mobile}";
+        window['_ZMQStringWithSignature'] = "";
+        window['_O2O_COUPONID_'] = "{$coupon.id}";
+        window['_O2O_FRONTEND_SIGN_'] = "{$o2o_frontend_sign}";
+        window['_O2O_COUPON_USENESS_'] = {if $coupon.status eq 1}false{else}true{/if};
+    </script>
+    <style>
+        ._O2O_COUPON_GROUP_DETAIL{display:none !important;}
+        ._O2O_COUPON_ACQUIRE_SUC{display:none !important;}
+        ._O2O_MY_COUPON_DETAIL{}
+        .p_coupon_detailed .address_con {line-height:26px;padding:3px 20px 0 15px;border-top:1px solid #F5F5FA;}
+        .address_con >div {position: relative;padding-right:16px;}
+        .address_con >div >span {display: inline-block;  margin: 72px;  border-right: 1px solid #999; border-bottom: 1px solid #999;  width: 7px; height: 7px;transform: rotate(-45deg);position:absolute;right:-68px; top:-63px; }
+        .address_con h3 span {margin-right:10px;}
+        .o2o_pickup {position: fixed;bottom:10px;width:100%;}
+    </style>
+</head>
+<body>
+<div id="JS-mask" class="ui_mask" style="display:none;"></div>
+<div class="m-main">
+    <div class="p_coupon_detailed">
+        <div class="goods big_bg">
+            <div class="big_bg_top">
+                <dl class="clearfix">
+                    <dt><img src="{$coupon.pic}"></dt>
+                    <dd>
+                        <h3>{$coupon.productName}</h3>
+                        {if $coupon.goodPrice neq 0}
+                        <p class="color_red"><span class="f15">{$coupon.goodPrice}元</span></p>
+                        {/if}
+                        {if $coupon.status eq 1}
+                        <p>有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                        {elseif $coupon.status eq 2}
+                            {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                        <p>有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                            {/if}
+                        {elseif $coupon.status eq 3}
+                        <p>有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                        {/if}
+                    </dd>
+                </dl>
+                {if $coupon.status eq 1}
+                    {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                    {if $coupon.isShowCouponNumber eq 1 }
+                <div class="underline_coupon">
+                    <div class="underline_coupon_bd">
+                        <div class="lt_icon"></div>
+                        <div class="rt_icon"></div>
+                        <div>券码: <span class="Js-coupon_num color_red">{$coupon.couponNumber}</span></div>
+                    </div>
+                </div>
+                    {/if}
+                    {elseif $coupon.useRules eq 3 || $coupon.useRules eq 4}
+
+                {if $address}
+                <div class="address_con" data-url="/address/index?token={$usertoken}&entryType=o2o&returnUrl={$returnUrl}" data-title="收货地址">
+                <h3 class=""><span>收货人：{$address.consignee}</span><span>{$address.mobile}</span></h3>
+                <div class=""><span></span>收货地址：{$address.area}&nbsp;{$address.address}</div>
+                </div>
+                <div class="o2o_pickup"><a data-proto="coupon://api" data-type="webview" data-backtype="finish" data-backid="myCoupon" data-title="领取礼券" data-needcloseall="true" data-identify="couponResult" data-needback="false" data-needrefresh="false" href="{$APP_HOST}/gift/ExchangeCoupon?token={$usertoken}&storeId={$coupon.storeId}&useRules={$coupon.useRules}&couponId={$coupon.id}&address_id={$address.id}" class="btn_red">领取</a></div>
+                {else}
+                  <div><a data-title="添加新地址"   data-url="/address/add?token={$usertoken}&returnUrl={$returnUrl}&entryType=o2o" class="btn_red write_con">填写收货地址</a></div>
+                {/if}
+                    {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                        {if $formConfig.phone.require}
+                <div><a class="btn_red" data-proto="coupon://api" data-type="webview" data-backid="couponConfirmInfo" data-title="领取礼券" data-identity="couponRedeemResult" data-needback="false" data-needrefresh="true" data-needcloseall="true" href="{$APP_HOST}/gift/ExchangeCoupon?token={$usertoken}&storeId={$coupon.storeId}&useRules={$coupon.useRules}&couponId={$coupon.id}&phone={$userInfo.mobile}">充入账户<span class="format_mobile">{$userInfo.mobile}</a></div>
+                <div><a data-proto="coupon://api" data-type="webview" data-backtype="finish" data-backid="myCoupon" data-title="领取礼券" data-identify="couponResult" data-needback="true" data-needrefresh="true" href="{$APP_HOST}{$coupon.p2pExchangeUrl}&token={$usertoken}" class="btn_white">充入其他账户</a></div>
+                        {else}
+                <div><a data-proto="coupon://api" data-type="webview" data-backtype="finish" data-backid="myCoupon" data-title="领取礼券" data-identify="couponResult" data-needback="true" data-needrefresh="true" href="{$APP_HOST}{$coupon.p2pExchangeUrl}&token={$usertoken}" class="btn_red">填写充值信息</a></div>
+                        {/if}
+                    {/if}
+                {elseif $coupon.status eq 2}
+                    {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                    {if $coupon.isShowCouponNumber eq 1 }
+                <div class="underline_coupon">
+                    <div class="underline_coupon_bd">
+                        <div class="lt_icon"></div>
+                        <div class="rt_icon"></div>
+                        <div>券码: <span class="Js-coupon_num ui_line_through">{$coupon.couponNumber}</span></div>
+                    </div>
+                </div>
+                    {/if}
+                <div class="status_icon"><div>已兑换</div></div>
+                    {elseif $coupon.useRules eq 3 || $coupon.useRules eq 4 || $coupon.useRules eq 7 || $coupon.useRules eq 8 || $coupon.useRules eq 9 || $coupon.useRules eq 10}
+                {if $coupon.useRules neq 7 || $coupon.isShowCouponNumber neq 1}
+                <div class="btn_gray">已领取</div>
+                {/if}
+                    {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                <div class="btn_gray">
+                    {foreach from=$coupon.p2pUsedDesc.orderInfo item=item key=key}
+                        {if $key eq 'phone'}
+                        已提交充值账户 <span class="format_mobile">{$item}</span>
+                        {else}
+                        已领取
+                        {/if}
+                    {/foreach}
+                </div>
+
+                    {/if}
+                    {if $coupon.useRules eq 9}
+                <div class="wx_share_tip">您也可以进入“红包”页面再次进行分享</div>
+                    {/if}
+                {elseif $coupon.status eq 3}
+                    {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                <div class="underline_coupon">
+                    <div class="underline_coupon_bd">
+                        <div class="lt_icon"></div>
+                        <div class="rt_icon"></div>
+                        <div>券码: <span class="Js-coupon_num ui_line_through">{$coupon.couponNumber}</span></div>
+                    </div>
+                </div>
+                <div class="status_icon"><div>已过期</div></div>
+                    {elseif $coupon.useRules eq 3 || $coupon.useRules eq 4 || $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                <div class="btn_gray">已过期</div>
+                    {/if}
+                {/if}
+            </div>
+            {if $coupon.useRules eq 7 && $coupon.isShowCouponNumber eq 1}
+                <div class="underline_coupon">
+                    <div class="underline_coupon_bd">
+                        <div class="lt_icon"></div>
+                        <div class="rt_icon"></div>
+                        <div class="online_coupon_num">券码：<span class="Js-coupon_num">{$coupon.couponNumber}</span></div>
+                    </div>
+                </div>
+            {/if}
+        </div>
+        <div class="detailed_text">
+            {if $coupon.status eq 2 && $coupon.p2pUsedDesc.detail}
+            <div class="detail_line">
+                <h2>{$coupon.p2pUsedDesc.title}</h2>
+                    {foreach from=$coupon.p2pUsedDesc.detail item=detail}
+                <p class="txt_show">{$detail}</p>
+                    {/foreach}
+            </div>
+            {/if}
+            <div class="detail_line">
+                <h2>礼券详情</h2>
+                <div class="p">{function name='htmlspecialchars_decode' v=$coupon.couponDesc}</div>
+            </div>
+            <div class="detail_line">
+                <h2>券码来源</h2>
+                <p>{$coupon.fromSourceName}</p>
+            </div>
+            <div class="detail_line">
+                <h2>领取时间</h2>
+                <p>{function name="format_date_by_type" b=$coupon.createTime}</p>
+            </div>
+            {if $coupon.status eq 2 && $coupon.createTime neq $coupon.updateTime}
+            <div class="detail_line">
+                <h2>兑换时间</h2>
+                <p>{function name="format_date_by_type" b=$coupon.updateTime}</p>
+            </div>
+            {/if}
+        </div>
+        {if $coupon.useRules neq 7}
+            {if $coupon.isShowCouponNumber eq 1 && !($coupon.useRules eq 1 || $coupon.useRules eq 2)}
+                <div class="online_coupon_num Js-coupon_num">{$coupon.couponNumber}</span>
+            {/if}
+        {/if}
+    </div>
+</div>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+<script>
+    $("body").on("touchstart" , ".address_con , .write_con" ,function(){
+        var $t = $(this),
+            url = $t.data("url"),
+            title = $t.data("title");
+        location.href = "coupon://api?type=webview&gobackrefresh=true&title=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(location.protocol + "//" + location.host + url) ;
+    });
+    //券码分割
+    var $couponNumList = $('.Js-coupon_num');
+    $couponNumList.each(function(k,v){
+        var str = $(v).html();
+        $(v).html(str.replace(/(.{4})/g, '$1 '));
+    });
+    var $mobileList = $('.format_mobile');
+    $mobileList.each(function(k,v){
+        var str = $(v).html();
+        $(v).html(str.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3'));
+    });
+    var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "",
+        is_ios = /iPhone|iPad|iPod/i.test(userAgentString),
+        is_android = /android/i.test(userAgentString),
+        iosVersion = 0;
+    var iosmatches = userAgentString.match(/IPHONE OS ([0-9_]*)/i);
+    if (iosmatches && iosmatches.length > 1) {
+        iosVersion = parseInt(iosmatches[1]);
+    }
+    if (iosVersion >= 8) {
+        $('.detail_line').addClass('ios');
+    }
+    {if $coupon.status eq 1}
+    setTimeout(function(){
+        window.location.href = 'coupon://api?type=refresh';
+    },30000);
+    {/if}
+</script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/jquery-1.10.2.min.js' />
+
+<div class="main">
+<div class="main_title">新增规则</div>
+<div class="blank5"></div>
+    <form method='post' action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">任务名称：</td>
+                <td class="item_input">
+                    <input size="100" type="text" class="textbox require" name="name" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送方式</td>
+                <td class="item_input">
+                    <label><input type="radio" name="send_way" value="1" class="require" onclick="switchSendType(1);" checked="checked" />按名单发送</label>
+                    <label><input type="radio" name="send_way" value="2" class="require" onclick="switchSendType(2);" />按条件发送</label>
+                </td>
+            </tr>
+            <tbody id="send_type_1">
+                <tr id="tr_send_type_list">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <select name="send_type_list" id="send_type_list" onchange="switchSendTypeList();">
+                            <foreach name="sendTypeList" key="key" item="item">
+                                <option value="{$key}">{$item}</option>
+                            </foreach>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="tr_send_type_uid">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <input type="text" class="textbox " name="uids" />
+                    </td>
+                </tr>
+                <tr id="tr_send_type_tag" style="display:none">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <input type="text" class="textbox " name="tags" />
+                    </td>
+                </tr>
+                <tr id="tr_send_type_csv" style="display:none">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <input type="file" class="textbox " name="csv_file" />
+                        <label><input type="radio" name="csv_type" value="1" checked="checked"/>导入uid</label>
+                        <label><input type="radio" name="csv_type" value="2" />导入手机号</label>
+                        &emsp;<a href="/m.php?m=BonusTask&a=download">下载模板</a>
+                        &emsp;<span class="tip_span">备注：每个csv不得超过六万条数据</span>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody id="send_type_2" style="display:none">
+                <tr id="tr_send_type_condition">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <select name="send_type_condition" id="send_type_condition" class="" onchange="switchSendTypeCondition();">
+                            <foreach name="sendTypeCondition" key="key" item="item">
+                                <option value="{$key}">{$item}</option>
+                            </foreach>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="tr_send_type_user">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <select name="send_type_user" id="send_type_user" class="" onchange="switchSendTypeUser();">
+                            <foreach name="sendTypeUser" key="key" item="item">
+                                <option value="{$key}">{$item}</option>
+                            </foreach>
+                        </select>
+                        <span id="send_type_birth" style="display:none">
+                            <input type="radio" name="birth_type" value="1" checked="checked"/>当天
+                            <input type="radio" name="birth_type" value="2" />本周
+                            <input type="radio" name="birth_type" value="3" />本月
+                        </span>
+                    </td>
+                </tr>
+                <tr id="tr_send_type_deal" style="display:none">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <select name="send_type_deal" id="send_type_deal" class="" onchange="switchSendTypeDeal();">
+                            <foreach name="sendTypeDeal" key="key" item="item">
+                                <option value="{$key}">{$item}</option>
+                            </foreach>
+                        </select>
+                        <span id="send_type_deal_deal" style="display:none">
+                            投资次数<input type="text" class="textbox " name="count_start_deal" placeholder=">=次" />
+                            <input type="text" class="textbox " name="count_end_deal" placeholder="<=次" />
+                            &emsp;且&emsp;
+                            <select name="is_yield_deal">
+                                <option value="0">累计投资金额</option>
+                                <option value="1">累计投资金额（年化）</option>
+                            </select>
+                            &emsp;<input type="text" class="textbox " name="money_start_deal" placeholder=">=元" />
+                            <input type="text" class="textbox " name="money_end_deal" placeholder="<=元" />
+                            <span id="send_type_deal_norepeat">&emsp;且&emsp;<input type="text" class="textbox " name="norepeat_days" placeholder="天" />未复投</span>
+                        </span>
+                    </td>
+                </tr>
+                <tr id="tr_send_type_invite" style="display:none">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <select name="send_type_invite" id="send_type_invite" class="" onchange="switchSendTypeInvite();">
+                            <foreach name="inviteList" key="key" item="item">
+                                <option value="{$key}">{$item}</option>
+                            </foreach>
+                        </select>
+                        <span id="send_type_invite_1" style="display:none">
+                            &emsp;单个被邀请人满足&emsp;
+                        </span>
+                        <span id="send_type_invite_2" style="display:none">
+                            &emsp;被邀请人&emsp;
+                        </span>
+                        <span id="send_type_invite_money" style="display:none">
+                            <select name="is_yield_invite" id="sendTypeDeal">
+                                <option value="0">累计投资金额</option>
+                                <option value="1">累计投资金额（年化）</option>
+                            </select>
+                            &emsp;
+                            <input type="text" class="textbox " name="money_start_invite" placeholder=">=元" />
+                            <input type="text" class="textbox " name="money_end_invite" placeholder="<=元" />
+                        </span>
+                        <span id="send_type_invite_count" style="display:none">
+                            &emsp;且&emsp;累计人数
+                            <input type="text" class="textbox " name="count_start_invite" placeholder=">=人" />
+                            <input type="text" class="textbox " name="count_end_invite" placeholder="<=人" />
+                        </span>
+                    </td>
+                </tr>
+                <tr id="tr_scope_time" style="display:none">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                            <select name="scope_time" id="scope_time" class="" onchange="switchScopeTime();">
+                            <foreach name="scopeTime" key="key" item="item">
+                                <option value="{$key}">{$item}</option>
+                            </foreach>
+                            </select>
+                            <span id="last_days" style="display:none">
+                                <input type="text" class="textbox " name="days_end" placeholder=">=天" />
+                                <input type="text" class="textbox " name="days_start" placeholder="<=天"/>
+                            </span>
+                            <span id="time_section" style="display:none">
+                                <input type="text" class="textbox " name="time_start" value="{$time_start}" id="time_start"  onfocus="this.blur(); return showCalendar('time_start', '%Y-%m-%d %H:%M:00', true, false, 'btn_time_start');" />&emsp;
+                                <input type="button" class="button" id="btn_time_start" value="{%SELECT_TIME}" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:00', true, false, 'btn_time_start');" />
+                                <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+
+
+                                <input type="text" class="textbox " name="time_end" value="{$time_end}" id="time_end"  onfocus="this.blur(); return showCalendar('time_end', '%Y-%m-%d %H:%M:00', true, false, 'btn_time_end');" />&emsp;
+                                <input type="button" class="button" id="btn_time_end" value="{%SELECT_TIME}" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:00', true, false, 'btn_time_end');" />
+                                <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+                            </span>
+                    </td>
+                </tr>
+                <tr id="tr_scope_site_group">
+                    <td class="item_title"></td>
+                    <td class="item_input">
+                        <select name="scope_type" id="scope_site_group" class="" onchange="switchScopeSiteGroup();">
+                            <foreach name="scopeSiteGroup" key="key" item="item">
+                                <option value="{$key}">{$item}</option>
+                            </foreach>
+                        </select>
+                        <span id="scope_ids" style="display:none"><input type="text" class="textbox " name="scope_ids"></span>
+                    </td>
+                </tr>
+            </tbody>
+            <tr>
+                <td class="item_title">劵组ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="coupon_ids" maxlength="64" size="72" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">通知类型</td>
+                <td class="item_input">
+                    <label><input type="radio" name="msg_type" value="0" onclick="switchMsgType(0)" checked="checked" />无</label>
+                    <label><input type="radio" name="msg_type" value="1" onclick="switchMsgType(1)" />短信</label>
+                    <label><input type="radio" name="msg_type" value="2" onclick="switchMsgType(2)" />推送</label>
+                    <span id="params_sms" style="display:none">
+                        <input type="text" class="textbox " name="params_sms_id" placeholder="短信模板ID" />
+                        <input type="text" class="textbox " name="params_sms_money" placeholder="投资劵金额" />
+                        <input type="text" class="textbox " name="params_sms_expire" placeholder="投资劵有效期" />
+                    </span>
+                    <span id="params_push" style="display:none">
+                        <input type="text" class="textbox " name="params_push_money" placeholder="投资劵金额" />
+                        <input type="text" class="textbox " name="params_push_expire" placeholder="投资劵有效期" />
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送开始时间</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="start_time" value="{$start_time}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />&emsp;
+                    <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+                    <!--<span class="tip_span">开始执行后不可编辑</span>-->
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">连续发送</td>
+                <td class="item_input">
+                    <label><input type="radio" name="is_continuous" value="0" onclick="switchContinuous(0)" checked="checked" />否</label>
+                    <label><input type="radio" name="is_continuous" value="1" onclick="switchContinuous(1)"/>是</label>
+                    <span id="continuous_params" style="display:none">
+                        <input type="text" class="textbox " name="params_count" value=""  placeholder="次"/>
+                        <input type="text" class="textbox " name="params_interval" value="" placeholder="天"/>
+                        &emsp;请填写整数</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="DirectPushTask" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+                <input type="submit" class="button" value="{%ADD}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript" charset="utf-8">
+
+function switchSendType(type)
+{
+    if (type == 1) {
+        $("#send_type_1").css('display', '');
+        $("#send_type_2").css('display', 'none');
+    }
+
+    if (type == 2) {
+        $("#send_type_1").css('display', 'none');
+        $("#send_type_2").css('display', '');
+    }
+}
+
+function switchSendTypeList()
+{
+    var type = $("#send_type_list").val();
+    if (type == '10') {
+        $("#tr_send_type_uid").css('display', '');
+        $("#tr_send_type_tag").css('display', 'none');
+        $("#tr_send_type_csv").css('display', 'none');
+    }
+    if (type == '11') {
+        $("#tr_send_type_uid").css('display', 'none');
+        $("#tr_send_type_tag").css('display', '');
+        $("#tr_send_type_csv").css('display', 'none');
+    }
+
+    if (type == '12') {
+        $("#tr_send_type_uid").css('display', 'none');
+        $("#tr_send_type_tag").css('display', 'none');
+        $("#tr_send_type_csv").css('display', '');
+    }
+}
+
+function switchSendTypeCondition()
+{
+    var type = $("#send_type_condition").val();
+    if (type == '20') {
+        $("#tr_send_type_user").css('display', '');
+        $("#tr_send_type_deal").css('display', 'none');
+        $("#tr_send_type_deal_norepeat").css('display', 'none');
+        $("#tr_scope_time").css('display', 'none');
+        $("#tr_scope_site_group").css('display', '');
+        $("#tr_send_type_invite").css('display', 'none');
+    }
+    if (type == '21') {
+        $("#tr_send_type_user").css('display', 'none');
+        $("#tr_send_type_deal").css('display', '');
+        $("#tr_send_type_deal_norepeat").css('display', 'none');
+        $("#tr_scope_time").css('display', '');
+        $("#tr_scope_site_group").css('display', '');
+        $("#tr_send_type_invite").css('display', 'none');
+    }
+    if (type == '22') {
+        $("#tr_send_type_user").css('display', 'none');
+        $("#tr_send_type_deal").css('display', 'none');
+        $("#tr_send_type_deal_norepeat").css('display', '');
+        $("#tr_scope_time").css('display', '');
+        $("#tr_scope_site_group").css('display', '');
+        $("#tr_send_type_invite").css('display', '');
+    }
+}
+
+function switchSendTypeUser()
+{
+    var type = $("#send_type_user").val();
+    if (type == '0') {
+        $("#send_type_birth").css('display', 'none');
+        $("#tr_scope_time").css('display', 'none');
+    } else {
+        $("#send_type_birth").css('display', '');
+        $("#tr_scope_time").css('display', 'none');
+    }
+}
+
+function switchSendTypeDeal()
+{
+    var type = $("#send_type_deal").val();
+    if (type == 0) {
+        $("#send_type_deal_deal").css('display', 'none');
+        $("#send_type_deal_norepeat").css('display', 'none');
+    }
+    if (type == 1) {
+        $("#send_type_deal_deal").css('display', '');
+        $("#send_type_deal_norepeat").css('display', 'none');
+    }
+    if (type == 2) {
+        $("#send_type_deal_deal").css('display', '');
+        $("#send_type_deal_norepeat").css('display', '');
+    }
+    $("#tr_scope_time").css('display', '');
+}
+
+function switchSendTypeInvite()
+{
+    var type = $("#send_type_invite").val();
+    if (type == 0) {
+        $("#send_type_invite_1").css('display', 'none');
+        $("#send_type_invite_2").css('display', 'none');
+        $("#send_type_invite_money").css('display', 'none');
+        $("#send_type_invite_count").css('display', 'none');
+    }
+    if (type == 1) {
+        $("#send_type_invite_1").css('display', '');
+        $("#send_type_invite_2").css('display', 'none');
+        $("#send_type_invite_money").css('display', '');
+        $("#send_type_invite_count").css('display', '');
+    }
+    if (type == 2) {
+        $("#send_type_invite_1").css('display', 'none');
+        $("#send_type_invite_2").css('display', '');
+        $("#send_type_invite_money").css('display', '');
+        $("#send_type_invite_count").css('display', 'none');
+    }
+
+}
+
+function switchScopeTime()
+{
+    var type = $("#scope_time").val();
+    if (type == 0) {
+        $("#last_days").css('display', 'none');
+        $("#time_section").css('display', 'none');
+    }
+    if (type == 1) {
+        $("#last_days").css('display', '');
+        $("#time_section").css('display', 'none');
+    }
+    if (type == 2) {
+        $("#last_days").css('display', 'none');
+        $("#time_section").css('display', '');
+    }
+
+}
+
+function switchScopeSiteGroup()
+{
+    var type = $("#scope_site_group").val();
+    if (type == 0) {
+        $("#scope_ids").css('display', 'none');
+    } else {
+        $("#scope_ids").css('display', '');
+    }
+
+}
+
+function switchMsgType(type)
+{
+    if (type == 0) {
+        $("#params_sms").css('display', 'none');
+        $("#params_push").css('display', 'none');
+    }
+    if (type == 1) {
+        $("#params_sms").css('display', '');
+        $("#params_push").css('display', 'none');
+    }
+    if (type == 2) {
+        $("#params_sms").css('display', 'none');
+        $("#params_push").css('display', '');
+    }
+}
+
+function switchContinuous(type)
+{
+    if (type == 0) {
+        $("#continuous_params").css('display', 'none');
+    } else {
+        $("#continuous_params").css('display', '');
+    }
+}
+
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,65 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+	<div class="main_title">见证人证明书</div>
+	<div class="blank5"></div>
+	<div class="button_row">
+		<!-- <input type="button" class="button" value="{%ADD}" onclick="add();" /> 
+		<input type="button" class="button" value="{%FOREVERDEL}"
+			onclick="foreverdel();" />-->
+	</div>
+	<div class="blank5"></div>
+	<!-- Think 系统列表组件开始 -->
+	<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+		<tr>
+			<td colspan="14" class="topTd">&nbsp;</td>
+		</tr>
+		<tr class="row">
+			<th width="50px"><a
+				href="javascript:sortBy('id','1','DealLoadProve','index')" title="按照编号升序排列 ">编号<img
+					src="/static/admin/Common/images/desc.gif" width="12"
+					height="17" border="0" align="absmiddle"></a></th>
+			<th>标题</th>
+			<th>借款标题</th>
+			<th>角色</th>
+			<th><a href="javascript:sortBy('apply_time','1','DealLoadProve','index')">申请时间</a></th>
+			<th>合同生成时间</th>
+			<th><a href="javascript:sortBy('effect_time','1','DealLoadProve','index')">合同生效时间</a></th>
+			<th><a href="javascript:sortBy('send_time','1','DealLoadProve','index')">邮寄时间</a></th>
+			<th><a href="javascript:sortBy('is_send','1','DealLoadProve','index')">邮寄状态</a></th>
+			<th><a href="">操作</a></th>
+		</tr>
+		<foreach name="list" item="item">
+		<tr class="row">
+			<td>&nbsp;{$item.id}</td>
+			<td>&nbsp;见证人证明书<br><if condition='$item.type eq 1'>（借款合同）<else />（保证合同）</if></td>
+			<td>&nbsp;<a href='/m.php?m=Deal&a=edit&id={$item.deal_id}' target='_blank'>{$item.deal_name}</a></td>
+			<td>借款人：<a href='/m.php?m=User&a=index&user_id={$item.borrow_user_id}' target='_blank'>{$item.borrow_user_name}</a><br>
+			出借人：<a href='/m.php?m=User&a=index&user_id={$item.load_user_id}' target='_blank'>{$item.load_user_name}</a><br>
+			担保公司：<a href='/m.php?m=DealAgency&a=index&id={$item.agency_id}' target='_blank'>{$item.agency_name}</a><br></td>
+			<td>&nbsp;{$item.apply_time|to_date}</td>
+			<td>&nbsp;{$item.cron_time|format_date}</td>
+			<td>&nbsp;{$item.effect_time|to_date}</td>
+			<td>&nbsp;<if condition='$item.is_send eq 1'>{$item.send_time|to_date} </if></td>
+            <td><if condition='$item.is_send eq 0'>未邮寄<else />已邮寄 </if><if condition='$item.remark != ""'>（{$item.remark}）</if></td>
+            <td><a href='#' onclick='editprove({$item.id},{$item.load_user_id})'>修改</a> <a href="/m.php?m=DealLoadProve&a=export&id={$item.id}">导出</a></td>
+		</tr>
+		</foreach>
+		<tr>
+			<td colspan="14" class="bottomTd">&nbsp;</td>
+		</tr>
+	</table>
+	<!-- Think 系统列表组件结束 --> 
+	<div class="blank5"></div>
+	<div class="page">{$page}</div>
+</div>
+<script>
+function editprove(id,user_id){
+	$.weeboxs.open(ROOT+'?m=DealLoadProve&a=edit&id='+id+'&user_id='+user_id, {contentType:'ajax',showButton:false,title:'邮寄',width:450,height:360});
+}
+</script>
+<include file="Public:footer" />

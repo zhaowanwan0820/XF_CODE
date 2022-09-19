@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>商品</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    {include file="api/views/_v48/candy/candy_header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/p_product_detail.css?v=4');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_product_detail">
+      <input type="hidden" class="JS_token" value="{$token}">
+      <input type="hidden" class="JS_product_type" value="{$product.product_type}">
+      {if $product.product_type eq 4}
+      <div class="house_product_box product_box" style="background:url({$product.couponGroup.pic}) no-repeat center #fff; background-size: 262px">
+      </div>
+      {elseif $product.product_type eq 3}
+        <div class="house_product_box product_box">
+          <div class="product_position">
+            <p>
+              <span>房租抵扣券</span><br/><span class="f32">{$product.couponGroup.goodPrice}元</span>
+            </p>
+            <p>有效期<span class="JS_useDayLimit">{$product.couponGroup.useDayLimit}</span>天</p>
+          </div>
+        </div>
+      {elseif $product.product_type eq 5}
+        <div class="house_product_box product_box" style="background:url({$product.couponGroup.pic}) no-repeat center #fff; background-size: 262px">
+        </div>
+      {else}
+        <div class="product_box">
+          <div class="product_position">
+            {if $product.couponGroup.givenType neq 1}
+            <div class="given_icon">可赠送</div>
+            {/if}
+            <p>
+              <span>返现券</span><br/><span class="f32">{$product.couponGroup.goodsPrice}元</span>
+            </p>
+            <p>满{$product.couponGroup.bidAmount}元 满{$product.couponGroup.bidDayLimit}天可用</p>
+          </div>
+        </div>
+      {/if}
+      
+      <div class="product_con">
+        {if $product.product_type eq 4}
+        <p class="JS_name">{$product.couponGroup.productName}</p>
+        {elseif $product.product_type eq 3}
+          <p class="JS_name">{$product.couponGroup.goodPrice}元房租抵扣券</p>
+        {elseif $product.product_type eq 5}
+          <p class="JS_name">{$product.couponGroup.productName}</p>
+        {else}
+          <p class="JS_name">{$product.couponGroup.goodsPrice}元返现券</p>
+        {/if}
+        <p>{if $product.is_limited}<span class="fr mt10 color_gray">剩余可兑：{$product.stock}</span>{/if}<span class="f22 color_red JS_xb">{$product.price}信宝 </span>{if $product.product_type eq 3 && $product.market_price neq 0} <span class="color_gray line_through">{$product.market_price}信宝</span>{/if}</p>
+        {if $product.product_type neq 3 && $product.product_type neq 4 && $product.product_type neq 5}
+        <p>投资满{$product.couponGroup.bidAmount}元 期限满{$product.couponGroup.bidDayLimit}天可用 有效期<span class="JS_useDayLimit">{$product.couponGroup.useDayLimit}</span>天 </p>
+        {/if}
+      </div>
+      {if $product.product_type eq 3}
+      <div class="exchange_rlue">
+        <div class="title"><span class="icon"></span>兑换规则</div>
+        <div class="con">
+          <p>1. 房租抵扣券有效期30天，过期作废</p>
+          <p>2. 仅限用户本人支付房租使用，每次仅可使用一张，限线下支付使用</p>
+          <p>3. 用户每天仅限兑换一张抵扣券，兑换后请在礼券频道查看</p>
+          <p>4. 若抵扣券超出房租价格，则按照房租价格一次抵扣，超额部分作废</p>
+          <p>5. 仅限一房集团指定的公寓运营商签约租房使用（武汉优粒芒果、厦门亿阁、上海HI居）</p>
+        </div>
+        <div class="tips">温馨提示：已兑换的抵扣券可在个人中心-我的礼券-已领取中查看</div>
+      </div>
+      {/if}
+      {if $product.product_type eq 4}
+      <div class="exchange_rlue">
+        <div class="title"><span class="icon"></span>兑换规则</div>
+        <div class="con">
+          <p>1. 同一用户ID，每个币种每天仅限兑换一次；</p>
+          <p>2. 外币抵扣券并非实际外币，仅限用户在”联合货币”公众号兑换外币业务时使用，可根据当前汇率抵扣相应的人民币金额；</p>
+          <p>3. 每笔外币兑换订单仅限使用一张抵扣券，不可累积使用；</p>
+          <p>4. 外币抵扣券的使用受最低兑换金额限制，具体使用规则详见礼券详情；</p>
+          <p>5. 若因用户个人原因导致使用抵扣券的外币兑换交易发生退款，仅退还用户实际支付的金额，抵扣券所对应的支付金额不予退还。</p>
+        </div>
+        <div class="tips">温馨提示：已兑换的抵扣券可在个人中心-我的礼券-已领取中查看</div>
+      </div>
+      {/if}
+      {if $product.product_type eq 5}
+      <div class="exchange_rlue">
+        <div class="title"><span class="icon"></span>兑换规则</div>
+        <div class="con">
+          <p>每日瑜伽是一款专注瑜伽练习的app。这里提供专业导师编排的瑜伽课程，不同时长和难度的教学视频，真人声音指导和交友分享社区...激活后您可体验维密天使系列、减脂塑形系列、理疗滋养系列、禅修冥想系列等独家打造课程。</p>
+          <p>从今天起，一起来感受瑜伽带给你前所未有的健康体验吧！</p>
+          <h3 style="font-weight:bold; margin-top:3px">兑换规则：</h3>
+          <p>1.该体验商品每日瑜伽新老用户均可兑换，每个网信用户仅可兑换一次；</p>
+          <p>2.请在兑换码有效期内激活使用，券码失效后不补；</p>
+          <p>3.若通过不正当手段兑换，平台有权取消使用资格。</p>
+          <h3 style="font-weight:bold; margin-top:3px">使用方式：</h3>
+          <p>1.进入每日瑜伽app—点击【个人】页面——【兑换码】选项——输入兑换码并激活；</p>
+          <p>2.激活后，即可前往app教学页面练习课程；</p>
+          <p>3.有效兑换时间：即日起—2019年6月30日；</p>
+          <p>4.如有疑问，请在app内联系客服【瑜小蜜】。</p>
+        </div>
+        <div class="tips">温馨提示：已兑换的抵扣券可在个人中心-我的礼券-已领取中查看</div>
+      </div>
+      {/if}
+
+      <div class="product_btn_box">
+        {if $product.stock eq 0 && $product.is_limited neq 0}
+        <span class="product_btn disabled_button" >今日已兑完</span>
+        {else}
+        <span class="product_btn JS_exchange" data-id="{$product.id}">立即兑换</span>
+        {/if}
+      </div>
+    </div>
+    <!--public js-->
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/p_exchange.js?v=1');?>"></script>
+    <script type="text/javascript">
+        $(function(){
+          localStorage.clear();
+          P2PWAP.app.triggerScheme("firstp2p://api?type=rightbtn&title=");
+          if(!p2pBrowser.iosApp){
+            P2PWAP.app.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+          }
+        })
+        function gobackjsfunc() {
+            window.location.reload();
+        }
+        window.onload = function(){
+          setTimeout(function(){
+            zhuge.track('进入信力任务说明');
+            
+            zhuge.track("虚拟商品_进入商品详情页",{
+            "虚拟商品名称":$(".JS_name")[0].innerText,
+            "所需信宝值": $(".JS_xb")[0].innerText
+            })
+          },1000);
+        }
+    </script>
+</body>
+
+</html>

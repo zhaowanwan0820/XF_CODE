@@ -1,0 +1,214 @@
+{include file="web/views/v3/header.html"}
+
+<div class="p_user_register">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/weebox.css');?>">
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_pwdrule.css');?>" type="text/css" rel="stylesheet">
+    
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_register_landing.css');?>" type="text/css" rel="stylesheet">
+    <div class="reg_bg">
+        {if false == $source }
+        <h2 style="display:none;">个人用户注册</h2> {else /}
+        <h2 style="display:none;">会员注册</h2>
+        <input data-label="注册来源" type="hidden" id="input-source" name="source" value="{$source}" jump-url="{$bedev}" /> {/if}
+        <div class="reg-mid"{if !$is_wxlc} style="padding-top:50px"{/if}}>
+            <div class="ui-form">
+                <form action="/user/doRegister{$querystring}?from=reg" method="post" id="reg_v2">
+                    <?php echo token_input(); ?>
+                    <input data-label="短信验证码" type="hidden" id="input-code" name="code" value="">
+                    <ul class="clearfix">
+                        <!-- 得到焦点时添加类名ipt-focus -->
+                        <li class="tel-ver clearfix" style="*z-index:2">
+                            <div class="select_box" data-name="country_code" id="" style="z-index:11">
+                                <div class="j_select"></div>
+                                <ul class="select_ul none j_selectContent">
+                                    {if isset($mobile_codes) } {foreach from=$mobile_codes item=val} {if $val.is_show}
+                                    <li data-value="{$val.code}" data-name="{$val.country}"><i class="icon-{$val.country}"></i>{$val.name}</li>
+                                    {/if} {/foreach} {else}
+                                    <li data-value="86" data-name="cn">
+                                        <i class="icon-cn"></i>中国大陆</li>
+                                    {/if}
+                                </ul>
+                            </div>
+                            <div class="ipt-wrap w224">
+                                <input type="text" value="{$data.mobile}" data-con="require" placeholder="手机号" name="mobile" id="input-mobile" class="txt-tel int_placeholder" data-placeholder="手机号" autocomplete="off">
+                            </div>
+                            <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                            <div class="error-wrap">
+                                <div class="form-sprite e-arrow"></div>
+                                <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                <div class="e-text">{$error.mobile}</div>
+                            </div>
+                        </li>
+                        <li class="pwd-item clearfix" id="pwd-item">
+                            <span>
+                        <input type="password" style="display:none;" autocomplete="off">
+                            <input type="password" value="" data-con="require" placeholder="密码(6-20位数字、字母、标点符号)" name="password" id="input-password" class="txt int_placeholder" data-placeholder="密码(6-20位数字、字母、标点符号)" data-stretype="0" autocomplete="off" maxlength="20">
+                        </span>
+                            <div class="pwd-sprite pwd-show eye"></div>
+                            <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                            <div class="error-wrap">
+                                <div class="form-sprite e-arrow"></div>
+                                <div class="ew-icon"><i class="form-sprite icon-wrong"></i><span><span></span></span>
+                                </div>
+                                <div class="e-text">{$error.password}</div>
+                            </div>
+                            <div id="" class="pass-item-tip-password">
+                                <ul id="pwd-checklist" class="pwd-checklist">
+                                    <li class="safety-level">
+                                        <span class="process low">弱</span>
+                                        <span class="process">中</span>
+                                        <span class="process">强</span>
+                                        <span class="ml4 color-low" style="display:none">低</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </li>
+
+                        {if $is_wxlc}
+                          <li class="clearfix {if $event_cn_hidden}none{/if}">
+                                <input type="text" value="{if $appInfo.inviteCode}{$appInfo.inviteCode}{else /}{$cn}{/if}" data-con="require"  placeholder="邀请码选填"
+                                       name="invite" id="input-invite" class="txt int_placeholder" data-placeholder="邀请码选填">
+                                <div class="error-wrap">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text">邀请码不对</div>
+                               </div>
+                           </li>
+                        {else}
+                          <li class="clearfix {if !$setParmas.CodeNotHidden}none{/if}">
+                                <input type="text" value="{if $appInfo.inviteCode}{$appInfo.inviteCode}{else /}{$cn}{/if}" data-con="require"  placeholder="邀请码选填"
+                                       name="invite" id="input-invite" class="txt int_placeholder" data-placeholder="邀请码选填">
+                                <div class="error-wrap">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text">邀请码不对</div>
+                               </div>
+                           </li>
+                        {/if}
+
+                        <li class="graph-ver clearfix">
+                            <input type="text" value="" data-con="require" placeholder="右侧数字" name="captcha" id="input-captcha" class="txt int_placeholder" data-placeholder="右侧数字">
+                            <div class="img-Veri">
+                                <img title="点击刷新" src="/verify.php?w=50&h=36&rb=0&vname=verify_register" id="captcha" width="100">
+                            </div>
+                            <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                            <div class="error-wrap">
+                                <div class="form-sprite e-arrow"></div>
+                                <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                <div class="e-text"></div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="btn-w30">
+                        <input class="btn-sub" type="submit" id="submit_button" value="立即注册">
+                    </div>
+                    <div class="p2p-ui-checkbox">
+                        <div class="ml70">
+                            <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal check-select"></a>
+                            <span>我已阅读并同意<a href="/help/register_terms" class="blue" target="_blank">《注册协议及隐私保护政策》</a></span>
+                        </div>
+                        <div class="error-wrap" id="agreement_msg">
+                            <div class="form-sprite e-arrow"></div>
+                            <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                            <div class="e-text">不同意注册协议及隐私保护政策无法完成注册</div>
+                        </div>
+                        <input data-con="require" type="hidden" name="agreement" value="1" id="agree">
+                        <i></i>
+                    </div>
+                    <div class="reg_tips_red">{if $is_firstp2p }平台{ else }网信{/if}不会以任何方式，向未注册用户收取费用。若遇到向用户预先收费的行为，请广大{if !$is_firstp2p }投资者{ else }用户{/if}提高警惕</div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {if $event_intro_hidden || (!$is_wxlc && !$is_firstp2p)}
+        {function name="get_adv" x="注册页新手福利_2016_第三方渠道"}
+    {else /}
+        {function name="get_adv" x="注册页新手福利_2016"}
+    {/if}
+    {if $is_firstp2p eq 1}
+    <script type="text/javascript">
+        $('.p2p_hide').remove();
+        $('.reg_com').html('已有账号？<a href="/user/login" class="blue">马上登录</a>');
+    </script>
+    {/if}
+</div>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/oauth/pas_strength_v2.js');?>" type="text/javascript"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/risk/frms-fingerprint-min.js')?>"></script>
+<!-- 短信验证码弹出框 -->
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.bgiframe.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.weebox.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/p2p-ui-checkbox.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/p2p_validate.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/user_reg_new.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/jquery_placeholder-1.0.js');?>"></script>
+<script type="text/javascript">
+var nogetCode = '{function name="get_adv" x="短信验证码获取文案_2015"}';
+if (nogetCode == "") {
+    nogetCode = '如未收到验证码，我们将以18401558140~18401558149号段再次发送，或拨打客服热线 <span style="color:#f75939;">400-890-9888</span>（工作时间 8:00-20:00）。';
+}
+</script>
+<!--底部开始-->
+<footer class="m_footer_gray">
+    <div class="copyright w1100">
+        <p>北京经讯时代科技有限公司</p>
+        <p>© 2019 网信 All rights reserved </p>
+    </div>
+</footer>
+<!--底部结束-->
+<script type="text/javascript">
+    var today = new Date();
+    var  year = today.getFullYear();
+    var month = today.getMonth() + 1;
+    var day= today.getDate();
+    var ymd = year +""+ month+"" + day;
+    var oHead = document.getElementsByTagName('HEAD').item(0); 
+    var oScript= document.createElement("script"); 
+    oScript.type = "text/javascript"; 
+    oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+    oHead.appendChild( oScript); 
+</script>
+<script type='text/javascript'>
+wxsa.track('RegisterInfoFill', {
+  EnterySource: document.referrer
+});
+zhuge.track('RegisterInfoFill', {
+  EnterySource: document.referrer
+});
+var _ncf = {
+    "prd": "firstp2p",
+    "pstr": "",
+    "pfunc": null,
+    "pcon": "",
+    "pck": {
+        "channel": "channel",
+        "fpid": "fpid"
+    },
+    "trid": "",
+    "channel": ['pubid', 'mediumid', 'adid', 'adsize'],
+    "rfuniq": [],
+    "rfmuti": []
+};
+(function(p, h, s) {
+    var o = document.createElement(h);
+    o.src = s;
+    p.appendChild(o)
+})(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+</script>
+<!--[if IE 6]>
+<link href="<?php echo $this->asset->makeUrl('v1/css/ie6-fix.css');?>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/DD_belatedPNG.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/DD_belated_ie6_fix.js');?>"></script>
+<![endif]-->
+<!--logId:{$logId}-->
+<?php
+    //灰度标签
+    if(get_cfg_var('p2p_rc') == 1){
+        echo "RC";
+    }
+?>
+    </body>
+
+    </html>

@@ -1,0 +1,37 @@
+<link href="<?php echo $this->asset->makeUrl('v2/css/account_borrow.css');?>" type="text/css" rel="stylesheet">
+<div class="ui_user_right">
+    <div class="p_account_borrow">
+        <div class="box" id="suc_hidden">
+            <div class="ui_title"><i class="icon"></i>请填写基本信息</div>
+            <div class="tip_con"><span class="tip_icon"></span>您需要借款邀请码才可提交借款申请</div>
+            <form id="borrow_form" action="/user/loanIntention" method="post">
+                <div class="borrow_form">
+                    <div class="borrow_con tc">
+                        <span class="mr20">借款邀请码</span>
+                        <input type="text" id="conpon_num" name="code" class="borrow_ipt mr10" placeholder="您的借款邀请码">
+                        <input class="btn_yuyue" type="submit" id="borrow_btn" value="我要申请">
+                        {if $error}
+                            <div class="error_mgs">
+                                    {$error}
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $('#borrow_btn').click(function() {
+            var conpon_num = $('#conpon_num').val()
+             if(conpon_num == '')
+                {
+                    alert('借款邀请码不能为空');
+                    return false;
+                }else{
+                    return true;
+                }
+        });
+    })
+</script>

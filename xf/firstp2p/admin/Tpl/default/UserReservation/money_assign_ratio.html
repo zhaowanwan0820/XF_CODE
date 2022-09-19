@@ -1,0 +1,125 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="blank5"></div>
+    <div class="button_row">
+        <input type="button" class="button" value="编辑" onclick="location.href='{:u("UserReservation/money_assign_ratio_edit")}'" />
+    </div>
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>标的比例配置列表</p>
+    </div>
+    <table id="dataTable" class="dataTable reservationZone" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="15" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row textDecNone">
+            <th>编号</th>
+            <th>产品类型</th>
+            <th>投资期限</th>
+            <th>比例</th>
+            <th>当日可匹配金额上限</th>
+            <th>是否有效</th>
+            <th>备注</th>
+            <!--
+            <th>当日已匹配金额</th>
+            <th>总预约金额</th>
+            <th>分配的预约金额</th>
+            -->
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="data">
+        <tr class="row">
+            <td>
+                &nbsp;{$data.id}
+            </td>
+            <td>
+                &nbsp;{$data.type_name}
+            </td>
+            <td>
+                &nbsp;{$data.invest_deadline_format}
+            </td>
+            <td>
+                &nbsp;{$data.money_ratio_format}
+            </td>
+            <td>
+                &nbsp;{$data.money_limit_format}
+            </td>
+            <td>
+                <if condition="$data.is_effect eq 1">
+                &nbsp;有效
+                <else/>
+                &nbsp;无效
+                </if>
+            </td>
+            <td>
+                &nbsp;{$data.remark}
+            </td>
+            <!--
+            <td>
+                <a href="javascript:;" onclick="get_invest_amount_by_type(this, {$data.type_id}, {$data.invest_deadline}, {$data.invest_deadline_unit})" >查看</a>
+            </td>
+            <td>
+                <a href="javascript:;" onclick="get_total_reserve_amount(this, {$data.invest_deadline}, {$data.invest_deadline_unit})" >查看</a>
+            </td>
+            <td>
+                <a href="javascript:;" onclick="get_reserve_amount_by_type(this, {$data.type_id}, {$data.invest_deadline}, {$data.invest_deadline_unit})" >查看</a>
+            </td>
+            -->
+            <td>
+                <a onclick="delRatio({$data.id})" href="javascript:;">删除</a>
+            </td>
+        </tr>
+        </volist>
+    </table>
+</div>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+<script type="text/javascript">
+function delRatio(id) {
+    if (window.confirm("确认删除？")) {
+        location.href="{:u("UserReservation/money_assign_ratio_del")}&id="+id;
+    }
+}
+
+function get_invest_amount_by_type(obj, typeId, deadline, deadlineUnit) {
+    $.post("/m.php?m=UserReservation&a=get_invest_amount_by_type", {
+        'type_id':typeId,
+        'deadline':deadline,
+        'deadline_unit':deadlineUnit,
+    }, function(rs){
+        if (rs.status == 1) {
+            $(obj).parent().html(rs.data);
+        }
+    }, 'json');
+}
+
+
+function get_total_reserve_amount(obj, deadline, deadlineUnit) {
+    $.post("/m.php?m=UserReservation&a=get_total_reserve_amount", {
+        'deadline':deadline,
+        'deadline_unit':deadlineUnit,
+    }, function(rs){
+        if (rs.status == 1) {
+            $(obj).parent().html(rs.data);
+        }
+    }, 'json');
+}
+
+function get_reserve_amount_by_type(obj, typeId, deadline, deadlineUnit) {
+    $.post("/m.php?m=UserReservation&a=get_reserve_amount_by_type", {
+        'type_id':typeId,
+        'deadline':deadline,
+        'deadline_unit':deadlineUnit,
+    }, function(rs){
+        if (rs.status == 1) {
+            $(obj).parent().html(rs.data);
+        }
+    }, 'json');
+}
+
+</script>

@@ -1,0 +1,373 @@
+{include file="web/views/v3/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_jijin_detail.css');?>" />
+<style>
+    .wrap,.special-description{ width:1100px;}
+    .p_jijin_detail .yuyuexingjijin{
+        width:1100px; height:260px; margin:0 auto; position: relative;
+    }
+    .p_jijin_detail .yuyuexingjijin .yuyuexingjijin-con{
+        width:289px; height:240px; background-color:#fff;
+        position: absolute; right:0px; top:0;
+        border:1px solid #e3e3e3; border-left:none;
+    }
+    .p_jijin_detail .special_box{ border:1px solid #e0dede; background:#fff; margin-bottom:30px;}
+    .p_jijin_detail .yuyuexingjijin-con p{
+        font-size:18px; color:#4b4e51; padding-left:26px; padding-top:20px; line-height: 35px;
+    }
+    .p_jijin_detail .yuyuexingjijin-con span{
+        font-size:30px; color:#f1584e;
+    }
+    .p_jijin_detail .yuyuexingjijin-con span em{
+        font-size:18px; color:#f1584e;
+    }
+    .p_jijin_detail .yuyuexingjijin-con ul{
+        width:250px; height: 25px; padding-left:26px; 
+    }
+    .p_jijin_detail .yuyuexingjijin-con li{
+        width:110px; height: 100%; float: left; color:#7a848d; font-size: 12px; line-height: 25px;
+    }
+    .p_jijin_detail .yuyuexingjijin-con li.yuyuexingjijin-con-li{
+        border-left: 1px solid #7a848d; padding-left: 10px; width:118px;
+    }
+    .p_jijin_detail .yuyuexingjijin-con li.yuyuexingjijin-con-li span{
+        color:#4b4e51; font-size: 14px;
+    }
+    .p_jijin_detail .yuyuexingjijin-con .yuyuexingjijin-con-btn{
+        padding-left:26px; padding-top:10px;
+    }
+    .p_jijin_detail .yuyuexingjijin-p{
+        font-size: 14px;
+        padding:15px;
+    }
+    .p_jijin_detail .yuyuexingjijin-p2{
+        font-size: 14px; padding-left: 32px;
+    }
+    .p_jijin_detail .yuyuexingjijin-p2 span{
+        padding-left: 20px;
+    }
+    .p_jijin_detail .yuyuexingjijin-table td{
+        padding-left: 16px;
+    }
+    .p_jijin_detail .yuyuexingjijin-ul{
+        padding-left: 16px; width:600px;
+    }
+    .p_jijin_detail .yuyuexingjijin-ul li{
+        width: 200px; float: left; height: 45px; line-height: 45px;
+    }
+    .p_jijin_detail .special-description .sub-heading {
+        background: none repeat scroll 0 0 #fcfcfc;
+        border-bottom: 1px solid #e0dede;
+        height: 50px;
+        line-height: 50px;
+        position: relative;
+        color:#474646;
+        margin-top:0;
+        font-size:18px; 
+        font-weight:normal;
+        padding:0px 0px 0px 10px;
+    }
+    .p_jijin_detail .special-description .sub-heading .icon_line {
+        background: none repeat scroll 0 0 #f3491f;
+        border: 1px solid #e43b19;
+        display: inline-block;
+        height: 18px;
+        margin-top: -2px;
+        vertical-align: middle;
+        width: 3px;
+        display:inline-block;
+        margin-right:10px;
+    }
+    .p_jijin_detail .btn-preorder {
+        background: url("/static/v3/images/specials/preorder.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    }
+
+    .p_jijin_detail #special-form-heading {
+        background: url("/static/v3/images/specials/special-form-heading.png") no-repeat scroll 45px center #fbfbfb;
+    }
+    .p_jijin_detail .special-modal .close-button {
+        background: url("/static/v3/images/specials/close-modal.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    }
+    .p_jijin_detail .btn-yuyue {
+        background: url("/static/v3/images/specials/preorder-submit.gif") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    }
+    .p_jijin_detail h1.sub-heading, h2.sub-heading{}
+    .p_jijin_detail a.btn-preorder{background-image: url(/static/v3/images/specials/jijin_button_v2.png) !important;}
+    .p_jijin_detail .main{ border:none; box-shadow:none;}
+</style>
+<div class="p_jijin_detail">
+<div class="special-cover" style="height:260px; margin-top:22px;background-color:#f4f4f4;background-image:url(/static/v3/images/specials//banner.jpg);background-position:top center">
+    <div class="yuyuexingjijin">
+        <div class="yuyuexingjijin-con">
+            <p>{function name='msubstr' x='$info.name' y='0' z='13'}<br />
+
+            {if $info.income_min neq $info.income_max}
+            <span>{$info.income_min}<em>%</em>~{$info.income_max}<em>%</em></span><br />
+            {else}
+            <span>{$info.income_min}<em>%</em></span><br />
+            {/if}
+
+            <span>{$info.repay_time}</span><br />
+            </p>
+            <ul>
+                <li>{$info.loan_money_min}元起</li>
+                <li class="yuyuexingjijin-con-li">
+                已预约<span>{$info.subscribe_count}</span>人
+                </li>
+            </ul>
+            <div class="yuyuexingjijin-con-btn">
+                <a class="btn-preorder" href="#"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clearfix wrap">
+    <div>
+        <div class="special-description" style="width:1100px; margin-top:0;">
+            <div class="special_box">
+                <h2 class="sub-heading"><i class="icon_line"></i>产品介绍</h2>
+                <div class="yuyuexingjijin-p">
+                    {$info.fund_intro}
+                </div>
+            </div>
+            <div class="special_box">
+                <h1 class="sub-heading"><i class="icon_line"></i>收益简述</h1>
+                <div class="yuyuexingjijin-p">
+                    {$info.income_intro}
+                </div>
+             </div>
+            <div class="special_box">
+            <h2 class="sub-heading"><i class="icon_line"></i>保障方式</h2>
+            <div class="yuyuexingjijin-p">
+                {$info.security_intro}
+            </div>
+            </div>
+            <div class="special_box">
+            <h2 class="sub-heading"><i class="icon_line"></i>预约记录</h2>
+            <ul class="yuyuexingjijin-ul">
+            {if $sub_list}
+                {foreach from=$sub_list item="item"}
+                <li>
+                    {$item.username} {$item.create_time}
+                </li>
+                {/foreach}
+            {else}
+                <li>暂无预约</li>
+            {/if}
+            </ul>
+            <div style="clear:both;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal special-modal" id="preorderform-modal" style="display:none">
+<a class="close-button" rel="cancel" href="#"></a>
+<div class="special-modal-content">
+
+<div id="special-form-heading">
+  {if empty($preset)}
+  <a class="btn" href="{url x="shop" u="user#login" }"><span>登录</span></a>
+  {/if}
+</div>
+
+<form id="special-form" action="/jijin/doSubscribe" method="post" enctype="multipart/form-data" >
+  <?php echo token_input(); ?>
+  <div id="error-row" style="height:19px;color:red;margin-top:10px;margin-bottom:-10px;padding-left:51px;"></div>
+  <p class="input-row" id="username-row">
+    <b>*</b>
+    <label>姓名</label>
+    <input class="input-text" type="text" name="name" value="{$preset.username}" readonly>
+  </p>
+  <p class="input-row" id="mobile-row">
+    <b>*</b>
+    <label>电话</label>
+    <input class="input-text" type="text" name="phone" value="{$preset.phone}" placeholder="仅支持中国大陆手机号">
+  </p>
+  <p class="input-row" id="email-row" style="position:relative">
+    <b>*</b>
+    <label>金额</label>
+    <input class="input-text" type="text" name="money" value="" placeholder="请输入您计划预约的金额">
+    <span id="input-money-affix">万元</span>
+  </p>
+  <p class="input-row" id="email-row">
+    <b></b>
+    <label>备注</label>
+    <input class="input-text" type="text" name="comment" value="">
+  </p>
+  <input type="hidden" name="fund_id" value="{$info.id}"/>
+  <input class="btn-yuyue" type="button" name="submit" value="" id="check_form"  />
+</form>
+</div>
+<div class="success-notice" style="display:none">
+  <h1>预约成功</h1>
+  <p>理财经理会在一个工作日内与您沟通项目情况并进行投资确认，如您的亲友有购买意向，可在客户经理回电时反馈。</p>
+  <p class="redirect">您可以前往<br>
+    － <a href="/" class="blue">首页</a><br>
+    － <a href="/jijin" class="blue">基金列表</a><br>
+</div>
+</div>
+<?php
+$this->_var['formjs'][] = $this->_var['APP_STATIC_PATH']."/js/placeholder.js";
+?>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/financial/plugins.js');?>"></script>
+<script>
+$(document).ready(function(){
+  $('.special-attachments .alert .action').on('click', function(){
+    $('html, body').animate({
+      scrollTop: $(".preorder-deal-box").offset().top
+   }, 800);
+  });
+  $('.btn-preorder').on('click', function(event) {
+    event.preventDefault();
+    $('#preorderform-modal').revealModal();
+  });
+  $("#check_form").bind("click",function(){
+    var el = $(this);
+    el.attr('disabled', true);
+    var fund_id = $('input[name="fund_id"]').val();
+    var name = $('input[name="name"]').val();
+    var mobile = $('input[name="phone"]').val();
+    var money = $('input[name="money"]').val();
+    var comment = $('input[name="comment"]').val();
+    if (name == "" || name == "姓名") {
+      $('#error-row').html('请输入姓名');
+      el.removeAttr('disabled');
+      return false;
+    }
+    if (mobile == "" || mobile == "电话" ) {
+      $('#error-row').html('请输入电话');
+      el.removeAttr('disabled');
+      return false;
+    } else if (!/^0?(13[0-9]|15[0-9]|18[0-9]|14[57]|17[0-9])[0-9]{8}$/.test(mobile)) {
+      $('#error-row').html('请正确输入电话');
+      el.removeAttr('disabled');
+      return false;
+    }
+    if ( (money == "" || money == "预约金额") || (!/[1-9]\d*/.test(money)) ) {
+      $('#error-row').html('请输入预约金额');
+      el.removeAttr('disabled');
+      return false;
+    }
+    money = X.accMul(money,10000);
+    $.ajax({
+      url : "/jijin/doSubscribe",
+      type : "POST",
+      data : {
+        "token_id": $('input[name="token_id"]').val(),
+        "token": $('input[name="token"]').val(),
+        "fund_id": fund_id,
+        "name": name,
+        "phone": mobile,
+        "money": money,
+        "comment": comment
+      },
+      dataType : "json",
+      success: function(rs){
+        el.removeAttr('disabled');
+        if(rs.status==1){
+          $('.special-modal-content').hide();
+          $('.success-notice').show();
+        }else{
+          $('#error-row').html(rs.info);
+        }
+      }
+    });
+  });
+});
+
+function addMyEvent(obj,sEv,fn){
+
+    if(obj.attachEvent){
+        obj.attachEvent("on"+sEv,function(){
+            fn.call(obj);
+        })
+    }else{
+    
+        obj.addEventListener(sEv,fn,false);
+    }
+}
+
+function fnselected(obj){
+
+    this.obj=obj;
+    this.oSpan=this.obj.getElementsByTagName("span")[0];
+    this.oUl=this.obj.getElementsByTagName("ul")[0];
+    this.aLi=this.oUl.getElementsByTagName("li");
+    this.oInput=this.obj.getElementsByTagName("input")[0];
+    this.arr=[];
+    this.flag=true;
+    var _this=this;
+    this.oSpan.onclick=function(ev){
+    
+        var ev=ev||event;
+        ev.cancelBubble=true;
+        _this.oUl.style.display="block";
+    }
+    addMyEvent(document,"click",function(){
+    
+        _this.oUl.style.display = 'none';
+    });
+    for(var i=0;i<this.aLi.length;i++){
+        
+        this.aLi[i].onmouseover=function(){
+            this.className="active";
+        }
+        this.aLi[i].onmouseout=function(){
+            if (!this.selected) {
+                this.className = '';
+            }
+        }
+        this.aLi[i].onclick=function(ev){
+            var ev=ev||event;
+            _this.fnClk(ev,this);
+        };
+    }
+    
+}
+fnselected.prototype.fnClk=function(ev,t){
+    
+    for(var i=0;i<this.aLi.length;i++){
+        this.aLi[i].className="";
+        this.aLi[i].selected=false;
+    }
+    t.className="active";
+    t.selected=true;
+    var _this=this;
+    this.oSpan.innerHTML=t.children[0].innerHTML;
+    var jvalue=t.getAttribute("title");
+    this.oInput.value=jvalue;
+    if(this.flag){
+        this.oLi=document.createElement("li");
+        this.oLi.innerHTML="<a href='javascript:;'>请选择所在地区</a>";
+        this.oUl.insertBefore(this.oLi,this.aLi[0]);
+        this.oLi.onmouseover=function(){
+            this.className="active";
+        }
+        this.oLi.onmouseout=function(){
+            if (!this.selected) {
+                this.className = '';
+            }
+        }
+        this.oLi.onclick=function(){
+            for(var i=0;i<_this.aLi.length;i++){
+                _this.aLi[i].className="";
+                _this.aLi[i].selected=false;
+            }
+            this.className="active";
+            this.selected=true;
+            _this.oSpan.innerHTML=this.children[0].innerHTML;
+            _this.oInput.value="";
+        };
+    }
+    this.flag=false;
+}
+
+{if !empty($preset_area)}
+window.onload=function(){
+    var oSel=document.getElementById("pre_sel");
+    new fnselected(oSel);
+}
+{/if}
+</script>
+</div>
+{include file="web/views/v3/footer.html"}

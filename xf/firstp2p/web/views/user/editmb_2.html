@@ -1,0 +1,82 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v1/css/edit-safetyPhone.css');?>" rel="stylesheet" type="text/css">
+<link href="<?php echo $this->asset->makeUrl('v1/css/edit-safetyPhone_skin.css');?>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/edit-safeyphone/edit-safetyphone.js');?>"></script>
+
+<div class="w980 mauto clearfix">
+    <section>
+        <div class="shadow">
+            <div class="mess_title tc"><i class="phone-tip"></i>修改安全手机</div>
+            <div class="step2-img">
+            </div>
+            <div class="edit-step2">
+                <form id="password-form" action="/user/editmb" method="post" onsubmit="$('#step-one').attr('disabled', 'disabled');return true;">
+                    <input type="hidden" name="sp" value="3" />
+                    <div class="edt-tab2">
+                        <table>
+                            <colgroup>
+                                <col width="35%" />
+                                <col width="65%" />
+                            </colgroup>
+                            <tbody>
+                                
+                            <tr>
+                                <th><span class="red">*</span>图形验证码：</th>
+                                <td class="input-row yanzheng">
+                                    <input type="text" placeholder="请输入图形验证码" name="captcha" class="idbox w120 validate[required]" width=100px id="input-captcha">
+                                    <img align="absbottom" title="点击刷新" src="/verify.php?w=91&h=36&rb=0" id="captcha" onclick="refresh()">
+                                </td>
+                            </tr>
+                                
+                            <tr>
+                                <th>
+                                    <span class="red">*</span> 请输入新的手机号：
+                                </th>
+                                <td>
+                                    <?php echo token_input(); ?>
+                                    <input type="text" data-only="1" data-source="11" name="mobile" value="{$mobile}"  id="mobile" placeholder="请输入您的新手机号码" data-tips="请输入正确的手机号"  maxlength="22" class="idbox w160 validate[funcCall[X.V.checkNum[11]],required]">
+                                    <input id="bt" type="button" data-type="2" class="fd-btn-code step2-fd-btn" value="获得手机验证码" />
+                                    <div class="red step2-tips  mobileformError"></div>
+                                    <div class="step2-txt">
+                                        <p> 网信理财不会绑定任何服务，不会泄漏您的手机号</p>
+                                        <p>目前仅支持中国大陆地区手机号</p>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <span class="red">*</span> 验证码：
+                                </th>
+                                <td>
+                                    <input type="text" name="code" class="idbox w120 validate[required]" id="validNum" placeholder="请输入验证码" maxlength="8" >
+                                    <div class="form-tips"><span class="red validNumformError"></span></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="step1-btn mar-btn">
+                        <input type="submit" class="but-yellow but-gray step2-btn" id="step-one" value="下一步">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+<span class="blank80"></span>
+{if $error}
+<script>
+    $(function() {
+        $.showErr('{$error}');
+    });
+</script>
+{/if}
+<script type="text/javascript">
+    function refresh() {
+        document.getElementById("captcha").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+    }
+</script>
+{include file="web/views/footer.html"}

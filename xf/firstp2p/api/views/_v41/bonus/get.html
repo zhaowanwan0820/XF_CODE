@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>红包-我收到的</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base_v32.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common_v32.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-bonus.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <input type="hidden" id="hiddenToken" value="{$token}">
+    <div class="p_bonus">
+        {if $show_btn eq 1}
+        <div class="b_bonus">
+            <a href="firstp2p://api?type=buybonus"><img src="<?php echo $this->asset->makeAppUrl('v3.2/images/bonus/red.png');?>" width="100%"></a>
+        </div>
+        {/if}
+        <div class="basic">
+            <div class="con">
+                <div class="border_r">
+                    <h3>待使用(元)</h3>
+                    <p>{$unuse}</p>
+                </div>
+            </div>
+            <div class="con">
+                <h3>累计使用(元)</h3>
+                <p>{$used}</p>
+            </div>
+        </div>
+        {if $all.list}
+        <div class="list">
+            {foreach from=$all.list item=bonus}
+            <a class="clearfix hb_black" href="/bonus/show?id={$bonus.id}&site_id={$site_id}">
+                {if $bonus.type == 31 or $bonus.type == 32}
+                {if $bonus.status == 1}
+                <dl class="birthday redbirth">
+                {else}
+                <dl class="birthday graybirth">
+                {/if}
+                {else}
+                <dl>
+                {/if}
+                    <dt>
+                        <div class="btn">
+                            <p class="{if $bonus.status eq 1}color_red{/if} f20">
+                                {$bonus.money}
+                                <span class="f12">元</span>
+                            </p>
+                            {if $bonus.status eq 2}
+                            <p>已使用</p>
+                            {elseif $bonus.status eq 3}
+                            <p>已过期</p>
+                            {/if}
+                        </div>
+                    </dt>
+                    <dd>
+                        <h3 {if $bonus.status neq 1}class="color_gray"{/if}>
+                            {if $bonus.type == 31 or $bonus.type == 32}
+                            <span {if $bonus.status eq 1}class="redgift ui_tips color_r"{else}class="graygift ui_tips_gray color_g"{/if}>
+                            {else}
+                            <span {if $bonus.status eq 1}class="ui_tips color_r"{else}class="ui_tips_gray color_g"{/if}>
+                            {/if}
+                                {$bonus.from_type}
+                            </span>
+                            {$bonus.bonus_type}
+                        </h3>
+                        {if $bonus.type == 31 or $bonus.type == 32}
+                        <p>{$bonus.from_detail}</p>
+                        {/if}
+                        <p>有效期至：{$bonus.expired_format}</p>
+                    </dd>
+                </dl>
+            </a>
+            {/foreach}
+
+        </div>
+
+        <div class="hb-more">
+            {if $all.count gt 10}
+            <a href="javascript:void(0);" class="tb1-more jia_zai">点击加载更多</a>
+            {else}
+            <p class='pb10 f16'>仅显示最近30天内的红包</p>
+            {/if}
+        </div>
+        <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>" type="text/javascript"></script>
+        <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/touch.min.js');?>" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(function () {
+                var $tb0 = $(".list");
+                var page0 = 1;
+                var site_id = '{$site_id}';
+                $(".jia_zai").bind("click", function () {
+                    page0++;
+                    $.ajax({
+                        url: '/bonus/ajaxGet?token={$token}&page=' + page0,
+                        type: 'POST',
+                        dataType: 'json',
+                        async: false,
+                        beforeSend: function (request) {
+                            request.setRequestHeader("VERSION", "410");
+                        },
+                        success: function (data) {
+                            var dataObj = eval(data);
+                            if (page0 * 10 > dataObj.data.count) {
+                                $(".tb1-more").html("<p class='pb10 f16'>仅显示最近30天内的红包</p>").addClass("hb-no").removeClass("jia_zai");
+                            }
+                            $.each(dataObj.data.list, function (idx, item) {
+                                var html = "";
+                                html += '<a class="clearfix hb_black" href="/bonus/show?id=' + item.id + '&site_id=' + site_id + '">';
+                                if (item.type == 31 || item.type == 32) {
+                                    if (item.status == 1) {
+                                        html += '<dl class="birthday redbirth"><dt><div class="btn">';
+                                    } else {
+                                        html += '<dl class="birthday graybirth"><dt><div class="btn">';
+                                    }
+                                } else {
+                                    html += '<dl><dt><div class="btn">';
+                                }
+                                if (item.status == 1) {
+                                    html += '<p class="color_red f20">' + item.money + '<span class="f12">元</span></p>';
+                                } else {
+                                    html += '<p class=" f20">' + item.money + '<span class="f12">元</span></p>';
+                                }
+                                if (item.status == 2) {
+                                    html += '<p>已使用</p>';
+                                }
+                                if (item.status == 3) {
+                                    html += '<p>已过期</p>';
+                                }
+                                html += "</div></dt><dd>";
+
+                                if (item.type == 31 || item.type == 32) {
+                                    if (item.status != 1) {
+                                        html += '<h3 class="color_gray">';
+                                        html += ' <span class="graygift ui_tips_gray color_g">' + item.from_type + '</span>' + item.bonus_type + '</h3>';
+                                    } else {
+                                        html += '<h3>';
+                                        html += ' <span class="redgift ui_tips color_r">' + item.from_type + '</span>' + item.bonus_type + '</h3>';
+                                    }
+                                } else {
+                                    if (item.status != 1) {
+                                        html += '<h3 class="color_gray">';
+                                        html += ' <span class="ui_tips_gray color_g">' + item.from_type + '</span>' + item.bonus_type + '</h3>';
+                                    } else {
+                                        html += '<h3>';
+                                        html += ' <span class="ui_tips color_r">' + item.from_type + '</span>' + item.bonus_type + '</h3>';
+                                    }
+                                }
+                                if (item.type == 31 || item.type == 32) {
+                                    html += '<p>' + item.from_detail + '</p>'
+                                }
+                                html += '<p>有效期至：' + item.expired_format + '</p></dd></dl></a>';
+                                $tb0.append(html);
+                            });
+                        }
+                    });
+                });
+            });
+
+        </script>
+
+        {else}
+        <!-- <div class="ui_un_tips">
+            <i class="ui_icon_un"></i>
+            <p>这里空空如也</p>
+        </div> -->
+        <div class="no_coupon"><p>这里空空如也</p></div>
+        {/if}
+
+
+    </div>
+
+{include file="api/views/_v32/footer.html"}

@@ -1,0 +1,26 @@
+<?php
+return array (
+  0 => 'user_id',
+  1 => 'office',
+  2 => 'jobtype',
+  3 => 'province_id',
+  4 => 'city_id',
+  5 => 'officetype',
+  6 => 'officedomain',
+  7 => 'officecale',
+  8 => 'position',
+  9 => 'salary',
+  10 => 'workyears',
+  11 => 'workphone',
+  12 => 'workemail',
+  13 => 'officeaddress',
+  14 => 'urgentcontact',
+  15 => 'urgentrelation',
+  16 => 'urgentmobile',
+  17 => 'urgentcontact2',
+  18 => 'urgentrelation2',
+  19 => 'urgentmobile2',
+  '_autoinc' => false,
+  '_pk' => 'user_id',
+);
+?>

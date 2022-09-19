@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>验证绑卡</title>
+<link rel="apple-touch-icon-precomposed" href="{$STATIC_PATH}/v2/images/favicon.png">
+<link rel="shortcut icon" type="image/x-icon" href="{$STATIC_PATH}/v2/images/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<!--public js&css start-->
+<link href="{$STATIC_PATH}/v3/css/m-base.css?v=20150914" rel="stylesheet" type="text/css" />
+<link href="{$STATIC_PATH}/v3/css/m-common.css?v=20150914" rel="stylesheet" type="text/css" />
+<!--public js&css end-->
+<script>
+window['_AJAXSIGN_'] = '{$asgn}';
+</script>
+<!--private js&css start-->
+<script type="text/javascript">
+    var today = new Date();
+    var  year = today.getFullYear();
+    var month = today.getMonth() + 1;
+    var day= today.getDate();
+    var ymd = year +""+ month+"" + day;
+    var oHead = document.getElementsByTagName('HEAD').item(0); 
+    var oScript= document.createElement("script"); 
+    oScript.type = "text/javascript"; 
+    oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+    oHead.appendChild( oScript); 
+</script>
+<script type="text/javascript" src="{$STATIC_PATH}/v3/js/zepto.min.js"></script>
+<script type="text/javascript" src="{$STATIC_PATH}/v3/js/iscroll.js"></script>
+<script type="text/javascript" src="{$STATIC_PATH}/v3/js/common.js?v=20151228"></script>
+<link href="{$STATIC_PATH}/v3/css/p-addbank-new.css?v=20151228" rel="stylesheet" type="text/css" />
+<!--private js&css end-->
+{if isset($fzjs)}
+<script type="text/javascript" src="{$fzjs}"></script>
+{/if}
+</head>
+<body>
+    <div class="p_addbank_new">
+        <div class="ui_title JS-title"><span class="JS-title_name">验证绑卡</span></div>
+        <div class="ui_register JS-main">
+            <form id="bind_card_form" class="JS-form" name="bind_card_form" method="POST" onsubmit="return false;">
+                <div class="form_box clearfix">
+                    {if $userInfo.idno}
+                    <div class="border_b" id="list_chinese_name">
+                        <input id="JS-username" readonly="readonly" class="ui_reg_input" type="text" name="username" placeholder="姓名" value="{$userInfo.realName}" />
+                    </div>
+                    <div class="border_b" id="list_user_id">
+                        <input id="JS-userid" readonly="readonly" class="ui_reg_input" type="text" name="userid" placeholder="身份证号码" value="{$userInfo.idno}" />
+                    </div>
+                    {else}
+                    <div class="border_b" id="list_chinese_name">
+                        <input id="JS-username" class="ui_reg_input" type="text" name="username" placeholder="姓名" value="" />
+                    </div>
+                    <div class="border_b" id="list_user_id">
+                        <input id="JS-userid" class="ui_reg_input" type="text" name="userid" placeholder="身份证号码" value="" />
+                    </div>
+                    {/if}
+                    <div class="border_b list_bank_id" id="list_bank_id">
+                        <input id="JS-bankid" class="ui_reg_input" type="hidden" name="bankid" value=""/>
+                        <div class="list_text holder">借记卡所属银行</div>
+                    </div>
+                    <div class="border_b" id="list_bank_code">
+                        <input id="JS-bankcode" class="ui_reg_input" type="text" name="bankcode" placeholder="借记卡卡号" />
+                    </div>
+                </div>
+                <div class="JS-submit_btn_box">
+                    <input id="bind_car_btn" type="submit" class="reg_finish_btn JS-submit_btn" value="完成">
+                </div>
+            </form>
+        </div>
+    </div>
+    <section class="p_account_addbank_panel JS-addbank_panel" id="p_bank_id">
+        <div class="ui_title JS-title"><a id="bank_id_back" class="ui_back" href="javascript:void(0);"><i class="ui_icon_back"></i>返回</a><span class="JS-sub_title_name">选择开户行</span></div>
+        <!-- 循环 -->
+        <div class="panel_bd">
+            <div class="choice-con"></div>
+        </div>
+    </section>
+<script>
+$(function(){
+var bankListHash = {$bankList};
+var _inSubmitRequest = false;
+var _bankListClickFlag = true;
+function upateSubmitButton() {
+    var disabled = _inSubmitRequest || $('#JS-username').val() == '' || $('#JS-userid').val() == '' || $('#JS-bankid').val() == '' || $('#JS-bankcode').val() == '';
+    if (disabled) {
+        $('#bind_car_btn').attr('disabled', 'disabled');
+        } else {
+        $('#bind_car_btn').removeAttr('disabled');
+    }
+}
+$('#JS-username,#JS-userid,#JS-bankcode').bind("input", upateSubmitButton);
+
+var _upateSubmitButtonCount = 10;
+var _upateSubmitButtonTimer = setInterval(function(){
+    upateSubmitButton();
+    _upateSubmitButtonCount--;
+    if (_upateSubmitButtonCount < 0) {
+        clearInterval(_upateSubmitButtonTimer);
+    }
+}, 300);
+
+//银行填充
+$('#p_bank_id .choice-con').html(function() {
+    var html = '';
+    for (var i = 0; i < bankListHash.length; i++) {
+        html += '<div class="ui_bank_list" data-id="'+ bankListHash[i].bank_id +'" data-name="'+ bankListHash[i].bankName +'">';
+        html += '    <div class="ui_bank_img ' + bankListHash[i].bankCode + '"></div>';
+        html += '    <div class="ui_bank_text">';
+        html += '        <h2>'+ bankListHash[i].bankName +'</h2>';
+        if(bankListHash[i].perDayLimit && bankListHash[i].perLimit){
+            html += '    <p class="gray_v1">限额'+ wanFormat(bankListHash[i].perLimit / 100) +'元/笔 '+ wanFormat(bankListHash[i].perDayLimit / 100) +'元/天</p>';
+        }
+        html += '    </div>';
+        html += '    <div class="ui_bank_icon"></div>';
+        html += '</div>';
+    }
+    return html;
+});
+
+function wanFormat(num) {
+    if (num >= 10000) {
+        return num / 10000 + '万';
+    }
+    return num;
+}
+//iscroll实例化
+window['scroll_bankid'] = new IScroll('#p_bank_id .panel_bd', {
+     click: true
+});
+//面板事件绑定
+$('#list_bank_id').click(function(){
+    if ( !_bankListClickFlag )  return;
+    _bankListClickFlag = false;
+    document.body.scrollTop = 0;
+    $('#p_bank_id').addClass('p_show');
+});
+$('#bank_id_back').click(function(){
+    $('#p_bank_id').removeClass('p_show');
+    setTimeout(function(){
+        _bankListClickFlag = true;
+    },600);
+});
+$('#p_bank_id .choice-con .ui_bank_list').click(function(){
+    var $this = $(this);
+    $this.addClass('active').siblings().removeClass('active');
+    $('#JS-bankid').val($this.attr('data-id'));
+    $('#list_bank_id .list_text').removeClass('holder').html($this.attr('data-name'));
+    $('#p_bank_id').removeClass('p_show');
+    upateSubmitButton();
+    setTimeout(function(){
+        _bankListClickFlag = true;
+    },600);
+});
+
+$('#bind_card_form').submit(function(){
+    if (_inSubmitRequest) return;
+    if(!/^[\u0391-\uFFE5]{2,10}$/.test($('#JS-username').val())){
+       P2PWAP.ui.showErrorTip('姓名输入不正确');
+       return;
+    }
+    if(!/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[A-Z])$/.test($('#JS-userid').val())){
+        P2PWAP.ui.showErrorTip('身份证号码输入不正确');
+        return;
+    }
+    if(!/\d+/.test($('#JS-bankid').val())){
+        P2PWAP.ui.showErrorTip('银行不能为空');
+        return;
+    } ;
+    if(!/^\d{10,20}$/.test($('#JS-bankcode').val())){
+        P2PWAP.ui.showErrorTip('银行卡号输入不正确');
+        return;
+    } ;
+
+    _inSubmitRequest = true;
+    upateSubmitButton();
+    P2PWAP.util.request('/user/DoModifyBank', function(data){
+        _inSubmitRequest = false;
+        upateSubmitButton();
+        window.location.href = '{$returnUrl}';
+    },function(msg){
+        _inSubmitRequest = false;
+        upateSubmitButton();
+        P2PWAP.ui.showErrorTip(msg);
+    },'get',{
+        'bank_id': $('#JS-bankid').val(),
+        'bank_no': $('#JS-bankcode').val()
+    });
+});
+});
+</script>
+</body>
+</html>

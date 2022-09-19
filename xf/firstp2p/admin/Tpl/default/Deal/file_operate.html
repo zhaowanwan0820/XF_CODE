@@ -1,0 +1,96 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script>
+function addf(id){
+	window.location.href = ROOT +'?m=Deal&a=add_deal_file&id='+id;
+}
+function editf(id){
+	window.location.href = ROOT +'?m=Deal&a=edit_deal_file&id='+id+"&list_id={$id}";
+}
+function delf(id){
+		if(!id)
+		{
+			idBox = $(".key:checked");
+			if(idBox.length == 0)
+			{
+				alert(LANG['DELETE_EMPTY_WARNING']);
+				return;
+			}
+			idArray = new Array();
+			$.each( idBox, function(i, n){
+				idArray.push($(n).val());
+			});
+			id = idArray.join(",");
+		}
+		if(confirm(LANG['CONFIRM_DELETE']))
+		$.ajax({ 
+				url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=del_deal_file&id="+id, 
+				data: "ajax=1",
+				dataType: "json",
+				success: function(obj){
+					$("#info").html(obj.info);
+					if(obj.status==1)
+					location.href=location.href;
+				}
+		});
+}
+function preview(id)
+{
+	window.open("/index.php?ctl=deal&id="+id+"&preview=1");
+}
+function referlist(ref)
+{
+	window.location.href= ref;
+}
+</script>
+<php>
+function get_substr($str){
+	return mb_substr($str,0,30,'UTF-8');
+}
+function get_ontime($time){
+	return to_date($time);
+}
+function show_file($file,$id){
+	return "<a href='".$GLOBALS['dict']['DEAL_FILE_PATH'].$file."' target='_blank''>". $file ."</a> ";
+}
+function preview($id){
+	return "<a href='/index.php?ctl=deal&id=".$id."&preview=1' target='_blank''>". $id ."</a> ";
+}
+</php>
+<div class="main">
+<div class="main_title">文件管理</div>
+<div class="blank5"></div>
+<div class="button_row">
+	<input type="button" class="button" value="{%ADD}" onclick="addf({$id});" />
+	<input type="button" class="button" value="{%DEL}" onclick="delf();" />
+	<input type="button" class="button" value="{%BACK_LIST}" onclick="referlist('{$refer}');" />
+</div>
+
+<div class="blank5"></div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="file_operate" 
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|50px
+		,deal_id|preview:订单id
+		,deal_name:借款描述
+		,title:文件名
+		,filename|show_file:{%ID}:文件路径
+		,type:文件类型
+		,description|get_substr:详细描述
+		,order:排序
+		,create_time|get_ontime:上传时间
+		,adm_name:上传管理员"
+	actionlist="editf:{%EDIT},delf:{%DEL}"
+	actionwidth="160px" /> 
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

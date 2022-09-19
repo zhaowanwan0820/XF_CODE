@@ -1,0 +1,51 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="main_title">红包组详情</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="20" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <!--<th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>-->
+        <th>编号</th>
+        <th>领用人ID</th>
+        <th>领用人姓名</th>
+        <th>领用人手机号</th>
+        <th>红包金额</th>
+        <th>红包状态</th>
+        <th>红包领取时间</th>
+        <th>红包过期时间</th>
+    </tr>
+    <foreach name="list" item="item">
+    <tr class="row">
+        <!--<td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>-->
+        <td>{$item.id}</td>
+        <td>{$item.owner_uid}</td>
+        <td>{$item.user_name}</td>
+        <td>{$item.mobile}</td>
+        <td>{$item.money}</td>
+        <td>{$item.status}</td>
+        <td>{$item.create_time}</td>
+        <td>{$item.expire_time}</td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="20" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<!-- Think 系统列表组件结束 -->
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,122 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">任务管理 - {$statusCn}</div>
+<div class="blank5"></div>
+
+<if condition="$status eq 1 || $status eq 3">
+<div class="button_row">
+<input type="button" class="button" value="重试" onclick="multi_redo();" />
+</div>
+</if>
+<div class="blank5"></div>
+<div class="search_row">
+<form name="search" action="__APP__" method="get">
+优先级：<input type="text" class="textbox" name="priority" value="{:trim($_REQUEST['priority'])}" size="8"/>
+<input type="hidden" value="Jobs" name="m" />    
+<if condition="$status eq 0">
+<input type="hidden" value="wait" name="a" />
+<elseif condition="$status eq 1"/>
+<input type="hidden" value="process" name="a" />
+<elseif condition="$status eq 2"/>
+<input type="hidden" value="succ" name="a" />
+<elseif condition="$status eq 3"/>
+<input type="hidden" value="fail" name="a" />
+</if>
+<input type="submit" class="button" value="{%SEARCH}" />
+</form>
+</div>
+<div class="blank5"></div>
+
+<script>
+function multi_redo() {
+    idBox = $(".key:checked");
+
+    var param = '';
+    if(idBox.length == 0){
+        idBox = $(".key");
+    }
+
+    idArray = new Array();
+    $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+            });
+
+    if(idArray.length == 0){
+        alert('无可导出的数据！');
+        return false;
+    }
+
+    id = idArray.join(",");
+
+    /*
+       var inputs = $(".search_row").find("input");
+
+       for(i=0; i<inputs.length; i++){
+       if(inputs[i].name != 'm' && inputs[i].name != 'a')
+       param += "&"+inputs[i].name+"="+$(inputs[i]).val();
+       }
+     */
+
+    var url= ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=multi_redo&id="+id;
+    window.location.href = url;
+}
+</script>
+
+<php>
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '-';
+    }
+    return date('Y-m-d H:i:s', $stamp + 28800);
+}
+function f_cutstr($string) {
+    $subString = $string;
+    if (mb_strlen($string) > 15) {
+        $subString = '<a href="javascript:;" title="'.str_replace('"',"'", $string).'">' . mb_substr($string, 0, 15) . '...</a>';
+    }
+    return $subString;
+}
+function f_status($status) {
+    return $GLOBALS['statusCn'][$status];
+}
+</php>
+<html:list
+id="dataTable"
+style="dataTable"
+name="user"
+checkbox="true"
+action="true"
+datasource="list"
+show="id:编号,function:待执行脚本,params|f_cutstr:参数,status|f_status:状态,create_time|f_to_date:创建时间,start_time|f_to_date:指定启动时间,begin_time|f_to_date:启动时间,finish_time|f_to_date:结束时间,job_cost:执行时长,priority:优先级"
+actionlist="view:查看详情,redo:手动执行" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+var status = '{$status}';
+var p = '{$p}';
+function view(id) {
+    if (parseInt(p) > 0) {
+        window.location.href = "/m.php?m=Jobs&a=view&status="+status+"&p="+p+"&id="+id;
+        return ;
+    }
+    window.location.href = "/m.php?m=Jobs&a=view&status="+status+"&id="+id;
+}
+function redo(id) {
+    window.location.href = "/m.php?m=Jobs&a=redo&id="+id;
+}
+</script>
+<include file="Public:footer" />
+

@@ -1,0 +1,302 @@
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    var appid = "{$appid}";
+    var nonceStr = "{$nonceStr}";
+    var timeStamp = "{$timeStamp}";
+    var signature = "{$signature}";
+    wx.config({
+        appId:appid,
+        timestamp:timeStamp,
+        nonceStr:nonceStr,
+        signature:signature,
+        jsApiList:[
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'hideOptionMenu',
+            'showOptionMenu',
+            'closeWindow'
+        ]
+    });
+    wx.ready(function(){
+        wx.hideOptionMenu();
+    });
+    var imgUrl = "{$event.shareIcon}";
+    var lineLink = "<?= (app_conf('ACTIVITY_WEIXIN_HOST') ? app_conf('ACTIVITY_WEIXIN_HOST') :  PRE_HTTP.app_conf('FIRSTP2P_COM_DOMAIN')).'/activity/game?event_id=' ?>{$eventId}";
+    var descContent = "{$event.shareDesc}";
+    var shareTitle = "{$event.shareTitle}";
+
+    $(function() {
+        {if $isApp }
+        $('.shareBtn').attr('href','bonus://api?title='+ encodeURIComponent(shareTitle) +'&content='+ encodeURIComponent(descContent) +'&face=' + encodeURIComponent(imgUrl) + '&url='+ encodeURIComponent(lineLink));
+        {/if}
+    });
+    wx.ready(function() {
+        wx.showOptionMenu();
+        wx.onMenuShareTimeline({
+            title: shareTitle, // 分享标题
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+        });
+        wx.onMenuShareAppMessage({
+            title: shareTitle, // 分享标题
+            desc: descContent, // 分享描述
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+        });
+    });
+
+    function onBridgeReady(){
+        WeixinJSBridge.call('showOptionMenu');
+    }
+
+    if (typeof WeixinJSBridge == "undefined"){
+        if( document.addEventListener ){
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        }else if (document.attachEvent){
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    } else {
+        onBridgeReady();
+    }
+    function shareFriend() {
+        WeixinJSBridge.invoke('sendAppMessage',{
+            "appid": appid,
+            "img_url": imgUrl,
+            "img_width": "200",
+            "img_height": "200",
+            "link": lineLink,
+            "desc": descContent,
+            "title": shareTitle
+        }, function(res) {
+            $.get('/activity/trace?token={$token}&event_id={$eventId}&type=1');
+        })
+    }
+    function shareTimeline() {
+        WeixinJSBridge.invoke('shareTimeline',{
+            "img_url": imgUrl,
+            "img_width": "200",
+            "img_height": "200",
+            "link": lineLink,
+            "desc": descContent,
+            "title": shareTitle
+        }, function(res) {
+            $.get('/activity/trace?token={$token}&event_id={$eventId}&type=1');
+        });
+    }
+    // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+        // 发送给好友
+        WeixinJSBridge.on('menu:share:appmessage', function(argv){
+            shareFriend();
+        });
+        // 分享到朋友圈
+        WeixinJSBridge.on('menu:share:timeline', function(argv){
+            shareTimeline();
+        });
+    }, false);
+
+    $(function () {
+        new Vue({
+            'el':'#loadingBox',
+            'data':{
+                preImgArr:['bottomBg.jpg','btn.jpg','btn_disabled.jpg','btnBg.jpg','gameRuleContBg.jpg','middleBg.jpg','title.jpg','topBg.jpg','winContBg.jpg'],
+                count:0,
+                showLoading:true
+            },
+            computed:{
+                len:function(){
+                    return this.preImgArr.length;
+                }
+            },
+            mounted:function(){
+                var _this=this;
+                prefixSrc="<?php echo $this->asset->makeUrl('game/roulette/images/'); ?>";
+                this.preImgArr.forEach(function (item,index) {
+                    var newImg=new Image();
+                    newImg.src=prefixSrc+item;
+                    if(newImg.complete){
+                        _this.count++;
+                    }else{
+                        newImg.onload=function () {
+                            _this.count++;
+                        }
+                        newImg.onerror=function () {
+                            _this.count++;
+                        }
+                    }
+
+                });
+            },
+            watch:{
+                count:function(){
+                    if(this.count>=this.preImgArr.length){
+                        this.showLoading=false;
+                    }
+                }
+            }
+        });
+
+        var errors = "{$errors}";
+        if (errors != "") {
+            showToast(errors);
+        }
+        var contUl=null;
+        new Vue({
+        "el":'#mainBox',
+        "data":{
+            "userLeftTimes": "{$event.userLeftTimes}",
+            "nonStr": "{$event.nonStr}",
+            "timestamp": "{$event.timestamp}",
+            "sign": "{$event.sign}",
+            "list": {$event.prizeSettings},
+            "locked":false,//转盘按钮上锁
+            "curIndex":0,//当前中奖编号
+            "showWinPop":false,//是否显示中奖弹层
+            "showSharePop":false,
+            "showGameRule":false,
+            "isDisable": {$event.isDisable},
+            "eventStatus": "{$event.status}",
+            "showNoWinPop":false,
+            "showLoading":true,
+            "shareResource":'win'
+        },
+        "mounted":function () {
+            contUl = $('#contUl');
+        },
+        "computed":{
+            "winItem":function () {
+                if (this.curIndex < 0 || this.curIndex >= this.list.length) {
+                    this.showWinPop = false;
+                    return {};
+                }
+                return this.list[this.curIndex];
+            },
+            "showMaskDiv":function(){
+                return this.showWinPop|this.showSharePop|this.showGameRule|this.showNoWinPop;
+            }
+        },
+        "methods":{
+            'runGame':function () {
+                var _this = this;
+                if (_this.locked || _this.isDisable) {
+                    return;
+                }
+
+                if (_this.userLeftTimes < 1) {
+                    showToast('没有剩余次数了');
+                    _this.isDisable = true;
+                    return;
+                }
+
+                // 锁住，防止频繁点击
+                _this.locked = true;
+                $.ajax({
+                    dataType:'json',
+                    type: 'POST',
+                    url: "/activity/lottery?token={$token}&event_id={$eventId}&timestamp="+_this.timestamp+"&nonStr="+_this.nonStr+"&sign="+_this.sign,
+                    success: function(data) {
+                        if (data.error != 0) {
+                            _this.locked = false;
+
+                            if (data.error == 401) {
+                                location.reload(true);
+                                return;
+                            } else if (data.error == 1702) {
+                                _this.userLeftTimes = 0;
+                                _this.isDisable = true;
+                            } else if (data.error == 1703) {
+                                _this.isDisable = true;
+                                _this.eventStatus = 0;
+                            } else if (data.error == 1704) {
+                                _this.isDisable = true;
+                                _this.eventStatus = 2;
+                            }
+
+                            showToast(data.msg);
+                            return;
+                        }
+
+                        var prize = data.data;
+                        _this.nonStr = prize.nonStr;
+                        _this.timestamp = prize.timestamp;
+                        _this.sign = prize.sign;
+                        _this.userLeftTimes = prize.userLeftTimes;
+                        if (_this.userLeftTimes == 0) {
+                            _this.isDisable = true;
+                        }
+
+                        if (prize.isRepeat == 1) {
+                            _this.locked = false;
+                            showToast("重复的抽奖请求");
+                            return;
+                        }
+
+                        var index = -1;
+                        for (var i=0; i<_this.list.length; i++) {
+                            if (_this.list[i].prizeId == prize.prizeId) {
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        if (index == -1) {
+                            _this.locked = false;
+                            showToast("数据配置错误");
+                            return;
+                        }
+
+                        var initDegVal=parseInt(contUl.css('rotate'));
+                        var degVal=function () {
+                            var returnVal=0;
+                            var degVal=(6-index)*60;
+                            var n=degVal <= initDegVal?3:2;
+                            returnVal=degVal+n*360;
+                            return returnVal;
+                        }();
+                        contUl.transition({
+                            rotate: degVal + 'deg'
+                        }, 2000, 'ease', function () {
+                            if (prize.allowanceGroupId == 0 || prize.allowanceGroupId == '') {
+//                                showToast("很遗憾，你没有中奖");
+                                _this.showNoWinPop=true;
+                            } else {
+                                _this.showWinPop = true;
+                            }
+                            _this.showGameRule=false;
+                            _this.locked = false;
+                            _this.curIndex = index;
+                            contUl.css({
+                                rotate: (degVal % 360) + 'deg'
+                            });
+                        });
+                    },
+                    error: function() {
+                        showToast("网络连接错误，请检查网络");
+                        _this.locked = false;
+                    }
+                });
+            },
+            'shareFn':function(type) {
+                this.showSharePop = true;
+                this.showWinPop = false;
+                this.showNoWinPop=false;
+                this.shareResource=type;
+            },
+            'closeShareFn':function(){
+                this.showSharePop=false;
+                if (this.shareResource=="win"){
+                    this.showWinPop=true;
+                }else{
+                    this.showNoWinPop=true;
+                }
+            },
+            'closeWinPop':function () {
+                this.showWinPop = false;
+            }
+        }
+    });
+    // pv统计
+    $.get('/activity/trace?token={$token}&event_id={$eventId}&type=2');
+});
+</script>

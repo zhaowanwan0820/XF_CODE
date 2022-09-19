@@ -1,0 +1,136 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+<php>
+function get_dmdeal_status($deal_status, $row) {
+    $dealStatus = $row['dealStatus'];
+    return $dealStatus[$deal_status];
+}
+
+function get_jys_name($type, $row)
+{
+    $jys = $row['jysArr'];
+    return $jys[$type] ? $jys[$type] : "无";
+}
+
+function get_jys_user_name($user_id, $row)
+{
+    return $row['userName']."(".$user_id.")";
+}
+
+function get_date($time)
+{
+    return $time ? date('Y-m-d H:i:s', $time) : '--';
+}
+</php>
+
+<div class="main">
+<div class="main_title">标的列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="新增" onclick="add();" />
+    <!--<a href="/m.php?m=DarkMoonDeal&a=trash">已置废</a>-->
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        交易所备案编号：<input type="text" class="textbox" name="jys_record_number" value="{:trim($_REQUEST['jys_record_number'])}"  />
+        交易所：
+        <select name="jys_id">
+            <option value="0" <if condition="intval($_REQUEST['jys_id']) eq 0">selected="selected"</if>> 所有平台 </option>
+            <foreach name="jys" key='jys_k' item="jys_v">
+                <option value="{$jys_k}" <if condition="intval($_REQUEST['jys_id']) eq $jys_k">selected="selected"</if>>{$jys_v}</option>
+            </foreach>
+        </select>
+
+        发行人：
+        <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" size="10" />
+
+        状态：
+        <select name="deal_status">
+            <option value="" <if condition="$_REQUEST['deal_status'] eq ''">selected="selected"</if>>所有状态</option>
+            <foreach name="dealStatus" key='status_k' item="status_v">
+                <option value="{$status_k}" <if condition="strval($_REQUEST['deal_status']) heq strval($status_k)">selected="selected"</if>>{$status_v}</option>
+            </foreach>
+        </select>
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DarkMoonDeal" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+
+<div class="blank5"></div>
+<empty name='isTrash'>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="DarkmoonDeal"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px
+    ,jys_record_number:交易所备案编号
+    ,jys_id|get_jys_name=$DarkmoonDeal:交易所
+    ,user_id|get_jys_user_name=$DarkmoonDeal:发行人
+    ,deal_status|get_dmdeal_status=$DarkmoonDeal:状态
+    ,create_time|get_date:{%CREATE_TIME}"
+    actionlist="edit:{%EDIT}, delDeal:作废, updateDeal|genTimestamp:生成合同|加盖时间戳, contractList:合同列表, sendSms:发送短信, sendEmail:发送邮件, goloadlist:投资客户明细"
+/>
+<else />
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="DarkmoonDeal"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px
+    ,jys_record_number:交易所备案编号
+    ,jys_id|get_jys_name=$DarkmoonDeal:交易所
+    ,user_id|get_jys_user_name=$DarkmoonDeal:发行人
+    ,deal_status|get_dmdeal_status=$DarkmoonDeal:状态
+    ,create_time|get_date:{%CREATE_TIME}"
+    actionlist="edit:查看,goloadlist:投资客户明细"
+/>
+</empty>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function goloadlist(id) {
+    window.location.href=ROOT+'?m=DarkMoonDealLoad&a=index&dealid='+id;
+}
+function updateDeal(id) {
+    window.location.href=ROOT+'?m=DarkMoonDeal&a=updateDealStatus&id='+id;
+}
+function genTimestamp(id){
+    window.location.href=ROOT+'?m=DarkMoonDeal&a=genTimestamp&id='+id;
+}
+function delDeal(id){
+    if (window.confirm("确认要作废吗？")) {
+        window.location.href=ROOT+'?m=DarkMoonDeal&a=del&id='+id;
+    }
+}
+function sendSms(id){
+    if (window.confirm("确认要发送吗")) {
+        window.location.href=ROOT+'?m=DarkMoonDeal&a=sendSms&id='+id;
+    }
+}
+function contractList(id) {
+    window.location.href=ROOT+'?m=DarkMoonContract&a=index&dealid='+id;
+}
+function sendEmail(id){
+    if(window.confirm("确认要发送邮件吗？")){
+        window.location.href=ROOT+'?m=DarkMoonDeal&a=sendEmail&id='+id;
+    }
+}
+</script>
+<include file="Public:footer" />
+

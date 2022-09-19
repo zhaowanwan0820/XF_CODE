@@ -1,0 +1,90 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">优惠码用户</div>
+<div class="blank5"></div>
+    <div class="button_row">
+        <input type="button" class="button" value="更新全部用户等级" onclick="update_user_level();" />
+    </div>
+<div class="blank5"></div>
+<div class="search_row">
+	<form name="search" action="__APP__" method="get">
+        用户ID：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" />
+        用户名称：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" />
+        用户姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" />
+        手机号：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" />
+        用户组：
+        <select name="group_id">
+            <option value="">=={%EMPTY_SELECT}==</option>
+            <foreach name="groups" item="item">
+                <option value="{$item.id}" <if condition="$item['id'] eq $_REQUEST['group_id']">selected="selected"</if>>{$item.name}</option>
+            </foreach>
+        </select>
+        用户等级：
+        <select name="level_id">
+            <option value="">=={%EMPTY_SELECT}==</option>
+            <foreach name="levels" item="item">
+                <option value="{$item.id}" <if condition="$item['id'] eq $_REQUEST['level_id']">selected="selected"</if>>{$item.group_name}-{$item.level}</option>
+            </foreach>
+        </select>
+		<input type="hidden" value="CouponUser" name="m" />
+		<input type="hidden" value="index" name="a" />
+		<input type="submit" class="button" value="{%SEARCH}" />
+	</form>
+</div>
+<div class="blank5"></div>
+
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="item"
+    checkbox="true"
+    action="true"
+	datasource="list" 
+	show="id:用户ID
+	,user_name:用户名称
+	,real_name:用户姓名
+	,level:用户等级
+	,coupon:优惠码
+	,valid_end:失效时间
+	"
+    actionlist="edit:{%EDIT}"
+    actionwidth="120px"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+    function weebox_edit(id){
+        $.weeboxs.open(ROOT+'?m=DealChannelLog&a=edit&id='+id, {contentType:'ajax',showButton:false,title:LANG['DEALCHANNEL_INDEX'],width:500,height:200});
+    }
+
+    function gen_short_alias(id)
+    {
+        if(!id)
+        {
+            idBox = $(".key:checked");
+            if(idBox.length == 0)
+            {
+                alert("请选择需要生成优惠码短码的用户记录");
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            id = idArray.join(",");
+        }
+        if(confirm("确定要生成优惠码短码吗？"))
+        {
+            location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=genShortAlias&id="+id;
+        }
+
+    }
+</script>
+<include file="Public:footer" />

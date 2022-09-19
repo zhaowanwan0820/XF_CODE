@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v2/css/base.css')?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v2/css/common.css')?>">
+    <script src="<?php echo $this->asset->makeUrl('/v2/js/common/jquery-1.10.2.min.js')?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('/v2/js/common/html5shiv.js')?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('/v2/js/common/common.js')?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('/v2/css/user_charge.css')?>" type="text/css" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('/v2/css/user_doLogin.css')?>" type="text/css" rel="stylesheet">
+    <script src="<?php echo $this->asset->makeUrl('/v2/js/common/jquery_placeholder-1.0.js')?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('/v2/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script src="<?php echo $this->asset->makeUrl('/v2/js/widget/select/select.v1.1.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('/v2/js/temp/weebox.css')?>" type="text/css" rel="stylesheet">
+    <script src="<?php echo $this->asset->makeUrl('/v2/js/temp/jquery.weebox.1.2.js')?>"></script>
+    <title>{$page_title} - {$website}</title>
+    <script type="text/javascript">
+    function refresh() {
+        document.getElementById("captcha").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+    }
+    </script>
+</head>
+
+
+
+
+<body class="p_user_dologin">
+    <div class="p_user_dologin">
+        <div class="log-header">
+            <a href="/" title="{$website}">
+                <img src="{$APP_SKIN_PATH}images/logo-big_wx.png?v=20150624" alt="{$website}">
+            </a>
+        </div>
+        <div class="log-main" >
+            <div class="log-wrap">
+                <div class="form-wrap" >
+                    <div class="ipt-form" >
+                        <div class="reg-head">
+                            <div class="sub-tit color_gray">没有账号? <a href={if !$isEnterpriseSite}"/user/register{$querystring}"{else}"/enterprise/register{$querystring}"{/if} class="blue">免费注册</a></div>
+                            <h2>登录</h2>
+                        </div>
+                        <div class="log-mid" >
+                            <div class="height_placeholder">
+                                <div class="login_err" {if isset($error)} style="display:block;">{$error}{else if}>{/if}</div>
+                            </div>
+                            <form method="post" action="/user/doLogin{$querystring}" id="loginForm">
+                                <input type="hidden" id="valid_phone" value="" name="valid_phone">
+                                <?php echo token_input(); ?>
+                                    <div class="log-form clearfix">
+                                        <!-- 用户选择下拉列表中中国时 -->
+                                        <div class="log-item clearfix" style="z-index:21;">
+                                            <div class="select_box" data-name="country_code" id="" >
+                                                <div class="j_select"></div>
+                                                <ul class="select_ul none j_selectContent">
+                                                    {if isset($mobile_codes) }
+                                                        {foreach from=$mobile_codes item=val}
+                                                            {if $val.is_show}
+                                                            <li data-value="{$val.code}" data-name="{$val.country}"><i class="icon-{$val.country}"></i>{$val.name}</li>
+                                                            {/if}
+                                                        {/foreach}
+                                                        {else}
+                                                            <li data-value="86" data-name="cn"><i class="icon-cn"></i>中国大陆</li>
+                                                    {/if}
+                                                </ul>
+                                            </div>
+                                            <div class="ipt-wrap w224">
+                                                <!--<div class="areacode" id="areacode" style="display:none;">+86</div>-->
+                                                <input type="text" tabindex="1" value="" data-con="require" placeholder="手机号" name="username" id="user" class="txt-tel w197 int_placeholder" data-placeholder="手机号" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="log-item">
+                                            <label class="pwd log-sprite"></label>
+                                            <input type="password" autocomplete="off" style="display:none;">
+                                            <input id="input-password" class="txt-input  padd-l47 int_placeholder" type="password" name="password" placeholder="登录密码" data-placeholder="登录密码" tabindex="2">
+                                        </div>
+                                        <div class="log-item item-veri clearfix">
+                                            {if isset($show_vcode) && $show_vcode eq '1'}
+                                            <input type="text" tabindex="3" placeholder="右侧数字" id="input-captcha" name="captcha" class="txt-input int_placeholder" data-placeholder="右侧数字">
+                                            <div class="img-Veri">
+                                                <img id="captcha" src="/verify.php?w=91&h=36&rb=0" onclick="refresh()">
+                                            </div>
+                                            <div class="refresh" onclick="refresh()">换一张</div>
+                                            {/if}
+                                            <a href="/user/ForgetPwd" class="forget-pwd blue">忘记密码</a>
+                                        </div>
+                                        <div class="log-item">
+                                            <div class="log-form-btn">
+                                                <input type="submit" value="登录" class="btn-sub  log-sprite">
+                                            </div>
+                                        </div>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/oauth/login.js');?>"></script>
+    <div class="log-footer">
+        <p>客服热线：400-890-9888 （工作时间 8:00-20:00） 京ICP证130046号
+            <br>北京东方联合投资管理有限公司
+            <br>© 2016 All rights reserved
+    </div>
+    <script type='text/javascript'>
+    var _ncf = {
+        "prd": "firstp2p",
+        "pstr": "",
+        "pfunc": null,
+        "pcon": "",
+        "pck": {
+            "channel": "channel",
+            "fpid": "fpid"
+        },
+        "trid": "",
+        "channel": ['pubid', 'mediumid', 'adid', 'adsize'],
+        "rfuniq": [],
+        "rfmuti": []
+    };
+    (function(p, h, s) {
+        var o = document.createElement(h);
+        o.src = s;
+        p.appendChild(o)
+    })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+    </script>
+</body>
+
+</html>

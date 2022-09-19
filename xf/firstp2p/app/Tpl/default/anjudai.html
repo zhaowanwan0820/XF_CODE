@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>{if $page_title}{$page_title} - {/if}{if $show_site_titile eq 1}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+</head>
+<body>
+{include file="inc/header.html"}
+
+{if app_conf("PREORDER_FULL") eq '0'}
+<div class="special-cover" style="height:280px;background:#fff url(<?php echo $this->_var['TMPL']; ?>/img/specials/anjudai.jpg) no-repeat center center"></div>
+{else}
+<div class="special-cover" style="height:280px;background:#fff url(<?php echo $this->_var['TMPL']; ?>/img/specials/anjudai.jpg) no-repeat center center"></div>
+{/if}
+
+<div class="special-form-wrapper">
+
+<form id="special-form" action="/anjudai" method="post" enctype="multipart/form-data" onsubmit="return check_huiyuan_form();">
+  <?php echo token_input(); ?>
+  
+  <div id="special-form-heading">
+    {if empty($preset)}
+    <a class="btn" href="{url x="shop" u="user#login" }"><span>登录</span></a>
+    {/if}
+  </div>
+  <div id="error-row" style="height:19px;color:red;margin-top:10px;margin-bottom:-10px;padding-left:51px;"></div>
+  <p class="input-row" id="username-row">
+    <b>*</b>
+    <label>姓名</label>
+    <input class="input-text" type="text" name="name" value="{$preset.name}">
+  </p>
+  <p class="input-row" id="mobile-row">
+    <b>*</b>
+    <label>电话</label>
+    <input class="input-text" type="text" name="mobile" value="{$preset.mobile}">
+  </p>
+  <p class="input-row" id="email-row">
+    <b>*</b>
+    <label>邮箱</label>
+    <input class="input-text" type="text" name="email" value="{$preset.email}">
+  </p>
+  <p class="input-row" id="money-row" style="position:relative">
+    <b>*</b>
+    <label>预约金额</label>
+    <input class="input-text" type="text" name="money" value="{$preset.money}">
+    <span id="input-money-affix">元</span>
+  </p>
+  <p class="input-row" id="uname-row">
+    <b>&nbsp;</b>
+    <label>注册用户名</label>
+    <input class="input-text" type="text" name="uname" value="{$preset.uname}">
+  </p>
+  <input type="hidden" name="code" value="{$code}" />
+  <input class="input-submit" type="submit" name="submit" value="" />
+</form>
+<?php
+$this->_var['formjs'][] = $this->_var['APP_STATIC_PATH']."/js/placeholder.js";
+?>
+<script type="text/javascript" src="{function name="parse_script" v="$formjs"}"></script>
+<script>
+     function check_huiyuan_form (){
+      var name = $('input[name="name"]').val();
+      var mobile = $('input[name="mobile"]').val();
+      var email = $('input[name="email"]').val();
+    var money = $('input[name="money"]').val();
+    if (name == "" || name == "姓名") {
+      $('#error-row').html('请输入姓名');
+      return false;
+    }
+    if (mobile == "" || mobile == "电话" ) {
+      $('#error-row').html('请输入电话');
+      return false;
+    }
+    if (email == "" || email == "邮箱") {
+      $('#error-row').html('请输入邮箱');
+      return false;
+    }
+    if (money == "" || money == "预约金额") {
+      $('#error-row').html('请输入预约金额');
+      return false;
+    }
+    return true;
+     }
+</script>
+
+<table class="special-downloads">
+  <tr>
+    <td>
+      <span class="special-download-icon special-download-manual"></span>
+      <br>产品说明书
+      <br><a target="_blank" href="./special/anjudai-manual.pdf"><span class="btn-download">下载 PDF</span></a>
+    </td>
+    <td>
+      <span class="special-download-icon special-download-faq"></span>
+      <br>产品 FAQ
+      <br><a target="_blank" href="./special/anjudai-faq.pdf"><span class="btn-download">下载 PDF</span></a>
+    </td>
+    <td>
+      <span class="special-download-icon special-download-guide"></span>
+      <br>投资人指引
+      <br><a target="_blank" href="./special/anjudai-guide.pdf"><span class="btn-download">下载 PDF</span></a>
+    </td>
+    <td>
+      <span class="special-download-icon special-download-plan"></span>
+      <br>还款计划表
+      <br><a target="_blank" href="./special/anjudai-plan.pdf"><span class="btn-download">下载 PDF</span></a>
+    </td>
+  </tr>
+</table>
+
+<div class="special-description">
+  <h1 style="background-image:url(<?php echo $this->_var['TMPL']; ?>/img/specials/title-anjudai.png)">安居贷</h1>
+  <table class="special-meta">
+    <tr>
+      <td>产品发布时间：2013年10月23日</td>
+      <td>年化收益率：10.0%~12.0%</td>
+    </tr>
+    <tr>
+      <td>起投金额：10万元</td>
+      <td>投资期限：1~12个月不等</td>
+    </tr>
+    <tr>
+      <td colspan=2>收款方式：按月收取利息，到期收取本金</td>
+    </tr>
+  </table>
+
+<h2 class="sub-heading">何为“安居贷”</h2>
+<p>“安居贷”是网信理财网站平台推出的个人投融资服务。通过联合创业担保集团公司审核的借款方直接向投资方借贷，双方通过平台的借贷协议，明确双方的债务与债权关系。网信理财向投资方（投资人）和融资方（借款人）提供投融资服务，帮助双方快捷方便地完成投资和借贷。该服务仅向符合中华人民共和国有关法律法规及本公司相关规定的合格投资人和借款人提供。
+
+<h2 class="sub-heading">投资安全性保障：四层保障</h2>
+
+<p>1. 联合创业担保集团公司承担担保责任，如借款人违约，则先行全额本金与约定收益进行赔付
+
+<p>2. 由多家第三方独立房产评估机构对抵押房产的价值进行交叉检验，评估房产的真实价格
+
+<p>3. 当地专业的贷后管理人员定期联系借款人，并且定期现场查看抵押的房产，进行专业的贷后管理
+
+<p>4. 借款人的抵押物的价值可以达到130%以上覆盖投资人的本息
+
+<h2 class="sub-heading">产品要素</h2>
+
+<p><b>预期年化收益率：</b>“安居贷”产品的年化收益率为<span style="color:#cd1233">10.0%~12.0%</span>
+
+<p><b>产品投资期限：</b><span style="color:#cd1233">1个月</span>，<span style="color:#cd1233">3个月</span>、<span style="color:#cd1233">6个月</span>、<span style="color:#cd1233">9个月</span>、<span style="color:#cd1233">12个月</span>（根据产品的不同投资期限，收益率如下所示）
+
+<table class="bordered-table">
+ <tr><th>产品投资期限
+</th><td>1个月
+</td><td>3个月</td><td>6个月</td><td>9个月</td><td>12个月</td></tr>
+ <tr><th>预期年化收益
+</th><td>10.00%</td><td>10.20%</td><td>10.80%</td><td>11.40%</td><td>12.00%</td></tr>
+</table>
+
+<p><b>投资人收款方式：</b>按月收取利息，到期一次性收取本金
+
+<p><b>投资起点：</b>10万元起投
+
+
+</div>
+
+
+</div>
+{include file="inc/footer.html"}
+</body>
+</html>

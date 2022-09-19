@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta name="format-detection" content="telephone=no">
+	<title>网信四周年生日快乐</title>
+	<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/fouryears/base.css?v=20170705011');?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/fouryears/user.css?v=2017070606');?>">
+	<script src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/fouryears/zepto.js');?>"></script>
+	<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/fouryears/common.js');?>"></script>
+	<script>
+
+        $(function(){
+            var sn = '{$sn}';
+
+
+        	$(".shareMask").css("height",winH/fontSize+"rem");
+        	$(".goShare").click(function(){
+		        $(".shareMask").show('fast');
+		    });
+		    $(".iKnow").click(function(){
+		    	$(".shareMask").hide('fast');
+		    });
+		    $(".praiseBtn").click(function(){
+		    	if($(this).hasClass('yizan')){
+		    		return;
+		    	}
+		    	var token = $("#token").val();
+                var token_id = $("#token_id").val();
+		    	//请求接口  成功以后改变文本
+		    	$.post("upvote?sn="+ sn,{token:token,token_id:token_id},function(result){
+            		if(result.error==0){
+		    			$(".praiseBtn").html("已赞").addClass('yizan praiseBtn2');
+
+		    			$(".hand1").hide();
+		    			$(".hand2").hide();
+                        $(".hand3").hide();
+
+                        var lessnum = parseInt(3-result.data.cnt);
+                        $(".lessThree").find(".num").html(lessnum);
+                        $(".userIcons").append('<li><img src="'+result.data.img+'" width="100%" ></li>');
+
+		    			if(result.data.cnt>=3){
+		    				//如果满3位数了 刷新页面
+                            window.location.href=window.location.href+ '&s=' + Math.random()
+
+		    			}
+            		}else if(result.error>0){
+            			return false;
+            		}
+            	}, 'json');
+		    })
+
+            if(!wx) return;
+            //分享控制
+            var shareOpt={//分享信息json对象
+                'title':'网信生日季，邀你送祝福！',
+                'content':'网信4岁生日季，声声的祝福，深深的情谊。7月，不平凡的日子……感恩相伴！',
+                'url':location.protocol+'//'+location.hostname+'/activity/bless?sn=' + sn,
+                'img':location.protocol + '//' + location.hostname + '/static/v3/images/fouryears/share.jpeg'
+            };
+            var sharetitle = shareOpt.title;
+            shareOpt.title = shareOpt.title;
+            shareOpt.content = shareOpt.content;
+            var appid = '{$appid}';
+            var nonceStr = '{$nonceStr}';
+            var timeStamp = '{$timeStamp}';
+            var signature = '{$signature}';
+            wx.config({
+                appId:appid,
+                timestamp:timeStamp,
+                nonceStr:nonceStr,
+                signature:signature,
+                jsApiList:[
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage',
+                    'hideOptionMenu',
+                    'showOptionMenu',
+                    'closeWindow'
+                ]
+            });
+            wx.ready(function(){
+                wx.onMenuShareAppMessage({
+                    title: shareOpt.title,
+                    desc: shareOpt.content,
+                    link: shareOpt.url, // 分享链接
+                    imgUrl: shareOpt.img
+                });
+                wx.onMenuShareTimeline({
+                    title: shareOpt.title,
+                    link: shareOpt.url,
+                    imgUrl: shareOpt.img
+                });
+            });
+        })
+	</script>
+</head>
+<body class="blessSuc">
+	<div class="shareMask" style="display:none;">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/suc/share.png');?>" width="100%" class="iKnow">
+	</div>
+	<div class="topHeader">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/suc/blessSucHeader.jpg');?>" width="100%" >
+	</div>
+	<div class="infoZone">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/suc/blessInfo.png');?>" class="infoImg" height="410" width="100%" >
+		<p class="formWho"><span>来自</span><span class="name">{$userInfo.nickname}</span><span>的祝福</span></p>
+		<p class="sucWords">{$info}</p>
+		<ul class="userIcons">
+		{foreach from="$upvoteInfo" item="item"}
+			<li>
+				<img src="{$item.detail.headimgurl}" width="100%" >
+			</li>
+		{/foreach}
+		</ul>
+	</div>
+	<div class="supplement">
+		{if $cnt > 0}
+		<p class="lessThree">还差<i class="num">{$cnt}</i>位好友助力,快去点击分享<span class="goShare">去分享</span></p>
+		{else}
+		<p class="finish"><i class="num">3</i>位好友已帮他完成助力<span class="goShare">去分享</span></p>
+		{/if}
+	</div>
+	<div class="btnZone">
+		{if $cnt == 0}
+		<a href="/activity/bless" class="finishParticipateBtn">我要参与</a>
+		{else}
+		{if $isUpvoted}
+		<a href="javascript:;" class="praiseBtn yizan">已赞</a>
+		<a href="/activity/bless" class="participateBtn">我要参与</a>
+		{else}
+		<a href="javascript:;" class="praiseBtn">
+            赞一下
+            <i class="hand hand1"></i>
+            <i class="hand hand2"></i>
+            <i class="hand hand3"></i>
+        </a>
+		<a href="/activity/bless" class="participateBtn">我要参与</a>
+
+
+		{/if}
+		{/if}
+	</div>
+	<div class="activityDetail">
+		<h2 class="commonH2">活动说明</h2>
+		<div class="rules">
+			<p>为网信四周年任意送一句祝福语分享至朋友圈，积满3个赞的手机号码系统会自动识别将其放入抽奖池中，参与抽奖！</p>
+			<p><span>活动奖品：</span>60元手机话费</p>
+			<p><span>活动时间：</span> 2017年7月10日~2017年7月12日</p>
+			<p><span>开奖时间以及规则：</span></p>
+			<p>本次活动将于2017年7月13日采用电脑程序抽奖，全程由公证人员视频拍摄监督以保证抽奖的公平性，并于当日网信官方微信公众号统一发布， 一共抽取40个幸运用户,参与次数越多获奖几率越大！</p>
+			<p><span>特别说明：</span>话费到账时间为活动结束后的5个工作日内，客服热线400-890-9888 。</p>
+		</div>
+	</div>
+	<div class="moreActivity">
+		<h2 class="commonH2">更多活动</h2>
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/qrCode.png');?>" width="100%" class="qrcode">
+	</div>
+	<div class="activityDetail">
+		<h2 class="commonH2">关于网信</h2>
+		<div class="rules">
+			<p>网信于2013年7月正式上线，作为金融科技开放平台，为用户提供一站式综合金融信息服务，为金融机构提供线上用户入口，输出金融科技技术，实现互联网金融服务的共享模式。</p>
+		</div>
+	</div>
+	<div class="footer">
+		<h2 class="commonH2">为什么选择我们</h2>
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/suc/blessSucFooter.jpg');?>" width="100%" >
+	</div>
+	<?php echo token_input(); ?>
+</body>
+</html>
+<script >
+var winW = document.documentElement.clientWidth;
+var winH = document.documentElement.clientHeight;
+var fontSize = winW / 750 * 100;
+document.documentElement.style.fontSize = fontSize + "px";
+</script>

@@ -1,0 +1,133 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("PaymentNotice/limit_list")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">ID</td>
+                <td class="item_input">{$vo.id}</td>
+            </tr>
+            <tr>
+                <td class="item_title">渠道名称</td>
+                <td class="item_input">
+                    <select name="pay_channel" id="pay_channel" class="textbox require" style="width:180px;" disabled="disabled">
+                        <foreach name="charge_channel_list" key="channel_key" item="channel_item">
+                            <option value="{$channel_key}" <if condition="$vo['pay_channel'] eq $channel_key">selected="selected"</if>>{$channel_item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行名称</td>
+                <td class="item_input">
+                    <select name="name" id="name" class="textbox require" style="width:180px;">
+                        <foreach name="bank_map" item="bank_item">
+                            <option value="{$bank_item.name}" <if condition="$vo['name'] eq $bank_item['name']">selected="selected"</if>>{$bank_item.name}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行简码</td>
+                <td class="item_input">
+                    <select name="code" id="code" class="textbox require" style="width:180px;">
+                        <foreach name="bank_map" item="bank_item">
+                            <option value="{$bank_item.code}" <if condition="$vo['code'] eq $bank_item['code']">selected="selected"</if>>{$bank_item.name}-{$bank_item.code}</option>
+                        </foreach>
+                    </select>&emsp;<span class="tip_span">大写英文字母</span></td>
+            </tr>
+            <tr>
+                <td class="item_title">单笔限额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="max_quota" value="{$vo.max_quota}"/>&emsp;<span class="tip_span">单位元（-1：无限额）不支持输入0</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">当日限额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="day_quota" value="{$vo.day_quota}"/>&emsp;<span class="tip_span">单位元（-1：无限额）不支持输入0</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">当月限额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="month_quota" value="{$vo.month_quota}"/>&emsp;<span class="tip_span">单位元（-1：无限额）不支持输入0</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">限额描述</td>
+                <td class="item_input">
+                    <textarea type="text" style="width:500px;height:100px" class="textbox" name="limit_intro" />{$vo.limit_intro}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">限额阶梯</td>
+                <td class="item_input"><input type="button" class="button" value="增加" id="addvalue"/></td>
+            </tr>
+            <tr>
+                <td class=""></td>
+                <td class="item_input">
+                <div id="valuetable">
+                    <foreach name="limitStep" item="item">
+                    <div class="pid var-box">
+                        <input type="text" class="textbox" name="min[]" style="width:50px;" value="{$item['min']/100}" />元
+                        - <input type="text" class="textbox" name="max[]" style="width:50px;" value="{$item['max']/100}" />元
+                        | 单笔：<input type="text" class="textbox" name="single[]" style="width:50px;" value="{$item['single']/100}"  />元
+                        <input type="button" class="button" value="删除" onclick="delvalue($(this));" />
+                        <hr>
+                    </div>
+                    </foreach>
+                <div>
+                </td>
+            </tr>
+            
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="type" value="{$vo.type}" />
+            <input type="hidden" name="pay_channel" value="{$vo.pay_channel}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="PaymentNotice" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="limit_update" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="submit" class="button" value="{%EDIT}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div style="display:none" id="hidevalue">
+    <div class="pid var-box">
+        <tr>
+            <td class="item_input">
+                <input type="text" class="textbox" name="min[]" style="width:50px;" />元
+                - <input type="text" class="textbox" name="max[]" style="width:50px;" />元
+                 | 单笔：<input type="text" class="textbox" name="single[]" style="width:50px;" />元
+                <input type="button" class="button" value="删除" onclick="delvalue($(this));" />
+        </tr>
+        <hr>
+    </div>
+</div>
+
+<script>
+
+$('#addvalue').click(function(){
+	$("#valuetable").append($("#hidevalue").html());
+});
+
+function delvalue(obj){
+    obj.parent().remove();
+}
+
+</script>
+
+<include file="Public:footer" />

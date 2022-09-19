@@ -1,0 +1,54 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+    function add(){
+        $.weeboxs.open(ROOT+'?m=ContractTplIdentifier&a=add', {contentType:'ajax',showButton:false,title:'添加模板标识',width:600,height:300});
+    }
+    function edit(id){
+        $.weeboxs.open(ROOT+'?m=ContractTplIdentifier&a=edit&id='+id, {contentType:'ajax',showButton:false,title:'修改模板标识',width:600,height:300});
+    }
+</script>
+<div class="main">
+    <div class="main_title">合同模板标识列表</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="14" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="50px">编号</th>
+            <th>模板标识</th>
+            <th>模板标识名称</th>
+            <th>更新时间</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td>{$item.id}</td>
+                <td>{$item.name}</td>
+                <td>{$item.title}</td>
+                <td>{$item.updatedTime|format_date}</td>
+                <td>
+                    <a href="javascript:void(0)" onclick="javascript:edit('{$item.id}')">查看/修改</a> &nbsp;
+                    <!--<a href="/m.php?m=ContractTplIdentifier&a=delete&id={$item.id}" onclick="return confirm('确定要删除吗?')">删除</a>-->
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,146 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<div class="main">
+<div class="main_title">优惠码附加返利 编辑 <a href="{:u("CouponExtra/index")}deal_id={$vo.deal_id}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+    <tr>
+        <td class="item_title">投资来源</td>
+        <td class="item_input">
+        <select name="source_type" onchange="javascript:displayTagList();" id="sourceType">
+            <option value="0" <if condition="$vo['source_type'] eq 0">selected="selected"</if>>web</option>
+            <option value="3" <if condition="$vo['source_type'] eq 3">selected="selected"</if>>ios</option>
+            <option value="4" <if condition="$vo['source_type'] eq 4">selected="selected"</if>>android</option>
+            <option value="11" <if condition="$vo['source_type'] eq 11">selected="selected"</if>>一触即发</option>
+            <option value="12" <if condition="$vo['source_type'] eq 12">selected="selected"</if>>一气呵成</option>
+            <option value="13" <if condition="$vo['source_type'] eq 13">selected="selected"</if>>首屈一指</option>
+            <option value="20" <if condition="$vo['source_type'] eq 20">selected="selected"</if>>用户tag</option>
+            <option value="21" <if condition="$vo['source_type'] eq 21">selected="selected"</if>>标tag</option>
+        </select>
+        </td>
+    </tr>
+    <tr>
+    <td class="item_title">标签列表</td>
+    <td class="item_input">
+    <div id="tagList">
+     <foreach name="tags" item="item">
+            <input type="checkbox" name="tags[]"  value="{$item.id}">{$item.name}
+            </foreach>
+     </div>
+     </td>
+    </tr>
+    <!--tr>
+        <td class="item_title">返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="rebate_amount" value="{$vo.rebate_amount}" maxlength="20"/>元</td>
+    </tr-->
+    <tr>
+        <td class="item_title">返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="rebate_ratio" value="{$vo.rebate_ratio}" maxlength="10"/>%</td>
+    </tr>
+    <!--tr>
+        <td class="item_title">推荐人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="referer_rebate_amount" value="{$vo.referer_rebate_amount}" maxlength="20"/>元</td>
+    </tr-->
+    <tr>
+        <td class="item_title">推荐人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="referer_rebate_ratio" value="{$vo.referer_rebate_ratio}" maxlength="10"/>%</td>
+    </tr>
+    <tr>
+        <td class="item_title">备注说明:</td>
+        <td class="item_input"><textarea id="remark" class="require" name="remark" style="width:500px;height:50px">{$vo.remark}</textarea></td>
+    </tr>
+
+    <input type="hidden" name="id" value="{$vo.id}" />
+    <input type="hidden" name="deal_id" value="{$vo.deal_id}" />
+	<input type="hidden" name="{:conf("VAR_MODULE")}" value="CouponExtra" />
+	<input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+	<tr>
+	<td class="item_title"></td>
+	<td>
+        <input type="submit" class="button" value="{%EDIT}" />
+        <input type="reset" class="button" value="{%RESET}" />
+	</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+</form>
+<script >
+
+    var _iframeUtil_adpatyParentHeight = function() {
+        var pwin = window.parent;
+        //如果父亲window跟当前window一样表示不是IFrame模式
+        if (pwin == window) {
+            return;
+        }
+        if (typeof pwin.iFrameHeight != 'function') {
+            return;
+        }
+        var piframes = pwin.document.getElementsByTagName("iframe");
+        for (var i = piframes.length - 1; i >= 0; i--) {
+            //定位到父亲iframe
+            if (piframes[i].contentWindow == window) {
+                var piframe = piframes[i];
+                pwin.iFrameHeight(piframe.id);
+            }
+        }
+    };
+    function displayTagList(){
+    
+        var tagType = $("#sourceType").val();
+   
+        if (tagType!=20 && tagType!=21){
+            $("#tagList").html("");
+            return false;
+        }
+        $.ajax({ 
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=getTagList&sourceType="+tagType, 
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                tagListHtml = '';
+                checkedHtml = '';
+                if(obj.data=='' || obj.error_code !=0)
+                {
+                    $("#tagList").html("");
+                }
+                dataList = eval(obj.data);
+                for(var i=0; i<dataList.length; i++)  
+                {  
+                    var tagchecked = "{$vo.tags}".split(',');
+                
+                    if ($.inArray(dataList[i].id,tagchecked) !=-1 ){
+                        checkedHtml = 'checked="checked"';
+                    }else{
+                        checkedHtml = '';
+                    }
+                    if (tagType==20){
+                    
+                        tagListHtml += '<input type="checkbox" name="tags[]" value="'+dataList[i].id+'" '+checkedHtml+'/>'+dataList[i].name;
+                    }
+                    if (tagType==21){
+                        tagListHtml += '<input type="checkbox" name="tags[]" value="'+dataList[i].id+'" '+checkedHtml+' />'+dataList[i].tag_name;
+                    }
+                }
+                tagListHtml += '<br /><span style="color:#ff0000">多选时为并且关系，需都满足才符合该规则</span>';
+                $("#tagList").html(tagListHtml);
+                _iframeUtil_adpatyParentHeight();
+            }
+        });
+    }
+
+    displayTagList();
+</script>
+<include file="Public:footer" />

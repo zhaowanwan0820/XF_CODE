@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>{$deal.name}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('css/m-base.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('css/m-common.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+</head>
+<body>
+    <link href="<?php echo $this->asset->makeAppUrl('css/xiangqing.css');?>" rel="stylesheet" type="text/css" />
+    <div class="bd_center">
+        <div class="bd_top">
+            
+            <div class="bdt_right">
+                <div class="bdt_title">
+                    <div class="xin_title">
+                        {if $deal.deal_tag_name}
+                        <span class="th_tips">{$deal.deal_tag_name}</span>
+                        {/if}
+                        {$deal.old_name}
+                    </div>
+                </div>
+                <div class="bdt_message">
+                    {if $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}<div class="ctr_img5"></div><!--等待确认-->
+                    {elseif $deal.deal_status eq 2}<div class="ctr_img3"></div><!--满标-->
+                    {elseif $deal.deal_status eq 3}<div class="ctr_img6"></div><!--流标 缺少-->
+                    {elseif $deal.deal_status eq 4}<div class="ctr_img4"></div><!--还款中-->
+                    {elseif $deal.deal_status eq 5}<div class="ctr_img2"></div><!--已还完-->
+                    {else}<div class="ctr_img dsn"></div>{/if}<!--投资中-->
+                    <!--ctr_img投资中-->
+                    <!--ctr_img2已还完-->
+                    <!--ctr_img3满标-->
+                    <!--ctr_img4还款中-->
+                    <!--ctr_img5待确认-->
+                    <table class="bdt_tb1">
+                        <colgroup>
+                            <col width="20%" />
+                            <col width="22%" />
+                            <col width="58%" />
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td rowspan="6">
+                                    <div class="bdt_left">
+
+                                        {if $deal.type_match_row}
+                                        <div class="bdt_ul">
+                                             <div class="bdt_icon"><img src="{$STATIC_PATH}/images/load_detail/{$deal.type_id}.png" width="50%"/></div>
+                                            <p>
+                                                {$deal.type_match_row}</p>
+                                           
+                                        </div>
+                                        {/if}
+                        
+                                    </div>
+                                </td>
+                                <th class="tb1-th">
+                                    收益率：
+                                </th>
+                                <td>
+                                    <div class="tb_zi">
+                                        <!--<img src="images/number/1.png" /><img src="images/number/8.png" /><img src="images/number/point.png"
+                                            style="width: 5px;" /><img src="images/number/4.png" /><img src="images/number/bai.png"
+                                                style="width: 15px" />-->
+                                        <em class="f14">{$deal.income_base_rate}%{if $deal.income_ext_rate>0}+{$deal.income_ext_rate}%{/if}</em>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="padding-top:2px;">
+                                   期限：
+                                </th>
+                                <td style="padding-top:2px;">
+                                     <em class="tb_zi4">{$deal.repay_time}{if $deal.loantype eq 5}天{else}个月{/if}</em>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="tb1_jg">
+                                    可投金额：
+                                </th>
+                                <td class="tb_zi5">
+                                    {$deal.need_money_detail}<span class="tb_zi2">/{$deal.borrow_amount_wan_int}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    还款方式：
+                                </th>
+                                <td>
+                                   {$deal.loantype_name}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    剩余时间：
+                                </th>
+                                <td>
+                                    {$deal.remain_time_format}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    起投金额：
+                                </th>
+                                <td>
+                                    {$deal.min_loan_money_format_yuan}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="huikuan clearfix">
+
+                {if $deal.is_crowdfunding eq 0}
+                <div class="bd_mid" style="clear: both">
+                     <table>
+                      
+                        <tbody>
+                            <tr>
+                                <th>保障方式：</th>
+                                <td>{if $deal.warrant eq 1}担保本金{elseif $deal.warrant eq 2}担保本息{else}无担保{/if}</td>
+                            </tr>
+                            {if $deal.income_subsidy_rate > 0}
+                              <tr>
+                                <th>
+                                    收益说明：
+                                </th>
+                                <td>
+
+                                    <p>
+                                        <span class="g-money">年化收益中{$deal.income_subsidy_rate}%为平台补贴</span>，放款后发放到平台账户，合同中不体现</p>
+                                </td>
+                            </tr>
+                            {/if}
+                        </tbody>
+                    </table>
+                </div>
+                {/if}
+
+
+            {include file="api/views/_v10/deals/load_list.html"}
+
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('js/jquery-1.10.2.min.js');?>" type="text/javascript"></script>
+</body>
+</html>

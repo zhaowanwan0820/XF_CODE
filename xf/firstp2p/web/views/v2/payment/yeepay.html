@@ -1,0 +1,39 @@
+{include file="web/views/v2/header.html"}
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v2/css/p_payment_yeepayconfirmpay.css');?>"  rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/js/temp/weebox.1.2.css');?>">
+<script src="<?php echo $this->asset->makeUrl('v2/js/payment/p_payment_yeepayconfirmpay.js');?>" type="text/javascript"></script>
+<!--private js&css end-->
+
+<div class="p_payment_yeepayconfirmpay">
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                <h2><i></i>充值</h2>
+            </div>
+            <div class="p_content">
+                {if $newBindCard}
+                <div class="bind_suc">验证成功！</div>
+                {/if}
+                <div class="confirm_top_txt">请确认充值金额进行充值</div>
+                <div class="confirm_box">
+                    <div class="line clearfix">
+                        <div class="fl line_l">{$userInfo.bankName}</div>
+                        <div class="fr line_r">{$userInfo.cardFormat}</div>
+                    </div>
+                    <div class="line clearfix">
+                        <div class="fl line_l">充值金额</div>
+                        <div class="fr line_r"><span class="money_num">￥{$userInfo.moneyFormat}</span> 元</div>
+                    </div>
+                </div>
+                <div class="tc">
+                    <input class="common-sprite btn-red-h46" type="button" id="confirmInfoBtn" value="下一步">
+                </div>
+                <div class="ui_payment_statement">本服务由易宝支付提供</div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+{include file="web/views/v2/footer.html"}

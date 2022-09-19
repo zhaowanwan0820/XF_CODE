@@ -1,0 +1,75 @@
+<link href="{$TMPL_NEW}/css/user.css" rel="stylesheet" type="text/css">
+<script src="{$TMPL_NEW}/js/vendor/ZeroClipboard.min.js"></script>
+
+<link href="{$TMPL_NEW}/css/yaoqingma.css" rel="stylesheet" type="text/css">
+
+<div class="user_right_box  mb20 pb20">
+    <div class="user_title"><h1><i class="ico_yaoqing"></i>我的邀请码</h1></div>
+
+    <div class="yaoqing">
+
+        {if $coupon.shortAlias}
+        <div class="youhui">
+        	<div class="icon_yh"></div>
+        	<h2 class="f30">我的<em class="color-red2">优惠</em>邀请码：<em class="color-red2">{$coupon.shortAlias}</em></h2>
+            <adv adv_id="我的邀请码说明"/>
+            <div class="copy_link">
+            <span class="link_box">{$domain}/?cn={$user_id}</span>
+            <input type="button" value="复制链接" class="link_but" id="copy-button" data-clipboard-target="il_text" data-clipboard-text="{$domain}/?cn={$user_id}" value='{$domain}/?cn={$user_id}'>
+        </div>
+        </div>
+        <adv adv_id="我的邀请码示例"/>
+        {/if}
+
+        <h3>邀请记录：您已累计邀请 <span>{$coupon_log.consume_user_count}</span> 人，
+            获得返利 <em class="color-yellow1">{function name="number_format" v=$coupon_log.referer_rebate_amount f="2"}</em> 元</h3>
+        <table width="100%" class="yqjilu">
+            <colgroup>
+                <col width="100">
+                <col width="120">
+                <col width="100">
+                <col width="150">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>返利金额（元）</th>
+                <td>返利时间</td>
+                <td>投资人</td>
+                <th>项目名称</th>
+            </tr>
+            </thead>
+            <tbody>
+            {if $coupon_log.list}
+            {foreach from=$coupon_log.list item='log'}
+            <tr>
+                <th><em class="color-yellow1">{function name="number_format" v=$log.referer_rebate_amount_2part f="2"}</em></th>
+                <td>{$log.pay_time}</td>
+                <td>{$log.consume_user_name}</td>
+                <th>编号{$log.deal_id} {$log.deal_name}</th>
+            </tr>
+            {/foreach}
+            {else}
+            <tr>
+                <td colspan="4">暂无记录</td>
+            </tr>
+            {/if}
+            </tbody>
+        </table>
+        <div class="pages">{$pages}</div>
+        <p class="yq_tip">北京东方联合投资管理有限公司保留对本活动的最终解释权。</p>
+    </div>
+</div>
+
+    <script>
+var clip = new ZeroClipboard( document.getElementById("copy-button"), {
+  moviePath: "{$TMPL_NEW}/js/vendor/ZeroClipboard.swf",
+  trustedDomains: ['*'],
+  allowScriptAccess: "always"
+} );
+
+clip.on( "load", function(client) {
+  client.on( "complete", function(client, args) {
+      $.showErr("邀请链接已复制到剪切板","","提示")
+  } );
+} );
+</script>

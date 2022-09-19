@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>协议</title>
+  <style>
+    *{padding: 0px; margin: 0px;}
+    a{-webkit-appearance:none; -moz-appearance:none; -webkit-tap-highlight-color:transparent;-webkit-transition:background-color;outline: none; border:none; border-radius:0;}
+    .list_item{
+      border-bottom: 1px solid #e7e7e7;
+      height: 50px;
+      line-height: 50px;
+      background: url(//event.ncfwx.com/upload/image/20180131/22-26-arrow.png) no-repeat 95% 50%,url(//event.ncfwx.com/upload/image/20180131/22-29-bg.png) no-repeat 10px 50% #fff;
+      background-size: 10px,17px;
+      padding-left: 34px;
+      font-size: 15px;
+    }
+    .list_item a{height: 50px; display: block;color:#000; text-decoration: none;}
+  </style>
+</head>
+<body>
+    <div class="p_list" id="p_list">
+    </div>
+    <script>
+        var jsonstr = '<adv adv_id="{$data.advid}"/>';
+        var lists = eval('(' + jsonstr + ')');
+        var html = "";
+        for(var i =0 ; i<lists.length; i++){
+          html += '<div class="list_item"><a href="/agreement/content?advid='+ lists[i].advId +'&title='+ lists[i].title +'">' + lists[i].title +'</a></div>'
+        }
+        document.getElementById("p_list").innerHTML = html;
+    </script>
+</body>
+</html>

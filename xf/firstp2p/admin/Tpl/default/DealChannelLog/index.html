@@ -1,0 +1,175 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<php>
+	function get_deal_channellog_status($deal_status)
+	{
+		if($deal_status == 0)
+		{
+			return '投标成功';
+		}
+		elseif($deal_status == 1)
+		{
+			return '还款中';
+		}else{
+			return '流标';
+		}
+	}
+	
+	function get_deal_channellog_fee_status($deal_status, $item){
+		$text = "";
+		$channel_type = get_deal_channel_value($item['channel_id'],'channel_type');
+		if ($item['deal_status'] == 1 && $channel_type == 0) {
+			$text = "<font color='red'>未结清</font>";
+			if ($item['fee_status'] == 1) {
+				$text = "已结清";
+			}
+		}
+		return "<span id='fee_status_".$item['id']."'>".$text."</span>";
+	}
+
+    function get_deal_channellog_add_type($add_type){
+        if($add_type == 2){
+            return '手工添加';
+        }else{
+            return '推广链接';
+        }
+    }
+
+	function re_interest_num($deal_load_money,$item){
+	    return format_price($item['deal_load_money']*$item['advisor_fee_rate']*$item['pay_factor']*0.01);
+	}
+	
+	function get_deal_channel_value_sw($channel_id){
+		return '<a href="/m.php?m=DealChannel&a=index&id='.$channel_id.'" target="_blank">'.get_deal_channel_value($channel_id,'channel_value')."</a>";
+	}
+	
+	function get_channellog_is_edit($type,$item){
+		if($item['fee_status'] == 0){
+			return "<span id='channel_edit_".$item['id']."'><a href='javascript:weebox_edit(".$item['id'].",this);'>编辑</a></span>";
+		}else{
+			return '&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+	}
+	
+	function rate_sw($num){
+		return $num.'%';
+	}
+	
+	function get_pay_link($param, $item){
+		if ($item['deal_status'] != 1 || $item['fee_status'] == 1) {
+			return "";
+		}
+		$channel_type = get_deal_channel_value($item['channel_id'],'channel_type');
+		if ($channel_type != 0) { // 只结算顾问类型
+			return "";
+		}
+		return "<span id='pay_channel_fee_".$item['id']."'><a href='#' onclick='pay_channel_fee(".$item['id'].",this);'>结算</a></span>";
+	}
+
+    function get_del_link($param, $item){
+        if ($item['fee_status'] == 1) {
+            return "";
+        }
+        return '<span id="channel_del_'.$item['id'].'"><a href="javascript:del(\\''.$item['id'].'\\');">删除</a></span>';
+    }
+	
+</php>
+
+<div class="blank5"></div>
+
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            {%ID}：<input type="text" class="textbox" name="id" value="{$_REQUEST['id']}" />
+          	  渠道ID：<input type="text" class="textbox" name="channel_id" value="{$_REQUEST['channel_id']}" />
+                                      订单ID：<input type="text" class="textbox" name="deal_id" value="{$_REQUEST['deal_id']}" />
+                                      投标人ID：<input type="text" class="textbox" name="user_id" value="{$_REQUEST['user_id']}" />
+                                      投标记录ID：<input type="text" class="textbox" name="deal_load_id" value="{$_REQUEST['deal_load_id']}" />
+                                      状态：
+            <select name="deal_status">
+                <option value="0" <if condition="intval($_REQUEST['deal_status']) eq 0">selected="selected"</if>>投标成功</option>
+                <option value="1" <if condition="intval($_REQUEST['deal_status']) eq 1">selected="selected"</if>>还款中</option>
+                <option value="2" <if condition="intval($_REQUEST['deal_status']) eq 2">selected="selected"</if>>流标</option>
+                <option value="" <if condition="$_REQUEST['deal_status'] eq ''">selected="selected"</if>>全部</option>
+            </select>
+                                      结算状态：
+            <select name="fee_status">
+                <option value="0" <if condition="intval($_REQUEST['fee_status']) eq 0">selected="selected"</if>>未结清</option>
+                <option value="1" <if condition="intval($_REQUEST['fee_status']) eq 1">selected="selected"</if>>已结清</option>
+                <option value="" <if condition="$_REQUEST['fee_status'] eq ''">selected="selected"</if>>全部</option>
+            </select>
+            <input type="hidden" value="DealChannelLog" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+<!---->
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="item"
+    action="true"
+    datasource="list"
+	show="id:{%ID}|50px
+		,channel_id:渠道ID
+		,channel_id|get_deal_channel_value_sw:渠道号
+		,deal_id:订单ID
+		,advisor_fee_rate|rate_sw:年化顾问利率
+		,pay_factor:返利系数
+		,user_id|get_user_name:投标人
+		,user_id:投标人ID
+		,deal_load_id:投标记录ID
+		,deal_load_money:投标金额
+		,pay_fee:返利金额
+		,deal_status|get_deal_channellog_status:订单状态
+		,fee_status|get_deal_channellog_fee_status=$item:结算状态
+		,add_type|get_deal_channellog_add_type:记录类型
+		,create_time|to_date:创建时间
+		"
+    actionlist="add_type|get_channellog_is_edit=$item, |get_del_link=$item, |get_pay_link=$item"
+    actionwidth="120px"/>
+
+    <!--,deal_load_money|re_interest_num=$item:返利金额--> <!--该页面功能运维不用，不继续维护-->
+    <div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+	function account(id){
+		if(id > 0){
+			window.location.href =  ROOT + '?m=User&a=index&user_id='+id;
+		}
+	}
+	function weebox_edit(id){
+		$.weeboxs.open(ROOT+'?m=DealChannelLog&a=edit&id='+id, {contentType:'ajax',showButton:false,title:LANG['DEALCHANNEL_INDEX'],width:500,height:200});
+	}
+	
+	//返利
+	function pay_channel_fee(channel_log_id, domobj)
+	{
+		if(confirm("确认结算该条渠道推广记录的返利？"))
+		$.ajax({ 
+				url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=pay_channel_fee&channel_log_id="+channel_log_id, 
+				data: "ajax=1",
+				dataType: "json",
+				success: function(obj){
+					if(obj.status==1){
+						$("#fee_status_"+channel_log_id).html("已结清");
+						$("#pay_channel_fee_"+channel_log_id).html("");
+						$("#channel_edit_"+channel_log_id).html("");
+                        $("#channel_del_"+channel_log_id).html("");
+						$("#info").html("结算成功");
+					} else {
+						$("#info").html(obj.info);
+					}
+				}
+		});
+	}
+	
+</script>
+<include file="Public:footer" />

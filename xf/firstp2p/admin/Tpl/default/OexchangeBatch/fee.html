@@ -1,0 +1,147 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<div class="main">
+<div class="main_title">费用明细 <a href="{:u("OexchangeBatch/index?pro_id=". $project['id'])}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<div class="button_row">
+    <a href="/m.php?m=OexchangeBatch&a=fee&id={$batch.id}&export=1';" class="button">导出</a>
+</div>
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">项目名称:</td>
+        <td class="item_input">{$project['name']}</td>
+    </tr>
+    <tr>
+        <td class="item_title">交易所备案产品编号:</td>
+        <td class="item_input">{$project['jys_number']}</td>
+    </tr>
+    <tr>
+        <td class="item_title">发行人信息:</td>
+        <td class="item_input"> <input type="hidden" id="fx_uid" value="{$project['fx_uid']}" />
+        {$project['fx_uid']} <span id="user_name"></span></td>
+    </tr>
+    <tr>
+        <td class="item_title">期数:</td>
+        <td class="item_input">
+            {$batch['batch_number']} 期
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">批次id:</td>
+        <td class="item_input">
+            {$batch['id']}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">批次金额:</td>
+        <td class="item_input">
+            {$batch['amount']} 元
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">期限:</td>
+        <td class="item_input">
+            {$project['repay_time']} <if condition="1 eq $project['repay_type']">天<else/>月</if>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款咨询费率:</td>
+        <td class="item_input">
+            {$batch['consult_rate']} % &nbsp;&nbsp;&nbsp;&nbsp; {$batch['consult_fee']} 元
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款咨询费收取方式:</td>
+        <td class="item_input">
+            <input type="radio" disabled="disabled" <if condition="1 eq $project['consult_type']">checked=""</if> /> 前收
+            <input type="radio" disabled="disabled" <if condition="2 eq $project['consult_type']">checked=""</if> /> 后收
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款担保费率:</td>
+        <td class="item_input">
+            {$batch['guarantee_rate']} % &nbsp;&nbsp;&nbsp;&nbsp; {$batch['guarantee_fee']} 元
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款担保费收取方式:</td>
+        <td class="item_input">
+            <input type="radio" disabled="disabled" <if condition="1 eq $project['guarantee_type']">checked=""</if> /> 前收
+            <input type="radio" disabled="disabled" <if condition="2 eq $project['guarantee_type']">checked=""</if> /> 后收
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资顾问费率:</td>
+        <td class="item_input">
+            {$batch['invest_adviser_rate']} % &nbsp;&nbsp;&nbsp;&nbsp; {$batch['invest_adviser_fee']} 元
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资顾问费收取方式:</td>
+        <td class="item_input">
+            <input type="radio" disabled="disabled" <if condition="1 eq $project['invest_adviser_type']">checked=""</if> /> 前收
+            <input type="radio" disabled="disabled" <if condition="2 eq $project['invest_adviser_type']">checked=""</if> /> 后收
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">发行服务费率:</td>
+        <td class="item_input">
+            {$batch['publish_server_rate']} % &nbsp;&nbsp;&nbsp;&nbsp; {$batch['publish_server_fee']} 元
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">发行服务费收取方式:</td>
+        <td class="item_input">
+            <input type="radio" disabled="disabled" <if condition="1 eq $project['publish_server_type']">checked=""</if> /> 前收
+            <input type="radio" disabled="disabled" <if condition="2 eq $project['publish_server_type']">checked=""</if> /> 后收
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">挂牌服务费率:</td>
+        <td class="item_input">
+            {$batch['hang_server_rate']} % &nbsp;&nbsp;&nbsp;&nbsp; {$batch['hang_server_fee']} 元
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">挂牌服务费收取方式:</td>
+        <td class="item_input">
+            <input type="radio" disabled="disabled" <if condition="1 eq $project['hang_server_type']">checked=""</if> /> 前收
+            <input type="radio" disabled="disabled" <if condition="2 eq $project['hang_server_type']">checked=""</if> /> 后收
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    var user_id = $("#fx_uid").val();
+    $.ajax({
+        url:ROOT+"?"+VAR_MODULE+"=User&"+VAR_ACTION+"=getAjaxUser&id="+user_id,
+        dataType:"json",
+        success:function(result){
+            if(result.status ==1)
+            {
+                if(result.user.user_name) {
+                    $("#user_name").html("  会员名称:<a href='{:U(\'User/edit\')}id="+user_id+"' target='__blank'>"+result.user.user_name+"</a>  会员姓名:"+result.user.name+" 用户类型:"+result.user.user_type_name);
+                }
+            }
+        }
+    });
+});
+</script>
+<include file="Public:footer" />

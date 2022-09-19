@@ -1,0 +1,78 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/financial/index.js');?>"></script>
+
+<div class="user_right_box">
+	<div class="user_title">
+		<h1>
+			<i class="ico_jilu"></i>资金记录
+		</h1>
+	</div>
+	<form id="search" action='{url x="index" r="account/money"  }' method="get">
+            <div class="screening clearfix">
+                 <div class="select_box" data-name="log_info">
+                   <div class="j_select"></div>
+                     <ul class="select_ul none j_selectContent">
+                        <li data-value="">全部类型</li>
+		                {foreach from=$filter item=log key=key}
+		                <li data-value="{$log}" {if $search_get.log_info eq $log}data-select="1"{/if}>{$log}</li>
+		                {/foreach}
+                     </ul>
+                </div>
+                <div class="sel_time">
+                    <span style="padding-left:190px;">时间</span>
+                    <input type="text" class="time_box" id="dateInput1" name="start" value="{$search_get.start}"> -
+                    <input type="text" class="time_box j_date" id="dateInput2" name="end" value="{$search_get.end}">
+                </div>
+                 <input type="submit" value="筛选" class="button_shaixian fr">
+            </div>
+        </form>
+</div>
+<section>
+	<div class="project clearfix">
+		<div class="pro_detailed clearfix">
+
+		    {if empty($list)}
+		    <div class="empty-box">没有记录</div>
+		    {else}
+			<table class="plan">
+				<colgroup>
+					<col width="160">
+					<col width="140">
+					<col width="142">
+					<col width="150">
+					<col width="120">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>时间</th>
+						<th>类型</th>
+						<th><div class="tl pl20">冻结/解冻（元）</div></th>
+						<th><div class="tl pl20">资金变动（元）</div></th>
+						<th>备注</th>
+					</tr>
+				</thead>
+				<tbody>
+					{foreach from=$list item=log key=key}
+					<tr {if $key mod 2 eq  1}class="tr_bg"{/if}>
+						<td>
+							<?php echo to_date($this->_var['log']['log_time'],"Y-m-d H:i"); ?>
+						</td>
+						<td><em>{$log.log_info}</em></td>
+						<td><div class="tl pl20">
+								{if $log.lock_money neq 0}<em class="color-yellow1">{function name="format_price" value=$log.lock_money c=0 d=0}</em>{/if}
+							</div></td>
+						<td><div class="tl pl20">
+								{if $log.money neq 0}<em class="color-yellow1">{function name="format_price" value=$log.money c=0 d=0}</em>{/if}
+							</div></td>
+						<td>{function name="htmlspecialchars" value=$log.note}</td>
+					</tr>
+					{/foreach}
+				</tbody>
+			</table>
+			<div class="pages">
+				{$pages}
+			</div>
+			{/if}
+		</div>
+	</div>
+</section>

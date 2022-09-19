@@ -1,0 +1,481 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="__TMPL__region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+<script type="text/javascript">
+    jQuery(function(){
+        setTimeout("bank_site_bank2();",1000);
+        //银行网点
+        $("select[name='bank_id2']").bind("change",function(){
+            clear_bank_site2();
+            bank_site_bank2();
+            $("#bank_shortno2").val('');
+            var bankIdString = $("select[name='bank_id2']").find("option:selected").val();
+            if (bankIdString !== undefined) {
+                var bankIdArray = bankIdString.split("|");
+                if (bankIdArray[1] !== undefined && bankIdArray[1] != '') {
+                    $("#bank_shortno2").val(bankIdArray[1]);
+                }
+            }
+        });
+        $("#_js_bankone2").live("change",function(){
+            var bankString = $("select[name='bank_bankzone2']").find("option:selected").val();
+            if (bankString !== undefined) {
+                $("#bank_bankzone_value2").val(bankString);
+                $("#branch_no2").show();
+                var bankArray = bankString.split("|");
+                if (bankArray[0] !== undefined) {
+                    $("#branch_no2").val(bankArray[0]);
+                }
+            }
+        });
+    });
+    function checkInchargeForm()
+    {
+        if($.trim($("#card_name2").val()) == '')
+        {
+            alert("开户名不能为空");
+            $("#card_name2").focus();
+            return false;
+        }
+        // 检查开户名格式
+        var regPattern = /^[\u4E00-\u9FA5\（\）]+$/;
+        var regResult = regPattern.test($("#card_name2").val());
+        if (regResult == false)
+        {
+            alert("开户名只允许输入中文跟中文括号!");
+            $("#card_name2").focus();
+            return false;
+        }
+        if($.trim($("#bankcard2").val()) == '')
+        {
+            alert('银行帐号不能为空');
+            $("#bankcard2").focus();
+            return false;
+        }
+        var bankIdValue = $("select[name='bank_id2']").find("option:selected").val();
+        if($.trim(bankIdValue) <= 0)
+        {
+            alert("开户行名称不能为空");
+            $("#bank_id2").focus();
+            return false;
+        }
+        var bankRegionLv1 = $("select[name='bank_region2_lv1']").find("option:selected").val();
+        var bankRegionLv2 = $("select[name='bank_region2_lv2']").find("option:selected").val();
+        var bankRegionLv3 = $("select[name='bank_region2_lv3']").find("option:selected").val();
+        var bankRegionLv4 = $("select[name='bank_region2_lv4']").find("option:selected").val();
+        if($.trim(bankRegionLv1) <= 0)
+        {
+            alert("开户行所在地-国家不能为空");
+            $("#bank_region2_lv1").focus();
+            return false;
+        }
+        if($.trim(bankRegionLv2) <= 0)
+        {
+            alert("开户行所在地-省份不能为空");
+            $("#bank_region2_lv2").focus();
+            return false;
+        }
+        if($.trim(bankRegionLv3) <= 0)
+        {
+            alert("开户行所在地-城市不能为空");
+            $("#bank_region2_lv3").focus();
+            return false;
+        }
+        if($.trim(bankRegionLv4) <= 0)
+        {
+            alert("开户行所在地-地区不能为空");
+            $("#bank_region2_lv4").focus();
+            return false;
+        }
+        var bankId = $("select[name='bank_bankzone2']").find("option:selected").val();
+        if($.trim(bankId) <= 0)
+        {
+            alert("开户网点不能为空");
+            $("#bank_bankzone2").focus();
+            return false;
+        }
+        var bankZoneName = $("select[name='bank_bankzone2']").find("option:selected").text();
+        var regResult = regPattern.test(bankZoneName);
+        if (regResult == false)
+        {
+            alert("开户网点只允许输入中文跟中文括号!");
+            $("#bank_bankzone2").focus();
+            return false;
+        }
+        if ($.trim($("#branch_no2").val()) <= 0)
+        {
+            alert("联行号码不能为空");
+            $("#branch_no2").focus();
+            return false;
+        }
+        if (confirm("您确定要更新银行账户信息吗？")) {
+            $("#updateButtonId").css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+            var s_name = $("#s_name").val();
+            var bankzone_value2 = parseInt($("#bankzone_value2").val());
+            // 通知支付部门进行开户
+            $.post("/m.php?m=EnterpriseRegister&a=editBankAccount", {
+                'id':$("#bank_auto_id").val(),
+                'userId':$("#bank_user_id").val(),
+                's':s_name,
+                'status':bankzone_value2,
+                'groupId':$("#group_id").val(),
+                'card_name':$("#card_name2").val(), //开户名
+                'card_type':$("#card_type").val(), //银行卡类型
+                'bankcard':$("#bankcard2").val(), //银行帐号
+                'bank_id':$("#bank_id2").val(), //开户行名称
+                'bank_region2_lv1':$("#bank_region2_lv1").val(), //开户行所在地-国家
+                'bank_region2_lv2':$("#bank_region2_lv2").val(), //开户行所在地-省
+                'bank_region2_lv3':$("#bank_region2_lv3").val(), //开户行所在地-市
+                'bank_region2_lv4':$("#bank_region2_lv4").val(), //开户行所在地-区
+                'bank_bankzone':$("#bank_bankzone_value2").val(), //开户网点
+                'branch_no':$("#branch_no2").val(), //联行号码
+            }, function(rs){
+//                var rsobj = eval( "(" + rs +  ")");
+                var rsobj = rs;
+                if (rsobj.code >= 1) {
+                    if (s_name == 'edit') {
+                        document.addForm.card_name.value = $.trim($("#card_name2").val());
+                        document.addForm.bankcard.value = $.trim($("#bankcard2").val());
+                        document.addForm.bank_id.value = document.addForm.bank_id_value.value = bankIdValue;
+                        document.addForm.bank_shortno.value = $.trim($("#bank_shortno2").val());
+                        document.addForm.branch_no.value = $.trim($("#branch_no2").val());
+                        document.addForm.bankzone_value.value = bankzone_value2;
+                        var devlv1Option = $("select[name='bankzone'] option[value='" + bankzone_value2 + "']")[0];
+                        if (devlv1Option) {devlv1Option.selected = true;}
+                        //$("#_js_bank_site").html($("#_js_bank_site_tips").html());
+                        var bankBankzone2 = $("select[name='bank_bankzone2']").find("option:selected").val();
+                        $("#bank_bankzone").val($("select[name='bank_bankzone2']").find("option:selected").text());
+                        $("#bank_bankzone_value").val($("select[name='bank_bankzone2']").find("option:selected").val());
+                        document.addForm.bank_region_input_lv1.value = bankRegionLv1;
+                        document.addForm.bank_region_input_lv2.value = bankRegionLv2;
+                        document.addForm.bank_region_input_lv3.value = bankRegionLv3;
+                        document.addForm.bank_region_input_lv4.value = bankRegionLv4;
+                        var devlv1Option = $("select[name='bank_region_lv1'] option[value='" + bankRegionLv1 + "']")[0];
+                        if (devlv1Option) {
+                            devlv1Option.selected = true;
+                            load_select_bank("1");
+                            var devlv2Option = $("select[name='bank_region_lv2'] option[value='" + bankRegionLv2 + "']")[0];
+                            if (devlv2Option) {
+                                devlv2Option.selected = true;
+                                load_select_bank("2");
+                                var devlv3Option = $("select[name='bank_region_lv3'] option[value='" + bankRegionLv3 + "']")[0];
+                                if (devlv3Option) {
+                                    devlv3Option.selected = true;
+                                    load_select_bank("3");
+                                    var devlv4Option = $("select[name='bank_region_lv4'] option[value='" + bankRegionLv4 + "']")[0];
+                                    if (devlv4Option) {
+                                        devlv4Option.selected = true;
+                                    }
+                                }
+                            }
+                        }
+                        $("#bank_auto_id").val(rsobj.bankLastId);
+                    }
+                    alert(rsobj.msg);
+                    $.weeboxs.close();
+                }else{
+                    alert(rsobj.msg);
+                }
+            }, 'json');
+            $("#updateButtonId").css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return true;
+        }
+        return false;
+    }
+</script>
+<div class="main">
+<!-- <div class="main_title">编辑银行账户</div> -->
+<div class="blank5"></div>
+<!-- <form id="editBankForm" name="editBankForm" action="__APP__" method="post" enctype="multipart/form-data"> -->
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <!-- 银行账户Start -->
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center;"><b>银行账户信息</b></td>
+    </tr>
+    <tr>
+        <td class="item_title">开户名:</td>
+        <td class="item_input">
+            <input type="hidden" id="bank_auto_id" name="bank_auto_id" value="{$bankcardInfo.id}">
+            <input type="hidden" id="bank_user_id" name="bank_user_id" value="{$userId}">
+            <input type="hidden" id="s_name" name="s_name" value="{$s}">
+            <input type="text" id="card_name2" name="card_name2" class="textbox _js_bankinfo require" value="{$bankcardInfo.card_name}" /><font color='red'>*</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">银行帐号:</td>
+        <td class="item_input">
+            <input type="text" id="bankcard2" name="bankcard2" class="textbox _js_bankinfo require" value="{$bankcardInfo.bankcard}" onkeyup="value=value.replace(/[^\d\.]/g,'')" style="ime-mode:Disabled" maxlength="32" /><font color='red'>*</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">银行卡类型:</td>
+        <td class="item_input">
+            <select id="card_type" name="card_type" class="_js_bankinfo textbox require" style="width:180px;">
+                <option value="1" <if condition="$bankcardInfo['card_type'] eq '' OR $bankcardInfo['card_type'] eq 1">selected="selected" </if>>公司账户</option>
+                <option value="0" <if condition="$bankcardInfo['card_type'] neq '' AND $bankcardInfo['card_type'] eq 0">selected="selected" </if>>个人账户</option>
+            </select>
+            <font color='red'>*</font>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">开户行名称:</td>
+        <td class="item_input">
+            <select id="bank_id2" name="bank_id2" class="_js_bankinfo textbox require" style="width:180px;">
+                <option value="0">={%PLEASE_SELECT}=</option>
+                <foreach name="bankList" item="item">
+                <option value="{$item.id}|{$item.short_name}|{$item.name}" <?php if($bankcardInfo['bank_id'] == $item['id']){echo 'selected';$bank_id_value=$item['id'].'|'.$item['short_name'];$bank_short_name=$item['short_name'];}?>>{$item.name}</option>
+                </foreach>
+            </select>
+            <font color='red'>*</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">开户行简码:</td>
+        <td class="item_input">
+            <input type="text" id="bank_shortno2" name="bank_shortno2" class="textbox _js_bankinfo require" value="{$bank_short_name}" readonly="readonly" /><font color='red'>*</font>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">开户行所在地:</td>
+        <td class="item_input">
+                <input type="hidden" id="bank_region_input2_lv1" name="bank_region_input_lv1" value="{$bankcardInfo.region_lv1}">
+                <input type="hidden" id="bank_region_input2_lv2" name="bank_region_input_lv2" value="{$bankcardInfo.region_lv2}">
+                <input type="hidden" id="bank_region_input2_lv3" name="bank_region_input_lv3" value="{$bankcardInfo.region_lv3}">
+                <input type="hidden" id="bank_region_input2_lv4" name="bank_region_input_lv4" value="{$bankcardInfo.region_lv4}">
+                <input type="hidden" id="input_bank_region_name1" name="input_bank_region_name1" value="">
+                <input type="hidden" id="input_bank_region_name2" name="input_bank_region_name2" value="">
+                <input type="hidden" id="input_bank_region_name3" name="input_bank_region_name3" value="">
+                <input type="hidden" id="input_bank_region_name4" name="input_bank_region_name4" value="">
+                <select id="bank_region2_lv1" name="bank_region2_lv1" class="_js_bankinfo textbox require">
+                    <option value="0">={%REGION_LV1}=</option>
+                    <foreach name="nRegionLv1" item="lv1">
+                    <option value="{$lv1.id}" <?php if($bankcardInfo['region_lv1'] == $lv1['id']){echo 'selected';}?>>{$lv1.name}</option>
+                    </foreach>
+                </select>
+                <select id="bank_region2_lv2" name="bank_region2_lv2" class="_js_bankinfo textbox require">
+                    <option value="0">={%REGION_LV2}=</option>
+                </select>
+                <select id="bank_region2_lv3" name="bank_region2_lv3" class="_js_bankinfo textbox require">
+                    <option value="0">={%REGION_LV3}=</option>
+                </select>
+                <select id="bank_region2_lv4" name="bank_region2_lv4" id="Jcarry_region_lv4" class="_js_bankinfo textbox">
+                    <option value="0">={%REGION_LV4}=</option>
+                </select>
+                <font color='red'>*</font>
+        </td>
+    </tr>
+    <script type="text/javascript">
+         $(document).ready(function(){
+             $("select[name='bank_region2_lv1']").bind("change",function(){
+                 load_select_bank2("1");
+                 clear_bank_site2();
+                 $("#bank_region_input2_lv1").val(0);
+                 $("#bank_region_input2_lv2").val(0);
+                 $("#bank_region_input2_lv3").val(0);
+                 $("#bank_region_input2_lv4").val(0);
+                 $("#input_bank_region_name1").val('');
+                 $("#input_bank_region_name2").val('');
+                 $("#input_bank_region_name3").val('');
+                 $("#input_bank_region_name4").val('');
+                 if ($("select[name='bank_region2_lv1']").val() > 0) {
+                     $("#bank_region_input2_lv1").val($("select[name='bank_region2_lv1']").val()+'|'+$("select[name='bank_region2_lv1']").find("option:selected").text());
+                 }
+                 // 下拉列表onchange的时候，需要把后面的列表清空
+                 var devOption2 = $("select[name='bank_region2_lv2'] option[value='0']")[0];
+                 if (devOption2) {devOption2.selected = true;}
+                 var devOption3 = $("select[name='bank_region2_lv3'] option[value='0']")[0];
+                 if (devOption3) {devOption3.selected = true;load_select_bank2('2');}
+                 var devOption4 = $("select[name='bank_region2_lv4'] option[value='0']")[0];
+                 if (devOption4) {devOption4.selected = true;load_select_bank2('3');}
+             });
+             $("select[name='bank_region2_lv2']").bind("change",function(){
+                 load_select_bank2("2");
+                 clear_bank_site2();
+                 $("#bank_region_input2_lv3").val(0);
+                 $("#bank_region_input2_lv4").val(0);
+                 $("#input_bank_region_name3").val('');
+                 $("#input_bank_region_name4").val('');
+                 if ($("select[name='bank_region2_lv2']").val() > 0) {
+                     $("#bank_region_input2_lv2").val($("select[name='bank_region2_lv2']").val()+'|'+$("select[name='bank_region2_lv2']").find("option:selected").text());
+                 }
+                 // 下拉列表onchange的时候，需要把后面的列表清空
+                 var devOption3 = $("select[name='bank_region2_lv3'] option[value='0']")[0];
+                 if (devOption3) {devOption3.selected = true;load_select_bank2('2');}
+                 var devOption4 = $("select[name='bank_region2_lv4'] option[value='0']")[0];
+                 if (devOption4) {devOption4.selected = true;load_select_bank2('3');}
+             });
+             $("select[name='bank_region2_lv3']").bind("change",function(){
+                 load_select_bank2("3");
+                 clear_bank_site2();
+                 bank_site_bank2();
+                 $("#bank_region_input2_lv4").val(0);
+                 $("#input_bank_region_name4").val('');
+                 if ($("select[name='bank_region2_lv3']").val() > 0) {
+                     $("#bank_region_input2_lv3").val($("select[name='bank_region2_lv3']").val()+'|'+$("select[name='bank_region2_lv3']").find("option:selected").text());
+                 }
+                 // 下拉列表onchange的时候，需要把后面的列表清空
+                 var devOption4 = $("select[name='bank_region2_lv4'] option[value='0']")[0];
+                 if (devOption4) {devOption4.selected = true;load_select_bank2('3');}
+             });
+             $("select[name='bank_region2_lv4']").bind("change",function(){
+                 load_select_bank2("4");
+                 if ($("select[name='bank_region2_lv4']").val() > 0) {
+                     $("#bank_region_input2_lv4").val($("select[name='bank_region2_lv4']").val()+'|'+$("select[name='bank_region2_lv4']").find("option:selected").text());
+                 }
+             });
+
+             // init region
+             var devlv1Option = $("select[name='bank_region2_lv1'] option[value='" + $("#bank_region_input2_lv1").val() + "']")[0];
+             if (devlv1Option) {
+                 devlv1Option.selected = true;
+                 load_select_bank2("1");
+                 var devlv2Option = $("select[name='bank_region2_lv2'] option[value='" + $("#bank_region_input2_lv2").val() + "']")[0];
+                 if (devlv2Option) {
+                     devlv2Option.selected = true;
+                     load_select_bank2("2");
+                     var devlv3Option = $("select[name='bank_region2_lv3'] option[value='" + $("#bank_region_input2_lv3").val() + "']")[0];
+                     if (devlv3Option) {
+                         devlv3Option.selected = true;
+                         load_select_bank2("3");
+                         var devlv4Option = $("select[name='bank_region2_lv4'] option[value='" + $("#bank_region_input2_lv4").val() + "']")[0];
+                         if (devlv4Option) {
+                             devlv4Option.selected = true;
+                             if ($("#bank_region2_lv4").val() > 0) {
+                                 $("#input_bank_region_name4").val($("select[name='bank_region2_lv4']").find("option:selected").text());
+                                 $("#bank_region_input2_lv4").val($("select[name='bank_region2_lv4']").val()+'|'+$("select[name='bank_region2_lv4']").find("option:selected").text());
+                             }
+                         }
+                     }
+                 }
+             }
+         });
+         function load_select_bank2(lv)
+         {
+             var name = "bank_region2_lv"+lv;
+             var next_name = "bank_region2_lv"+(parseInt(lv)+1);
+             var id = $("select[name='"+name+"']").val();
+
+             if(lv==1) {
+                 var evalStr="regionConf.r"+id+".c";
+             }
+             if(lv==2) {
+                 var evalStr="regionConf.r"+$("select[name='bank_region2_lv1']").val()+".c.r"+id+".c";
+             }
+             if(lv==3) {
+                 var evalStr="regionConf.r"+$("select[name='bank_region2_lv1']").val()+".c.r"+$("select[name='bank_region2_lv2']").val()+".c.r"+id+".c";
+             }
+
+             if(id==0)
+             {
+                 var html = "<option value='0'>="+LANG['PLEASE_SELECT']+"=</option>";
+             }
+             else
+             {
+                 var regionConfs=eval(evalStr);
+                 evalStr+=".";
+                 var html = "<option value='0'>="+LANG['PLEASE_SELECT']+"=</option>";
+                 for(var key in regionConfs)
+                 {
+                     html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+                 }
+             }
+             $("select[name='"+next_name+"']").html(html);
+             //$("#bank_region_input2_lv" + lv).val(id);
+             if (id > 0) {
+                 $("#bank_region_input2_lv" + lv).val(id+'|'+$("select[name='"+name+"']").find("option:selected").text());
+                 $("#input_bank_region_name" + lv).val($("select[name='"+name+"']").find("option:selected").text());
+             }
+         }
+
+         //银行开户网点
+         function bank_site_bank2(){
+           var c = encodeURIComponent($("select[name='bank_region2_lv3']").find("option:selected").text());
+           var p = encodeURIComponent($("select[name='bank_region2_lv2']").find("option:selected").text());
+           var b = encodeURIComponent($("select[name='bank_id2']").find("option:selected").text());
+           var n = encodeURIComponent('{$bankcardInfo.bankzone}');
+           var data = {c:c,p:p,n:n};
+
+           $.get("/m.php?m=Enterprise&a=getBankListHtml&c="+c+"&i=2&p="+p+"&n="+n+"&b="+b+"&jsonpCallback=?",function(rs){
+               var rsobj = eval( "(" + rs +  ")");
+               if (rsobj.bankListHtml != '') {
+                   $("#_js_bank_site_tips").html(rsobj.bankListHtml);
+               }else{
+                   $("#_js_bank_site_tips").html('<select id="_js_bankone2" name="bank_bankzone2" class="_js_bankinfo textbox require" style="width:180px;"><option value="0">=请选择=</option></select><font color=\'red\'>*</font>');
+               }
+               var bankString = $("select[name='bank_bankzone2']").find("option:selected").val();
+               $("#bank_bankzone_value2").val(bankString);
+               if (bankString !== undefined) {
+                   $("#branch_no2").show();
+                   var bankArray = bankString.split("|");
+                   if (bankArray[0] !== undefined) {
+                       $("#branch_no2").val(bankArray[0]);
+                   }
+               }
+           });
+         }
+         //清空银行开户网点
+         function clear_bank_site2(){
+             $("#_js_bank_site_tips").html('<select id="bank_id" name="bank_id" class="_js_bankinfo textbox" style="width:180px;""><option value="0">=请选择=</option></select>');
+             $("#branch_no2").val('');
+         }
+         //重置银行开户窗口
+         function reset_bank_window(){
+             //$.weeboxs.close();
+             //$.weeboxs.open(ROOT+'?m=Enterprise&a=editBankAccount&uid={$userId}', {contentType:'ajax',showButton:false,title:'编辑银行账户',modal:true,overlay:5,width:600,height:500,onopen: function(){}});
+             $("#card_name2").val('');$("#bankcard2").val('');
+             var devOption1 = $("select[name='bank_id2'] option[value='0']")[0];
+             if (devOption1) {devOption1.selected = true;}
+             $("#bank_shortno2").val('');
+             var devOption2 = $("select[name='bank_region2_lv2'] option[value='0']")[0];
+             if (devOption2) {devOption2.selected = true;load_select_bank2('2');}
+             var devOption3 = $("select[name='bank_region2_lv3'] option[value='0']")[0];
+             if (devOption3) {devOption3.selected = true;load_select_bank2("3");}
+             clear_bank_site2();
+         }
+     </script>
+    <tr>
+        <td class="item_title">开户网点:</td>
+        <td id="_js_bank_site_tips"><select id="_js_bankone2" name="bank_bankzone2" class="_js_bankinfo textbox require" style="width:180px;"><option value="0">=请选择=</option></select><font color='red'>*</font></td>
+    </tr>
+    <tr>
+        <td class="item_title">联行号码:</td>
+        <td class="item_input" id="_js_bank_no" >
+            <input type="text" id="branch_no2" name="branch_no2" class="textbox _js_bankinfo require" value="<?php if(!empty($bankcardInfo['branch_no'])){echo $bankcardInfo['branch_no'];}?>" readonly="readonly" /><font color='red'>*</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">验证状态</td>
+        <td class="item_input">
+            <input type="hidden" id="bankzone_value2" name="bankzone_value2" value="{$bankcardInfo.status}" />
+            <select class="textbox" id="bankzone2" name="bankzone2" class="require" disabled="disabled">
+                <option value="1" <?php if(isset($bankcardInfo['status']) && $bankcardInfo['status'] == 1){echo 'selected';}?>>是</option>
+                <option value="0" <?php if(isset($bankcardInfo['status']) && $bankcardInfo['status'] == 0){echo 'selected';}?>>否</option>
+            </select>
+            <font color='red'>*</font>
+        </td>
+    </tr>
+    <!-- 银行账户End -->
+    <tr>
+        <td class="item_title">&nbsp;</td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="id" value="{$id}" />
+            <input type="hidden" id="moduleName" name="{:conf("VAR_MODULE")}" value="EnterpriseRegister" />
+            <input type="hidden" id="actionName" name="{:conf("VAR_ACTION")}" value="editBankAccount" />
+            <!--隐藏元素-->
+            <input type="button" id="updateButtonId" class="button" value="保存" onclick='return checkInchargeForm();'/>
+            <input type="reset" class="button" value="{%RESET}" onclick='reset_bank_window();' />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+<!-- </form> -->
+</div>

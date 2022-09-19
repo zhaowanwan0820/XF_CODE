@@ -1,0 +1,23 @@
+{if $focus_list}
+<div class="pt15 pl15">
+	{foreach from=$focus_list item=user_item}
+			<div class="rand_user">			
+				{function name="show_avatar" uid=$user_item.id  type="middle"}			
+				<br />	
+				{function name="get_user_name" value=$user_item.id} 
+				<br />
+				{if $user_id eq $user_info.id}			
+				{if $user_item.focused eq 1}
+				<a href="javascript:;" onclick="focus_user({$user_item.id},this);" class="remove_focus">{$LANG.CANCEL_FOCUS}</a>
+				{else}
+				<a href="javascript:;" onclick="focus_user({$user_item.id},this);" class="add_focus">{$LANG.FOCUS_THEY}</a>
+				{/if}
+				{/if}	
+			</div>
+	{/foreach}
+	<div class="blank"></div>
+	<div class="pages">{$pages}</div>
+</div>
+{else}
+<div class="empty-box">没有记录</div>
+{/if}

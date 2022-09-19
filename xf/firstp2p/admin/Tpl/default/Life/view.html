@@ -1,0 +1,44 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<php>
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '-';
+    }
+    return date('Y-m-d H:i:s', $stamp);
+}
+</php>
+<div class="main">
+<div class="main_title">任务#{$id}详情</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" style="table-layout:fixed">
+<tr><th width="200">任务状态</th><td>{$job.status_cn}</td></tr>
+<tr><th>任务优先级</th><td>{$job.priority}</td></tr>
+<tr><th>待执行函数</th><td>{$job.func}</td></tr>
+<tr><th>参数</th><td style="word-break:break-all; word-wrap:break-word">{$job.params}</td></tr>
+<tr><th>创建时间</th><td>{$job.create_time|f_to_date} ({$job.create_time})</td></tr>
+<tr><th>下次启动时间</th><td>{$job.start_time|f_to_date} ({$job.start_time})</td></tr>
+<tr><th>启动时间</th><td>{$job.begin_time|f_to_date} ({$job.begin_time})</td></tr>
+<tr><th>结束时间</th><td>{$job.finish_time|f_to_date} ({$job.finish_time})</td></tr>
+<tr><th>执行时长</th><td>{$job.job_cost}(秒)</td></tr>
+<tr><th>已重试次数</th><td>{$job.retry_cnt}</td></tr>
+<tr><th>最大重试次数</th><td>{$job.max_retry}</td></tr>
+<tr><th>最后一次错误信息</th><td>{$job.err_msg}</td></tr>
+<tr class=""><td colspan="2" align="center"><a href="javascript:redo({$job.id});">重新执行</a> <a href="javascript:window.location.href='/m.php?m=Life&a=jobIndex&status={$status}&p={$p}';">返回列表页</a></td></tr>
+</table>
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    function redo(id) {
+        window.location.href = "/m.php?m=Life&a=redo&id="+id;
+    }
+</script>
+<include file="Public:footer" />

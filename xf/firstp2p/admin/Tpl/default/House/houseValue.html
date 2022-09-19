@@ -1,0 +1,38 @@
+<tagLib name="html"/>
+<include file="Public:header"/>
+<load href='__TMPL__Common/js/jquery.min.js'/>
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<load href='__TMPL__Common/js/jquery.ui.widget.js'/>
+<load href='__TMPL__Common/js/jquery.weebox.js'/>
+<load href='__TMPL__Common/js/bootstrap.min.js'/>
+<load href='__TMPL__Common/js/user.js'/>
+<load href='__TMPL__Common/style/weebox.css'/>
+<load href='__TMPL__Common/style/bootstrap.min.css'/>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js"></script>
+<load href='__TMPL__Common/js/calendar/calendar.css'/>
+<load href='__TMPL__Common/js/calendar/calendar.js'/>
+<style>
+    .table {
+        width: 600px;
+        margin-left: 100px;
+        margin-right: 100px;
+        margin-top: 10px;
+    }
+</style>
+<div>
+    <h3 style="margin-left:100px;margin-right: 100px;">{$houseInfo.house_city}市{$houseInfo.house_district}{$houseInfo.house_address}</h3>
+    <hr/>
+    <table border='1' cellsapcing="0" cellpadding="0" class="table table-hover">
+        <tr>
+            <th>时间</th>
+            <th>金额(元)</th>
+        </tr>
+        <foreach name="houseValue" item="item">
+            <tr>
+                <td>{$item.time}</td>
+                <td>{$item.value| number_format="2",".",","}</td>
+            </tr>
+        </foreach>
+    </table>
+</div>
+<include file="Public:footer"/>

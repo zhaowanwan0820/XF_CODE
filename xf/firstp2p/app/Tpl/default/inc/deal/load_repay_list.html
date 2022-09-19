@@ -1,0 +1,30 @@
+ {if !$user_info}
+<p align="center">只有<a href="{url x="index" r="user#register"}">注册</a>用户才可以查看借款者信用信息！现在<a href="javascript:void(0);" onclick="ajax_login();">登录</a></p>
+{else}
+ <table class="data_table" border="0" cellspacing="1" style="background:#ccc;width: 100%;">
+    <tbody>
+        <tr>
+			<th width="10%" style="background:#F6F6F6">编号</th>
+            <th width="20%" style="background: #F6F6F6;">债权人昵称</th>
+            <th width="20%" style="background: #F6F6F6;">剩余本金</th>
+            <th width="20%" style="background: #F6F6F6;">出借时间</th>
+			<th style="background: #F6F6F6;">状态</th>
+        </tr>
+		{foreach from="$load_list" item="load" name="load"}
+		<tr>
+			<td>{$smarty.foreach.load.index}</td>
+			<td>
+				<a href="{url x="index" r="space" p="id=$load.user_id"}" class="f_red">{$load.user_name}</a>
+			</td>
+			<td>
+				{function name="format_price" v="$load.remain_money"}
+			</td>
+			<td>
+				{function name="to_date" v="$load.create_time" f="Y-m-d"}
+			</td>
+			<td>{if $load.status eq 1}还款完毕{else}还款中{/if}</td>
+		</tr>
+		{/foreach}
+    </tbody>
+</table>
+{/if}

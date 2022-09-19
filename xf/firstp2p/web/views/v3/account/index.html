@@ -1,0 +1,650 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/user_web2.css?v=2017082901');?>" />
+<link href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.1.3.css');?>" type="text/css" rel="stylesheet">
+
+
+{if $is_firstp2p eq ''}
+<script src="<?php echo $this->asset->makeUrl('v3/js/common/medal_lightinglay.js');?>" type="text/javascript"></script>
+{/if}
+
+<style>
+  .shouyi {font-family: 'Microsoft YaHei';}
+  .user_num{color: #333;}
+  .user_num:hover{color: #08c;}
+  .account_msg{padding-left: 500px;}
+  .table_msg{float:left;}
+  .height60{height:60px;}
+  .over_hidden{overflow:hidden;}
+  .user_num{float:left;}
+</style>
+
+<script type="text/javascript">
+  var doneBankOperate_url;
+  window["_openSvButton_"] = "{$openSvButton}";
+</script>
+<script>
+  $(document).ready(function(){
+    $("#yanzheng").click(function(){
+        $('#bindCardForm').submit();
+    });
+    $("#bindcard").click(function(){
+        $('#bindCardForm').submit();
+    });
+    $("#svBindcard").click(function(){
+        $('#bindCardForm').submit();
+    });
+
+    //判断用户名是否包含手机号
+    var userName = "{$user_info.user_name}";
+    var userMobile = "{$user_info.mobile}";
+    var isEnterprise = "{$isEnterprise}";
+    var userReg = /^0?m[\d]{11}$/;
+    // if (isEnterprise != 1) {
+    //     if (userName.indexOf(userMobile) != -1 || userReg.test(userName)) {
+    //         $(".js_name").hide();
+    //     }
+    // }
+  });
+</script>
+<!--<div id = "container">-->
+<div id = "container" class="user_right user_right_new ">
+    <!-- 用户信息 -->
+    <div class="user_right_box  mb20 pb20" style="height:180px;">
+        <div class="user_title">{if !$is_firstp2p}<a class="f14 fr pr30 color-black" href="/account/setup">{if $isEnterprise}会员{else}个人{/if}设置<i class="ico_more"></i></a>{/if}
+            <h1><i class="ico_yonghu"></i>用户信息</h1></div>
+        {if app_conf('UCF_PAY_STATUS') eq '0'}
+        <div style="background: #f1f2f3;
+                        line-height: 27px;
+                        text-align: center;
+                        font-size: 13px;
+                        color: #888888;"> {function name="get_adv" x="首页投资说明"}</div>
+        {/if}
+        <div class="acount_user acount_user2 clearfix">
+            <div class="user_l" style="position:relative;top:-10px;left:-10px;"><span class="icon_user {if $user_sex eq 1}tx_male {else}tx_female {/if}"></span></div>
+            <div class="user_r">
+                <div class="user_tit f18">
+                    <div class="info_box">
+                        <span class="com-name">您好，{if !$isEnterprise} {if $user_info.idcardpassed eq 1} {if $user_info.real_name}{$user_info.real_name}{/if} {elseif $user_info.idcardpassed eq 3} 实名认证审核中 {else}
+                        <a href='/account/addbank' class="blue">请实名认证</a> {/if}{else} {$enterpriseInfo.company_name}{/if}</span><span><a href="/account/setup" title='会员编号' id='user_num' class='user_num'>（{if $isEnterprise}{function name="numTo32Enterprise" value=$user_info.id}{else}{function name="numTo32" value=$user_info.id}{/if}）</a></span>
+                        {if $isEnterprise and $isEnterpriseSite}
+                        <!-- is_apply=1 表示是开户成功页 -->
+                        {if $enterprise_verify_status eq 2 || $enterprise_verify_status eq 3}<span class="enterprise_verify_status status_shz"><a href='/user/RegisterCompany?is_apply=1'>审核中</a></span>
+                            {elseif $enterprise_verify_status eq 4}<span class="enterprise_verify_status status_ykh">已开户</span>
+                            {elseif $enterprise_verify_status eq 1}<span class="enterprise_verify_status status_wkh">未开户</span><a href="/enterprise/apply" class="f13 status_wkh_blue"> 资料未提交，点击填写</a>
+                            {elseif $enterprise_verify_status eq 5}<span class="enterprise_verify_status status_khsb">开户失败</span>
+                            {/if}
+                        {/if}
+                        {if !empty($ppId)}
+                            <a class="passpart-logo" href="/user/permit_help" target="_blank"></a>
+                        {/if}
+                        {if $vipGradeInfo.service_grade gt 0}
+                        <a href="http://event.ncfwx.com/zt/180" class="vip_notice1">{$vipGradeInfo.name}</a>
+                        {/if}
+                    </div>
+                    <div><span class="log_time f14">上次登录时间：{$last_time}</span></div>
+                </div>
+                <div class="user_con" style="position:relative;left:-120px;top:8px;">
+                    <div class="u_name js_name"><a {if !$is_firstp2p}href="/account/setup"{else}href="javascript:void(0);" style="cursor:default;"{/if} class="user_a"><i class="icon_user un" title="用户名"></i></a>{$user_info.user_name}</div>
+                    <div class="u_phone">
+                    {if $isEnterprise eq 1}
+                        {if $user_info.payment_user_id eq 0}
+                            {if $enterprise_verify_status eq 1}
+                                <a href="/user/RegisterCompany" class="user_a"><i class="icon_user yz" title="请完成身份认证"></i></a><a href="/user/RegisterCompany" class="blue">请完成身份认证</a>
+                            {/if}
+                        {else}
+                            <a {if !$is_firstp2p}href="/account/setup"{else}href="javascript:void(0);" style="cursor:default;"{/if} class="user_a"><i class="icon_user yz" title="{$enterpriseInfo.credentials_type_cn}"></i></a>证件号码 {$enterpriseInfo.credentials_no_mask}
+                        {/if}
+                    {else}
+                        <a {if !$is_firstp2p}href="/account/setup"{else}href="javascript:void(0);" style="cursor:default;"{/if} class="user_a"><i class="icon_user up" title="手机号码"></i></a>{function name="moblieFormat" value=$user_info.mobile mobile_code=$user_info.mobile_code}
+                    {/if}
+                    </div>
+                    <div class="u_bank">
+                        {$bindCardForm}
+                        {if $bankcard.status eq 1}
+                        <a {if !$is_firstp2p}href="/account/setup"{else}href="javascript:void(0);" style="cursor:default;"{/if} class="user_a"><i class="icon_user ub_has" title="{if $isEnterprise eq 1}银行帐号{else}银行卡号{/if}"></i></a>
+                            {if !$is_firstp2p}
+                                {$bankcard.name}<span class="pl8">{function name="formatBankcard" value=$bankcard.bankcard}</span>
+                            {elseif $user_info.isSvUser}
+                                已开通{$p2pAccountConfig.name}
+                            {else}
+                            <div class="u_bind">
+                                <a href="javascript:void(0);" class="bind_a blue j_userAt_kt" data-lock="0">请开通{$p2pAccountConfig.name}</a>
+                                {if $is_wxlc}
+                                <span >
+                                <span class="ml15">消费卡</span><a href="/account/setup#bank_card_bind" class="card_no_bind">{if $bankcard.bind_consume}已绑定{else}未绑定</a>{/if}
+                                </span>
+                                {/if}
+                            </div>
+                            {/if}
+                            {if !$isEnterprise}
+                                {if !$bankcard.is_valid and !$is_firstp2p}
+                                <span class="qyz"><a href="javascript:void(0)" class="txtd" id="yanzheng">请验证</a></span>
+                                {/if}
+
+                                <!-- 消费卡相关 -->
+                                {if $is_wxlc}
+                                <style>.acount_user .user_r .user_con .u_bank{overflow: visible;position: relative;left:-35px;} .acount_user .user_r .user_con .u_bank .qyz {position: static;}
+                                .u_bank .ml15 {margin-left:9px;}
+                                </style>
+                                <span >
+                                <span class="ml15">消费卡</span><a href="/account/setup#bank_card_bind" class="card_no_bind">{if $bankcard.bind_consume}已绑定{else}未绑定</a>{/if}
+                                </span>
+                                {/if}
+                            {/if}
+                        {else}
+                         <a {if !$is_firstp2p}href="/account/setup"{else}href="javascript:void(0);" style="cursor:default;"{/if} class="user_a"><i class="icon_user ub" title="{if $isEnterprise eq 1}银行帐号{else}银行卡号{/if}"></i></a>
+                        <div class="u_bind">
+                            {if $isEnterprise eq 1}
+                                <a href="/account/addbank" class="bind_a blue">请绑定银行账户</a>
+                            {else}
+	                            {if !$is_firstp2p}
+	                            {if $user_info.idcardpassed eq 1}{if $hasPassport} <a href="/account/addbank" class="bind_a blue">请绑定银行账户</a> {else}<a href="javascript:void(0)" class="bind_a blue JS_bind_a" id="bindcard">请绑定银行卡</a>{/if}{else}<span class="color-gray JS_bind_a" title="请先实名认证再绑定银行卡">请绑定银行卡</span>{/if}
+	                            {else}
+                                {if $user_info.idcardpassed eq 1}{if $hasPassport || $bankcard.bankcard || $bankcard.newbankcard} <a href="/account/addbank" class="bind_a blue">请开通{$p2pAccountConfig.name}</a> {else}<a href="/account/goRegisterStandard" class="bind_a blue">请开通{$p2pAccountConfig.name}</a>{/if}{else}<span class="color-gray" title="请先实名认证再开通{$p2pAccountConfig.name}">请开通{$p2pAccountConfig.name}</span>{/if}
+                                {/if}
+                                {if $is_wxlc}
+                                <span >
+                                <span class="ml15">消费卡</span><a href="/account/setup#bank_card_bind" class="card_no_bind">{if $bankcard.bind_consume}已绑定{else}未绑定</a>{/if}
+                                </span>
+                                {/if}
+                                {/if}
+	                            <div class="bank_tips">
+	                                <p>您尚未绑定银行卡</p>
+	                                <a {if !$is_firstp2p}href="/account/setup"{else}href="javascript:void(0);" style="cursor:default;"{/if}>设置</a>
+	                                <div class="arrow"></div>
+	                            </div>
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- //用户信息 -->
+    <div class="user_right_box  mb20 pb20">
+        <div class="user_title">
+            <h1 class="fl"><i class="ico_zhanghu"></i>账户信息</h1>
+            {if $is_firstp2p and $user_info.idcardpassed eq 1 and $bankcard.status eq 1}
+            <div class="fr pr20">
+                {if $hasUnactivatedTag}<a href="/payment/transit?srv=register">查看存管账户</a>{elseif $user_info.isSvUser}<a href="javascript:void(0);" class="j_userAt_kt cg_check_account" data-lock="0">查看存管账户</a>{else}<a href="javascript:void(0);" class="j_userAt_kt" data-lock="0">开通存管账户</a>{/if}
+            </div>
+            {/if}
+        </div>
+        <div class="mt20 over_hidden">
+            <div class="yh_tab f14  table_msg cg_new">
+                <!--
+                <div>
+                    <span>可用余额：</span>
+                    <span><em class="color-yellow1">{function name="format_price" value=$user_info.total_money b=0}&nbsp</em>元</span>
+                </div>
+                -->
+                <div class="mb8">
+                    {if $is_firstp2p}
+                    <span>现金余额({$p2pAccountConfig.name})：</span>
+                    {else}
+                    <span>现金金额：</span>
+                    {/if}
+                    <span>
+                      <em class="color-yellow1 xj-em">{function name="format_price" value=$moneyInfo.totalCashMoney b=0}&nbsp</em>元
+                      {if $is_firstp2p}
+                        {if $user_info.isSvUser || $bankcard.bankcard || $bankcard.newbankcard}
+                          <a href="javascript:void(0);" class="j_ph_charge button_cz JS_button_cz" data-lock="0">充值</a><a href="javascript:void(0);" class="j_ph_carry button_tx" data-lock="0">提现</a>
+                        {else}
+                          <a href="/account/goRegisterStandard" class="button_cz JS_button_cz">充值</a><a href="/account/goRegisterStandard" class="button_tx">提现</a>
+                        {/if}
+                      {else}
+                        {if $isSvOpen}<i class="j_showCash cash_showImg" style="display:none"></i><i class="j_hideCash cash_hideImg"></i>{/if}
+                        {if $user_info.isCompliantUser neq 1}
+                          <a href="/account/charge" class="button_cz JS_button_cz">充值</a>
+                          {if $isSvOpen and $bankcard.is_valid}
+                            <a href="javascript:void(0);" class="j_txp2p button_tx">提现</a>
+                          {elseif !$bankcard.is_valid and $user_info.supervision_user_id > 0}
+                            <a href="/account/carryP2P" class="button_tx">提现</a>
+                          {else}
+                            <a href="/account/carry" class="button_tx">提现</a>
+                          {/if}
+                        {/if}
+                      {/if}
+                    </span>
+                </div>
+                {if $user_info.isCompliantUser neq 1}
+                  {if $isSvOpen and !$is_firstp2p}
+                    {if $user_info.idcardpassed eq 1 and $bankcard.status eq 1}
+                      <div class='cash_detail mt16'>
+                        <span class="cg_cash">{$wxAccountConfig.name}现金余额：</span>
+                        <span><em class="color-yellow1 xj-em">{function name="format_price" value=$moneyInfo.wxCashMoney b=0}&nbsp</em>元<a href="/payment/transit?srv=superInfo" target="_blank" class="mrl20 sv_wxlc_account_md">查看</a></span>
+                      </div>
+                    {else}
+                      <div class='cash_detail mt16'>
+                        <span class="cg_cash">尚未开通{$wxAccountConfig.name} {if $user_info.idcardpassed eq 1}<a href="javascript:void(0)" class="bind_a blue" id="svBindcard">去开通</a>{else}<a href="/account/addbank" class="blue">去开通</a>{/if}</span>
+                      </div>
+                    {/if}
+
+                    {if $user_info.isSvUser and $user_info.idcardpassed eq 1 and $bankcard.status eq 1}
+                      <div class="cash_detail mb16">
+                        <span class="cg_cash">{$p2pAccountConfig.name}现金余额：</span>
+                        <span><em class="color-yellow1 xj-em">{function name="format_price" value=$moneyInfo.svCashMoney b=0}&nbsp</em>元 {if $isSvDown}<span style="color:red">（海口联合农商银行系统维护，</br>暂不可用）</span>{elseif $hasUnactivatedTag}<a href="/payment/transit?srv=register" target="_blank" class="mrl20 sv_account_p2p_md">查看</a>{else}<a href="/payment/transit?srv=info" target="_blank" class="mrl20 sv_account_p2p_md">查看</a>{/if}</span>
+                      </div>
+                    {else}
+                      <div class="cash_detail mb16">
+                        <span class="cg_cash">尚未开通{$p2pAccountConfig.name} {if $user_info.idcardpassed eq 1 and $bankcard.status eq 1}<a href="/payment/transit?srv=register" class="blue j_ktP2p sv_setup_kaihu" target="_blank">去开通</a>{/if}</span>
+                      </div>
+                    {/if}
+                  {/if}
+                {/if}
+                <div class="JS_hidden_bonus">
+                  <span>红包金额：</span>
+                  <span>{function name="format_price" value=$moneyInfo.bonusMoney b=0}&nbsp元</span>
+                </div>
+                <div>
+                  <span>冻结金额：</span>
+                  <span>{function name="format_price" value=$moneyInfo.freezeMoney b=0}&nbsp元</span>
+                </div>
+                <div>
+                    <span>待收本金：</span>
+                    <span>{function name="format_price" v="$moneyInfo.principalMoney" b=0}&nbsp元</span>
+                </div>
+                <div>
+                    <span>待收利息：</span>
+                    <span>{function name="format_price" v="$moneyInfo.interestMoney" b=0}&nbsp元</span>
+                </div>
+                {if !$is_firstp2p}
+                <div>
+                    <span>资产总额：</span>
+                    <span><em class="color-yellow1">{function name="format_price" v="$moneyInfo.allMoney" b=0}&nbsp</em>元</span>
+                </div>
+                {/if}
+                <!-- <colgroup>
+                    <col width="140">
+                    <col width="350">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>可用余额：</th>
+                        <td><em class="color-yellow1">{function name="format_price" value=$user_info.total_money b=0}&nbsp</em>元</td>
+                    </tr>
+                    <tr>
+                        <th>现金金额：</th>
+                        <td><em class="color-yellow1 xj-em">{function name="format_price" value=$user_info.money b=0}&nbsp</em>元<span><i class="j_showCash cash_showImg"></i></span><i class="j_hideCash cash_hideImg" style="display:none;"></i><a href="/account/charge" class="button_cz">充值</a> <a href="javascript:void(0);" class="j_txp2p button_tx">提现</a></td>
+                    </tr>
+                    <tr class='cash_detail' style="display:none;">
+                        <th>网信账户现金余额：</th>
+                        <td>100元<a href="/account/charge">查看</a></td>
+                    </tr>
+                    <tr class="cash_detail" style="display:none;">
+                        <th>网贷P2P账户现金余额：</th>
+                        <td>100元 <a href="/account/charge_p2p">查看</a></td>
+                    </tr>
+                    <tr>
+                        <th>红包金额：</th>
+                        <td>{function name="format_price" value=$bonus b=0}&nbsp元</td>
+                    </tr>
+                    <tr>
+                        <th>冻结金额：</th>
+                        <td>{function name="format_price" value=$user_info.lock_money b=0}&nbsp元</td>
+                    </tr>
+                    <tr>
+                        <th>待收本金：</th>
+                        <td>{function name="format_price" v="$user_statics.principal" b=0}&nbsp元</td>
+                    </tr>
+                    <tr>
+                        <th>待收收益：</th>
+                        <td>{function name="format_price" v="$user_statics.interest" b=0}&nbsp元</td>
+                    </tr>
+                    <tr>
+                        <th>资产总额：</th>
+                        <td><em class="color-yellow1">{function name="format_price" v="$user_statics.money_all" b=0}&nbsp</em>元</td>
+                    </tr>
+                </tbody> -->
+            </div>
+            {if !$is_firstp2p}
+            <div class="account_msg">
+                <div class="lgl_money mb20 height60">
+                    <div><div class="w115 fl tr">通知贷金额：</div><span class="color-yellow1">{$compound.compound_money}</span></div>
+                    <div><a href="/account/load?type=1" class="button_tx fr mr10">申请赎回</a><div class="w115 fl tr">可申请赎回金额：</div><span class="color-yellow1">{$compound.repay_money}</span></div>
+                </div>
+                {if $is_duotou_inner_user eq 1}
+                    <div class="lgl_money mb20 pd30">
+                        <div>
+                            {if $isEnterpriseSite eq 1}
+                            <a href="javascript:void(0);" class="qy_button_tx_gray fr mr10">转让/退出</a>
+                            {else}
+                            <a href="/account/finplan" class="button_tx fr mr10">转让/退出</a>
+                            {/if}
+                            <div class="w115 fl tr">智多新金额：</div>
+                            <span class="color-yellow1">{$dt_remain_money}</span>
+                        </div>
+                    </div>
+                {/if}
+                <div class="lgl_money pd30">
+                    <div><a href="/account/load?type=2" class="button_tx fr mr10">查看</a><div class="w115 fl tr">交易中心金额：</div><span class="color-yellow1">{$user_statics.js_norepay_principal}</span></div>
+                </div>
+            </div>
+            {/if}
+        </div>
+        {if !$is_firstp2p}
+        <div style="width:850px;border-bottom:4px solid #F7F7F7;clear:both;margin:30px auto;"></div>
+        <div class="clearfix" style="margin:0 50px 20px 0;font-size:14px;">
+            <div class="fr"><i class="ico_shou"></i><span class="w70 tr"  style="display:inline-block">累计收益：</span><strong class="color-yellow1">{function name="format_price" v="$user_statics.earning_all" b=0}</strong>&nbsp元 </div>
+            <div class="pt3 fr" style="margin-right:50px;"><i class="ico_tou"></i><span class="w70 tr" style="display:inline-block">总投资额：</span><strong class="color-yellow1">{function name="format_price" v=$user_statics.load_money b=0}</strong>&nbsp元 </div>
+        </div>
+        {/if}
+    </div>
+    {if !$is_firstp2p}
+    <div class="user_right_box mb20">
+        <!--投标概况增加农担贷逻辑 $is_nongdan 布尔值为真时表示来自农担贷 -->
+        <div class="user_title"><a class="f14 fr pr30 color-black" href='{if !$is_nongdan}{url x="index" r="account/load"}{else}{url x="index" r="account/loadph?type=3"}{/if}'>更多<i class="ico_more"></i></a><h1><i class="ico_toubiao"></i>投标概况</h1></div>
+            <div class="w710 mauto pb20">
+            <table class="plan">
+                <colgroup>
+                    <col width="370">
+                    <col width="113">
+                    <col width="375">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="tl pl30">状态</div>
+                        </th>
+                        <th>笔数</th>
+                        <th>
+                            <div class="tr pr25">金额（元）</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$invest item=item key=key}
+                    <tr {if $key mod 2 eq 1}class="tr_bg" {/if}>
+                        <td>
+                            <div class="tl pl25">{$item.text}</div>
+                        </td>
+                        <td>{if $item.counts}{$item.counts}{else}0{/if}</td>
+                        <td>
+                            <div class="tr pr25 f16">{function name="format_price" value=$item.money b=0}</div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {if !empty($deal_repay)}
+    <div class="user_right_box mb20">
+    <!--回款计划增加农担贷逻辑 $is_nongdan 布尔值为真时表示来自农担贷 -->
+        <div class="user_title"><a class="f14 fr pr30 color-black" href='{if !$is_nongdan}{url x="index" r="account/loan"}{else}{url x="index" r="account/loan?type=2"}{/if}'>更多<i class="ico_more"></i></a>
+            <h1><i class="ico_huikuan"></i>回款计划</h1></div>
+        <div class="w710 mauto pb20">
+            <table class="plan">
+                <colgroup>
+                    <col width="370">
+                        <col width="113">
+                            <col width="375">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="tl pl25">时间</div>
+                        </th>
+                        <th>笔数</th>
+                        <th>
+                            <div class="tr pr15">金额（元）</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$deal_repay item=item key=key}
+                    <tr {if $key mod 2 eq 1}class="tr_bg" {/if}>
+                        <td>
+                            <div class="tl pl25">{$item.text}</div>
+                        </td>
+                        <td>{if $item.counts}{$item.counts}{else}0{/if}</td>
+                        <td>
+                            <div class="tr pr25 f16">{function name="format_price" value=$item.money b=0}</div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {/if}
+    <script>
+;(function($) {
+    $(function() {
+        $('.j_tooltip_top').tooltip({
+            position: {
+                my: "left-80 top+10"
+            }
+        });
+        $('.JS_button_cz').click(function(){
+            zhuge.track('我的账户_点击充值');
+        })
+    })
+
+})(jQuery);
+    </script>
+    <div class="user_right_box mb20">
+        <div class="user_title"><a class="f14 fr pr30 color-black" href="{url x="index" r="account/money" }">更多<i class="ico_more"></i></a>
+            <h1><i class="ico_jilu"></i>资金记录</h1></div>
+        <div class="zj_gb w710 mauto pb20 ">
+            <table class="plan">
+                <colgroup>
+                    <col width="273">
+                    <col width="172">
+                    <!-- <col width="200"> -->
+                    <col width="418">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><div class="pr25">类型/时间</div></th>
+                        <th>资金变动（元）</th>
+                        <!-- <th>余额（元）<i class="ico_sigh j_tooltip_top" title="余额=现金金额+冻结金额"></i></th> -->
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$log item=item key=key}
+                    <tr {if $key mod 2 eq 1}class="tr_bg" {/if}>
+                    <td class="tl">
+                       <div class="log_label pl20">
+                        {if $item.label == 1}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/dong.png');?>">
+                        {elseif $item.label == 2}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/zhi.png');?>">
+                        {elseif $item.label == 3}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/jie.png');?>">
+                        {elseif $item.label == 4}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/shou.png');?>">
+                        {elseif $item.label == 5}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/hua.png');?>">
+                        {/if}
+                        </div>
+                        <div class="jl_title ml23">
+                        <span class="color_lx">{$item.log_info}</span><span class="color_gray j_zj_date" data-time="<?php echo $this->_var['item']['log_time']; ?>">
+                        <?php echo to_date($this->_var['item']['log_time'],"Y-m-d H:i"); ?>
+                        </span>
+                        </div>
+                    </td>
+                    <td>
+                        <em class="{if $item.label == 4}color_yellow{elseif $item.label == 2}color_zhi{else}color_gray{/if}">
+                                {if $item.showmoney eq 0}
+                                    0.00
+                                {else}
+                                    {if $item.label == 4}+{/if}
+                                    {function name="format_price" value=$item.showmoney c=0 d=0}
+                                {/if}</em>
+                    </td>
+                    <!-- <td>
+                        <span class="j_zj_change color_lx">{$item.remaining_total_money}</span>
+                        </td> -->
+                    <td>
+                        <div class="text_overf color_gray" title="{function name="htmlspecialchars" value=$item.note}"><?php echo msubstr(htmlspecialchars($this->_var['item']['note']),0,28); ?></div>
+                    </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {/if}
+    {if $is_firstp2p eq 1}
+    {function name="get_adv" x="pc普惠个人中心提示_2017"}
+    <style type="text/css">
+    body{background:#e8e9eb;}
+    .ph_userAccount_tips p:first-child{padding-top:20px !important;}
+    .ph_userAccount_tips p:last-child{padding-bottom:20px !important;}
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        //普惠个人中心查看存管账户
+        $('.j_userAt_kt').on('click',function() {
+            Firstp2p.supervision.ph_account_newWindow('/payment/transit?srv=info',$(this));
+        });
+        //普惠个人中心充值
+        $('.j_ph_charge').on('click',function() {
+            Firstp2p.supervision.ph_account('/account/chargeP2P',$(this));
+        });
+        //普惠个人中心提现
+        $('.j_ph_carry').on('click',function() {
+            Firstp2p.supervision.ph_account('/account/carryP2P',$(this));
+        });
+    });
+    </script>
+    {/if}
+    <div id="supernatant" class="supernatant">
+    </div>
+</div>
+
+{if $is_firstp2p}
+{$formString}
+{/if}
+<script>
+//修改
+function editor_bankInfo() {
+    window.location.href = '/account/editbank';
+}
+
+</script>
+<!--通行证浮层-->
+<script type="text/javascript">
+{if $passportNotice}
+    setTimeout("guidance()", 500);
+{/if}
+    function guidance() {
+        if (!$('.passpart-logo').position()) {
+            return;
+        };
+        var aPositin = $('.passpart-logo').position(),
+            aLeft = aPositin.left,
+            aTop = aPositin.top,
+            supernatant = document.getElementById("supernatant"),
+            container = document.getElementById("container");
+        container.style.overflow = "hidden";
+        supernatant.style.display = "block";
+        document.getElementById("supernatant").style.backgroundPosition = (aLeft - 175 )+ "px " + (aTop - 20) + "px";
+        // e.preventDefault();
+        // e.stopPropagation();
+        var oHeight = $(document).height();
+        supernatant.style.height = oHeight + "px";
+        console.log(oHeight)
+        supernatant.onclick = function () {
+            container.style.overflow = "auto";
+            this.style.display = "none";
+    }
+}
+</script>
+
+<script>
+    var buttonCz = document.getElementsByClassName("button_cz")[0];
+    var buttonTx = document.getElementsByClassName("button_tx")[0];
+    buttonCz.onclick = function(){
+        zhuge.track('个人账户点击充值');
+    }
+    buttonTx.onclick = function(){
+        zhuge.track('个人账户点击提现');
+    }
+
+</script>
+<script type="text/javascript">
+var isSvUser = '{$user_info.isSvUser}';
+var isSvOpen = '{$isSvOpen}';
+var isFirstp2p = '{$is_firstp2p}';
+var bankcardVerifyStatus = '{$bankcard["is_valid"]}';
+(function(){
+    $(".j_zj_date").each(function(index,data){
+        var currentDate = $(this).data("time");
+        var oldDate = parseInt(new Date("2014-03-01 00:00:00").getTime()/1000);
+        var $p = $(this).closest('tr');
+        if(currentDate < oldDate){
+            $p.find(".j_zj_change").html("--");
+        }
+    });
+    //网信个人中心提现
+    var txDialog_html = '<p class="openTips">账户现金余额：<span class="cg_balance">{function name="format_price" value=$moneyInfo.totalCashMoney b=0} 元<span></p><div class="wxlc_account mb20"><p>{$wxAccountConfig.name}现金余额(元)</p><p>{function name="format_price" value=$moneyInfo.wxCashMoney b=0} 元</p><div class="txbtn_cont"><a class="JS_carry txbtn" href="/account/carry"  data-content="网信">提现</a></div></div><div class="wdp2p_account"><p>{$p2pAccountConfig.name}现金余额(元)</p><p>{function name="format_price" value=$moneyInfo.svCashMoney b=0} 元</p><div class="txbtn_cont"><a class="JS_carry txbtn" href="/account/carryP2P"  data-content="网贷">提现</a></div>';
+    $('.table_msg').on('click','.j_txp2p', function() {
+        var $t = $(this);
+        var promptStr = '';
+        var moreText = '';
+        if(isSvUser == 1){
+            Firstp2p.alert({
+                title: "提现",
+                boxclass: 'txDialog',
+                text:txDialog_html,
+                showButton: false
+            });
+        }else{
+            $.ajax({
+                url: '/deal/isOpenAccount',
+                data: '',
+                type: "post",
+                dataType: "json",
+                success: function(result) {
+                    if(result.errno === 0){
+                        if(result.data.status == 1 && result.data.wxStatus == 1){
+                            Firstp2p.alert({
+                                title: "提现",
+                                boxclass: 'txDialog',
+                                text:txDialog_html,
+                                showButton: false
+                            });
+                        }else if(result.data.status == 1){
+                            window.location.href = '/account/carryP2P';
+                        }else{
+                            window.location.href = '/account/carry';
+                        }
+                    }else{
+                        Firstp2p.alert({
+                            text : '<div class="tc">'+  result.error +'</div>',
+                            ok : function(dialog){
+                                dialog.close();
+                            }
+                        });
+                    }
+                },
+                error: function() {
+
+                }
+            });
+        }
+    });
+    //余额展开收起
+    $('.j_showCash').click(function() {
+            $(this).hide();
+            $('.j_hideCash').show();
+            $('.cash_detail').show();
+        });
+    $('.j_hideCash').click(function() {
+        $(this).hide();
+        $('.j_showCash').show();
+        $('.cash_detail').hide();
+    });
+    //完成弹窗
+    $('.j_ktP2p').click(function(obj) {
+       Firstp2p.supervision.wancheng();
+    });
+})();
+
+// $(html).on('click','.JS_carry',function(){
+//     alert(1111)
+// })
+</script>

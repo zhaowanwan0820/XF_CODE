@@ -1,0 +1,60 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">标签分配规则</div>
+<div class="blank5"></div>
+<div class=""><input type="BUTTON" class="" value="新建规则" onclick="location.href='?m=OtoConfig&a=createConfig';"/></div>
+<div class="blank5"></div>
+<php>
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '-';
+    }
+    return date('Y-m-d H:i:s', $stamp + 28800);
+}
+function f_cutstr($string) {
+    $subString = $string;
+    if (mb_strlen($string) > 15) {
+        $subString = '<a href="javascript:;" title="'.str_replace('"',"'", $string).'">' . mb_substr($string, 0, 15) . '...</a>';
+    }
+    return $subString;
+}
+function f_effective($status) {
+    return $GLOBALS['statusCn'][$status];
+}
+</php>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="user"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:编号,groupName:推荐人会员组ID,couponCode:会员使用的优惠码,eventName:分配规则触发方式,tagConstant:分配的标签键名,toGroupName:分配至会员组,toCouponLevelName:会员组优惠码等级,isEffective:状态,addTime|f_to_date:添加时间"
+    actionlist="view:编辑" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    var status = '{$status}';
+    var p = '{$p}';
+    function view(id) {
+        if (parseInt(p) > 0) {
+            window.location.href = "/m.php?m=OtoConfig&a=viewConfig&status="+status+"&p="+p+"&id="+id;
+            return ;
+        }
+        window.location.href = "/m.php?m=OtoConfig&a=viewConfig&status="+status+"&id="+id;
+    }
+</script>
+<include file="Public:footer" />

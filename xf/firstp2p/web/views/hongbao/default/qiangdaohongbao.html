@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    {include file="web/views/hongbao/shareLogo.html"}
+    <title>{$new_bonus_title}详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/common.css', 1);?>" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+<div class="top_bg" style="background-image:url({$bg_image})"></div>
+    <div class="bonus_box">
+    	<div class="bonus_money_top"></div>
+    	<div class="bonus_money">
+        	<p class="color_red monye_text"><span class="f28">￥</span><span class="f65">{$bonusDetail.money}</span></p>
+            <p>有效期至:{function name='format_date' v=$bonusDetail.expired_at f="Y年m月d日H:i"}</p>
+        </div>
+    	<div class="f18 tc border_t2">{$new_bonus_title}已存入<span class="color_yellow">{$mobile}</span>的账户  <a class="color_yellow" href="ChangeMobile?sn={$sn}&site_id={$site_id}">修改</a></div>
+        <div class="go_btn"><a href="{$downloadUrl}" class="tel_btn">{$downloadDesc}</a></div>
+    </div>
+    {include file="web/views/hongbao/hongbao_list.html"}
+    {include file="web/views/hongbao/js.html"}
+</body>
+</html>

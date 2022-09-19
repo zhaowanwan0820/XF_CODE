@@ -1,0 +1,159 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript">
+function change_html(tag){
+    if(tag == 1){
+        $('#html0').hide();
+        $('#html1').show();
+    }else{
+        $('#html0').show();
+        $('#html1').hide();
+    }
+}
+
+function check_form(){
+    var msg_title = $('#msg_title').val();
+    var is_html = $('#is_html').val();
+    var name = $('#name').val();
+    
+    if(msg_title.length == 0){
+        alert('请输入模板标题');
+        return false;
+    }
+    if(name.length == 0){
+        alert('请输入模板标识');
+        return false;
+    }
+    return true;
+}
+
+function check_tpl_name(){
+    var name = $('#name').val();
+    name = encodeURIComponent(name);
+    if(name.length > 0){
+        url = "/m.php?m=MsgTemplate&a=check_tpl_name";
+        $.getJSON(url, { tpl_name: name, tag: "add" },function(data){
+            if(data.status == 0){
+                $('#checktplname').html(data.data);
+            }else{
+                $('#checktplname').html('模板标识可以使用');
+            }
+        });
+    }else{
+        $('#checktplname').html('不可以为空');
+    }
+}
+
+$(document).ready(function(){
+    
+    var is_copy = {$is_copy};
+    if(is_copy == 1){
+        $('#tpl_type').val({$tpl_info.type});
+        $('#is_html').val({$tpl_info.is_html});
+        $('#type_list_option').val({$tpl_info.msg_type_id});
+    }
+    
+    var is_html = $('#is_html').val();
+    if(is_html == 1){
+        $("#html0").hide();
+        $("#html1").show();
+    }else{
+        $("#html0").show();
+        $("#html1").hide();
+    }
+    
+    check_tpl_name();
+});
+</script>
+<style>
+.two-columns {border-collapse:collapse;}
+.two-columns td {border:0;vertical-align:top}
+</style>
+<div class="main">
+<div class="main_title">添加模板 <a href="{:u("MsgTemplate/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="add" action="__APP__" method="post">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">模板名称:</td>
+        <td class="item_input">
+            <input type='text' id='msg_title' name='msg_title' value='{$tpl_info.msg_title}' size='30'>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">模板标识:</td>
+        <td class="item_input">
+            <input type='text' id='name' name='tmpl_name' value='{$tpl_info.name}' size='30' onchange='check_tpl_name()'> <font id='checktplname' color='red'></font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">合同标题:</td>
+        <td class="item_input">
+            <input type='text' id='contract_title' name='contract_title' value='{$tpl.contract_title}' size='30' />
+        </td>
+    </tr>
+    <tr id="html_row">
+        <td class="item_title">发送类型:</td>
+        <td class="item_input">
+            <select name="type" id='tpl_type'>
+                <option value="0">短信</option>
+                <option value="1">邮件</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">{%IS_HTML}:</td>
+        <td class="item_input">
+            <select name="is_html" id='is_html' onchange='change_html(this.value);'>
+                <option value="0">{%IS_HTML_0}</option>
+                <option value="1">{%IS_HTML_1}</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">所属模板分类:</td>
+        <td class="item_input">
+        <select name='parent_id' id='type_list_option'>
+              <option value='0'>=顶级分类=</option>
+              <foreach name="list" item="item">
+              <option value="{$item.id}">{$item.type_name}</option>
+              </foreach>
+        </select>
+        </td>
+    </tr>    
+    
+    <tr>
+        <td class="item_title">{%CONTENT}:</td>
+        <td class="item_input">
+
+            <table class="two-columns" style='width:100%;'>
+            <tr>
+            <td class="item_input" id='html0'><textarea class="textarea" id='content0' name="content0" style="width:700px; height:250px;" >{$tpl_info.content}</textarea></td>
+            <td class="item_input" id='html1' style='display:none'>
+            <html:editor id='content1' name="content1" type="KINDEDITOR" content="{$tpl_info.content}" style="width:700px; height:450px;"/></td>
+            <td>合同模板常用变量：<br><br>{$tip_variable}</td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="m" value="MsgTemplate" />
+            <input type="hidden" name="a" value="do_add" />
+            <input type="hidden" name="tag" value="add" />
+            <input type="submit" class="button" value="{%ADD}" onclick='return check_form();'/>
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

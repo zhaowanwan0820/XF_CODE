@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file='web/views/hongbao/shareLogo.html'}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/monkey_bonus.css', 1);?>" rel="stylesheet" type="text/css">
+</head>
+<body>
+   	<div class="main">
+        <div class="top_bg"></div>
+        <div class="con view-main">            
+            <div class="aa_con">
+                <form id="register-form" action="GetHongbao" method="get">
+                    <input type="tel" class="tel-box" id="input-mobile" name="mobile" placeholder="请输入您的手机号" maxlength="11">
+                    <?php echo token_input(); ?>
+                    <input type="hidden" value="{$sn}" name='sn' id="zz_sn">
+                    <input type="hidden" value="{$cn}" name="cn" id="zz_cn">
+                    <input type="hidden" value="0" name="replace" id="replace" />
+                    {if $only_new_user}<div class="errorDiv">{$only_new_user}</div>{/if}
+                    <input type="button" class="tel-btn no-change" value="打开红包">
+                </form>
+                <p class="p_tip">红包将自动存入您在网信的账户可直接抵用现金，快去投资吧!</p>
+            </div>
+            <div class="aa_link tc">
+                <a href="###" class="p2p_logo"></a>
+                <!--<a href="###" class="hz_logo"></a>-->
+            </div>
+        </div>
+    </div>
+    <div class="ui_mask" style="display: none" >
+        <div class="ui_dialog">
+            <div class="pop_head">
+                <h2>提示</h2>
+            </div>
+            <div class="pop_body">
+                <div class="pop_text">
+                    <h3>领取本活动奖励：</h3>
+                    <table>
+                        <colgroup>
+                            <col width="30%" />
+                            <col width="40%" />
+                            <col width="30%" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <td colspan="3" class="xs_title">
+                                    新手礼包3.1
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>投资红包</th>
+                                <th>有效期至</th>
+                                <th>邀请人</th>
+                            </tr>
+                            <tr>
+                                <td class="xs_money">--</td>
+                                <td class="xs_date">--</td>
+                                <td class="xs_name">--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>将放弃已领取的奖励：</h3>
+                    <table>
+                        <colgroup>
+                            <col width="30%" />
+                            <col width="40%" />
+                            <col width="30%" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <td colspan="3" class="ts_title">
+                                    轮盘抽奖
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>投资红包</th>
+                                <th>有效期至</th>
+                                <th>邀请人</th>
+                            </tr>
+                            <tr>
+                                <td class="ts_money">--</td>
+                                <td class="ts_date">--</td>
+                                <td class="ts_name">--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="pop_tip">是否继续领取？</p>
+                <div class="pop-btn fr">
+                    <input type="submit" value="继续领取" class="btn-ok">
+                </div>
+                <div class="pop-btn mr10">
+                    <input type="submit" value="取消" class="btn-cancel">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+		$(function(){
+            var mobileRegEx = /^0?(13[0-9]|15[0-9]|18[0-9]|17[0678]|14[457])[0-9]{8}$/;
+			$('.tel-btn').addClass('no-change').attr('disabled','disabled');
+			$('.tel-box').on('input propertychange', function() {
+				var tel= $('.tel-box').val();
+				if(!tel || tel==null){
+					$('.tel-btn').addClass('no-change').attr('disabled','disabled');
+					//$('.tel-box').focus();
+					return false;
+				}else if(!mobileRegEx.test(tel)){
+					$('.tel-btn').addClass('no-change').attr('disabled','disabled');
+					//$('.tel-box').focus();
+					return false;
+				}else{
+					$('.tel-btn').removeClass('no-change').removeAttr('disabled','disabled');
+					return true;
+				}
+			});
+			$(".tel-btn").bind("click", function () {
+			    $(this).addClass('no-change').attr('disabled', 'disabled');
+		        $.ajax({
+		            type: "GET",
+		            url: "/hongbao/CheckMobile",
+		            data: { mobile: $('.tel-box').val(), fromPlatform: "zzhb",sn:$("#zz_sn").val(),cn:$("#zz_cn").val()},
+		            dataType: "json",
+		            async: false,
+		            success: function (data) {
+		                $('.tel-btn').removeClass('no-change').removeAttr('disabled', 'disabled');
+		                if (data.errCode == "4002") {
+		                    $(".ts_money").html(data.data.replaceMoney + "元");
+		                    $(".ts_date").html(data.data.replaceDate);
+		                    $(".ts_name").html(data.data.replaceUser);
+		                    $(".ts_title").html(data.data.replaceName);
+		                    $(".xs_money").html(data.data.activityMoney + "元");
+		                    $(".xs_date").html(data.data.activityDate);
+		                    $(".xs_name").html(data.data.activityUser);
+		                    $(".xs_title").html(data.data.activityName);
+		                    $(".ui_mask").show();
+		                } else {
+		                    $("#register-form").submit();
+		                   
+		                }
+		            },
+		            error: function () {
+		                $('.tel-btn').removeClass('no-change').removeAttr('disabled', 'disabled');
+		                alert('请求错误！');
+		            }
+		        });
+			});
+			$(".btn-cancel").bind("click", function () {
+			    $(".ui_mask").hide();
+			    $('.tel-btn').removeClass('no-change').removeAttr('disabled', 'disabled');
+			});
+			$(".btn-ok").bind("click", function () {
+			    $(".ui_mask").hide();
+			    $("#replace").val("1");
+			    $("#register-form").submit();
+			    $('.tel-btn').removeClass('no-change').removeAttr('disabled', 'disabled');
+			});
+		})
+    </script>
+</body>
+</html>

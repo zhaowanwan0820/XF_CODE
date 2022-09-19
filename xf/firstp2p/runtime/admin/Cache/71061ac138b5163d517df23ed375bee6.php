@@ -1,0 +1,76 @@
+<?php if (!defined('THINK_PATH')) exit();?>
+<script type="text/javascript">
+
+function confirm_form(btn){
+
+    var id = $("input[name='id']").val();
+    var money = $("input[name='send_money']").val();
+    var user_id = $("input[name='send_id']").val();
+    var info = $("#info_val").val();
+
+    if(money == '' || isNaN(money)){
+        money = '';
+    }else if(money > 0 && money.indexOf('.') > 0 && money.length - money.indexOf('.') - 1 > 2){
+        money = parseFloat(money).toFixed(2);
+    }
+    $("input[name='send_money']").val(money);
+
+    if(money == '' || money <= 0){
+        alert('请输入金额');
+        return false;
+    }
+    if(user_id == ''){
+        alert('请输入用户名');
+        return false;
+    }
+    money_transfer_detail(id, user_id, money, info);
+}
+
+function check_fee(obj){
+    var new_fee = obj.val();
+    if(new_fee == '' || isNaN(new_fee)){
+        new_fee = '';
+    }
+
+    if(new_fee > 0 && new_fee.indexOf('.') > 0 && new_fee.length - new_fee.indexOf('.') - 1 > 2){
+        new_fee = parseFloat(new_fee).toFixed(2);
+    }
+    obj.val(new_fee);
+}
+</script>
+<div class="main">
+<div class="main_title">id:<?php echo ($user_info["id"]); ?> 用户名:<?php echo ($user_info["user_name"]); ?> 余额:<?php echo (format_price($user_info["money"])); ?></div>
+<div class="blank5"></div>
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">转账金额:</td>
+        <td class="item_input"><input type="text" class="textbox" name="send_money" onkeyup="check_fee($(this))"/> 元
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">转入用户ID:</td>
+        <td class="item_input"><input type="text" class="textbox" name="send_id"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">备注:</td>
+        <td class="item_input"><textarea id="info_val" name="info"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">&nbsp;</td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="id" value="<?php echo ($user_info["id"]); ?>" />
+            <!--隐藏元素-->
+            <input type="button" class="button" value="<?php echo L("OK");?>" onclick="return confirm_form(this);"/>
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</div>

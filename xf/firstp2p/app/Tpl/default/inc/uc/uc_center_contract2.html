@@ -1,0 +1,86 @@
+<link href="{$TMPL_NEW}/css/user.css" rel="stylesheet" type="text/css">
+<div class="user_right">
+        <div class="user_right_box">
+        	<div class="user_title"><h1><i class="ico_hetong"></i>我的合同列表</h1></div>
+            <div class="w750 mauto clearfix">
+            	<table class="plan">
+                	<colgroup>
+                    	<col width="160">
+                        <col width="110">
+                        <col width="70">
+                        <col width="100">
+                        <col width="90">
+                        <col width="155">
+                        <col width="72">
+                    </colgroup>
+                    <thead>
+                    	<tr>
+                        	<th class="ml10">合同类型</th>
+                            <th>借款标题</th>
+                            <th width='120'>合同内容</th>
+                            <th>时间</th>
+                           	<th>期限</th>
+                            <th>金额</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    	{foreach from=$contract item='con'  key="mykey" }
+                    	<tr id='{$con.deal_id}' {if $mykey % 2 ==0 }{else}class="tr_bg"{/if}>
+                        	<td>{$con.title}<br>{$con.number}</td>
+                            <td title='{$con.deal_name}'>{$con.user_name} <br>{function name="cutstr" v=$con.deal_name}</td>
+                            <td><a href="javascript:clickopen({$con.id})" class="color-blue1 underline">查看</a><br><a href="{url x="index" r="uc_center#download" p="id=$con.id&tag=download"}" class="color-blue1 underline">下载</a></td>
+                            <td>{$con.create_time}</td> 
+                            <td>{if $con.d_repay_time>0}{$con.d_repay_time}{if $con.loantype == 5}天{else}个月{/if}{else}--{/if}</td>
+                            <td>{if $con.d_money>0}{$con.d_money}元{else}--{/if}</td>
+                            <td><em class="color-blue1">
+				              {if $agencyUserInfo}
+							    <div class="f_l" style="width: 120px">
+							        {if $con.is_needsign eq 0}
+								        {foreach from=$con.passlist item='list'}
+								            <p>{$list.user_name}{if $list.pass == 1}已通过{else}未通过{/if}</p>
+								        {/foreach}
+							        
+									    {if $con.pass}
+				                		    <p>已通过</p>
+				                		{else}
+				                		    <p><a class="color-blue1" href="/uc_center-checkContract?action=pass&contract_id={$con.id}&p={$p}">通过</a></p>
+				                		{/if}
+			                		{else}
+			                		  <!-- 二次签署 -->
+				                	  {foreach from=$con.passlist item='list'}
+				                         <p>{$list.user_name}{if $list.sign_pass == 1}已通过 {elseif $list.sign_pass == 2}已拒签{else}未通过{/if}</p>
+				                      {/foreach}
+			                		  {if $con.alone_pass eq 1}
+					                     <p>已通过</p>
+					                  {elseif $con.alone_pass eq 2}
+					                     <p>已拒签</p>
+			                          {else}
+			                             <p><a class="color-blue1" href="/uc_center-checkAloneSign?action=pass&contract_id={$con.id}&p={$p}">通过</a>
+			                             <a class="color-blue1" href="/uc_center-checkAloneSign?action=nopass&contract_id={$con.id}&p={$p}">拒绝</a></p>
+			                          {/if}
+				                    {/if}
+							    </div>
+             				 {/if}
+			                </em></td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <div class="pages w715"> 
+            {$pages}
+        	</div>
+        </div>
+</div>    
+
+<script>
+function showopen(url){
+    $.weeboxs.open(url, {boxid:null,contentType:'iframe',showButton:true, showCancel:false, showOk:false,title:'审核详情',width:250,height:150,type:'wee',onclose:function(){null}});
+}
+
+function clickopen(id){
+    var url = APP_ROOT+"/index.php?ctl=uc_center&act=download&id="+id;
+    $.weeboxs.open(url, {boxid:null,contentType:'iframe',showButton:true, showCancel:false, showOk:false,title:'合同详情',width:750,height:550,type:'wee',onclose:function(){null}});
+}
+</script>

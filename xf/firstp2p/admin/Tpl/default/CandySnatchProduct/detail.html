@@ -1,0 +1,81 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+<div class="main">
+    <div class="main_title">商品详情
+        <a href="m.php?m=CandySnatchProduct&a=index" class="back_list">返回列表</a>
+    </div>
+    <div class="blank5"></div>
+    <table cellpadding="4" cellspacing="0" border="0" class="form">
+        <tr>
+            <td colspan="2" class="topTd"></td>
+        </tr>
+        <tr>
+            <td class="item_title">商品名称</td>
+            <td>&nbsp;{$productInfo.short_title}</td>
+        </tr>
+        <tr>
+            <td class="item_title">商品详情</td>
+            <td>&nbsp;{$productInfo.title}</td>
+        </tr>
+        <tr>
+            <td class="item_title">商品首页图片和滑动图片</td>
+            <td>
+                <foreach name="images" item="item">
+                    <img src="{$item}" height="100" width="100">
+                </foreach>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品详情图片</td>
+            <td>
+                    <img src="{$productInfo.detail}" height="100" width="100">
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品类型</td>
+            <td>&nbsp;
+                <if condition = "$productInfo.type eq 0">
+                    普通商品
+                    <elseif condition = "$productInfo.type eq 1"/>
+                    双十一商品
+                    <elseif condition = "$productInfo.type eq 2"/>
+                    邀请专享商品
+                    <elseif condition = "$productInfo.type eq 3"/>
+                    女神节商品
+                </if>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品排序</td>
+            <td>&nbsp;{$productInfo.sort}</td>
+        </tr>
+        <tr>
+            <td class="item_title">商品库存</td>
+            <td>&nbsp;{$productInfo.stock}</td>
+        </tr>
+        <tr>
+            <td class="item_title">历史累计已消耗件数</td>
+            <td>&nbsp;{$snatchInfo.snatchAmount}</td>
+        </tr>
+        <tr>
+            <td class="item_title">历史累计已回收用户信宝总数</td>
+            <td>
+                <if condition = "$userPutAmount eq 0">
+                    &nbsp;0
+                    <else/>
+                    &nbsp;{$userPutAmount}
+                </if>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">机器人投入信宝所占比例</td>
+            <td>&nbsp;{$robotPercent}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="bottomTd"></td>
+        </tr>
+    </table>
+</div>
+
+<include file="Public:footer"/>

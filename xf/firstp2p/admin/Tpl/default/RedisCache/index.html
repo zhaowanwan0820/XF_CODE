@@ -1,0 +1,231 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<style type="text/css">
+    .fLeft{ float:left;}
+    .cBoth{clear:both}
+    .hMargin{margin-left:3px; margin-right:3px}
+    .vMargin{margin-top:3px; margin-bottom:3px}
+    #execSql{ font-size:12px; height:198px; width:450px; font-family:verdana,arial;}
+    #tableName{ font-size:12px; height:200px; font-family:verdana,arial;}
+</style>
+<script language="JavaScript">
+<!--
+    function set() {
+        $.ajax({ 
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=set", 
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('key_set').value)+'&value='+encodeURIComponent(document.getElementById('val_set').value)+'&expire='+
+                encodeURIComponent(document.getElementById('expire_set').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+            }
+        }); 
+    }
+    function get(){ 
+        $.ajax({ 
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=execute", 
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('key').value),
+            dataType: "json",
+            success: function(obj){
+                $("#val").html(obj.data);
+            }
+        }); 
+    }
+    function del(){ 
+        $.ajax({ 
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=del", 
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('key_del').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+            }
+        }); 
+    }
+
+    function ha_set() {
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=ha_set",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('ha_key_set').value)+'&value='+encodeURIComponent(document.getElementById('ha_val_set').value)+'&expire='+
+            encodeURIComponent(document.getElementById('ha_expire_set').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+            }
+        });
+    }
+
+    function ha_get() {
+        $.ajax({
+            url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=ha_get",
+            data: 'ajax=1&key=' + encodeURIComponent(document.getElementById('ha_key').value),
+            dataType: "json",
+            success: function (obj) {
+                $("#ha_val").html(obj.data);
+            }
+        });
+    }
+
+    function ha_del(){
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=ha_del",
+            data: 'ajax=1&key='+encodeURIComponent(document.getElementById('ha_key_del').value),
+            dataType: "json",
+            success: function(obj){
+                alert(obj.data);
+            }
+        });
+    }
+//-->
+</script>
+<!-- 菜单区域  -->
+
+<!-- 主页面开始 -->
+<div id="main" class="main" >
+<!-- 主体内容  -->
+<div class="main_title">REDIS缓存操作</div>
+<div class="blank5"></div>
+<!--  功能操作区域  -->
+<div class="cBoth">
+<!-- SQL执行器 -->
+<form method=post action="" name="form1">
+    <fieldset id="querybox" >
+    <legend style="color:gray">缓存查询窗口
+    <div class="fLeft"></div>
+    KEY:<input type="text" name="key" id="key" style="width:300px;" />
+    </legend>
+    <div class="cBoth"></div>
+    <div id="dbSql" class="cBoth vMargin">
+    <div class="fLeft">VALUE:<br><TEXTAREA id="val" NAME="val" style="width:800px; height:100px;" ></TEXTAREA></div>
+    <div id="dbSql" >
+    <div class="fLeft" style="width:65px">
+
+    </div>
+    </div>
+    </div>
+    <br class="cBoth">
+    <div class="cBoth vMargin" >
+    <html:imageBtn name="button" value="查询"  click="get()" style="impBtn hMargin fLeft shadow" />
+    <html:imageBtn name="button" type="reset" value="重置"  style="impBtn hMargin fLeft shadow" />
+    </div>
+    </fieldset>
+</form>
+
+<br>
+
+<form method=post action="" name="form2">
+    <fieldset id="querybox" >
+    <legend style="color:gray">缓存设置窗口
+    <div class="fLeft"></div>
+    KEY:<input type="text" name="key" id="key_set" style="width:300px;" />
+    </legend>
+    <div class="cBoth"></div>
+    <div id="dbSql" class="cBoth vMargin">
+    <div class="fLeft">VALUE:<br><TEXTAREA id="val_set" NAME="val" style="width:800px; height:100px;" ></TEXTAREA></div>
+    <div id="dbSql" >
+    <div class="fLeft" style="width:65px">
+    </div>
+    </div>
+    </div>
+    <br class="cBoth">
+    过期时间(秒):<input type="text" name="expire_set" id="expire_set" style="width:300px;" value="86400" />
+    <div class="cBoth vMargin" >
+    <html:imageBtn name="button" value="修改"  click="set()" style="impBtn hMargin fLeft shadow" />
+    <html:imageBtn name="button" type="reset" value="重置"  style="impBtn hMargin fLeft shadow" />
+    </div>
+    </fieldset>
+</form>
+
+<br>
+
+<form method=post action="" name="form3">
+    <fieldset id="querybox" >
+    <legend style="color:gray">缓存删除窗口
+    <div class="fLeft"></div>
+    KEY:<input type="text" name="key" id="key_del" style="width:300px;" />
+    </legend>
+    <div class="cBoth"></div>
+    <br class="cBoth">
+    <div class="cBoth vMargin" >
+    <html:imageBtn name="button" value="删除"  click="del()" style="impBtn hMargin fLeft shadow" />
+    <html:imageBtn name="button" type="reset" value="重置"  style="impBtn hMargin fLeft shadow" />
+    </div>
+    </fieldset>
+</form>
+
+</div>
+
+<br>
+
+<div class="main_title">高可用REDIS缓存操作</div>
+<div class="blank5"></div>
+
+<div class="cBoth">
+    <form method=post action="" name="form4">
+        <fieldset>
+            <legend style="color:gray">高可用缓存查询窗口
+                <div class="fLeft"></div>
+                KEY:<input type="text" name="ha_key" id="ha_key" style="width:300px;" />
+            </legend>
+            <div class="cBoth"></div>
+            <div class="cBoth vMargin">
+                <div class="fLeft">VALUE:<br><TEXTAREA id="ha_val" name="ha_val" style="width:800px; height:100px;" ></TEXTAREA></div>
+            </div>
+            <br class="cBoth">
+            <div class="cBoth vMargin" >
+                <html:imageBtn name="button" value="查询"  click="ha_get()" style="impBtn hMargin fLeft shadow" />
+                <html:imageBtn name="button" type="reset" value="重置"  style="impBtn hMargin fLeft shadow" />
+            </div>
+        </fieldset>
+    </form>
+
+    <br>
+
+    <form method=post action="" name="form5">
+        <fieldset>
+            <legend style="color:gray">高可用缓存设置窗口
+                <div class="fLeft"></div>
+                KEY:<input type="text" name="ha_key_set" id="ha_key_set" style="width:300px;" />
+            </legend>
+            <div class="cBoth"></div>
+            <div class="cBoth vMargin">
+                <div class="fLeft">VALUE:<br><TEXTAREA id="ha_val_set" name="ha_val_set" style="width:800px; height:100px;" ></TEXTAREA></div>
+            </div>
+            <br class="cBoth">
+            过期时间(秒):<input type="text" name="ha_expire_set" id="ha_expire_set" style="width:300px;" value="86400" />
+            <div class="cBoth vMargin" >
+                <html:imageBtn name="button" value="修改"  click="ha_set()" style="impBtn hMargin fLeft shadow" />
+                <html:imageBtn name="button" type="reset" value="重置"  style="impBtn hMargin fLeft shadow" />
+            </div>
+        </fieldset>
+    </form>
+
+    <br>
+
+    <form method=post action="" name="form6">
+        <fieldset>
+            <legend style="color:gray">高可用缓存删除窗口
+                <div class="fLeft"></div>
+                KEY:<input type="text" name="ha_key_del" id="ha_key_del" style="width:300px;" />
+            </legend>
+            <div class="cBoth"></div>
+            <br class="cBoth">
+            <div class="cBoth vMargin" >
+                <html:imageBtn name="button" value="删除"  click="ha_del()" style="impBtn hMargin fLeft shadow" />
+                <html:imageBtn name="button" type="reset" value="重置"  style="impBtn hMargin fLeft shadow" />
+            </div>
+        </fieldset>
+    </form>
+
+</div>
+<!-- 列表显示区域结束 -->
+
+<!-- 主体内容结束 -->
+</div>
+<!-- 主页面结束 -->
+<script language="JavaScript">
+<!--
+    if ({$Think.get.run|default=0}) runSql();
+//-->
+</script>
+<include file="Public:footer" />

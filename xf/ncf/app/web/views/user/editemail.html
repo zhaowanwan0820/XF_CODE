@@ -1,0 +1,41 @@
+{include file="web/views/header.html"}
+<div class="p_account_email">
+<link href="<?php echo $this->asset->makeUrl('v3/css/p_account_email.css');?>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/p_account_email.js?v=1000');?>"></script>
+    <div class="w1100">
+       <section>
+            <div class="shadow">
+                <div class="user_title"><h1><i class="ico_xiangmu"></i>修改邮箱</h1></div>
+					<div class="pw-info">
+                <form method="post" action="/user/saveemail" id="modify">
+                    <?php echo token_input(); ?>
+                <ul class="clearfix">
+                    <li><label> <span>*</span> 登录密码：
+                    </label> <input type="password" value="" name="password" id="password"
+                        class="txt" autocomplete="off"> &nbsp;&nbsp;&nbsp;<span class="error_tip tip"></span></li>
+                    <li><label> <span>*</span> 新邮箱：
+                    </label> <input type="text" value="" name="new_email" id="new_mail"
+                        class="txt"> &nbsp;&nbsp;&nbsp;<span
+                        class="error_tip tip new_mail"></span></li>
+                    <li class="clearfix">
+                        <label> 图形验证：</label>
+                        <input type="text" value="" data-url="/user/captchaCheck" placeholder="请输入图片中的数字" name="captcha" id="captcha" class="txt" autocomplete="off" maxlength="25">
+                        <img align="absbottom" title="点击刷新" src="/verify.php?w=93&h=34&rb=0" id="img_captcha"  width="93" class="ml15 fl">
+                        <span class="error_tip tip captcha" for="captcha" id="code-err"></span>
+                    </li>
+                    <li class="btn-w30"><label> <span></span>
+                    </label>
+                    <input class="sumbtn" type="submit" id="submit_button" value="确定">
+
+                    </li>
+                    <li><label> <span></span>
+                    </label> <span class="error_tip" style="color: red" id="error_tip"></span>
+                    </li>
+                </ul>
+                </form>
+            </div>
+            </div>
+       </section>
+    </div>
+</div>
+{include file="web/views/footer.html"}

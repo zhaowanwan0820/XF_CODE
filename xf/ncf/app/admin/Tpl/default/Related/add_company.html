@@ -1,0 +1,116 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="main_title">{$main_title} <a href="{:u("Related/index_company",array('channel'=>$channel))}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">注册/营业执照号</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="license" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">序号</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="serialno" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">关联方名称</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="related_name" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">英文名称</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="enname" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">注册地</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="address" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">关联人</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="related_user" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">关联形式</td>
+                <td class="item_input">
+                    <select name="related_type" >
+                        <option value="0">=={%NO_SELECT_CATE}==</option>
+                        <foreach name="related_types" key="related_type_key" item="related_type">
+                            <option value="{$related_type_key}"> {$related_type}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">持股比例</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="rate" />%
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">关联关系</td>
+                <td class="item_input">
+                    <select name="related_mode" >
+                        <option value="0">=={%NO_SELECT_CATE}==</option>
+                        <foreach name="related_modes" key="related_mode_key" item="related_mode">
+                            <option value="{$related_mode_key}"> {$related_mode}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">关联开始时间:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="start_time" id="start_time" onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d', false, false, 'btn_start_time');">
+                    <input type="button" class="button" id="btn_start_time" value="选择时间" onclick="return showCalendar('start_time', '%Y-%m-%d', false, false, 'btn_start_time');">
+                    <input type="button" class="button" value="清空时间" onclick="$('#start_time').val('');">
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">备注</td>
+                <td class="item_input"><textarea class="textarea" name="remark" ></textarea></td>
+            </tr>
+            <tr>
+                <td class="item_title">是否启用</td>
+                <td class="item_input">
+                    <lable><input type="radio" name="status" value="1" checked="checked"/>是</lable>
+                    <lable><input type="radio" name="status" value="2" />否</lable>
+                </td>
+            </tr>
+            <input type="hidden" name="user_type" value="{$user_type}" />
+            <input type="hidden" name="channel" value="{$channel}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Related" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="submit" class="button" value="{%ADD}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

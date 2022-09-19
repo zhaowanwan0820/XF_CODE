@@ -1,0 +1,47 @@
+<div id="dashboard" class="dashboard">
+	<ul>
+		<li class="current"><a href="{url x="index" r="uc_invest#booked"}">我的预约列表</a></li>
+	</ul>
+</div>
+<div class="uc_r_bl_box clearfix">
+	{if $booked_list}
+	<table cellspacing="0" cellspadding="0" border="0" class="tb_money">
+		<colgroup>
+			<col width="100">
+			<col width="110">
+			<col width="100">
+			<col width="80">
+			<col width="190">
+			<col width="80">
+		</colgroup>
+		<thead>
+			<tr>
+				<th scope="col">项目名</th>
+				<th scope="col">预约时间</th>
+				<th scope="col">预约金额</th>
+				<th scope="col">预约人</th>
+				<th scope="col">邮件/手机</th>
+				<th scope="col">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach from=$booked_list item='book'}
+			<tr>
+				<td class="tc">{$book.program_name}</td>
+				<td class="tc">{function name="to_date" v="$book.create_time"}</td>
+				<td class="tc">{$book.money} 元</td>
+				<td class="tc">{$book.real_name}</td>
+				<td class="tc">{$book.email}<br />{$book.mobile}</td>
+				<td class="tc"><a href='/uc_invest-booked_del?id={$book.pid}&p={$page}' onclick='return confirm("确认删除该预约？")'>删除</a></td>
+			</tr>
+			{/foreach}
+		</tbody>
+	</table>
+
+	<div class="clearfix pt5 pb5 pl10 ">
+		<div class="pages">{$pages}</div>
+	</div>
+	{else}
+	<div class="empty-box">没有记录</div>
+	{/if}
+</div>

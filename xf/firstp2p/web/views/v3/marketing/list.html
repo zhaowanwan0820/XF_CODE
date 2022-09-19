@@ -1,0 +1,31 @@
+<div class="active_rule">
+    <div class="fengexian">
+        最近领取记录
+    </div>
+    {foreach from=$discountList item=val}
+    <div class="record">
+        <div class="record_left">
+            {if $val.weixin_user_info.headimgurl neq NULL && $val.weixin_user_info.headimgurl neq ''}
+            <img src="{$val.weixin_user_info.headimgurl}" alt="">
+            {else}
+            <img src="<?php echo $this->asset->makeUrl('v3/images/discount_pick/touxiang.png');?>" alt="">
+            {/if}
+        </div>
+        <div class="record_right">
+            <div class="record_right_con">
+                <div class="rr_in"> 
+                    <p>
+                        {if $val.weixin_user_info.nickname}
+                        {$val.weixin_user_info.nickname}:
+                        {else}
+                        用户{$val.mobile}:
+                        {/if}
+                        <span class="ml3">{$val.desc_info}</span>
+                    </p>
+                    <span class="record_right_span">{$val.time}</span>
+                </div> 
+            </div>   
+        </div>
+    </div>
+    {/foreach}
+</div>

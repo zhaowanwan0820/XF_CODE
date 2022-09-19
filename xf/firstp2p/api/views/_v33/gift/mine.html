@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>我的优惠券</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <!--public js&css start-->
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/o2o/o2o_coupon.css');?>">
+        <!--<script type="text/javascript" src="{$STATIC_SITE}/mobile/app/v2/js/my_bonus.js"></script>
+        public js&css end-->
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="p_coupon_list">
+                <div class="tab">
+                    <!-- <ul class="tab_header">
+                        <li class="active">待兑换<span></span></li>
+                        <li>已兑换<span></span></li>
+                        <li>已过期<span></span></li>
+                    </ul> -->
+                    <!--全部-->
+                    <div class="tab_bd">
+                        <div class="tab_box">
+                            <div class="tab_con"></div>
+                            <div class="tab_more tb0-more"><a href="javascript:void(0);">点击加载更多</a></div>               
+                        </div>
+                        <!-- <div class="tab_box"  style="display:none;">
+                            <div class="tab_con"></div>
+                            <div class="tab_more tb0-more"><a href="javascript:void(0);">点击加载更多</a></div>  
+                        </div>
+                        <div class="tab_box" style="display:none;">
+                            <div class="tab_con"></div>
+                            <div class="tab_more tb0-more"><a href="javascript:void(0);">点击加载更多</a></div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+        <script>
+            //(function ($) {
+                var rawFirstPageData = {function name="json_encode" v="$couponList"};
+                var loadmore0 = new WXP2P.UI.P2PLoadMore($(".tab_con")[0], $('.tb0-more')[0], '/gift/ajaxMine?token={$usertoken}',1);
+                // var loadmore1 = new WXP2P.UI.P2PLoadMore($(".tab_con")[1], $('.tb0-more')[1], '/gift/ajaxMine?token={$usertoken}&status=2',1);
+                // var loadmore2 = new WXP2P.UI.P2PLoadMore($(".tab_con")[2], $('.tb0-more')[2], '/gift/ajaxMine?token={$usertoken}&status=3',1);
+                loadmore0.createItem = function(item){
+                    var dl = document.createElement("div");
+                    var html = "";
+                    html +='<div class="items_bg_right">';
+                    html +='<dl class="coupon_items clearfix">';
+                    html += '<a data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="myCoupon" data-title="礼券详情" data-identity="couponDetail" data-needback="true" data-needrefresh="false" href="{$APP_HOST}/gift/MineDetail?couponId=' + item.id + '&token={$usertoken}">';
+                    html += '    <dt>';
+                    html +='        <img src="'+item.pic+'">'
+                    html += '    <dd>';
+                    html += '       <div class="draw_text">';
+                    html +='            <h3>'+ item.productName +'</h3>';
+                    if (item.isShowCouponNumber == 1) {
+                        html +='        <p>券码：'+ item.couponNumber.replace(/(.{4})/g, '$1 ') +'</p>';
+                    }
+                    if (item.status == 1) {
+                        html +='        <p>有效期至：'+ WXP2P.UTIL.dataFormat(item.useEndTime) +'</p>';
+                    } else if (item.status == 2) {
+                        html +='        <p>'+ item.couponExchangedDesc +'</p>';
+                    }else if (item.status == 3) {
+                        html +='        <p>已过期，'+ WXP2P.UTIL.dataFormat(item.useEndTime) +'</p>';
+                    }
+                    html +='        </div>';
+                    html +='        <div class="draw_btn"><span class="btn"></span></div>';
+                    html += '   </dd>';
+                    html +='</a>';
+                    html +='</dl>';
+                    html +='</div>';
+                    dl.innerHTML = html;
+                    dl.className="items_bg_left";
+                    WXP2P.APP.batchWarpAnchorSchema($(dl).find('a'));
+                    return dl;
+                };
+                loadmore0.preProcessData = function(ajaxData) {
+                    var listItems = ajaxData['data'] ? ajaxData['data'] : [];
+                    return {"data": listItems, "errno": ajaxData['errno'], "error": ajaxData["error"]} 
+                };
+                loadmore0.loadNextPage();
+                var tabHash = {
+                    'tab0': loadmore0
+                };
+                loadmore0.updateLoadMoreBtn  = function(){
+                    if (this.loading) {
+                        this.loadmorepanel.innerHTML = '加载中...';
+                    } else if(this.hasNoMore) {
+                        if (this.isEmpty) {
+                            this.loadmorepanel.innerHTML = '<div class="ui_no_coupon"><p>这里空空如也</p></div>';
+                        } else {
+                            this.loadmorepanel.innerHTML = "已兑换礼券仅显示最近30天内的记录";
+                        }
+                    } else {
+                        this.loadmorepanel.innerHTML = '<a href="javascript:void(0)">点击加载更多</a>';
+                        var pThis = this;
+                        $(this.loadmorepanel).find("a").unbind("click").bind("click", function(){
+                            pThis.loadNextPage();
+                        });
+                    }
+                }
+                // loadmore0.updateLoadMoreBtn = loadmore2.updateLoadMoreBtn = function(){
+                //     if (this.loading) {
+                //         this.loadmorepanel.innerHTML = '加载中...';
+                //     } else if(this.hasNoMore) {
+                //         if (this.isEmpty) {
+                //             this.loadmorepanel.innerHTML = '<div class="ui_un_tips"><i class="ui_icon_un"></i><p>无可显示内容</p></div>';
+                //         } else {
+                //             this.loadmorepanel.innerHTML = "没有更多了";
+                //         }
+                //     } else {
+                //         this.loadmorepanel.innerHTML = '<a href="javascript:void(0)">点击加载更多</a>';
+                //         var pThis = this;
+                //         $(this.loadmorepanel).find("a").unbind("click").bind("click", function(){
+                //             pThis.loadNextPage();
+                //         });
+                //     }
+                // }
+                // $('.tab_header li').click(function() {
+                //    if($(this).hasClass('active')) return;
+                //    var idx = $(this).index();
+                //    var $con = $('.tab .tab_box').eq(idx);
+                //    $(this).addClass('active').siblings().removeClass('active');
+                //    $con.show().siblings().hide();
+                //    console.log(idx);
+                //    tabHash['tab' + idx].refresh();
+                // });
+            //})(Zepto);
+        </script>
+    </body>
+</html>

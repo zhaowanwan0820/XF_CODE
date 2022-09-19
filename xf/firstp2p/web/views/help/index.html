@@ -1,0 +1,37 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/help_web2.css');?>" />
+<div class="blank"></div>
+<div class="clearfix">
+    <div class="short_uc fl">
+        <div class="comm2_top"></div>
+        <div class="comm2_con"><div class="nav-aside">
+                {foreach from=$cate_list key=key item=cate}
+                <span class="nav-aside-lv1{if $key eq 0} first{/if}">{$cate.title}</span>
+                {foreach from=$cate.sub item=item}
+                <a class="nav-aside-lv2 {if $item.id eq $article.id}active{/if}" href="{$item.url}">{$item.title}</a>
+                {/foreach}
+                {/foreach}
+            </div></div>
+        <div class="comm2_bot"></div>
+    </div>
+    <div class="inc_box fr">
+        <div class="comm_top"></div>
+        <div class="comm_con">
+            <div class="inc">
+                <div class="inc_main" style="padding:0 40px">
+                    <div class="article_title">
+                        {$article.title}
+                    </div>
+                    <div class="article_info">
+                        {$article.content}
+                    </div>
+                </div>
+                <div class="inc_foot"></div>
+            </div>
+        </div>
+        <div class="comm_bot"></div>
+    </div>
+</div>
+<div class="blank"></div>
+
+{include file="web/views/footer.html"}

@@ -1,0 +1,97 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href="__TMPL__Common/js/ztree/jquery.ztree.all-3.5.min.js" />
+<load href="__TMPL__Common/js/ztree/jquery.ztree.core-3.5.min.js" />
+<load href="__TMPL__Common/js/ztree/demo.css" />
+<load href="__TMPL__Common/js/ztree/zTreeStyle.css" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">{$typeName}</div>
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="tid" value="{$typeId}" />
+          名单导入：  <input type="file" name="upfile" id="upfile" style="width:150px; "> <input type="submit" class="button" value="批量导入" onclick="return confirm('确定此操作吗？')"/><br />
+            <strong>表头说明：（"value1","value2","value3","状态"）&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用说明：{$note}</strong><br />
+            <strong>内容填写说明：状态1为新增，0为移除</strong><br />
+            <strong>最多一次导入3000条数据</strong><br />
+            <a href="/static/admin/Common/bwlist_template.csv">获取csv模板</a>
+            <input type="hidden" value="BwList" name="m" />
+            <input type="hidden" value="import" name="a" />
+
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            value1：<input type="text" class="textbox" name="value1" value="{:trim($_REQUEST['value1'])}" />
+            value2：<input type="text" class="textbox" name="value2" value="{:trim($_REQUEST['value2'])}" />
+            value3：<input type="text" class="textbox" name="value3" value="{:trim($_REQUEST['value3'])}" />
+            <input type="hidden" name="tid" value="{$typeId}" />
+            <input type="hidden" value="BwList" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <input type="button" class="button" value="新增" onclick="addList({$typeId});">
+        </form>
+    </div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="bw"
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|20px,value1:value1|30px,value2:value2|50px,value3:value3|10px,opt_name:操作人|5px,create_time:操作时间|5px"
+	actionlist="dele:移除"
+	actionwidth="100px"/> 
+
+<div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+
+ function dele(id){
+     if (confirm('确定此操作吗？')){
+         location.href = ROOT+"?m=BwList&a=del&id="+id
+     }
+ }
+ function urlParamToJson(urlParam){
+     var string = urlParam.split('&');
+     var res = {};
+     for(var i = 0;i<string.length;i++){
+         var str = string[i].split('=');
+         res[str[0]]=str[1];
+     }
+     return res;
+ }
+ function save(){
+     data = $("#_js_form").serialize();
+     jsonData = urlParamToJson(data);
+
+     if(jsonData.value1 == '' && jsonData.value2 == '' && jsonData.value3 == ''){
+         alert('三个值不能都为空');
+         return false;
+     }
+
+     $.post("/m.php?m=BwList&a=save",data,function(rs){
+
+         var rs = $.parseJSON(rs);
+         if(rs.status){
+             alert("操作成功！");
+             $.weeboxs.close();
+             window.location.href = "/m.php?m=BwList&a=index&tid="+jsonData.typeId;
+         }else{
+             alert(rs.info);
+         }
+     });
+ }
+ function addList(id){
+     typename = '{$typeName}';
+     $.weeboxs.open(ROOT+"?m=BwList&a=add&typeId="+id, {contentType:'ajax',onok:save,showButton:true,okBtnName:'添加',title:typename,width:650,height:270});
+ }
+</script>
+<include file="Public:footer" />

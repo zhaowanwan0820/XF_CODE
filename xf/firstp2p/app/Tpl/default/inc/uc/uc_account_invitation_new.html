@@ -1,0 +1,44 @@
+<link href="{$TMPL_NEW}/css/user.css" rel="stylesheet" type="text/css">
+<script src="{$TMPL_NEW}/js/vendor/ZeroClipboard.min.js"></script>
+
+<div class="user_right_box  mb20 pb20">
+	<div class="user_title">
+		<h1>
+			<i class="ico_yonghu"></i>邀请好友
+		</h1>
+	</div>
+	<div class="w568 mauto friends">
+		<div class="u_banner pt30">
+			<adv adv_id="邀请链接页面banner"/>
+		</div>
+		<h1>分享邀请链接 获得投资返利</h1>
+		
+		<div class="copy">
+			<input type="text" class="copy_box" value="{$domain}/?cn={$user_id}" readonly/>
+			<input type="button" value="复制链接" class="copy_but" id='copy-button' data-clipboard-target="il_text" data-clipboard-text="{$domain}/?cn={$user_id}" value='{$domain}/?cn={$user_id}'>
+		</div>
+		
+		<h2>返利规则</h2>
+		<adv adv_id="邀请链接页面返利规则"/>
+		
+		<h2>示例</h2>
+		<h3>成功邀请单笔投资100万元，返利计算如下</h3>
+		<adv adv_id="邀请链接页面示例表格"/>
+		
+		<h4 class="f12 color-gray1 pb15">* 北京东方联合投资管理有限公司保留对本活动的最终解释权。</h4>
+	</div>
+</div>
+
+<script>
+var clip = new ZeroClipboard( document.getElementById("copy-button"), {
+  moviePath: "{$TMPL_NEW}/js/vendor/ZeroClipboard.swf",
+  trustedDomains: ['*'],
+  allowScriptAccess: "always"
+} );
+
+clip.on( "load", function(client) {
+  client.on( "complete", function(client, args) {
+    alert("邀请链接已复制到剪切板");
+  } );
+} );
+</script>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{$title}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/p_reservation.css');?>" />
+</head>
+
+<body class="bg-white">
+    <div class="p_reservation">
+        <div class="box mt15" id="j_contract_cont"></div>
+    </div>
+    <div class="adv_tit" style="display:none;">{$id}</div>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+    <script>
+       
+        $(function () {
+            var id = $('.adv_tit').html();
+            $.ajax({
+                data: {
+                    advid: id,
+                    type:1,
+                },
+                dataType: 'json',
+                type: 'get',
+                url: '/common/adv',
+                success: function (res) {
+                    $('#j_contract_cont').html(res.data)
+                },
+                error: function(){ }
+            });
+        });
+    </script>
+</body>
+
+</html>

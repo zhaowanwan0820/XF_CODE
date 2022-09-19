@@ -1,0 +1,110 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="main_title">
+        <p>交易列表查询条件</p>
+    </div>
+    <div class="blank5"></div>
+    <div>
+        <form name="search" action="__APP__" method="get">
+            &nbsp;预约ID：<input type="text" class="textbox" name="reserve_id" value="{:trim($_REQUEST['reserve_id'])}" />
+            &nbsp;交易ID：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" />
+            &nbsp;预约出借期限：
+            <select name="invest_deadline_opt" class="textbox selectW">
+                <option value="">全部</option>
+                <foreach name="data.deadlineConf" key="key" item="invest_conf">
+                <option value="{$invest_conf['deadline']}|{$invest_conf['deadline_unit']}" <if condition="$_REQUEST['invest_deadline_opt'] eq $invest_conf['deadline'] . '|' . $invest_conf['deadline_unit']">selected="selected"</if>>{$invest_conf['deadline_format']}</option>
+                </foreach>
+            </select>
+            &nbsp;出借标的:
+            <input type="text" class="textbox" name="deal_name" value="{:trim($_REQUEST['deal_name'])}" />
+            <br />
+            &nbsp;交易时间:
+            <input type="text" class="textbox" style="width:120px;" name="invest_date_from" id="invest_date_from" value="{$_REQUEST['invest_date_from']}" onfocus="this.blur(); return showCalendar('invest_date_from', '%Y-%m-%d 00:00:00', false, false, 'btn_invest_date_from');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}"/>
+            <input type="button" class="button" id="btn_invest_date_from" value="{%SELECT_TIME}" onclick="return showCalendar('invest_date_from', '%Y-%m-%d %H:%M:%S', false, false, 'btn_invest_date_from');" />
+            － <input type="text" class="textbox" style="width:120px;" name="invest_date_to" id="invest_date_to" value="{$_REQUEST['invest_date_to']}" onfocus="this.blur(); return showCalendar('invest_date_to', '%Y-%m-%d 23:59:59', false, false, 'btn_invest_date_to');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_invest_date_to" value="{%SELECT_TIME}" onclick="return showCalendar('invest_date_to', '%Y-%m-%d %H:%M:%S', false, false, 'btn_invest_date_to');" />
+
+            <input type="hidden" value="UserReservation" name="m" />
+            <input type="hidden" value="trans" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <input type="button" class="button" value="导出" onclick="export_csv();" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>交易列表</p>
+    </div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="15" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row textDecNone">
+            <th width="100px">预约ID</th>
+            <th>交易ID</th>
+            <th>交易时间</th>
+            <th>用户ID</th>
+            <th>用户名</th>
+            <th>手机号</th>
+            <th>交易状态</th>
+            <th>出借标的</th>
+            <th>出借金额</th>
+            <th>预约出借期限</th>
+        </tr>
+        <volist name="list" id="tran">
+        <tr class="row">
+            <td>
+                &nbsp;{$tran.reserve_id}
+            </td>
+            <td>
+                &nbsp;{$tran.id}
+            </td>
+            <td>
+                &nbsp;{$tran.create_time|format_date}
+            </td>
+            <td>
+                &nbsp;{$tran.user_id}
+            </td>
+            <td>
+                &nbsp;{$tran.real_name}
+            </td>
+            <td>
+                &nbsp;{$tran.mobile}
+            </td>
+            <td>
+                &nbsp;交易成功
+            </td>
+            <td>
+                &nbsp;{$tran.deal_name}
+            </td>
+            <td>
+                &nbsp;{$tran.money_format}
+            </td>
+            <td>
+                &nbsp;{$tran.invest_deadline_format}
+            </td>
+        </tr>
+        </volist>
+    </table>
+</div>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+<script charset="utf-8">
+function get_query_string(){
+    querystring = '';
+    querystring += "&reserve_id="+$("input[name='reserve_id']").val();
+    querystring += "&id="+$("input[name='id']").val();
+    querystring += "&invest_deadline_opt="+$("select[name='invest_deadline_opt']").val();
+    querystring += "&deal_name="+$("input[name='deal_name']").val();
+    querystring += "&invest_date_from="+$("input[name='invest_date_from']").val();
+    querystring += "&invest_date_to="+$("input[name='invest_date_to']").val();
+    return querystring;
+}
+function export_csv() {
+    window.location.href = ROOT+'?m=UserReservation&a=export_trans'+get_query_string();
+}
+</script>

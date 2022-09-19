@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>详情</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/p-detail-hasinvestment-new.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="p_deal_hasinvestment">
+            <div class="has-main">
+            {if $deal.loantype neq 7}
+                <div class="detail_data">
+                    <div class="data_top tc">
+                        <div class="color_gray">{if $deal.deal_type == 0}出借{else}投资{/if}金额(元)</div>
+                        <div class="tzi_money mt5 f25">{function name="number_format" v="$deal_load.money" f="2"}</div>
+                        <div class="color_gray f12">
+                            {$deal.old_name}&nbsp;&nbsp;
+                            <span class="color_red">
+                            {$deal.repay_start_time_name}: {$deal.formated_repay_start_time}
+                            </span>
+                        </div>
+
+                        {if $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                        <div class="btn_h15 btn_zise">待确认</div><!--等待确认-->
+                        {elseif $deal.deal_status eq 2}
+                        <div class="btn_h15 bg_red">满标</div><!--满标-->
+                        {elseif $deal.deal_status eq 3}
+                        <div class="btn_h15 bg_gray">流标</div><!--流标 缺少-->
+                        {elseif $deal.deal_status eq 4}
+                        <div class="btn_h15 bg_green">还款中</div><!--还款中-->
+                        {elseif $deal.deal_status eq 5}
+                        <div class="btn_h15 bg_yellow">已还清</div><!--已还清-->
+                        {else}
+                        <div class="btn_h15 bg_blue">{if $deal.deal_type == 0}募集中{else}投资中{/if}</div>
+                        {/if}
+
+                    </div>
+
+                    <div class="data_bot color_gray f12 clearfix">
+                        <ul class="data_list  clearfix">
+                            <li>{if $deal.deal_type == 0}借款利息{else}预期收益{/if}(元) <span class="color_red f25">{function name="number_format" v="$deal_load.income" f="2"}</span> </li>
+                            <li>已获{if $deal.deal_type == 0}利息{else}收益{/if}(元)<span class="f25">{function name="number_format" v="$deal_load.real_income" f="2"}</span> </li>
+                            <li>{if $deal.deal_type == 0}年化借款利率{else}预期年化收益率{/if}<span class=" color_black f25">{$deal.income_base_rate}<em class="f18">%</em></span> </li>
+                            <li>期限<span class=" color_black f25">{$deal.repay_time}<em class="f18">{if $deal.loantype eq 5}天{else}个月{/if}</em></span></li>
+                            <li>还款方式<span class="color_black mt7 f18">{$deal.loantype_name}</span></li>
+                            {if $deal.isDealZX or ($deal.deal_type eq 2)}
+                            {else}
+                            <li>{if $item.is_lease}融资方{else}借款人{/if}<span class="color_black mt7 f18">{$deal.user_deal_name}</span></li>
+                            {/if}
+                        </ul>
+                    </div>
+                </div>
+                {if $contract_list}
+                <div class="title">
+                    {if $deal.isDealZX}
+                        说明、合同和协议
+                    {else}
+                        合同和协议
+                    {/if}
+                </div>
+                {foreach from=$contract_list item="contract" key="k"}
+                    <div class="common_btn">
+                        {if $is_attachment}
+                            <a href="{$contract.url}"><i class="icon_arrow fr"></i>{$contract.name}</a>
+                        {else}
+                            <a href="/deals/contract/?id={$contract.id}&dealId={$contract.deal_id}&token={$token}"><i class="icon_arrow fr"></i>{$contract.title}</a>
+                        {/if}
+                    </div>
+                {/foreach}
+                {/if}
+
+                {if isset($deal.p2p_show) && !($deal.deal_type == 0 && in_array($deal.deal_status, array(4,5)) && $post_loan_message)}
+                <div class="title">
+                    项目资金用途情况
+                </div>
+                    <div class="common_btn zjyt">
+                        <a href="javascript:;">{$deal.p2p_show_detail}</a>
+                    </div>
+                {/if}
+            {else}
+                <div class="detail_data">
+                    <div class="data_top tc">
+                        <p class="color_gray f12">{$deal.old_name}</p>
+                    </div>
+                </div>
+                <div class="hash-tb mt20">
+                    <table>
+                        <colgroup>
+                            <col width="100" />
+                            <col width="" />
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>
+                                <span class="color_gray">捐赠金额</span>
+                                </th>
+                                <td>
+                                    {function name="number_format" v="$deal_load.money" f="2"}元
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <span class="color_gray">捐赠时间</span>
+                                </th>
+                                <td>
+                                    {function name="to_date" b=$deal_load.create_time}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {/if}
+                <div class="inv-footer mt10">
+                    {if $deal.loantype neq 7}
+                        <div class="invf_top">
+                            {if $deal.isBxt eq 1}
+                                {if $deal.deal_type == 0 && in_array($deal.deal_status, array(4,5)) && $post_loan_message}
+                                    <ul class="menu">
+                                        <li class="select" style="width:25%;"><span>回款计划<em></em></span></li>
+                                        <li style="width:25%;"><span>贷后信息<em></em></span></li>
+                                        <li style="width:25%;"><span>受托人信息<em></em></span></li>
+                                        <li style="width:25%;"><span>出借记录<em></em></span></li>
+                                    </ul>
+                                {else}
+                                    <ul class="menu">
+                                        <li class="select" style="width:33.3%;"><span>回款计划<em></em></span></li>
+                                        <li style="width:33.3%;"><span>受托人信息<em></em></span></li>
+                                        <li style="width:33.3%;"><span>{if $deal.deal_type == 0}出借{else}投资{/if}记录<em></em></span></li>
+                                    </ul>
+                                {/if}
+                            {else}
+                                {if $deal.deal_type == 0 && in_array($deal.deal_status, array(4,5)) && $post_loan_message}
+                                    <ul class="menu">
+                                        <li class="select"{if $deal.warrant eq 0} style="width:25%;"{/if}><span>回款计划<em></em></span></li>
+                                        {if $deal.warrant neq 0}<li><span>贷后信息<em></em></span></li>{/if}
+                                        {if $deal.warrant eq 0}<li style="width:25%;"><span>贷后信息<em></em></span></li>{/if}
+                                        <li{if $deal.warrant eq 0} style="width:25%;"{/if}><span>项目信息<em></em></span></li>
+                                        {if $deal.warrant neq 0}<li><span>保障方信息<em></em></span></li>{/if}
+                                        <li{if $deal.warrant eq 0} style="width:25%;"{/if}><span>出借记录<em></em></span></li>
+                                    </ul>
+                                {else}
+                                    <ul id="defaultWidth" class="menu">
+                                        <li class="select"{if $deal.warrant eq 0} style="width:33.3%;"{/if}><span>回款计划<em></em></span></li>
+                                        <li {if $deal.warrant eq 0} style="width:33.3%;"{/if}><span>项目信息<em></em></span></li>
+                                        {if $deal.warrant neq 0}<li><span>保障方信息<em></em></span></li>{/if}
+                                        <li {if $deal.warrant eq 0} style="width:33.3%;"{/if}><span>{if $deal.deal_type == 0}出借{else}投资{/if}记录<em></em></span></li>
+                                    </ul>
+                                {/if}
+                            {/if}
+                            <div class="invf_write">
+                            </div>
+                        </div>
+                    {/if}
+                    <div class="invf_txt">
+                        {if $deal.loantype neq 7}
+                        <div class="tb0">
+                            {if $loan_repay_list}
+                                {foreach from=$loan_repay_list item="item" key="k"}
+                                <div class="bid_list">
+                                    <div class="float_l">
+                                        <p>{function name="to_date" v="$item.time" f="Y-m-d"}</p>
+                                        <p class="gray">{$item.money_status}</p>
+                                    </div>
+                                    <div class="float_r tr">
+                                        <p class="color_red">{$item.money}元</p>
+                                        <p class="gray">{$item.money_type}</p>
+                                    </div>
+                                </div>
+                                {/foreach}
+                                {else}
+                                <div class="tc mt20">暂无回款计划</div>
+                            {/if}
+                        </div>
+                        {/if}
+
+                        {if $deal.deal_type == 0 && in_array($deal.deal_status, array(4,5)) && $post_loan_message}
+                        <div class="tb3">
+                            {$post_loan_message}
+                        </div>
+                        {/if}
+
+                        <div class="tb1"{if $deal.loantype eq 7} style="display:block"{/if}>
+                            <table>
+                                <colgroup>
+                                    <col width="25%" />
+                                    <col width="75%" />
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            简介：
+                                        </th>
+                                        <td class="tb_line">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tb_line" colspan="2">
+                                            {if $project_intro}
+                                                {$project_intro}
+                                            {elseif $company.is_company eq 1}
+                                                {if $company.company_description_html}
+                                                    {$company.company_description_html}
+                                                {else}
+                                                    -
+                                                {/if}
+                                            {elseif $deal.is_crowdfunding eq 1 || $company.is_company eq 0}
+                                                {if $deal_user_info.info}
+                                                    {$deal_user_info.info}
+                                                {else}
+                                                    -
+                                                {/if}
+                                            {else}
+                                                -
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {if $deal.loantype neq 7}
+                        {if $deal.isBxt neq 1}
+                            {if $deal.warrant neq 0}
+                                <div class="tb2">
+                                    {if $deal.is_crowdfunding eq 0}
+                                    <table>
+                                        <colgroup>
+                                            <col width="25%" />
+                                            <col width="75%" />
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <th>
+                                                    保障方式：
+                                                </th>
+                                                <td>
+                                                {if $deal.warrant eq 1 || $deal.warrant eq 2 || $deal.warrant eq 3}第三方提供担保{elseif $deal.warrant eq 4}第三方资产收购{else}无担保{/if}
+                                                </td>
+                                            </tr>
+                                            {if $deal.agency_info.brief}
+                                            <tr>
+                                                <th colspan='2'>
+                                                    保障方介绍：
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td colspan='2'>
+                                                    {$deal.agency_info.brief}
+                                                </td>
+                                            </tr>
+                                            {/if}
+                                        </tbody>
+                                    </table>
+                                    {elseif $deal.is_crowdfunding eq 1}
+                                    <table>
+                                        <colgroup>
+                                            <col width="35%" />
+                                            <col width="30%" />
+                                            <col width="30%" />
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                            <td colspan="3">
+                                                  无
+                                            </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    {/if}
+                                </div>
+                            {/if}
+                        {/if}
+                        <div class="tb3">
+                            {if $load_list}
+                                {foreach from=$load_list item="loan"}
+                                <div class="bid_list">
+                                    <div class="float_l">
+                                        <p>{$loan.user_deal_name}</p>
+                                        <p class="gray">{function name="to_date" v="$loan.create_time" f="Y-m-d"}</p>
+                                    </div>
+                                    <div class="float_r">{function name="format_price" v="$loan.money" b=0}元</div>
+                                </div>
+                                {/foreach}
+                                {else}
+                                <div class="tc mt20">暂无投资人</div>
+                            {/if}
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{include file="api/views/_v32/footer.html"}

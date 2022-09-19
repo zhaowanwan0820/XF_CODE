@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>已加入详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/p_deal_load_detail.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="p_deal_load_detail">
+    <input type="hidden" name="token" id="token" value="{$token}">
+        <div class="detail_data">
+            <div class="data_top tc">
+                <div class="f25">{$deal.money}元</div>
+                <div class="sh_status btn_red_h15 {if $deal.dealLoan.status eq 1}bg_djx{elseif $deal.dealLoan.status eq 3}bg_shz{elseif $deal.dealLoan.status eq 4}bg_ysh{elseif $deal.dealLoan.status eq 5 || $deal.dealLoan.status eq 6}bg_yjq{/if}">{$deal.statusText}</div>
+                <p class="color_gray f12">{if $deal.activityId gt 0}{$deal.activityInfo.name}{/if}</p>
+                {if $deal.dealLoan.status neq 6}
+                <p class="color_gray f12 pt10">{if $deal.activityId gt 0}{$deal.repayStartTime}起算 {/if}{if $deal.dealLoan.status eq 3 || $deal.dealLoan.status eq 4  || $deal.dealLoan.status eq 5}| {$deal.quitTime}申请转让/退出{/if}</p>
+                {/if}
+            </div>
+            <div class="data_bot color_gray f12 clearfix">
+                <ul class="data_list  clearfix">
+                    <li>加入天数(天)<span class="color_red f25">{$deal.ownDay}</span></li>
+                    <li>已到账(元)<span class="f25">{$deal.hasRepayInterest}</span> </li>
+                    <li>往期年化<span class="color_red mt8 f18">{if $deal.activityId gt 0}{$deal.activityInfo.min_rate}%~{$deal.activityInfo.max_rate}% {else}{$deal.rateYearBase}%~{$deal.rateYear}%{/if}</span> </li>
+                    <li>管理服务费(元){if $feeNum}<span class="f25">{$feeNum}</span>{else}<span class="f20 mt3">{$fee}</span>{/if} </li>
+                </ul>
+                <div class="info fr">本金的年化{$deal.feeRate}%，满{$deal.projectInfo.feeDays}天免收</div>
+            </div>
+            {if $deal.dealLoan.status eq 3}
+            <div class="dz_tips color_gray f12">按以往平均转让/退出的成功率，您的本金从申请转让/退出起预计{$deal.minTransferDays}-{$deal.maxTransferDays}日内到账(具体时间以实际交易情况为准)</div>
+            {/if}
+        </div>
+        <div class="ui_common_list mt10">
+            <div class="common_btn">
+                <a href="javascirpt:void(0)" class="j_contract_btn">顾问协议<i class="icon_arrow fr"></i></a>
+            </div>
+        </div>
+        <div class="ui_common_list bot_border_none">
+            <div class="common_btn">
+                <a href="javascirpt:void(0);" class="j_cjjl_btn">成交记录<i class="icon_arrow fr"></i></a>
+            </div>
+        </div>
+        {if $deal.dealLoan.status neq 6}
+            <div class="ui_submit">
+                {if $deal.dealLoan.status eq 2}
+                    {if !$deal.isOpen}
+                    <span class="color_red f15">每日{$deal.projectInfo.redemptionStartTime}-{$deal.projectInfo.redemptionEndTime}开放转让/退出</span>
+                    {elseif $deal.activityId gt 0 && $deal.ownDay lt $deal.activityInfo.lock_day}
+                    <span class="color_red f15">持有{$deal.activityInfo.lock_day}天后可申请转让/退出</span>
+                    {else}
+                    <a class="submit_but JS_submit_but" href="javacript:void(0);">申请转让/退出</a>
+                    {/if}
+                {else}
+                    <span class="submit_but btn_gray">申请转让/退出</span>
+                {/if}
+            </div>
+        {/if}
+    </div>
+    <!-- 申请转让弹窗 -->
+    <div class="ui_popup dealloaddetail_pop" id="j_dealloaddetail_pop" style="display:none;">
+        <div class="popup_bg"></div>
+        <!-- 确认转让 -->
+        <div class="popup_box j_confirm_shui" id='j_confirm_shui' style="display:none;">
+            <div class="popup_head">申请转让/退出</div>
+            <div class="popup_content">
+                <div class="shui_data">
+                    <ul class="shui_list">
+                        <li><span class="color_gray">待转让/退出本金</span><span  class="j_bjin tr"></span></li>
+                        <li><span class="color_gray">管理服务费</span><span class="j_fwf tr"></span></li>
+                    </ul>
+                    <div class="info f12 color_gray lh_150 tr">
+                        待结利息将按加入资产还款日发放
+                        <br/>到您的账户中
+                    </div>
+                </div>
+                <div class="pt10 lh_150 color_gray f11">按以往平均转让/退出的成功率，您的本金从申请转让/退出起预计<span  class="j_dzr"></span>日内到账(具体时间以实际交易情况为准)</div>
+            </div>
+            <div class="popup_btn">
+                <a class="btn_cancel" id="JS-cancel" href="javascript:void(0);">取消</a>
+                <a class="btn_ok" id="JS-confirm" href="javascript:void(0);">确认</a>
+            </div>
+        </div>
+
+        <!-- 申请转让失败 -->
+       <div class="popup_box j_shui_err" id='j_shui_err'style="display:none;">
+           <div class="popup_content">
+               <div class="mt15 tc">
+                   <img src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/chaoxian@3x.png');?>" alt="" width="141" height="85">
+               </div>
+               <div class="mt25 f15 tc">申请转让/退出失败</div>
+               <div class="color_gray mt15 mb5 tc j_err_txt">每日最多可赎回本金30,000.00元
+                   <br/> 如有问题请联系客服
+               </div>
+           </div>
+           <div class="popup_btn">
+               <a class="btn_ok w255" id="JS-know" href="javascript:void(0);">我知道了</a>
+           </div>
+       </div>
+    </div>
+    <script>
+    var deal_loan_id = {$deal.dealLoan.id};
+    var deal_loan_projectId = {$deal.dealLoan.projectId};
+    var contract_number = '{$contract.number}';
+    </script>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/deal_load_detail.js');?>"></script>
+</body>
+
+</html>

@@ -1,0 +1,122 @@
+<tagLib name="html" />
+
+<include file="Public:header" />
+
+<style>
+#dataTable th { text-align: left; }
+</style>
+
+<div class="main">
+    <div class="main_title">
+        <label>投资客户明细</label>
+        <a href="{:u("OexchangeBatch/index?pro_id=". $projectInfo['id'])}" class="back_list">{%BACK_LIST}</a>
+    </div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable">
+        <tr>
+            <th style="text-align:right">项目名称：</th>
+            <td>{$projectInfo['name']}</td>
+        </tr>
+        <tr>
+            <th style="width:140px; text-align:right">交易所备案产品编号：</th>
+            <td>{$projectInfo['jys_number']}</td>
+        </tr>
+        <tr>
+            <th style="text-align:right">批次id：</th>
+            <td>{$batchInfo['id']}</td>
+        </tr>
+        <tr>
+            <th style="text-align:right">期数：</th>
+            <td>{$batchInfo['batch_number']}</td>
+        </tr>
+        <tr>
+            <th style="text-align:right">投资用户明细：</th>
+            <td>
+                <form id="upload_form" method="post" action="{:u('ExchangeLoad/upload')}" enctype="multipart/form-data">
+                    <input type="hidden" name="batch_id" value="{$batchInfo['id']}" />
+                    <input type="file" name="load_list" id="load_list" />
+                    <input type="submit" value="导入" class="button" id="import" />
+                    <input type="button" value="下载模板" class="button" id="download" />
+                </form>
+            </td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable">
+        <tr class="row">
+            <th>序号</th>
+            <th>投资订单号</th>
+            <th>用户名称</th>
+            <th>身份证件类型</th>
+            <th>证件号</th>
+            <th>手机号</th>
+            <th>银行卡号</th>
+            <th>开户行名称</th>
+            <th>联行号</th>
+            <th>开户行所在省</th>
+            <th>开户行所在市</th>
+            <th>服务人邀请码</th>
+            <th>打款时间</th>
+            <th>认购金额</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="item" key="index">
+        <tr class="row">
+            <td>{$pageSize * ($nowPage - 1) + $index}</td>
+            <td>{:sprintf("%08d", $item[id])}</td>
+            <td>{$item['real_name']}</td>
+            <td>{$item['certificate_type']}</td>
+            <td>{$item['certificate_no']}</td>
+            <td>{$item['mobile']}</td>
+            <td>{$item['bank_no']}</td>
+            <td>{$item['bank_name']}</td>
+            <td>{$item['cnaps_no']}</td>
+            <td>{$item['bank_province']}</td>
+            <td>{$item['bank_city']}</td>
+            <td>{$item['invite_code']}</td>
+            <td>{:date("Y-m-d H:i:s", $item['pay_time'])}</td>
+            <td>{:sprintf("%.2f", $item['pay_money'] / 100)}</td>
+            <td> <if condition="$item['status'] eq 1">有效<else />无效</if></td>
+            <td>
+                <a href="{:u('ExchangeLoad/show?load_id=' . $item['id'])}">编辑</a>
+                <a href="{:u('ExchangeLoad/del?load_id=' . $item['id'])}" class="del-link">作废</a>
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+
+    <div class="page">{$page}</div>
+    <div class="blank5"></div>
+</div>
+
+<script>
+    $(function() {
+        //下载模板
+        $('#download').click(function() {
+            location.href='/static/exchange_load.csv'
+        })
+
+        //上传文件
+        $('#import').click(function() {
+           if ($('#load_list').val()) {
+              return $('#upload_form').submit();
+           } else {
+              alert("上传文件不能为空!");
+              return false;
+           }
+        })
+
+        $('.del-link').click(function() {
+            if (!confirm('确定要将此记录作废?')) {
+                return false;
+            }
+        })
+    })
+</script>
+
+<include file="Public:footer" />

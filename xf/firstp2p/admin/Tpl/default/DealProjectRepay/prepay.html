@@ -1,0 +1,389 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/deal.js' />
+
+<script>
+    $(document).ready(function(){
+        $("#calcPrepay").click(function(){
+            if($("#end_day").val() == '') {
+                alert('请选择计息结束日期');
+                return false;
+            }
+            var res = do_prepay();
+            if(!res){
+                return false;
+            }
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=calc_project_prepay",
+                data: 'ajax=1&project_id='+$("#project_id").val()+'&day='+$("#end_day").val(),
+                dataType: "json",
+                success: function(obj){
+                    if(obj.errCode !=1000 && obj.errCode != 1001) {
+                        alert(obj.errMsg);
+                        return false;
+                    }else {
+                        res = true;
+                        if(obj.errCode == 1001) {
+                            res = confirm("选择此日期后将在提前还款锁定期前还款，确定此操作吗？");
+                        }
+                        if(res){
+                            $("#has_calc").val($("#end_day").val());
+                            //$("#interest_time").text(obj.data.interest_day);
+                            $("#remain_days").text(obj.data.remain_days+'天');
+                            if(obj.data.remain_days >= 90) {
+                                $("#remain_days").css("color","red");
+                                $("#remain_days").append(" (请联系资产管理部再次确认还款日期)")
+                            }else{
+                                $("#remain_days").removeAttr("style");
+                            }
+                            $("#remain_principal").text(obj.data.remain_principal+'元');
+                            $("#prepay_interest").text(obj.data.prepay_interest+'元');
+                            $("#prepay_compensation").text(obj.data.prepay_compensation+'元');
+                            $("#loan_fee").text(obj.data.loan_fee+'元');
+                            $("#consult_fee").text(obj.data.consult_fee+'元');
+                            $("#guarantee_fee").text(obj.data.guarantee_fee+'元');
+                            $("#pay_fee").text(obj.data.pay_fee+'元');
+                            $("#canal_fee").text(obj.data.canal_fee+'元');
+                            $("#prepay_money").text(obj.data.prepay_money+'元');
+                            $("#deal_prepay_money").val(obj.data.prepay_money);
+                            $("#is_calc").val(1);
+                        }
+                    }
+                }
+            });
+        });
+
+        $("#savePrepay").click(function(){
+            //正在事务中，按钮置灰，不可点
+            $("#savePrepay").attr("disabled",true);
+            $("#savePrepay").css("background",'#999');
+            if($("#has_calc").val() == '') {
+                alert('在得出计算结果后再操作保存');
+                return false;
+            }
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=save_prepay",
+                data: 'ajax=1&project_id='+$("#project_id").val()+'&day='+$("#has_calc").val()+'&repay_user_type='+$("#repay_user").val(),
+                dataType: "json",
+                success: function(obj){
+                    if(obj.errCode == 2) {
+                        return false;
+                    }if(obj.errCode !=1000) {
+                        $("#savePrepay").removeAttr("disabled");
+                        $("#savePrepay").css("background",'#4e6a81');
+                        alert(obj.errMsg);
+                        return false;
+                    }else{
+                        $("#savePrepay").removeAttr("disabled");
+                        $("#savePrepay").css("background",'#4e6a81');
+                        $("#is_save").val(1);
+                        alert('保存成功');
+                    }
+                }
+            });
+        });
+    })
+
+    function audit(optype)
+    {
+        if($("#has_calc").val() == '') {
+            alert('当前数据尚未保存，请先操作保存');
+            return false;
+        }
+        <if condition="$role eq 'b'">
+        if(Number($("#deal_prepay_money").val()) > Number($("#user_money").val()) && optype != 'return'){
+            var is_through = confirm('借款人账户余额不足，还款后账户借款人账户余额将为负数！');
+            if (is_through != true) {
+                return is_through;
+            }
+        }
+        </if>
+        // 条件：1、没有存库；2、角色a 计算了，但是没有操作过保存
+        if ($('#has_saved').val() == '' || ($('#role').val() == 'a' && $('#is_calc').val() && $('#is_save').val() == '')) {
+            alert('当前数据尚未保存，请先操作保存');
+            return false;
+        }
+        var type = 'GET';
+        var data = {
+                return_reason : $("#return_reason").val(),
+                return_type : $("#return_type").val(),
+                agree : $('#agree').val(),
+                deal_repay_id : $("#deal_repay_id").val(),
+                repay_user_type : $('#repay_user').val(),
+        }
+        url = ROOT+"?"+VAR_MODULE+"=DealProjectRepay&"+VAR_ACTION+"=submitAudit&audit_type=8"+"&role="+$("#role").val()+"&project_repay_id="+$("#project_repay_id").val();
+        if (optype == 'submit') {
+            var type = "POST";
+            var caution = confirm("确定提交");
+        } else if (optype == 'agree') {
+            var data = '';
+            var caution = confirm("确认提交");
+            if (caution == true) {
+                var url = ROOT+"?"+VAR_MODULE+"=DealProjectRepay"+"&"+VAR_ACTION+"=prepayProject&role="+$("#role").val()+"&project_repay_id="+$("#project_repay_id").val();
+                $.ajax({
+                    url: url,
+                    data: 'ajax=1&deal_id='+$("#deal_id").val()+'&deal_repay_id='+$("#deal_repay_id").val(),
+                    dataType: "json",
+                    success: function(obj){
+                        if(obj.errCode !=1000) {
+                            alert(obj.errMsg);
+                        }else{
+                            alert('操作成功');
+                            location.href = ROOT+"?m=DealProjectRepay&a=index&ref=1&role=" + $("#role").val()+"&{$querystring}";
+                        }
+                    }
+                });
+            }
+            return;
+        } else if (optype == 'return') {
+            if ($("#return_type").val() == '0') {
+                alert("请选择回退类型");
+                return;
+            }
+            if ($("#return_reason").val() == '') {
+                alert("请填写回退原因");
+                return;
+            }
+            var type = "POST";
+            var caution = confirm("确认回退");
+        }
+        if (caution == true) {
+            $.ajax({
+                url: url,
+                data: data,
+                type: type,
+                dataType: "json",
+                success: function(obj){
+                    if(obj.errCode != 0) {
+                        alert(obj.errMsg);
+                    } else {
+                        if (optype == 'submit') {
+                            alert('提交审核成功');
+                        }
+                        if (optype == 'return') {
+                            alert('回退成功');
+                        }
+                    }
+                    //location.href = '<?php echo $redirectUrl; ?>';
+                    location.href = 'm.php?m=DealProjectRepay&a=index&ref=1&role='+$("#role").val()+"&{$querystring}";
+                }
+            });
+        }
+    }
+
+    // 计算利息天数
+    function do_prepay() {
+        var prepay_days_limit = $("#prepay_days_limit").val(); // 提前还款锁定期限
+        var end_day = $("#end_day").val(); // 利息结束天数
+        var end_day_arr = end_day.split('-');
+        var end_interest_time = Date.parse(new Date(end_day_arr[0],end_day_arr[1]-1,end_day_arr[2],0,0,0)) / 1000;
+        var start_interest_time = $("#start_interest_time").val(); // 利息开始天数
+        //var remain_days = Math.ceil((end_interest_time - start_interest_time)/86400);
+
+        var first_interest_time = $("#first_interest_time").val(); // 放款日期
+        var remain_days =  Math.ceil((end_interest_time - first_interest_time)/86400);
+
+        var repay_start_time = {$deal['repay_start_time']+28800}; // (服务器和正常差8小时) 放款日期
+        var end_day_time = $("#end_day_time").val(); // 到期日期
+
+        if(end_interest_time == repay_start_time) {
+            alert('计息结束日期不能等于放款日期');
+            return false;
+        }
+        if(end_interest_time >= end_day_time) {
+            alert('计息结束日期不能大于等于到期日期');
+            return false;
+        }
+
+        if(remain_days <=0) {
+            alert('计息结束日期必须大于放款日期');
+            return false;
+        }
+        /**
+         *
+         */
+        if(remain_days < prepay_days_limit) {
+            return confirm("选择此日期后将在提前还款锁定期前还款，确定此操作吗？");
+        }
+        return true;
+    }
+</script>
+<form action="" method="post" class="j-form-post">
+<input type="hidden" name="deal_id" id="deal_id" value="{$deal.id}"/>
+<input type="hidden" name="project_id" id="project_id" value="{$project.id}"/>
+<input type="hidden" name="project_repay_id" id="project_repay_id" value="{$project_repay_id}"/>
+<input type="hidden" name="role" id="role" value="{$role}"/>
+<input type="hidden" name="has_calc" id="has_calc" value="{$has_calc}"/>
+<input type="hidden" name="start_interest_time" id="start_interest_time" value="{$interest_time}"/>
+<input type="hidden" id="end_day_time" value="<?php echo strtotime($end_day);?>"/>
+<input type="hidden" name="prepay_days_limit" id="prepay_days_limit" value="{$deal.prepay_days_limit}"/>
+<input type="hidden" id="first_interest_time" value="<?php echo strtotime(to_date($deal['repay_start_time'],'Y-m-d'))?>">
+<input type="hidden" name="user_money" id="user_money" value="{$user_money}"/>
+<input type="hidden" name="deal_prepay_money" id="deal_prepay_money" value="{$prepay.prepay_money}"/>
+<input type="hidden" name="is_save" id="is_save"/>
+<input type="hidden" name="has_saved" id="has_saved" value="{$has_saved}"/>
+<input type="hidden" name="is_calc" id="is_calc"/>
+
+<div class="main_title">{$project.name} 提前还款 <a href="{:u("DealProjectRepay/index?ref=1&$querystring")}" class="back_list">{%BACK_LIST}</a></div>
+
+    <fieldset>
+        <legend>贷款管理</legend>
+            <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+                <tr class="row">
+                    <td colspan="2">项目标题：{$project.name}</td>
+                </tr>
+                <tr class="row">
+                    <td>剩余本金：{$data.principal|format_price}</td>
+                    <td>借款期限：{$deal.repay_time}<if condition="$deal.loantype eq 5">天<else/>个月</if></td>
+                </tr>
+                <tr class="row">
+                    <td>借款年利率：{$deal.rate|number_format=2}%</td>
+                    <td>提前还款锁定期：{$deal.prepay_days_limit}天</td>
+                </tr>
+                <tr class="row">
+                    <td>出借人年化收益率：{$deal.rate|number_format=2}%</td>
+                    <td>提前还款违约金系数：{$deal.prepay_rate|number_format=2}%</td>
+                </tr>
+                <tr class="row">
+                    <td colspan="2">还款方式：{$deal.loantype|get_loantype}</td>
+                </tr>
+           </table>
+        </fieldset>
+    <table class="dataTable" style="margin-top:5px;border-top: double">
+        <tr class="row">
+            <td style="width:40%" align="center"><b>到期还款明细</b></td>
+            <td align="center"><b>提前还款明细</b></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float:left;width:100px"> 到期日期：</div><div>{$end_day}</div></td>
+            <td>计息结束日期：
+                <if condition="$role eq 'b'">
+                    <input type="text" class="textbox" name="end_day" id="end_day" value="<?php echo to_date($prepay['prepay_time'],'Y-m-d')?>" disabled />
+                <else />
+                    <input type="text" class="textbox" name="end_day" id="end_day" value="<?php echo to_date($prepay['prepay_time'],'Y-m-d')?>" onfocus="this.blur(); return showCalendar('end_day', '%Y-%m-%d', false, false, 'end_day');">
+                    <input type="button" class="button" id="btn_base_contract_repay_time" value="选择时间" onclick="return showCalendar('end_day', '%Y-%m-%d', false, false, 'end_day');">
+                    <input type="button" class="button" value="清空时间" onclick="$('#end_day').val('');">
+                </if>
+            </td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">放款日期：</div><div><?php echo to_date($deal['repay_start_time'],'Y-m-d');?></div></td>
+            <td><div style="float: left;width:100px;">放款日期：</div><div><span id="interest_time" class="form_prepay"><?php echo to_date($deal['repay_start_time'],'Y-m-d');?></span></div></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">借款期限：</div><div>{$deal.repay_time}<if condition="$deal.loantype eq 5">天<else/>个月</if></div></td>
+            <td><div style="float: left;width:100px">利息天数：</div><div><span id="remain_days" <if condition="$prepay['remain_days'] egt 90"> style="color:red" </if>>
+                 {$prepay.remain_days}天 <if condition="$prepay['remain_days'] egt 90"> (请联系资产管理部再次确认还款日期)</if></span></div></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">应还本金：</div><div>{$data.principal|format_price}</div></td>
+            <td><div style="float: left;width:100px;">应还本金：</div><div><span id="remain_principal">{$prepay.remain_principal|format_price}</span></div></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px">应还利息：</div><div>{$data.interest|format_price}</div></td>
+            <td><div style="float: left;width:100px;">应还利息：</div><div><span id="prepay_interest">{$prepay.prepay_interest|format_price}</span></div></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">提前还款违约金：</div><div> 0 元</div></td>
+            <td><div style="float: left;width:100px;">提前还款违约金：</div><div><span id="prepay_compensation">{$prepay.prepay_compensation} 元</span></div></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">手续费：</div><div>{$data.loan_fee|format_price}</div></td>
+            <td><div style="float: left;width:100px;">手续费：</div><div><span id="loan_fee">{$prepay.loan_fee|format_price}</span></div></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">咨询费：</div><div>{$data.consult_fee|format_price}</div></td>
+            <td><div style="float: left;width:100px;">咨询费：</div><div><span id="consult_fee">{$prepay.consult_fee|format_price}</span></div></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">担保费：</div><div>{$data.guarantee_fee|format_price}</div></td>
+            <td><div style="float: left;width:100px;">担保费：</div><div><span id="guarantee_fee">{$prepay.guarantee_fee|format_price}</span></div></td>
+        </tr>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">支付服务费：</div><div>{$data.pay_fee|format_price}</div></td>
+            <td><div style="float: left;width:100px;">支付服务费：</div><div><span id="pay_fee">{$prepay.pay_fee|format_price}</span></div></td>
+        </tr>
+        <if condition="$deal['canal_agency_id'] neq 0">
+        <tr class="row">
+            <td><div style="float: left;width:100px;">渠道服务费：</div><div>{$data.canal_fee|format_price}</div></td>
+            <td><div style="float: left;width:100px;">渠道服务费：</div><div><span id="canal_fee">{$prepay.canal_fee|format_price}</span></div></td>
+        </tr>
+        </if>
+        <tr class="row">
+            <td><div style="float: left;width:100px;">还款总额：</div><div>{$data.repay_money|format_price}</div></td>
+            <td><div style="float: left;width:100px;">还款总额：</div><div><span id="prepay_money">{$prepay.prepay_money|format_price}</span></div></td>
+        </tr>
+        <tr class="row">
+            <td></td>
+            <td>
+                <div style="float: left;width:100px;">还款方：</div>
+                <div>
+                    <select type="select" name="repay_user_type" id='repay_user' <if condition="$role eq 'b'">disabled</if>>
+                        <foreach name="repay_user" item="repay_user_item">
+                            <option value="{$repay_user_item.type}"
+                                <if condition="$repay_user_item.type eq $prepay['repay_type']">
+                                    selected="selected"
+                                <else />
+                                    <if condition="$repay_mode eq 1 AND $repay_user_item.type eq 1">
+                                    selected="selected"
+                                    </if>
+                                </if>
+                            >{$repay_user_item.userName}</option>
+                        </foreach>
+                    </select>
+                </div>
+            </td>
+        </tr>
+        <if condition="$role eq 'b'">
+        <tr>
+            <td colspan="2">
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="item_title">退回类型</td>
+                        <td class="item_input">
+                            <select name="return_type" id="return_type">
+                                <option value="0" <if condition="$_REQUEST['return_type'] eq 0">selected</if>>请选择</option>
+                                <foreach name="return_type_list" key="key" item="item">
+                                    <option value="{$key}">{$item}</option>
+                                </foreach>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="item_title">退回意见</td>
+                        <td class="item_input">
+                            <textarea id="return_reason" name="return_reason" style="height:85px;width:450px;"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </if>
+        <tr>
+            <td colspan="2" align="right">
+                <if condition="$role neq 'b'">
+                <input  class="button" id="calcPrepay" value="计算">
+                </if>
+<if condition="$type eq 1">
+                <if condition="$role eq 'b'">
+                    <input  class="button" id="submitAudit" onclick="audit('return')" value="退回">
+                    <input  class="button" id="submitAudit" onclick="audit('agree')" value="还款">
+                <else/>
+                    <if condition="$exist_transaction eq 1">
+                        <input  class="button" id="savePrepay" value="保存" disabled="disabled" style="background:#999">
+                    <else/>
+                        <input  class="button" id="savePrepay" value="保存">
+                    </if>
+                    <input  class="button" id="submitAudit" onclick="audit('submit')" value="提交审核">
+                </if>
+</if>
+            </td>
+        </tr>
+    </table>
+</form>
+<include file="Public:footer" />

@@ -1,0 +1,148 @@
+{// 引入标签库 }
+
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/userfreezemoney.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+function get_type_name($id){
+    return $GLOBALS['dict']['MONEY_APPLY_TYPE'][$id];
+}
+function get_status_name($status){
+    $status_list = array(
+            '0'=>'待审核',
+            '1'=>'审核通过',
+            '2'=>'审核未通过',
+            );
+    return $status_list[$status].'<br/>';
+}
+
+function todate($timestamp)
+{
+    return date('Y-m-d H:i:s', $timestamp);
+}
+
+
+
+function get_oplist($id)
+{
+    $data = M("UserFreezeMoney")->where("id=".$id)->find();
+    if ($data['status'] != 0)
+    {
+        return '';
+    }
+    else
+    {
+        return '<a href="javascript:doverify('.$id.');">批准</a> &nbsp; <a href="javascript:noverify('.$id.');">拒绝</a>';
+    }
+}
+
+function get_real_name($user_id){
+    return get_user_name($user_id, 'real_name');
+}
+
+function get_mobile($user_id){
+    return get_user_name($user_id, 'mobile');
+}
+</php>
+<div class="main">
+<div class="main_title">冻结/解冻申请列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="导入批量申请" onclick="importCsv();" />
+    <input type="button" class="button" value="批准" onclick="confirm('确定要批准?') && multiProcess('pass');" />
+    <input type="button" class="button" value="拒绝" onclick="confirm('确定要拒绝?') && multiProcess('refuse');" />
+</div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+    申请人：<input type="text" class="textbox" id="apply_admin_name" name="apply_admin_name" value="{:trim($_REQUEST['apply_admin_name'])}"/>
+    会员名称：<input type="text" class="textbox" id="username" name="username" value="{:trim($_REQUEST['username'])}"/>
+    状态：<select name="status" >
+       <option value="-1" <if condition="$_REQUEST['status'] == -1">selected="selected"</if>>==请选择==</option>
+                <foreach name="statusCn" item="item">
+                    <option value="{$item.status}" <if condition="$_REQUEST['status'] == $item['status']">selected="selected"</if>>{$item.statusCn}</option>
+                </foreach>
+
+    </select>
+    <br />
+    申请时间：<input type="text" class="textbox" id="apply_start" name="apply_start" value="{:trim($_REQUEST['apply_start'])}" onfocus="return showCalendar('apply_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+至
+                  <input type="text" class="textbox" name="apply_end" id="apply_end" value="{:trim($_REQUEST['apply_end'])}"  onfocus="return showCalendar('apply_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="UserFreezeMoney" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    <input type="button" class="button" value="导出" onclick="export_csv();" />
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="userfreezemoney"
+    checkbox="true"
+    datasource="list"
+    show="apply_admin_name:申请人,money|format_price:金额,user_id|get_user_name:会员名称,user_id|get_real_name:姓名,status|get_status_name:状态,memo:审批记录,create_time|todate:申请时间,note:备注,id|get_oplist:操作"
+    />
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function add(){
+    location.href = ROOT+"?"+VAR_MODULE+"=UserFreezeMoney&"+VAR_ACTION+"=add";
+}
+
+//批量处理
+function multiProcess(type) {
+    idBox = $(".key:checked");
+    if (idBox.length === 0) {
+        alert('没有选择任何记录');
+        return;
+    }
+    idArray = new Array();
+    $.each(idBox, function (i, n) {
+        idArray.push($(n).val());
+    });
+    ids = idArray.join(',');
+
+    //通过
+    if (type === 'pass') {
+        location.href =  '?m=UserFreezeMoney&a=doverify&type=1&id=' + ids;
+        return;
+    }
+
+    //拒绝
+    if (type === 'refuse') {
+        location.href =  '?m=UserFreezeMoney&a=doverify&type=2&id=' + ids;
+        return;
+    }
+}
+function get_query_string() {
+        var id_str = arguments[0] || 'id';
+        querystring = '';
+        querystring += "&apply_start="+$("input[name='apply_start']").val();
+        querystring += "&apply_end="+$("input[name='apply_end']").val();
+        querystring += "&status="+$("select[name='status']").val();
+        querystring += "&apply_admin_name="+$("input[name='apply_admin_name']").val();
+        querystring += "&username="+$("input[name='username']").val();
+        return querystring;
+}
+
+function importCsv(){
+    location.href = ROOT+"?"+VAR_MODULE+"=UserFreezeMoney&"+VAR_ACTION+"=import";
+}
+
+function export_csv() {
+    window.location.href = ROOT+'?m=UserFreezeMoney&a=export_csv'+get_query_string();
+}
+
+</script>
+<include file="Public:footer" />

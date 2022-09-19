@@ -1,0 +1,51 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+    <div class="main_title"><a href="/m.php?m=AdPub&a=index&" class="back_list">返回列表</a></div>
+    <div class="blank5"></div>
+    <input type="button" class="button" value="新增" onclick="location.href='/m.php?m=AdPub&a=addChannel&pubId={$pubId}'">
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th>id</th>
+            <th>渠道类型</th>
+            <th>渠道名称</th>
+            <th>邀请码</th>
+            <th>操作</th>
+
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+
+            <td>{$item.id}</td>
+            <td>{$item.type}</td>
+            <td>{$item.name}</td>
+            <td>{$item.link_coupon}</td>
+            <td><a href="/m.php?m=AdPub&a=editChannel&channelId={$item.id}&pubId={$pubId}">修改</a> <a href="javascript:deleteConfirm({$item.id}, {$pubId})">删除</a></td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<script>
+function deleteConfirm(channelId, pubId){
+    var r=confirm("确认删除?")
+    if (r==true){
+        location.href="/m.php?m=AdPub&a=doDelChannel&channelId="+channelId+"&pubId="+pubId;
+    }
+}
+
+</script>

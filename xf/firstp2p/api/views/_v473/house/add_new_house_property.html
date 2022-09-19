@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <title>{if $house.house_district}修改房产信息{else}添加新房产{/if}</title>
+    {include file="api/views/_v32/header.html"}
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/add_new_house_property.css');?>">
+    <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+  </head>
+<body>
+<!-- 点击首页的房产资料 添加新房产页 -->
+<div class="add_new_property">
+  <div class="house_property_city">
+    <a href="#"><span>房产所在城市</span><span><i class="selected_city">请选择</i><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/arrow_right_gray.png');?>"/></span></a>
+  </div>
+  <!-- 市辖区名称+想起地址 -->
+  <form class="city_area_name">
+    <div class="first_city_area">
+      <label class="first_label">市辖区名称</label>
+      {if $districtList}      
+      <select class="first_text">
+          {foreach from=$districtList item="district"}
+            {if $house.house_district eq $district.AREADESC}
+            <option value="{$district.AREADESC}" selected>{$district.AREADESC}</option>
+            {else}
+            <option value="{$district.AREADESC}">{$district.AREADESC}</option>
+            {/if}
+          {/foreach}
+      </select>
+      {/if}
+    </div>
+    <div class="first_city_area">
+      <label class="second_label">详细地址</label>
+      <input type="text" placeholder="请精确到门牌号" class="second_text" value="{if $house.house_address}{$house.house_address}{/if}">
+    </div>
+  </form>
+  <!-- 房产材料上传-->
+  <div class="p_change_bankcard material_upload">
+    <div class="bg_white mt10 user_info j_user_info">
+      <h2 class="material_upload_top">房产材料上传</h2>
+      <div class="padd15 clearfix">
+        <div class="first">
+          <div class="upload_box j_uploadbox" data-img = "myimg_file1">
+            <div class="myimg_file1 mying">{if $house.house_deed_first}<img src="{$house.house_deed_first}">{/if}</div>
+            <div class="photo_img"></div>
+          </div>
+        <div class="img_text">登记信息页</div>
+      </div>
+      <div class="first">
+        <div class="upload_box j_uploadbox" data-img = "myimg_file2">
+          <div class="myimg_file2 mying">{if $house.house_deed_second}<img src="{$house.house_deed_second}"/>{/if}</div>
+          <div class="photo_img"></div>
+        </div>
+        <div class="img_text">附页</div>
+      </div>
+      </div>
+    </div>
+    <div class="btn">
+      <input type="submit" class="change_btn ui_btn_disabled JS_submit_change" value="保存" disabled="disabled">
+    </div>
+  </div>
+  </div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+<script>
+  var second_text = $(".second_text"),
+      second_text_val = second_text.val(),/* 详细地址 */
+      myimg_file1 = $(".myimg_file1 img").attr("src"),/* 登记信息页 */
+      myimg_file2 = $(".myimg_file2 img").attr("src"),/* 附页 */
+      $imgEl,/* 点击的拍照渲染的img parents（myimg_file） */
+      bottom_tips_container = $(".bottom_tips_container"),
+      house_property_city = $(".house_property_city a"),
+      selectedCity = "{$selectedCity}",/* 后端返回选中城市字段 */
+      selected_city_val,/* 定义变量记录房产所在城市城市选择val */
+      mark = 1, /* 1：编辑 2: 添加 */
+      house_address = "{$house.house_address}",/*后端返回的详细地址 */
+      house_deed_first_id = "{$house.house_deed_first_id}",
+      house_deed_second_id = "{$house.house_deed_second_id}",
+      first_img_id = house_deed_first_id ? house_deed_first_id : '' ,
+      second_img_id = house_deed_second_id ? house_deed_second_id : ''
+  /* 从房产所在城市列表页面返回时判断用户之前是否填写过详细地址、房产材料是否上传 */
+  if(P2PWAP.cache.get("_second_text_val_")){
+    second_text.val(P2PWAP.cache.get("_second_text_val_"))
+    second_text_val = second_text.val()
+  }
+  if(P2PWAP.cache.get("_myimg_file1_src_") || P2PWAP.cache.get("_myimg_file2_src_")){
+    myimg_file1 = P2PWAP.cache.get("_myimg_file1_src_")
+    $(".myimg_file1").html('<img src="'+P2PWAP.cache.get("_myimg_file1_src_")+'">')
+    myimg_file2 = P2PWAP.cache.get("_myimg_file2_src_")
+    $(".myimg_file2").html('<img src="'+P2PWAP.cache.get("_myimg_file2_src_")+'">')
+    first_img_id = P2PWAP.cache.get("_myimg_file1_id_")
+    second_img_id = P2PWAP.cache.get("_myimg_file2_id_")
+  }
+  /* 房产所在城市改成配置的 */
+   if(selectedCity){
+    house_property_city.find(".selected_city").addClass("selected_city_color").html(selectedCity)
+    selected_city_val = selectedCity
+  }
+  if(!house_address){
+    mark = 2
+  }else{
+    mark = 1
+  }
+  house_property_city.click(function(){
+    $(this).attr("href","/house/CityList?token={$token}&selectedCity="+selectedCity+"&mark="+mark+"&id={$house.id}")
+  })
+  /* 获取window高 */
+  var window_height = $(window).height()
+  window.onresize=function(){
+    var window_height_now = $(window).height()
+    if(window_height_now < window_height){
+      $(".bottom_tips_container").css("position","static")
+    } else {
+      $(".bottom_tips_container").css("position","fixed")
+    }
+  }
+  /* 虚拟键盘禁止：前往按键点击 */
+  $(document).keydown(function(event){ 
+    if(event.keyCode == 13) {
+      event.stopPropagation()
+      event.preventDefault()
+    }
+  });
+  /* 判断用户是新增房产还是修改房产*/
+  house_address ? $(".btn .change_btn").val("保存") : $(".btn .change_btn").val("保存并选择")
+  /* 页面底部提示语 */
+  var add_new_property = $(".add_new_property"),
+  add_new_property_height = add_new_property.height()
+  _html(add_new_property[0],add_new_property_height,"0.2rem","none")
+  /* 拍照弹框 */
+  $(".photo_click_popup").height(window_height)
+  /*数据完整性判断，定义方法*/
+  function _data_integrity(){
+    if(!second_text_val || !myimg_file1 || !myimg_file2 || !selected_city_val){
+      $('.JS_submit_change').attr('disabled', 'disabled').css("background-color","rgb(217,217,217)")
+    }else{
+      $('.JS_submit_change').removeAttr('disabled', 'disabled').css("background-color","rgb(23,127,222)")
+    }
+  }
+  _data_integrity()
+  /*详细地址输入时，判断数据完整性 */
+  second_text.on("input",function(){
+    second_text_val = second_text.val()
+    _data_integrity()
+    P2PWAP.cache.set("_second_text_val_",second_text_val,60000)
+  })
+  /*资料上传部分点击事件*/
+  $('.p_change_bankcard .j_uploadbox').click(function(){
+    $imgEl = $('.'+$(this).attr("data-img"))
+    _scheme_photo(document.body,_data_integrity)
+    return $imgEl
+  })
+  /* 调用接口 */
+  $(".JS_submit_change").click(function(){
+     $.ajax({
+      url:"/house/SaveHouse",
+      type:"post",
+      data:{
+          token:"{$token}",
+          house_city:house_property_city.find(".selected_city").html(),
+          house_district:$(".first_city_area .first_text").val(),
+          house_address:$(".first_city_area .second_text").val(),
+          house_deed_first:first_img_id,
+          house_deed_second:second_img_id,
+          selectedCity: selectedCity,
+          id:"{$house.id}"
+      },
+      dataType:"json",
+      success:function(data){
+        if(data.errno == 0){
+          if(typeof(data.data) == "number"){
+            window.location.href = "/house/PreApply?token={$token}&house_id="+data.data+"&selectedCity="+selectedCity
+          }else{
+            window.location.href = "/house/HouseList?token={$token}"
+          }
+        }else{
+          P2PWAP.ui.toast(data.error)
+        }
+      }
+    })
+  })
+</script>
+</html>

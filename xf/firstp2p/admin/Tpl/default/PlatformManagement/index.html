@@ -1,0 +1,128 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<php>
+function get_status_is_effect($is_effect,$is_warning){
+        if ($is_effect == 1) $is_effect='有效';
+        else $is_effect='无效';
+        if($is_warning == 1) {
+        return '<font color="red">'.$is_effect.'</font>';
+        }
+        return $is_effect;
+}
+function get_is_warning($content,$is_warning) {
+
+    $content = format_date($content);
+
+    if($is_warning == 1) {
+        return '<font color="red">'.$content.'</font>';
+    }
+    return $content;
+}
+function get_is_warning_format($content,$is_warning) {
+
+    $content = format_date($content,'Y-m-d');
+
+    if($is_warning == 1) {
+        return '<font color="red">'.$content.'</font>';
+    }
+    return $content;
+}
+function get_is_warning_c($content,$is_warning) {
+    if($is_warning == 1) {
+        return '<font color="red">'.$content.'</font>';
+    }
+    return $content;
+}
+function subtraction($num1,$num2) {
+    $num = $num1 - $num2;
+    $num = format_price($num,false);
+    return $num;
+}
+function get_rate($rate) {
+    return $rate.'%';
+}
+function get_link($link){
+    return "<a href='$link' target='_blank'>链接</a>";
+}
+</php>
+
+<script type="text/javascript">
+
+
+    function add_deal(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=add&proid="+id;
+    }
+
+    function copy(id) {
+        $.ajax({
+            url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=copy&id=" + id,
+            data: "ajax=1",
+            dataType: "json",
+            success: function (obj) {
+                $("#info").html(obj.info);
+            }
+        });
+    }
+</script>
+
+<div class="main">
+<div class="main_title">项目列表 <!--
+            <input type="text" class="textbox" name="test_email" />
+            <input type="button" class="button" name="test_mail_btn" value="{%TEST}" />
+             -->
+</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%DELETE}" onclick="del();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+         咨询机构名称：<input type="text" class="textbox" name="advisory_name" placeholder="输入文本..." size="8" value="{$advisory_name}"/>
+        状态：
+        <select name="is_effect" style="height:27px;">
+            <option value="-1" <if condition="$is_effect eq -1"> selected="selected" </if>>全部</option>
+            <option value="1" <if condition="$is_effect eq 1"> selected="selected" </if>>有效</option>
+            <option value="0" <if condition="$is_effect eq 0"> selected="selected" </if>>无效</option>
+        </select>
+        <input type="hidden" value="PlatformManagement" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv_file('');" />
+    </form>
+</div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id|get_is_warning_c=\$item['is_warning']:{%ID}|50px
+    ,advisory_name|get_is_warning_c=\$item['is_warning']:咨询机构名称
+    ,money_limit|get_is_warning_c=\$item['is_warning']:用款限额
+    ,money_effect_term_start|get_is_warning_format=\$item['is_warning']:平台合作限额有效期起始日期|120px
+    ,money_effect_term_end|get_is_warning_format=\$item['is_warning']:平台合作限额有效期，终止日期|120px
+    ,is_effect|get_status_is_effect=\$item['is_warning']:状态
+    ,operate_person|get_is_warning_c=\$item['is_warning']:操作人
+    ,update_time|get_is_warning=\$item['is_warning']:操作时间"
+    actionlist="edit:{%EDIT}" />
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+        <script type="text/javascript">
+            // csv导出
+            function export_csv_file()
+            {
+                confirm_msg = "确认要导出csv文件数据吗？\n\r导出过程中请耐心等待，不要关闭页面。";
+                if (!confirm(confirm_msg)) {
+                    return;
+                }
+                return export_csv();
+
+            }
+
+        </script>
+<include file="Public:footer" />

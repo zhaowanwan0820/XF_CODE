@@ -1,0 +1,81 @@
+<div class="main">
+<div class="blank5"></div>
+<form name="edit" id="_js_form" action="/m.php?m=Region&a=nodeedit" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<input type="hidden" name="id" value="{$node.id}" >
+	<input type="hidden" id="_js_type" name="type" value="edit" >
+
+    <tr class="_jsedit">
+        <td class="item_title">节点name</td>
+        <td class="item_input"><input type="text" class="textbox require" name="name" value="{$node.name}"/></td>
+    </tr>
+	
+	<tr>
+		<td class="item_title"></td>
+		<td class="item_input">
+			<input type="button" class="button" id="_js_edit_submit" value="编辑" />
+			<if condition="$is_add">
+			<input type="button" class="button" id="_js_add_submit" value="新增子节点" />
+			</if>
+			<input type="reset" class="button" id="_js_cancel" value="取消" />
+			<if condition="$is_del">
+			<input type="button" class="button" id="_js_del_submit" value="删除" />
+			</if>
+		</td>
+	</tr>
+</table>	 
+</form>
+</div>
+<SCRIPT type="text/javascript">
+	<!--
+	$(document).ready(function(){
+		$("#_js_edit_submit").click(function(){
+			$.post("/m.php?m=Region&a=nodeedit", $("#_js_form").serialize(),function(rs){
+				var rs = $.parseJSON(rs);
+				if(rs.status){
+					alert("操作成功！");
+					$.weeboxs.close();
+					window.location.reload();
+				}else{
+					alert("操作失败！"+rs.info);
+				}
+			});
+			return false;
+		});
+		//新建节点
+		$("#_js_add_submit").click(function(){
+			$("#_js_type").val('add');
+			$.post("/m.php?m=Region&a=nodeedit", $("#_js_form").serialize(),function(rs){
+				var rs = $.parseJSON(rs);
+				if(rs.status){
+					alert("操作成功！");
+					$.weeboxs.close();
+					window.location.reload();
+				}else{
+					alert("操作失败！"+rs.info);
+				}
+			});
+			return false;
+		});
+		//删除
+		$("#_js_del_submit").click(function(){
+			$("#_js_type").val('add');
+			$.post("/m.php?m=Region&a=nodedel", $("#_js_form").serialize(),function(rs){
+				var rs = $.parseJSON(rs);
+				if(rs.status){
+					alert("操作成功！");
+					$.weeboxs.close();
+					window.location.reload();
+				}else{
+					alert("操作失败！"+rs.info);
+				}
+			});
+			return false;
+		});
+		//取消
+		$("#_js_cancel").click(function(){
+			$.weeboxs.close();
+		});
+	});
+	//-->
+</SCRIPT>

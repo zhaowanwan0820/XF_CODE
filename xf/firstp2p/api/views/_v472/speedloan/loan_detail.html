@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>借款详情</title>
+</head>
+<body class="jkxq_body">
+<input type="hidden" value="{$token}" id="tokenHidden"/>
+<!-- 借款金额 begin -->
+<div class="loanMoneyBox">
+    <div class="title">借款金额(元)</div>
+    <div class="num">{$loanInfo.totalAmountFormat}</div>
+    <div class="status">{$loanInfo.loanStatusDesc}</div>
+</div>
+<!-- 借款金额 end -->
+
+<!-- 借款详情信息 begin -->
+<ul class="detailData">
+    <li>
+        <p>借款金额</p>
+        <p>{$loanInfo.totalAmountFormat}元</p>
+    </li>
+    <li>
+        <p>已还本金</p>
+        <p>{$loanInfo.repayAmountFormat}元</p>
+    </li>
+    <li>
+        <p>待还本金</p>
+        <p>{$loanInfo.needRepayPrincipalFormat}元</p>
+    </li>
+    <li>
+        <p>借款发放人</p>
+        <p>海口联合农商银行</p>
+    </li>
+    <li>
+        <p>申请时间</p>
+        <p>{$loanInfo.applyTimeDateFormat}</p>
+    </li>
+    <li>
+        <p>放款时间</p>
+        <p>{$loanInfo.loanTimeDateFormat}</p>
+    </li>
+    <li>
+        <p>使用天数{if $loanInfo.loanStatus == 3}（截止本日）{/if}</p>
+        <p>{$loanInfo.lasts}天</p>
+    </li>
+    <li>
+        <p>已还利息 / 日利率</p>
+        <p>{$loanInfo.interestRepayFormat}元 / {$loanInfo.dailyRate}%</p>
+    </li>
+    <li>
+        <p>平台服务费</p>
+        <p>{$loanInfo.serviceFeeFormat}元</p>
+    </li>
+</ul>
+<!-- 借款详情信息 end -->
+
+<!-- 查看还款明细&&在线还款 begin -->
+<ul class="linkBox">
+    <li>
+        <a href="/speedloan/repayDetail?token={$token}&loanId={$loanInfo.id}">查看还款明细</a>
+    </li>
+    {if $loanInfo.loanStatus == 3}
+    <li>
+        <a href="javascript:;" data-href-text="/speedloan/repay?token={$token}&id={$loanInfo.id}" id="onlineRepay">在线还款</a>
+    </li>
+    {/if}
+</ul>
+<!-- 查看还款明细&&在线还款 end -->
+
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_jiekuanxiangqing.js');?>"></script>
+{include file="api/views/_v32/footer.html"}

@@ -1,0 +1,133 @@
+﻿{include file="web/views/v2/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/account_o2o_gift.css');?>">
+<script src="<?php echo $this->asset->makeUrl('v2/js/o2o/o2o_goods.js');?>" type="text/javascript"></script>
+
+<div class="p_account_o2o_coupon_datail">
+        <span class="blank23"></span>
+        <div class="w1100">
+            <div class="ui-box">
+                <div class="h-title">
+                    <h2><i></i>礼券详情</h2>
+                </div>
+                 {if $coupon.useRules eq 3 || $coupon.useRules eq 4 || $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                <div class="detail">
+                    <dl>
+                        <dt><img src="{$coupon.pcPic}"></dt>
+                        <dd>
+                            <div class="v_middle">
+                                <h2>{$coupon.productName}</h2>
+                                {if $coupon.goodPrice neq 0}
+                                    <p>价       值：<span class="f24 color_red">{$coupon.goodPrice}</span></p>
+                                {/if}
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+                 {/if}
+                <div class="detail_con">
+                    <div class="title">
+                        <i class="circle"></i>
+                    {if $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                        邮寄地址
+                    {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                        充值账户
+                    {/if}
+                    </div>
+                    <div class="con_text">
+                     {if $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                         <form method="post" id="goods_form" 
+                          {if $couponId}
+                           action="/gift/exchangeCoupon"
+                         {else}
+                           action="/gift/acquireExchange"
+                         {/if}>
+<input type="hidden"  name="storeId" value="{$coupon.storeId}">
+<input type="hidden"  name="useRules" value="{$coupon.useRules}">
+<input type="hidden" name="couponId" value="{$couponId}">
+<input type="hidden" name="couponGroupId" value="{$couponGroupId}">
+<input type="hidden" name="load_id" value="{$load_id}">
+<input type="hidden" name="action" value="{$action}">
+<input type="hidden" name="deal_type" value="{$deal_type}">
+
+                        <div class="coupon_form">
+                            <dl>
+                                <dt>收货人姓名<span class="color_red">*</span></dt>
+                                <dd>
+                                    <input type="text" class="o2o_ui_input" id="JS_o2o_username" placeholder="请填写收货人姓名" data-name="收货人姓名" name="receiverName">
+                                    <span class="error_tip tip"></span>
+                                </dd>                            
+                            </dl>
+                            <dl>
+                                <dt>手机号码<span class="color_red">*</span></dt>
+                                <dd>
+                                    <input type="text" class="o2o_ui_input" id="JS_o2o_tel" placeholder="请填写中国大陆地区手机号码" data-name="手机号" name="receiverPhone">
+                                    <span class="error_tip tip"></span>
+                                </dd>                            
+                            </dl>
+                            <dl>
+                                <dt>邮政编码<span class="color_red"></span></dt>
+                                <dd>
+                                    <input type="text" class="o2o_ui_input" placeholder="如不确定可留空" id="JS_o2o_zipCode" data-name="邮政编码" name="receiverCode">
+                                    <span class="error_tip tip"></span>
+                                </dd>                            
+                            </dl>
+                            <dl>
+                                <dt>详细地址<span class="color_red">*</span></dt>
+                                <dd>
+                                    <textarea id="JS_o2o_address" class="o2o_ui_input o2o_ui_textarea"  placeholder="请填写详细收货地址，例如省市区、街道名、门牌号、楼层
+和房间号等信息" data-name="详细地址" name="receiverAddress" ></textarea>
+                                    <span class="error_tip tip"></span>
+                                </dd>                            
+                            </dl>
+
+                    {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                        
+                         <form method="post" id="coupon_form" 
+                          {if $couponId}
+                           action="/gift/exchangeCoupon"
+                         {else}
+                           action="/gift/acquireExchange"
+                         {/if}>
+<input type="hidden"  name="storeId" value="{$coupon.storeId}">
+<input type="hidden"  name="useRules" value="{$coupon.useRules}">
+<input type="hidden" name="couponId" value="{$couponId}">
+<input type="hidden" name="couponGroupId" value="{$couponGroupId}">
+<input type="hidden" name="load_id" value="{$load_id}">
+<input type="hidden" name="action" value="{$action}">
+                            <div class="coupon_form">
+                            {foreach from=$formConfig item=couponform key=key}
+                                <dl>
+                                    <dt>{$couponform.displayName}</dt>
+                                    <dd>
+                                        <input type="text" {if $key eq 'phone'} class="o2o_ui_input o2o_w232 "   id="JS_o2o_tel" {else} class="o2o_ui_input o2o_w232 j_o2o_input" {/if} placeholder="{$storeName}" name="{$key}">
+                                        <span class="error_tip tip"></span>
+                                         {if $key eq 'phone'}
+                                        <div class="tel_big_box"></div>
+                                        {/if}
+                                    </dd>                            
+                                </dl>
+                                {/foreach}
+                            {/if}
+                                <dl>
+                                <dt></dt>
+                                <dd>
+                                    <div class="o2o_pc_btn_red_h38 mr50"><input type="submit" value="确认领取" class="right" id="JS_goods_btn"></div>
+                                    {if $couponId}
+                                    <a href="/gift/mineDetail?couponId={$couponId}" class="o2o_pc_btn_gray_h38"><span class="right o2o_w66">返回</span></a>
+                                    {else}
+                                    <a href="/gift/acquireDetail?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&deal_type={$deal_type}" class="o2o_pc_btn_gray_h38"><span class="right o2o_w66">返回</span></a>
+                                    {/if}
+                                </dd>                            
+                            </dl>
+                          </div>
+                        </form>
+                    
+                    </div>
+                </div>
+            </div>
+        <span class="blank60"></span>
+    </div>
+</div>
+
+
+{include file="web/views/v2/footer.html"}

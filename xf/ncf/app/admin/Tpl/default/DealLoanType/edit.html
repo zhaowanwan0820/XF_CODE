@@ -1,0 +1,119 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript">
+function check_type_tag(){
+    var mark = $('#mark').val();
+    mark = encodeURIComponent(mark);
+    mark_ts = /^[A-Za-z0-9_]{2,6}$/;
+    
+    if(mark_ts.test(mark)){
+        var url = "/m.php?m=DealLoanType&a=check_mark_name";
+        $.getJSON(url, { mark: mark, tag: "edit", id: {$vo.id}},function(data){
+            if(data.status == 0){
+                $('#mark_tip').html(data.data);
+            }else{
+                $('#mark_tip').html('标识可以使用');
+            }
+        });  
+    }else{
+        $('#mark_tip').html('请输入长度在2-6之间的标识');
+    }
+}
+
+</script>
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("DealLoanType/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">{%TITLE_SHOW}:</td>
+		<td class="item_input"><input type="text" class="textbox require" name="name" value="{$vo.name}" /></td>
+	</tr>
+    <tr>
+        <td class="item_title">唯一标识:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="type_tag" id='mark' value="{$vo.type_tag}" onchange="return check_type_tag()"/><span class="tip_span" id='mark_tip'>可输入字母数字下划线</span></td>
+    </tr>	
+	<tr>
+		<td class="item_title">{%DEAL_ICON}:</td>
+		<td class="item_input">
+			<html:imgUpload name = 'icon' id='icon' value='$vo.icon' />
+		</td>
+	</tr>
+	<tr style="display:none;">
+		<td class="item_title">{%URL_UNAME}:</td>
+		<td class="item_input"><input type="text" class="textbox word-only" name="uname" value="{$vo.uname}" /> </td>
+	</tr>
+	<tr>
+		<td class="item_title">简介:</td>
+		<td class="item_input"><textarea class="textarea" name="brief" >{$vo.brief}</textarea></td>
+	</tr>
+	<tr>
+		<td class="item_title">{%IS_EFFECT}:</td>
+		<td class="item_input">
+			<lable>{%IS_EFFECT_1}<input type="radio" name="is_effect" value="1" <if condition="$vo['is_effect'] eq 1">checked="checked"</if> /></lable>
+			<lable>{%IS_EFFECT_0}<input type="radio" name="is_effect" value="0" <if condition="$vo['is_effect'] eq 0">checked="checked"</if> /></lable>
+		</td>
+	</tr>
+
+	
+	<tr>
+		<td class="item_title">{%SORT}:</td>
+		<td class="item_input"><input type="text" class="textbox" name="sort" value="{$vo.sort}" /></td>
+	</tr>
+	<tr>
+		<td class="item_title">TAB显示:</td>
+		<td class="item_input"><input type="text" class="textbox" name="istab" value="{$vo.istab}" />(0表示其他数字大的优先显示)</td>
+	</tr>
+	<if condition = "$vo['type_tag'] eq 'ZZJR'">
+		<tr>
+			<td class="main_title" colspan="2">费率配置</td>
+		</tr>
+		<tr>
+			<td class="item_title">平台服务费:</td>
+			<td class="item_input"><input type="text" class="textbox" name="loan_fee_rate" value="{$vo.loan_fee_rate}" />%<font color='red'>（借款人给p2p平台的手续费）</font></td>
+		</tr>
+		<tr>
+			<td class="item_title">年化收益基本利率:</td>
+			<td class="item_input"><input type="text" class="textbox" name="income_base_rate"  value="{$vo.income_base_rate}"  />%</td>
+		</tr>
+	</if>
+
+	<tr>
+		<td class="main_title" colspan="2">自动化配置</td>
+	</tr>
+	<tr>
+		<td class="item_title">自动放款:</td>
+		<td class="item_input"><input type="checkbox" class="textbox" name="auto_loan"  <if condition="$vo['auto_loan'] eq 1">checked="checked"</if>/><font color='red'>（仅支持快速放款）</font></td>
+	</tr>
+	<tr>
+		<td class="item_title">自动上标队列:</td>
+		<td class="item_input"><input type="checkbox" class="textbox" name="auto_start" <if condition="$vo['auto_start'] eq 1">checked="checked"</if>/></td>
+	</tr>
+	<tr>
+		<td class="item_title">提现后收费:</td>
+		<td class="item_input"><input type="checkbox" class="textbox" name="after_fee" <if condition="$vo['after_fee'] eq 1">checked="checked"</if>/></td>
+	</tr>
+	<tr>
+		<td class="item_title"></td>
+		<td class="item_input">
+			<!--隐藏元素-->
+			<input type="hidden" name="id" value="{$vo.id}" />
+			<input type="hidden" name="{:conf("VAR_MODULE")}" value="DealLoanType" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+			<!--隐藏元素-->
+			<input type="submit" class="button" value="{%EDIT}" />
+			<input type="reset" class="button" value="{%RESET}" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>	 
+</form>
+</div>
+<include file="Public:footer" />

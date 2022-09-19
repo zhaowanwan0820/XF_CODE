@@ -1,0 +1,428 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<DIV id="admin_edit_main_div">
+	<form  name="theForm" action="{:U('Deploy/edit')}" method="post" onsubmit="return validate();">
+		<table width="97%" border="0" cellspacing="1" cellpadding="2" bgcolor="#EEEEEE">
+			<if condition="$deployResult[process] == 'SEASON_EQUAL_REPAY_12'">
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按季等额还款（12个月）设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" >{$deployResult[total]}</td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'SEASON_EQUAL_REPAY_9'" />	
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按季等额还款（9个月）设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" >{$deployResult[total]}</td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'SEASON_EQUAL_REPAY_6'" />		
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按季等额还款（6个月）设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" >{$deployResult[total]}</td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'SEASON_EQUAL_REPAY_3'" />		
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按季等额还款（3个月）设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月期限：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" >{$deployResult[total]}</td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'ONCE_BACK_PERIOD_RATE'" />			
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>一次到期回款->期间收益率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'ONCE_BACK_ANNUALIZED_RATE'" />				
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>一次到期回款->年化收益率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'SEASON_EQUAL_BACK_ANNUALIZED_RATE'" />					
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按季等额回款->年化收益率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'MONTH_EQUAL_BACK_ANNUALIZED_RATE'" />						
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按月等额回款->年化收益率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'SEASON_EQUAL_BACK'" />							
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按季等额回款额设置：</h1></td>
+				</tr>
+                <tr bgcolor="#FFFFFF">
+                    <td align="right" width="17%" height="22">3个月：</td>
+                    <td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="red">*</font></td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td align="right" width="17%" height="22">6个月：</td>
+                    <td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="red">*</font></td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td align="right" width="17%" height="22">9个月：</td>
+                    <td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="red">*</font></td>
+                </tr>              				
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[total]" value="{$deployResult[total]}" /><font color="red">*</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'ONCE_BACK_PERIOD'" />
+                <tr bgcolor="#FFFFFF">
+                    <td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>到期支付本金收益设置：</h1></td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td align="right" width="17%" height="22">3个月：</td>
+                    <td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="red">*</font></td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td align="right" width="17%" height="22">6个月：</td>
+                    <td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="red">*</font></td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td align="right" width="17%" height="22">9个月：</td>
+                    <td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="red">*</font></td>
+                </tr>                           
+                <tr bgcolor="#FFFFFF">
+                    <td align="right" width="17%" height="22">12个月：</td>
+                    <td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="red">*</font></td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td align="right" width="17%" height="22">总计：</td>
+                    <td align="left" ><input type="text" class="compay_text" name="bc[total]" value="{$deployResult[total]}" /><font color="red">*</font></td>
+                </tr>
+			<elseif condition="$deployResult[process] == 'MONTH_EQUAL_BACK_3'" />								
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按月等额回款额(3个月)设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[total]" value="{$deployResult[total]}" /><font color="red">*</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'MONTH_EQUAL_BACK_6'" />									
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按月等额回款额(6个月)设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[total]" value="{$deployResult[total]}" /><font color="red">*</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'MONTH_EQUAL_BACK_9'" />										
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按月等额回款额(9个月)设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[total]" value="{$deployResult[total]}" /><font color="red">*</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'MONTH_EQUAL_BACK_12'" />											
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按月等额回款额(12个月)设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="red">*</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">总计：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[total]" value="{$deployResult[total]}" /><font color="red">*</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'TRANSFER_RATE'" />												
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>转让利率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'MONTH_EQUAL_MONTH_RATE'" />													
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按月等额本息月利率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'SEASON_EQUAL_MONTH_RATE'" />	
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按季等额本息月利率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'ONCE_BACK_MONTH_RATE'" />		
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>到期支付本金收益月利率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			<elseif condition="$deployResult[process] == 'MONTH_INTEREST_ONCE_BACK_ANNUALIZED_RATE'" />			
+				<tr bgcolor="#FFFFFF">
+					<td style="padding-left:150px;" align="left" colspan="2" width="17%" height="22"><h1>按月付息到期一次性回本年化收益率设置：</h1></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">3个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[threeperiod]" value="{$deployResult[threeperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">6个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[sixperiod]" value="{$deployResult[sixperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">9个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[nineperiod]" value="{$deployResult[nineperiod]}" /><font color="blue">%</font></td>
+				</tr>
+				<tr bgcolor="#FFFFFF">
+					<td align="right" width="17%" height="22">12个月：</td>
+					<td align="left" ><input type="text" class="compay_text" name="bc[twelveperiod]" value="{$deployResult[twelveperiod]}" /><font color="blue">%</font></td>
+				</tr>
+			</if>
+		</table>
+		<input type="hidden" name="id" value="{$deployResult[id]}">
+		<table width="97%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td align="center" width="100%">
+					<input type="submit" value="提交"/>
+				</td>
+			</tr>
+		</table>
+    </form>
+	<script type="text/javascript">
+		function validate()
+		{
+			validator = new Validator("theForm");
+			<!--{if ($main->process == 'SEASON_EQUAL_REPAY_12')}-->
+				validator.isNumber("bc[threeperiod]","3个月还款额输入不正确");
+				validator.isNumber("bc[sixperiod]","6个月还款额输入不正确");
+				validator.isNumber("bc[nineperiod]","9个月还款额输入不正确");
+				validator.isNumber("bc[twelveperiod]","12个月还款额输入不正确");
+			<!--{elseif ($main->process == 'SEASON_EQUAL_REPAY_9')}-->
+				validator.isNumber("bc[threeperiod]","3个月还款额输入不正确");
+				validator.isNumber("bc[sixperiod]","6个月还款额输入不正确");
+				validator.isNumber("bc[nineperiod]","9个月还款额输入不正确");
+			<!--{elseif ($main->process == 'SEASON_EQUAL_REPAY_6')}-->
+				validator.isNumber("bc[threeperiod]","3个月还款额输入不正确");
+				validator.isNumber("bc[sixperiod]","6个月还款额输入不正确");
+			<!--{elseif ($main->process == 'SEASON_EQUAL_REPAY_3')}-->
+				validator.isNumber("bc[threeperiod]","3个月还款额输入不正确");
+			<!--{elseif ($main->process == 'ONCE_BACK_PERIOD_RATE')}-->
+				validator.isNumber("bc[threeperiod]","3个月期间收益率输入不正确");
+				validator.isNumber("bc[sixperiod]","6个月期间收益率输入不正确");
+				validator.isNumber("bc[nineperiod]","9个月期间收益率输入不正确");
+				validator.isNumber("bc[twelveperiod]","12个月期间收益率输入不正确");
+			<!--{elseif ($main->process == 'ONCE_BACK_ANNUALIZED_RATE')}-->
+				validator.isNumber("bc[threeperiod]","3个月年化收益率输入不正确");
+				validator.isNumber("bc[sixperiod]","6个月年化收益率输入不正确");
+				validator.isNumber("bc[nineperiod]","9个月年化收益率输入不正确");
+				validator.isNumber("bc[twelveperiod]","12个月年化收益率输入不正确");
+			<!--{elseif ($main->process == 'SEASON_EQUAL_BACK_ANNUALIZED_RATE')}-->
+				validator.isNumber("bc[twelveperiod]","年化收益率输入不正确");
+			<!--{elseif ($main->process == 'MONTH_EQUAL_BACK_ANNUALIZED_RATE')}-->
+				validator.isNumber("bc[threeperiod]","3个月年化收益率输入不正确");
+				validator.isNumber("bc[sixperiod]","6个月年化收益率输入不正确");
+				validator.isNumber("bc[nineperiod]","9个月年化收益率输入不正确");
+				validator.isNumber("bc[twelveperiod]","12个月年化收益率输入不正确");
+			<!--{elseif ($main->process == 'SEASON_EQUAL_BACK')}-->
+				validator.isNumber("bc[twelveperiod]","12个月回款额输入不正确");
+				validator.isNumber("bc[total]","回款总计输入不正确");
+			<!--{elseif ($main->process == 'MONTH_EQUAL_BACK_3')}-->
+				validator.isNumber("bc[threeperiod]","3个月回款额输入不正确");
+				validator.isNumber("bc[total]","回款总计输入不正确");
+			<!--{elseif ($main->process == 'MONTH_EQUAL_BACK_6')}-->
+				validator.isNumber("bc[sixperiod]","6个月回款额输入不正确");
+				validator.isNumber("bc[total]","回款总计输入不正确");
+			<!--{elseif ($main->process == 'MONTH_EQUAL_BACK_9')}-->
+				validator.isNumber("bc[nineperiod]","9个月回款额输入不正确");
+				validator.isNumber("bc[total]","回款总计输入不正确");
+			<!--{elseif ($main->process == 'MONTH_EQUAL_BACK_12')}-->
+				validator.isNumber("bc[twelveperiod]","12个月回款额输入不正确");
+				validator.isNumber("bc[total]","回款总计输入不正确");
+			<!--{elseif ($main->process == 'TRANSFER_RATE')}-->
+				validator.isNumber("bc[threeperiod]","3个月转让利率输入不正确");
+				validator.isNumber("bc[sixperiod]","6个月转让利率输入不正确");
+				validator.isNumber("bc[nineperiod]","9个月转让利率输入不正确");
+			<!--{elseif ($main->process == 'MONTH_EQUAL_MONTH_RATE')}-->
+				validator.isNumber("bc[threeperiod]","按月等额本息3个月月利率输入不正确");
+				validator.isNumber("bc[sixperiod]","按月等额本息6个月月利率输入不正确");
+				validator.isNumber("bc[nineperiod]","按月等额本息9个月月利率输入不正确");
+				validator.isNumber("bc[twelveperiod]","按月等额本息12个月月利率输入不正确");
+			<!--{elseif ($main->process == 'SEASON_EQUAL_MONTH_RATE')}-->
+				validator.isNumber("bc[threeperiod]","按季等额本息3个月月利率输入不正确");
+				validator.isNumber("bc[sixperiod]","按季等额本息6个月月利率输入不正确");
+				validator.isNumber("bc[nineperiod]","按季等额本息9个月月利率输入不正确");
+				validator.isNumber("bc[twelveperiod]","按季等额本息12个月月利率输入不正确");
+			<!--{elseif ($main->process == 'ONCE_BACK_MONTH_RATE')}-->
+				validator.isNumber("bc[threeperiod]","到期支付本金收益3个月月利率输入不正确");
+				validator.isNumber("bc[sixperiod]","到期支付本金收益6个月月利率输入不正确");
+				validator.isNumber("bc[nineperiod]","到期支付本金收益9个月月利率输入不正确");
+				validator.isNumber("bc[twelveperiod]","到期支付本金收益12个月月利率输入不正确");
+			<!--{elseif ($main->process == 'MONTH_INTEREST_ONCE_BACK_ANNUALIZED_RATE')}-->
+				validator.isNumber("bc[threeperiod]","按月付息到期一次性回本3个月年化收益率输入不正确");
+				validator.isNumber("bc[sixperiod]","按月付息到期一次性回本6个月年化收益率输入不正确");
+				validator.isNumber("bc[nineperiod]","按月付息到期一次性回本9个月年化收益率输入不正确");
+				validator.isNumber("bc[twelveperiod]","按月付息到期一次性回本12个月年化收益率输入不正确");
+			<!--{/if}-->
+			return validator.passed();
+		}
+	</script>
+</DIV>
+<include file="Public:footer" />

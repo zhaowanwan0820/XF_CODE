@@ -1,0 +1,62 @@
+{
+  "author": "yanbingrong<yanbingrong@ucfgroup.com>",
+  "comment": "同步或异步领取多张投资券",
+  "namespace": "NCFGroup\\Protos\\Ptp",
+  "use": ["NCFGroup\\Common\\Extensions\\Base\\AbstractRequestBase", "Assert\\Assertion"],
+  "extend": "AbstractRequestBase",
+  "properties": [
+    {
+      "name": "userId",
+      "comment": "用户ID",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "discountGroupIds",
+      "comment": "券组ID，多个用逗号分隔",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "token",
+      "comment": "券码唯一token",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "remark",
+      "comment": "领取备注",
+      "type": "string",
+      "required": false,
+      "default": ""
+    },
+    {
+      "name": "dealLoadId",
+      "comment": "交易id",
+      "type": "int",
+      "required": false,
+      "default": 0
+    },
+    {
+      "name": "isSync",
+      "comment": "是否同步请求，默认异步请求",
+      "type": "int",
+      "required": false,
+      "default": 0
+    },
+    {
+      "name": "rebateAmount",
+      "comment": "返利金额，覆盖投资券的金额配置",
+      "type": "float",
+      "required": false,
+      "default": 0
+    },
+    {
+      "name": "rebateLimit",
+      "comment": "返利期限，覆盖投资券的期限配置",
+      "type": "int",
+      "required": false,
+      "default": 0
+    }
+  ]
+}

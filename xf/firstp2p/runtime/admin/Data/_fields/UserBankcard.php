@@ -1,0 +1,28 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'bank_id',
+  2 => 'bankcard',
+  3 => 'bankzone',
+  4 => 'user_id',
+  5 => 'status',
+  6 => 'card_name',
+  7 => 'card_type',
+  8 => 'region_lv1',
+  9 => 'region_lv2',
+  10 => 'region_lv3',
+  11 => 'region_lv4',
+  12 => 'image_id',
+  13 => 'is_effective',
+  14 => 'create_time',
+  15 => 'update_time',
+  16 => 'verify_status',
+  17 => 'branch_no',
+  18 => 'cert_status',
+  19 => 'e_account',
+  20 => 'p_account',
+  21 => 'unitebank_state',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

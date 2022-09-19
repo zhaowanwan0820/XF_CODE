@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>{if $page_title}{$page_title} - {/if}{if $show_site_titile eq 1}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+</head>
+<body>
+{include file="inc/header.html"}
+
+{if app_conf("PREORDER_FULL") eq '0'}
+<div id="cover-baijin" class="special-cover"></div>
+{else}
+<div id="cover-baijin-full" class="special-cover"></div>
+{/if}
+
+<div id="baijin-form-wrapper" class="special-form-wrapper">
+
+<form id="special-form" action="/baijin" method="post" enctype="multipart/form-data" onsubmit="return check_huiyuan_form();">
+  <?php echo token_input(); ?>
+  
+  <div id="special-form-heading">
+    {if empty($preset)}
+    <a class="btn" href="{url x="shop" u="user#login" }"><span>登录</span></a>
+    {/if}
+  </div>
+  <div id="error-row" style="height:19px;color:red;margin-top:10px;margin-bottom:-10px;padding-left:51px;"></div>
+  <p class="input-row" id="username-row">
+    <b>*</b>
+    <label>姓名</label>
+    <input class="input-text" type="text" name="name" value="{$preset.name}">
+  </p>
+  <p class="input-row" id="mobile-row">
+    <b>*</b>
+    <label>电话</label>
+    <input class="input-text" type="text" name="mobile" value="{$preset.mobile}">
+  </p>
+  <p class="input-row" id="email-row">
+    <b>*</b>
+    <label>邮箱</label>
+    <input class="input-text" type="text" name="email" value="{$preset.email}">
+  </p>
+  <p class="input-row" id="money-row" style="position:relative">
+    <b>*</b>
+    <label>预约金额</label>
+    <input class="input-text" type="text" name="money" value="{$preset.money}">
+    <span id="input-money-affix">元</span>
+  </p>
+  <p class="input-row" id="uname-row">
+    <b>&nbsp;</b>
+    <label>注册用户名</label>
+    <input class="input-text" type="text" name="uname" value="{$preset.uname}">
+  </p>
+	<input type="hidden" name="code" value="{$code}" />
+	<input type="hidden" name="pro" value="2" />
+	<input class="input-submit" type="submit" name="submit" value="" />
+</form>
+<?php
+$this->_var['formjs'][] = $this->_var['APP_STATIC_PATH']."/js/placeholder.js";
+?>
+<script type="text/javascript" src="{function name="parse_script" v="$formjs"}"></script>
+<script>
+     function check_huiyuan_form (){
+      var name = $('input[name="name"]').val();
+      var mobile = $('input[name="mobile"]').val();
+      var email = $('input[name="email"]').val();
+	  var money = $('input[name="money"]').val();
+	  if (name == "" || name == "姓名") {
+	    $('#error-row').html('请输入姓名');
+	    return false;
+	  }
+	  if (mobile == "" || mobile == "电话" ) {
+	    $('#error-row').html('请输入电话');
+	    return false;
+	  }
+	  if (email == "" || email == "邮箱") {
+	    $('#error-row').html('请输入邮箱');
+	    return false;
+	  }
+	  if (money == "" || money == "预约金额") {
+	    $('#error-row').html('请输入预约金额');
+	    return false;
+	  }
+	  return true;
+     }
+</script>
+</div>
+{include file="inc/footer.html"}
+</body>
+</html>

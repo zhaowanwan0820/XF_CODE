@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>提交预约</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('css/common/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.75/css/p_reservation.css?v=hhdh');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/css/virtual.v1.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/css/format_money.v1.css');?>" rel="stylesheet" />
+    <script>
+        window['_isQuickBidAuth_'] = "{$isQuickBidAuth}";
+        window['_isSupervisionReserve_'] = "{$isSupervisionReserve}";
+        window['_userClientKey_'] = "{$userClientKey}";
+        window['_isServiceDown_'] = "{$isServiceDown}";
+        window['reserveRuleUrl'] = "{$reserveRuleUrl}";
+        window['isBankcard'] = "{$isBankcard}";
+        window['displayP2pSwitch'] = "{$displayP2pSwitch}";
+    </script>
+</head>
+
+<body>
+    {include file="api/views/_v492/common/zhugemaidian.html"}
+    <div class="p_reserve">
+        <input type="hidden" name="ketou_money" id="ketou_money" value="{if $svInfo.isSvUser neq 0 && $isSupervisionReserve eq 1}{$total_money}{else}{$user_total_money}{/if}"
+        />
+        <input type="hidden" id="token" value="{$token}">
+        <input type="hidden" id="site_id" value="{$siteId}">
+        <input type="hidden" name="user_id" id="user_id" value="{$user_id}" />
+        <input type="hidden" name="userClientKey" id="userClientKey" value="{$userClientKey}" />
+        <input type="hidden" name="asgn" id="asgn" value="{$asgn}" />
+        <input type="hidden" name="rate" id="rate" value="{$invest_conf[0].rate}" />
+        <input type="hidden" name="loantype" id="loantype" value="{$invest_conf[0].loantype}" />
+        <div class="ditf_list bg-white pt20 reserve_tit">
+          <img class="top_bg_img" src="<?php echo $this->asset->makeAppUrl('v4.0/images/reservation/reserve_detail_header_bg1.png');?>"/>
+          <div class="pop_qx_list">
+            <div class="p_discount_friend JS_p_discount_friend {if count($invest_conf) gt 6}friend_list{/if}">
+              {foreach from=$invest_conf item=data key=key}
+                <div class="item JS_item onlyone active"
+                    data-projectrisk="{$data.is_check_project_risk}" data-reserveinfo='{"min_amount": "{$data.min_amount}","max_amount": "{$data.max_amount}","authorizeAmountString":"{$data.authorizeAmountString}","deal_type":"{$data.deal_type}","deadline_days":"{$data.deadline_days}"}'
+                    data-message="{$data.deadline_tag}" data-rate="{$data.rate}" data-q="{$data.deadline_days}" data-x="{$data.deadline_unit_string}">
+                  <div class="qx_con">
+                    <span class="rate">
+                      <em class="qxc_l">预期年化<br/></em>
+                      <em class="qxc_r">
+                        <i class="f24 din_alternate">{$data.rate}</i>
+                        <i class="f14">%</i>
+                      </em>
+                    </span>
+                    <span>
+                      <em class="qxc_l">期限<br/></em>
+                      <em class="qxc_r">
+                        <i class="f24 din_alternate">{$data.deadline}</i>
+                        <i class="f14">{$data.deadline_unit_string}</i>
+                      </em>
+                    </span>
+                  </div>
+                </div>
+              {/foreach}
+            </div>
+          </div>
+          {if $invest_conf[0].loantype_name}<div class="repayment_way f13">{$invest_conf[0].loantype_name}</div>{/if}
+          <img class="bottom_bg_img" src="<?php echo $this->asset->makeAppUrl('v4.0/images/reservation/reserve_detail_header_bg2.png');?>"/>
+        </div>
+
+        <div class="ditf_list bg-white pt20">
+            <h2 class="sq_money f18 fw pt20">授权金额</h2>
+            <div class="f12 color_normal">预约有效期内请保证账户可用余额充足，以免预约失败</div>
+            <div class="input_deal mt10">
+                <div class="p2p_ipt clearfix">
+                    <a id="quantou_all" class="qtou_all" href="javascirpt:void(0)">全部预约</a>
+                    <div class="show_daxie"></div>
+                    <div class="ui_input clearfix"></div>
+                </div>
+                {if $invest_line lte 0 || $invest_unit lte 0}
+                <div class="no_choose_reserve JS_no_choose_reserve"></div>
+                {/if}
+            </div>
+            <p class="dit_yq color_yellow f12"></p>
+            <div class="do_money">
+                <div class="tips clearfix">
+                    <div class="remain_money_text fl">可用余额:<span class="JS_remain_money">{if $svInfo.isSvUser neq 0 && $isSupervisionReserve eq 1}{$total_money}{else}{$user_total_money}{/if}</span>元
+                        {if $bonus_money > 0} (含{$new_bonus_title}<span class="JS_bonus">{$bonus_money}</span>{$new_bonus_unit}) {/if}
+                    </div>
+                </div>
+                {if $isSupervisionReserve eq 1}
+                <div class="account_money">
+                    <div>- {$wxAccountConfig.name}现金余额:
+                        <span class="val_wxMoney">{$user_money}</span>元 </br><span class="JS_wx_nouse" style="display:none;">（该账户不适用于该产品）</span></div>
+                    <div class="line_space"></div>
+                    {if $svInfo.isSvUser neq 0}
+                    <div>- {$p2pAccountConfig.name}现金余额:
+                        <span class="val_svBalance">{$bank_money}</span>元 </br><span class="JS_wd_nouse" style="display:none;">（该账户不适用于该产品）</span>
+                        {if $isServiceDown eq 1}<span>(海口联合农商银行系统维护，暂不可用)</span>{/if}
+                    </div>
+                    {else}
+                    <div>- 尚未开通网贷账户</div>
+                    {/if}
+                </div>
+                {/if}
+            </div>
+        </div>
+
+        <!-- 优惠券 -->
+        {if $o2oDiscountSwitch eq 1 and $o2oReserveDiscountSwitch eq 1}
+        <h2 class="sq_money f18 tit_youhui fw">优惠券</h2>
+        <div class="JS-youhuiquanpannel new_guide_box">
+            <div class="discount_list disn_border">
+                <div class="JS-touziyindao new_guide_icon" style="display:none;"></div>
+                <a class="to_youhuiquanList f18" href="#">
+                    <i class="icon_arrow fr"></i>
+                    <span class="JS-couponnum_label pr10 fr">更多</span>
+                    <span class="can_use" style="display:none;">
+                        <span class="JS_coupon_num num_canuse JS_red"></span><span class="JS_red">张可用</span>
+                        <img src="<?php echo $this->asset->makeAppUrl('v4.75/images/reserve/no_choose.png');?>" class="no_choose">
+                    </span>
+                    {if count($invest_conf) neq 1}
+                    <span class="JS_placehoder">
+                        <span class="youhui_normal">请选择优惠券</span>
+                        <img src="<?php echo $this->asset->makeAppUrl('v4.75/images/reserve/no_choose.png');?>" class="no_choose">
+                    </span>
+                    {/if}
+                </a>
+            </div>
+            <div class="discount_list JS-selected_discount" style="display:none;" style="border-top:1px solid #d9d9d9;">
+                <div class="coupon_detail">
+                    <div class="content">
+                        <span class="con">计算中...</span>
+                        <i class="close_btn JS_close"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <div class="bg_whtie reserve_list">
+            <h2 class="sq_money f18 pl15 fw">预约有效期</h2>
+            <div class="ditf_list JS_to_yxq gold_need">
+                <a href="javascript:void(0)" class='to_yxq f18'>
+                    <span class="active_yxq f13 fl"></span>
+                    <span class="fr">
+                        <span class="JS_yxq_selcet_text color_gray f13">更多</span>
+                        <i class="icon_arrow"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div style="clear:both"></div>
+        <div class="box need_top">
+            <h3 class="f18 color_black mb10 fw">您可能签署的相关协议</h3>
+            <h3 class="color_normal mb10">尊享
+                <a href="#" class="color_normal to_contractpre_zx">《合同和协议》<i class="icon_a"></i></a>
+            </h3>
+            <h3>
+                <a href="#" class="color_normal to_contractpre_reserve">预约协议 <i class="icon_a"></i></a>
+            </h3>
+            <h3 class='f12'>您点击提交预约按钮时即表示同意以上协议内容</h3>
+        </div>
+        <div class="appointment_rule pl15">预约规则</div>
+        <a href="" class="to_rules_instruction"><div class="appointment_rule_content pl15 f13">查看《预约规则说明》<i></i></div></a>
+        {if $needForceAssess eq 1}
+        <input type="hidden" class="needForceAssess" value="{$needForceAssess}">
+        <div class="needForceAssess_box tc">
+            <div class="group_icon"></div>
+            <h2 class="title">请您先完成风险承受能力评估</h2>
+            <a href="#" class="needForceAssess_link">立即参与评估</a>
+            <a href="javascrpit:void(0)" class="needForceAssess_link_no">暂不评估</a>
+        </div>
+        {/if}
+        <!-- 点击“提交预约”后，如果个人会员投资人评级低于项目评级，弹窗提示。 -->
+        <div class="ui_conf_risk bid_conf" id="ui_conf_risk" style="display:none;">
+            <div class="opacity"></div>
+            <div class="confirm_donate">
+                <p class="confirm_donate_title">提示</p>
+                <p class="confirm_donate_text">
+                    {if $user_risk.user_risk_assessment} 当前您的风险承受能力
+                    <br/> 为“{$user_risk.user_risk_assessment}”，与项目要求不符 {/if}
+                    <span class="sy_num color_gray f13">本年度剩余评估{$user_risk.remaining_assess_num}次</span>
+                </p>
+                <div class="confirm_donate_but">
+                    {if $user_risk.remaining_assess_num > 0}
+                    <input type="button" class="confirm_donate_but_del" id="JS-cancel" value="暂不评估">
+                    <a class="confirm_donate_but_yes" id="JS-confirm" href="">重新评估</a>
+                    {else}
+                    <input type="button" class="confirm_donate_but_yes w240" id="JS-know" value="知道了"> {/if}
+                </div>
+            </div>
+        </div>
+
+        <div class="bg_cover" style="display:none"></div>
+        <div class="JS_assess" style="display:none"></div>
+        <div class="pop_yxq_list" id="pop_yxq_list">
+            <div class="ui_title">
+                <a class="ui_back" id="back_but" href="javascript:void(0)">
+                    <i class="ui_icon_back"></i>
+                </a>选择有效期</div>
+            <div class="move_now">
+                {foreach from=$reserve_conf item=data key=key}
+                <div class="item JS_item" data-message="{$data.expire_tag}">
+                    <span class="icon_yes fr"></span>
+                    <span class="qx_con">{$data.expire}{$data.expire_unit_string}</span>
+                </div>
+                {/foreach}
+                <div class="sxy_tips">
+                    1、预约有效期是指用户提交预约后系统自动进行匹配投资的有效期限，包含3天、5天、7天。
+                    <br/> 2、有效期内系统会一直进行匹配投资，预约金额全部投资完成本次预约结束，若未达到预约金额系统会一直匹配投资，有效期到期后（不管预约金额是否全部投资成功）本次预约结束。
+                </div>
+            </div>
+        </div>
+        {if !$allowReserve}
+        <!-- 非投资户不允许投资 -->
+        <div class="JS_can_not_bid">
+            <div class="not_bid_bg"></div>
+            <div class="not_bid_box">
+                <div class="title">提示</div>
+                <i class="sc_no_bid"></i>
+                <p>非投资户不允许投资</p>
+                <a href="firstp2p://api?type=native&name=home">返回首页</a>
+            </div>
+        </div>
+        {/if}
+        <div class="sub_btn">
+            <input type="button" id="JS-pay_btn" class="reservation_btn disabled_btn" value="同意协议并提交预约" disabled="disabled" style="width:100%; margin:0px;"
+            />
+        </div>
+        {if $o2oDiscountSwitch eq 1 and $o2oReserveDiscountSwitch eq 1}
+        <div class="JS-touziyindao ui_mask_touziyindao" style="display:none"></div>
+        <div class="JS-touziyindao ui_mask_white" style="display:none"></div>
+        {/if}
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.75/js/reservation/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/virtual.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/formatMoney.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/common.js');?>"></script>
+    <script>
+        WXP2P.APP.triggerScheme("firstp2p://api?type=local&action=changetitle&newtitle=提交预约")
+        //显示返回按钮  or 关闭按钮
+        //如果是从预约成功页面跳过来的显示关闭按钮or显示返回按钮
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+
+        }
+        var isShowClose = getQueryString("isShowClose");
+        if (isShowClose == 1) {
+            WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=2");
+        } else {
+            WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+
+        }
+    </script>
+    <script type='text/javascript'>
+        var _ncf = { "prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "&uf=app", "pck": { "channel": "channel", "fpid": "fpid" }, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": [] };
+        (function (p, h, s) { var o = document.createElement(h); o.src = s; p.appendChild(o) })(document.getElementsByTagName("HEAD")[0], "script", "//assets.firstp2p.com/default/js/ncfpb.1.5.min.js?v=201503101911");
+    </script>
+
+    <script src="<?php echo $this->asset->makeAppUrl('v4.75/js/reservation/p_reservation.js?v=jhghj');?>"></script>
+</body>
+
+</html>

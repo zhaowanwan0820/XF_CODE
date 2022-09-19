@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提示</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.97/css/payment/p_no_support_charge.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="p_no_support_charge">
+      <div class="ui_page_title">
+        <div class="ui_page_title_con">
+          <a class="backbutton" href="firstp2p://api?type=local&action=closeself"><span class="back_arrow"></span>返回</a>
+          <div class="page_middle_title">提示</div>
+        </div>
+      </div>
+      <div class="remind_box">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.97/images/payment/no_card.png');?>"/>
+        <p>您绑定的银行卡暂不支持大额充值 请登录网信电脑端进行网银充值</p>
+      </div>
+      <div class="step_list">
+        <p>网银充值操作流程：</p>
+        <img src="<?php echo $this->asset->makeAppUrl('v4.97/images/payment/step1.png');?>"/>
+        <img src="<?php echo $this->asset->makeAppUrl('v4.97/images/payment/step2.png');?>"/>
+        <img src="<?php echo $this->asset->makeAppUrl('v4.97/images/payment/step3.png');?>"/>
+        <img src="<?php echo $this->asset->makeAppUrl('v4.97/images/payment/step4.png');?>"/>
+      </div>
+      <a href="firstp2p://api?type=closeallpage"><div class="know_btn">我知道了</div></a>
+      <div class="iphonex_botm"></div>
+    </div>
+    <script>
+        window.zhuge = window.zhuge || [];
+        window.zhuge.methods = "_init debug identify track trackLink trackForm page".split(" ");
+        window.zhuge.factory = function (b) {
+        return function () {
+        var a = Array.prototype.slice.call(arguments);
+        a.unshift(b);
+        window.zhuge.push(a);
+        return window.zhuge;
+        }
+        };
+        for (var i = 0; i < window.zhuge.methods.length; i++) {
+        var key = window.zhuge.methods[i];
+        window.zhuge[key] = window.zhuge.factory(key);
+        }
+        window.zhuge.load = function (b, x) {
+        if (!document.getElementById("zhuge-js")) {
+        var a = document.createElement("script");
+        var verDate = new Date();
+        var verStr = verDate.getFullYear().toString() + verDate.getMonth().toString() + verDate.getDate().toString();
+        a.type = "text/javascript";
+        a.id = "zhuge-js";
+        a.async = !0;
+        a.src = 'https://stat.ncfwx.com/zhuge.js?v=' + verStr;
+        a.onerror = function () {
+        window.zhuge.identify = window.zhuge.track = function (ename, props, callback) {
+        if (callback && Object.prototype.toString.call(callback) === '[object Function]') callback();
+        };
+        };
+        var c = document.getElementsByTagName("script")[0];
+        c.parentNode.insertBefore(a, c);
+        window.zhuge._init(b, x)
+        }
+        };
+        window.zhuge.load('6f33d6821b27439dae59698798ef81d6', { debug: true, superProperty: { PlatformType: 'H5', xinbao: 1 }, autoTrack: true, singlePage: true }); //配置应用的AppKey -->
+        window.onload = function() {
+          setTimeout(function(){
+            zhuge.track("进入不支持大额充值提示页面");
+          },1000)
+        }
+        $(function () {
+          var u = navigator.userAgent, app = navigator.appVersion;
+          var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+          var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+          if (isAndroid) {
+            //这个是安卓操作系统
+            $(".ui_page_title").addClass("font_normal")
+          }
+        });
+    </script>
+</body>
+</html>

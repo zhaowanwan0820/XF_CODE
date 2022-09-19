@@ -1,0 +1,180 @@
+@charset "utf-8";
+//文本阴影 text-shadow
+@mixin text-shadow($shadow...){
+    -webkit-text-shadow: $shadow;
+            text-shadow: $shadow;
+}
+//阴影 box-shadow
+@mixin box-shadow($shadow...){
+    -webkit-box-shadow: $shadow;
+            box-shadow: $shadow;
+}
+//过渡 transition
+@mixin transition($trans...){
+    -webkit-transition: $trans;
+       -moz-transition: $trans;
+        -ms-transition: $trans;
+         -o-transition: $trans;
+            transition: $trans;
+}
+//动画 animation
+@mixin animation($animation...){
+     -webkit-animation: $animation;
+        -moz-animation: $animation;
+         -ms-animation: $animation;
+             animation: $animation;
+}
+//2D/3D transform
+@mixin transform($transform...){
+     -webkit-transform: $transform;
+        -moz-transform: $transform;
+         -ms-transform: $transform;
+             transform: $transform;
+}
+@mixin perspective($perspective){
+   -webkit-perspective: $perspective;
+      -moz-perspective: $perspective;
+       -ms-perspective: $perspective;
+           perspective: $perspective;
+}
+//盒子模型 box-sizing
+@mixin box-sizing($sizing:border-box){
+    -webkit-box-sizing: $sizing;
+       -moz-box-sizing: $sizing;
+            box-sizing: $sizing;
+}
+//圆角 border-radius
+@mixin border-radius($radius){
+    -webkit-border-radius: $radius;
+       -moz-border-radius: $radius;
+            border-radius: $radius;
+  //兼容移动端圆角问题
+  -webkit-background-clip: border-box;
+          background-clip: border-box;
+}
+//圆角以边框圆角 border-one-radius
+@mixin border-one-radius($radius){
+    -webkit-border-radius: $radius;
+            border-radius: $radius;
+
+    @media(-webkit-min-device-pixel-ratio:2){
+      -webkit-border-radius: $radius*2;
+              border-radius: $radius*2;
+    }
+
+    @media(-webkit-min-device-pixel-ratio:3){
+      -webkit-border-radius: $radius*3;
+              border-radius: $radius*3;
+    }
+  //兼容移动端圆角问题
+  -webkit-background-clip: border-box;
+          background-clip: border-box;
+}
+
+@mixin border-one-radius2($radius1,$radius2,$radius3,$radius4){
+    -webkit-border-radius: $radius1 $radius2 $radius3 $radius4;
+            border-radius: $radius1 $radius2 $radius3 $radius4;
+
+    @media(-webkit-min-device-pixel-ratio:2){
+      -webkit-border-radius: $radius1*2 $radius2*2 $radius3*2 $radius4*2;
+              border-radius: $radius1*2 $radius2*2 $radius3*2 $radius4*2;
+    }
+
+    @media(-webkit-min-device-pixel-ratio:3){
+      -webkit-border-radius: $radius1*3 $radius2*3 $radius3*3 $radius4*3;
+              border-radius: $radius1*3 $radius2*3 $radius3*3 $radius4*3;
+    }
+}
+//透明度
+@mixin opacity($opacity){
+    opacity: $opacity;
+    filter:alpha(opacity = $opacity * 100);
+}
+//移动端显示n行，超过省略
+@mixin show-line($n){
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: $n;
+    -webkit-box-orient: vertical; 
+}
+
+//右箭头
+@mixin yAllow($color:#666,$w:12){
+    content: "";
+    position: absolute;
+    height: pxToRem($w);
+    width: pxToRem($w);
+    border-width: 2px 2px 0 0;
+    border-color: $color;
+    border-style: solid;
+    -webkit-transform: matrix(.71,.71,-.71,.71,0,0);
+    transform: matrix(.71,.71,-.71,.71,0,0);
+    position: absolute;
+    top: 50%;
+    margin-top: pxToRem(-$w/2);
+}
+
+//移动端以像素边框
+@mixin border-one($vertical:all,$color: #e5e5e5,$radius: 0){
+    position: relative;
+    &:before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        pointer-events: none;
+        z-index: 5;
+        height: 100%;
+        width: 100%;
+        border-radius: $radius;
+
+        @if $vertical == all{
+            border: 1px solid $color;
+        } @else if $vertical == t {
+            border-top: 1px solid $color;
+        } @else if $vertical == b {
+            border-bottom: 1px solid $color;
+        } @else if $vertical == l {
+            border-left: 1px solid $color;
+        } @else if $vertical == r {
+            border-right: 1px solid $color;
+        } @else if $vertical == tb {
+            border-top: 1px solid $color;
+            border-bottom: 1px solid $color;
+        } @else if $vertical == lr {
+            border-left: 1px solid $color;
+            border-right: 1px solid $color;
+        }        
+    }
+
+    &:before{
+        width: 200%;
+        height: 200%;
+        -webkit-transform: scale(.5);
+        transform: scale(.5);
+    }
+
+    
+
+    @media(-webkit-min-device-pixel-ratio:3){
+        &:before{
+            width: 300%;
+            height: 300%;
+            -webkit-transform: scale(.333333333);
+            transform: scale(.333333333);
+        }
+    }
+}

@@ -1,0 +1,95 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+
+</php>
+<div class="main">
+<div class="main_title">O2O兑券查询</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号ID:
+        <input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:70px;" />
+        用户ID:
+        <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:70px;" />
+        商户ID:
+        <input type="text" class="textbox" name="store_id" value="{:trim($_REQUEST['store_id'])}" style="width:70px;" />
+        券码编号:
+        <input type="text" class="textbox" name="gift_code" value="{:trim($_REQUEST['gift_code'])}" style="width:70px;" />
+        转账状态：
+        <select name="trans_status" id="trans_status">
+                <option value=10000 <if condition="intval($_REQUEST['trans_status']) eq 10000">selected="selected"</if>>==请选择==</option>
+                <option value="1" <if condition="$_REQUEST['trans_status'] eq 1">selected="selected"</if>>已处理</option>
+                <option value="0" <if condition="$_REQUEST['trans_status'] eq 0">selected="selected"</if>>未处理</option>
+        </select>
+        时间段：
+        <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        -
+        <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="O2OConfirmList" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="20" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <!--<th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>-->
+        <th>编号</th>
+        <th>用户ID</th>
+        <th>商户ID</th>
+        <th>券码</th>
+        <th>创建时间</th>
+        <th>转账处理时间</th>
+        <th>操作</th>
+    </tr>
+    <foreach name="list" item="item">
+    <tr class="row">
+        <!--<td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>-->
+        <td>{$item.id}</td>
+        <td>{$item.user_id}</td>
+        <td>{$item.store_id}</td>
+        <td>{$item.gift_code}</td>
+        <td><?php echo (format_date($item['create_time']));?></td>
+        <td id ="status{$item.id}"><?php echo (format_date($item['update_time']));?></td>
+        <td id="action{$item.id}"><?php if ($item['update_time'] == 0 && $item['id'] > 129688) :?><a href="javascript:re_transfer('<?php echo ($item["id"]); ?>')">重发</a><?php endif;?></td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="20" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<!-- Think 系统列表组件结束 -->
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function re_transfer(id){
+    $.post("m.php?m=O2OConfirmList&a=reTransfer", { id:id}, function (rs){
+        var rs = $.parseJSON(rs);
+        if (!rs.status) {
+            alert(rs.info);
+        } else {
+            alert(rs.info);
+            $('#action'+id).html('');
+            $('#status'+id).html('<?php echo (date("Y-m-d H:i:s"));?>');
+        }
+    });
+}
+
+</script>
+<include file="Public:footer" />

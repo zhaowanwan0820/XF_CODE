@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if isset($page_title) && $page_title}{$page_title} - {/if}{if isset($show_site_titile) && ($show_site_titile eq 1)}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+<link rel="icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<meta name="keywords" content="{if isset($page_keyword) && $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+<meta name="description" content="{if isset($page_description) && $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+<script>
+   var  status_switch = {function name="app_conf" v="SWITCH_DEAL_INFO_DISPLAY"};
+</script>
+
+{if isset($rss_title) && $rss_title}
+<link title="{$rss_title}" type="application/rss+xml" rel="alternate" href="{$rss_url}" />
+{/if}
+
+{if isset($is_index) && $is_index eq 1}
+<?php echo $this->asset->renderAll(1); ?>
+{else}
+<!--[if lte IE 9]>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/html5shiv.js');?>"></script>
+<![endif]-->
+<?php echo $this->asset->renderAll(); ?>
+{/if}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('skins/zsz/css/style.css');?>" />
+
+<script type="text/javascript">
+var APP_ROOT = '{$APP_ROOT}';
+{if app_conf("APP_MSG_SENDER_OPEN") eq 1}
+var send_span = {function name="app_conf" v="SEND_SPAN"}000;
+{/if}
+</script>
+
+
+<!--public js&css end -->
+
+</head>
+
+<body>  
+<script type="text/javascript" src="/api/fzjs"></script>
+<!--头部开始-->
+    <header class="m-head">
+<!--顶部黑条  登录注册部分-->
+<div style="width:100%;height:34px;background-color:#303337;margin:0px;padding:0px;color:white;">
+            <div style="width:980px;margin:0px auto;padding:0px;position:relative;">
+                <!--客服部分-->
+                <div style="font-size:12px;font-family:'微软雅黑';position:absolute;left:0px;top:0px;height:34px;line-height: 34px;width:400px;">
+                    客服热线：<span style='color:#ffb904;padding:0px;margin:0px;'>400-890-9888</span>&nbsp;&nbsp;周一到周五：9:00-18:00
+                </div>
+                <!--客服end-->
+                <!--登陆后信息 请用程序控制------------------------------------------------------------------->
+                {if $user_info}
+                <div style="padding:0px;margin:0px;font-family:微软雅黑;float:right;">
+                    <div style="background-color:#303337;color:#777d86;height:34px;font-size:12px;line-height:34px;text-align:center;float:left;">
+                        您好,
+                    </div>
+                    <div style="width:80px;height:34px;color:white;font-size:12px;line-height:34px;text-align:center;float:left;overflow:hidden;">
+                        <a href='/account' style="float:left;padding:0px;margin:0px;text-decoration: none;color:white;display:inline-block;width:93%;height:100%;">
+                           {if empty($user_info.real_name)}{$user_info.user_name}{else}{$user_info.real_name}{/if}
+                        </a>|
+                    </div>
+                    <div style="min-width:45px;height:34px;color:white;font-size:12px;line-height:34px;text-align:center;float:left;">
+                        <a href='/message' style="float:left;padding:0px;margin:0px;text-decoration: none;color:white;display:inline-block;width:90%;height:100%;">
+                           消息
+                        </a>|
+                    </div>
+                    <div style="min-width:45px;height:34px;color:white;font-size:12px;line-height:34px;text-align:center;float:left;">
+                        <a href='http://zushangzu.com/Oauth/logout' style="float:left;padding:0px;margin:0px;text-decoration: none;color:white;display:inline-block;width:90%;height:100%;">
+                           退出
+                        </a>|
+                    </div>
+                    <div style="min-width:60px;height:34px;color:white;font-size:12px;line-height:34px;text-align:center;float:left;">
+                        <a href='/helpcenter' style="float:left;padding:0px;margin:0px;text-decoration: none;color:white;display:inline-block;width:100%;height:100%;">
+                           帮助中心
+                        </a>
+                    </div>
+                </div>
+                 <!--登录后end------------------------------------------------------------------>
+                {else}
+                 <!--登陆前---请用程序控制------------------------------------------------------------------>
+                     <div style="position:absolute;right:0px;font-family:微软雅黑;padding:0px;width:160px;">
+                         <div style="padding:0px;margin:0px;width:50px;height:34px;float:left;text-align: center;font-size:12px;line-height:34px;">
+                             <a href='http://zushangzu.com/Oauth/login' style="float:left;padding:0px;margin:0px;text-decoration: none;color:white;display:inline-block;width:93%;height:100%;">登录</a>|
+                         </div>
+                         <div style="padding:0px;margin:0px;width:50px;height:34px;float:left;text-align: center;font-size:12px;line-height:34px;">
+                             <a href='http://zushangzu.com/Oauth/register' style="float:left;padding:0px;margin:0px;text-decoration: none;color:white;display:inline-block;width:93%;height:100%;">注册</a>|
+                         </div>
+                         <div style="padding:0px;margin:0px;width:60px;height:34px;float:left;text-align: center;font-size:12px;line-height:34px;">
+                             <a href='/helpcenter' style="float:left;padding:0px;margin:0px;text-decoration: none;color:white;display:inline-block;width:100%;height:100%;">帮助中心</a>
+                         </div>
+                     </div>
+                <!---登陆前end----------------------------------------------------------------->
+
+                {/if}
+            </div>
+
+</div>
+ <style>
+     .zushangzu_com_nav{
+         position:relative;
+         padding:0px;margin:0px;
+     }
+     .zushangzu_com_nav:hover{
+         background-color:#fe8a01;
+     }
+     .zushangzu_com_nav a{
+         color:#3f3f3f;
+     }
+     .zushangzu_com_nav:hover a{
+         color:#fff;
+     }
+     .zushangzu_com_nav:hover .zushangzu_com_child_nav{
+         display:block;
+     }
+     .zushangzu_com_child_nav{
+         padding:0px;margin:0px;
+         position:absolute;
+         left:0px;
+         top:96px;
+         width:100px;
+         list-style: none;
+         background-color:#04314b;
+         z-index: 1000;
+         display:none;
+     }
+     .zushangzu_com_child_nav li{
+         width:100px;height:42px;line-height: 42px;
+         display:block;
+         text-align: center;
+         margin:0px;padding:0px;
+         color:white;
+
+     }
+     .zushangzu_com_child_nav li:hover{
+         background-color:#052030;
+     }
+     .zushangzu_com_child_nav a{
+         color:white;font-size:14px;font-family: "微软雅黑";
+         text-decoration: none;
+     }
+     .zushangzu_com_nav_current{
+      background:#f0f0f0;;height:96px;line-height:96px;
+     }
+ </style>
+<!--导航菜单-->
+<div style="width:980px;height:96px;margin:0px auto;background:white;position:relative;padding:0px;">
+    <!--logo-->
+    <div style="height:60px;width:140px;margin-top:18px;position:absolute;left:0px;">
+        <a href="http://zushangzu.com" style="text-decoration: none;outline: none;">
+            <img src="http://zushangzu.com/Public/Home/cn/images/logo.png" style="border:0px;margin:0px;padding:0px;vertical-align: middle;" width="140px" height="60px"/>
+        </a>
+    </div>
+    <!--导航菜单-->
+    <div style="width:700px;height:100%;position:absolute;right:0px;padding:0px;margin:0px;">
+        <ul style="padding:0px;margin:0px;width:700px;height:96px;position: relative;top:0px;right:0px;">
+            <li class="zushangzu_com_nav" style="width:100px;height:96px;margin:0px;padding:0px;list-style:none;float:left;line-height:96px;text-align:center;">
+                <a href="http://zushangzu.com" style="display:block;text-decoration: none;font-size:16px;font-family:微软雅黑">首页</a>
+            </li>
+            <li class="zushangzu_com_nav" style="width:100px;height:96px;margin:0px;padding:0px;list-style:none;float:left;line-height:96px;text-align:center;">
+                <a href="http://zushangzu.com/comintroduce.html" style="display:block;text-decoration: none;font-size:16px;font-family:微软雅黑">公司介绍</a>
+                <ul class="zushangzu_com_child_nav">
+                    <li><a href="http://zushangzu.com/comintroduce.html">公司简介</a></li>
+                    <li><a href="http://zushangzu.com/teamintroduce.html">团队简介</a></li>
+                    <li><a href="http://zushangzu.com/partner.html">合作伙伴</a></li>
+                </ul>
+            </li>
+            <li class="zushangzu_com_nav"  style="width:100px;margin:0px;padding:0px;list-style:none;float:left;line-height:96px;text-align:center;">
+                <a href="http://zushangzu.com/huaying.html" style="display:block;text-decoration: none;font-size:16px;font-family:微软雅黑">P2P投资</a>
+                 <ul class="zushangzu_com_child_nav">
+                    <li><a href="http://zushangzu.com/huaying.html">华赢系列</a></li>
+                    <li><a href="http://zushangzu.com/zhongying.html">中赢系列</a></li>
+                    <li><a href="http://zushangzu.com/chuangye.html">创业者平台</a></li>
+                </ul>
+            </li>
+            <li class="zushangzu_com_nav"  style="width:100px;margin:0px;padding:0px;list-style:none;float:left;line-height:96px;text-align:center;">
+                <a href="http://zushangzu.com/trends.html" style="display:block;text-decoration: none;font-size:16px;font-family:微软雅黑">行业动态</a>
+                 <ul class="zushangzu_com_child_nav">
+                    <li><a href="http://zushangzu.com/trends.html">最新动态</a></li>
+                    <li><a href="http://zushangzu.com/news.html">行业新闻</a></li>
+                    <li><a href="http://zushangzu.com/media.html">媒体介绍</a></li>
+                </ul>
+            </li>
+            <li class="zushangzu_com_nav"  style="width:100px;margin:0px;padding:0px;list-style:none;float:left;line-height:96px;text-align:center;">
+                <a href="http://zushangzu.com/comculture.html" style="display:block;text-decoration: none;font-size:16px;font-family:微软雅黑">企业文化</a>
+            </li>
+            <li class="zushangzu_com_nav"  style="width:100px;margin:0px;padding:0px;list-style:none;float:left;line-height:96px;text-align:center;">
+                <a href="http://zushangzu.com/jobs.html" style="display:block;text-decoration: none;font-size:16px;font-family:微软雅黑">招聘信息</a>
+            </li>
+<!--            <li class="zushangzu_com_nav"  style="width:100px;margin:0px;padding:0px;list-style:none;float:left;line-height:96px;text-align:center;">
+                <a href="http://zushangzu.com/more.html" style="display:block;text-decoration: none;font-size:16px;font-family:微软雅黑">更多服务</a>
+            </li>-->
+            <li class="zushangzu_com_nav zushangzu_com_nav_current"  style="width:100px;margin:0px;padding:0px;list-style:none;float:left;line-height:96px;text-align:center;">
+                <a href="/" style="display:block;text-decoration: none;font-size:16px;font-family:微软雅黑">我要投资</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</header>
+<!--头部结束-->
+
+<!--面包屑导航开始-->
+{if isset($nav) && $nav}
+<section>
+    <div class="fix_width">
+        <div class="m-nav">
+            <a href="http://zushangzu.com/">首页</a>
+            >
+            <a href="/">我要投资</a>
+                {foreach from=$nav item=n}
+                > <label>{if isset($n.url) && $n.url}<a href="{$n.url}">{$n.text}</a>{else}{$n.text}{/if}</label>
+                {/foreach}
+        </div>
+    </div>
+</section>
+{/if}
+<!--面包屑导航结束-->
+<div class="{if isset($in_preset_page) && $in_preset_page eq 1}{else}wrap{/if}">

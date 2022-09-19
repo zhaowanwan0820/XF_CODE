@@ -1,0 +1,186 @@
+<!-- 投资理财 -->
+            {if ($show_btx_list eq 0) || (($bxt_list.0.deal_status neq 1) && ($bxt_list.1.deal_status neq 1) && ($bxt_list.2.deal_status neq 1)) }
+            <div class="ui_product_tab box mt20 mb30" id="tzlc" style="display:none">
+            {else}
+            <div class="ui_product_tab box mt20 mb30" id="tzlc">
+            {/if}
+                <div class="product_type">
+                    <div class="fl title"><i class="icon_line mr15"></i>专享理财</div>
+                </div>
+                <div class="tabbd">
+                    <div class="con">
+                        <div class="conbd">
+                        <!-- 循环 -->
+                            {foreach from=$bxt_list item="bxt" key=key}
+                            <div class="p2p_product p5" >
+                                <div class="clearfix bg_whtie">
+                                    <div class="con_l">
+                                        <h3 class="f16">
+                                        <i class="icon_WTDX" style="display:none;"></i>
+                                            {if isset($bxt.deal_tag_name) && $bxt.deal_tag_name != ''}
+                                                <i class="deal_tips bg_blue" title="{$bxt.deal_tag_desc}">{$bxt.deal_tag_name}</i>
+                                            {/if}
+                                            {if isset($deal.product_name) && $deal.product_name != ''}
+                                            <span class="product_name">{$deal.product_name}</span>
+                                            {/if}
+                                            {if $bxt.bid_flag eq 1}
+                                                <a title="{$bxt.old_name}" alt="{$bxt.old_name}"  href="{$bxt.url}" target="_blank" >{$bxt.name}</a>
+                                            {else}
+                                                <span title="{$bxt.old_name}" alt="{$bxt.old_name}" class="deal_tag_name">{$bxt.name}</span>
+                                            {/if}
+
+                                        </h3>
+                                        <div class="fl w360">
+                                            <p><span>预期年化收益率：</span>
+                                            {if $bxt.income_base_rate eq $bxt.max_rate }
+                                                <span class="f20"><i>{$bxt.max_rate}</i>&nbsp;%</span>
+                                            {else}
+                                                <span class="f20"><i>{$bxt.income_base_rate}</i>&nbsp;%～<i>{$bxt.max_rate}</i>&nbsp;%</span>
+                                            {/if}
+                                            </p>
+                                            <p>
+                                                <span>总额：</span> {$bxt.borrow_amount_format_detail}万
+                                            </p>
+                                        </div>
+                                        <div class="fl w265">
+                                            <p><span>投资期限：</span>
+                                                {if $bxt.loantype eq 5}
+                                                    <em><i class="f18">{if $bxt.deal_type eq 1}{function name="plus" x=$bxt.lock_period y=$bxt.redemption_period}~{/if}{$bxt.repay_time}</i>天</em>
+                                                {else}
+                                                    <em><i class="f18">{$bxt.repay_time}</i>个月</em>
+                                                {/if}
+                                            </p>
+                                            <p>
+                                                <span>收益方式：</span> {$bxt.loantype_name} </p>
+                                        </div>
+                                        <div class="fl w265 progress_rate" total="{$bxt.borrow_amount}" has="{$bxt.load_money}">
+                                            <p>
+                                                <span>投资进度：</span>
+                                                <span class="progress">
+                                                <i class="ico_bace"></i>
+                                                <i class="ico_yitou" style="width: 50%;">进度条</i>
+                                            </span>
+                                                <ins class="f12 pl5"></ins>
+                                            </p>
+                                            <p><span>剩余可投：</span>&nbsp;{$bxt.need_money_detail}元</p>
+                                        </div>
+                                    </div>
+                                    <div class="product_btn">
+                                        {if $bxt.deal_type eq 0 || $bxt.deal_type eq 3 || $bxt.deal_type eq 5}
+                                            {if $bxt.is_crowdfunding eq 0}
+                                                {if $bxt.is_update eq 1}
+                                                    <a href="#" class="btn_touzi">查看</a>
+                                                {elseif $bxt.deal_status eq 4}
+                                                    <span class="btn_manbiao">还款中</span>
+                                                {elseif $bxt.deal_status eq 0}
+                                                    <a href="{$bxt.url}" class="btn_touzi">查看</a>
+                                                {elseif $bxt.deal_status eq 2}
+                                                    <span class="btn_manbiao">满标</span>
+                                                {elseif $bxt.deal_status eq 5}
+                                                    <span class="btn_manbiao">已还清</span>
+                                                {else}
+                                                    <a href="{$bxt.url}" class="btn_touzi">投资</a>
+                                                {/if}
+                                            {elseif $bxt.is_crowdfunding eq 1}
+                                                {if $bxt.is_update eq 1}
+                                                    <a href="{$bxt.url}" class="btn_touzi">查看</a>
+                                                {elseif $bxt.deal_status eq 4}
+                                                    <span class="btn_manbiao">已成功</span>
+                                                {elseif $bxt.deal_status eq 0}
+                                                    <a href="{$bxt.url}" class="btn_touzi">查看</a>
+                                                {elseif $bxt.deal_status eq 2}
+                                                    <span class="btn_manbiao">已成功</span>
+                                                {elseif $bxt.deal_status eq 5}
+                                                    <span class="btn_manbiao">已成功</span>
+                                                {else}
+                                                    <a href="{$bxt.url}" class="btn_touzi">筹款</a>
+                                                {/if}
+                                            {/if}
+                                        {/if}
+                                    </div>
+                                </div>
+                            </div>
+                            {/foreach}
+                            <!-- //循环 -->
+                        </div>
+                        <div class="deal_more"><a href="/touzi/">点击查看更多</a></div>
+                    </div>
+                </div>
+            </div>
+            {if app_conf('TEMPLATE_ID') == '1' and app_conf('SHOW_FUNDING') == '1' and !$isEnterprise}
+            <div class="ui_product_tab box mt20 mb30 ui_fund">
+                <!--[if IE 6]>
+                <div></div>
+                <![endif]-->
+                <div class="product_type">
+                  <div class="title"><i class="icon_line mr15"></i>基金理财</div>
+                </div>
+                <div class="con">
+                    {foreach from=$fund_list.list item="fund"}
+                    <div class="p2p_product p5">
+                        <div class="clearfix bg_whtie">
+                            <div class="con_l">
+                                <h3 class="f16">
+                                    <span class="product_name tag_sty">契约</span>{if $fund.status eq 1}<a title="{$fund.name}" alt="{$fund.name}"  href="/jijin/detail?id={$fund.id}" target="_blank" >{$fund.name}</a>{else}<span title="{$fund.name}" alt="{$fund.name}"  href="/jijin/detail?id={$fund.id}" target="_blank" class="deal_tag_name" >{$fund.name}</span>{/if}
+                                </h3>
+                                <div class="fl w340">
+                                    <p><span>预期年化收益率：</span>
+                                        {if $fund.income_min neq $fund.income_max}
+                                        <span class="f20"><i>{$fund.income_min}</i>&nbsp;%～<i>{$fund.income_max}</i>&nbsp;%</span>
+                                        {else}
+                                        <span class="f20"><i>{$fund.income_min}</i>&nbsp;%</span>
+                                        {/if}
+                                    </p>
+                                </div>
+                                <div class="fl w175">
+                                    <p><span>期限：</span><em><i class="f16">{$fund.repay_time}</i></em></p>
+                                </div>
+                                <div class="fl w200">
+                                    <p><span>起投金额：</span>{$fund.loan_money_min}</p>
+                                </div>
+                                <div class="fl w173">
+                                    <p><span>预约人数：</span>{$fund.subscribe_count}人</p>
+                                </div>
+                            </div>
+                            {if $fund.status eq 1}
+                                <div class="product_btn"><a href="/jijin/detail?id={$fund.id}" class="btn_yuyue" target="_blank">预约中</a></div>
+                            {else}
+                                <div class="product_btn"><span class="btn_manbiao">已结束</span></div>
+                            {/if}
+                        </div>
+                    </div>
+                    {/foreach}
+                    <div class="deal_more"><a href="/jijin/">点击查看更多</a></div>
+              </div>
+            </div>
+            {/if}
+
+            <div class="news clearfix mb30" id="newsPart" style="display:none">
+
+                <div class="news_list pt_news" id="ptgg" style="width:733px;">
+                    <h2><a class="new_more change_att" href="###"></a><i class="icon_line mr15"></i>平台公告</h2>
+                    <div class="con">
+                           <div class="no_data">加载中，请稍候...</div>
+                    </div>
+                </div>
+                <div class="news_list hk_news" id="hkgg">
+                    <h2><a class="new_more" href="/news/hklist" target="_blank"></a><i class="icon_line mr15"></i>还款公告</h2>
+                    <div class="con">
+                        <div class="no_data">加载中，请稍候...</div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+    {if ($is_wxlc && $is_firstp2p==false)}
+        <script type="text/javascript">
+            $('.change_att').attr('href',"//news.wangxinlicai.com/p2pApi/");
+         </script>
+    {else}
+        <script type="text/javascript">
+            $('.change_att').attr('href',"//news.firstp2p.com/p2pApi/");
+        </script>
+    {/if}
+

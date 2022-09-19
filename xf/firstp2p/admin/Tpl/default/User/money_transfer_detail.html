@@ -1,0 +1,127 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<script type="text/javascript">
+
+function confirm_form(btn){
+
+    var id = $("input[name='out_id']").val();
+    var money = $("input[name='send_money']").val();
+    var user_id = $("input[name='send_id']").val();
+    var info = $("input[name='info_val']").val()
+    var url = "/m.php?m=User&a=money_transfer_do";
+
+    if(money == '' || isNaN(money)){
+        money = '';
+    }else if(money > 0 && money.indexOf('.') > 0 && money.length - money.indexOf('.') - 1 > 2){
+        money = parseFloat(money).toFixed(2);
+    }
+
+    if(money == '' || money <= 0){
+        alert('请输入金额');
+        return false;
+    }
+    if(user_id == ''){
+        alert('请输入用户名');
+        return false;
+    }
+    if(window.confirm('确定向用户 '+user_id+' 转账 '+money+'元 吗？')){
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+        $.getJSON(url, { user_id:user_id, money:money, id:id ,info:info},function(data){
+            alert(data.data);
+            if(data.status == 1){
+                window.location = location.href;
+            } else {
+                $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            }
+        });
+    }
+    return false;
+}
+
+function check_fee(obj){
+    var new_fee = obj.val();
+    if(new_fee == '' || isNaN(new_fee)){
+        new_fee = '';
+    }
+
+    if(new_fee > 0 && new_fee.indexOf('.') > 0 && new_fee.length - new_fee.indexOf('.') - 1 > 2){
+        new_fee = parseFloat(new_fee).toFixed(2);
+    }
+    obj.val(new_fee);
+}
+</script>
+<div class="main">
+<div class="main_title">id:{$out_user.id} 用户名:{$out_user.user_name} 余额:{$out_user.money|format_price}</div>
+<div class="blank5"></div>
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">转账金额:</td>
+        <td class="item_input">{$money|format_price}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center">转出账户</td>
+    </tr>
+    <tr>
+        <td class="item_title">会员id:</td>
+        <td class="item_input">{$out_user.id}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">会员名称:</td>
+        <td class="item_input">{$out_user.user_name}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">姓名:</td>
+        <td class="item_input">{$out_user.real_name}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">转出后剩余金额:</td>
+        <td class="item_input">{$remain_money|format_price}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center">转入账户</td>
+    </tr>
+    <tr>
+        <td class="item_title">会员id:</td>
+        <td class="item_input">{$send_user.id}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">会员名称:</td>
+        <td class="item_input">{$send_user.user_name}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">姓名:</td>
+        <td class="item_input">{$send_user.real_name}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">备注:</td>
+        <td class="item_input">{$info}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">&nbsp;</td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="out_id" value="{$out_user.id}" />
+            <input type="hidden" name="send_id" value="{$send_user.id}" />
+            <input type="hidden" name="send_money" value="{$money}" />
+            <input type="hidden" name="info_val" value="{$info}" />
+            <!--隐藏元素-->
+            <input type="button" class="button" value="{%OK}" onclick="return confirm_form(this);"/>
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</div>

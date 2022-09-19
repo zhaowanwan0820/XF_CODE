@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>限额详情</title>
+  {include file="api/views/_v32/header.html"}
+  <link href="<?php echo $this->asset->makeAppUrl('v4.100/css/payment/p_limit_detail.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+  {include file="api/views/_v492/common/zhugemaidian.html"}
+  <div class="p_limit_detail">
+    <!-- 充值限额说明 -->
+    {foreach from=$limitInfo item="mapLimitInfo"}
+    <div class="charge_limit_descript">
+      <p class="descript_title">
+        {if $mapLimitInfo.payment_method eq 'UCFPAY'}<i class="xianfeng"></i>先锋支付充值限额{/if}
+        {if $mapLimitInfo.payment_method eq 'YEEPAY'}<i class="yibao"></i>易宝支付充值限额{/if}
+        {if $mapLimitInfo.payment_method eq 'PCPAY'}<i class="yibao"></i>电脑端网银充值限额{/if}
+        {if $mapLimitInfo.payment_method eq 'BIGPAY'}<i class="yibao"></i>大额充值限额{/if}
+      </p>
+      <table cellSpacing="0">
+        <thead>
+          <th style="width: 25%;text-align:center">单笔限额</th>
+          <th style="width: 25%;text-align:center">日累计限额</th>
+          <th style="width: 50%;text-align:center">单笔限额说明</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="single_limit">{if $mapLimitInfo.singleLimitDesc}{$mapLimitInfo.singleLimitDesc}{else}无{/if}</td>
+            <td class="day_limit">{if $mapLimitInfo.dayLimitDesc}{$mapLimitInfo.dayLimitDesc}{else}无{/if}</td>
+            <td class="limit_intro">
+              {if !!$mapLimitInfo.limitIntro}
+              {foreach from=$mapLimitInfo.limitIntro item="eachLimitIntro"}
+              <p>{$eachLimitIntro}</p>
+              {/foreach}
+              {else}
+              <p class="null">无</p>
+              {/if}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {/foreach}
+  </div>
+</body>
+</html>
+<script>
+  window.onload = function(){
+    setTimeout(function(){
+      zhuge.track('进入网信账户限额详情页');
+    },1000)
+  }
+</script>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>勋章</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v2/css/medal/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/medal/p_medal.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="p_medal">
+        <div class="title">
+            <div class="logo">
+                <h2>网信</h2>
+                <p>快来点亮您的专属勋章吧！</p>
+            </div>
+            <div class="download_btn">
+                <a href="{$downloadUrl}">下载应用</a>
+            </div>
+        </div>
+        <div class="medal_icon" style="background-image:url({$medal.bigLightenedImg})">
+            {if $medal.isLimited > 0 || $medal.type == 2}<span class="labelled_icon">限定</span>{/if}{if $medal.hasAwards}<span class="labelled_icon">奖励</span>{/if}
+            <h2>{$medal.name}</h2>
+            <h3>{$medal.description}</h3>
+        </div>
+        <div class="medal_title">
+            <i class="medal_detail"></i>勋章详情
+        </div>
+        <div class="medal_text">
+            <p>时间：{if $medal.endTime}{function name="format_date" v="$medal.startTime" f="Y-m-d"}~{function name="format_date" v="$medal.endTime" f="Y-m-d"}{else}无期限{/if}</p>
+            <p class="pb20">数量：{if $medal.totalNum}{$medal.totalNum}个{else}无限制{/if}</p>
+            {$medal.details}
+        </div>
+        <div class="medal_title">
+            <i class="medal_schedule"></i>勋章任务
+        </div>
+        <div class="medal_text">
+            <p>{$medal.progressTitle}</p>
+            {foreach from=$medal.rules item='rule'}
+            <p><span class="color_yellow">{$rule.name}</span></p>
+            {/foreach}
+        </div>
+        {if $medal.hasAwards}
+        <div class="medal_title">
+            <i class="medal_reward"></i>勋章奖励（可选择{$medal.prizeNum}个奖品）
+        </div>
+        <div class="medal_text">
+            {foreach from=$medal.prizes item="prize"}
+            <p>{$prize.name}</p>
+            {/foreach}
+        </div>
+        {/if}
+    </div>
+</body>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    var appid = '{$appid}';
+    var nonceStr = '{$nonceStr}';
+    var timeStamp = '{$timeStamp}';
+    var signature = '{$signature}';
+    wx.config({
+        appId:appid,
+        timestamp:timeStamp,
+        nonceStr:nonceStr,
+        signature:signature,
+        jsApiList:[
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'hideOptionMenu',
+            'showOptionMenu',
+            'closeWindow'
+        ],
+    });
+    var imgUrl = '{$medal.smallLightenedImg}';
+    var lineLink = '{$shareConf.url}';
+    var descContent = '{$shareConf.content}';
+    var shareTitle = '{$shareConf.title}';
+    wx.ready(function() {
+        wx.showOptionMenu();
+        wx.onMenuShareTimeline({
+            title: shareTitle, // 分享标题
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function (res) { 
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function (res) { 
+                // 用户取消分享后执行的回调函数
+            },
+        });
+        wx.onMenuShareAppMessage({
+            title: shareTitle, // 分享标题
+            desc: descContent, // 分享描述
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function (res) { 
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function (res) { 
+                // 用户取消分享后执行的回调函数
+            },
+        });
+    });
+</script>
+</html>

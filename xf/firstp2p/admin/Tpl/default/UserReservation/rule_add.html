@@ -1,0 +1,215 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<title>新增触发规则</title>
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<load href="__TMPL__Common/js/calendar/calendar_lang.js" />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+    .item_title{text-align: center;background: #f2f2f2;width: 160px;}
+    .require{border-left: 1px solid #ddd;}
+    table.form td{padding: 12px;}
+    .project_id{width: 170px;padding: 3px;}
+    .button{padding: 7px 21px;}
+    .text_width70{width: 70px;}
+    .text_width100{width: 100px;}
+    .guize_ul{width: 100%;height: 30px;line-height: 30px;}
+    .guize_ul li{display: block;float: left;}
+    .guize .item_input p{margin:10px 0;}
+    tr.time{display: none;}
+</style>
+<script>
+    function checkNum(obj,type) {
+         //检查是否是非数字值
+         if (isNaN(obj.value)) {
+             obj.value = "";
+         }
+         if (obj != null) {
+             //检查小数点后是否多于两位
+             if (obj.value.toString().split(".").length > 1 && obj.value.toString().split(".")[1].length > 2) {
+                 alert("小数点后多于两位！");
+                 obj.value = "";
+                 if(type ==2){
+                    var intThisLit = parseInt(obj.value.toString().split(".")[1]);
+                    var intThisBig = parseInt(obj.value.toString().split("."));
+                    if(intThis>0){
+                        if(intThisBig>100){
+                            alert("请输入正确的比例值");
+                        }
+                    }
+                 }
+             }else if(type == 2){
+                var intThisBig = parseInt(obj.value.toString().split("."));
+                var intThisLit = parseInt(obj.value.toString().split(".")[1]);
+                if(intThisBig>100){
+                    alert("请输入正确的比例值");
+                }
+                if(intThisLit>0){
+                    if(intThisBig>=100){
+                        alert("请输入正确的比例值");
+                    }
+                }
+             }
+
+         }
+    }
+    function checkNum2(obj,type){
+        if(type ==3 ){
+            var money1V = parseFloat($("#money1").val());
+            var money2V = parseFloat($("#money2").val());
+            if(obj.id =='money1'){
+                if(money2V != '' && money1V>=money2V){
+                    alert("投资金额下限必须小于上限")
+                }
+
+            }else if(obj.id =='money2'){
+                if(money1V != '' && money1V>=money2V){
+                    alert("投资金额下限必须小于上限")
+                }
+            }
+        }
+    }
+</script>
+<div class="main reservationContent">
+    <div class="main_title">
+        <p>新增触发规则</p>
+    </div>
+    <div class="blank5"></div>
+    <form id="formid" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约入口</td>
+                <td>
+                    <select id="entra_id" name="entra_id" class="textbox">
+                        <foreach name='data.entra_conf' key="key" item="item">
+                        <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                 <td class="item_title">咨询机构</td>
+                 <td>
+                 <select name="advisory_id" class="textbox text_width100">
+                     <option value="0">无</option>
+                     <volist name='data.dealAdvisoryMap' id='item'>
+                          <option value="{$item.id}">{$item.name}</option>
+                     </volist>
+                 </select>
+            </tr>
+            <tr >
+                 <td class="item_title"><i class="requireI">*</i>触发规则</td>
+                 <td class="item_input ">
+                    <table >
+                        <thead>
+                            <th>累计投资成功金额</th>
+                            <th>券ID</th>
+                            <th>年化投资额返红包比例</th>
+                            <th>操作</th>
+                        </thead>
+                        <tbody class="guize">
+                            <tr>
+                                <td>
+                                    <input type="text" id="money1" class="textbox text_width100" name="down_amount[]"  required="required" onkeyup="checkNum(this)" onblur="checkNum2(this,'3')"/> (含)至 <input type="text" id="money2" class="textbox text_width100" name="up_amount[]"  required="required" onkeyup="checkNum(this)" onblur="checkNum2(this,'3')"/> (不含)元
+                                </td>
+                                <td>
+                                    <select id="award_type[]" name="award_type[]" class="textbox text_width70" required="required">
+                                        <option value="1">礼券</option>
+                                        <option value="2">投资券</option>
+                                    </select>
+                                    <input type="text" class="textbox text_width100" name="award_id[]"  required="required" value=""/>
+                                </td>
+                                <td>
+                                    <input type="text" class="textbox text_width100" name="rate[]"  required="required" onkeyup="checkNum(this,'2')"/>&nbsp;%
+                                </td>
+                                <td>
+                                    <a href="javascript:;" class="minusBtn">-</a>
+                                    <a href="javascript:;" class="plusBtn">+</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>有效起止时间</td>
+                <td>
+                    <input type="text" class="textbox" id="use_start_time" name="use_start_time" readOnly value="{:trim($_REQUEST['use_start_time'])}" onfocus="return showCalendar('use_start_time', '%Y-%m-%d', false, false, 'use_start_time');" style="width:150px;" onclick="return showCalendar('use_start_time', '%Y-%m-%d', false, false, 'use_start_time');" required="required"/> 至
+                    <input type="text" class="textbox" name="use_end_time" id="use_end_time" readOnly value="{:trim($_REQUEST['use_end_time'])}"  onfocus="return showCalendar('use_end_time', '%Y-%m-%d', false, false, 'use_end_time');" style="width:150px;" onclick="return showCalendar('use_end_time', '%Y-%m-%d', false, false, 'use_end_time');" required="required"/>
+
+                </td>
+
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>状态</td>
+                <td><input name="status" type="radio" value="1" class="invest" checked />有效 <input name="status" type="radio" value="0" />无效</td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserReservation" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="rule_add" />
+                    <input type="submit" id="publish" class="button" value="发布" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+$(function(){
+    //删除触发规则
+    $(".guize").on('click', '.minusBtn', function(event) {
+        var trLength = $(".guize").find("tr").length;
+        //只有一种触发规则的时候,禁止删除
+        if(trLength>1){
+            $(this).parent().parent().remove();
+        }
+    });
+    //添加触发规则
+    $(".guize").on('click', '.plusBtn', function(event) {
+        var thisParent = $(this).parent().parent();
+        var CloneTr = '<tr>'+thisParent.clone()[0].innerHTML+'</tr>'
+        $(thisParent).parent().append(CloneTr);
+    });
+    $("#publish").click(function(){
+        var use_start_time = $("#use_start_time").val();
+        var use_end_time = $("#use_end_time").val();
+        var Duse_start_time = use_start_time.replace(/\-/g, '');
+        var Duse_end_time = use_end_time.replace(/\-/g, '');
+        if (use_start_time == '' || use_end_time == '') {
+            alert('有效起止时间字段不能为空，请检查');
+            return false;
+        }else if(use_start_time != '' &&  use_end_time != '' && Duse_start_time>=Duse_end_time){
+            alert('请输入正确的起止时间，请检查');
+            return false;
+        }
+
+        var _total = [];
+        $(".guize tr").each(function(index, el) {
+            var _array = new Array();
+            var money1V = parseFloat($(this).find("#money1").val());
+            var money2V = parseFloat($(this).find("#money2").val());
+            _array['money1'] = money1V ,_array['money2'] = money2V;
+            _total[index] = _array;
+            if(money1V > money2V){
+                alert("投资金额下限不能大于上限");
+                return false;
+            }
+        });
+        var _length = $(".guize tr").length;
+        if(_length > 1){
+            for (var i = 0; i < _total.length; i++) {
+                var prev_index = _total[i];
+                var next_index = _total[i+1];
+                if(next_index['money1'] < prev_index['money2']){
+                    alert("请输入正确的投资区间");
+                    return false;
+                }
+            };
+        }
+        // document.getElementById("formid").submit();
+        // return true;
+    });
+});
+</script>

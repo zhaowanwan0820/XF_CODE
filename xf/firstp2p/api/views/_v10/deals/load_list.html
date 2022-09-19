@@ -1,0 +1,107 @@
+<div class="bd_footer">
+      <div id="menu" class="bdf_top">
+                    <a id="a1" class="bdf_zhengzuo bdf_dianji" onclick="OnTab(this,0)"><span>融资方信息 </span></a><a id="a2" class="bdf_zheng" onclick="OnTab(this,1)"><span>投资人({$load_list_count}) </span></a>
+                </div>
+    <div class="bdf_txt">
+        <div id="menu_center0">
+            <table>
+                <colgroup>
+                    <col width="30%" />
+                    <col width="50%" />
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td class="tb_line" colspan="2">简介</td>
+                </tr>
+                <tr>
+                    <td class="tb_line" style="width: 100%" colspan="2">
+                        {if $project_intro}
+                            {$project_intro}
+                        {elseif $company.is_company eq 1}
+                            {if $company.company_description_html}
+                                {$company.company_description_html}
+                            {else}
+                                -
+                            {/if}
+                        {elseif $deal.is_crowdfunding eq 1 || $company.is_company eq 0}
+                            {if $deal_user_info.info}
+                                {$deal_user_info.info}
+                            {else}
+                                -
+                            {/if}
+                        {else}
+                            -
+                        {/if}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="menu_center1">
+            <table class="tb_ql">
+                <colgroup>
+                    <col width="25%" />
+                    <col width="37%" />
+                    <col width="38%" />
+                </colgroup>
+                <tbody>
+                {if $load_list}
+                {foreach from=$load_list item="loan"}
+                <tr>
+                    <td>
+                        {$loan.user_deal_name}
+                    </td>
+                    <td class="g-money">
+                        {function name="format_price" v="$loan.money" b=0}
+                    </td>
+                    <td>
+                        {function name="to_date" v="$loan.create_time" f="Y-m-d"}
+                    </td>
+                </tr>
+                {/foreach}
+                {else}
+                <tr>
+                    <td colspan="3">暂无投资人</td>
+                </tr>
+                {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function OnTab(thisObj, Num) {
+                if (thisObj.className == "bdf_zhengzuo bdf_dianji") return;
+                var menu = document.getElementById("menu");
+                var tabList = menu.getElementsByTagName("a");
+                for (i = 0; i < tabList.length; i++) {
+                    removeClass(tabList[i], "bdf_dianji");
+                     if (i == Num) {
+                        document.getElementById("menu_center" + i).style.display = "block";
+                    } else {
+                        document.getElementById("menu_center" + i).style.display = "none";
+                    }
+
+                }
+                thisObj.className = thisObj.className + " bdf_dianji";
+            }
+
+            function removeClass(ele, className) {
+                var tmpClassName = ele.className;
+                ele.className = null; //清除类名
+                ele.className = tmpClassName.split(new RegExp(" " + className + "|" + className + " " + "|" + "^" + className + "$", "ig")).join("");
+            }
+
+            $(window).load(function () {
+                $(".tb_line img").each(function () {
+                    var bili = $(this).width() / 270;
+                    var imgheight = $(this).height() / bili;
+                    $(this).css("width", "270px").css("height", imgheight);
+
+                });
+            });
+
+   
+</script>

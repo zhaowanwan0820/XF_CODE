@@ -1,0 +1,62 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<form action="?m=Deal&a=repayProject" method="post" class="j-form-post">
+    <input type="hidden" name="deal_id" id="deal_id" value="{$deal.id}"/>
+    <input type="hidden" id="today" value="{$today}">
+    <input type="hidden" id="agency_money" value="{$agency_money}">
+    <input type="hidden" id="advance_money" value="{$advance_money}">
+    <input type="hidden" id="user_money" value="{$user_money}">
+
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <div class="main_title">{$project.name} 还款 <a href="{:u("DealProjectYjRepay/index?ref=1&$querystring")}" class="back_list">{%BACK_LIST}</a></div>
+    <input type="hidden" name="project_id" id="project_id" value="{$project.id}"/>
+    <input type="hidden" name="project_repay_id" id="project_repay_id" value="{$project_repay_id}"/>
+        <tr>
+            <td colspan="11" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row" >
+            <th>选择还款</th>
+            <th>还款日</th>
+            <th>已还金额</th>
+            <th>待还金额</th>
+            <th>待还本息</th>
+            <th>手续费</th>
+            <th>咨询费</th>
+            <th>担保费</th>
+            <th>支付服务费</th>
+            <if condition="$deal['canal_agency_id'] neq 0">
+            <th>渠道服务费</th>
+            </if>
+            <th>逾期费用</th>
+            <th>状态</th>
+        </tr>
+        <?php $i=0; ?>
+        <volist name="loan_list" id="loan" key="id">
+            <tr class="row">
+                <td>
+                    <if condition="$loan.status eq 0">
+                        <if condition="$i eq 0">
+                            <input type="checkbox" name="repay_to[]" value="{$loan.id}" data-day="{$loan.repay_day}" <if condition="in_array($loan['id'], $chk_ids)">checked="checked"</if> <if condition="$role eq 'b'">onclick="return false"</if>/>
+                        </if>
+                        <?php $i++; ?>
+                    </if>
+                </td>
+            <td> {$loan.repay_day} </td>
+            <td> {$loan.month_has_repay_money_all|format_price=false} </td>
+            <td>{$loan.month_need_all_repay_money|format_price=false}</td>
+            <td> {$loan.month_repay_money|format_price=false} </td>
+            <td class="service_fee"> {$loan.loan_fee|format_price=false} </td>
+            <td class="service_fee"> {$loan.consult_fee|format_price=false} </td>
+            <td class="service_fee"> {$loan.guarantee_fee|format_price=false} </td>
+            <td class="service_fee"> {$loan.pay_fee|format_price=false} </td>
+            <if condition="$deal['canal_agency_id'] neq 0">
+            <td class="service_fee"> {$loan.canal_fee|format_price=false} </td>
+            </if>
+                <td> {$loan.impose_money|format_price=false} </td>
+            <td> {$loan.status_text} </td>
+        </tr>
+        </volist>
+    </table>
+</form>
+<include file="Public:footer" />

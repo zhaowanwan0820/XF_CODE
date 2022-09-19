@@ -1,0 +1,275 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script src="/static/admin/Common/js/zeroClipboard/ZeroClipboard.min.js"></script>
+
+
+
+<div class="main">
+    <div class="main_title"><a href="/m.php?m=AdPub&amp;a=index&amp;" class="back_list">返回列表</a></div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <!-- <form action="/m.php?m=AdPub&a=doAddPub" method="post"> -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;
+                <input type="hidden" id="pubId" value="{$pubId}" />
+            </td>
+        </tr>
+
+        <tr class="row">
+            <td  style="width:150px;"> 选择广告规格</td>
+            <td>
+                <select id="adType" name="name" required="required">
+                    <option>---选择广告规格---</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr class="row">
+            <td>选择广告尺寸</td>
+            <td>
+                <select id="size" name="size" required="required">
+                    <option>---选择广告尺寸---</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="row">
+            <td>数据条目</td>
+            <td>
+                <input size="1" type="text" name="rows" id="rows"  disabled />
+            </td>
+        </tr>
+        <tr class="row">
+            <td>请选择颜色</td>
+            <td><div id="color">
+
+            </div></td>
+        </tr>
+        <tr class="row">
+            <td>选择投放渠道</td>
+            <td>
+                <select name="channel_id" id="channelId" >
+                    <foreach name="channels" item="channel">
+                        <option value="{$channel.id}" cn="{$channel.link_coupon}">{$channel.name}</option>
+                    </foreach>
+                </select>
+            </td>
+        </tr>
+
+
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div id="preview"></div>
+    <div class="blank5"></div>
+
+    <div id="codeWrapper" style="display:none">
+        <textarea id="code" rows="5" cols="50" ></textarea>
+<input type="button" value="复制代码" class="link_but" id="copy-button0" onclick='copyUrl("copy-button0");' data-clipboard-target="code" data-clipboard-text="">
+
+    </div>
+
+    <div class="blank5"></div>
+    <input type="button" id="genBtn" class="button" onclick="genCode();" value="生成代码" disabled >
+    <input type="button" id="saveBtn" class="button" onclick="saveAd();" value="保存" style="display:none" >  
+    <a href="javascript:history.go(0);">清空</a>
+    <!-- </form> -->
+</div>
+
+<script>
+
+
+    $(document).ready(function(){
+        //初始化广告类型
+        $.getJSON("/m.php?m=AdUnit&a=getAdTypes", function(data){
+            $.each(data, function(i, item){
+                $("#adType").append("<option value='"+item.id+"'>"+item.name+"</option>");
+            });
+        });
+
+
+
+        //广告类型 change 后事件
+        $("#adType").change(function(){
+            $("#size").html('<option>---选择广告尺寸---</option>');
+            $('#color').html('');
+            $.getJSON('/m.php?m=AdUnit&a=getAdSizeColorByTplId&tplId='+$(this).val(), function(data){
+                $.each(data.size, function(i, item){
+                    $("#size").append("<option value='"+item+"'>"+item+"</option>");
+                });
+                $.each(data.color, function(i, item){
+                    var color = item.split("=");
+                    $("#color").append(color[0] + ': <input type="color" onChange="changeAdColor();" name="'+color[0]+'" value="#'+color[1]+'" /> ');
+                });
+                if(data.rows == '*'){
+
+                    $("#rows").attr("disabled", false);
+                    $("#rows").val(1);
+                }else{
+                    $("#rows").attr("disabled", true);
+                    $("#rows").val(data.rows);
+
+                }
+
+            });
+        });
+
+        //尺寸change 后事件
+        $("#size").change(function(){
+            //选择尺寸后预览
+            if($(this).val=='') return;
+            previewAd($("#adType").val());
+        });
+
+        $('#rows').blur(function(){
+            previewAd($("#adType").val());
+        });
+
+
+
+
+    });
+
+
+    //广告预览，成功回调 渲染颜色
+    var previewAd = function(tplId){
+
+        $("#preview").load("/m.php?m=AdUnit&a=previewAd&tplId="+tplId, function(){
+            //先clone节点
+            cloneNode($("#rows").val()?$("#rows").val():0, $(".j_firstp2p_ad").children('ul').children('li'), $(".j_firstp2p_ad").children('ul'));
+            //再渲染颜色
+
+            //删除满标和还款中btn
+            $("#preview").find('span').each(function(){
+                if($(this).text() == '满标' || $(this).text() == '还款中' ){
+                    $(this).remove();
+                }
+            });
+
+
+            changeAdColor();
+        });
+
+        $("#genBtn").attr('disabled', false);
+
+
+
+    }
+
+    //变更配色后渲染模板
+    var changeAdColor = function(){
+        // alert('change color');
+
+        $("input[type='color']").each(function(){
+            var className = $(this).attr('name');
+            var classValue = $(this).val();
+
+            if(className.indexOf("bg") >= 0 ){
+                $("."+className).css('background', classValue);
+            }else{
+                $("."+className).css('color', classValue);
+            }
+        });
+    }
+
+
+    //改变广告数据row条目, clone 节点
+    //params: 数据条数, clone节点， 父节点
+    function cloneNode(rows, node, nodeP){
+        if(rows != '*'){
+            for(var i=1; i<rows; i++){
+                node.clone(true).appendTo(nodeP);
+            }
+        }
+
+    }
+    //生成代码
+    var genCode = function(){
+        var vars = {};
+        vars.pubId = $("#pubId").val();
+        vars.adId = $("#adType").val();
+        vars.w = $("#size").val().split("x")[0];
+        vars.h = $("#size").val().split("x")[1];
+        vars.ref = $("#channelId").find("option:selected").text();
+        vars.cn = $("#channelId").find("option:selected").attr('cn');
+        vars.rows = $("#rows").val();
+
+        if(vars.h == "*"){
+            vars.h = $("#preview").height();
+        }
+
+        $("input[type='color']").each(function(){
+            vars[$(this).attr('name')] = $(this).val().replace("#","");
+        });
+
+        // console.log(vars);
+
+        jsonVars = '<script>_firstp2pData = '+ JSON.stringify(vars) +';<'+'/script>';
+        var extJs = '<script src="http://u.firstp2p.com/static/js/wm.js" _firstp2pAdTag="_firstp2pData"><'+'/script>';
+        $("#code").text(jsonVars + extJs);
+        $("#codeWrapper").show();
+
+        $("#saveBtn").show();
+    }
+
+
+
+    var copyUrl = function(div_id){
+
+            var clip = new ZeroClipboard( document.getElementById(div_id), {
+                      moviePath: "/static/admin/Common/js/zeroClipboard/ZeroClipboard.swf",
+                      trustedDomains: ['*'],
+                      allowScriptAccess: "always"
+                    } );
+
+            clip.on( "load", function(client) {
+              client.on( "complete", function(client, args) {
+                alert("代码已复制到剪切板");
+              } );
+            } );
+    }
+
+
+    var saveAd = function(){
+        var ad_id = $("#adType").val();
+        var pub_id = $("#pubId").val();
+        var channel_id = $("#channelId").val();
+        var name = $("#adType option:selected").text();
+        var size = $("#size").val();
+        var rows = $("#rows").val();
+        var color = new Array;
+        $("#color").find("input[type='color']").each(function(){
+            color = color.concat($(this).attr('name')+"="+ $(this).val().replace("#",""));
+        });
+        color = color.join(",");
+
+        var code = $("#code").text();
+
+        var postData = {"ad_id":ad_id, "pub_id":pub_id, "channel_id":channel_id, "name":name, "size":size, "rows":rows, "color":color, "code":code};
+
+        $.post("/m.php?m=AdUnit&a=saveAd", postData,
+           function(data){
+
+                if(data.errorno == 0){
+                    alert('保存成功!');
+
+                    $("#saveBtn").val("已保存");
+                    $("#saveBtn").attr('disabled',true);
+                }
+
+           }, "json");
+
+
+
+
+    }
+
+
+
+</script>
+
+
+
+
+<include file="Public:footer" />

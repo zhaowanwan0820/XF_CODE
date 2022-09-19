@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{$match.name}</title>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-base.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/team_detail.css?v=99');?>">
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/jquery-1.10.2.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/px2rem.js?v=99');?>"></script>
+</head>
+<body>
+  <!--小组对决详情页-->
+  <div class="team_detail_container">
+    <!--用户中心tab部分-->
+    <div class="custom_center_tab">
+      <div class="custom_center_tab_fixed clearfix">
+        <span class="index_custom_logo">
+          {if $userPic}
+          <img src="{$userPic}" class="user_portrait">
+          {/if}
+          {if $userRank.times >= 5}
+          <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_custom_logo.png');?>" class="suc_five">
+          {/if}
+        </span>
+        <a href="/worldcup/scoreLog?token={$token}" class="total_integral">
+            <i class="top">{$userRank.points}</i>
+          <i class="bottom">总积分</i>
+        </a>
+        <a href="/worldcup/rank?token={$token}" class="total_integral">
+            <i class="top">{$userRank.rank}</i>
+          <i class="bottom">总排名</i>
+        </a>
+        <a href="/worldcup/guessLog?token={$token}" class="total_suc_count">
+            <i class="top">{$userRank.times}</i>
+            <i class="bottom">竞猜胜利次数</i>
+          </a>
+      </div>
+      <div class="custom_center_tab_position"></div>
+    </div>
+    <!-- end -->
+    <div class="team_detail">
+      <div class="team_detail_top">
+        <div class="hot_events">
+          {if $match.tags}
+          <p class="hot_events_img">{$match.tags}</p>
+          {/if}
+        </div>
+        <ul class="top_list clearfix">
+          <li class="left national_flag">
+            <img src="{$match.guessTeams.teamA.pic}">
+            <p class='national_name'>{$match.guessTeams.teamA.name}</p>
+          </li>
+          <li class="middle">
+            <p class="middle_date">{$match.startTime}</p>
+            <p class="middle_tag">VERSUS</p>
+            <p class="middle_game">{$match.name}</p>
+          </li>
+          <li class="right national_flag">
+            <img src="{$match.guessTeams.teamB.pic}">
+            <p class='national_name'>{$match.guessTeams.teamB.name}</p>
+          </li>
+        </ul>
+        <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/team_detail_ball.png');?>" class="team_detail_ball">
+      </div>
+      <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/team_detail_rectangle.png');?>" class="team_detail_rectangle">
+      <div class="team_detail_content">
+        <!--比赛简介：后台返回-->
+        <div class="competition_introduction">
+          <p class="title">比赛简介</p>
+          <div class="content">{$match.detail}</div>
+        </div>
+        <!--end-->
+        <!--规则说明-->
+        <p class="rules_description"><a href="/worldcup/matchRule?matchId={$match.id}&token={$token}">{$match.ruleName}</a></p>
+        <p class="rules_text">RULES</p>
+      </div>
+    </div>
+
+    <!--底部固定部分-->
+    <div class="group_match_fixed">
+      {if $match.userChoice}
+      <ul class="group_matched clearfix">
+        <li class="left">{if $match.userChoice eq "DRAW"}平局{else}{$match.userChoiceName} 胜{/if}</li>
+        <li class="middle">参与竞猜积分</li>
+        <li class="right"><i>{$match.userGuessPoints}</i></li>
+      </ul>
+      {else}
+      <!--竞猜：胜平负 + 胜负（win_lose）A,B,DRAW-->
+        {if $match.matchStatus == 2}
+          <ul class="{if $match.guessMode eq 1}group_match_tab{else}group_match_tab win_lose{/if}">
+            {if $match.guessMode eq 1}
+            <li class="left" data-team="A">{$match.guessTeams.teamA.name} 胜</li>
+            <li class="middle" data-team="DRAW">平局</li>
+            <li class="right" data-team="B">{$match.guessTeams.teamB.name} 胜</li>
+            {else}
+            <li class="left" data-team="A">{$match.guessTeams.teamA.name} 胜</li>
+            <li class="right" data-team="B">{$match.guessTeams.teamB.name} 胜</li>
+            {/if}
+          </ul>
+        {elseif $match.matchStatus > 2}
+          <div class="guess_match_over">
+            <div class="guess_match_over_btn">竞猜已结束</div>
+          </div>
+        {/if}
+      {/if}
+      <div class="group_match_position"></div>
+    </div>
+    <!--end-->
+
+    <!--遮罩层部分-->
+      <div class="invest_tips_mask" style="display: none">
+        <!--积分不足-->
+        <div class="invest_tips">
+          <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_remider_tips.png');?>" class="index_remider_tips">
+          <div class="bg_tips">
+            <div class="text_tips_container">
+              <p class="tips_text">您目前积分不足，请通过投资、邀请好友等途径增加积分，然后参与竞猜。快去获取积分吧~</p>
+              <p class="tips_btn">确定</p>
+            </div>
+            <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_tips_close.png');?>" class="tips_close">
+          </div>
+        </div>
+        <!--end-->
+        <!--竞猜胜平负-->
+        <div class="guessing_competition">
+          <div class="middle_bg">
+            <p class="middle_title"></p>
+            <p class="guess_confirm_text">每场仅可竞猜一次，积分确认后不可更改</p>
+            <p class="guess_success" style="display: none">
+              <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/guess_success.png');?>" >
+            </p>
+            <p class="middle_input">
+              <input type="tel" class="input">
+              <span class="placeholder_text">请输入竞猜积分/{$match.minPoints}积分起猜</span>
+            </p>
+            <p class="guess_success_text" style="display: none">您已完成本场竞猜。<br/>快去投资、邀请好友获取更多积分噢，<br/>还能争取更好名次～</p>
+            <p class="middle_minimum">竞猜需{$match.minPoints}积分起</p>
+            <p class="middle_ok">确定</p>
+            <p class="middle_ok_success" style="display: none">确定</p>
+          </div>
+          <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_tips_close.png');?>" class="tips_close">
+        </div>
+        <!--end-->
+      </div>
+    <!--end-->
+  </div>
+</body>
+<script src="<?php echo $this->asset->makeUrl('app/v3.4/js/base.js');?>"></script>
+<script>
+  var group_match_tab = $(".group_match_tab"),/*底部tab——container*/
+      invest_tips_mask = $(".invest_tips_mask"),/*mask_container*/
+      invest_tips = $(".invest_tips"),/*积分不足mask*/
+      guessing_competition = $(".guessing_competition"),/*用户竞猜mask*/
+      placeholder_text = $(".placeholder_text"),/*输入框默认文案*/
+      input = $(".guessing_competition .middle_input .input"),/*输入框*/
+      tips_close = $(".tips_close"),/*关闭按钮*/
+      middle_ok = $(".middle_ok"),/*用户竞猜点击确定按钮*/
+      input_value = input.val(),/*输入框积分value*/
+      group_matched = $(".group_matched")/*竞猜完成底部tab*/
+
+  var totalPoints = "{$userRank.points}",
+      minPoints = "{$match.minPoints}",
+      isJifen = (totalPoints - minPoints) >= 0 ? true : false,/*积分是否充足*/
+      isApp = "{$isApp}"
+    /*用户点击底部tab部分显示遮罩层*/
+    group_match_tab.find("li").click(function(){
+      invest_tips_mask.show()
+      /*点击当前tab的data值*/
+      var choice = $(this).data("team")
+      /*end*/
+      if(isJifen){
+        invest_tips.hide()
+        guessing_competition.show()
+        $(".guessing_competition .middle_title").html($(this).text())
+        /*用户可以参与竞猜，输入框逻辑*/
+        placeholder_text.click(function(){
+          input.focus()
+          $(this).hide()
+        })
+        input.focus(function(){
+          placeholder_text.hide()
+          $(this).css({"color":"#333333"})
+        })
+        input.blur(function(){
+          input_value = $(".guessing_competition .input").val()
+          if(!!input_value){
+            placeholder_text.hide()
+          }else{
+            placeholder_text.show()
+          }
+        })
+        /*end*/
+                
+        /*用户点击确定按钮事件*/
+        middle_ok.click(function(){
+          if(!!input_value){
+            var input_fixed = input_value.split(".")
+            if(/[\#\*\+\,\;]/.test(input_value)){
+              P2PWAP.ui.toast("仅可输入整数")
+            }else if(input_fixed.length > 1 && input_fixed[1] > 0 ){
+              P2PWAP.ui.toast("输入值需为整数，请重新输入")
+            }else{
+              if(parseInt(input_value) >= {$match.minPoints}){
+                $.ajax({
+                  url:"/worldcup/Guess",
+                  type:"post",
+                  dataType:"json",
+                  data:{matchId:"{$match.id}",choice:choice,points:parseFloat(input.val()),token:"{$token}"},
+                  success:function(res){
+                    if(res.error == 0){
+                      tips_close.hide()
+                      $(".guess_success").show()
+                      $(".guessing_competition .middle_title").html("完成竞猜")
+                      $(".guessing_competition .middle_input").hide()
+                      $(".guessing_competition .guess_success_text").show()
+                      $(".guessing_competition .middle_minimum").hide()
+                      $(".guessing_competition .guess_confirm_text").hide()
+                      middle_ok.hide()
+                      $(".guessing_competition .middle_ok_success").show()
+                      /*竞猜成功点击事件*/
+                      $(".guessing_competition .middle_ok_success").click(function(){
+                        invest_tips_mask.hide()
+                        group_matched.show()
+                        group_match_tab.hide()
+                        window.location.reload()
+                      })
+                      /*end*/
+                    }else{
+                      P2PWAP.ui.toast(res.msg)
+                    }
+                  },
+                  error:function(error){console.log(error)}
+                })
+              }else{
+                P2PWAP.ui.toast("竞猜需{$match.minPoints}积分起")
+              }
+            }
+          }else{
+          P2PWAP.ui.toast("请输入竞猜积分/{$match.minPoints}积分起猜")
+          }
+        })
+      /*end*/
+      }else{
+        invest_tips.show()
+        guessing_competition.hide()
+        $(".tips_btn").click(function(){invest_tips_mask.hide()})
+      }
+      tips_close.click(function(){invest_tips_mask.hide()})
+    })
+
+</script>
+</html>

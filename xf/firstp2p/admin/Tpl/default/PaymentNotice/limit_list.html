@@ -1,0 +1,109 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="limit_add();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        充值渠道：
+        <select name="channel">
+            <foreach name="channel_list" item="channel_item">
+                <option value="{$channel_item.id}" <if condition="$_REQUEST['channel'] eq $channel_item['id']">selected="selected"</if>>{$channel_item.name}</option>
+            </foreach>
+        </select>
+        <input type="hidden" value="PaymentNotice" name="m" />
+        <input type="hidden" value="limit_list" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<!-- Think 系统列表组件开始 -->
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="9" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <th width="50px">ID</th>
+        <th>银行名称</th>
+        <th>银行简称</th>
+        <th>单笔限额</th>
+        <th>当日限额</th>
+        <th>当月限额</th>
+        <th>限额描述</th>
+        <th>限额阶梯</th>
+        <th style="width:">操作</th>
+    </tr>
+    <foreach name="limit_list" item="item">
+    <tr class="row">
+        <td>&nbsp;{$item.id}</td>
+        <td>&nbsp;{$item.name}</td>
+        <td>&nbsp;{$item.code}</td>
+        <td>&nbsp;{$item.max_quota}</td>
+        <td>&nbsp;{$item.day_quota}</td>
+        <td>&nbsp;{$item.month_quota}</td>
+        <td>&nbsp;<div style="width:280px;word-break:break-all;">{$item.limit_intro}</div></td>
+        <td>&nbsp;<div style="width:280px;word-break:break-all;">{$item.limit_json}</div></td>
+        <td><a href="javascript:limit_edit('{$item.pay_channel}','{$item.code}')"><?php echo L("EDIT");?></a>&nbsp;<a
+            href="javascript: foreverdel('{$item.id}', 'foreverdelete')">{%FOREVERDEL}</a>&nbsp;</td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="8" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<!-- Think 系统列表组件结束 -->
+<div class="blank5"></div>
+<script>
+//添加跳转
+function limit_add()
+{
+    location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=limit_add";
+}
+//编辑跳转
+function limit_edit(pay_channel, bank_code)
+{
+    var url = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=limit_edit&channel="+pay_channel+"&code="+bank_code;
+    location.href = url;
+}
+
+//完全删除
+function foreverdel(id, m)
+{
+  if(!id)
+  {
+      idBox = $(".key:checked");
+      if(idBox.length == 0)
+      {
+          alert(LANG['DELETE_EMPTY_WARNING']);
+          return;
+      }
+      idArray = new Array();
+      $.each( idBox, function(i, n){
+          idArray.push($(n).val());
+      });
+      id = idArray.join(",");
+  }
+  if (!m) {
+      m = 'foreverdelete';
+  }
+
+  if(confirm(LANG['CONFIRM_DELETE']))
+  $.ajax({
+      url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=" + m + "&id="+id + "&t=" + Math.random(),
+      data: "ajax=1",
+      dataType: "json",
+      success: function(obj) {
+          alert(obj.info);
+          if(obj.status == 1) {
+              location.href=location.href;
+          }
+      }
+  });
+}
+</script>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,52 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%DEL}" onclick="del();" />
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="role"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px,name:{%NAME}:edit,is_effect|get_is_effect=$role['id']:{%IS_EFFECT}"
+    actionlist="edit:{%EDIT}, del:{%DEL}" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+/**
+ * CSV导出，构造下载链接
+ */
+function exportCSV()
+{
+    var idBox = $(".key:checked"),
+        id = '',
+        action = $("form [name=a]"),
+        curVal = action.val(),
+        params = '';
+
+    if(idBox.length > 0)
+    {
+        var idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+    }
+    action.val('index');
+    params = $('form').serialize();
+    action.val(curVal);
+    location.href = "/m.php?export=1&" + params + '&id=' + id;
+}
+</script>
+<include file="Public:footer" />

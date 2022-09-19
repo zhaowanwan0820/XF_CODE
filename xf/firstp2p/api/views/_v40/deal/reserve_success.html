@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提示</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <?php echo $this->asset->renderAppCssV2("reserve_v40"); ?>
+</head>
+<style>
+    .btn1{ padding:15px; }
+    .btn1 a{ display:block; }
+    .p_reservation .reservation_btn, .my_reservation_btn{ width:100%!important; float: ''; border-radius:3px; height:40px; line-height:40px; }
+</style>
+<body style="background:#F5F5FA;">
+    {include file="api/views/_v492/common/zhugemaidian.html"}
+<div class="p_reservation">
+    <div class="box">
+        <div class="suc_icon"></div>
+        <div class="title tc need_change_size" style="padding-bottom:5px;">预约成功</div>
+        <!-- <div class="color_blue tc f15">为提高预约成功率，您还可以继续添加预约计划</div> -->
+    </div>
+    <div class="mt10 btn1">
+        <a href="/deal/reserveMy?userClientKey={$userClientKey}&isShowClose=1&site_id={$site_id}" class="my_reservation_btn mt10 control_colo1">完成</a>
+        {if $isBookingButtonUnused eq 1 }
+        <span class="reservation_btn disabled_btn mt10">再约一笔</span>
+        {else}
+        <a href="/deal/reserveIndex?token={$token}&isShowClose=1&site_id={$site_id}" class="reservation_btn control_colo">再约一笔</a>
+        {/if}
+    </div>
+</div>
+<script src="<?php echo $this->asset->makeApiUrl('v3.3/js/zepto.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeApiUrl('v3.3/js/common.js');?>"></script>
+<script>
+    P2PWAP.app.triggerScheme("firstp2p://api?method=updatebacktype&param=2");
+    setTimeout(()=>P2PWAP.app.triggerScheme("firstp2p://api?type=local&action=goodpraise"),0)
+
+    //埋点
+
+    $('.my_reservation_btn').click(function() {
+        zhuge.track('预约成功页_点击完成',{
+            "类型": "尊享"
+        })
+    });
+    $('.reservation_btn').click(function() {
+        zhuge.track('预约成功页_点击再约一笔',{
+            "类型": "尊享"
+        })
+    });
+
+    $(function(){
+        zhuge.track('进入随心约预约成功页',{
+            "类型": "尊享"
+        })
+    })
+    
+    var site_id = '{$site_id}';
+    if(site_id != 100){
+        // title右上角增加帮助中心
+        location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+        function gobackjsfuncReserve(){
+            location.href = 'firstp2p://api?type=webview&gobackrefresh=false&url='+ encodeURIComponent(location.origin + '/help/faq_list/?cid=227');
+        }
+    }
+</script>
+</body>
+</html>

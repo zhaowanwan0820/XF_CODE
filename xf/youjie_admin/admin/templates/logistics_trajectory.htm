@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>客户列表</title>
+    <link rel="stylesheet" href="../js/calendar/init.css">
+    <style>
+        .list-time{width: 50%;margin: 50px auto 0;}
+        #item li {padding: 10px 0 5px; border-left: 4px solid #108ee9;padding-left: 20px;position: relative;}
+        #item li p{line-height: 20px;}
+        #item li:before {   
+            content: "";
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgb(30, 180, 122);
+            position: absolute;
+            top: 50%;
+            left: -12px;
+        }
+        .heade{
+
+        }
+        .float{
+            float: right;
+            margin: 40px 50px 0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .float a{
+            font-size: 14px;
+            color: #fb3a40;
+        }
+    </style>
+</head>
+<body>
+    <div class="heade clearfix">
+        <div class="float">
+            <a href="https://www.kuaidi100.com/?from=openv">顺丰、京东快递请点击此处查询</a>
+        </div>
+    </div>
+    <div class="list-time">
+        <ul id="item">
+        </ul>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        {insert_scripts files="../js/util.js"}
+    <script>
+        $(function () {
+            const logisticsCode = {$logistic_code};
+            const shipperCode = {$shipper_code};
+            function jsonArrObj(obj){
+                obj.sort(function(a,b){
+                    if(typeof(a) == "object" && typeof(b) == "object"){
+                        return new Date (a['AcceptTime']).getTime() > new Date (b['AcceptTime']).getTime() ? -1 : 1; //倒叙 ,
+                    }
+                });
+                return obj
+            }
+            /*
+                获取列表信息
+                url express.php?act=inquire_logistics
+                logisticCode=12345673838  运单号		 
+                shipperCode=YZPY 		  快递公司编码 
+            */
+            function shopsSite(){
+                let obj = {
+                    type:'GET',
+                    site:'express.php?act=inquire_logistics',
+                    data:{logisticsCode,shipperCode}
+                };
+                U.https(obj).then(data=>{
+                    let datas= JSON.parse(data.data), str = '';
+                    console.log(datas.Traces)
+                    if(datas.Traces.length>0){
+                        let s = jsonArrObj(datas.Traces);
+                        for(let i of s){
+                            str += `<li><p>${i.AcceptTime}</p><p>${i.AcceptStation}</p></li>`;
+                        }
+                        $('#item').html(str);
+                    }else {
+                        $('#item').html(`<li>暂无物流信息</li>`);
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
+            shopsSite();
+            
+        })
+    </script>
+</body>
+</html>

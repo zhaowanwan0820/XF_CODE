@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>更换银行卡</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-base_v32.css');?>" rel="stylesheet">
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-common_v32.css');?>" rel="stylesheet">
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/js/lib/widget/upload/upload.v1.css');?>" rel="stylesheet">
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/p_change_bankcard.css?v=90');?>" rel="stylesheet">
+</head>
+
+<body>
+    {include file="api/views/_v492/common/zhugemaidian.html"}
+    {if $error}
+    <div class="p_changecard_error">
+      <div class="inreview_img_error"></div>
+      <div class="inreview_instr">换卡失败</div>
+      <div class="error_text">{$error}</div>
+      <div class="plr15">
+          <div class="ui_btn_red_h40"><a href="firstp2p://api?type=closeall">完成</a></div>
+      </div>
+      <div class="inreview_foot f12">如有疑问请联系客服 <a href="tel:95782"><span>95782</span></a></div>
+    </div>
+    {else}
+    <div class="p_change_bankcard">
+    <form id="form" method="post"  action="javascript:;" enctype="multipart/form-data">
+    <input type="hidden" name="token" value="{$token}" id="token">
+    <input type="hidden" name="bankcard" value="{$bankcard}">
+    <input type="hidden" name="bank_id" value="{$bankId}">
+    <input type="hidden" name="certStatus" value="{$certStatus}">
+    <input type="hidden" name="bankzone" value="{$bankzone}">
+    <input type="hidden" name="bankcardSignature" value="{$cardNoSignature}">
+    <input class="ui_file" type="hidden" name="image_id" id="file">
+        <div class="bg_white mt15 user_info">
+            <dl class="">
+                <dt>姓名</dt>
+                <dd>{$realName}</dd>
+            </dl>
+            <dl>
+                <dt>证件号</dt>
+                <dd>{$idno}</dd>
+            </dl>
+            <dl>
+                <dt>开户名</dt>
+                <dd>{$cardName}</dd>
+            </dl>
+            <dl>
+                <dt>开户银行</dt>
+                <dd>{$bankName}</dd>
+            </dl>
+            <dl>
+                <dt>银行卡号</dt>
+                <dd>{$cardNoFormat}</dd>
+            </dl>
+        </div>
+        <!-- 拍摄申请照片 -->
+        <div class="photograph j_photograph" style="display:none;">
+            <div class="gray_box"></div>
+            <div class="photograph_box">
+                <p class="photo_text">照片要求</p>
+                <p class="photo_detail">本人手持身份证、目标银行卡，请他人协助拍摄一张照片。确保照片中面部、身份证信息、银行卡信息三者清晰可见。</p>
+                <div class="plr15 bg_white">
+                    <div class="photograph_img01"></div>
+                    <div class="photograph_img02 mt10"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ui_sub_btn j_pzhao_btn" style="display:none;">
+            <div class="btn_content">
+                <div class="content_h5">
+                    <div class="upfile_root">
+                        <div class="upfile_c">
+                            <a class="upfile_word" href="firstp2p://api?type=photo&source=camera&callback=callback_fun">拍摄</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="tishi tc">如摄像头无法正常开启，请前往<span>网信官网</span>操作</div>
+            </div>
+        </div>
+        <!-- 点击小图看大图  -->
+        <div class="bigimg_bg" style="display:none;">
+        </div>
+        <div class="bigimg_wrap" style="display:none;"><img src="" class="j_big_img" alt="">
+            <div class="close"></div>
+        </div>
+
+        <div class="bg_white mt10 user_info j_user_info">
+            <h2 class="img_tips">拍摄申请照片</h2>
+            <div class="padd15">
+                <div class="upload_box j_uploadbox">
+                    <div class="myimg_h5"></div>
+                    <div class="del_img JS_del_img" style="display:none"></div>
+                </div>
+            </div>
+        </div>
+        <div class="btn">
+            <input type="submit" class="change_btn ui_btn_disabled JS_submit_change" value="提交审核" disabled="disabled">
+        </div>
+        <div class="f12 tc color_gray">您提交成功后，我们将在<span class="color_red">3</span>个工作日内审核</div>
+
+        <!-- 进度条 -->
+        <div class="circle_wrap progress load8" style="display:none;">
+            <div class="loader"></div>
+        </div>
+
+         </form>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.72/js/common/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.72/js/common/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.72/js/changecard/p_change_bankcard_v4.73.js');?>"></script>
+    <script>
+    //添加统计代码
+     var  triggerScheme = function(scheme) {
+        var iframe = document.createElement("iframe");
+        iframe.src= scheme;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+    };
+    triggerScheme("firstp2p://api?type=umeng&ukey=change_bankcard");
+    triggerScheme("firstp2p://api?method=updatebacktype&param=2");
+    $(function(){
+        if(window.devicePixelRatio && devicePixelRatio >= 2){
+	        $(".p_change_bankcard .user_info dl").addClass("scale-1px");
+            $(".p_change_bankcard .img_tips").addClass("scale-1px");
+        }
+    })
+    
+    </script>
+    {/if}
+</body>
+
+</html>

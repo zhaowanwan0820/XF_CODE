@@ -1,0 +1,96 @@
+
+<!--2013/7/4 xuxiaonan begin -->
+<div class="uc_user_info">
+	<div class="comm_top"></div>
+	<div class="comm_con">
+		<div class="clearfix pt5 pb5 pl10 pr10">
+			<form action="http://guishu.showji.com/search.htm" method="GET" target="_blank" name="J_check_mobile_form" id="J_check_mobile_form">
+			<div style="padding:10px 0  20px 20px">
+                <div class="clearfix">
+                    <div>
+                    	手机号码 : <input type="text" id="mobile" name="m" class="f-input input_tx" style="width:190px;margin-left:5px">
+						<span style="padding:10px 0 0 34px;display:inline-block">
+							<input type="submit" value="查询" class="saveSettingBnt" id="J_saveSettingBnt" type="button">
+						</span>
+                    </div>
+					<span style="color: red" class="lh26" id="T_error"></span>
+                </div>
+               <p style="color:#888;margin:10px 0 0 61px">点查询就会显示该手机号码所在地区</p>
+            </div>
+			</form>
+		</div>
+	</div>
+	<div class="comm_bot"></div>
+</div>
+
+
+<div id="J_check_Result" class="hide">
+	<div class="comm_top"></div>
+	<div class="comm_con">
+		<p style="font-size:14px;margin-left:20px" class="b">结果</p>
+		<div class="clearfix pt5 pb5 pl10 pr10">
+			<div class="clearfix p10 lh24">
+				<p>
+					 归属地：<span id="txtProvince"></span>
+				</p>
+				<p>
+					卡类型：<span id="txtCard"></span>
+				</p>
+				<p>
+					区号：<span id="txtAreaCode"></span>
+				</p>
+				<p>
+					 邮编：<span id="txtPostCode"></span>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="comm_bot"></div>
+</div>
+<!--2013/7/4 xuxiaonan end -->
+
+
+<script type="text/javascript">
+	jQuery(function(){
+		$("#J_check_mobile_form").submit(function(){
+			
+			$("#T_error").html("");
+			$("#J_check_Result").addClass("hide");
+			var mobile = $("#J_check_mobile_form #mobile").val();
+			
+			if($.trim(mobile) == ""){
+				$("#T_error").html("请输入手机号码。");
+				return false;
+			}
+			
+			var mobreg = /^1[3456789]\d{9}$/;
+	        if(!mobreg.test(mobile)){
+	        	$("#T_error").html("您输入的手机号码格式有误，请重新输入。");
+                return false;
+	        }
+	        
+	        return true;
+			
+			$.ajax({
+				url : APP_ROOT+"/index.php?ctl=tool&act=ajax_mobile",
+				data:'mobile='+mobile,
+				type:"post",
+				dataType:"json",
+				cache:true,
+				success:function(result){
+					if(result.QueryResult=="True"){
+						$("#J_check_Result").removeClass("hide");
+						$("#txtProvince").html(result.Province + result.City);
+						$("#txtCard").html(result.Corp + result.Card);
+						$("#txtAreaCode").html(result.AreaCode);
+						$("#txtPostCode").html(result.PostCode);
+					}
+					else{
+						$("#T_error").html("您输入的手机号码格式有误，请重新输入。");
+					}
+				}
+			});
+			return false;
+		});
+	});
+</script>

@@ -1,0 +1,54 @@
+<!--logId:<?php echo \libs\utils\Logger::getLogId(); ?>-->
+
+<script>
+/*
+function getFormJson(form) {
+var o = {};
+var a = $(form).serializeArray();
+$.each(a, function () {
+if (o[this.name] !== undefined) {
+if (!o[this.name].push) {
+o[this.name] = [o[this.name]];
+}
+o[this.name].push(this.value || '');
+} else {
+o[this.name] = this.value || '';
+}
+});
+return o;
+}
+
+
+$.ajax({
+   type: "POST",
+   url:"m.php?m=User&a=setFormCache",
+   data:getFormJson($("form")),//表单数据JSON格式的函数参数里填写表单的ID或要提交的表单
+   dataType: 'json',
+   success: function(msg) {alert(msg);},
+   error: function(error){alert(error);}
+});
+*/
+
+setTimeout(function(){
+    var formCache = $('form').serialize();
+    formCache = formCache.replace(/[?&]m=([^&=]*)/, "").replace(/[?&]a=([^&=]*)/, "");
+    $.post("/m.php?m=User&a=setFormCache", formCache,
+    function(data){
+        //alert("Data Loaded: " + data);
+    });
+
+}, 1000);
+
+jQuery.browser={};
+(function(){
+    jQuery.browser.msie=false;
+    jQuery.browser.version=0;
+    if(navigator.userAgent.match(/MSIE ([0-9]+)./)){
+        jQuery.browser.msie=true;
+        jQuery.browser.version=RegExp.$1;
+    }
+})();
+</script>
+
+</body>
+</html>

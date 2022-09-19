@@ -1,0 +1,42 @@
+{include file="web/views/header.html"}
+<div class="p_account_transfer">
+    <!--private js&css start-->
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_transfer.css');?>" />
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/charge/transfer.js');?>"></script>
+    <script type="text/javascript">
+//        var doneBankOperate_url = '{$doneBankOperate_url}';
+    </script>
+    <!--private js&css end-->
+    <span class="blank23"></span>
+    <div class="w1100">
+    <input type="hidden" id="orderSnHidden" value="{$orderId}" />
+    <div class="user_title">
+        <h1><i class="ico_chongzhi"></i>余额划转</h1>
+    </div>
+    <form name="chargeForm" id="transferForm" action='/payment/transit' method="get" target="_blank">
+        <input type="hidden" name="srv" id="transferService" value="transferWx">
+        <input type="hidden" name="orderId" value="{$orderId}">
+        <div class="formInner">
+            <div class="formTitle">划转方式:</div>
+            <div class="switchUl" id="switchUl">
+                <li class="active" data-val="transferWx">网信账户划转至网贷P2P账户</li>
+                <li style="margin-left:22px;" data-val="transfer">网贷P2P账户划转至网信账户</li>
+            </div>
+            <div class="formTitle" style="margin:22px 0px 16px 0px;">划转金额:</div>
+            <div class="inputWrap">
+                <input type="text" class="moneyInput" id="moneyInput" name="amount" autocomplete="off"/>
+                <span class="moneyUnit">元</span>
+                <span id="errorTip" class="errorTip"></span>
+            </div>
+            <div class="inforUl">
+                <li>网信账户现金余额:{function name="number_format" v=$user_info.money f="2"}元</li>
+                <li>网贷P2P账户现金余额:{function name="number_format" v=$user_info.svCashMoney f="2"}元</li>
+            </div>
+            <button class="submitBtn" id="submitBtn" type="button">确定</button>
+        </div>
+    </form>
+    </div>
+    <span class="blank23"></span>
+</div>
+
+{include file="web/views/footer.html"}

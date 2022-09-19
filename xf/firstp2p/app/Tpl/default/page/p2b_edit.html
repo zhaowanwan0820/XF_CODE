@@ -1,0 +1,139 @@
+{include file="inc/header.html"}
+<div class="blank"></div>
+  <div class="wrap clearfix">
+    <div class="clearfix">
+      <div class="rightlendstep">
+        <form action="{url x="index" r="p2b#saveedit"}" method="post" id="J_save_deal_form" enctype="multipart/form-data">
+          <span class="t_title f_l">借款基本信息</span>
+          <div class="clearfix b_box b_box2">
+            <div class="field field3">
+              <label class="f12">借款标题：</label>
+              <input type="text" style="width: 100px" class="f-input" name="p2b[title]" id="borrowtitle" value='{$p2b_deal.title}'>
+            </div>
+            <div class="field field3">
+              <label class="f12">借款标题：</label>
+              <input type="text" style="width: 500px" class="f-input" name="p2b[description]" id="borrowdescription" value='{$p2b_deal.description}'>
+            </div>
+            <div class="field field3">
+              <label class="f12">借款金额：</label>
+              <input type="text" style="width:100px" class="f-input" name="p2b[borrow_amount]" id="borrowamount" value='{$p2b_deal.borrow_amount}'>
+              <span class="lh30">&nbsp;元 </span>
+            </div>
+            <div class="field field3">
+              <label class="f12">借款期限：</label>
+              <input type="text" style="width:100px" class="f-input" name="p2b[repay_period]" id="repaytime" value='{$p2b_deal.repay_period}'>
+              <span class="lh30">&nbsp;日 </span>
+            </div>
+            <div class="field field3">
+              <label class="f12">还款方式：</label> 
+              <select id="loanType" name="p2b[repay_type]">
+                {foreach from=$loan_type key=type_key item=type_val}
+                <option value="{$type_key}" {if $p2b_deal.repay_type eq $type_key}selected="selected"{/if}>{$type_val}</option>
+                {/foreach}
+              </select>
+            </div>
+            <div class="field field3">
+              <label class="f12">年化借款利率：</label> 
+              <span class="lh30"> 
+                <input type="text" id="apr" name="p2b[rate]" class="f-input" style="width:50px" value='{$p2b_deal.rate}'>&nbsp;%
+              </span>
+            </div>
+            <div class="field field3">
+              <label class="f12">借款人ID：</label> 
+              <span class="lh30"> 
+                <input type="text" id="username" name="p2b[user_id]" class="f-input" style="width:100px" value='{$p2b_deal.user_id}'>&nbsp;
+              </span>
+            </div>
+            <div class="field field3">
+              <label class="f12">状态：</label> 
+              <select id="status" name="p2b[status]">
+                <option value="-1">已删除</option>
+                <option selected value="0">待处理</option>
+                <option value="1">处理中</option>
+                <option value="2">已完成</option>
+                <option value="3">拒绝受理</option>
+              </select>
+            </div>
+            <div class="field field3">
+             {foreach from=$attach_list key=akey item=attach}
+                <label class="f12">{if $akey eq 0}附件：{/if}</label>
+                <span class="lh30"><a href='{$att_path}{$attach.filename}'>{$attach.title}.{$attach.type}</a> &nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='att_desc_edit[{$attach.id}]' value='{$attach.description}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='{url x="index" r="p2b#delatt" p="id=$attach.id"}' onclick='return confirm("确认删除该附件？");'>删除</a></span><br />
+             {/foreach}
+           </div>
+           <div id='div_attach'>
+              <div class="field field3 attach">
+                <label class="f12">添加附件：</label> 
+                <span class="lh30"> 
+                  <input type="file" class="attachment" name="attachment[]" style="width:200px"><input type='text' name='att_desc[]'>&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' id='addattach'>添加</a>
+                </span>
+              </div>
+          </div>
+          </div>
+          <div class="b_box2" style="text-align: center; margin: 10px 0; color: #4A74CA;">
+            <input type='hidden' name='id' value='{$p2b_deal.id}'>
+            <input type="button" id="publishBnt" class="mbtn save" value="" onclick="checkP2bSave();">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<div class="blank"></div>
+<div style='display:none' id='hideattach'>
+    <div class="field field3 attach">
+      <label class="f12"></label> 
+      <span class="lh30"> 
+        <input type="file" class="attachment" name="attachment[]" style="width:200px"><input type='text' name='att_desc[]'>&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' onclick='delattach($(this));'>删除</a>
+      </span>
+    </div>
+</div>
+<script type="text/javascript">
+$(function() {
+	$('#status').val({$p2b_deal.status});
+    $('#addattach').click(function(){
+        $('#div_attach').append($('#hideattach').html());
+    })
+})
+function delattach(obj){
+    obj.parent().parent().remove();
+}
+function checkP2bSave() {
+  if($.trim($("#borrowtitle").val())==""){
+    $.showErr("请输入借款标题",function(){
+      $("#borrowtitle").focus();
+    });
+    return false;
+  }
+  if($.trim($("#borrowdescription").val())==""){
+    $.showErr("请输入借款标题",function(){
+      $("#borrowdescription").focus();
+    });
+    return false;
+  }
+  if($.trim($('#borrowamount').val())=="" || !(parseInt($('#borrowamount').val()) > 0)) {
+    $.showErr("请输入正确的借款金额",function(){
+      $("#borrowamount").focus();
+    });
+    return false;
+  }
+  if($.trim($('#repaytime').val())=="" || !(parseInt($('#repaytime').val()) > 0)) {
+    $.showErr("请输入正确的借款期限",function(){
+      $("#repaytime").focus();
+    });
+    return false;
+  }
+  if($.trim($('#apr').val())=="" || !(parseFloat($('#apr').val()) > 0)) {
+    $.showErr("请输入正确的借款利率",function(){
+      $("#apr").focus();
+    });
+    return false;
+  }
+  if($.trim($('#username').val())=="") {
+    $.showErr("请输入借款人ID",function(){
+      $("#username").focus();
+    });
+    return false;
+  }
+  $("#J_save_deal_form").submit();
+}
+</script>
+{include file="inc/footer.html"}

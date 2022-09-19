@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$tplTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-base.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/discount.css');?>">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/zepto.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/base.js');?>" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+{include file="web/views/v3/marketing/share_js.html"}
+{include file="web/views/v3/marketing/top.html"}
+	<div class="discount_box">
+		<div class="discount_box_top">
+      <div class="account">投资券已存入账户 {$userInfo.mobile}&nbsp&nbsp <a href="{$changeMobileUrl}" class="color_red change_link" style="display:none;">修改></a></div>
+      {foreach from=$userDiscountList item=val}
+      {if $val.couponInfo.type eq 1}
+      
+      <dl class="discount type_fanxian clearfix">
+        <dt>
+          <p><span class="f33">{$val.couponInfo.goodsPrice}</span>元</p>
+          <p> 返现券 </p>
+        </dt>
+        <dd>
+          <div class="border">
+            <div class="discount_con">
+              <p>{$val.couponInfo.goodsDesc}</p>
+              <p>{$val.couponInfo.goodsTimeDesc}</p>
+            </div>
+          </div>
+        </dd>
+      </dl>
+      {else} 
+      
+       <dl class="discount type_jiaxi clearfix">
+        <dt>
+          <p><span class="f33">{$val.couponInfo.goodsPrice}</span>%</p>
+          <p>加息券</p>
+        </dt>
+        <dd>
+          <div class="border">
+            <div class="discount_con">  
+              <p>{$val.couponInfo.goodsDesc}</p>
+              <p>{$val.couponInfo.goodsTimeDesc}</p>
+            </div>
+          </div>
+        </dd>
+      </dl>
+      {/if}
+      {/foreach}
+		</div>	
+		<div class="line">
+			<div class="line_right">
+				<div class="line_center"></div>
+			</div>
+		</div>
+    <div class="discount_box_bottom">
+      {include file="web/views/v3/marketing/rules.html"}
+      {include file="web/views/v3/marketing/list.html"}
+		</div>
+    </div>
+		<div class="h120"></div>
+  </div>   
+    <div class="ui_share_box">
+      <a href="{$downloadUrl}" class="reg_btn">{$downloadDesc}</a>
+      {if $canNotInvaite}
+      <a href="javascript:void(0)" class="share_btn">{$invaiteDesc}</a>
+      {else}
+      <a href="javascript:void(0)" class="share_btn JS-share_btn">{$invaiteDesc}</a>
+      {/if}
+    </div>
+    <div class="ui_mask" style="display:none"></div>
+    <div class="share_icon" style="display:none"></div>
+    {if $canNotInvaite}
+    <script>
+        $('.share_btn').on("click" , function(){
+          P2PWAP.ui.showErrorTip("投资过两次(含以上)网贷理财产品(非私募和基金)的用户才有邀请资格。");
+        })
+    </script>
+    {/if}
+  <script type="text/javascript">
+        function weixinFacility() {
+            var userAgentString = window.navigator ? window.navigator.userAgent : "";
+            var weixinreg = /MicroMessenger/i;
+            return weixinreg.test(userAgentString);
+        };
+        if(weixinFacility()){
+           $('.change_link').show(); 
+        } 
+        window['_user_m_'] = "{$m}{$id}";
+        var _TOUZIQUAN_PICK_COOKIE_NAME_ = '_touziquanpick_';
+        function touziQuanPick() {
+            var pickcokkiestr = P2PWAP.util.getCookie(_TOUZIQUAN_PICK_COOKIE_NAME_);
+            var pickList = pickcokkiestr != null && pickcokkiestr != "" ? pickcokkiestr.split(",") : [];
+            for (var i = pickList.length - 1; i>= 0; i--) {
+                if (pickList[i] == window['_user_m_']){
+                  P2PWAP.ui.showErrorTip("您已经领过该奖励了！"); 
+                }
+            }
+            pickList.push(window['_user_m_']);
+            P2PWAP.util.setCookie(_TOUZIQUAN_PICK_COOKIE_NAME_, pickList.join(","), 365);
+        }
+        touziQuanPick();
+    </script>
+</body>
+</html>

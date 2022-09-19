@@ -1,0 +1,168 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+function get_type_name($id, $money_adjust_type){
+    return $money_adjust_type[$id];
+}
+function get_status_name($status, $money_adjust_status){
+    return $money_adjust_status[$status].'<br/>';
+}
+function get_username($user){
+    $str = '<a target="_blank" href="/m.php?m=User&a=index&user_name='.$user.'">'.$user.'</a>';
+    return $str;
+}
+function get_action_list($status,$row){
+    if($status == 1){
+        return '<a href="javascript:money_adjust_action(' . $row['id'] . ",'verify1'" . ');">运营批准</a>  <a href="javascript:money_adjust_action(' . $row['id'] . ",'refuse1'" . ');">拒绝</a>';
+    }elseif($status == 2){
+        return '<a href="javascript:money_adjust_action(' . $row['id'] . ",'verify2'" . ');">财务批准</a>  <a href="javascript:money_adjust_action(' . $row['id'] . ",'refuse2'" . ');">拒绝</a>';
+    }elseif($status == 3){
+        return "审核通过";
+    }elseif($status == -1){
+        return "审核未通过";
+}
+
+}
+</php>
+<div class="main">
+<div class="main_title">调账管理</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="addm();" />
+    <input type="button" class="button" value="批量导入" onclick="importCsv();" />
+    <input type="button" class="button" value="批准" onclick="batch_edit('{$auth_action.p}',this);" />
+    <input type="button" class="button" value="拒绝" onclick="batch_edit('{$auth_action.r}',this);" />
+    <input type="button" class="button" value="{%DEL}" onclick="del();" />
+</div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+    申请时间：<input type="text" class="textbox" id="adjust_start" name="adjust_start" value="{:trim($_REQUEST['adjust_start'])}" onfocus="return showCalendar('adjust_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+至
+        <input type="text" class="textbox" name="adjust_end" id="adjust_end" value="{:trim($_REQUEST['adjust_end'])}"  onfocus="return showCalendar('adjust_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        申请人：<input type="text" class="textbox" name="apply_user" value="{:trim($_REQUEST['apply_user'])}" style="width:100px;" />
+        调减账户会员名：<input type="text" class="textbox" name="decr_name" value="{:trim($_REQUEST['decr_name'])}" style="width:100px;" />
+        调增账户会员名：<input type="text" class="textbox" name="incr_name" value="{:trim($_REQUEST['incr_name'])}" style="width:100px;" />
+        批次号：<input type="text" class="textbox" name="batch_number" value="{:trim($_REQUEST['batch_number'])}" style="width:100px;" />
+        类型:
+        <select name="type" id="js_type">
+            <option value="0" <if condition="intval($_REQUEST['type']) eq 0 ">selected="selected"</if>>全部</option>
+            <foreach name="money_adjust_type" item="type" key="key">
+                <option value="{$key}" <if condition="intval($_REQUEST['type']) eq $key">selected="selected"</if>>{$type}</option>
+            </foreach>
+        </select>
+        状态:
+        <select name="status">
+            <option value="0" <if condition="intval($_REQUEST['status']) eq 0 ">selected="selected"</if>>全部</option>
+            <foreach name="money_adjust_status" item="status" key="key">
+                <option value="{$key}" <if condition="intval($_REQUEST['status']) eq $key">selected="selected"</if>>{$status}</option>
+            </foreach>
+        </select>
+        <input type="hidden" value="MoneyAdjust" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    <input type="button" class="button" value="导出" onclick="export_csv();" />
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="link"
+    checkbox="true"
+    datasource="list"
+    show="id:{%ID}|50px,batch_number:批次号,create_time|to_date:申请时间|80px,apply_user:申请人,type|get_type_name=$money_adjust_type:类型,money|format_price:金额,decr_name|get_username:调减账户会员名,decr_note:调减账户备注,incr_name|get_username:调增账户会员名,incr_note:调增账户备注,status|get_status_name=$money_adjust_status:审核状态,log|nl2br:审批记录,status|get_action_list=$link:操作|110px"
+    />
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+var bool = false;
+function money_adjust_action(id, action, is_ajax) {
+    if (is_ajax != 1) {
+        if (!confirm("确认要进行操作？")) {
+            return;
+        }
+    }
+    if (!arguments[2]) is_ajax = 0;
+    if (!bool) {
+        bool = true;
+        $.post("/m.php?m=MoneyAdjust&a=" + action, { id: id, ajax: is_ajax }, function(rs) {
+            var rs = $.parseJSON(rs);
+            if (rs.status) {
+                alert(rs.data);
+                window.location.reload();
+            } else {
+                alert("操作失败！" + rs.data + rs.info);
+            }
+        });
+        bool = false;
+    } else {
+        alert("请不要重复点击");
+        return false;
+    }
+
+}
+function addm(){
+    location.href = ROOT+"?"+VAR_MODULE+"=MoneyAdjust&"+VAR_ACTION+"=add";
+}
+
+//通过拒绝 批量操作
+function batch_edit(action,btn) {
+    $(btn).css({ "color": "grey",  "background-color":"#CCC" }).attr("disabled", "disabled");
+    idBox = $(".key:checked");
+    if(idBox.length == 0)
+    {
+        alert('请选择未处理的调账申请记录！');
+        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+        return;
+    }
+    idArray = new Array();
+    $.each( idBox, function(i, n){
+        idArray.push($(n).val());
+    });
+    id = idArray.join(",");
+    str = '确认批量处理您选择的记录？';
+    if(confirm(str)){
+        money_adjust_action(id,action,1);
+    }
+    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+}
+function get_query_string() {
+    idBox = $(".key:checked");
+    idArray = new Array();
+    $.each(idBox, function (i, n) {
+        idArray.push($(n).val());
+    });
+    ids = idArray.join(',');
+    querystring = '&id=' + ids;
+    querystring += "&adjust_start="+$("input[name='adjust_start']").val();
+    querystring += "&adjust_end="+$("input[name='adjust_end']").val();
+    querystring += "&batch_number="+$("input[name='batch_number']").val();
+    querystring += "&apply_user="+$("input[name='apply_user']").val();
+    querystring += "&decr_name="+$("input[name='decr_name']").val();
+    querystring += "&incr_name="+$("input[name='incr_name']").val();
+    querystring += "&type="+$("select[name='type']").val();
+    querystring += "&status="+$("select[name='status']").val();
+    return querystring;
+}
+
+function importCsv(){
+    location.href = ROOT+"?"+VAR_MODULE+"=MoneyAdjust&"+VAR_ACTION+"=import";
+}
+
+function export_csv() {
+    window.location.href = ROOT+'?m=MoneyAdjust&a=export_csv'+get_query_string();
+}
+
+</script>
+<include file="Public:footer" />

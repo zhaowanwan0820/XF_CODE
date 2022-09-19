@@ -1,0 +1,94 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/jquery-1.10.2.min.js' />
+<div class="main">
+<div class="main_title">查看&emsp;<a href="javascript:history.back(-1);" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">经验值：</td>
+                <td class="item_input">
+                    {$item.point}
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送方式</td>
+                <td class="item_input">
+                    {$item.type_desc}
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送ID列表</td>
+                <td class="item_input">
+                    {$item.send_condition}
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">来源名称</td>
+                <td class="item_input">
+                    {$item.source_name}
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">审批意见</td>
+                <td class="item_input">
+                    <textarea></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <span class="button submit" data="2"/>通过</span>
+                    <span class="button submit" data="3"/>驳回</span>
+                    <input type="hidden" value="{$item.id}" id="id" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+$(".submit").click(function(){
+    reason = $.trim($("textarea").val());
+    id = $("#id").val();
+    if($(this).attr("data") == "3") {
+        type = '3';
+        if (reason === '') {
+            alert("驳回原因不能为空");
+            return;
+        }
+    } else {
+        type = "2";
+    }
+    if (confirm("确定此操作吗？")) {
+        $.ajax({
+            type:"post",
+            url:"m.php?m=VipPointResend",
+            data :{
+                "a":"doVerify",
+                "reason": reason,
+                "type" : type,
+                "id" :id
+            },
+            dataType:'json',
+            success:function(data){
+                if(data.status == 1){
+                    alert("操作成功");
+                    location.href="m.php?m=VipPointResend&a=manage";
+                } else {
+                    alert(data.errorMsg);
+                }
+            },
+            fail:function(){alert("处理失败，请稍后再试");}
+        });
+    }
+});
+</script>
+<include file="Public:footer" />

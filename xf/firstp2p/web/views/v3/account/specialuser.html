@@ -1,0 +1,319 @@
+{include file="web/views/header.html"}
+<div class="p_passporttype">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_passporttype.css');?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/widget/datepicker/datepicker.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/ui/jquery.ui.core.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/ui/jquery.ui.widget.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/ui/jquery.ui.datepicker.js');?>"></script>
+<style type="text/css">
+    .alert{
+         margin: 0 auto 20px;
+    }
+    .m-head{
+        margin-bottom:0px;
+    }
+</style>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#valid_date").datepicker({
+      showAnim:'fadeIn',
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "2013:2050"
+    });
+    $("#birthday").datepicker({
+      showAnim:'fadeIn',
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "1942:2014",
+      minDate: "-72Y",
+      maxDate: -1
+    });
+  });
+</script>
+<style>
+.ui-datepicker select.ui-datepicker-year {width:48%;}
+.ui-datepicker select.ui-datepicker-month {width:41%;}
+.pp-input{width:280px;}
+.pp-input-xsm{width:55px;}
+.p_passporttype .card-container {width: 160px;}
+</style>
+<div class="blank"></div>
+<div class="w980 clearfix">
+  <div class="deal_box_top"></div>
+  <div class="deal_box_data">
+    <div class="con">
+      <div class="contentnn"></div>
+        <div class="contentnp">
+          <div class="alert">
+            请完整填写以下身份验证信息，以下信息将作为您未来投资人身份确认的唯一认证，请确保您填写的信息准确无误
+          </div>
+          <h2>填写认证信息：</h2>
+            <div class="pio">
+                <form id="swfupload_photo_form" name="upfile_form" action="/file/ajax_upload_img" method="post" enctype="multipart/form-data" target="check_file_frame">
+                 <div class="piou">
+                 <ul>
+                 <li>
+                     <label for="nkhg" class="nin">您的真实姓名</label>
+                     <input name="name" id="name" type="text" placeholder="您的姓名" maxlength="12" class="pp-input"/>
+                     <span id="name_tips" class="span-error" style="display:none;">请输入您的真实姓名！</span>
+                 </li>
+                 <li class="ye_1">
+                         <span class="float-span sex">性別：</span>
+                         <span class="float-span">
+                             <input name="sex" type="radio" value="1" checked="checked" id="sex_a" />
+                             <label for="sex_a">男</label>
+                         </span>
+                         <span class="float-span">
+                             <input name="sex" type="radio" value="0" id="sex_b" />
+                             <label for="sex_b">女</label>
+                         </span>
+                     </li>
+
+                 <li>
+                     {if $type == 1}
+                     <!-- 军官证 -->
+                     <label for="nkhg_3" class="nin">身份证号码</label>
+                     <input id="idno" name="idno" type="text" maxlength="18" value="" class="pp-input" placeholder="您的身份证号码" />
+                     {else}
+                     <!-- 护照 -->
+                      <label for="nkhg_3" class="nin">护照号码</label>
+                     <input id="passportid" name="passportid" type="text" maxlength="10" class="pp-input pp-input-sm" style="width:190px" placeholder="您的护照号码" />
+                     {/if}
+                     <input type="hidden" name="type" value="{$type}">
+                     <span id="idno_tips" class="span-error" style="display:none;">请输入身份证号码</span>
+                 </li>
+
+                 <li style="height:320px;margin-top:30px;" class="upload-row">
+                   <span id="heng" class="float-span">上传证件照片</span>
+                   <div class="form-row-content">
+
+                     <div id="card_container1" class="card-container">
+                      <div class="photo-btn-container">
+                        <div class="photo-upload-btn">
+                          <input type="hidden" id="img_v_path1" name="path[pass1]" value="">
+                          <input class="flag hidden-file-input" id="file_v_1" type="file" name="file[]" style="width:100%;height:100%;" onchange="checkFileSize(this,1);">
+                        </div>
+                      </div>
+                      <div class="photo-upload-container">
+                        <div class="photo-container">
+                          <img id="img_path1" src="">
+                        </div>
+                      </div>
+                     {if $type == 1}
+                      军官证内页
+                     {else}
+                      护照个人信息页照片
+                     {/if}
+                     </div>
+                     <div id="card_container2" class="card-container">
+                       <div class="photo-btn-container">
+                         <div class="photo-upload-btn">
+                           <input type="hidden" id="img_v_path2" name="path[pass2]" value="">
+                           <input class="flag hidden-file-input" id="file_v_2" type="file" name="file[]" style="width:100%;height:100%;" onchange="checkFileSize(this,2);">
+                         </div>
+                       </div>
+                       <div class="photo-upload-container has-photo">
+                         <div class="photo-container" style="">
+                           <img id="img_path2" src="">
+                         </div>
+                       </div>
+                       {if $type == 1}
+                        本人手持身份证及军官证照片
+                       {else}
+                        本人手持护照正面照片
+                       {/if}
+
+                     </div>
+
+                     <div id="card_container3" class="card-container">
+                       <div class="photo-btn-container">
+                         <div class="photo-upload-btn">
+                           <input type="hidden" id="img_v_path3" name="path[idno1]" value="">
+                           <input class="flag hidden-file-input" id="file_v_3" type="file" name="file[]" style="width:100%;height:100%;" onchange="checkFileSize(this,3);">
+                         </div>
+                       </div>
+                       <div class="photo-upload-container">
+                         <div class="photo-container" style="">
+                           <img id="img_path3" src="">
+                         </div>
+                       </div>
+                       {if $type == 1}
+                        身份证正面
+                       {else}
+                        签证照片
+                       {/if}
+
+                     </div>
+                     <div id="card_container4" class="card-container">
+                       <div class="photo-btn-container">
+                         <div class="photo-upload-btn">
+                             <input type="hidden" id="img_v_path4" name="path[idno2]" value="">
+                            <input class="flag hidden-file-input" id="file_v_4" type="file" name="file[]" style="width:100%;height:100%;" onchange="checkFileSize(this,4);">
+                         </div>
+                       </div>
+                       <div class="photo-upload-container has-photo">
+                         <div class="photo-container" style="">
+                           <img id="img_path4" src="">
+                         </div>
+                       </div>
+                       {if $type == 1}
+                        身份证反面
+                       {else}
+                        盖有入境章的护照页
+                       {/if}
+
+                     </div>
+                   </div>
+                 </li>
+                 </ul>
+                 </div>
+                 </form>
+         </div>
+              <div class="xin">
+                    <ul>
+                        <li>请确认上传图片清晰、未经修改</li>
+                        <li>图片格式仅限JPG</li>
+                        <li>图片大小不超过1.5MB</li>
+                    </ul>
+                </div>
+                <div class="tu"><a id="save_data" class="pp-btn-lg" href="javascript:void(0);">确认提交</a></div>
+       </div>
+    </div>
+  </div>
+  <div class="deal_box_bot"></div>
+</div>
+</div>
+<iframe name="check_file_frame" style="display:none;"></iframe>
+<script>
+init_photo();
+/**
+ * 初始化 样式
+ */
+function init_photo(){
+    $('.has-photo').on('mouseenter', function(event){
+          $(this).find('.photo-upload-btn').show();
+        }).on('mouseleave', function(event){
+          $(this).find('.photo-upload-btn').hide();
+    });
+}
+</script>
+
+<script>
+
+function checkFileSize(fileObj,id) {
+    var patn = /\.jpg$|\.jpeg$/i;
+    if(!patn.test(fileObj.value)){
+        alert("您选择的图像文件不符合要求！");
+        return false;
+    }
+    if(fileObj.value != "") {
+        $(fileObj).removeClass("flag");
+
+        replace_file(id);
+
+        var form = document.forms['upfile_form'];
+        //请求服务器端
+        form.target = "check_file_frame";
+        //form.action = "/file.php?m=File&a=ajax_upload_img&n="+id;
+        form.action = "/upload/ajaxuploadimg?n="+id+ '&is_priv=1';
+        var img = '/static/default/images/loading.gif';
+        $("#img_path"+id).attr("src",img);
+        form.submit();
+        $(fileObj).addClass("flag");
+      }
+      return false;
+}
+
+//替换文件域 解决ie兼容问题
+function replace_file(n){
+    var arr = [1,2,3,4];
+    //设置其他上传为空
+    $(".flag").val('');
+    for (var i = 0; i < arr.length; i++) {
+        var a = arr[i];
+        if(a != n){
+            var afile = $("#file_v_"+a);
+            afile.replaceWith(afile.clone());
+        }
+    }
+}
+
+function ajax_callback(url,msg,id,img){
+    // 支持http和https
+    img = img.replace('http://','//');
+    url = url.replace('http://','//');
+    $("#img_path"+id).attr("src",img);
+    $("#img_v_path"+id).val(url);
+    $("#card_container"+id).addClass("has-photo");
+    init_photo();
+}
+
+function ajax_callback_error(id,str) {
+    $("#img_path"+id).attr("src",'');
+    alert(str);
+    return false;
+}
+
+function cheackerror(id){
+    var name = $("#"+id).val();
+    if(!name){
+        $("#"+id+'_tips').show();
+        $("#"+id).focus();
+        return false;
+    }
+    return true;
+}
+
+function hideerror(){
+    $('.span-error').hide();
+}
+
+$(document).ready(function(){
+    //保存数据
+    $("#save_data").click(function(){
+
+        hideerror();
+        if(!cheackerror('name')){
+            return false;
+        }
+        {if $type == 1}
+            if(!cheackerror('idno')){
+                return false;
+            }
+        {/if}
+
+
+        if(!$('#img_v_path1').val() || !$('#img_v_path2').val() || !$('#img_v_path3').val() || !$('#img_v_path4').val()){
+            $("#img_path").show();
+            $.showErr("请上传图片！");
+              return false;
+        }
+
+        hideerror();
+        var poststr = jQuery("#swfupload_photo_form").serialize();
+        $.post("/account/specialuser",poststr,function(result) {
+            //console.log(result.status);
+            //jsonData = jQuery.parseJSON(result);
+            //jsonData = eval(result);
+            //alert(result.status);return;
+            if(result.status == 1){
+                $.showSuccess("认证信息提交成功，网信将在3个工作日内完成信息审核。审核结果将以短信、站内信或电子邮件等方式通知您。",function(){
+                    //window.opener=null;window.close();
+                    window.location.href="/";
+                });
+            }else if(result.status == 2){
+                $("#idno_tips").show().html("身份验证失败，如需帮助请联系客服。");
+                location.href = "#idno_tips";
+            }else if(result.status == 3){
+                $("#idno_tips").show().html("身份验证失败，如需帮助请联系客服。");
+                location.href = "#idno_tips";
+            }else{
+                $.showErr("提交资料失败，请重试！");
+            }
+        },"json");
+    });
+});
+
+</script>
+{include file="web/views/footer.html"}

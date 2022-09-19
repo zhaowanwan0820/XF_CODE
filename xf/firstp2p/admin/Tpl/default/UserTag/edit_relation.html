@@ -1,0 +1,43 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("User/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">用户</td>
+        <td class="item_input">{$user_name}</td>
+    </tr>
+    <tr>
+        <td class="item_title">标签列表</td>
+        <td class="item_input">
+            <foreach name="tags" item="item">
+            <input type="checkbox" name="tags[]" <if condition="$item.checked eq 1">checked=checked</if> value="{$item.tag_id}">{$item.tag_name}
+            </foreach>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">&nbsp;</td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="m" value="UserTag" />
+            <input type="hidden" name="a" value="edit_relation" />
+            <input type="hidden" name="uid" value="{$uid}" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%OK}" onclick='return confirm("确认提交!？")'/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

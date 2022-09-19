@@ -1,0 +1,62 @@
+{include file="web/views/v3/en/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.1.css');?>" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/media_coverage.css');?>"/>
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/media_coverage_pc.css');?>" media="screen and (min-width: 1200px)"/>
+    <div class="media_coverage">
+        <div class="bg1">NEWS</div>
+        <ul class="media_ul">
+            {foreach from=$article_list item="article_list"}
+                <li class="media_list1">
+                    <a href="/articleDetail?id={$article_list.id}">
+                        <img src="{$article_list.image_url}" title="{$article_list.title}" alt="{$article_list.title}">
+                        <div class="me_box moz_box">
+                            <div class="line"></div>
+                            <p class="title">{$article_list.title}</p>
+                            <p class="small_title">{$article_list.update_time}</p>
+                            <div class="detail">
+                                {$article_list.content}
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            {/foreach}
+        </ul>
+        <div class="pagination" id="pagination">{$pagination}</div>
+{include file="web/views/v3/en/footer.html"}
+<script src="<?php echo $this->asset->makeUrl('v3/js/en/paginate.v1.js');?>" type="text/javascript"></script>
+<script>
+    var flag = IsPC(); 
+    if(flag){//pc
+        var media_ul_top = $(".media_ul").offset().top;
+        var media_ul_height = $(".media_ul").height();
+        $(window).scroll(function(){
+            var this_scrollTop = $(this).scrollTop();
+            if(this_scrollTop > media_ul_top - media_ul_height-200){
+                setTimeout(function(){
+                    $(".media_list2").animate({marginTop:"1.54rem"},1000,'swing');
+                },500)
+                setTimeout(function(){
+                    $(".media_list3").animate({marginTop:"1.54rem"},1000,'swing');
+                },1000)
+            }
+        });
+    }
+    
+    var flag = IsPC(); 
+    if(flag){//pc
+        var media_ul_top = $(".media_ul").offset().top;
+        var media_ul_height = $(".media_ul").height();
+        $(window).scroll(function(){
+            var this_scrollTop = $(this).scrollTop();
+            if(this_scrollTop > media_ul_top - media_ul_height-200){
+                setTimeout(function(){
+                    $(".media_list2").animate({marginTop:"1.54rem"},1000,'swing');
+                },500)
+                setTimeout(function(){
+                    $(".media_list3").animate({marginTop:"1.54rem"},1000,'swing');
+                },1000)
+            }
+        });
+    }
+</script>
+</html>

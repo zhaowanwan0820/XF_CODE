@@ -1,0 +1,148 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("Life/merchantList?$nowParam")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <if condition="$data['merchant_id'] neq ''">
+            <tr>
+                <td class="item_title">商户编号：</td>
+                <td class="item_input">
+                    {$data.merchant_id}
+                </td>
+            </tr>
+            </if>
+            <if condition="$data['merchant_id'] eq ''">
+            <tr>
+                <td class="item_title">商户编号前缀：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" maxlength="4" onkeyup="this.value=this.value.replace(/[^A-Z]/g,'')" name="merchantPrefix" value="" />&nbsp;&nbsp;大写字母，非必填，默认：MEC
+                </td>
+            </tr>
+            </if>
+            <tr>
+                <td class="item_title">商户名称：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" style="width:220px" name="merchantName" value="{$data.merchant_name}"/>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">商户简称：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" style="width:220px" name="shortname" value="{$data.shortname}"/>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">版块编号：</td>
+                <td class="item_input">
+                    <select name="secId" id="secId" class="textbox require" style="width:230px;">
+                        <foreach name="secAllList" item="sec_item">
+                        <option value="{$sec_item.sec_id}" <if condition="$sec_item['sec_id'] eq $data['sec_id']">selected="selected"</if>>{$sec_item.sec_name}</option>
+                        </foreach>
+                    </select>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+           <if condition="$data['merchant_id'] neq ''">
+            <tr>
+                <td class="item_title">商户密钥：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" style="width:220px" name="merchantSecret" value="{$data.merchant_secret}"/>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            </if>
+            <tr>
+                <td class="item_title">支付分账商户编号：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="paymerchantId" value="{$data.paymerchant_id}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">支付分账商户密钥：</td>
+                <td class="item_input">
+                    <textarea name="paymerchantSecret" id="paymerchantSecret" class="txt addarea int_placeholder" placeholder=""  style="width:400px;height:150px;" data-placeholder="" >{$data.paymerchant_secret}</textarea >
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态：</td>
+                <td class="item_input">
+                    <select name="status" id="status" class="textbox require" style="width:230px;">
+                        <option value="0" <if condition="$data['status'] eq 0">selected="selected"</if>>禁用</option>
+                        <option value="1" <if condition="$data['status'] eq 1">selected="selected"</if>>启用</option>
+                    </select>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">接口访问白名单：</td>
+                <td class="item_input">
+                    <textarea name="actionWhitelist" id="actionWhitelist" class="txt addarea int_placeholder" placeholder=""  style="width:400px;height:100px;" data-placeholder="" >{$data.action_whitelist}</textarea >
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">结算账户名：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="settleName" value="{$data.settle_name}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">结算卡号：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="settleAccount" value="{$data.settle_account}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开户名：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="openName" value="{$data.open_name}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开户行：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="openBank" value="{$data.open_bank}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">联行号码：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="branchNo" value="{$data.branch_no}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">签名校验的前缀字段：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" style="width:220px" name="signPrefix" value="{$data.sign_prefix}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">商户介绍：</td>
+                <td class="item_input">
+                    <textarea name="desc" id="desc" class="txt addarea int_placeholder" placeholder=""  style="width:400px;height:100px;" data-placeholder="商户简介" >{$data.desc}</textarea >
+                </td>
+            </tr>
+            <input type="hidden" name="merchantId" value="{$data.merchant_id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveMerchant" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="submit" class="button" value="{%EDIT}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

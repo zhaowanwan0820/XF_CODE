@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="web/views/fenzhan/hongbao/shareLogo.html"}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+       <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/newyear.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css start-->
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+{include file="web/views/fenzhan/hongbao/newyear/logo.html"}
+    <div class="top bg_02">
+        <div class="rob-tel">
+            <div class="p-title"></div>
+            <div class="p-tips pt50">
+                <p class="pb10">输入手机号，快去抢红包！</p>
+            </div>
+            <form id="register-form" action="GetHongbao" method="get">
+                <input type="tel" class="tel-box" id="input-mobile" name = 'mobile' placeholder='请输入您的手机号码' maxlength="11">
+                <?php echo token_input(); ?>
+                <input type="hidden" value = "{$sn}" name = 'sn'>
+                <input type="hidden" value = "{$site_id}" name = 'site_id'>
+                <div class="errorDiv"></div>
+                <input type="submit" class="tel-btn" value="打开红包">
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            var bHeight=document.documentElement.clientHeight-398;
+            var hHeight=document.documentElement.clientHeight
+            $('.top').css({"margin-top":(bHeight/2)+'px'})
+            if(hHeight==504){
+                $('.tel-box').focus(function(){
+                    $('.top').css({"margin-top":"-130px;"});
+                    $('.logo').css({"top":"-130px;"});
+                })
+                $('.tel-box').blur(function(){
+                    $('.top').css({"margin-top":(bHeight/2)+'px'});
+                    $('.logo').css({"top":"7px;"});
+                })
+            }
+
+            if(hHeight==416){
+                $('.tel-box').focus(function(){
+                    $('.top').css({"margin-top":"-170px;"});
+                    $('.logo').css({"top":"-130px;"});
+                })
+                $('.tel-box').blur(function(){
+                    $('.top').css({"margin-top":(bHeight/2)+'px'});
+                    $('.logo').css({"top":"7px;"});
+                })
+            }
+
+
+            $('.tel-btn').click(function(){
+                var mobileRegEx = /^1[3456789]\d{9}$/;
+                var tel= $('.tel-box').val()
+                if(!tel || tel==null){
+                    $('.errorDiv').html('手机号不能为空！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else if(!mobileRegEx.test(tel)){
+                    $('.errorDiv').html('手机号码格式不正确！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else{
+                    return true;
+                }
+            });
+        });
+    </script>
+{include file="web/views/fenzhan/hongbao/js.html"}
+</body>
+</html>

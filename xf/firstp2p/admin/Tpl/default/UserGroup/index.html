@@ -1,0 +1,70 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+    <input type="button" class="button" value="导出所有记录" onclick="location.href='?m=UserGroup&a=export_csv';" />
+</div>
+<div class="blank5"></div>
+
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        会员组名称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" />
+        分属政策组：
+        <select name="basic_group_id" >
+            <option value="">==未选政策组==</option>
+            <foreach name="basic_groups" key="dkey" item="item">
+                <option value="{$dkey}" <if condition="$dkey eq $_REQUEST['basic_group_id']">selected="selected"</if>>{$item}</option>
+            </foreach>
+        </select>
+        服务标识：
+        <select name="service_status" id="service_status">
+            <option <if condition="$_REQUEST['service_status'] eq 'all' || trim($_REQUEST['service_status']) eq ''">selected="selected"</if> value="all">全部</option>
+            <option <if condition="intval($_REQUEST['service_status']) eq 1">selected="selected"</if> value="1">有效</option>
+            <option <if condition="$_REQUEST['service_status'] neq 'all' && trim($_REQUEST['service_status']) neq '' && intval($_REQUEST['service_status']) eq 0">selected="selected"</if> value="0">无效</option>
+        </select>
+        会员组状态：
+        <select name="is_effect" id="is_effect">
+            <option <if condition="$_REQUEST['is_effect'] eq 'all' || trim($_REQUEST['is_effect']) eq ''">selected="selected"</if> value="all">全部</option>
+            <option <if condition="intval($_REQUEST['is_effect']) eq 1">selected="selected"</if> value="1">有效</option>
+            <option <if condition="$_REQUEST['is_effect'] neq 'all' && trim($_REQUEST['is_effect']) neq '' && intval($_REQUEST['is_effect']) eq 0">selected="selected"</if> value="0">无效</option>
+        </select>
+        机构/打包比例：
+        <select name="pack_ratio" >
+            <option value="-1" <if condition="$_REQUEST['pack_ratio'] eq -1">selected="selected"</if>>全部</option>
+            <foreach name="pack_ratio" item="item">
+                <option value="{$item}" <if condition="$item eq $_REQUEST['pack_ratio']">selected="selected"</if>>{$item}</option>
+            </foreach>
+        </select>
+        打包比例上限：
+        <select name="max_pack_ratio" >
+            <option value="-1" <if condition="$_REQUEST['max_pack_ratio'] eq -1">selected="selected"</if>>全部</option>
+            <foreach name="max_pack_ratio" item="item">
+                <option value="{$item}" <if condition="$item eq $_REQUEST['max_pack_ratio']">selected="selected"</if>>{$item}</option>
+            </foreach>
+        </select>
+        <input type="hidden" value="UserGroup" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<html:list 
+    id="dataTable" 
+    style="dataTable" 
+    name="group" 
+    checkbox="true" 
+    action="true" 
+    datasource="list" 
+    show="id:{%ID}|50px,name:{%USER_GROUP_NAME}:edit,service_status:服务标识,prefix:邀请码前缀,is_effect:会员组状态,basic_group_name:所属政策组,agency_user_name:绑定用户,pack_ratio:机构/打包比例,max_pack_ratio:打包比例上限,is_related:是否联动"
+    actionlist="edit:{%EDIT}, foreverdel:{%FOREVERDEL}" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

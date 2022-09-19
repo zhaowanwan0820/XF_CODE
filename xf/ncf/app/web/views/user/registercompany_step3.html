@@ -1,0 +1,145 @@
+{include file="web/views/header.html"}
+<div class="p_user_register">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_register.css');?>" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_charge.css');?>" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/weebox.css');?>">
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_pwdrule.css');?>" type="text/css" rel="stylesheet">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/oauth/pas_strength_v2.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/risk/frms-fingerprint-min.js')?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_register_company_new.css');?>" type="text/css" rel="stylesheet">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/mulselect/cityData2.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/mulselect/mulselect.v1.1.js');?>" type="text/javascript"></script>
+    <style type="text/css">
+        .ui-form .er-icon, .ui-form .error-wrap{display: none;}
+        .p_user_register .ui-form li { overflow: visible; }
+    </style>
+    <script>
+     $(function() {
+            var mul2 = new Firstp2p.mulselect(".cityDom", {
+                mulDom: ".cityDom",
+                defaultdata: ["{$bankzone_region0}", "{$bankzone_region1}","{$bankzone_region2}"],
+                selectsClass: "select",
+                url: cityJson,
+                jsonsingle:"name",
+                jsonid:"id",
+                jsonmany:"s",
+                selectName:"bankzone_region"
+            });
+        });
+    </script>
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="r-title">
+                <h2>企业开户信息</h2>
+            </div>
+            <div class="step_img step_img3"></div>
+            <div class="reg-mid">
+                <div class="ui-form">
+                    <form action="/enterprise/setup?step=4" method="post" id="reg_v2">
+                        <input type="hidden" name="step" value="3">
+                        <?php echo token_input(); ?>
+                            <input data-label="短信验证码" type="hidden" id="input-code" name="code"  value="">
+                            <ul class="clearfix">
+                                <li class="clearfix" style="*z-index:2">
+                                    <label> 开户名
+                                    </label>
+                                    <input type="text" readonly="readonly" value="{$company_name}" data-value="{$company_name}" data-con="require" placeholder="输入文本..." name="card_name" id="card_name" class="txt int_placeholder" data-placeholder="输入文本...">
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                                <li class="clearfix" style="*z-index:2;">
+                                    <label> 银行账号
+                                    </label>
+                                    <input type="text" value="{$bankcard}" data-con="require" placeholder="输入文本..." name="bankcard" class="txt int_placeholder" data-placeholder="输入文本..." onkeyup="value=value.replace(/[\W]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                                <li class="tel-ver clearfix" style="*z-index:2">
+                                    <label> 开户行名称
+                                    </label>
+                                    <div class="select_box company_reg_select_box JS_bank_name" data-value="{$bank_id}" data-name="bank_id" id="" style="z-index:11">
+                                        <div class="j_select j_select_type JS_bank_id"></div>
+                                        <ul class="none j_selectContent">
+                                            {if $bank_id ne 0}
+                                            <li data-name="{$bank_id}" data-value="{$bank_name}">{$bank_name}</option>
+                                            {/if}
+                                            {foreach from=$bank_list item=type key=key}
+                                                {if $bank_id ne $type.id}
+                                                <li data-name="{$type.id}" data-value="{$type.name}">{$type.name}</option>
+                                                {/if}
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                                <li class="clearfix" style="*z-index:2">
+                                    <label style="padding-top:7px;"> 开户行所在地
+                                    </label>
+                                    <div class="clearfix">
+                                        <div class="cityDom JS_bankzone_region" selectname="bankzone_region" data-bankzone_region0="{$bankzone_region0}" data-bankzone_region1="{$bankzone_region1}" data-bankzone_region2="{$bankzone_region2}"></div>
+                                    </div>
+                                </li>
+                                <li class="tel-ver clearfix" style="*z-index:2">
+                                    <label> 开户网点
+                                    </label>
+                                    <div class="select_box company_reg_select_box JS_bankzone" data-value="{$bankzone}" data-name="bankzone" id="" style="z-index:11">
+                                        <input type="hidden" name="bankzone" id="bankzone" value="">
+                                        <div class="j_select j_select_type tit_bankwangdian"></div>
+                                        <ul class="none j_selectContent bankwangdian">
+                                        </ul>
+                                    </div>
+
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="btn-w30">
+                                {if false == $source }
+                                    <input class="btn-sub" type="submit" id="submit_button" value="下一步">
+                                {else /}
+                                    <input class="btn-sub" type="submit" id="submit_button" value="完成">
+                                {/if}
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+<!-- 短信验证码弹出框 -->
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.bgiframe.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.weebox.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/p2p-ui-checkbox.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/p2p_validate.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/user_reg_company_step1.js');?>?123124"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/jquery_placeholder-1.0.js');?>"></script>
+<script type="text/javascript">
+var nogetCode = '{function name="get_adv" x="短信验证码获取文案_2015"}';
+if (nogetCode == "") {
+    nogetCode = '如未收到验证码，我们将以18401558140~18401558149号段再次发送，或拨打客服热线 <span style="color:#f75939;">400-890-9888</span>（工作时间 8:00-20:00）。';
+}
+
+</script>
+{include file="web/views/footer.html"}

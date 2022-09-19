@@ -1,0 +1,53 @@
+<link href="<?php echo $this->asset->makeUrl('v3/css/duotou/p_finplan_information.css');?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.1.css');?>" rel="stylesheet" type="text/css" />
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+
+<div class="w1100 p_mapst_detail p_info_common">
+    <div class="main ui-box mt20 clearfix">
+        <div class="user_title">
+            <h1 class="fl"><i class="ico_huankuan"></i>债务信息</h1>
+        </div>
+        <div class="mapst_table">
+            <div class="pro_detailed clearfix">
+                {if empty($mappingStats)}
+                <div class="empty-box">没有记录</div>
+                {else}
+                <table class="plan zj_tab">
+                    <colgroup>
+                        <col width="366">
+                        <col width="366">
+                        <col width="366">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>债权转让日期</th>
+                            <th>当日债务余额（元）</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$mappingStats item=log key=key}
+                        <tr>
+                            <td>
+                                <span>{$log.mapping_date_show}</span>
+                            </td>
+                            <td>
+                                <span>{function name="number_format" v="$log.money" f="2"}</span>
+                            </td>
+                            <td>
+                                <a href="/finplan/MappingStatsdetail?deal_id={$log.p2p_deal_id}&date={$log.mapping_date}&page_num=1&page_size=15" class="clblue">查看详情</a>
+                            </td>
+                        </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+                <div class="pages">
+                    {if $pages gt 1}
+                        {$pagination}
+                    {/if}
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>

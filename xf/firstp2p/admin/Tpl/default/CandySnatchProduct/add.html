@@ -1,0 +1,115 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">新增商品
+        <a href="m.php?m=CandySnatchProduct&a=index" class="back_list">返回列表</a>
+</div>
+<div class="blank5"></div>
+<form method='get' id="form" name="form" action="__APP__" >
+    <table cellpadding="4" cellspacing="0" border="0" class="form">
+        <tr>
+            <td colspan="2" class="topTd"></td>
+        </tr>
+        <tr>
+            <td class="item_title">商品名称</td>
+            <td class="item_input">
+                <input type="text" class="textbox require" name="short_title" />
+                &emsp;
+                <span class="tip_span">IPHONEX</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品详细信息</td>
+            <td class="item_input">
+                <input type="text" class="textbox require" name="title" />
+                &emsp;
+                <span class="tip_span">IPHONEX大屏双摄，全面屏</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">每日库存</td>
+            <td class="item_input">
+                <input type="text" class="textbox require" name="stock" />
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">所需信宝</td>
+            <td class="item_input">
+                <input type="text" class="textbox require" name="price" />
+                &emsp;
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品首页图片和滑动图片路径</td>
+            <td class="item_input appendChild">
+                <span style="display: inline-block;" class="btn_add" onclick="">继续添加</span>
+                <input type="text" class="textbox require" name="images[]" />
+                <div class="dom_div" style="display:inline-block"></div>
+                <span style="display:inline-block" class="btn_del">删除</span>
+                <span class="tip_span" id="tip_span">&emsp;上传完整url,删除为最后一个</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品详情图片路径</td>
+            <td class="item_input">
+                <input type="text" class="textbox require" name="detail" />
+                &emsp;
+                <span class="tip_span">完整url</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品种类</td>
+            <td class="item_input">
+                <input type="text" class="textbox require" name="type" />
+                &emsp;
+                <span class="tip_span">0：普通商品 1：双十一商品 2：邀请专享商品 3: 女神节商品</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品排序</td>
+            <td class="item_input">
+                <input type="text" class="textbox require" name="sort" />
+                &emsp;
+                <span class="tip_span">排序值须在100以上才有置顶功能（100以下可以局部移动商品位置）;邀请专享商品请填9999，确保可置顶</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">商品状态</td>
+            <td class="item_input">
+                <select class="textbox require" name="status">
+                    <option value="1">下线</option>
+                    <option value="0">上线</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title"></td>
+            <td class="item_input">
+                <input type="submit" class="button" value="确认新增" />
+                <input type="reset" class="button" value="重置" />
+            </td>
+        </tr>
+        <input type="hidden" name="m" value="CandySnatchProduct" />
+        <input type="hidden" name="a" value="save" />
+        <tr>
+            <td colspan="2" class="bottomTd"></td>
+        </tr>
+    </table>
+</form>
+</div>
+<script>
+    $('.btn_add').click(function(e){
+        var event = e || window.event;
+        event.preventDefault;
+        var dom = $('<input type="text" class="textbox require" name="images[]" />');
+        $('.dom_div').append(dom)
+    })
+    $('.btn_del').click(function(e){
+        var event = e || window.event;
+        event.preventDefault;
+        var dom = $('.dom_div');
+        dom.find('input').eq(-1).remove();
+    })
+</script>
+<include file="Public:footer" />

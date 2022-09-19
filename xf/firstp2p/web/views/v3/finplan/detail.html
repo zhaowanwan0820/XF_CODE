@@ -1,0 +1,217 @@
+{include file="web/views/v3/header.html"}
+
+<link href="<?php echo $this->asset->makeUrl('v3/css/duotou/p_finplan_detail.css');?>" rel="stylesheet" type="text/css">
+<link  href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.1.3.css');?>" rel="stylesheet" type="text/css">
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.1.css');?>" rel="stylesheet" type="text/css" />
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/duotou/deal_detail.js');?>"></script>
+<script type="text/javascript">
+    var isSvUser = '{$user_info.isSvUser}';
+    var isSvOpen = '{$isSvOpen}';
+    var needGrantStr='{$grantInfo.needGrantStr}';
+</script>
+    <!--面包屑导航开始-->
+    <section class="crumbs">
+        <div class="w1100">
+            <a href="/">首页</a>
+            <i></i>
+            <span>智多新</span>
+        </div>
+    </section>
+    <!--面包屑导航结束-->
+<div class="w1100">
+
+    <!-- 是否为新用户 -->
+    <input type="hidden" id='isNewUser' name="isNewUser" value="{$isNewUser}" />
+    <!-- 新用户单笔最低金额 -->
+    <input type="hidden" id='newUserMinLoanMoney' name="newUserMinLoanMoney" value="{$activityInfo.new_user_min_invest_money}" />
+    <input type="hidden" id='lock_day' name="lock_day" value="{$activityInfo.lock_day}" />
+    <form action="" method="post" name="BidForm" id="BidForm">
+    <!-- 活动id-->
+    <input type="hidden" id='deal_id' name="activity_id" value="{$activityInfo.id}" />
+    <!-- 项目id -->
+    <input type="hidden" id='project_id' name="id" value="{$id}" />
+    <!-- 投资券 -->
+    <input type="hidden" id="discountId" name="discountId">
+    <input type="hidden" id="discountType" name="discountType">
+    <input type="hidden" id="discountGroupId" name="discountGroupId">
+    <input type="hidden" id="discountSign" name="discountSign">
+    <input type="hidden" id="discountDetail" name="discountDetail">
+    <input type="hidden" id="discountGoodsPrice" name="discountGoodsPrice">
+    <input type="hidden" id="discountGoodsType" name="discountGoodsType">
+    <input type="hidden" id="discountAvaliableCount" name="discountAvaliableCount">
+    <!-- siteId -->
+    <input type="hidden" id="siteId" name="siteId" value="{$siteId}">
+    <input type="hidden" id="projectRiskHidden" value="{$needReAssess}"
+           data-num="{$remainAssessNum}"
+           data-assessmen="{$riskLevel}"
+    />
+    <!-- 判断登录站点是否为普惠 -->
+    <input type="hidden" id="isForbidTransferHidden" value="{$isFromWxlc}"/>
+    <!-- 可用余额 -->
+    <input type="hidden" id="totalMoneyHidden" value="{$total_money}"/>
+    <?php echo token_input(); ?>
+        <div class="p_finplan_detail">
+            <section>
+            <div class="touzi_top clearfix">
+                    <div class="title_box">
+                        <h1 class="fl">
+                        <span class="dt-tit">
+                            {$activityInfo.name}
+                        </span>
+                            {if isset($deal.tagBeforeName) && $deal.tagBeforeName != ''}
+                            <span class="icon_tit" title="{$deal.tagBeforeDesc}">{$deal.tagBeforeName}</span>
+                            {/if}
+                            {if isset($deal.tagAfterName) && $deal.tagAfterName != ''}
+                            <span class="icon_tit" title="{$deal.tagAfterDesc}">{$deal.tagAfterName}</span>
+                            {/if}
+                        </h1>
+                    </div>
+
+                    <div class="detail_data">
+                    <ul class="data_top clearfix">
+                    <li><div class="tit color_gray">{$deal.rateYearTag}</div><div class="cont color_red f24 bottom6"><span class="f30">{$activityInfo.min_rate}</span>%~<span class="f30">{$activityInfo.max_rate}</span>%</div></li>
+                    <li><div class="tit color_gray">计息方式</div><div class="cont f24">匹配后按日计算</div> </li>
+                    <li><div class="tit color_gray">最低加入金额</div>
+                        <div class="cont f24">
+                            <span class="f36">
+                                {if $isNewUser eq 1 and $activityInfo.new_user_min_invest_money gt 0} {$activityInfo.new_user_min_invest_money}{else}{$activityInfo.min_invest_money}{/if}</span>元
+                        </div>
+                        </li>
+                    <li class="bor_none"><div class="tit color_gray">当前加入</div><div class="cont f24"><span class="f36">{$deal.peopleCount}</span>人</div></li></ul>
+                    <ul class="related_instruction clearfix">
+                        <li><div class="tit">期限</div><div class="cont">{if $activityInfo.lock_day lte 1}<span className="f18">1天可申请转让/退出</span>{else}<span className="f18">{$activityInfo.lock_day}</span>天可申请转让/退出{/if}
+                        </div></li>
+                        <li><div class="tit">结息日</div><div class="cont">按加入资产还款日结算利息</div></li>
+                        <li><div class="tit">转让/退出限额</div><div class="cont">当日智多新可转让/退出额度{function name="number_format" v="$deal.day_redemption" f="2"}元</div></li>
+                        
+                        <li><div class="tit">底层资产募集期</div><div class="cont">{$loanPeriod}</div></li>
+                        <li><div class="tit">管理服务费</div><div class="cont">{if $deal.feeDays gt 0 && $deal.feeRate gt 0}本金的年化{function name="number_format" v="$deal.feeRate" f="2"}%，满{$deal.feeDays}天免收{else}免费{/if}</div></li>
+                        <li><div class="tit">顾问服务费</div><div class="cont">{$advisorFee}</div></li>
+                        <li><div class="tit">温馨提示</div><div class="cont">您未能成功转让的债权需继续持有，通过智多新匹配的资产期限最长为36个月。</div></li>
+                        <li><div class="tit">加入限制</div><div class="cont">每人最多加入{$deal.single}笔，其中 1 天可申请转让/退出期限最多加入{$deal.quickLoanCount}笔(转让/退出后可再加入)</div></li>
+                    </ul>
+                </div>
+            </div>
+            </section>
+            <section>
+          <div class="main ui-box mt20 clearfix">
+            <div class="h-title">
+                <h2><i></i>加入</h2></div>
+            <div class="con_width">
+                <div class="mb10 f24">可用余额：<span class="color_red">{function name="number_format" v=$total_money f=2}元<span class="f16">(含&nbsp{function name="format_price" value=$bonus b=0}&nbsp{$new_bonus_unit}{$new_bonus_title})</span></span>
+                <a href="/account/chargeP2P" class="blue f14 incharge_done">充值</a>
+                </div>
+                {if $user_info.isSvUser}
+                <!-- <div class='cash_detail'>
+                    <span class="cg_cash">网信账户现金余额：</span>
+                    <span><em class="color-yellow1 xj-em">{function name="format_price" value=$moneyInfo.wxCashMoney b=0}&nbsp</em>元</span>
+                </div>
+                <div class="cash_detail mb20">
+                    <span class="cg_cash">网贷P2P账户现金余额：</span>
+                    <span><em class="color-yellow1 xj-em">{function name="format_price" value=$moneyInfo.svCashMoney b=0}&nbsp</em>元 {if $isSvDown}<span style="color:red">（海口联合农商银行系统维护，</br>暂不可用）</span>{/if}</span>
+                </div> -->
+                {/if}
+                <div class="input_wrap clearfix">
+                    <div class="ipt_text {if $is_open}bg_gray{/if}">
+                        <input type="text"  name="bid_money" class="ipt_key j_ipt_key {if $is_open}bg_gray{/if}" {if $is_open}disabled="disabled"{/if}  id="J_BIDMONEY"  value="{if $isNewUser eq 1 and $activityInfo.new_user_min_invest_money gt 0}{$activityInfo.new_user_min_invest_money}{else}{$activityInfo.min_invest_money}{/if}" data-min="{if $isNewUser eq 1 and $activityInfo.new_user_min_invest_money gt 0}{$activityInfo.new_user_min_invest_money}{else}{$activityInfo.min_invest_money}{/if}" data-max="{$deal.max_loan_money}" data-keyong='{function name="number_format" v=$total_money f=2}' data-remainmoneyday ="{$deal.remainMoneyDay}"><span class="yuan">元</span>
+                        <div class="qtou_btn">
+                            <div class="pt5">全部</div>
+                            <div>加入</div>
+                        </div>
+                    </div>
+                    {if $is_open}
+                    <div class="info ml10 color_red">每日{$deal.loanStartTime}-{$deal.loanEndTime}开放加入</div>
+                    {elseif $deal.isFull}
+                    <div class="info ml10 color_red">今日额度已满，请明日再来</div>
+                    {/if}
+                </div>
+                <div class="color_gray mt15">1份债权价值0.01元，{if $isNewUser eq 1 and $activityInfo.new_user_min_invest_money gt 0} {$activityInfo.new_user_min_invest_money}{else}{$activityInfo.min_invest_money}{/if}元起单笔限额{function name="number_format" v="$deal.max_loan_money" f="0"}元</div>
+
+                <div class="tzq_tit" id="tzq_tit"><i></i></div>
+                <div class="tzq_choose"  id="tzq_choose" style="display:none;">
+                    <div class="tzq_seclect" id="tzq_seclect">
+
+                        <span class="active">返现券</span>{if $activityInfo.lock_day gt 1}<span>加息券</span>{/if}
+                    </div>
+                    <div class="tzq_cont" id="tzq_cont">
+                    </div>
+                </div>
+                <script id="cer_data" type="text/html">
+                    <% if (list.length <= 0) { %>
+                    <% if (type == 1) { %>
+                    <div class="zw">暂无返现券</div>
+                    <% } else { %>
+                    <div class="zw">暂无加息券</div>
+                    <% } %>
+                    <% } else { %>
+                    <table cellspacing="0" cellpadding="0" border="0" class="tzq_table">
+                        <colgroup>
+                            <col width="214">
+                            <col width="200">
+                            <col width="230">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>面值／类型</th>
+                            <th>加入金额</th>
+                            <th>有效期至</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for (var i = 0; i < list.length; i++) { %>
+                        <tr>
+                            <td class="pl20 tl">
+                                <input type="radio" name="fav" id="discount_<%= list[i].discountSign %>" class="zjq_radio" data-discount='{"discountId":"<%= list[i].discountId %>","discountType":"<%= list[i].discountType %>","discountGroupId":"<%= list[i].discountGroupId %>","discountSign":"<%= list[i].discountSign %>","discountGoodsPrice":"<%= list[i].money %>","discountDetail":"<%= list[i].discountDetail %>", "discountGoodsType": "<%= list[i].discountGoodsType %>", "discountTypeDesp": "<%= list[i].discountTypeDesp %>"}' data-price="<%= list[i].discountGoodPrice %>"><span class="fx_money"><%= list[i].money %></span><% if ( type == 1) { %>元 返现券
+                                <% } else { %>% 加息券<% } %>
+                            </td>
+                            <td>满<span class="max_money"><%= list[i].deal_money %></span>元</td>
+                            <td><%= list[i].effective_end_time %></td>
+                        </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="pagination"></div>
+                    <% } %>
+                </script>
+
+                <div class="algin_c pb30 mt40">
+                    <input type="button" id="J_bid_submit" class="button_confirm1 {if $is_open or $deal.isFull}ui-btn-disable{/if}" {if $is_open or $deal.isFull}disabled="true"{/if} value="同意协议并加入">
+                    <div class="xieyi mt20 pl100">查看<a href="javascript:void(0)" class="blue" id="j_xieyi">《顾问协议》</a></div>
+                    {if !$isSvDown}
+                    {if $isShowQuickBidAuthLink}
+                    <!--<p class="mm_service mm_finplan">
+                           尚未开通快捷投资服务<a class="doOpen cg_openFreePs" target="_blank" href="/payment/Transit?srv=freePaymentQuickBid">去开通></a>
+                    </p>-->
+                    {/if}
+                    {/if}
+                </div>
+                </div>
+            </div>
+            </section>
+        </div>
+    </form>
+
+    <div id="is_risk" style="display:none;">{$needForceAssess}</div>
+    <div id="backurl" style="display:none;">{$backurl}</div>
+    <div id="investCount" style="display:none;">{$deal.investCount}</div>
+    <div id="loanCount" style="display:none;">{$deal.loanCount}</div>
+    <!-- 投资一天锁定期的持有笔数 -->
+    <div id="quickInvestCount" style="display:none;">{$deal.quickInvestCount}</div>
+    <!-- 灵活投每人每天最多加入笔数 -->
+    <div id="quickLoanCount" style="display:none;">{$deal.quickLoanCount}</div>
+</div>
+<script>
+    /*诸葛埋点jyy4：click*/
+    var inchargeDone = document.getElementsByClassName("incharge_done")[0];
+    // console.log(inchargeDone);
+    inchargeDone.onclick = function(){
+        zhuge.track('产品详情页点击充值',{
+            '适用产品':'P2P/智多新'
+        });	
+    }
+    /*诸葛埋点jyy4*/
+
+
+</script>
+{include file="web/views/v3/footer.html"}

@@ -1,0 +1,39 @@
+{// 引入标签库 }
+<div class="main">
+
+        <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+            <tr>
+                <td colspan="17" class="topTd" >&nbsp; </td>
+            </tr>
+            <tr class="row">
+                <th>标的ID</th>
+                <th style="width:250px">操作</th>
+            </tr>
+            <volist name="list" key = "deal_id" id="istrue">
+                <tr class="row" id="{$key}">
+                    <td>{$key}</td>
+                    <td>
+                        <a href="javascript:gaichuo({$key})" target="_blank">手动加盖(按标)</a>&nbsp;
+                        <a href="m.php?m=Contract&a=checkTsa&deal_id={$key}" target="_blank">签署详情</a>
+                    </td>
+                </tr>
+            </volist>
+        </table>
+</div>
+<script>
+    function gaichuo(deal_id) {
+        $.ajax({
+            url: ROOT+"?m=Contract&a=signTsaWithId&id="+deal_id+"&serviceType=1",
+            data: '',
+            dataType: "json",
+            success: function(obj){
+                if(obj.errno == 0) {
+                    alert("加入盖戳队列成功");
+                    //$("#"+deal_id).remove();
+                }else{
+                    alert("盖戳失败");
+                }
+            }
+        });
+    }
+</script>

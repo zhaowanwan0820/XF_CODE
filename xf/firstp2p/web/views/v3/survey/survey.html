@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>穷癌测试</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no">
+  <link href="<?php echo $this->asset->makeUrl('v3/css/survey.css');?>" rel="stylesheet" />
+  <script src="<?php echo $this->asset->makeUrl('v3/js/common/jquery-1.10.2.min.js');?>"></script>
+  <script src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+  <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/base.js');?>"></script>
+</head>
+
+<body>
+  <div class="container">
+    <input type="hidden" id="percent">
+    <!-- 微信分享遮罩层 -->
+    <div class="mask_winxin">
+      <div><img src="<?php echo $this->asset->makeUrl('v3/images/survey/mask_weixin.png');?>" id="mask_img"></div>
+    </div>
+    <!-- 活动关闭遮罩层 -->
+    <div class="close_act">
+      <div class="mask_over"></div>
+      <div class="active_over">很抱歉，您参加的活动已结束。还有其他活动，敬请期待...</div>
+    </div>
+    <!--问卷首页-->
+    <div class="s_index index_bg">
+      <div class="index_main margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/index_main.png');?>">
+      </div>
+      <div class="index_item margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/index_item.png');?>">
+      </div>
+      <div class="index_btn margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/index_btn.png');?>">
+      </div>
+    </div>
+    <!--第一题-->
+    <div class="more_money ques_bg question">
+      <div class="more_money_tit margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/more_money.png');?>">
+      </div>
+      <div class="more_choose margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/more_choose.png');?>">
+      </div>
+      <div class="more_choose_warn">请选择答案！</div>
+      <div class="answer_box margin">
+        <div class="answer_cont cont_1">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/more_money_1.png');?>">
+        </div>
+        <div class="answer_cont cont_1">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/more_money_2.png');?>">
+        </div>
+        <div class="answer_cont cont_1">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/more_money_3.png');?>">
+        </div>
+        <div class="answer_cont cont_1">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/more_money_4.png');?>">
+        </div>
+      </div>
+      <div class="more_money_btn margin next">
+      </div>
+    </div>
+    <!--第二题-->
+    <div class="income ques_bg question">
+      <div class="come_back" id="back_2">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/come_back.png');?>">
+      </div>
+      <div class="income_tit margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/income.png');?>">
+      </div>
+      <div class="answer_box margin answer_box_2">
+        <div class="answer_cont cont_2 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/income_one.png');?>" style="height: .18rem; width: .73rem">
+        </div>
+        <div class="answer_cont cont_2 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/income_two.png');?>" style="height: .18rem; width: 1.25rem">
+        </div>
+        <div class="answer_cont cont_2 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/income_three.png');?>" style="height: .18rem; width: 1.62rem">
+        </div>
+        <div class="answer_cont cont_2 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/income_four.png');?>" style="height: .18rem; width: .97rem">
+        </div>
+        <div class="answer_cont cont_2 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/income_five.png');?>" style="height: .18rem; width: .69rem">
+        </div>
+      </div>
+    </div>
+    <!--第三题-->
+    <div class="cost ques_bg question">
+      <div class="come_back" id="back_3">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/come_back.png');?>">
+      </div>
+      <div class="cost_tit margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/cost.png');?>">
+      </div>
+      <div class="answer_box margin answer_box_2">
+        <div class="answer_cont cont_3 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/cost_1.png');?>" style="height: .18rem; width: .66rem">
+        </div>
+        <div class="answer_cont cont_3 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/cost_2.png');?>" style="height: .18rem; width: .32rem">
+        </div>
+        <div class="answer_cont cont_3 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/cost_3.png');?>" style="height: .18rem; width: .32rem">
+        </div>
+        <div class="answer_cont cont_3 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/cost_4.png');?>" style="height: .18rem; width: .73rem">
+        </div>
+      </div>
+    </div>
+    <!--第四题-->
+    <div class="money_manage ques_bg question">
+      <div class="come_back" id="back_4">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/come_back.png');?>">
+      </div>
+      <div class="money_manage_tit margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/money_manage.png');?>">
+      </div>
+      <div class="answer_box margin answer_box_2" data-index="3">
+        <div class="answer_cont cont_4 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/manage_1.png');?>" style="height: .18rem; width: 1.63rem">
+        </div>
+        <div class="answer_cont cont_4 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/manage_2.png');?>" style="height: .18rem; width: 1.63rem">
+        </div>
+        <div class="answer_cont cont_4 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/manage_3.png');?>" style="height: .18rem; width: .55rem">
+        </div>
+        <div class="answer_cont cont_4 cont_radio next">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/manage_4.png');?>" style="height: .18rem; width: .73rem">
+        </div>
+      </div>
+    </div>
+    <!--穷癌检测报告-->
+    <div class="survey_results index_bg">
+      <div class="result_main margin">
+        <div class="main_scale">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/main_scale.png');?>">
+        </div>
+        <div class="re_scale"></div>
+      </div>
+      <div class="result_btn_box">
+        <div class="result_btn_1 result_btn"></div>
+        <a class="result_btn_2 result_btn"></a>
+      </div>
+    </div>
+    <!--不要放弃治疗-->
+    <div class="quan index_bg">
+      <div class="quan_tit margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/tit_88.png');?>">
+      </div>
+      <div class="quan_main margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/quan.png');?>">
+      </div>
+      <div class="quan_btn margin"></div>
+      <div class="quan_footer margin">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/survey/bottom_item.png');?>">
+      </div>
+    </div>
+    <!--遮罩层-->
+    <div class="mask">
+      <div class="mask_bg"></div>
+      <div class="mask_main margin">
+        <div class="phone_warn">请输入正确的格式！</div>
+        <input type="tel" class="mast_input mask_background" maxLength="11" />
+        <?php echo token_input(); ?>
+        <a href="#" class="mask_btn mask_btn_0"></a>
+        <a href="#" class="mask_back"></a>
+      </div>
+    </div>
+    <!-- 领取奖励 -->
+    <div class="reward index_bg reward_111">
+      <div class="reward_content">
+        <div class="reward_tit">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/reward_tit.png');?>">
+        </div>
+        <div class="reward_main">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/reward_main_888.png');?>">
+        </div>
+        <a class="reward_btn" href="https://m.ncfwx.com/">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/reward_btn.png');?>">
+        </a>
+        <div class="reward_footer">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/bottom_item.png');?>">
+        </div>
+      </div>
+    </div>
+    <!-- 领取奖励qiong -->
+    <div class="reward index_bg reward_222">
+      <div class="reward_content">
+        <div class="reward_tit">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/reward_tit_00.png');?>">
+        </div>
+        <div class="reward_main">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/reward_main_88.png');?>">
+        </div>
+        <a class="reward_btn" href="https://m.ncfwx.com/">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/survey/bottom_item_00.png');?>">
+          </a>
+        <div class="reward_footer">
+          <img src="<?php echo $this->asset->makeUrl('v3/images/survey/bottom_item.png');?>">
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <input type='hidden' id='a_token' name='a_token' value='{$a_token}' />
+  <input type='hidden' id='is_valid' name='is_valid' value='{$is_valid}' />
+</body>
+<script>
+  if ($('#is_valid').val() == 0) {
+    $('.close_act').fadeIn();
+  }
+  //判断是否微信
+  var img_url = "https://event.firstp2p.com/upload/image/20170926/16-32-weixin_img.jpg";
+  var rata_weixin_tit1 = "";
+  function weixinFacility() {
+    var userAgentString = window.navigator ? window.navigator.userAgent : "";
+    var weixinreg = /MicroMessenger/i;
+    return weixinreg.test(userAgentString);
+  };
+  //微信中分享朋友圈
+  function share() {
+    if (weixinFacility()) {
+      var wx_enjoy_tit = '我得穷癌的几率' + rata_weixin_tit1 + '，需要安慰';
+      //分享控制
+      var shareOpt = { //分享信息json对象
+        'title': wx_enjoy_tit,
+        'content': '据说穷是一种病，由剁手引起，有哭穷症状，严重者发展成穷癌... ',
+        'url': location.href,
+        'img': img_url
+      };
+      var sharetitle = shareOpt.title;
+      shareOpt.title = shareOpt.title;
+      shareOpt.content = shareOpt.content;
+      var appid = '{$appid}';
+      var nonceStr = '{$nonceStr}';
+      var timeStamp = '{$timeStamp}';
+      var signature = '{$signature}';
+      wx.config({
+        appId: appid,
+        timestamp: timeStamp,
+        nonceStr: nonceStr,
+        signature: signature,
+        jsApiList: [
+          'onMenuShareTimeline',
+          'onMenuShareAppMessage',
+          'hideOptionMenu',
+          'showOptionMenu',
+          'closeWindow'
+        ],
+      });
+      wx.ready(function () {
+        wx.onMenuShareAppMessage({
+          title: shareOpt.title,
+          desc: shareOpt.content,
+          link: shareOpt.url, // 分享链接
+          imgUrl: shareOpt.img
+        });
+        wx.onMenuShareTimeline({
+          title: shareOpt.title,
+          link: shareOpt.url,
+          imgUrl: shareOpt.img
+        });
+      });
+    }
+  }
+  share();
+  if (weixinFacility()) {
+    $('.result_btn_2').click(function () {
+      $('.result_btn_2').attr('href', 'javascript:void(0)');
+      $('.mask_winxin').css('display', 'block');
+    })
+  }
+  //手机适配
+  var winW = document.documentElement.clientWidth;
+  document.documentElement.style.fontSize = winW / 375 * 100 + "px"
+  function s_answer() {
+    var result = [];
+    var $come_back = $('.come_back')
+    var questionKeyArr = ['more_money', 'income', 'cost', 'money_manage'];
+    var currentQuestionIndex = 0;
+    var result_radio = [];
+    var $next = $('.next');
+    //返回按钮
+    $come_back.click(function () {
+      $('.' + questionKeyArr[currentQuestionIndex]).fadeOut()
+      currentQuestionIndex--
+      $('.' + questionKeyArr[currentQuestionIndex]).fadeIn()
+    })
+    //复选样式切换
+    $('.cont_1').click(function () {
+      $(this).toggleClass('cont_1_2')
+    })
+    $next.click(function () {
+      if (currentQuestionIndex == 0) { //复选
+        result[currentQuestionIndex] = [];
+        $('.' + questionKeyArr[currentQuestionIndex]).find('.cont_1').each(function (index, item) {
+          if ($(item).hasClass('cont_1_2')) {
+            result[currentQuestionIndex].push(index)
+            $('.more_choose_warn').hide()
+          }
+        })
+        if (result[0].length <= 0) {
+          $('.more_choose_warn').show();
+        }
+      } else { //单选
+        var $this = $(this)
+        $this.addClass('active_radio').siblings().removeClass('active_radio').addClass('answer_cont');
+        result[currentQuestionIndex] = $this.index()
+      }
+      if (result[0].length > 0) {
+        $('.' + questionKeyArr[currentQuestionIndex]).fadeOut()
+        currentQuestionIndex++
+        $('.' + questionKeyArr[currentQuestionIndex]).fadeIn()
+      }
+    })
+    $('.cont_radio').click(function () {
+      if ($(this).parent().data('index') == 3) {
+        $.ajax({
+          type: 'post',
+          url: '/survey/Assess',
+          dataType: 'json',
+          data: {
+            answers: JSON.stringify(result),
+            a_token: $('#a_token').val(),
+            format: 'json'
+          },
+          success: function (res) {
+            $("#percent").val(res.data.percent);
+            if (res.errno != 0) {
+              P2PWAP.ui.toast(res.error);
+            }
+            // if (res.errno == 0) {
+            $('.money_manage').fadeOut()
+            $('.survey_results').fadeIn('slow');
+            // }
+            //跳转优惠券列表页
+            var link_origin = location.origin.replace(/^(http(s?):\/\/)([^\.]*)\.(firstp2p|wangxinlicai)/, function (_0, _1, _2, _3) {
+              // 线上
+              if (_3 == 'www') return _1 + 'api.ncfwx';
+              // 测试环境
+              return _1 + _3 +  '.api.firstp2p';
+            });
+            var qiongai_token = $('#a_token').val()
+            if (qiongai_token != '') {
+              $('.reward_btn').attr("href", "firstp2p://api?type=webview&url=" + encodeURIComponent(
+                link_origin + "/discount/mine?token=" + qiongai_token))
+            }
+            var rata_weixin_tit = encodeURIComponent(res.data.percent + '%')
+            rata_weixin_tit1 = res.data.percent + '%';
+            share();
+            //键盘按下，去掉placehoder
+            $(".re_scale").html(res.data.percent + "%");
+            var i = res.data.percent;
+            //选择展示的表情和按钮的样式
+            if (i >= 0 && i < 30) {
+              $('.result_main').addClass('result_main_1');
+            } else if (i >= 30 && i < 55) {
+              $('.result_main').addClass('result_main_2');
+            } else if (i >= 55 && i < 80) {
+              $('.result_main').addClass('result_main_3');
+              $('.result_btn_2').addClass('result_btn_2_2');
+              $('.result_btn_1').addClass('result_btn_1_1');
+            } else if (i >= 80 && i < 100) {
+              $('.result_main').addClass('result_main_4');
+              $('.result_btn_2').addClass('result_btn_2_2');
+              $('.result_btn_1').addClass('result_btn_1_1');
+            }
+            //app 中分享朋友圈
+            var res_link = res.data.share_url;
+            $(".result_btn_2").attr("href", "bonus://api?title=我得穷癌的几率" + rata_weixin_tit +
+              "，需要安慰&content=据说穷是一种病，由剁手引起，有哭穷症状，严重者发展成穷癌... &face=" + img_url + "&url=" + res_link)
+
+            //判断用户是否登录
+            $('.result_btn_1').click(function () {
+              if (i >= 55 && i <= 100) {
+                $('.mask_btn').addClass('mask_btn_11')
+              }
+              $('.mast_input').click(function () {
+                $('.mast_input').removeClass('mask_background');
+              })
+              if (res.data.is_login == 0) { //未登录
+                $('.mast_input').val('');
+                $('.mask').fadeIn('slow');
+                //手机号码校验
+                $('.mask_btn_0').click(function () {
+                  var reg = /^0?(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/;
+                  var flag = reg.test($(".mast_input").val()); //true
+                  if (flag == false) {
+                    $('.phone_warn').fadeIn()
+                    setTimeout(function () {
+                      $('.phone_warn').fadeOut()
+                    }, 3000)
+                  } else {
+                    $('.phone_warn').css('display', 'none');
+                    $('.mask').fadeOut();
+                    getAjax4(res)
+                  }
+                })
+              } else { //已登录
+                getAjax3(res)
+              }
+            })
+          },
+          error: function () {
+            P2PWAP.ui.toast('网络错误');
+          }
+        })
+      }
+    });
+  }
+  s_answer();
+  var val;
+  $('.mast_input').on('input', function () {
+    val = $(this).val()
+    // if (val == '') {
+    //   $(this).addClass('mask_background')
+    // } else {
+    //   $(this).removeClass('mask_background');
+    // }
+    return val;
+  })
+  //ajax
+  function getAjax4(res) { //未登录
+    $.ajax({
+      type: 'post',
+      url: '/survey/Award',
+      format: 'json',
+      data: {
+        result_id: res.data.result_id,
+        percent: res.data.percent,
+        mobile: val,
+        token: $('#token').val(),
+        token_id: $('#token_id').val(),
+      },
+      success: function (res_1) {
+        if (res_1.data.is_award == 1) {
+          P2PWAP.ui.toast(res_1.data.errmsg);
+          rata(res_1);
+          return;
+        }
+        if (res_1.errno != 0) {
+          P2PWAP.ui.toast(res_1.error);
+        }
+        // if (res_1.errno == 0) {
+        rata(res)
+        // }
+      },
+      error: function () {
+        P2PWAP.ui.toast('网络错误');
+      }
+    })
+  }
+
+  function getAjax3(res) { //已登录
+    $.ajax({
+      type: 'post',
+      url: '/survey/Gift',
+      dataType: "json",
+      data: {
+        percent: res.data.percent,
+        a_token: $('#a_token').val(),
+        format: 'json',
+        result_id: res.data.result_id
+      },
+      success: function (res_1) {
+        if (res_1.data.is_award == 1) {
+          P2PWAP.ui.toast(res_1.data.errmsg);
+          rata(res_1);
+          return;
+        }
+        if (res_1.errno != 0) {
+          P2PWAP.ui.toast(res_1.error);
+        }
+
+        // if (res_1.errno == 0) {
+        rata(res)
+        // }
+      },
+      error: function () {
+        P2PWAP.ui.toast('网络错误');
+      }
+    });
+  }
+
+  function rata(res) {
+    var i = res.data.percent;
+    if (i >= 0 && i < 30) {
+      $('.reward_111').addClass('reward_youqian')
+      $('.reward_111').fadeIn('slow')
+    } else if (i >= 30 && i < 55) {
+      $('.reward_111').addClass('reward_youqian')
+      $('.reward_111').fadeIn('slow')
+    } else if (i >= 55 && i < 80) {
+      $('.reward_222').addClass('reward_qiong')
+      $('.reward_222').fadeIn('slow')
+    } else if (i >= 80 && i < 100) {
+      $('.reward_222').addClass('reward_qiong')
+      $('.reward_222').fadeIn('slow')
+    }
+  }
+  //填写手机号mask关闭  
+  $(".mast_input").blur(function(){
+      if (!!val){
+        $('.mast_input').removeClass('mask_background');
+      }else {
+        $('.mast_input').addClass('mask_background');        
+      }
+  })
+  $('.mask_back').click(function () {
+    $('.mask').hide();
+    $('.survey_results').show()
+    $('.mast_input').addClass('mask_background');
+  })
+  $(function () {
+    $(".mask_winxin").click(function () {
+      $(this).hide();
+    })
+  })
+  $(function next() {
+    $('.index_btn').click(function () {
+      $('.s_index').fadeOut();
+      $('.more_money').fadeIn('slow');
+    });
+  });
+</script>
+</html>

@@ -1,0 +1,57 @@
+{include file="inc/header_v1.html"}
+{if $stay eq 0}
+<meta http-equiv="refresh" content="{$refresh_time};URL={$jump}"/>
+{/if}
+
+<!--private js&css start-->
+<link href="{$TMPL_NEW}/css/edit-password.css" rel="stylesheet" type="text/css">
+<!--private js&css end-->
+
+<div class="edit-mid">
+    <div class="edit-success"><i class="edit-suc"> </i>
+        <span class="font24">{$LANG.SUCCESS_TITLE}</span>
+    </div>
+    <span class="font16">
+         {if $integrate_result}
+            {$integrate_result}
+         {/if}
+         
+         {$msg}<br/>
+         
+         {if $stay eq 0}
+            {function name="sprintf" format=$LANG.NEW_JUMP_TIP value1=$refresh_time value2=$jump}
+         {/if}
+    </span>
+    <span class="blank80"></span>
+</div>
+<span class="blank80"></span>
+
+{include file="inc/footer.html"}
+
+<!--
+<div class="msg_box success_box mt10 mb10">
+							<h2>
+								<div class="icon"><i></i></div>
+								<span class="tip">{$LANG.SUCCESS_TITLE}</span>
+							</h2>
+						
+							<div class="notice">
+								<p>
+								{if $integrate_result}
+								{$integrate_result}
+								{/if}
+								{$msg}
+								</p>
+								<p>
+									{if $stay eq 0}
+									{function name="sprintf" format=$LANG.JUMP_TIP value=$jump}
+									{/if}
+								</p>
+							</div>
+
+
+</div>
+</div>						
+<div style="background:#f2f2f2; padding:30px;">
+	{function name="app_conf" value="SHOP_FOOTER"} 
+</div>-->

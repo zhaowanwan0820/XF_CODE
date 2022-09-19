@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的奖品</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/flexible.js?1');?>"></script>
+    <link href="<?php echo $this->asset->makeAppUrl('v4.83/css/snatch.css?14');?>" rel="stylesheet" />
+</head>
+
+<body class="snatch_mine_body">
+    <div class="snatch_mine_wrap">
+        <div class="my_prize_wrap">
+            <input type="hidden" value="{$token}" class="token">
+            <!-- 当有数据是显示ul列表 -->
+            <ul class="product_list" style="">
+                {if count($period) eq 0}
+                <!-- 当数据为空时显示这个 -->
+                <div class="my_prize_null">
+                    <div class="null_wrap">
+                        <img src="<?php echo $this->asset->makeAppUrl('v4.83/images/Group 6@3x.png');?>" alt="">
+                    </div>
+                    <p class="null_note">还未获奖哦~</p>
+                    <p class="null_test">多多尝试，一定有惊喜~</p>
+                </div>
+                {else}
+                {foreach from=$period item=item}
+                <a class="JS_todetail snatch_jump_productDetail" href="storemanager://api?type=webview&gobackrefresh=true&url=" data-pram="/candysnatch/SnatchProduct/?token={$token}&periodId={$item.id}">
+                    <li>
+                        <div class="product_left">
+                            {if $item.status eq 2}
+                            <span class="product_status product_status_over">
+                                待发货
+                            </span>
+                            {else}
+                            <span class="product_status">
+                                已发货
+                            </span>
+                            {/if}
+                            <div class="wdjp_inviter_wrap">
+                                <img src={$item.image_main} class="product_img">
+                                {if $item.productInfo.type eq 2}
+                                    <img class="wdjp_inviter_icon" src="<?php echo $this->asset->makeAppUrl('v4.83/images/only_inviter_icon.png');?>" alt="only_inviter_icon">
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="product_right product_right_prize">
+                            <p class="product_detail">
+                                <span class="product_name">{$item.productInfo.title}</span>
+                            </p>
+                            <!-- 需要后端状态码来判断是否选择了地址 -->
+                            {if !$item.address}
+                            <p class="prize_my_info">
+                                恭喜您获奖！
+                            </p>
+                            {else}
+                            <p class="prize_my_address">
+                                <span class="user_add_lab">收货地址：</span>
+                                <span class="user_add">{$item.address.area}{$item.address.address}</span>
+                            </p>
+                                {if $item.express_company and $item.express_order_id}
+                                <div class="logistics">
+                                    <div>
+                                        <span class="logistics_left">物流公司：</span>
+                                        <span class="logistics_right">{$item.express_company}</span>
+                                    </div>
+                                    <div>
+                                        <span class="logistics_left">快递单号：</span>
+                                        <span class="logistics_right">{$item.express_order_id}</span>
+                                    </div>
+                                </div>
+                                {/if}
+                            {/if}
+                            <p class="product_issue user_prize_issue">
+                                <span>第{$item.id}期</span>
+                            </p>
+                            {if !$item.address}
+                            <span class="start_snatch JS_goto_add" data-id="{$item.id}">
+                                选择收货地址
+                            </span>                         
+                            {/if}
+                        </div>
+                    </li>
+                </a>
+                {/foreach}
+                {/if}
+            </ul>
+            
+            <div class="prize_btn_wrap">
+                <a class="cli_jump_snatch_now" href="/candysnatch/SnatchAuction?token={$token}&clearCookie=1">继续夺宝</a>
+            </div>
+        </div>
+    </div>
+
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+    <script>
+        WXP2P.APP.triggerScheme("firstp2p://api?type=rightbtn&title=");
+        //跳转隐藏原生头
+        $('.JS_todetail').attr('href',function () {
+            return $(this).attr('href')+encodeURIComponent(location.origin + $(this).data('pram'));
+        })
+        //点击选择收货地址跳转
+        $('.start_snatch').click(function(e){
+            var event = window.event || e;
+            event.stopPropagation();
+            event.preventDefault();
+            var id = $(this).data("id");
+            location.href = "firstp2p://api?type=webview&gobackrefresh=true&url=" + encodeURIComponent(location.origin + '/address/index?token={$token}&entryType=candy_snatch&returnUrl='+id)
+        })
+    </script>
+</body>
+
+</html>

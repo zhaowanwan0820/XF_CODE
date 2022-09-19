@@ -1,0 +1,79 @@
+{if $deal_list}
+<table class="data-table">
+  <thead>
+    <tr>
+      <th style="padding-left:15px;text-align:left">借款标题</th>
+      <th></th>
+      <th style="text-align:left">金额</th>
+      <th style="text-align:left">年化借款利率</th>
+      <th style="text-align:left">期限</th>
+      <th style="text-align:left">完成度</th>
+      <th>发布日期</th>
+    </tr>
+  </thead>
+  <tbody>
+    {foreach from=$deal_list item='deal'}
+    <tr>
+      <td class="cell-icon">
+        <img src="{$deal.icon}" width="50" height="50" alt="{$deal.name}" title="{$deal.name}">
+      </td>
+      <td class="cell-type" width='15%'><a href="{$deal.url}" title='{$deal.name}'>{function name="cutstr" v=$deal.name}</a></td>
+      <td class="cell-money">{$deal.borrow_amount_format_detail}万</td>
+      <td class="cell-interest">{$deal.deal_rate}</td>
+      <td class="cell-term">{$deal.repay_time}{if $deal.loantype == 5}天{else}个月{/if}</td>
+      <td class="cell-completion">
+        <div class="blueProgressBar progressBar w100">
+                        <div class="p"><div class="c" style="width: {function name="round" v=$deal.progress_point f=2}%;"> </div></div>
+                       
+                    </div>
+                    <div>
+                        <p class="f_l" style="width:100%">{function name="round" v=$deal.progress_point}% 已完成</p>
+                    </div>
+      </td>
+      <td class="cell-date">
+        {if $deal.publish_wait eq 1}
+                    <div class="tc">
+                        等待审核
+                    </div>
+                    {elseif $deal.deal_status eq 0}
+                    <div class="tc">
+                        等待确认
+                    </div>
+                    {else}
+                    
+                        {if $deal.publis_wait eq 1 || $deal.publis_wait eq 0}
+                        <div class="tc">
+                        {function name="to_date" v="$deal.create_time" f="Y-m-d"}
+                        </div>
+                        <div class="tc">
+                        {function name="to_date" v="$deal.create_time" f="H:i"}
+                        </div>
+                        {else}
+                        <div class="tc">
+                        {function name="to_date" v="$deal.start_time" f="Y-m-d"}
+                        </div>
+                        <div class="tc">
+                        {function name="to_date" v="$deal.start_time" f="H:i"}
+                        </div>
+                        {/if}
+                    
+                    
+                    <div class="tc">
+                        {if $deal.deal_status eq 3}
+                        流标
+                        {elseif $deal.deal_status eq 4}
+                        还款中
+                        {elseif $deal.deal_status eq 5}
+                        已还清
+                        {/if}
+                    </div>
+                    {/if}
+      </td>
+    </tr>
+    {/foreach}
+  </tbody>
+</table>
+	<div class="pages">{$pages}</div>
+{else}
+<div class="empty-box">没有记录</div>
+{/if}

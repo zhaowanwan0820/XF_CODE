@@ -1,0 +1,71 @@
+{include file="web/views/v3/wxinvest/common/header.html"}
+			<div class="discount_box">
+				<div class="user_info">
+	                {if $senderInfo.headimgurl}
+	                    <div class="left"><img src="{$senderInfo.headimgurl}" alt=""></div>
+	                {else}
+	                    <div class="left"><img src="<?php echo $this->asset->makeUrl('v1/images/hongbao/wx_def.jpg', 1);?>" alt=""></div>
+	                {/if}
+				    <div class="right">
+	                    {if $senderInfo.nickname}
+	                        <p class="user_name">{$senderInfo.nickname}</p>
+	                    {else}
+	                        <p class="user_name">用户 {$senderInfo.mobile}</p>
+	                    {/if}
+	                    <p>送你一张优惠券</p>
+				    </div>
+				</div>
+				<div class="discount_box_top">
+	                <div class="account">优惠券已存入账户{$mobile}<a href="ChangeMobile?sn={$sn}&cn={$cn}&site_id={$site_id}" class="update_phone">修改></a></div>
+					{if $discountInfo.type eq 1}
+	                <dl class="discount type_fanxian clearfix marginBottom0">
+	                {elseif $discountInfo.type eq 2}
+	                <dl class="discount type_jiaxi clearfix marginBottom0">
+	                {elseif $discountInfo.type eq 3}
+	                <dl class="discount type_gold clearfix marginBottom0">
+	                {/if}
+						<dt>
+	                    {if $discountInfo.type eq 1}
+	                    <p><span class="fEm">{$discountInfo.goodsPrice}</span>&nbsp;元</p>
+						<p>返现券</p>
+	                    {elseif $discountInfo.type eq 2}
+	                    <p><span class="f25">{$discountInfo.goodsPrice}</span>&nbsp;%</p>
+						<p>加息券</p>
+	                    {else}
+	                    <p><span class="f25">{$discountInfo.goodsPrice}</span>&nbsp;克</p>
+						<p>黄金券</p>
+	                    {/if}
+						</dt>
+						<dd>
+							<div class="border">
+								<div class="discount_con">
+	                                <p>{$discountInfo.bidAmountDesc}</p>
+	                                <p>{$discountInfo.bidDayLimitDesc}</p>
+	                                <p>{$discountInfo.goodsTimeDesc}</p>
+								</div>
+							</div>
+						</dd>
+					</dl>
+				</div>
+				<div class="discount_box_top discount_box_top2">
+	                <a href="{$downloadUrl}" class="reg_btn">{$downloadDesc}</a>
+				</div>
+				{include file="web/views/v3/wxinvest/line.html"}
+				<div class="discount_box_bottom">
+					{include file="web/views/v3/wxinvest/common/rules.html"}
+				</div>
+			</div>
+			<!-- 控制是否隐藏显示-->
+	        {if $isToast eq 1}
+	        <script>
+	                P2PWAP.ui.showErrorTip("您已经领取过该券");
+	        </script>
+	        {/if}
+			<script>
+				$(".closeBtn").click(function(event) {
+					$(".dialog").hide();
+				});
+			</script>
+		</div>
+    </body>
+</html>

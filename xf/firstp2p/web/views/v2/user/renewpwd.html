@@ -1,0 +1,60 @@
+{include file="web/views/v2/header.html"}
+<div class="p_account_setnewpwd">
+    <link href="<?php echo $this->asset->makeUrl('v2/css/p_account_setnewpwd.css');?>" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/oauth/pas_strength.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/oauth/account_renewpwd.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v2/css/user_pwdrule.css');?>" type="text/css" rel="stylesheet">
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                <h2>
+            <i></i>修改密码
+        </h2>
+                
+            </div>
+            <div class="pwd-mid">
+                <div class="ui-form">
+                    <form method="post" action="/user/savepwdp2p" id="setnew_form" autocomplete="off">
+                        <?php echo token_input(); ?>
+                        <ul>
+                            <li class="clearfix">
+                                <label> 新密码：</label>
+                                <input type="password" value="" data-url="/user/savepwdp2p" placehoder="请设置新的登陆密码" name="new_password" id="new_password" autocomplete="off" data-stretype="1" class="txt int_placeholder" />
+                                {if $error.new_password}
+                                <span class="msg-box n-right" style="" for="new_password"><span class="msg-wrap n-error" role="alert"><span class="n-icon"></span><span class="n-msg">{$error.new_password}</span></span></span>
+                                {/if}
+
+                                <span class="color-gray2 safety-degree">密码安全程度：<span class="color-low">低</span></span>
+                                <div id="tips-pass" class="pass-item-tip-password">
+                                    <div class="pwd-checklist-wrapper"><span class="pwd-checklist-arrow"><em class="arrowa">◆</em><em class="arrowb">◆</em></span>
+                                        <ul id="pwd-checklist" class="pwd-checklist">
+                                            <li class="safety-level"> <span class="pr9">安全程度：</span><span class="process low"></span><span class="process"></span><span class="process"></span><span class="ml4 color-low">低</span>
+                                            </li>
+                                            <li id="" data-rule="len" class="pwd-checklist-item pwd-checklist-item-error">6-20位</li>
+                                            <li id="" data-rule="cha" class="pwd-checklist-item pwd-checklist-item-success">支持数字、大小写字母、标点符号</li>
+                                            <li id="" data-rule="spa" class="pwd-checklist-item pwd-checklist-item-error">不允许有空格</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="clearfix">
+                                <label> 确认密码：</label>
+                                <input type="password" value="" name="confirmPassword" id="confirmPassword" class="txt int_placeholder" autocomplete="off" placehoder="请再次输入">
+                                {if $error.confirmPassword}
+                                <span class="msg-box n-right" style="" for="confirmPassword"><span class="msg-wrap n-error" role="alert"><span class="n-icon"></span><span class="n-msg">{$error.confirmPassword}</span></span></span>
+                                {/if}
+                               
+                            </li>
+                        </ul>
+                        <div class="btn-w30">
+                            <input class="common-sprite btn-red-h46" id="settings-submit" type="submit" value="确定">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+{include file="web/views/v2/footer.html"}

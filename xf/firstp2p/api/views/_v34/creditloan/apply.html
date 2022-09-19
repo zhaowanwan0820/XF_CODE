@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>申请借款</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/apply.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-common.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="wrap container"> 
+    <input type="hidden" value="{$unique_id}" id="unique_id" />
+      <form action="" method="get" id="postForm">
+      <?php /**  <form action="/creditloan/bankHome?token={$token}&deal_id={$credit_deal.id}" method="get" id="postForm"> **/ ?>
+      <input type="hidden" value="{$credit_deal.totalmoney}" name="totalmoney" />
+      <input type="hidden" value="{$credit_deal.duration}" name="duration" />
+      <input type="hidden" value="{$credit_deal.rate}" name="rate" />
+      <input type="hidden" value="{$credit_deal.service_fee_rate}" name="service_fee_rate" />
+      <input type="hidden" value="{$credit_deal.day_cost}" name="day_cost" />
+        <div class="apply_loan">
+            <div class="apply_text">
+                <div class="a_text_top">
+                    <p class="text_1">参考金额(元)</p>
+                    <p class="text_2">实际金额以银行结果为准</p>
+                    <p class="text_3" id="format_num">{$credit_deal.totalmoney}</p>
+                </div>
+                <div class="a_text_middle">
+                    <p class="a_text_p"><span>可使用天数</span><span class="c_right">{$credit_deal.duration}天</span></p>
+                    <div class="a_cost">
+                        <div class="c_left">
+                            <span>总成本</span>
+                        </div>
+                        <div class="c_right">
+                            <p><span>年化{$credit_deal.rate}%</span><span class="gray">(含{$credit_deal.service_fee_rate}%业务信息服务费)</span></p>
+                            <p class="gray c_right">每万元成本约{$credit_deal.day_cost}元/日</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="/creditloan/protocol?token={$token}">
+                <div class="inf" style="height:52px;line-height:52px;">
+                    <input id="user_protocol" type="hidden">
+                    <div id="user_list" class="list_text" style="height:52px;line-height:52px;">
+                    用户服务协议 
+                    <i class="holder" id="user_list_choice">查看详情</i>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="loan_bank">
+                <div class="inf">
+                    <input id="bankname" type="hidden" name="bankname">
+                    <div id="bank_l" class="list_text">
+                        <p style="display:inline-block;float:left;">借款银行</p>
+                        <i class="holder" id="bank_list_choice">请选择</i>
+                    </div>
+                </div>
+            </div>
+            <div class="but"><input id="next_but" type="button"  value="同意协议并提交申请" disabled="disabled"></div>
+            <div class="point_out">
+                <p class="pl15 pr15 w_b">该笔申请以标的<span class="red">“{$credit_deal.name}”</span>为保障，成功后标的投资本金将被冻结，项目到期<span class="red">自动还款。</span></p>
+            </div>
+        </div>
+        </form>
+
+    </div>
+    <div class="bg_cover dis_none"></div>
+    <div id="p_bank_choice" class="p_bank_list">
+        <div class="ui_title"><a class="ui_back" id="back_but" href="javascript:void(0)"><i class="ui_icon_back"></i></a>选择银行</div>
+        <ul id="bank_ul">
+        {foreach from=$bank_list item=list}
+            <li {if $list.is_effect  eq 1} class="point_bank"  {/if} data-id="{$list.id}">
+            <div class="ml15 border_b" id="bank_div">
+            {if $list.id eq 1}
+            <img src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/haikou_bank.png');?>">
+            {elseif $list.id eq 2}
+            <img class="gray" src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/bohai_bank.png');?>">
+             {elseif $list.id eq 3}
+            <img class="gray" src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/jiangsu_bank.png');?>">
+             {elseif $list.id eq 4}
+            <img class="gray" src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/huaxia_bank.png');?>">
+             {elseif $list.id eq 5}
+            <img class="gray" src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/tianjin_bank.png');?>">
+            {/if}
+            <span>{$list.name}</span>
+            </div>
+            </li>
+        {/foreach}  
+        </ul>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('js/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/creditloan/apply_loan.js');?>"></script>
+<?php
+/**
+    <script type="text/javascript">
+        var _inChargeRequest = false;
+        function upateSubmitButton() {
+            var disabled = _inChargeRequest;
+            if (disabled) {
+                $('#next_but').attr('disabled', 'disabled');
+            } else {
+                $('#next_but').removeAttr('disabled');
+            }
+        }
+        $("#postForm").submit(function(){
+
+            if(_inChargeRequest || !$("#bankname").val()) return false;
+            _inChargeRequest = true;
+            upateSubmitButton();
+                P2PWAP.util.request($("#postForm").attr("action") + "&" + $("#postForm").serialize() , function(data){
+                    $('#h5chargeFormDiv').remove();
+                    $('body').append('<div id="h5chargeFormDiv" style="display:none;"></div>');
+                    $('#h5chargeFormDiv').append(data.form);
+                    $('#unitebankForm').submit();
+                    _inChargeRequest = false;
+                    upateSubmitButton();
+                },function(msg,errorCode){
+                    _inChargeRequest = false;
+                    upateSubmitButton();
+                    P2PWAP.ui.showErrorTip(msg);
+                    
+                },'get' , {});
+                return false;
+        });
+        $(function(){
+            $("#bank_ul li:last").find('#bank_div').addClass('no_border');
+        })
+    </script>
+    */
+?>
+</body>
+</html>

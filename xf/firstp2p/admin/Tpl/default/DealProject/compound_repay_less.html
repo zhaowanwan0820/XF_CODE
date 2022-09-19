@@ -1,0 +1,66 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">近日还款不足项目列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+</div>
+<!-- <div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        &nbsp;借款标题：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" />
+        &nbsp;借款人会员ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" />
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="Deal" name="m" />
+        <input type="hidden" value="compound_repay_less" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div> -->
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="25" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>编号</th>
+            <th>项目名称</th>
+            <th>还款日期</th>
+            <th>借款总额</th>
+            <th>年化借款利率</th>
+            <th>借款期限</th>
+            <th>还款方式</th>
+            <th>赎回周期</th>
+            <th width='180px'>借款人id/姓名/用户名/手机</th>
+            <th>账户余额</th>
+            <th>该日应还</th>
+        </tr>
+        <volist name="list" id="row">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$row.id}"
+                <php>
+                if (($row['deal_status ']== 3) || (intval($row['load_money']) == 0)) {} else {
+                    echo 'disabled="disabled"';
+                }
+                </php>
+                >
+            </td>
+            <td>{$row.id}</td>
+            <td><a href="javascript:edit ('{$row.id}')">{$row.name}</a></td>
+            <td>{$next_repay_date}</td>
+            <td>{$row.borrow_amount}</td>
+            <td>{$row.rate}%</td>
+            <td>{$row.repay_time}<if condition="$row.loantype eq 5">天<else/>个月</if></td>
+            <td>{$row.loantype|get_loantype}</td>
+            <td>{$row.redemption_period}天</td>
+            <td>{$row.user_id}/{$row.real_name}/{$row.user_name}/{$row.mobile}</td>
+            <td>{$row.money}</td>
+            <td>{$row.repay_money_all}</td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

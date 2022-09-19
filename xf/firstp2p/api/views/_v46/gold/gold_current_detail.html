@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>优金宝</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('/v4.6/css/gold/p_detail_new.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="inv-main">
+      <div class="p_detail p_current_detail">
+            <div class="inv-head">
+                <div class="inv_top">
+                    <div class="invh_nhua">
+                        <div class="tit">灵活买卖</div>
+                        <!-- <div class="cont color_gold"><span class="f25">{$goldCurrentDetail.rate}</span>%</div> -->
+                        <!-- 读取后台 -->
+                        <div class="cont color_gold"><span class="f25">{$goldCurrentDetail.minSize}克起提金</span></div>
+                    </div>
+                </div>
+                <div class="icon_current">
+                    <div class="icon_type"><i class="free"></i><p>随时买卖</p></div>
+                    <div class="icon_type"><i class="type"></i><p id="JS_minBuyAmount"></p></div>
+                    <div class="icon_type"><i class="num"></i><p>累计已售<br><span class="color_gold">{$goldCurrentDetail.loadAmount}克</span></p></div>
+                </div>
+            </div>
+            
+            <div class="inv-center mt10">
+                <div class="invc_list  clearfix">
+                    <div class="title fl">实时金价</div>
+                    <div class="fl">
+                        <p class="color_golden">{$goldCurrentDetail.goldPrice}元/克</p>
+                    </div>
+                </div>
+                <div class="invc_list  clearfix">
+                    <div class="title fl">起购克重</div>
+                    <div class="fl">
+                        <p>{ $goldCurrentDetail.minBuyAmount }克</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inv-footer">
+                <div class="invf_top">
+                    <ul class="menu">
+                        <li class="select" style="width:50%"><span>产品详情<em></em></span></li>
+                        <li style="width:50%"><span>购买记录<em></em></span></li>
+                    </ul>
+                    <div class="invf_write">
+                    </div>
+                </div>
+                <div class="invf_txt">
+                    <div id="tb0">
+                       <div class="productDetailBox">
+                           <div class="item">
+                               <p class="title">黄金品种</p>
+                               <p class="content">纯度为99.99%的现货黄金</p>
+                           </div>
+                           <!-- <div class="item">
+                               <p class="title">收益计算方式</p>
+                               <p class="content">消费者当日收益=当日委托管理黄金克重×年化收益率÷360天×交易日截止时刻金价</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">收益交付方式</p>
+                               <p class="content">收益每日结算<br>以现金方式发放至网信账户</p>
+                           </div> -->
+                           <div class="item">
+                               <p class="title">买入手续费</p>
+                               <p class="content">{$goldCurrentDetail.buyerFee}元/克（以页面公示信息为准）</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">变现手续费</p>
+                               <p class="content">{$goldCurrentDetail.withdrawFee }元/克（以页面公示信息为准）</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">提金手续费</p>
+                               <p class="content">单品克重≥30g，7元/克；单品克重＜30g，9元/克（以页面公示信息为准）</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">变现说明</p>
+                               <p class="content">工作日14:00点前变现，当日24:00前到账；14:00点后变现，T+1日24:00前到账</p>
+                           </div>
+                           {if $withdrawLimit != 0}
+                           <div class="item">
+                               <p class="title">变现限额说明</p>
+                               <p class="content">单日最多可变现{$withdrawLimit}克</p>
+                           </div>
+                           {/if}
+                           {if $goldCurrentDetail.note }
+                           <div class="detailHtml">
+                               {$goldCurrentDetail.note}
+                           </div>
+                           {/if}
+                       </div>
+                    </div>
+                    <div id="tb1">
+                    {if $dealCurrentLog}
+                        {foreach from=$dealCurrentLog.data item="loan"}
+                        <div class="bid_list">
+                            <div class="float_l">
+                                <p>{$loan.userDealName}</p>
+                                <p class="gray">{$loan.createTimeHis}</p>
+                            </div>
+                            <div class="float_r">{$loan.buyAmount}克</div>
+                        </div>
+                        {/foreach}
+                        <div class="tc color_gray" style="padding:10px;">只展示最近20条购买记录</div>
+                        {else}
+                        <div class="tc mt20" style="padding-bottom: 20px;">暂无购买记录</div>
+                    {/if}
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="inv-fbtn">
+                <a href="#" class="ui_red_btn">立即投资</a>
+            </div> -->
+        </div>
+        <div class="ui_risk_tips"><em class="line"></em><span>市场有风险，购买需谨慎</span></div>
+    </div>
+    <script type="text/javascript">
+        // 加载入口模块
+        //seajs.use("{$STATIC_SITE}/mobile/app/v2/js/m-common");
+        var num = { $goldCurrentDetail.minBuyAmount };
+        document.getElementById('JS_minBuyAmount').innerHTML = num + "克起购";
+    </script>
+</body>
+</html>

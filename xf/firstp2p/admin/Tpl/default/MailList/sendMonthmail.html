@@ -1,0 +1,38 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<div class="main">
+    <div class="main_title">补发对账单 </div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">用户名:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="user_name" /><span style="color: red; padding-left: 10px; font-size: 12px;"></span></td>
+            </tr>
+            <tr>
+                <td class="item_title">月份:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="month" /><span style="color: red; padding-left: 10px; font-size: 12px;">填写正确的月份（本月以前例如：201501）六位数字</span></td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="MailList" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="doSendMonthMail" />
+                    <!--隐藏元素-->
+                    <input type="submit" class="button" value="发送" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,146 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/swfupload/swfupload.js" ></script>
+<script type="text/javascript" src="__TMPL__Common/js/swfupload/plugins/swfupload.swfobject.js"></script>
+<script type="text/javascript" src="__TMPL__Common/js/swfupload/plugins/swfupload.queue.js"></script>
+<script type="text/javascript" src="__TMPL__Common/js/swfupload/plugins/fileprogress.js"></script>
+<script type="text/javascript" src="__TMPL__Common/js/swfupload/plugins/handlers.js"></script>
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/deal.js' />
+<script type="text/javascript">
+	var swfu;
+	window.onload = function()
+	{
+		var settings = {
+			flash_url : "/static/admin/Common/js/swfupload/swfupload.swf",
+			upload_url: "/m.php?m=Deal&a=upload",
+			post_params: {
+				"PHPSESSID" : "{$ssid}",
+					"HELLO-WORLD" : "Here I Am",
+					".what" : "OKAY"
+			},
+			file_size_limit : "{$max_upload}",
+			file_types : "{$stype}",
+			file_types_description : "All Files",
+			file_upload_limit : 100,
+			file_queue_limit : 0,
+			custom_settings : {
+				progressTarget : "fsUploadProgress",
+				cancelButtonId : "btnCancel"
+			},
+			debug: false,
+
+			// Button Settings
+			button_placeholder_id : "spanButtonPlaceholder",
+			button_width: 70,
+			button_height: 22,
+			button_text : "添加文件",
+			button_text_top_padding : 3,
+			button_text_left_padding : 15,
+
+			// The event handler functions are defined in handlers.js
+			swfupload_loaded_handler : swfUploadLoaded,
+			file_queued_handler : fileQueued,
+			file_queue_error_handler : fileQueueError,
+			file_dialog_complete_handler : fileDialogComplete,
+			upload_start_handler : uploadStart,
+			upload_progress_handler : uploadProgress,
+			upload_error_handler : uploadError,
+			upload_success_handler : uploadSuccess,
+			upload_complete_handler : uploadComplete,
+			queue_complete_handler : queueComplete,	// Queue plugin event
+
+			// SWFObject settings
+			minimum_flash_version : "9.0.28",
+			swfupload_pre_load_handler : swfUploadPreLoad,
+			swfupload_load_failed_handler : swfUploadLoadFailed
+		};
+
+		swfu = new SWFUpload(settings);
+		init_dealform();
+	}
+</script>
+<div class="main">
+<div class="main_title">{%EDIT} <a href="/m.php?m=Deal&a=file_operate&id={$lid}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data" >
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+        <td class="item_title"> 文件名称:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="name" value="{$deal.title}" maxlength="50" /></td>
+    </tr>
+	<tr>
+        <td class="item_title">上传文件:</td>
+        <td class="item_input">
+        	<div id="divSWFUploadUI">
+				<div class="fieldset  flash" id="fsUploadProgress">
+				<span class="legend"></span>
+				</div>
+				<p id="divStatus" style="display:none">0 张图片上传</p>
+				<p>
+					<span id="spanButtonPlaceholder">上传</span>
+					<input id="btnCancel" type="button" value="Cancel All Uploads"  style="display:none;margin-left: 2px; height: 22px; font-size: 8pt;" />
+					<br />
+				</p>
+			</div>
+        	<br /><input type="text" class="textbox" readonly="readonly" style="width:400px;" name="attachment" value="{$deal.filename}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">类型:</td>
+        <td class="item_input"><input type="text" readonly="readonly" class="textbox" name="type" value="{$deal.type}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">排序:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="order" value="{$deal.order}" maxlength="10" /></td>
+    </tr>
+	<tr>
+        <td class="item_title">上传时间:</td>
+        <td class="item_input"><input type="text" readonly="readonly" class="textbox" name="create_time" value="{$deal.create_time}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">上传管理员:</td>
+        <td class="item_input"><input type="text" readonly="readonly" class="textbox" name="admin_name" value="{$deal.admin_name}" /></td>
+    </tr>
+	<tr>
+		<td class="item_title">详细描述:</td>
+		<td class="item_input">
+			 <html:editor id="description" name="description" style="width:500px;height:200px" content="{$deal.description}" />
+		</td>
+	</tr>
+</table>
+
+
+<div class="blank5"></div>
+	<table class="form" cellpadding=0 cellspacing=0>
+		<tr>
+			<td colspan=2 class="topTd"></td>
+		</tr>
+		<tr>
+			<td class="item_title"></td>
+			<td class="item_input">
+			<input type="hidden" name="id" value="{$id}" />
+			<input type="hidden" name="{:conf("VAR_MODULE")}" value="Deal" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="edit_deal_file" />
+			<input type="hidden" name="save" value="save" />
+			<div id='button_ff'>
+                <input type="submit" onclick="doconfirmSubmit(); return false;" class="button" value="{%SAVE}" />
+                <input type="reset" class="button" value="{%RESET}" />
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2 class="bottomTd"></td>
+		</tr>
+	</table>
+</form>
+</>
+<include file="Public:footer" />

@@ -1,0 +1,323 @@
+{include file="web/views/v3/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v3/css/p_success.css');?>" rel="stylesheet" type="text/css">
+
+<div class="p_success">
+    <input type="hidden"  value='{$is_from_nongdan}' id="isNongDan"/>
+    <input type="hidden"  value='{$from_site.host}' id="isFromSite"/>
+    <div class="mauto clearfix main">
+        <div class="hong-ok">
+            {if $deal.type_id eq 25}
+                <h2><i class="icon-ok"></i>恭喜您，捐赠成功！</h2>
+                <h3>本次捐赠金额：<span><em>{function name="number_format" v=$loan_info.money f=2}</em>元</span>{if $bonus_use_money gt 0}（使用账户金额：<span>{$user_use_money}元</span>  {$new_bonus_title}：<span>{$bonus_use_money}{$new_bonus_unit}</span>）{/if}</h3>
+            {else}
+                <h2><i class="icon-ok"></i>恭喜您，{if !$is_firstp2p}投资{else}出借{/if}成功！</h2>
+            {if $gS eq 0}
+            <style type="text/css">div.change_style_money{margin:0;}</style>
+                {if $bonus_maked}
+                    {if $site_id eq 1}
+                        <div class="hong-bg">
+                             {if $bonus_maked.bonus_type_id eq 3}
+                                <div class="fl super-hongbao"><span>{$bonus_maked.money}</span>{$new_bonus_unit}{$new_bonus_title}</div>
+                             {/if}
+                    {else}
+                        <div class="hong-bg sub_bg">
+                    {/if}
+                    <div class="hong-number">获得<em>{$bonus_maked.count}</em>个{$new_bonus_title}
+                        <!--<p class="f14 color-black">投资满<span class="f20">500元</span>就有机会中<span class="f20">888元</span>超级{$new_bonus_title}  每小时仅一名</p>-->
+                    </div>
+                    <div class="hong-share">
+                        <h4>分享至朋友圈<br>和小伙伴一起拼手气抢{$new_bonus_title}吧！</h4>
+                        <div class="hong-code"><img src="/deal/bonusQrcode?code={$bonus_maked.id_encrypt}" width='160px' height='160px'></div>
+                        <h5>打开微信，使用“扫一扫”即可<br>将网页分享到我的朋友圈。</h5>
+                        <h6>{$new_bonus_title}最终解释权归{$site_name}所有</h6>
+                    </div>
+                </div>
+                {/if}
+            {elseif $gS eq 1}
+               <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/account_o2o_gift.css');?>">
+               <div class="p_account_o2o_gift">
+                    <span class="blank23"></span>
+                        <!-- <div class="ui_suc_title">礼券领取</div> -->
+                        <div class="gift_list">
+                            <h2 class="list_title gift_receive_color">以下礼券只能选择领取其一，礼券库存有限，请及时领取</h2>
+                            <div class="gift_tab">
+                                <ul class="gift_thead">
+                                    <li class="gift_name">礼券名称</li>
+                                    <li class="gift_money">价值</li>
+                                    <li class="gift_operation">操作</li>
+                                </ul>
+                                {foreach from=$couponList item=coupon key=key}
+                                <ul class="gift_tbody{if $key mod 2 eq 0} tr_bg{/if}">
+                                    <li class="one">
+                                       <div class="gift_product">
+                                           <dl>
+                                               <dt><img src="{$coupon.pcPic}"></dt>
+                                               <dd>
+                                                    <div class="v_middle">
+                                                       <h2>{$coupon.productName}</h2>
+                                                       {if $coupon.useEndTime neq 0}
+                                                           {if $coupon.useTimeType eq 2}
+                                                            <p class="color_gray">有效期至：{function name="date" v="Y.m.d" b=$coupon.useEndTime}</p>
+                                                           {/if}
+                                                        {/if}
+
+                                                    </div>
+                                               </dd>
+                                           </dl>
+                                       </div>
+                                    </li>
+
+                                    <li class="two">
+                                    {if $coupon.goodPrice neq 0 || $coupon.useRules eq 1}
+                                    {if $coupon.goodPrice neq 0}&yen;{$coupon.goodPrice}{/if}
+                                    {/if}
+                                    </li>
+                                    <li class="three">
+                                        {if $coupon.useRules eq 12}
+                                        <a href="javascript:;" class="operation_btn" onclick="Firstp2p.alert({text:'精彩游戏请去app礼券，领取玩哦。',ok:function(dialog){dialog.close()}});">{if $is_firstp2p}详情{else}查看详情 {/if}</a>
+                                        {else}
+                                        <a href="/gift/acquireDetail?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&deal_type={$deal_type}" class="operation_btn">{if $is_firstp2p}详情{else}查看详情 {/if}</a>
+                                        {/if}
+                                    </li>
+                                </ul>
+                                 {/foreach}
+
+                            </div>
+                        </div>
+                </div>
+                {if $is_firstp2p}
+                    <div class="invest_explain">( 本优惠劵由网信综合门户网站提供 )</div>
+                {/if}
+            {/if}
+            <!-- 如果是多投宝产品 -->
+            {if $isDt eq 1}
+            <div class="f16 tc pt25 dt-msg">您可以在起息后申请转让，转让款项最快将在一个工作日后到账</div>
+            {/if}
+            <!-- //如果是多投宝产品 -->
+            <h3>本次{if $deal.deal_type eq 0}出借{else}{if !$is_firstp2p}投资{else}出借{/if}{/if}金额：<span><em>{function name="number_format" v=$loan_info.money f=2}</em>元</span>{if $bonus_use_money gt 0}（使用账户金额：<span>{$user_use_money}元</span>  {$new_bonus_title}：<span>{$bonus_use_money}{$new_bonus_unit}</span>）{/if}<i class="pl64">{if $deal.deal_type eq 0}借款利息{else}预期收益{/if}：</i><span><em >{function name="number_format" v=$loan_info.income f=2}元</em></span></h3>
+            <!-- 判断后才能显示 -->
+            {if $discountGoodsPrice}<div class="tit pb10 change_style_money">{$discountGoodsPrice}</div>{/if}
+            {/if}
+            <div class="hong-item">
+                <ul>
+                    <li>项目名称： <span>{$deal.old_name}</span></li>
+                    {if $deal.type_id neq 25}
+                    {if $deal.deal_type neq 0 ||  $deal.deal_type neq 3}
+                        <li>{if $deal.deal_type eq 0}年化借款利率{else}预期年化收益率{/if}：
+                        <span>{$deal.income_base_rate}%
+
+                                </span></li>
+                                <li>期限：
+                                    <span>
+                                    {if $deal.loantype eq 5}
+                                        {$deal.repay_time}天
+                                    {else}
+                                        {$deal.repay_time}个月
+                                    {/if}
+                                    </span>
+                                </li>
+                                <li>还款方式：<span>{$deal.loantype_name}</span></li>
+
+                    {else}
+                        <li>{if $deal.deal_type eq 0}年化借款利率{else}预期年化收益率{/if}：
+                            <span>
+                            {if $deal.income_ext_rate eq 0}
+                                {$deal.rate_show}%
+                            {else}
+                                {$deal.income_base_rate}%+{$deal.income_ext_rate}%
+                            {/if}
+                            起
+                            </span>
+                        </li>
+                        <li>期限：
+                            <span>
+                            {function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{$deal.repay_time}天
+                            </span>
+                        </li>
+                        <li>还款方式：
+                            <span>
+                            提前{$deal.redemption_period}天申请赎回
+                            </span>
+                        </li>
+                    {/if}
+                    {/if}
+                  </ul>
+            </div>
+            <h3 class="back tc"><a href="{$deal.url}" class="see_deal_btn mr20 change_colo" target="_blank">查看项目</a>  <a href="/" target="_blank" class="back_index_btn change_colo">返回首页</a></h3>
+        </div>
+    </div>
+</div>
+        <div class="mark"></div>
+        <div class="big-hongbao">
+            <div class="fl super-hongbao"><span>{$bonus_maked.money}</span>{$new_bonus_unit}{$new_bonus_title}</div>
+            <div class="hong-code fl"><img src="/deal/bonusQrcode?code={$bonus_maked.id_encrypt}" width='160px' height='160px'></div>
+        </div>
+        <script>
+    {if $is_from_nongdan}
+    $('.see_deal_btn').attr('href',location.protocol + '//{$from_site.host}{$deal.url}');
+    $('.back_index_btn').attr('href',location.protocol + '//{$from_site.host}/');
+    {/if}
+        {if $deal.deal_type neq 1}
+        {if $loan_info.short_alias eq 'CPSFBB'}
+        //富爸爸渠道增加统计参数（邀请码CPSFBB ）
+        $.get("http://www.fbaba.net/track/cps.php" , {
+            "action" : "create",
+            "planid" : "107" ,
+            "order" : "{$loan_info.id}" ,
+            "goodsmark" : "1" ,
+            "goodsprice" : "{$cps_fbb_fee}" ,
+            "goodsname" : "名称:{$deal.name},类型:{$deal.type_info.name},周期:{$deal.repay_time}{if $deal.loantype eq 5}天{else}月{/if}" ,
+            "sig" : "{$fubaba_cps_sig}" ,
+            "status" : "直投【{$loan_info.money}元：已付款】" ,
+            "uid" : "{$euid}"
+        });
+        {/if}
+        {/if}
+
+        if('{$bonus_maked.bonus_type_id}' == '3'){
+            $('.mark,.big-hongbao').show();
+            $('.hong-bg').css({"background":"url(<?php echo $this->asset->makeUrl('v3/images/red-paper/bg-02.png');?>)"});
+            $('.hong-share .hong-code').css({"margin-top":"135px"});
+            $('.hong-share').css({"width":"294px"});
+            $('.hong-number,.hong-share h4,.hong-share h5,.hong-share h6').hide();
+            $('.mark,.big-hongbao').click(function(){
+                $('.mark,.big-hongbao').hide();
+                })
+        };
+
+        </script>
+<style>
+.change_style_money{font-size: 14px;width: 900px;margin: 0 auto;}
+</style>
+
+{if $is_firstp2p}
+<style>
+body {
+    background-color: #f6f7f8;
+}
+.main{
+    border:none;
+}
+/*.p_account_o2o_gift .gift_list .gift_receive_color{
+    width: 980px;
+    height: 40px;
+    line-height: 55px;
+    margin:0 auto;
+    color:#ff9025;
+    background: #fcfcfc;
+    font-size: 16px;
+}  */
+ .p_account_o2o_gift .gift_tab{
+    border: none ;
+}
+ .p_account_o2o_gift .gift_tab .gift_thead{
+    border-bottom: none;
+    background: none;
+    height: 40px;
+    line-height: 40px;
+    font-size: 13px;
+ }
+.gift_tab ul:nth-child(even){
+    background:#fcfcfc;
+}
+.p_account_o2o_gift .gift_tbody{
+    margin: 0px;
+}
+.p_account_o2o_gift .gift_tbody .two{
+   width: 147px;
+   color: red;
+   padding-right: 125px;
+}
+.p_account_o2o_gift .gift_tbody .one{
+    /*padding-left: 43px;*/
+}
+.p_account_o2o_gift .gift_tbody .operation_btn{
+    color: #f64440;
+    background: white;
+    border-bottom: none;
+    border: 2px solid #f64440;
+    font-weight: 600;
+}
+.invest_explain{
+    width: 980px;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 12px;
+    color: #8a8a8a;
+}
+.blank60{
+    height: 25px;
+}
+.back{
+    text-align: center;
+}
+.back a{
+    width: 105px;
+    height: 36px;
+    color: #7f8db4;
+    border: 2px solid #7f8db4;
+    display: inline-block;
+    margin-right: 17px;
+    border-radius:10px;
+    line-height: 36px;
+    font-weight: 600;
+}
+/*.back a:first-child{
+    color: #f64442;
+    border:2px solid #f64442;}*/
+.back a:hover{
+    color: #f64442;
+    border:2px solid #f64442;
+}
+.just_left{
+    padding-left: 40px;
+}
+.hong-item li{
+    list-style: none;
+    color: #797878;
+    margin-left: 10px;
+}
+.p_account_o2o_gift .gift_tab .gift_thead .gift_name{
+    padding-left: 147px;
+}
+.p_account_o2o_gift .gift_tab .gift_thead .gift_money{
+    width: 95px;
+    padding-right: 148px;
+}
+.ui_suc_title{display:none;}
+/*.p_account_o2o_gift .gift_list .gift_receive_color{
+    border: 1px solid #e3e3e3;
+    margin-top:25px;
+    font-size: 15px;
+    height: 32px;
+    line-height: 52px;
+}*/
+.p_account_o2o_gift .gift_tbody .two{
+    font-size: 15px;
+}
+.p_success .icon-ok{
+    margin-left: 5px;
+}
+.p_account_o2o_gift .gift_tbody .gift_product dl dd{
+    line-height: 72px;
+}
+.mb50{
+    margin-bottom:50px!important;
+    padding-top: 10px!important;
+}
+.change_style_money{font-size: 14px;width: 900px;margin: 0 auto;}
+.change_colo{border:2px solid #ee4634 !important;background: white !important;color: #ee4634 !important;}
+</style>
+    {if $isShowBankAlert}
+    <script type="text/javascript">
+        ;(function($){
+             $(function(){
+                 Firstp2p.supervision.shouquan();
+                 $('#cg_password_free .dialog-close').wrap("<a class='btn-base dialog-cancel'></a>");
+             });
+        })(jQuery);
+
+    </script>
+    {/if}
+{/if}
+{include file="web/views/v3/footer.html"}

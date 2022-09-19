@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>项目列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('css/common/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('css/common/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.75/css/p_reserve_disclosure_list.css');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_reserve_disclosure_list">
+        <div class="list_description">
+            您预约的标的即将进行匹配，如有异议请选择取消预约
+        </div>
+        <div class="load_box"></div>
+        <div class="load_more"></div>
+        {if $hasReserve}
+        <div class="conf_btn">
+            <a href="javascript:void(0)" class="cancel to_cancel_disclosure">取消预约</a>
+        </div>
+        {/if}
+        <script type="text/html" id="itemTmp">
+            <div class="ui_common_list">
+                <div class="common_btn">
+                    <a href="/deals/detail?id=<%= id %>&site_id={$site_id}&is_disclosure=1"><%= name %>
+                        <i class="icon_arrow fr"></i>
+                    </a>
+                </div>
+            </div>
+        </script>
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/common.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/lib/artTemplate/template-native-debug.js');?>"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            // 加载更多
+            var loadmore = new WXP2P.UI.P2PLoadMore($(".load_box")[0], $('.load_more')[0], "/deal/reserveDisclosureListApi?userClientKey={$userClientKey}&invest={$invest}&page_size=10", 1, 'get', 10);
+            loadmore.loadNextPage();
+            loadmore.createItem = function (item) {
+                return $(template('itemTmp', item)).get(0);
+            };
+            $('a.to_cancel_disclosure').attr('href', 'firstp2p://api?type=webview&gobackrefresh=false' + '&url=' + encodeURIComponent(location.origin + '/deal/reserveMy?userClientKey={$userClientKey}&site_id={$site_id}&product_type={$product_type}'));
+        })
+    </script>
+
+</body>
+
+</html>

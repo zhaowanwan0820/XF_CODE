@@ -1,0 +1,69 @@
+{include file="inc/header_v1.html"}
+<link rel="stylesheet" type="text/css" href="{$TMPL_NEW}/css/identity.css" />
+
+<div class="w980 mauto clearfix">
+    <section>
+        <div class="shadow">
+            <div class="mess_title tc">个人信息验证</div>
+            <div class="identity w588 mauto">
+                <form id="stepVerifyIdCardAndPhone" method="post" action="./">
+                    <table>
+                        <colgroup>
+                            <col width="233">
+                            <col width="355">
+                        </colgroup>
+                        <tbody class="idtab">
+                            <tr>
+                                <td colspan="2" class="f14 color-gray1 tc">绑定身份证、手机号码即可成为{function name="app_conf" v="SHOP_TITLE"}投资人
+                                    <a href="/account/passporttype" class="color-blue1 underline">港澳台投资人请点此确认</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>姓名：</th>
+                                <td><input type="text" class="idbox w173" name="name" id="name" value="{$user_info.real_name}"></td>
+                            </tr>
+                            <tr>
+                                <th>身份证号：</th>
+                                <td><input type="text" class="idbox w173 {if $user_info.idcardpassed eq 1}readonly{/if}" {if $user_info.idcardpassed eq 1}disabled="true"{/if} name="idno" id="idno" value="{$user_info.idno}"></td>
+                            </tr>
+                            <tr>
+                                <th>确认身份证号：</th>
+                                <td><input type="text" class="idbox w173" name="idno_re" id="idno_re" value=""></td>
+                            </tr>
+                            <tr>
+                                <th>手机号码：</th>
+                                <td>
+                                    <input type="text" class="idbox w173 {if $user_info.mobilepassed eq 1}readonly{/if}" name="phone" {if $user_info.mobilepassed eq 1} disabled="true"{/if} id="J_Vphone" value="{$user_info.mobile}">
+                                    {if $user_info.mobilepassed eq 0}
+                                    <input type="button" id="reveiveActiveCode" class="reveiveActiveCode" value="{$LANG.DO_SEND}{$LANG.MOBILE_VERIFY_CODE}" onclick="sendPhoneCode(this,'#J_Vphone');">
+                                    {/if}
+                                </td>
+                            </tr>
+                            {if $user_info.mobilepassed eq 0}
+                            <tr>
+                                 <th>验证码：</th>
+                                 <td><input type='text' class="idbox w173" id="validateCode2" name="validateCode" value=""></td>
+                            </tr>
+                            {/if}
+                            <tr>
+                                <td></td>
+                                <td><input type="submit" value="成为投资用户" id="licaiuser"
+                                    class="but-gray but-yellow"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <p>注意：请务必填写您的真实信息，进行手机绑定后，本手机号将作为{function name="app_conf" v="SHOP_TITLE"}和您确认借款的途径之一，请使用您常用的号码进行绑定，您的手机号码不会以任何形式被泄露。</p>
+                                    <p>如果您收不到手机验证码，请拨打客服电话：{function name="app_conf" v="SHOP_TEL"}</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <script>$("#idno_re,#idno").on("paste copy" , function(){
+                                  return false;
+                            });</script>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{include file="inc/footer.html"}

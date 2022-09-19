@@ -1,0 +1,151 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">任务管理</div>
+<div class="blank5"></div>
+
+<if condition="$status eq 1 || $status eq 3">
+<div class="button_row">
+    <input type="button" class="button" value="重试" onclick="multi_redo();" />
+</div>
+</if>
+<div class="blank5"></div>
+<div class="search_row">
+  <form name="search" action="__APP__" method="get">
+    优先级：<input type="text" class="textbox" name="priority" value="{:trim($_REQUEST['priority'])}" size="8"/>&nbsp;&nbsp;
+    任务ID：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" size="8"/>&nbsp;&nbsp;
+    <input type="hidden" value="Life" name="m" />    
+    <if condition="$status eq 0">
+    <input type="hidden" value="<?php echo ACTION_NAME;?>" name="a" />
+    <elseif condition="$status eq 1"/>
+    <input type="hidden" value="<?php echo ACTION_NAME;?>" name="a" />
+    <elseif condition="$status eq 2"/>
+    <input type="hidden" value="<?php echo ACTION_NAME;?>" name="a" />
+    <elseif condition="$status eq 3"/>
+    <input type="hidden" value="<?php echo ACTION_NAME;?>" name="a" />
+    </if>
+    <input type="submit" class="button" value="{%SEARCH}" />
+  </form>
+</div>
+<div class="blank5"></div>
+
+<script>
+function multi_redo() {
+    idBox = $(".key:checked");
+
+    var param = '';
+    if(idBox.length == 0){
+        idBox = $(".key");
+    }
+
+    idArray = new Array();
+    $.each( idBox, function(i, n){
+        idArray.push($(n).val());
+    });
+
+    if(idArray.length == 0){
+        alert('无可导出的数据！');
+        return false;
+    }
+
+    id = idArray.join(",");
+    var url= ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=multi_redo&id="+id;
+    window.location.href = url;
+}
+</script>
+
+<php>
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '-';
+    }
+    return date('Y-m-d H:i:s', $stamp);
+}
+function f_cutstr($string) {
+    $subString = $string;
+    if (mb_strlen($string) > 15) {
+        $subString = '<a href="javascript:;" title="'.str_replace('"',"'", $string).'">' . mb_substr($string, 0, 15) . '...</a>';
+    }
+    return $subString;
+}
+
+</php>
+
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="12" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" name="key" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px   ">编号</th>
+            <th>待执行脚本</th>
+            <th>参数</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>下次启动时间</th>
+            <th>启动时间</th>
+            <th>结束时间</th>
+            <th>执行时长</th>
+            <th>优先级</th>
+            <th>操作</th>
+        </tr>
+
+        <foreach name="data" item="jobs">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$jobs.id}"></td>
+            <td>&nbsp;{$jobs.id}</td>
+            <td>&nbsp;{$jobs.func}</td>
+            <td>&nbsp;{$jobs.params|f_cutstr}</td>
+            <td>&nbsp;{$jobs.status_cn}</td>
+            <td>&nbsp;{$jobs.create_time|f_to_date}</td>
+            <td>&nbsp;{$jobs.start_time|f_to_date}</td>
+            <td>&nbsp;{$jobs.begin_time|f_to_date}</td>
+            <td>&nbsp;{$jobs.finish_time|f_to_date}</td>
+            <td>&nbsp;{$jobs.job_cost}</td>
+            <td>&nbsp;{$jobs.priority}</td>
+            <td>&nbsp;<a href="javascript:view('{$jobs.id}');">查看</a>&nbsp;
+                <a href="javascript:redo('{$jobs.id}');">重新执行</a>&nbsp;
+                <a href="javascript:terminate('{$jobs.id}');">终止执行</a></td>
+        </tr>
+        </foreach>
+
+</table>
+
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    var status = '{$status}';
+    var p = '{$p}';
+    function view(id) {
+        if (parseInt(p) > 0) {
+            window.location.href = "/m.php?m="+MODULE_NAME+"&a=view&status="+status+"&p="+p+"&id="+id;
+            return ;
+        }
+        window.location.href = "/m.php?m="+MODULE_NAME+"&a=view&status="+status+"&id="+id;
+    }
+    function redo(id) {
+        if(confirm("确定要重新执行该任务吗？")) {
+            window.location.href = "/m.php?m="+MODULE_NAME+"&a=redo&id="+id;
+        }
+    }
+    function terminate(id) {
+        if(confirm("确定要终止执行该任务吗？")) {
+            window.location.href = "/m.php?m="+MODULE_NAME+"&a=terminate&id="+id;
+        }
+    }
+</script>
+<include file="Public:footer" />

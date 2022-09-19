@@ -1,0 +1,75 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script>
+
+</script>
+
+<php>
+function get_group_name($group_id){
+    $group = M("UserGroup")->where("id=".$group_id)->find();
+    return $group?$group['name']:'未知';
+}
+
+function get_level_name($level_id){
+    $level = M("CouponLevel")->where("id=".$level_id)->find();
+    return ($level)?$level['level']:'未知';
+}
+</php>
+
+<div class="main">
+    <div class="main_title">O2O用户上传</div>
+    <div class="blank5"></div>
+    <form name="upload" action="__APP__" method="post" enctype="multipart/form-data">
+    <div class="button_row">
+        <input type="hidden" name="{:conf("VAR_MODULE")}" value="User" />
+        <input type="hidden" name="{:conf("VAR_ACTION")}" value="doUploadUserIds" />
+        <input type='file' name='upfile' style='width:150px'>
+        <input type='submit' name='submit' value='导入' class="button">&nbsp;<a href="http://static.firstp2p.com/attachment/201508/13/13/a24444c034ff127a353dbfd924a6ac26/129e422e06d45342f596750d34c1fedc.csv">模板下载</a>&nbsp;&nbsp;<span style="color:red;">(最多一次处理2000个用户)导入的文件类型为csv格式；数据共4列：身份证号、分组ID、优惠码等级ID、Tag键名,多个tag之间用|分隔、指定用户的新邀请码、项目类型,项目说明。</span>
+    </div>
+    </form>
+    <!-- <div class="blank5"></div>
+    <div class="search_row">
+    <form name="search" action="__APP__" method="get">  
+        身份证号码：<input type="text" class="textbox" name="idno" value="{:trim($_REQUEST['idno'])}"/>
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="usersToMove" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form> -->
+</div>
+<div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+<!--    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th>id</th>
+            <th>用户名</th>
+            <th>姓名</th>
+            <th>手机号</th>
+            <th>旧的分组</th>
+            <th>新的分组</th>
+            <th>操作时间</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td>{$item.id}</td>
+            <td><a target="_blank" href="/m.php?m=User&a=index&user_name={$item.user_name}">{$item.user_name}</a></td>
+            <td>{$item.real_name}</td>
+            <td><a target="_blank" href="/m.php?m=User&a=index&mobile={$item.mobile}">{$item.mobile}</a></td>
+            <td title='{$item.old_groupid}-{$item.old_levelid}'>{$item.old_groupid|get_group_name}-{$item.old_levelid|get_level_name}</td>
+            <td title='{$item.new_groupid}-{$item.new_levelid}'>{$item.new_groupid|get_group_name}-{$item.new_levelid|get_level_name}</td>
+            <td>{$item.update_time}</td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+-->
+<include file="Public:footer" />

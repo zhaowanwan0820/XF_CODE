@@ -1,0 +1,261 @@
+<!doctype html>
+<?php if($_SERVER['REQUEST_URI'] == '' || $_SERVER['REQUEST_URI'] == '/'){app_redirect(url('index','deals'));} ?>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if isset($page_title) && $page_title}{$page_title} - {/if}{if isset($show_site_titile) && ($show_site_titile eq 1)}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+<link rel="icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<meta name="keywords" content="{if isset($page_keyword) && $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+<meta name="description" content="{if isset($page_description) && $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+<script>
+   var  status_switch = '{function name="app_conf" v="SWITCH_DEAL_INFO_DISPLAY"}';
+</script>
+
+{if isset($rss_title) && $rss_title}
+<link title="{$rss_title}" type="application/rss+xml" rel="alternate" href="{$rss_url}" />
+{/if}
+
+{if isset($is_index) && $is_index eq 1}
+<?php echo $this->asset->renderAll(1); ?>
+{else}
+<!--[if lte IE 9]>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/html5shiv.js');?>"></script>
+<![endif]-->
+<?php echo $this->asset->renderAll(); ?>
+{/if}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('skins/esp2p/css/style.css');?>" />
+
+<script type="text/javascript">
+var APP_ROOT = '{$APP_ROOT}';
+{if app_conf("APP_MSG_SENDER_OPEN") eq 1}
+var send_span = {function name="app_conf" v="SEND_SPAN"}000;
+{/if}
+var scrolltotop={
+    setting:{
+        startline:100, //起始行
+        scrollto:0, //滚动到指定位置
+        scrollduration:80, //滚动过渡时间
+        fadeduration:[500,100] //淡出淡现消失
+    },
+controlHTML: '<img src="{$APP_SKIN_PATH}images/common/fhdb.png" style="width:48px; height:50px; border:0;" />', //返回顶部按钮
+    controlattrs:{offsetx:60,offsety:80},//返回按钮固定位置
+    anchorkeyword:"#top",
+    state:{
+        isvisible:false,
+        shouldvisible:false
+    },scrollup:function(){
+        if(!this.cssfixedsupport){
+            this.$control.css({opacity:0});
+        }
+        var dest=isNaN(this.setting.scrollto)?this.setting.scrollto:parseInt(this.setting.scrollto);
+        if(typeof dest=="string"&&jQuery("#"+dest).length==1){
+            dest=jQuery("#"+dest).offset().top;
+        }else{
+            dest=0;
+        }
+        this.$body.animate({scrollTop:dest},this.setting.scrollduration);
+    },keepfixed:function(){
+        var $window=jQuery(window);
+        var controlx=$window.scrollLeft()+$window.width()-this.$control.width()-this.controlattrs.offsetx;
+        var controly=$window.scrollTop()+$window.height()-this.$control.height()-this.controlattrs.offsety;
+        this.$control.css({left:controlx+"px",top:controly+"px"});
+    },togglecontrol:function(){
+        var scrolltop=jQuery(window).scrollTop();
+        if(!this.cssfixedsupport){
+            this.keepfixed();
+        }
+        this.state.shouldvisible=(scrolltop>=this.setting.startline)?true:false;
+        if(this.state.shouldvisible&&!this.state.isvisible){
+            this.$control.stop().animate({opacity:1},this.setting.fadeduration[0]);
+            this.state.isvisible=true;
+        }else{
+            if(this.state.shouldvisible==false&&this.state.isvisible){
+                this.$control.stop().animate({opacity:0},this.setting.fadeduration[1]);
+                this.state.isvisible=false;
+            }
+        }
+    },init:function(){
+        jQuery(document).ready(function($){
+            var mainobj=scrolltotop;
+            var iebrws=document.all;
+            mainobj.cssfixedsupport=!iebrws||iebrws&&document.compatMode=="CSS1Compat"&&window.XMLHttpRequest;
+            mainobj.$body=(window.opera)?(document.compatMode=="CSS1Compat"?$("html"):$("body")):$("html,body");
+            mainobj.$control=$('<div id="topcontrol">'+mainobj.controlHTML+"</div>").css({position:mainobj.cssfixedsupport?"fixed":"absolute",bottom:mainobj.controlattrs.offsety,right:mainobj.controlattrs.offsetx,opacity:0,cursor:"pointer"}).attr({title:"返回顶部"}).click(function(){mainobj.scrollup();return false;}).appendTo("body");if(document.all&&!window.XMLHttpRequest&&mainobj.$control.text()!=""){mainobj.$control.css({width:mainobj.$control.width()});}mainobj.togglecontrol();
+            $('a[href="'+mainobj.anchorkeyword+'"]').click(function(){mainobj.scrollup();return false;});
+            $(window).bind("scroll resize",function(e){mainobj.togglecontrol();});
+        });
+    }
+};
+scrolltotop.init();
+$(function () {
+        $(".Top_bg table tr td ul li").mouseover(function () {
+            $(this).attr("class", "Top_bgcur");
+        })
+        $(".Top_bg table tr td ul li").mouseout(function () {
+            $(this).attr("class", "");
+        })
+
+        $('[name="bannerspantit"]').each(function () {
+            $(this).mouseenter(function () {
+                $(this).addClass('titbanner');
+            });
+            $(this).mouseleave(function () {
+                $(this).removeClass();
+            });
+        });
+
+    });
+</script>
+
+
+<!--public js&css end -->
+
+</head>
+
+<body>  <!--头部开始-->
+<header class="m-head">
+        <div class="top_bg">
+        <div class="top_21">
+            <div class="ui-header-top ">
+                <div class="container_12 fn-clear">
+                    <div class="grid_12 fn-clear">
+                        <div class="fn-left">
+                            <a href="http://www.esp2p.com/mobile.html" target="_blank" class="ui-nav-item fn-left"><i class="icon icon-app"></i> 移动客户端</a>
+                        </div>
+                {if $user_info}
+                        <div class="fn-right">
+                            <a href="/account" class="ui-nav-item reg-link"><u>您好，{if empty($user_info.real_name)}{$user_info.user_name}{else}{$user_info.real_name}{/if}</u></a> 
+                            <a href="/message" class="ui-nav-item login-link {if $msg_count>0}pr15 j_showMenu{/if}">消息</a>
+                           {if $msg_count>0}
+                           <div class="g-message-number">{$msg_count}</div>
+                           <ul>
+                               {foreach from=$msg_list item=msg key=key}
+                               <li {if $key eq count($msg_list) -1}class="nobor"{/if}><em><a href="/message/deal/{$msg.group_key}">{$msg.total}</a></em> 条 {if isset($msg_title.$msg.is_notice)}
+                                       {$msg_title.$msg.is_notice}
+                                       {else}
+                                       {$LANG.SYSTEM_PM}
+                                       {/if}，<a href="/message/deal/{$msg.group_key}">查看</a></li>
+                               {/foreach}
+                           </ul>
+                           {/if}
+                            <a href="http://www.esp2p.com/logout/" class="ui-nav-item login-link">退出</a>
+                            <a target="_blank" href="http://www.esp2p.com/help-1.html" class="ui-nav-item">帮助</a>
+                        </div>
+                {else}
+                        <div class="fn-right">
+                            <a href="http://www.esp2p.com/register/" class="ui-nav-item reg-link">快速注册</a> 
+                            <a href="http://www.esp2p.com/login/" class="ui-nav-item login-link">立即登录</a>
+                            <a target="_blank" href="http://www.esp2p.com/help-1.html" class="ui-nav-item">帮助</a>
+                        </div>
+                {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="Top_bg">
+        <div class="Min-Container">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+                        <a href="http://www.esp2p.com">
+                            <img src="{$APP_SKIN_PATH}images/common/logo-big_wx.jpg" style="padding-bottom: 2px;padding-left: 1px;padding-top:5px;"></a>
+                    </td>
+                    <td>
+                        <ul style="position:relative; z-index:30000; width:610px; margin-left:76px;">
+
+                            <li name="dhli" style="position:relative;">
+
+                                <a href="http://www.esp2p.com/" style=" text-decoration:none;">
+                                    <div>
+                                        <span name="bannerspantit" style=" height:40px; width:100px;">首页</span>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li name="dhli" style="position:relative;">
+
+                                <a href="/deals" style=" text-decoration:none;">
+                                    <div>
+                                        <span name="bannerspantit" style=" height:40px; width:100px;">我要投资</span>
+                                    </div>
+                                </a>
+                            </li>
+
+                {if $user_info}
+                            <li name="dhli" style="position:relative;">
+                            <a href="/account" style=" text-decoration:none;">
+                                <div>
+                                    <span name="bannerspantit" style=" height:40px; width:100px;">我的账户</span>
+                                </div>
+                            </a>
+                            </li>
+                {else}
+                    <li name="dhli" style="position:relative;">
+                    <a href="http://www.esp2p.com/login/" style=" text-decoration:none;">
+                    <div>
+                    <span name="bannerspantit" style=" height:40px; width:100px;">我的账户</span>
+                    </div>
+                    </a>
+                    </li>
+                {/if}
+                            <li name="dhli" style="position:relative;">
+
+                                <a href="http://www.esp2p.com/product.html" style=" text-decoration:none;">
+                                    <div>
+                                        <span name="bannerspantit" style=" height:40px; width:100px;">产品服务</span>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li name="dhli" style="position:relative;">
+
+                                <a href="http://www.esp2p.com/guidelines.html" style=" text-decoration:none;">
+                                    <div>
+                                        <span name="bannerspantit" style=" height:40px; width:100px;">新手指引</span>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li name="dhli" style="position:relative;">
+
+                                <a href="http://www.esp2p.com/about-1.html" style=" text-decoration:none;">
+                                    <div>
+                                        <span name="bannerspantit" style=" height:40px; width:100px;">关于我们</span>
+                                    </div>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    </header>
+    <!--头部结束-->
+
+    <!--面包屑导航开始-->
+    <!--
+    {if isset($nav) && $nav}
+    <section>
+        <div class="fix_width">
+            <div class="m-nav">
+                <a href="/">首页</a>
+                >
+                <a href="/">我要投资</a>
+                    {foreach from=$nav item=n}
+                    > <label>{if isset($n.url) && $n.url}<a href="{$n.url}">{$n.text}</a>{else}{$n.text}{/if}</label>
+                    {/foreach}
+            </div>
+        </div>
+    </section>
+    {/if}
+    -->
+    <!--面包屑导航结束-->
+    <div class="{if isset($in_preset_page) && $in_preset_page eq 1}{else}wrap{/if}">

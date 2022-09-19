@@ -1,0 +1,50 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">商品支付订单</div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            用户ID：<input type="text" class="textbox" name="user_id" value="{$userId}" />
+            商品ID：<input type="text" class="textbox" name="merchant_id" value="{$merchantId}" />
+            订单：<input type="text" class="textbox" name="out_order_id" value="{$order}" />
+            状态：<input type="text" class="textbox" name="status" value="{$status}" />
+            <input type="hidden" value="CandyShop" name="m" />
+            <input type="hidden" value="payOrder" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr class="row">
+            <th>编号</th>
+            <th>用户ID</th>
+            <th>总价</th>
+            <th>商品ID</th>
+            <th>订单</th>
+            <th>状态</th>
+            <th width="300px  ">说明</th>
+            <th>创建时间</th>
+            <!--<th style="width:">操作</th>-->
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td>&nbsp;{$item.id}</td>
+                <td>&nbsp;{$item.user_id}</td>
+                <td>&nbsp;{$item.amount}</td>
+                <td>&nbsp;{$item.merchant_id}</td>
+                <td>&nbsp;{$item.out_order_id}</td>
+                <td>&nbsp;{$item.status}</td>
+                <td>&nbsp;{$item.note}</td>
+                <td>&nbsp;{$item.create_time}</td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="9" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

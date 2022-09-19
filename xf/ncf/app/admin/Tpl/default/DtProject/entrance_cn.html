@@ -1,0 +1,85 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script>
+    function addEntrance()
+    {
+        location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=addEntrance";
+    }
+</script>
+<php>
+    function get_entrance_status($type) {
+        if($type == 1) return '启用';
+        if($type == 2) return '禁用';
+        return '未知';
+    }
+
+    function get_entrance_site($type, $site) {
+        if($type == 0) return '全部站点';
+        if($type == 1) return '站点白名单:'.$site['site_ids'];
+        if($type == 2) return '站点黑名单:'.$site['site_ids'];
+    }
+</php>
+<div class="main">
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        <div style="margin-bottom: 10px;">
+            入口名称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" style="margin-right: 100px;"/>
+            状态：
+            <select name="status" class='search_export'>
+                <option value="0" <if condition="intval($_REQUEST['status']) eq 0">selected="selected"</if>>{%ALL}</option>
+                <option value="1" <if condition="intval($_REQUEST['status']) eq 1">selected="selected"</if>>启用</option>
+                <option value="2" <if condition="intval($_REQUEST['status']) eq 2">selected="selected"</if>>禁用</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 10px;">
+            最低加入限额：<input type="text" class="textbox" name="min_invest" value="{:trim($_REQUEST['min_invest'])}" style="margin-right: 100px;"/>
+            锁定天数：<input type="text" class="textbox" name="lock_day" value="{:trim($_REQUEST['lock_day'])}"/>&nbsp;
+            新用户最低加入限额: <input type="text" class="textbox" name="new_user_min_invest" value="{:trim($_REQUEST['new_user_min_invest'])}"/>
+        </div>
+        <div>
+            创建日期：<input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'time_start');" style="margin-right: 10px"/>
+            至<input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'time_end');" style="margin-left: 10px"/>
+            <input type="hidden" value="DtProject" name="m" />
+            <input type="hidden" value="entrance" name="a" />
+            <input type="button" class="button" value="新建入口" onclick="addEntrance();" style="margin-left: 150px;margin-right: 20px;" />
+            <input type="submit" class="button" value="{%SEARCH}"/>
+        </div>
+    </form>
+</div>
+
+<div class="blank5"></div>
+<html:list
+        id="dataTable"
+        style="dataTable"
+        name="item"
+        action="true"
+        datasource="list"
+        show="id:{%ID}|50px
+        ,name:入口名称
+        ,min_rate:利率下限
+        ,max_rate:利率上限
+        ,min_invest_money:最低加入限额
+        ,new_user_min_invest_money:新用户最低加入限额
+        ,lock_day:锁定天数
+        ,status|get_entrance_status:状态
+        ,site_ids_type|get_entrance_site=$item:站点id
+        ,create_time|to_date:申请时间|150px"
+        actionlist="editEntrance:修改"
+        actionwidth="50px"
+/>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+    function editEntrance(id){
+        window.location.href = "/m.php?m=DtProject&a=editEntrance&id="+id;
+    }
+</script>
+<include file="Public:footer" />

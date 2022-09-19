@@ -1,0 +1,335 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/jquery-1.10.2.min.js' />
+
+<script>
+function bonusTaskAlert(info,reload) {
+        window.location.href = ROOT + '?m=BonusTask&a=bonus_type';
+}
+
+function makeCheck() {
+    //$('#form').submit();
+    var fd = new FormData(document.getElementById("form"));
+    //$("#a").val("checkDataFromCsv");
+    $.ajax({
+        url: "./m.php?m=BonusTask&a=checkDataFromCsv",
+        type: "POST",
+        data: fd,
+        enctype: 'multipart/form-data',
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,   // tell jQuery not to set contentType
+        success: (function(data) {
+            if (data.errMsg != '') {
+                alert(data.errMsg);
+            } else {
+                alert("总共需要发送"+data.count+"个，发送的总金额为"+data.total_money+"，发送的最大金额为"+data.max);
+            }
+            //console.log("PHP Output:");
+            //console.log(data);
+        })
+    });
+}
+</script>
+
+<div class="main">
+<div class="main_title">新增规则 <a href="{:u("BonusTask/index")}&role={$role}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">规则名</td>
+                <td class="item_input">
+                    <input size="100" type="text" class="textbox require" name="name" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">规则键名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="const_name" />
+                </td>
+            </tr>
+            <if condition="$discount neq 1">
+            <tr>
+                <td class="item_title">红包类型</td>
+                <td class="item_input">
+                    <select name="type" id="type" class="require" onchange="switchType();">
+                        <foreach name="types" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包（组）个数/人次</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="times" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包组拆分个数</td>
+                <td class="item_input">
+                    <input type="text" id="count" class="textbox require" name="count" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="money" />
+                    &emsp;<span class="tip_span">备注：若红包类型为红包组，则金额为红包组总金额，否则为单个红包金额</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用限制</td>
+                <td class="item_input">
+                    <select name="use_type" class='require'>
+                        <foreach name="use_type" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包发送有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" id="send_limit_day" name="send_limit_day" />&emsp;
+                    <span class="tip_span">天&emsp;备注：本字段针对红包组有效</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="use_limit_day" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包来源</td>
+                <td class="item_input">
+                    <label><input type="radio" name="source" value="1" checked="checked" />平台奖励</label>
+                    <label><input type="radio" name="source" value="2" />活动奖励</label>
+                </td>
+            </tr>
+            <else/>
+            <tr>
+                <td class="item_title">投资劵组ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="extra" maxlength="64" size="72" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">投资劵金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="money" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">投资劵有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="use_limit_day" />&emsp;
+                </td>
+            </tr>
+            </if>
+            <tr>
+                <td class="item_title">发送方式</td>
+                <td class="item_input">
+                    <select name="send_way" id="send_way" class="require" onchange="switchCondition();">
+                        <foreach name="send_way_list" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                    &emsp;<span class="tip_span"></span>
+                </td>
+            </tr>
+            <tr id="send_condition">
+                <td class="item_title">领用人会员id</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="send_condition" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送消息类型</td>
+                <td class="item_input">
+                    <label><input type="radio" name="is_sms" value="0" checked="checked" />无</label>
+                    <label><input type="radio" name="is_sms" value="1" />短信</label>
+                    <label><input type="radio" name="is_sms" value="2" />推送</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">短信模板ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="sms_temp_id" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送开始时间</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="start_time" value="{$start_time}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />&emsp;
+                    <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+                    <!--<span class="tip_span">开始执行后不可编辑</span>-->
+                </td>
+            </tr>
+
+            <if condition="$discount neq 1">
+            <tr>
+                <td class="item_title">连续发送天数</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="continue_times" value="1" readonly="readonly"/>&emsp;天
+                    <span class="tip_span">若连续每天发送一次，则每天发送的时间一致</span>
+                </td>
+            </tr>
+            </if>
+            <!--
+            <tr>
+                <td class="item_title">状态</td>
+                <td class="item_input">
+                    <label><input type="radio" name="is_effect" value="1" checked="checked"/>有效</label>
+                    <label><input type="radio" name="is_effect" value="0" />无效</label>
+                </td>
+            </tr>
+            -->
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusTask" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+                <input type="hidden" name="is_effect" value="0" />
+                <if condition="$discount eq 1">
+                    <input type="hidden" name="type" value="3" />
+                    <input type="hidden" name="continue_times" value="1">
+                </if>
+                <input type="submit" class="button" value="{%ADD}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript" charset="utf-8">
+
+function switchType() {
+    var bonus_type = $("#type").val();
+    if (bonus_type == 1) {
+        $("#send_limit_day").addClass('require');
+        $("#count").addClass('require');
+    }
+    if (bonus_type == 2) {
+        $("#send_limit_day").removeClass('require');
+        $("#count").removeClass('require');
+    }
+}
+
+function switchCondition(){
+    var condition = '';
+    var item = 1;
+    /*var chkObjs = document.getElementsByName("send_way");
+    for (var i=0; i<chkObjs.length; i++) {
+        if(chkObjs[i].selected){
+            item = chkObjs[i].value;
+            break;
+        }
+    }*/
+    item = $("#send_way").val();
+    if (item == 1) {
+        condition += '<td class="item_title">领用人会员id</td>';
+        condition += '<td class="item_input">';
+        condition += '<input type="text" class="textbox require" name="send_condition" />';
+        condition += '</td>';
+    } else if (item == 2) {
+        condition += '<td class="item_title">领用人会员组号</td>';
+        condition += '<td class="item_input">';
+        condition += '<input type="text" class="textbox require" name="send_condition" />';
+        condition += '</td>';
+    } else if (item == 3) {
+        condition += '<td class="item_title">领用人tag</td>';
+        condition += '<td class="item_input">';
+        condition += '<input type="text" class="textbox require" name="send_condition" />';
+        condition += '<label><input type="radio" name="send_type" value="1" checked="checked"/>并且</label>';
+        condition += '<label><input type="radio" name="send_type" value="2" />或者</label>';
+        condition += '&emsp;<span class="tip_span"></span>';
+        condition += '</td>';
+    } else if (item == 4) {
+        condition += '<td class="item_title">导入csv</td>';
+        condition += '<td class="item_input">';
+        condition += '<input type="file" class="textbox require" name="send_condition" />';
+        condition += '<label><input type="radio" name="send_type" value="1" checked="checked"/>导入uid</label>';
+        condition += '<label><input type="radio" name="send_type" value="2" />导入手机号</label>';
+        condition += '&emsp;<a href="/m.php?m=BonusTask&a=download">下载模板</a>';
+        <if condition="$discount neq 1">
+        condition += '&emsp;是否包含金额：';
+        condition += '<label><input type="radio" name="is_include_money" value="0" checked="checked"/>不包含</label>';
+        condition += '<label><input type="radio" name="is_include_money" value="1" />包含</label>';
+        condition += '<label><input type="button" name="check_data" class="button" onclick="makeCheck()" value="检测数据" /></label>';
+        </if>
+        condition += '&emsp;<span class="tip_span">备注：每个csv不得超过一百万条数据，且文件大小不能超过10M</span>';
+        condition += '</td>';
+
+    } else if (item == 5) {
+        condition += '<td class="item_title">自定义条件发送</td>';
+        condition += '<td class="item_input">';
+        condition += '<table cellpadding="4" cellspacing="0" border="0" class="form">';
+        condition += '<tr>';
+        condition += '<td class="input_title">时间区间：</td>';
+        condition += '<td class="input_item"><input type="text" class="textbox require" name="deal_time_start" value="{$deal_time_start}" id="deal_time_start"  onfocus="this.blur(); return showCalendar(\'deal_time_start\', \'%Y-%m-%d %H:%M:00\', true, false, \'btn_deal_time_start\');" />&emsp;';
+        condition += '<input type="button" class="button" id="btn_deal_time_start" value="{%SELECT_TIME}" onclick="return showCalendar(\'deal_time_start\', \'%Y-%m-%d %H:%M:00\', true, false, \'btn_deal_time_start\');" />';
+        condition += '<input type="button" class="button" value="{%CLEAR_TIME}" onclick="$(\'#deal_time_start\').val(\'\');" />至';
+        condition += '<input type="text" class="textbox require" name="deal_time_end" value="{$deal_time_end}" id="deal_time_end"  onfocus="this.blur(); return showCalendar(\'deal_time_end\', \'%Y-%m-%d %H:%M:59\', true, false, \'btn_deal_time_end\');" />&emsp;';
+        condition += '<input type="button" class="button" id="btn_deal_time_end" value="{%SELECT_TIME}" onclick="return showCalendar(\'deal_time_end\', \'%Y-%m-%d %H:%M:59\', true, false, \'btn_deal_time_end\');" />';
+        condition += '<input type="button" class="button" value="{%CLEAR_TIME}" onclick="$(\'#deal_time_end\').val(\'\');" /></td></tr>';
+        condition += '<tr><td class="input_title">投资次数：</td>';
+        condition += '<td class="input_item"><input type="text" class="textbox require" name="deal_times_start" />至';
+        condition += '<input type="text" class="textbox require" name="deal_times_end" /></td></tr>';
+        //condition += '<tr><td class="input_title">累计投资金额：</td>';
+        //condition += '<td class="input_item"><input type="text" class="textbox require" name="deal_money_start" />至';
+        //condition += '<input type="text" class="textbox require" name="deal_money_end" /></td>';
+        //condition += '</tr>';
+        condition += '</table>';
+
+        condition += '</td>';
+    } else if (item == 6) {
+        condition += '<td class="item_title">时间段内注册未投资用户</td>';
+        condition += '<td class="item_input">';
+        condition += '<table cellpadding="3" cellspacing="0" border="0" class="form">';
+        condition += '<tr>';
+        condition += '<td class="input_item"><input type="text" class="textbox require" name="reg_time_start" value="{$reg_time_start}" id="reg_time_start"  onfocus="this.blur(); return showCalendar(\'reg_time_start\', \'%Y-%m-%d %H:%M:00\', true, false, \'btn_reg_time_start\');" />&emsp;';
+        condition += '<input type="button" class="button" id="btn_reg_time_start" value="{%SELECT_TIME}" onclick="return showCalendar(\'reg_time_start\', \'%Y-%m-%d %H:%M:00\', true, false, \'btn_reg_time_start\');" />';
+        condition += '<input type="button" class="button" value="{%CLEAR_TIME}" onclick="$(\'#reg_time_start\').val(\'\');" />至';
+        condition += '<input type="text" class="textbox require" name="reg_time_end" value="{$reg_time_end}" id="reg_time_end"  onfocus="this.blur(); return showCalendar(\'reg_time_end\', \'%Y-%m-%d %H:%M:59\', true, false, \'btn_reg_time_end\');" />&emsp;';
+        condition += '<input type="button" class="button" id="btn_reg_time_end" value="{%SELECT_TIME}" onclick="return showCalendar(\'reg_time_end\', \'%Y-%m-%d %H:%M:59\', true, false, \'btn_reg_time_end\');" />';
+        condition += '<input type="button" class="button" value="{%CLEAR_TIME}" onclick="$(\'#reg_time_end\').val(\'\');" /></td></tr>';
+        condition += '</table>';
+
+        condition += '</td>';
+
+    } else if (item == 7) {
+        condition += '<td class="item_title">时间段内未投资用户</td>';
+        condition += '<td class="item_input">';
+        condition += '<table cellpadding="3" cellspacing="0" border="0" class="form">';
+        condition += '<tr>';
+        condition += '<td class="input_item"><input type="text" class="textbox require" name="not_deal_time_start" value="{$not_deal_time_start}" id="not_deal_time_start"  onfocus="this.blur(); return showCalendar(\'not_deal_time_start\', \'%Y-%m-%d %H:%M:00\', true, false, \'btn_not_deal_time_start\');" />&emsp;';
+        condition += '<input type="button" class="button" id="btn_not_deal_time_start" value="{%SELECT_TIME}" onclick="return showCalendar(\'not_deal_time_start\', \'%Y-%m-%d %H:%M:00\', true, false, \'btn_not_deal_time_start\');" />';
+        condition += '<input type="button" class="button" value="{%CLEAR_TIME}" onclick="$(\'#not_deal_time_start\').val(\'\');" />至';
+        condition += '<input type="text" class="textbox require" name="not_deal_time_end" value="{$not_deal_time_end}" id="not_deal_time_end"  onfocus="this.blur(); return showCalendar(\'not_deal_time_end\', \'%Y-%m-%d %H:%M:59\', true, false, \'btn_not_deal_time_end\');" />&emsp;';
+        condition += '<input type="button" class="button" id="btn_not_deal_time_end" value="{%SELECT_TIME}" onclick="return showCalendar(\'not_deal_time_end\', \'%Y-%m-%d %H:%M:59\', true, false, \'btn_not_deal_time_end\');" />';
+        condition += '<input type="button" class="button" value="{%CLEAR_TIME}" onclick="$(\'#not_deal_time_end\').val(\'\');" /></td></tr>';
+        condition += '</table>';
+
+        condition += '</td>';
+
+    }
+    $('#send_condition').innerHTML = condition;
+    document.getElementById('send_condition').innerHTML = condition;
+}
+
+</script>
+<include file="Public:footer" />

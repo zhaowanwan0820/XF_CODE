@@ -1,0 +1,217 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v1/css/collection_web2.css');?>" rel="stylesheet" type="text/css">
+
+<div class="mauto clearfix">
+       <section>
+            <div class="shadow">
+                <div class="mess_title"><h1><i></i>收款银行卡信息</h1></div>
+                <div class="collection">
+                    <form name="Jcarry_From" id="Jcarry_From_2" action="{url x="index" r="account/ebank"}" method="post" enctype='multipart/form-data'>
+                    <table width="100%">
+                        <input type='hidden' name='id' value='{$id}'>
+                        <input type='hidden' name='user_bank_id' value='{$user_bank_id}'>
+                        <?php echo token_input(); ?>
+                        <tbody class="colltab">
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 姓名：</th>
+                                <td>{$realName}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 证件号：</th>
+                                <td>{$idno}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 开户名：</th>
+                                <td>
+                                    <?php echo nameFormat($this->_var['bankcard_info']['card_name'],1);?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 选择银行：</th>
+                                <td>
+                                    {foreach from="$bank_list" item="item"}
+                                        {if $item.id eq $bankcard_info.bank_id}{$item.name}<input type='hidden' id="bank_name" name="bank_name" value='{$item.name}'>{/if}
+                                    {/foreach}
+                                    <input type='hidden' name="bank_id" value='{$bankcard_info.bank_id}'>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 银行卡号：</th>
+                                <td>
+                                    {function name="formatBankcard" value=$bankcard_info.bankcard}
+                                </td>
+                            </tr>
+
+                            <script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+                            <tr style="{if $hideExtra}display: none;{/if}">
+                                <th><i class="ico_asterisk"></i> 开户行所在地：</th>
+                                <td >
+                                    <input type="hidden" value="{$bankcard_info.region_lv1}" id="deflv1">
+                                    <input type="hidden" value="{$bankcard_info.region_lv2}" id="deflv2">
+                                    <input type="hidden" value="{$bankcard_info.region_lv3}" id="deflv3">
+                                    <input type="hidden" value="{$bankcard_info.region_lv4}" id="deflv4">
+                                    <label></label>
+                                    <select class="select_box" style='width:100px;' name="region_lv1"  >
+                                        <option value="0">={$LANG.SELECT_PLEASE}=</option>
+                                        {foreach from=$region_lv1 item=lv1}
+                                        <option {if $lv1.selected eq 1}selected="selected"{/if} value="{$lv1.id}">{$lv1.name}</option>
+                                        {/foreach}
+                                    </select>
+                                    <label>省：</label>
+                                    <select class="select_box" name="region_lv2" >
+                                        <option value="0">={$LANG.SELECT_PLEASE}=</option>
+                                    </select>
+                                    <label>市：</label>
+                                    <select class="select_box" name="region_lv3" >
+                                        <option value="0">={$LANG.SELECT_PLEASE}=</option>  
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr style="{if $hideExtra}display: none;{/if}">
+                                <th><i class="ico_asterisk"></i> 开户行网点：</th>
+                                <td id="_js_bank_site">
+                                    <select class="" name="bankzone">
+                                        <option value="{$bankcard_info.bankzone}">{$bankcard_info.bankzone}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" height="150" valign="top">
+                                    <input type="submit" value="提交修改" class="but-gray but-yellow btn_tj" onclick='return checkData();'> 
+                                    <input type="reset" value="重置" id="_js_reset" class="but-gray btn_cz" >
+                                </td>
+                            </tr>
+                            <!--  -->
+                            <script>$("#Jcarry_rebankcard,#Jcarry_bankcard").on("paste copy" , function(){
+    return false;
+});</script>     
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+            </div>
+       </section>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){   
+        $("select[name='region_lv1']").bind("change",function(){
+            load_select("1");
+            bank_site();
+        });
+        $("select[name='region_lv2']").bind("change",function(){
+            load_select("2");
+            bank_site();
+        });
+        //城市
+        $("select[name='region_lv3']").bind("change",function(){
+            load_select("3");
+            bank_site();
+        });
+
+        //重置
+        $("#_js_reset").click(function(){
+            var hidden_previous_id = $('#hidden_previous_id').val();
+            //判断是否上传过了。如果有需要删除先前的图片
+            if(hidden_previous_id) {
+                del_previous_image(hidden_previous_id);
+            }
+            $('#hidden_previous_id').val('');
+        });
+
+        //银行网点
+        $("select[name='bank_id']").bind("change",function(){
+            bank_site();
+        });
+        setTimeout("bank_site();",1000);
+        //手动填写
+        $("#Jcarry_From_2").on("click", "#_js_shoudong" ,function(){
+            $("#_js_shoudong_input").show();
+        });
+
+        $("#Jcarry_From_2").on("change", "#_js_bankone" ,function(){
+            $("#_js_shoudong_input").val('');
+            $("#_js_shoudong_input").hide();
+        });
+
+        // init region
+                var devlv1Option = $("select[name='region_lv1'] option[value='" + $("#deflv1").val() + "']")[0];
+                if (devlv1Option) {
+                    devlv1Option.selected = true;
+                    load_select("1");
+                    var devlv2Option = $("select[name='region_lv2'] option[value='" + $("#deflv2").val() + "']")[0];
+                    if (devlv2Option) {
+                        devlv2Option.selected = true;
+                        load_select("2");
+                        var devlv3Option = $("select[name='region_lv3'] option[value='" + $("#deflv3").val() + "']")[0];
+                        if (devlv3Option) {
+                            devlv3Option.selected = true;
+                            load_select("3");
+                            var devlv4Option = $("select[name='region_lv4'] option[value='" + $("#deflv4").val() + "']")[0];
+                            if (devlv4Option) {
+                                devlv4Option.selected = true;
+                            }
+                        }
+                    }
+                }
+    });
+    
+    function load_select(lv)
+    {
+        var name = "region_lv"+lv;
+        var next_name = "region_lv"+(parseInt(lv)+1);
+        var id = $("select[name='"+name+"']").val();
+        
+        if(lv==1)
+        var evalStr="regionConf.r"+id+".c";
+        if(lv==2)
+        var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+id+".c";
+        if(lv==3)
+        var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+$("select[name='region_lv2']").val()+".c.r"+id+".c";
+        
+        if(id==0)
+        {
+            var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+        }
+        else
+        {
+            var regionConfs=eval(evalStr);
+            evalStr+=".";
+            var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+            for(var key in regionConfs)
+            {
+                html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+            }
+        }
+        $("select[name='"+next_name+"']").html(html);
+        
+        if(lv == 4)
+        {
+            load_delivery();
+        }
+        else
+        {
+            load_select(parseInt(lv)+1);
+        }
+        
+        
+    }
+
+    bank_site();
+    //银行网点
+    function bank_site(){
+        var c = $("select[name='region_lv3']").find("option:selected").text();
+        var p = $("select[name='region_lv2']").find("option:selected").text();
+        var b = $('#bank_name').val();
+        var n = '{function name="addslashes" value=$bankcard_info.bankzone}';
+        var data = {c:c,p:p,n:n,b:b};
+        $.post('/api/banklist',data,function(rs){
+            if (c == '=请选择=') {
+                $("#_js_bank_site").html("<select id='_js_bankone' class='select_box w323' name='bankzone' ><option value='0'>=请选择=</option></select>");
+            }else if (rs != "") {
+                $("#_js_bank_site").html(rs);
+            }
+        });
+    }
+</script>
+{include file="web/views/footer.html"}

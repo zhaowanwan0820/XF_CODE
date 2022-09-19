@@ -1,0 +1,155 @@
+{// 引入标签库 }
+<tagLib name="html" />  
+<include file="Public:header" />
+<!-- style -->
+<link href="__ROOT__/static/admin/easyui/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+<link href="__ROOT__/static/admin/easyui/themes/icon.css" rel="stylesheet" type="text/css" />
+<link href="__ROOT__/static/admin/easyui/demo.css" rel="stylesheet" type="text/css" />
+<!-- edn -->
+<!-- js文件 start -->
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.form.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.json-2.3.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/Common/js/bank.js"></script>
+<!--js end      -->
+<load href='__TMPL__Common/js/deal.js' />
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("Bank/index?p=$p")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form name="edit" id='companyForm' method="post" enctype="multipart/form-data">
+        <input type='hidden' name='id' value='{$vo.id}' id='id'>
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">银行名称:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="name" value="{$vo.name}" /></td>
+            </tr>
+            <tr>
+                <td class="item_title">银行名称简称:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="abbreviate_name" maxlength="6" value="{$vo.abbreviate_name}" onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))" />
+                    <font color='red'>最多6个汉字</font>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行简码:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="short_name" value="{$vo.short_name}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行logo:</td>
+                <td class="item_input">
+                    <input id="fileToUpload" type="file" size="20" name="fileToUpload" class="input">
+                    <button class="button" id="buttonUpload" onclick="return upload('fileToUpload');">上传</button>
+                    <input type='hidden' name='img' id='hidden_fileToUpload' value='{$vo.img}' class="textbox require"> 
+                    <span id='img_name_fileToUpload' {if $vo.img}{else}style='display:none;'{/if}><a href='{$vo.imgName}' id='img_href_fileToUpload' target='_blank'>{$vo.imgName}</a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">排序位置:</td>
+                <td class="item_input"><input type="text" class="textbox " name="sort" value="{$vo.sort}" /></td>
+            </tr>
+        <tr>
+                <td class="item_title">是否支持第三方存管:</td>
+                <td class="item_input">
+                    <lable><input type="radio" name="deposit" value="1" <if condition="$vo['deposit'] eq 1">checked="checked"</if> />是</lable>
+                    <lable><input type="radio" name="deposit" value="0" <if condition="$vo['deposit'] eq 0">checked="checked"</if> />否</lable>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">是否为推荐:</td>
+                <td class="item_input">
+                    <lable><input type="radio" name="is_rec" value="1" <if condition="$vo['is_rec'] eq 1">checked="checked"</if> />是</lable>
+                    <lable><input type="radio" name="is_rec" value="0" <if condition="$vo['is_rec'] eq 0">checked="checked"</if> />否</lable>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行logo(原卡中心):</td>
+                <td class="item_input">
+                    <input id="fileToUploadLogo" type="file" size="20" name="fileToUploadLogo" class="input">
+                    <button class="button" id="buttonUpload" onclick="return upload('fileToUploadLogo');">上传</button>
+                    <input type='hidden' name='logo_id' id='hidden_fileToUploadLogo' value='{$vo.logo_id}' class="textbox require"> 
+                    <span id='img_name_fileToUploadLogo' ><a href='{$vo.logoImgName}' id='img_href_fileToUploadLogo' target='_blank'>{$vo.logoImgName}</a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行背景图:</td>
+                <td class="item_input">
+                    <input id="fileToUploadBg" type="file" size="20" name="fileToUploadBg" class="input">
+                    <button class="button" id="buttonUpload" onclick="return upload('fileToUploadBg');">上传</button>
+                    <input type='hidden' name='bg_id' id='hidden_fileToUploadBg' value='{$vo.bg_id}' class="textbox require"> 
+                    <span id='img_name_fileToUploadBg' ><a href='{$vo.bgImgName}' id='img_href_fileToUploadBg' target='_blank'>{$vo.bgImgName}</a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行icon:</td>
+                <td class="item_input">
+                    <input id="fileToUploadIcon" type="file" size="20" name="fileToUploadIcon" class="input">
+                    <button class="button" id="buttonUpload" onclick="return upload('fileToUploadIcon');">上传</button>
+                    <input type='hidden' name='icon_id' id='hidden_fileToUploadIcon' value='{$vo.icon_id}' class="textbox require"> 
+                    <span id='img_name_fileToUploadIcon' ><a href='{$vo.iconImgName}' id='img_href_fileToUploadIcon' target='_blank'>{$vo.iconImgName}</a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">水印2倍:</td>
+                <td class="item_input">
+                    <input id="fileToUploadMask2x" type="file" size="20" name="fileToUploadMask2x" class="input">
+                    <button class="button" id="buttonUpload" onclick="return upload('fileToUploadMask2x');">上传</button>
+                    <input type='hidden' name='mask2x' id='hidden_fileToUploadMask2x' value='{$vo.mask2x}' class="textbox require"> 
+                    <span id='img_name_fileToUploadMask2x' ><a href='{$vo.mask2xImgName}' id='img_href_fileToUploadMask2x' target='_blank'>{$vo.mask2xImgName}</a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">水印3倍:</td>
+                <td class="item_input">
+                    <input id="fileToUploadMask3x" type="file" size="20" name="fileToUploadMask3x" class="input">
+                    <button class="button" id="buttonUpload" onclick="return upload('fileToUploadMask3x');">上传</button>
+                    <input type='hidden' name='mask3x' id='hidden_fileToUploadMask3x' value='{$vo.mask3x}' class="textbox require"> 
+                    <span id='img_name_fileToUploadMask3x' ><a href='{$vo.mask3xImgName}' id='img_href_fileToUploadMask3x' target='_blank'>{$vo.mask3xImgName}</a></span>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="submit" class="button" value="保存" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+$(document).ready(function() {
+    var lock_form = 0,
+    $sub = $('#companyForm').find("input[type='submit']");
+    //ajaxForm
+    $('#companyForm').ajaxForm({
+        url: '/m.php?m=Bank&a=saveBank',
+        dataType:'json',
+        beforeSubmit: function(arr, $form, options) { 
+            //加锁处理防止表单 多次请求服务器提交
+            $sub.attr("disabled","disabled");
+        },
+        success: function(data) {
+            lock_form = 1;
+            if(data.code == '0000') {
+                alert('保存成功!');
+                window.location.href="/m.php?m=Bank&a=editor&id="+data.message;
+                window.reload();
+            }else{
+                alert(data.message);
+            }
+        }
+    });
+})
+</script>
+<include file="Public:footer" />

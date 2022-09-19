@@ -1,0 +1,112 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<div class="main reservationContent">
+    <div class="main_title">
+        <p>投资期限配置</p>
+    </div>
+    <div class="blank5"></div>
+    <form id="pre-form" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>投资期限:</td>
+                <td class="item_input qixian">
+                    <if condition="empty($data['invest_conf'])">
+                    <div class="invest_qixian clearfix">
+                        <div class="qx_left">
+                            <input type="number" class="textbox require class_deadline" name="deadline[0]"  required="required" value=""/>
+                            <foreach name="investUnitConfig" key="key" item="investunit_conf">
+                                <input type="radio" class="class_deadline_unit" name="deadline_unit[0]" value="{$investunit_conf['investNum']}" <if condition="$investunit_conf['investNum'] == 1"> checked </if>>{$investunit_conf['investUnit']}
+                            </foreach>
+                            <a href="javascript:;" class="minusBtn investminusBtn">-</a>
+                            <a href="javascript:;" class="plusBtn investplusBtn">+</a>
+                        </div>
+                    </div>
+                    </if>
+
+                    <foreach name="data.invest_conf" key="key" item="invest_conf">
+                    <div class="invest_qixian clearfix">
+                        <div class="qx_left">
+                            <input type="number" class="textbox require class_deadline" name="deadline[{$key}]"  required="required" value="{$invest_conf['deadline']}"/>
+                            <foreach name="investUnitConfig" key="key2" item="investunit_conf">
+                                <input type="radio" class="class_deadline_unit" name="deadline_unit[{$key}]" value="{$investunit_conf['investNum']}" <if condition="$invest_conf['deadline_unit'] == $investunit_conf['investNum']"> checked </if>>{$investunit_conf['investUnit']}
+                            </foreach>
+                            <a href="javascript:;" class="minusBtn investminusBtn">-</a>
+                            <a href="javascript:;" class="plusBtn investplusBtn">+</a>
+                        </div>
+                    </div>
+                    </foreach>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserReservation" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="deadline" />
+                    <if condition="empty($data)">
+                    <input type="submit" id="publish" class="button" value="发布" />
+                    <else/>
+                    <input type="submit" id="publish" class="button" value="编辑" />
+                    </if>
+
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    $(function(){
+        // 投资期限总数
+        var investConfCnt = {$data.invest_conf_cnt}?{$data.invest_conf_cnt}:1;
+        //删除投资期限
+        $(".qixian").on('click', '.investminusBtn', function(event) {
+            var pLength = $(".qixian").find("div.invest_qixian").length;
+            //只有一种投资期限的时候,禁止删除
+            if(pLength>1){
+                $(this).parents('div.invest_qixian').remove();
+            }
+        });
+        //添加投资期限
+        $(".qixian").on('click', '.investplusBtn', function(event) {
+            var thisParent = $(this).parents('div.invest_qixian');
+            var parentData = thisParent.clone(true);
+            parentData.find('.class_deadline').attr('name', 'deadline['+investConfCnt+']');
+            parentData.find('.class_deadline_unit').attr('name', 'deadline_unit['+investConfCnt+']');
+            parentData.find('.class_rate').attr('name', 'rate['+investConfCnt+']');
+            parentData.find('.class_thirdGradeName').find("select").attr('name', 'third_grade_name['+investConfCnt+'][]');
+            parentData.find('.class_thirdGradeName:gt(0)').remove();
+            parentData.find('.class_thirdGradeName').find("select option").removeAttr("selected");
+            parentData.find('.class_groupids').attr('name', 'visiableGroupIds['+investConfCnt+']');
+            parentData.find('.class_groupids').val('');
+            parentData.find('.class_deadline').val('');
+            parentData.find('.class_rate').val('');
+            $(".qixian").append(parentData);
+            investConfCnt += 1;
+        });
+
+        $(".grademinusBtn").click(function(){
+            var length =  $(this).parent("span").parents("div.invest_qixian").find("span").length;
+            if(length>1){
+                $(this).parent().remove();
+            }
+        });
+
+        $(".gradeplusBtn").click(function(){
+            thirdGradeName = $(this).parent("span").clone(true);
+            thirdGradeName.find("select option").removeAttr("selected");
+            $(this).parent("span").parent("div.thirdgradelist").append(thirdGradeName);
+        });
+        //校验最低 最高预约金额逻辑
+        $("#publish").on('click', function(event) {
+            var minimum = parseInt($("#minimum").val());
+            var highest = parseInt($("#highest").val());
+            if(highest>0){
+                if(minimum>highest){alert("最低预约金额不能高于最高预约金额");return false;}
+            }
+        });
+    })
+</script>

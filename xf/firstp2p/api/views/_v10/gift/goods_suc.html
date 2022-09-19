@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>兑换详情</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_success.css');?>">
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="sc_top">
+                <i class="sc_success"></i>
+                <p>兑换成功</p>
+            </div>
+            <div class="sc_list clearfix">
+                <div class="scl_show">
+                    <span>商品名称</span><p class="ts_color">{$coupon.productName}</p>
+                </div>
+                <div class="scl_show dis_border">
+                    <span>兑换时间</span><p>{function name="format_date_by_type" b=$coupon.updateTime}</p>
+                </div>
+            </div>
+            <div class="sc_title">物品会尽快邮寄至以下地址</div>
+            <div class="sc_address">
+                <span>收货信息</span>
+                <p>{$coupon.receiverName}</p>
+                <p>{$coupon.receiverPhone}</p>
+                <p>{$coupon.receiverCode}</p>
+                <p class="ts_color">{$coupon.receiverAddress}</p>
+            </div>
+            <div class="ui_h56"></div>
+            <div class="sc_footer">
+                <a href="coupon://api?type=native&name=coupontab&selectedtab=mine" class="a_btn">查看礼券</a>
+            </div>
+        </div>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    <script type="text/javascript">
+    //券码分割
+    var str = '{$coupon.couponNumber}';
+    var couponNumber = '';
+    for(var i = 0; i< str.length; i++){
+       couponNumber += str[i];
+       if((i+1) % 4 == 0) couponNumber += ' ';
+    }
+    $('.coupon_num').html(couponNumber);
+    </script>
+    </body>
+</html>

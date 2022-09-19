@@ -1,0 +1,47 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+    <div class="main_title">{$main_title}客服查询</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        {%USER_MOBILE}：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:100px;" />
+                         会员编号：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+                          证件号码：<input type="text" class="textbox" name="idno" value="{:trim($_REQUEST['idno'])}" style="width:100px;" />
+                           银行卡号：<input type="text" class="textbox" name="bankcard" value="{:trim($_REQUEST['bankcard'])}" style="width:100px;" />
+
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="custServInquir" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+    </div>
+
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="user"
+    checkbox="true"
+    action="true"
+    datasource="user_info"
+    show="idnum:{%ID}|50px,id|numTo32:会员编号,user_name:{%USER_NAME},real_name:姓名,mobile:{%USER_MOBILE},create_time:注册时间,idno:证件号码,bankcard:银行卡号,principal:待还本金,ph_norepay_principal:网贷代还本金,wx_norepay_principal:网信代还本金,duotou_norepay_principal:智多新待还本金,money:资产总额,visit_time:查询时间,is_effect:状态,user:操作人"
+    actionlist="custServInquir_detail:{%USER_ACCOUNT_DETAIL_SHORT}"/>
+<div class="blank5"></div>
+<div class="blank5"></div>
+    <div>
+    <if condition="count($page_flag) eq 1 ">
+        <table style="width:100%;">
+        <tr >
+        <td cellspacing="1" style="text-align:center;">没有查到相关记录</td>
+        </tr>
+        </table>
+    </if>
+    </div>
+</div>
+
+<include file="Public:footer" />

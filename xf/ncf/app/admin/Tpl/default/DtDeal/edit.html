@@ -1,0 +1,170 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/deal.js' />
+<script type="text/javascript">
+
+
+</script>
+<div class="main">
+    <div class="main_title">{%ADD} <a href="javascript:history.back();" class="back_list" >{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" id="de-form" method="post" enctype="multipart/form-data">
+
+        <div class="blank5"></div>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">借款标题:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="name" style="width:200px;" value="<?php echo $data['name'] ?>" />
+                    项目名称：{$data['projectInfo']['name']}</td>
+                    <input type="hidden" name="project_id" value="{$vo.id}"/></td>
+            </tr>
+            <tr>
+                <td class="item_title">单位投资金额:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="unit_loan_money" id="unit_loan_money" value="<?php echo $data['projectInfo']['unitLoanMoney'] ?>" disabled/>
+                </td>
+            </tr>
+            <tr id="use_user_id">
+                <td class="item_title">每日加入限额:</td>
+                <td class="item_input">
+                    <input type="hidden" id="money_limit_day_copy" value="<?php echo $data['moneyLimitDay']?>">
+                    <input type="text" class="textbox require" id="money_limit_day" name="money_limit_day" value="<?php echo $data['moneyLimitDay']?>">
+                    <span class="tip_span"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">自定义标签:</td>
+                <td class="item_input">
+                    前tag名称:<input type="text" class="textbox" name="tag_before_name"  id = "tag_before_name" value="<?php echo $data['tagBeforeName']?>" />
+                    描述:<input type="text" class="textbox" size="60" name="tag_before_desc" id = "tag_before_desc" value="<?php echo $data['tagBeforeDesc']?>"> <br>
+                    后tag名称:<input type="text" class="textbox" name="tag_after_name"  id = "tag_after_name" value="<?php echo $data['tagAfterName']?>" />
+                    描述:<input type="text" class="textbox" size="60" name="tag_after_desc" id = "tag_after_desc" value="<?php echo $data['tagAfterDesc']?>">
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开始时间:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="start_time" id="start_time" value="<?php echo date('Y-m-d H:i:s',$data['startTime'])?>" onfocus="this.blur();">
+                    <span class="tip_span"></span>
+                    <input type="button" class="button" value="清空时间" onclick="$('#start_time').val('');">
+                </td>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">结束时间:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="end_time" id="end_time" value="<?php echo date('Y-m-d H:i:s',$data['endTime'])?>" onfocus="this.blur();">
+                    <span class="tip_span"></span>
+                    <input type="button" class="button" value="清空时间" onclick="$('#end_time').val('');">
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">前台显示:</td>
+                <td class="item_input">
+                    <input type="radio" class="textbox" name="is_show" value="1"  <if condition="$data['isShow'] eq 1"> checked="true" </if>>有效
+                    <input type="radio" class="textbox" name="is_show" value="0" <if condition="$data['isShow'] eq 0"> checked="true" </if>>无效
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">是否发起投资:</td>
+                <td class="item_input">
+                    <input type="radio" class="textbox" name="is_effect" value="1" <if condition="$data['isEffect'] eq 1"> checked="true" </if>>开启
+                    <input type="radio" class="textbox" name="is_effect" value="0" <if condition="$data['isEffect'] eq 0"> checked="true" </if>>关闭
+                </td>
+            </tr>
+
+        </table>
+
+        <div class="blank5"></div>
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="deal_id" value="{$data['id']}">
+                    <input type="hidden" name="project_id" value="{$data['projectId']}">
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="DtDeal" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+                    <input type="submit" class="button" value="{%SAVE}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            //每日加入限额必须是单位投资金额的整数倍
+            $("#money_limit_day").blur(function(){
+                var unit_money = parseFloat($("#unit_loan_money").val());
+                var money_limit_day = parseFloat($("#money_limit_day").val());
+                var money_limit_day_copy = parseFloat($("#money_limit_day_copy").val());
+                if(money_limit_day <= 0 || ( money_limit_day % unit_money != 0)) {
+                    $(this).next().text('每日加入限额必须是单位投资金额的整数倍');
+                    $(this).val('');
+                    $(this).focus();
+                 } else if(money_limit_day_copy > money_limit_day){
+                    $(this).next().text('每日加入限额必须大于原有值');
+                    $(this).val('');
+                    $(this).focus();
+                }else{
+                    $(this).next().text('');
+                 }
+            });
+            
+            //开始时间必须小于结束时间
+            $("#start_time").blur(function(){
+                return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', false, false, 'start_time',function() {
+                    if('' == $("#end_time").val()) {
+                        return true;
+                    }
+                    
+                    var start_time = new Date($("#start_time").val().replace(/-/g,'/')).getTime(); 
+                    var end_time = new Date($("#end_time").val().replace(/-/g,'/')).getTime(); 
+                    
+                    if(start_time < end_time ) {
+                        $("#start_time").next().text('');
+                     } else {
+                        $("#start_time").val('');
+                        $("#start_time").focus();
+                        $("#start_time").next().text('开始时间必须小于结束时间');
+                     }
+                });
+            });
+            
+            //结束时间必须大于开始时间
+            $("#end_time").blur(function(){
+                return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', false, false, 'end_time',function() {
+                    if('' == $("#start_time").val()) {
+                        return true;
+                    }
+                    var start_time = new Date($("#start_time").val().replace(/-/g,'/')).getTime(); 
+                    var end_time = new Date($("#end_time").val().replace(/-/g,'/')).getTime(); 
+                    
+                    if(start_time < end_time ) {
+                        $("#end_time").next().text('');
+                     } else {
+                        $("#end_time").val('');
+                        $("#end_time").focus();
+                        $("#end_time").next().text('结束时间必须大于开始时间');
+                     }
+                });
+            });
+            
+        });
+    </script>
+    <include file="Public:footer" />

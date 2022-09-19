@@ -1,0 +1,152 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery-1.10.2.min.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<!-- 截图 start-->
+<load href='__TMPL__Common/js/bootstrap.min.js' />
+<load href='__TMPL__Common/js/cropper.js' />
+<load href='__TMPL__Common/js/jquery-cropper.js' />
+<load href='__TMPL__Common/style/cropper.css' />
+<!-- 截图 end -->
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+div{margin: 0}
+.span_block{
+    display:block;
+}
+.content{width: 100%;overflow:hidden;}
+.content .left{width:50%;float: left;overflow:hidden;}
+.content .compare { display:none;float:left;margin:0 0 0 5px; }
+.content .compare div { margin:0 0 10px 0;}
+.content .info{height: 20px;line-height: 20px;}
+.flipped {
+    transform: scale(-1, 1);
+    -moz-transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    -khtml-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+}
+</style>
+<div class="main">
+<div class="main_title">人工换卡</div>
+<div class="blank5"></div>
+
+<!--table-->
+<table cellpadding="4" cellspacing="0" border="0" class="form">
+    <tr>
+        <td colspan="2" class="topTd"></td>
+    </tr>
+    <tr> <td class="item_title">姓名</td> <td>{$data['name']}</td> </tr>
+    <tr> <td class="item_title">身份证号</td> <td>{$data['user']['idno']}</td> </tr>
+    <tr> <td class="item_title">银行</td> <td>{$data['bank']['name']}</td> </tr>
+    <tr> <td class="item_title">开户行所在地</td> <td>{$data['city']}</td> </tr>
+    <tr> <td class="item_title">开户行网点</td> <td>{$data['data']['bankzone']}</td> </tr>
+    <tr> <td class="item_title">银行卡号</td> <td>{$data['data']['bankcard']}</td> </tr>
+    <tr>
+        <td class="item_title">照片</td>
+        <td>
+            <div id='dialogbox_msg' class="dialog-box dialogbox" style="position: ; overflow: hidden; z-index: 999; width: 1000px;">
+                <div class="dialog-content" id="bankInfo" >
+                    <div class='content'>
+                        <div class='left'>
+                            <div class='image img-container'>
+                                <img src = "{$data['stream']}" width='400' id='idcard_img'>
+                            </div>
+                        </div>
+                        <div class='compare' style=''>
+                            <input type='hidden' id='base64'>
+                            <input type='hidden' id='name' value='{$data['name']}'>
+                            <input type='hidden' id='idno' value='{$data['user']['idno']}'>
+                            <div class="img-preview" style="width:200px; height:200px;overflow: hidden;"></div>
+                            <div>
+                                <button class='button' id='cut_idcard'>获取相似度</button>
+                            </div>
+                            <div>结果：<span class="tip_span" id="compareRet"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">操作</td>
+        <td>
+            <input type='button' class="button" value='镜面翻转' id='idcard_img_btn' style='position:relative; z-index:1;'>
+            <input type='button' class="button" value='截图' id='crop_idcard' style='position:relative; z-index:1;'>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="bottomTd"></td>
+    </tr>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+$(function(){
+    //图片翻转
+    $('#idcard_img_btn').click(function() {
+        $('#dialogbox_msg #idcard_img').toggleClass('flipped');
+    });
+
+    //图片截图
+    $('#crop_idcard').click(function() {
+        $('.compare').show();
+        var image = $('#idcard_img');
+        var base64 = $('#base64');
+        var options = {
+            preview: '.img-preview',
+            checkCrossOrigin: false,
+            checkOrientation: false,
+            aspectRatio: 1 / 1,
+            autoCropArea: 0.6,
+            zoomable: false,
+            viewMode:2,
+            crop: function (e) {
+                var cas=$(this).cropper('getCroppedCanvas');
+                var base64url=cas.toDataURL('image/*');
+                base64.val(base64url);
+            },
+        }
+
+        image.cropper(options);
+
+    });
+
+    $('#cut_idcard').click(function() {
+        var imgBase64 = $('#base64').val();
+        var imgBase64 = imgBase64.replace(/\+/g, "-");
+        var name = $('#name').val();
+        var idno = $('#idno').val();
+        $('#compareRet').html('相似度计算中...');
+        $.ajax({
+            type: "POST",
+            url: "/m.php?m=IDVerify&a=imageCompare",
+            data:{
+               'imgBase64':imgBase64,
+               'name':name,
+               'idno':idno,
+            },
+            dataType:'json',
+            success: function(data){
+                 result = data.data;
+                 if (!isNaN(result)) {
+                     result = Math.round(result * 10000) / 100 + '%';
+                 }
+                 $('#compareRet').html(result);
+            }
+        });
+    });
+});
+
+</script>
+<include file="Public:footer" />

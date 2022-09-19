@@ -1,0 +1,36 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__searchselect/jquery.searchableselect.js' />
+<load href='__TMPL__searchselect/searchableselect.css' />
+<load href='__TMPL__widget/mulselect/cityData.js' />
+<load href='__TMPL__widget/mulselect/mulselect.v1.js' />
+
+<div class="main">
+    <div class="main_title">{$main_title}</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <input type="button" class="button" value="{%ADD}" onclick="location.href='m.php?m=OnlineRegistration&a=addActivity'" />
+        <input type="button" class="button" value="{%DEL}" onclick="del();" />
+        <input type="button" class="button" value="查看用户" onclick="location.href='m.php?m=OnlineRegistration&a=userList'" />
+    </div>
+    <div class="blank5"></div>
+    <html:list
+            id="dataTable"
+            style="dataTable"
+            name="onlineRegistration"
+            checkbox="true"
+            action="true"
+            datasource="list"
+            show="id:活动ID|50p,title:活动标题:edit,level:活动限制等级,start_time:活动开始时间,end_time:活动结束时间,detail:活动详情,shared_icon:微信分享图标,shared_text:微信分享文案,create_time:活动创建时间,update_time:活动更新时间"
+            actionlist="edit:{%EDIT}, del:{%DEL}"
+    />
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

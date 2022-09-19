@@ -1,0 +1,156 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+
+<div class="main">
+    <div class="main_title">{%EDIT} <a href="{:u("Splash/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">标题:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="title" value="{$vo.title}"/></td>
+            </tr>
+            <tr>
+                <td class="item_title">链接:</td>
+                <td class="item_input"><input type="text" class="textbox" name="link" value="{$vo.link}"/></td>
+            </tr>
+            <tr>
+                <td class="item_title">分站:</td>
+                <td class="item_input">
+                    <select name="site_id">
+                        <foreach name="site_list" key="site_id" item="site_name">
+                            <option name="site_id" value="{$site_id}" <if condition="$vo.site_id eq $site_id">selected="selected"</if>>
+                            {$site_name}
+                            </option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%IS_EFFECT}:</td>
+                <td class="item_input">
+            <lable>{%IS_EFFECT_1}<input type="radio" name="is_effect" value="1" <if condition="$vo['is_effect'] eq 1">checked="checked"</if> /></lable>
+            <lable>{%IS_EFFECT_0}<input type="radio" name="is_effect" value="0" <if condition="$vo['is_effect'] eq 0">checked="checked"</if> /></lable>
+            </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">IOS素材:</td>
+                <td class="item_input">
+                    <div style="height:30px">
+                        <label>640*960px:</label>
+                        <input id="file_pic1" type="file" size="20" name="fileToUpload" class="input" onchange="tryUploadInput('file_pic1', 'hide_pic1', 'img_pic1')">
+                        <input id="hide_pic1" name="ios_640_960" type="hidden" value="{$attachment['ios_640_960']['id']}">
+                    </div>
+                    <img id="img_pic1" src="{$attachment['ios_640_960']['img_url']}"  class="img-thumbnail" style="width: 60px;height: 60px;">
+
+                    <div style="height:30px">
+                        <label>640*1136px:</label>
+                        <input id="file_pic2" type="file" size="20" name="fileToUpload" class="input" onchange="tryUploadInput('file_pic2', 'hide_pic2', 'img_pic2')">
+                        <input id="hide_pic2" name="ios_640_1136" type="hidden" value="{$attachment['ios_640_1136']['id']}">
+                    </div>
+                    <img id="img_pic2" src="{$attachment['ios_640_1136']['img_url']}"  class="img-thumbnail" style="width: 60px;height: 60px;">
+
+                    <div style="height:30px">
+                        <label>750*1334px:</label>
+                        <input id="file_pic3" type="file" size="20" name="fileToUpload" class="input" onchange="tryUploadInput('file_pic3', 'hide_pic3', 'img_pic3')">
+                        <input id="hide_pic3" name="ios_750_1334"type="hidden" value="{$attachment['ios_750_1334']['id']}">
+                    </div>
+                    <img id="img_pic3" src="{$attachment['ios_750_1334']['img_url']}"  class="img-thumbnail" style="width: 60px;height: 60px;">
+
+                    <div style="height:30px">
+                        <label>1242*2208px:</label>
+                        <input id="file_pic4" type="file" size="20" name="fileToUpload" class="input" onchange="tryUploadInput('file_pic4', 'hide_pic4', 'img_pic4')">
+                        <input id="hide_pic4" name="ios_1242_2208" type="hidden" value="{$attachment['ios_1242_2208']['id']}">
+                    </div>
+                    <img id="img_pic4" src="{$attachment['ios_1242_2208']['img_url']}" class="img-thumbnail" style="width: 60px;height: 60px;">
+                    <div style="height:30px">
+                        <label>1125*2346px:</label>
+                        <input id="file_pic8" type="file" size="20" name="fileToUpload" class="input" onchange="tryUploadInput('file_pic8', 'hide_pic8', 'img_pic8')">
+                        <input id="hide_pic8" name="ios_1125_2346" type="hidden" value="{$attachment['ios_1125_2346']['id']}">
+                    </div>
+                    <img id="img_pic8" src="{$attachment['ios_1125_2346']['img_url']}" class="img-thumbnail" style="width: 60px;height: 60px;">
+
+                    <span class="tip_span">IOS图片限制400KB</span>
+                </td>
+            </tr>
+            <tr>
+
+            <tr>
+                <td class="item_title">ANDROID素材:</td>
+                <td class="item_input">
+                    <div style="height:30px">
+                        <label>480*800px:</label>
+                        <input id="file_pic5" type="file" size="20" name="fileToUpload" class="input" onchange="tryUploadInput('file_pic5', 'hide_pic5', 'img_pic5')">
+                        <input id="hide_pic5" name="android_480_800" type="hidden" value="{$attachment['android_480_800']['id']}">
+                    </div>
+                    <img id="img_pic5" src="{$attachment['android_480_800']['img_url']}"  class="img-thumbnail" style="width: 60px;height: 60px;">
+
+                    <div style="height:30px">
+                        <label>720*1080px:</label>
+                        <input id="file_pic6" type="file" size="20" name="fileToUpload" class="input" onchange="tryUploadInput('file_pic6', 'hide_pic6', 'img_pic6')">
+                        <input id="hide_pic6" name="android_720_1080" type="hidden" value="{$attachment['android_720_1080']['id']}">
+                    </div>
+                    <img id="img_pic6" src="{$attachment['android_720_1080']['img_url']}"  class="img-thumbnail" style="width: 60px;height: 60px;">
+
+                    <div style="height:30px">
+                        <label>1080*1920px:</label>
+                        <input id="file_pic7" type="file" size="20" name="fileToUpload" class="input" onchange="tryUploadInput('file_pic7', 'hide_pic7', 'img_pic7')">
+                        <input id="hide_pic7" name="android_1080_1920" type="hidden" value="{$attachment['android_1080_1920']['id']}">
+                    </div>
+                    <img id="img_pic7" src="{$attachment['android_1080_1920']['img_url']}" class="img-thumbnail" style="width: 60px;height: 60px;">
+                    <span class="tip_span">Android闪屏图片限制350KB</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="id" value="{$vo.id}" />
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="Splash" />
+                           <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+                           <!--隐藏元素-->
+                           <input type="submit" class="button" value="{%EDIT}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+    function tryUploadInput(input_id, hide_id, img_pic) {
+        $.ajaxFileUpload({
+            url: '/m.php?m=Splash&a=uploadSplashImg',
+            secureuri: false,
+            fileElementId: input_id,
+            dataType: 'json',
+            success: function (data, status) {
+                if (typeof (data.code) != 'undefined') {
+                    if (data.code != '0000') {
+                        alert(data.message);
+                    } else {
+                        if (data.message.filename) {
+                            alert('上传成功');
+                            $('#' + hide_id).attr("value", data.message.image_id);
+                            $("#" + img_pic).attr("hidden", false);
+                            $("#" + img_pic).attr("src", data.message.filename).show();
+                        }
+                    }
+                }
+            },
+            error: function (data, status, e) {
+                alert(data.message);
+            }
+        })
+    }
+</script>
+<include file="Public:footer" />

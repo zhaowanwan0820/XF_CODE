@@ -1,0 +1,12 @@
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 1 1000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 1000001 2000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 2000001 3000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 3000001 4000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 4000001 5000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 5000001 6000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 6000001 7000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 7000001 8000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 8000001 9000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 9000001 10000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 10000001 11000000 &
+/apps/product/php/bin/php /apps/product/nginx/htdocs/firstp2p/scripts/onetime/move_user_purpose.php 11000001 12000000 &

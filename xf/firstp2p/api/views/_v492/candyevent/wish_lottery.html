@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>惊喜揭晓</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  {include file="api/views/_v48/candy/candy_header.html"}
+  {include file="web/views/v3/happy_newyear/share_js.html"}
+  <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/eleven_activity_4.css?v=4321218');?>" rel="stylesheet" />
+</head>
+
+<body class="eleven_activity_wap">
+  <input type="hidden" value="{$token}" name="token" id="token">
+  <input type="hidden" value="0" name="token" id="openPrize">
+  <!-- 赢锦鲤弹窗 -->
+  <div class="mask_content">
+      <div class="img_box">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/mask_content.png');?>" />
+        <div class="JS_btn btn"></div>
+      </div>
+  </div>
+  <!-- 中奖弹窗 -->
+  <div class="mask_surprise">
+      <div class="jinli_box">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/prize_fish_mask.png');?>" />
+        <div class="JS_back btn"></div>
+      </div>
+      <!-- 心愿奖 -->
+      <div class="lucky_box" style="display: none">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/prize_hope_mask.png');?>" />
+        <div class="cont JS_lucky_prize">
+          <div class="xin_mask"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/xin.png');?>" /></div>
+          <div class="shop">
+              <div class="shop_right">
+                <span class="suc">恭喜您获得-- </span></br>
+                <span class="suc">双11许愿好礼！</span>
+              </div>
+          </div>
+        </div>
+        <div class="JS_back btn"></div>
+      </div>
+  </div>
+  <!-- 未中奖弹窗 -->
+  <div class="mask_no_surprise" style="display:none">
+    <div class="mask_box">
+      <div class="no_participate">
+        <div class="tit"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/tip.png');?>" /></div>
+        <div class="txt">
+          <p>您没有许下心愿,下次活动及时参与哦~</p>
+        </div>
+        <div class="JS_back back"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/btn_sub.png');?>" /></div>
+      </div>
+      <div class="no_prize">
+        <div class="tit"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/tip.png');?>" /></div>
+        <div class="txt">
+          <p>很遗憾，您与幸运女神擦肩而过~ </br>感谢您的参与，欢迎下次参与~</p>
+        </div>
+        <div class="JS_back back"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/btn_sub.png');?>" /></div>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <!-- <div class="txt">距11月10日72H欢乐趴开启仅 <span class="JS_day"></span> 天</div> -->
+    <div class="help"><a href="http://event.ncfwx.com/zt/241"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/help.png');?>" /></a></div>
+    <!-- <div class="back"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/back.png');?>" /></div> -->
+    <div class="top"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/top111.jpeg');?>" /></div>
+    <div class="top_process">
+      <div class="JS_led_4" style="display:block;"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/led_4.png');?>" /></div>
+      <div class="win_fish JS_fish"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/win_fish.png');?>" /></div>
+    </div>
+    <div class="led"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/result.png');?>" /></div>
+    <!-- 惊喜揭晓 -->
+    <div class="cont cont_prize">
+      <div class="bg start"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/start.png');?>" /></div>
+      <div class="start_bg"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/start_bg.png');?>" /></div>
+      <div class="box_prize JS_prize JS_box_prize"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/touming.png');?>" /></div>
+      <div class="btn_prize JS_prize">
+        <div class="led_btn">
+          
+        </div>
+        <img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/btn_prize.png');?>" />
+      </div>
+    </div>
+
+    <div class="bottom_txt" style="padding:0 18% 9%;"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/bottom_txt.png');?>" /></div>
+    <!-- <div class="bottom"><img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/eleven_activity/bottom_four.png');?>" /></div> -->
+  </div>
+    <!-- 底部按钮 -->
+ <!--  <div class="btn_box btn_box_prize">
+    <div class="btn_1">
+      <a href="/candyevent/double11h72?token={$token}" ></a>
+    </div>
+    <div class="btn_2">
+      <a href="/candyevent/double11?token={$token}" ></a>
+    </div>
+    <div class="btn_3">
+      <a href="/candyevent/wish_lottery?token={$token}" ></a>
+    </div>
+  </div> -->
+  <!--public js-->
+  <script src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/eleven_activity_two.js');?>"></script>
+  <script>
+    P2PWAP.app.triggerScheme('firstp2p://api?type=leftbtn&jsfunc=goback');
+    function goback() {
+      P2PWAP.app.triggerScheme('firstp2p://api?type=closeall');
+    }
+    $(function(){
+      var timer = true;
+      var token = $('#token').val();
+    // 惊喜揭晓弹窗
+      $('.JS_prize').unbind().click(function(){
+        if(timer == true){
+          timer = false;
+          setTimeout(function(){
+            timer = true;
+          },3000);
+          $.ajax({
+            url: '/candyevent/Double11Status',
+            type:'POST',
+            dataType:'json',
+            data:{
+              token: token
+            },
+            success: function(res) {
+              if( res.data.isActivityEnd == false){
+                $('.JS_box_prize').removeClass('box_prize').addClass('box_prize_open')
+                  setTimeout(function(){
+                    $('.JS_box_prize').addClass('box_prize_open_')
+                  },1000)
+                  $.ajax({
+                    url:"/candyevent/WishDoLottery",
+                    type: 'POST',
+                    dataType: 'json',
+                    data:{
+                      token: token
+                    },
+                    success: function(res) {
+                      if(res.data.res == 1){
+                        setTimeout(function(){
+                          $('.mask_no_surprise').show()
+                          $('.no_prize').hide()
+                          $('.no_participate').show()
+                        },1500)
+                      }else if(res.data.res == 2){
+                        setTimeout(function(){
+                          $('.mask_no_surprise').show()
+                          $('.no_participate').hide()
+                          $('.no_prize').show()
+                        },1500)
+                      }else if(res.data.res == 3){
+                        setTimeout(function(){
+                          $('.mask_surprise').show()
+                          $('.lucky_box').hide()
+                          $('.jinli_box').show()
+                        },1500)
+                      }else if(res.data.res == 4){
+                        setTimeout(function(){
+                          $('.mask_surprise').show()
+                          $('.shop').css({'background':"url(" + res.data.image +") no-repeat",'backgroundSize':'100%'})
+                          $('.jinli_box').hide()
+                          $('.lucky_box').show()
+                        },1500)
+                      }
+                      $('.JS_back img').click(function(){
+                        $('.mask_no_surprise').hide()
+                        location.href = "/candyevent/wish_result?token=" + token
+                      })
+                      $('.JS_back').click(function(){
+                        $('.mask_surprise').hide()
+                        location.href = "/candyevent/wish_result?token=" + token
+                      })
+                    }
+                  })
+              }else {
+                P2PWAP.ui.toast('活动已结束，下次活动及时参与哦～');
+              }
+            }
+          })
+        }
+      })
+    })
+  </script>
+</body>
+
+</html>

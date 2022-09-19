@@ -1,0 +1,53 @@
+
+<!-- 2013/7/3 xuxiaonan begin -->
+<div class="uc_user_info">
+	<div class="uc_bg_top"></div>
+	<div class="uc_bg_con">
+		<div class="thub">
+			<img src="{function name="get_user_avatar" uid="$user_data.id" type="big"}" width="84" height="84" alt="{$user_data.name}" title="{$user_data.name}">
+		</div>
+		<div class="uc_per_info f_l" style="width:450px;">
+			<h4>{$user_data.user_name}<a href="{url x="index" r="uc_account"}">修改我的信息</a></h4>
+			<table cellspacing="0" cellpadding="0" border="0" class="tb_sty">
+			<tbody>
+			<tr>
+			<td>
+				<p class="txt_sty4">角色 : <span class="txt_sty4 txt_sty">{$user_data.group_name}{if $user_data.deal_count gt 0} 借款者{/if} {if $user_data.load_count gt 0} 投资者{/if} </span></p>
+			</td>
+			<td>
+				<p class="txt_sty4">所在地 : <span class="txt_sty4 txt_sty">{$user_data.user_location}</span></p>
+			</td>
+			<td>
+				<p class="txt_sty4">注册时间 : <span class="txt_sty4 txt_sty">{function name="to_date" v=$user_data.create_time f="Y-m-d"}</span></p>
+			</td>
+			</tr>
+			<tr>
+			<td colspan="3">
+				<p class="txt_sty4">个人统计 : <span class="txt_sty4 txt_sty"><span>{$user_statics.deal_count}</span>条借款记录，<span>{$user_statics.load_count}</span>条投资记录</span></p>
+			</td>
+			</tr>
+			</tbody>
+			</table>
+		</div>
+		<style>
+			.video_auth_btn{float:right;margin-right:40px;}
+			.video_auth_btn .icon{margin: 0 auto;width: 55px;height: 55px;background-position: -220px 0;background-image: url("{$TMPL}/images/ico_money.png"); background-repeat:no-repeat;}
+			.video_auth_btn a {text-decoration: none;}
+		</style>
+		<!--
+		<span class="video_auth_btn tc">
+			<a href="javascript:openupload('视频认证','credit_videoauth','VIDEO_AUTH');" style="display:inline-block;"><div class="icon video_no"></div>视频认证</a>
+		</span>
+		-->
+	</div>
+	<div class="uc_bg_bot"></div>
+</div>
+<script>
+	function openupload(title,path,auth){
+		var url = APP_ROOT+"/index.php?ctl=borrow&act=file_upload&path="+path+"&auth="+auth;
+		$.weeboxs.open(url, {boxid:'credit_f_box',contentType:'iframe',showButton:true, showCancel:false, showOk:false,title:title,width:680,height:455,type:'wee'});
+	}
+
+</script>
+
+

@@ -1,0 +1,965 @@
+<!-- $Id: agency_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/region.js"}
+<link href="styles/uploader.css" rel="stylesheet" type="text/css" />
+<div class="main-div">
+<form method="post" action="suppliers.php" name="theForm" enctype="multipart/form-data" onsubmit="return validate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+  <tr><td class="line-title">基本信息设置</td></tr>
+  <!-- 店铺名称 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_shop_name}</td>
+    <td><input type="text" name="shop_name" maxlength="50" value="{$suppliers.shop_name}" id="shop_name" /></td>
+  </tr>
+
+   <!-- 合作类型 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_cooperate_type}</td>
+    <td>
+      <select name="cooperate_type" id="cooperate_type" onchange="isShowHBSet()">
+        <option value="0">请选择</option>
+        {foreach from=$suppliers.cooperate_type_list  item=item key=key}
+        <option value="{$key}" {if $suppliers.cooperate_type == $key} selected {/if}" >{$item} </option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+
+  {if empty($suppliers.cooperate_type) ||  $suppliers.cooperate_type == 1}
+  <!-- 是否结算浣币 -->
+  <tr id='label_is_huanbi_settlement'>
+    <td class="label">{$lang.require_field}{$lang.label_is_huanbi_settlement}</td>
+    <td>
+      <select name="is_huanbi_settlement">
+        <option value="0">请选择</option>
+        {foreach from=$suppliers.huanbi_settlement_list  item=item key=key}
+        <option value="{$key}" {if $suppliers.is_huanbi_settlement == $key} selected {/if}" >{$item} </option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+  {/if}
+
+  <!-- 供应商类型 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_type}</td>
+    <td>
+      <select name="type" onchange="showSuppliersNameAndShopDesc()">
+        <option value="0">请选择</option>
+        {foreach from=$suppliers.typeList  item=item key=key}
+        <option value="{$key}" {if $suppliers.type == $key} selected {/if}" >{$item} </option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+  <!-- 企业名称 -->
+  <tr id="tr_suppliers_name" style="display: none">
+    <td class="label">{$lang.require_field}{$lang.label_suppliers_name}</td>
+    <td><input type="text" name="suppliers_name" id = "suppliers_name" maxlength="50" value="{$suppliers.suppliers_name}" /></td>
+  </tr>
+  <!-- 主营业务 -->
+  <tr id="tr_main_business" style="display: none">
+    <td class="label">{$lang.require_field}{$lang.label_main_business}</td>
+    <td><input type="text" name="main_business" id="main_business" maxlength="50" value="{$suppliers.main_business}" /></td>
+  </tr>
+  <!-- 营业执照 -->
+  <tr id="zhizhao">
+    <td class="label">{$lang.label_shop_zhizhao}</td>
+    <td>
+        <input type="hidden" id="upload_view_b_old" value="background:url('../{$suppliers.shop_business_license}')">
+        <p id="upload_view_b" class="view_b" style="background:url('../{$suppliers.shop_business_license}')"></p>
+        <input type="button" id="open_b" value="上传图片">
+        <div id="upload_B">
+          <div class="upload_frame">
+            <div class="upload_title">
+              <span id="upload_title_left_b">请选择图片</span>
+              <span id="upload_title_right_b"><img src="images/close.png"></span>
+            </div>
+            <div class="upload_fileBtn">
+              图片上传
+              <input type="file" id="file_b"/>
+              <input id="file_2" name="shop_business_license" hidden multiple="multiple" style="cursor:pointer;" />
+              <label for="file_b">选择图片</label>
+            </div>
+            <div class="upload_content">
+              <div id="clipArea_b"></div>
+              <div class="upload_content_right">
+                <p class="upload_view"></p>
+                <input type="button" id="clipBtn_b" value="保存修改">
+                <input type="button" id="close_b" value="提交">
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="notice-span"> {$lang.warn_icon}</span>
+    </td>
+  </tr>
+  <tbody id="pinpai">
+  <!-- 品牌及授权 1 -->
+  <tr>
+    <td class="label">{$lang.label_shop_pinpai}</td>
+    <td id="pinpai_1" style="{$suppliers.shop_brand_license_status[0]}">
+        <input type="hidden" id="upload_view_c_old" value="background:url('../{$suppliers.shop_brand_license[0]}')">
+        <p id="upload_view_c" class="view" style="background:url('../{$suppliers.shop_brand_license[0]}')"></p>
+        <input type="button" id="open_c" value="上传图片">
+        <div id="upload_C">
+          <div class="upload_frame">
+            <div class="upload_title">
+              <span id="upload_title_left_c">请选择图片</span>
+              <span id="upload_title_right_c"><img src="images/close.png"></span>
+            </div>
+            <div class="upload_fileBtn">
+              图片上传
+              <input type="file" id="file_c"/>
+              <input id="file_3" name="shop_brand_license[]" hidden multiple="multiple" style="cursor:pointer;" />
+              <label for="file_c">选择图片</label>
+            </div>
+            <div class="upload_content">
+              <div id="clipArea_c"></div>
+              <div class="upload_content_right">
+                <p class="upload_view"></p>
+                <input type="button" id="clipBtn_c" value="保存修改">
+                <input type="button" id="close_c" value="提交">
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="notice-span"> {$lang.warn_icon}</span>
+        <input type="hidden" name="shop_brand_license_del[]" id="shop_brand_license_del_0" value="">
+        <input type="button" value="删除" onclick="del_file(0)">
+    </td>
+  </tr>
+  <!-- 品牌及授权 2 -->
+  <tr id="pinpai_2" style="{$suppliers.shop_brand_license_status[1]}">
+    <td class="label"></td>
+    <td>
+        <input type="hidden" id="upload_view_d_old" value="background:url('../{$suppliers.shop_brand_license[1]}')">
+        <p id="upload_view_d" class="view" style="background:url('../{$suppliers.shop_brand_license[1]}')"></p>
+        <input type="button" id="open_d" value="上传图片">
+        <div id="upload_D">
+          <div class="upload_frame">
+            <div class="upload_title">
+              <span id="upload_title_left_d">请选择图片</span>
+              <span id="upload_title_right_d"><img src="images/close.png"></span>
+            </div>
+            <div class="upload_fileBtn">
+              图片上传
+              <input type="file" id="file_d"/>
+              <input id="file_4" name="shop_brand_license[]" hidden multiple="multiple" style="cursor:pointer;" />
+              <label for="file_d">选择图片</label>
+            </div>
+            <div class="upload_content">
+              <div id="clipArea_d"></div>
+              <div class="upload_content_right">
+                <p class="upload_view"></p>
+                <input type="button" id="clipBtn_d" value="保存修改">
+                <input type="button" id="close_d" value="提交">
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="notice-span"> {$lang.warn_icon}</span>
+        <input type="hidden" name="shop_brand_license_del[]" id="shop_brand_license_del_1" value="">
+        <input type="button" value="删除" onclick="del_file(1)">
+    </td>
+  </tr>
+  <!-- 品牌及授权 3 -->
+  <tr id="pinpai_3" style="{$suppliers.shop_brand_license_status[2]}">
+    <td class="label"></td>
+    <td>
+        <input type="hidden" id="upload_view_e_old" value="background:url('../{$suppliers.shop_brand_license[2]}')">
+        <p id="upload_view_e" class="view" style="background:url('../{$suppliers.shop_brand_license[2]}')"></p>
+        <input type="button" id="open_e" value="上传图片">
+        <div id="upload_E">
+          <div class="upload_frame">
+            <div class="upload_title">
+              <span id="upload_title_left_e">请选择图片</span>
+              <span id="upload_title_right_e"><img src="images/close.png"></span>
+            </div>
+            <div class="upload_fileBtn">
+              图片上传
+              <input type="file" id="file_e"/>
+              <input id="file_5" name="shop_brand_license[]" hidden multiple="multiple" style="cursor:pointer;" />
+              <label for="file_e">选择图片</label>
+            </div>
+            <div class="upload_content">
+              <div id="clipArea_e"></div>
+              <div class="upload_content_right">
+                <p class="upload_view"></p>
+                <input type="button" id="clipBtn_e" value="保存修改">
+                <input type="button" id="close_e" value="提交">
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="notice-span"> {$lang.warn_icon}</span>
+        <input type="hidden" name="shop_brand_license_del[]" id="shop_brand_license_del_2" value="">
+        <input type="button" value="删除" onclick="del_file(2)">
+    </td>
+  </tr>
+  <!-- 品牌及授权 4 -->
+  <tr id="pinpai_4" style="{$suppliers.shop_brand_license_status[3]}">
+    <td class="label"></td>
+    <td>
+        <input type="hidden" id="upload_view_f_old" value="background:url('../{$suppliers.shop_brand_license[3]}')">
+        <p id="upload_view_f" class="view" style="background:url('../{$suppliers.shop_brand_license[3]}')"></p>
+        <input type="button" id="open_f" value="上传图片">
+        <div id="upload_F">
+          <div class="upload_frame">
+            <div class="upload_title">
+              <span id="upload_title_left_f">请选择图片</span>
+              <span id="upload_title_right_f"><img src="images/close.png"></span>
+            </div>
+            <div class="upload_fileBtn">
+              图片上传
+              <input type="file" id="file_f"/>
+              <input id="file_6" name="shop_brand_license[]" hidden multiple="multiple" style="cursor:pointer;" />
+              <label for="file_f">选择图片</label>
+            </div>
+            <div class="upload_content">
+              <div id="clipArea_f"></div>
+              <div class="upload_content_right">
+                <p class="upload_view"></p>
+                <input type="button" id="clipBtn_f" value="保存修改">
+                <input type="button" id="close_f" value="提交">
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="notice-span"> {$lang.warn_icon}</span>
+        <input type="hidden" name="shop_brand_license_del[]" id="shop_brand_license_del_3" value="">
+        <input type="button" value="删除" onclick="del_file(3)">
+    </td>
+  </tr>
+  <!-- 品牌及授权 5 -->
+  <tr id="pinpai_5" style="{$suppliers.shop_brand_license_status[4]}">
+    <td class="label"></td>
+    <td>
+        <input type="hidden" id="upload_view_g_old" value="background:url('../{$suppliers.shop_brand_license[4]}')">
+        <p id="upload_view_g" class="view" style="background:url('../{$suppliers.shop_brand_license[4]}')"></p>
+        <input type="button" id="open_g" value="上传图片">
+        <div id="upload_G">
+          <div class="upload_frame">
+            <div class="upload_title">
+              <span id="upload_title_left_g">请选择图片</span>
+              <span id="upload_title_right_g"><img src="images/close.png"></span>
+            </div>
+            <div class="upload_fileBtn">
+              图片上传
+              <input type="file" id="file_g"/>
+              <input id="file_7" name="shop_brand_license[]" hidden multiple="multiple" style="cursor:pointer;" />
+              <label for="file_g">选择图片</label>
+            </div>
+            <div class="upload_content">
+              <div id="clipArea_g"></div>
+              <div class="upload_content_right">
+                <p class="upload_view"></p>
+                <input type="button" id="clipBtn_g" value="保存修改">
+                <input type="button" id="close_g" value="提交">
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="notice-span"> {$lang.warn_icon}</span>
+        <input type="hidden" name="shop_brand_license_del[]" id="shop_brand_license_del_4" value="">
+        <input type="button" value="删除" onclick="del_file(4)">
+    </td>
+  </tr>
+  </tbody>
+  <!-- 新增品牌及授权图片 -->
+  <tbody id="add_file" style="{$suppliers.add_file}">
+  <tr>
+    <td class="label"></td>
+    <td>
+      <input type="hidden" id="file_number" value="{$suppliers.file_number}">
+      <input type="button" value="新增品牌及授权图片" onclick="add_file()">
+    </td>
+  </tr>
+  </tbody>
+  <!-- 店铺图标 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_shop_icon}</td>
+    <td>
+        <p id="upload_view_a" class="view" style="background:url('../{$suppliers.shop_icon}')"></p>
+        <input type="button" id="open_a" value="上传图片">
+        <div id="upload_A">
+          <div class="upload_frame">
+            <div class="upload_title">
+              <span id="upload_title_left_a">请选择图片</span>
+              <span id="upload_title_right_a"><img src="images/close.png"></span>
+            </div>
+            <div class="upload_fileBtn">
+              图片上传
+              <input type="file" id="file_a"/>
+              <input id="file_1" name="shop_icon" hidden multiple="multiple" style="cursor:pointer;" />
+              <label for="file_a">选择图片</label>
+            </div>
+            <div class="upload_content">
+              <div id="clipArea_a"></div>
+              <div class="upload_content_right">
+                <p class="upload_view"></p>
+                <input type="button" id="clipBtn_a" value="保存修改">
+                <input type="button" id="close_a" value="提交">
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="notice-span"> {$lang.warn_icon}</span>
+    </td>
+  </tr>
+  <!-- 个性签名 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_personal_signature}</td>
+    <td><textarea  name="personal_signature" cols="60" rows="1" maxlength="20" placeholder="{$lang.warn_signature}" value="{$suppliers.personal_signature}"  >{$suppliers.personal_signature}</textarea></td>
+  </tr>
+  <!-- 店铺简介 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_shop_desc}</td>
+    <td><textarea  name="shop_desc" cols="60" rows="4" maxlength="500" >{$suppliers.shop_desc}</textarea><span class="notice-span"> {$lang.warn_desc}</span></td>
+  </tr>
+
+  <!-- 客服电话 -->
+  <tr>
+    <td class="label">{$lang.label_service_tel}</td>
+    <td><input type="text" name="service_tel" maxlength="14" value="{$suppliers.service_tel}" /><span class="notice-span"> {$lang.warn_service_tel}</span></td>
+  </tr>
+  <!-- 服务时间 -->
+  <tr>
+    <td class="label">{$lang.label_service_week}</td>
+    <td><input type="text" name="weekdays_s" maxlength="60" value="{$suppliers.service_time.weekdays.s}" class="checktime" placeholder="{$lang.label_time_exc1}" /> 到 <input type="text" name="weekdays_e" maxlength="60" value="{$suppliers.service_time.weekdays.e}" class="checktime" placeholder="{$lang.label_time_exc2}" /></td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_service_weekends}</td>
+    <td><input type="text" name="holiday_s" maxlength="60" value="{$suppliers.service_time.holiday.s}" class="checktime" placeholder="{$lang.label_time_exc1}" /> 到 <input type="text" name="holiday_e" maxlength="60" value="{$suppliers.service_time.holiday.e}" class="checktime" placeholder="{$lang.label_time_exc2}" /></td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_service_qq}</td>
+    <td><input type="text" name="service_qq" maxlength="14" value="{$suppliers.service_qq}" /><span class="notice-span"> {$lang.label_warn_qq_tel}</span></td>
+  </tr>
+
+  <tr><td class="line-title">收货信息设置</td></tr>
+  <!-- 收货地址 -->
+  <tr>
+    <td class="label">{$lang.label_receiver_address}</td>
+      <!-- <input type="text" name="receiver_address" value="{$suppliers.receiver_address}"> -->
+        <!-- <select name="country" id="selCountries" onChange="region.changed(this, 1, 'selProvinces')" size="10">
+          {foreach from=$countries item=country name="fe_country"}
+            <option value="{$country.region_id}" {if $smarty.foreach.fe_country.first}selected{/if}>{$country.region_name|escape:html}</option>
+          {/foreach}
+        </select>
+        <select name="province" id="selProvinces" onChange="region.changed(this, 2, 'selCities')" size="10">
+          <option value="">{$lang.select_please}</option>
+        </select>
+        <select name="city" id="selCities" onChange="region.changed(this, 3, 'selDistricts')" size="10">
+          <option value="">{$lang.select_please}</option>
+        </select> -->
+        <td><textarea name="receiver_address" cols="60" rows="4" >{$suppliers.receiver_address}</textarea></td>
+  </tr>
+
+  <!-- 收货人 -->
+  <tr>
+    <td class="label">{$lang.label_receiver_name}</td>
+    <td><input type="text" name="receiver_name" maxlength="10" value="{$suppliers.receiver_name}" /></td>
+  </tr>
+  <!-- 收货电话 -->
+  <tr>
+    <td class="label">{$lang.label_receiver_tel}</td>
+    <td><input type="text" name="receiver_tel" maxlength="60" value="{$suppliers.receiver_tel}" /></td>
+  </tr>
+  <!-- 备注 -->
+  <tr>
+    <td class="label">{$lang.label_remark}</td>
+    <td><textarea name="remark" cols="60" rows="4" maxlength="500">{$suppliers.remark}</textarea></td>
+  </tr>
+
+  <tr><td class="line-title">发货时间</td></tr>
+  {if $inputForbidden}
+      <tr><td class="label"></td><td style="font-weight: bold">用户下单后{$suppliers.delivery_time}小时内发货</td></tr>
+  {else}
+    <tr><td class="label"></td><td style="font-weight: bold"><input type="radio" value="24" name="delivery_time" {if $suppliers.delivery_time==24}checked{/if}>用户下单后24小时内发货</td></tr>
+    <tr><td class="label"></td><td style="font-weight: bold"><input type="radio" value="48" name="delivery_time" {if $suppliers.delivery_time==48}checked{/if}>用户下单后48小时内发货</td></tr>
+    <tr><td class="label"></td><td style="font-weight: bold"><input type="radio" value="72" name="delivery_time" {if $suppliers.delivery_time==72}checked{/if}>用户下单后72小时内发货</td></tr>
+    <tr><td class="label"></td><td><span class="notice-span"> {$lang.suppliers_delivery_time}</span></td></tr>
+  {/if}
+
+  <tr><td class="line-title">店铺联系人</td></tr>
+  <!-- 负责人姓名 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_manager_name}</td>
+    <td><input type="text" name="manager_name" maxlength="60" value="{$suppliers.manager_name}" /></td>
+  </tr>
+  <!-- 负责人电话 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_manager_tel}</td>
+    <td><input type="text" name="manager_tel" maxlength="60" value="{$suppliers.manager_tel}" onblur="checkTel(value)" /><span class="notice-span"> {$lang.warn_manager_tel} </span><span class="warning none"> {$lang.warn_manager_tel_error}</span></td>
+  </tr>
+  <!-- 负责人姓名 -->
+  <tr><td class="line-title">绑定买家端用户</td></tr>
+  <!-- 负责人姓名 -->
+  <tr>
+    <td class="label">换换注册手机号码：</td>
+    <td><input type="text" name="platform_user_phone" maxlength="60" value="{$suppliers.platform_user_phone}" {if $suppliers.platform_user_phone >0} disabled {/if} /><span class="notice-span"> 非爱投资注册手机号码</span></td>
+  </tr>
+
+  {if !$inputForbidden}
+    <tr><td class="line-title">平台管理员</td></tr>
+    <tr>
+      <td class="label">
+      <a href="javascript:showNotice('noticeAdmins');" title="{$lang.form_notice}"><img src="images/notice.svg" width="16" height="16" border="0" alt="{$lang.form_notice}"></a>{$lang.label_admins}</td>
+      <td>{foreach from=$suppliers.admin_list item=admin}
+        <input type="radio" name="admins" value="{$admin.user_id}" {if $admin.types eq "this"}checked="checked"{/if} />
+        {$admin.user_name}{if $admin.types eq "other"}(*){/if}
+      {/foreach}<br />
+      <span class="notice-span" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticeAdmins">{$lang.notice_admins}</span></td>
+    </tr>
+    <!--新增-->
+    <tr>
+      <td class="label">{$lang.platform_list}</td>
+      <td>{foreach from=$suppliers.platform_list item=admin}
+        <input type="checkbox" name="platforms[]" value="{$admin.user_id}" {if $admin.types eq "this"}checked="checked"{/if} />
+        {$admin.user_name}{if $admin.types eq "other"}(*){/if}&nbsp;&nbsp;
+        {/foreach}<br />
+      </td>
+    </tr>
+  {/if}
+</table>
+
+{if !$inputForbidden}
+<table align="center">
+  <tr>
+    <td colspan="2" align="center">
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <input type="reset" class="button" value="{$lang.button_reset}" />
+      <input type="hidden" name="act" id="act" value="{$form_action}" />
+      <input type="hidden" name="id" value="{$suppliers.suppliers_id}" />
+    </td>
+  </tr>
+</table>
+{/if}
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{insert_scripts files="uploader/jquery.js,uploader/iscroll-zoom.js?1,uploader/hammer.js,uploader/lrz.all.bundle.js,uploader/jquery.photoClip.min.js"}
+
+<!-- 头像上传 -->
+<script>
+$(function(){
+  var clipArea_a = new bjj.PhotoClip("#clipArea_a", {
+    size: [300, 300],// 截取框的宽和高组成的数组。默认值为[260,260]
+    outputSize: [300, 300], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+    //outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+    file: "#file_a", // 上传图片的<input type="file">控件的选择器或者DOM对象
+    view: "#upload_view_a", // 显示截取后图像的容器的选择器或者DOM对象
+    ok: "#clipBtn_a", // 确认截图按钮的选择器或者DOM对象
+    loadStart: function() {
+      // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+      $('.cover-wrap').fadeIn();
+      // console.log("照片读取中");
+    },
+    loadComplete: function() {
+        // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+      console.log("照片读取完成");
+    },
+    //loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+    clipFinish: function(dataURL) {
+        // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+        // console.log(dataURL);
+        $("#file_1").val(dataURL)
+    }
+  });
+
+  var clipArea_b = new bjj.PhotoClip("#clipArea_b", {
+    size: [300, 450],// 截取框的宽和高组成的数组。默认值为[260,260]
+    outputSize: [0, 0], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+    //outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+    file: "#file_b", // 上传图片的<input type="file">控件的选择器或者DOM对象
+    view: "#upload_view_b", // 显示截取后图像的容器的选择器或者DOM对象
+    ok: "#clipBtn_b", // 确认截图按钮的选择器或者DOM对象
+    loadStart: function() {
+      // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+      $('.cover-wrap').fadeIn();
+      // console.log("照片读取中");
+    },
+    loadComplete: function() {
+        // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+      console.log("照片读取完成");
+    },
+    //loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+    clipFinish: function(dataURL) {
+        // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+        // console.log(dataURL);
+        $("#file_2").val(dataURL)
+    }
+  });
+
+  var clipArea_c = new bjj.PhotoClip("#clipArea_c", {
+    size: [300, 450],// 截取框的宽和高组成的数组。默认值为[260,260]
+    outputSize: [0, 0], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+    //outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+    file: "#file_c", // 上传图片的<input type="file">控件的选择器或者DOM对象
+    view: "#upload_view_c", // 显示截取后图像的容器的选择器或者DOM对象
+    ok: "#clipBtn_c", // 确认截图按钮的选择器或者DOM对象
+    loadStart: function() {
+      // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+      $('.cover-wrap').fadeIn();
+      // console.log("照片读取中");
+    },
+    loadComplete: function() {
+        // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+      console.log("照片读取完成");
+    },
+    //loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+    clipFinish: function(dataURL) {
+        // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+        // console.log(dataURL);
+        $("#file_3").val(dataURL)
+    }
+  });
+
+  var clipArea_d = new bjj.PhotoClip("#clipArea_d", {
+    size: [300, 450],// 截取框的宽和高组成的数组。默认值为[260,260]
+    outputSize: [0, 0], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+    //outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+    file: "#file_d", // 上传图片的<input type="file">控件的选择器或者DOM对象
+    view: "#upload_view_d", // 显示截取后图像的容器的选择器或者DOM对象
+    ok: "#clipBtn_d", // 确认截图按钮的选择器或者DOM对象
+    loadStart: function() {
+      // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+      $('.cover-wrap').fadeIn();
+      // console.log("照片读取中");
+    },
+    loadComplete: function() {
+        // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+      console.log("照片读取完成");
+    },
+    //loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+    clipFinish: function(dataURL) {
+        // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+        // console.log(dataURL);
+        $("#file_4").val(dataURL)
+    }
+  });
+
+  var clipArea_e = new bjj.PhotoClip("#clipArea_e", {
+    size: [300, 450],// 截取框的宽和高组成的数组。默认值为[260,260]
+    outputSize: [0, 0], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+    //outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+    file: "#file_e", // 上传图片的<input type="file">控件的选择器或者DOM对象
+    view: "#upload_view_e", // 显示截取后图像的容器的选择器或者DOM对象
+    ok: "#clipBtn_e", // 确认截图按钮的选择器或者DOM对象
+    loadStart: function() {
+      // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+      $('.cover-wrap').fadeIn();
+      // console.log("照片读取中");
+    },
+    loadComplete: function() {
+        // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+      console.log("照片读取完成");
+    },
+    //loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+    clipFinish: function(dataURL) {
+        // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+        // console.log(dataURL);
+        $("#file_5").val(dataURL)
+    }
+  });
+
+  var clipArea_f = new bjj.PhotoClip("#clipArea_f", {
+    size: [300, 450],// 截取框的宽和高组成的数组。默认值为[260,260]
+    outputSize: [0, 0], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+    //outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+    file: "#file_f", // 上传图片的<input type="file">控件的选择器或者DOM对象
+    view: "#upload_view_f", // 显示截取后图像的容器的选择器或者DOM对象
+    ok: "#clipBtn_f", // 确认截图按钮的选择器或者DOM对象
+    loadStart: function() {
+      // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+      $('.cover-wrap').fadeIn();
+      // console.log("照片读取中");
+    },
+    loadComplete: function() {
+        // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+      console.log("照片读取完成");
+    },
+    //loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+    clipFinish: function(dataURL) {
+        // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+        // console.log(dataURL);
+        $("#file_6").val(dataURL)
+    }
+  });
+
+  var clipArea_g = new bjj.PhotoClip("#clipArea_g", {
+    size: [300, 450],// 截取框的宽和高组成的数组。默认值为[260,260]
+    outputSize: [0, 0], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+    //outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+    file: "#file_g", // 上传图片的<input type="file">控件的选择器或者DOM对象
+    view: "#upload_view_g", // 显示截取后图像的容器的选择器或者DOM对象
+    ok: "#clipBtn_g", // 确认截图按钮的选择器或者DOM对象
+    loadStart: function() {
+      // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+      $('.cover-wrap').fadeIn();
+      // console.log("照片读取中");
+    },
+    loadComplete: function() {
+        // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+      console.log("照片读取完成");
+    },
+    //loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+    clipFinish: function(dataURL) {
+        // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+        // console.log(dataURL);
+        $("#file_7").val(dataURL)
+    }
+  });
+
+  // 店铺图标
+  $("#upload_title_right_a").click(function(){
+    $("#upload_A").fadeOut();
+  });
+  $("#close_a").click(function(){
+    if ($("#file_a")[0].files.length) {
+      $("#upload_A").fadeOut();
+    }
+  });
+  $("#open_a").click(function(){
+    $("#upload_A").fadeIn();
+  });
+  // 营业执照
+  $("#upload_title_right_b").click(function(){
+    $("#upload_B").fadeOut();
+  });
+  $("#close_b").click(function(){
+    if ($("#file_b")[0].files.length) {
+      $("#upload_B").fadeOut();
+    }
+  });
+  $("#open_b").click(function(){
+    $("#upload_B").fadeIn();
+  });
+  // 品牌及授权 1
+  $("#upload_title_right_c").click(function(){
+    $("#upload_C").fadeOut();
+  });
+  $("#close_c").click(function(){
+    if ($("#file_c")[0].files.length) {
+      $("#upload_C").fadeOut();
+    }
+  });
+  $("#open_c").click(function(){
+    $("#upload_C").fadeIn();
+  });
+  // 品牌及授权 2
+  $("#upload_title_right_d").click(function(){
+    $("#upload_D").fadeOut();
+  });
+  $("#close_d").click(function(){
+    if ($("#file_d")[0].files.length) {
+      $("#upload_D").fadeOut();
+    }
+  });
+  $("#open_d").click(function(){
+    $("#upload_D").fadeIn();
+  });
+  // 品牌及授权 3
+  $("#upload_title_right_e").click(function(){
+    $("#upload_E").fadeOut();
+  });
+  $("#close_e").click(function(){
+    if ($("#file_e")[0].files.length) {
+      $("#upload_E").fadeOut();
+    }
+  });
+  $("#open_e").click(function(){
+    $("#upload_E").fadeIn();
+  });
+  // 品牌及授权 4
+  $("#upload_title_right_f").click(function(){
+    $("#upload_F").fadeOut();
+  });
+  $("#close_f").click(function(){
+    if ($("#file_f")[0].files.length) {
+      $("#upload_F").fadeOut();
+    }
+  });
+  $("#open_f").click(function(){
+    $("#upload_F").fadeIn();
+  });
+  // 品牌及授权 5
+  $("#upload_title_right_g").click(function(){
+    $("#upload_G").fadeOut();
+  });
+  $("#close_g").click(function(){
+    if ($("#file_g")[0].files.length) {
+      $("#upload_G").fadeOut();
+    }
+  });
+  $("#open_g").click(function(){
+    $("#upload_G").fadeIn();
+  });
+})
+
+$(".checktime").on("blur",function(){
+  if(!this.value) return false
+  var reg = /^(20|21|22|23|[0-1]\d):[0-5]\d$/;
+  var regExp = new RegExp(reg);
+  if(!regExp.test(this.value)){
+　　alert("时间格式不正确");
+    this.value = ''
+  }
+})
+</script>
+
+{literal}
+<script language="JavaScript">
+  document.forms['theForm'].elements['shop_name'].focus();
+  onload = function(){
+    // 开始检查订单
+    //startCheckOrder();
+    showSuppliersNameAndShopDesc();
+    // 查看模式input+textarea禁用
+    var inputForbidden = '{$inputForbidden}'
+    if (inputForbidden) $('form').find('input,textarea,select').attr('disabled',true)
+  }
+    /**
+ * 检查表单输入的数据
+ */
+  function validate(){
+    var validator = new Validator("theForm");
+    var shop_name = document.forms['theForm'].elements['shop_name'].value.length;
+    var shop_desc = document.forms['theForm'].elements['shop_desc'].value.length;
+    var type            = document.forms['theForm'].elements['type'].value;
+    var cooperate_type  = document.forms['theForm'].elements['cooperate_type'].value;
+    var personal_signature = document.forms['theForm'].elements['personal_signature'].value.length;
+    var suppliers_name = document.forms['theForm'].elements['suppliers_name'].value.length;
+    var service_tel = document.forms['theForm'].elements['service_tel'].value;
+    var manager_name = document.forms['theForm'].elements['manager_name'].value.length;
+    var manager_tel = document.forms['theForm'].elements['manager_tel'].value;
+    var main_business = document.forms['theForm'].elements['main_business'].value.length;
+    var admins = $("input[type=radio][name='admins']:checked").val();
+    var platforms = $("input[type=checkbox][name='platforms[]']:checked").length;
+    var t1 = document.forms['theForm'].elements['weekdays_s'].value.length;
+    var t2 = document.forms['theForm'].elements['weekdays_e'].value.length;
+    var t3 = document.forms['theForm'].elements['holiday_s'].value.length;
+    var t4 = document.forms['theForm'].elements['holiday_e'].value.length;
+    var service_qq = document.forms['theForm'].elements['service_qq'].value;
+    var delivery_time = document.forms['theForm'].elements['delivery_time'].value;
+    var platform_user_phone = document.forms['theForm'].elements['platform_user_phone'].value;
+    var acr = $("#act").val();
+    var file_2 = $("#file_2").val();
+
+    var arr = new Array(24,48,72);
+    if(!shop_name){
+      alert(no_shop_name)
+      return false
+    }
+    if(type<1) {
+      alert(no_type);
+      return false;
+    }
+    //个人商家不校验
+    if(type != 5 && !suppliers_name) {
+      alert(no_suppliers_name);
+      return false;
+    }
+    // if(!main_business) {
+    //   alert(no_main_business);
+    //   return false;
+    // }
+    // if(acr == 'insert' && type != 5 && !file_2) {
+    //   alert(no_file_2);
+    //   return false;
+    // }
+    if (cooperate_type < 1) {
+      alert(no_cooperate_type);
+      return false;
+    }
+    if(!service_tel.length && !service_qq.length){
+      alert(no_service_tel);
+      return false;
+    }
+    if(service_tel.length){
+      var reg = /^[0-9-]{1,14}$/;
+      if(!reg.test(service_tel)){
+        alert(service_tel_error);
+        return false;
+      }
+    }
+      if(service_qq.length) {
+        var reg = /^\d{4,14}$/
+        if(!reg.test(service_qq)){
+          alert(service_qq_error)
+          return false;
+        }
+      }
+
+      if (!delivery_time) {
+        alert(select_delivery_time);
+        return false;
+      }
+
+      if (!arr.includes(parseInt(delivery_time))) {
+        alert(select_delivery_time);
+        return false;
+      }
+
+    // if(!manager_name) {
+    //   alert(no_manager_name);
+    //   return false;
+    // }
+    if(!manager_tel.length) {
+      alert(no_manager_tel);
+      return false;
+    }
+    if (manager_tel) {
+      var telrule = /^1\d{10}$/
+      if (!telrule.test(manager_tel)) {
+        alert(manager_tel_error)
+        return false;
+      }
+    }
+    if (platform_user_phone) {
+      var telrule = /^1\d{10}$/
+      if (!telrule.test(platform_user_phone)) {
+        alert('换换注册手机号码格式错误')
+        return false;
+      }
+    }
+  //   if(!t1 || !t2 || !t3 || !t4) {
+  //     alert(warn_service_tel);
+  //     return false;
+  //   }
+  //  if(!platforms || !admins) {
+  //    alert(no_admins_platforms);
+  //    return false;
+  //  }
+  //   if(!shop_name){
+  //     alert(no_shop_name)
+  //     return false
+  //   }else if(shop_name<2){
+  //     alert(shop_name_error)
+  //     return false
+  //   }
+  //   if(!shop_desc){
+  //     alert(no_shop_desc)
+  //     return false
+  //   }else if(shop_desc<2){
+  //     alert(shop_desc_error)
+  //     return false
+  //   }
+  //   if(!personal_signature){
+  //     alert(no_personal_signature)
+  //     return false
+  //   }else if(personal_signature<2){
+  //     alert(personal_signature_error)
+  //     return false
+  //   }
+    return validator.passed();
+  }
+  function checkTel(value){
+    if (value) {
+      var telrule = /^1\d{10}$/
+      if (!telrule.test(value)) {
+        $("span.warning").fadeIn()
+        return false;
+      }else{
+        $("span.warning").fadeOut()
+      }
+    }
+  }
+
+  function isShowHBSet() {
+    var cooperate_type  = $('#cooperate_type').val();
+    if (1 == cooperate_type) {
+      $('#label_is_huanbi_settlement').show();
+    } else if (2 == cooperate_type) {
+      $('#label_is_huanbi_settlement').hide();
+    }
+  }
+
+  function showSuppliersNameAndShopDesc(){
+    if(document.forms['theForm'].elements['type'].value == 5){
+      $("#tr_suppliers_name").hide();
+      $("#tr_main_business").hide();
+      $("#suppliers_name").val('');
+      $("#main_business").val('');
+      $("#zhizhao").hide();
+      $("#pinpai").hide();
+      $("#file_2").val('');
+      $("#file_3").val('');
+      $("#file_4").val('');
+      $("#file_5").val('');
+      $("#file_6").val('');
+      $("#file_7").val('');
+      var upload_view_b_old = $("#upload_view_b_old").val();
+      var upload_view_c_old = $("#upload_view_c_old").val();
+      var upload_view_d_old = $("#upload_view_c_old").val();
+      var upload_view_e_old = $("#upload_view_c_old").val();
+      var upload_view_f_old = $("#upload_view_c_old").val();
+      var upload_view_g_old = $("#upload_view_c_old").val();
+      $("#upload_view_b").prop('style',upload_view_b_old+' center center / contain no-repeat rgb(102, 102, 102);');
+      $("#upload_view_c").prop('style',upload_view_c_old+' center center / contain no-repeat rgb(102, 102, 102);');
+      $("#upload_view_d").prop('style',upload_view_d_old+' center center / contain no-repeat rgb(102, 102, 102);');
+      $("#upload_view_e").prop('style',upload_view_e_old+' center center / contain no-repeat rgb(102, 102, 102);');
+      $("#upload_view_f").prop('style',upload_view_f_old+' center center / contain no-repeat rgb(102, 102, 102);');
+      $("#upload_view_g").prop('style',upload_view_g_old+' center center / contain no-repeat rgb(102, 102, 102);');
+      $("#add_file").hide();
+    }else{
+      $("#tr_suppliers_name").show();
+      $("#tr_main_business").show();
+      $("#zhizhao").show();
+      $("#pinpai").show();
+      var number = $("#file_number").val();
+      if (number < 5) {
+        $("#add_file").show();
+      }
+    }
+  }
+
+  function add_file() {
+    var number = $("#file_number").val();
+    if (number == 0) {
+      $("#pinpai_1").show();
+      $("#file_number").val(1);
+    } else if (number == 1) {
+      $("#pinpai_2").show();
+      $("#file_number").val(2);
+    } else if (number == 2) {
+      $("#pinpai_3").show();
+      $("#file_number").val(3);
+    } else if (number == 3) {
+      $("#pinpai_4").show();
+      $("#file_number").val(4);
+    } else if (number == 4) {
+      $("#pinpai_5").show();
+      $("#file_number").val(5);
+      $("#add_file").hide();
+    }
+  }
+
+  function del_file(value) {
+    if (value == 0) {
+      $("#file_3").val('');
+      $("#shop_brand_license_del_0").val('OK');
+      $("#upload_view_c").prop('style','background:url("../") center center / contain no-repeat rgb(102, 102, 102);');
+    } else if (value == 1) {
+      $("#file_4").val('');
+      $("#shop_brand_license_del_1").val('OK');
+      $("#upload_view_d").prop('style','background:url("../") center center / contain no-repeat rgb(102, 102, 102);');
+    } else if (value == 2) {
+      $("#file_5").val('');
+      $("#shop_brand_license_del_2").val('OK');
+      $("#upload_view_e").prop('style','background:url("../") center center / contain no-repeat rgb(102, 102, 102);');
+    } else if (value == 3) {
+      $("#file_6").val('');
+      $("#shop_brand_license_del_3").val('OK');
+      $("#upload_view_f").prop('style','background:url("../") center center / contain no-repeat rgb(102, 102, 102);');
+    } else if (value == 4) {
+      $("#file_7").val('');
+      $("#shop_brand_license_del_4").val('OK');
+      $("#upload_view_g").prop('style','background:url("../") center center / contain no-repeat rgb(102, 102, 102);');
+    }
+  }
+
+</script>
+{/literal}
+{include file="pagefooter.htm"}

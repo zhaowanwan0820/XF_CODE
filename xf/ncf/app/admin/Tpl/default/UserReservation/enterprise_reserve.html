@@ -1,0 +1,55 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<div class="main reservationContent">
+    <div class="main_title">
+        <p>添加用户预约</p>
+    </div>
+    <div class="blank5"></div>
+    <form id="pre-form" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>用户ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" id="uid" name="uid"  value="" required="required" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>授权金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" id="amount" name="amount"  value="" placeholder="" required="required" />元
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约入口</td>
+                <td class="item_input">
+                    <select id="entra_id" name="entra_id" class="textbox require">
+                        <foreach name='data.entra_conf' key="key" item="item">
+                        <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约有效期</td>
+                <td class="item_input">
+                    <foreach name="data.reserve_conf" key="key" item="reserve_conf">
+                        <input type="radio" class="class_deadline_unit" name="expire" value="{$reserve_conf.expire}-{$reserve_conf.expire_unit}" checked>{$reserve_conf.expire_display_name}
+                    </foreach>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserReservation" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="enterprise_reserve" />
+                    <input type="submit" id="publish" class="button" value="发布" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

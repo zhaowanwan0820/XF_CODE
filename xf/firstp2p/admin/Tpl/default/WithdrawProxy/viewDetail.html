@@ -1,0 +1,65 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<PHP>
+    function showMoney($amount)
+    {
+        return number_format(bcdiv($amount, 100, 2),2);
+    }
+
+    function showDatetime($timestamp)
+    {
+        return date('Y-m-d H:i:s', $timestamp);
+    }
+
+    function showOperation($id, $row)
+    {
+        $options = "&nbsp;&nbsp;<a href='javascript:viewDetail($id)'>查看</a>";
+        if ($row['notify_retry_counter'] == 10 && $row['notify_success'] != 1)
+        {
+            $options  .= "&nbsp;&nbsp;<a href='javascript:resetNotifyCounter($id)'>重置通知计数器</a>";
+        }
+        if($row['order_status'] != 3)
+        {
+            return $options;
+        }
+        return $options."&nbsp;&nbsp;<a href='javascript:redoWithdrawProxy($id)'>重新代发</a> &nbsp;&nbsp; <a href='javascript:watchRetry($id)'>查看历史重发</a>";
+    }
+</PHP>
+<div class="main">
+<div class="main_title">代发记录明细</div>
+<div class="blank5"></div>
+<table class="dataTable">
+<tr> <th>编号</th> <td>{$withdrawInfo.id}</td> </tr>
+<tr> <th>代发单号</th> <td>{$withdrawInfo.request_no}</td> </tr>
+<tr> <th>收款人</th> <td>{$withdrawInfo.account_name}</td> </tr>
+<tr> <th>收款账户</th> <td>{$withdrawInfo.account_no_format}</td> </tr>
+<tr> <th>收款账户类型</th> <td>{$withdrawInfo.user_type_cn}</td> </tr>
+<tr> <th>收款账户银行简码</th> <td>{$withdrawInfo.bank_no}</td> </tr>
+<tr> <th>收款银行联行号</th> <td>{$withdrawInfo.bank_issuer}</td> </tr>
+<tr> <th>代发金额</th> <td>{$withdrawInfo.amount_format}</td> </tr>
+<tr> <th>代发结果</th> <td>{$withdrawInfo.order_status_cn}</td> </tr>
+<tr> <th>成功时间</th> <td>{$withdrawInfo.update_time_format}</td> </tr>
+<tr> <th>创建时间</th> <td>{$withdrawInfo.create_time_format}</td> </tr>
+<tr> <th>业务单号批次状态</th> <td>{$withdrawInfo.merchant_no_result}</td> </tr>
+<tr> <th>业务单号</th> <td>{$withdrawInfo.merchant_no}</td> </tr>
+<tr> <th>业务序号</th> <td>{$withdrawInfo.merchant_no_seq}</td> </tr>
+<tr> <th>业务类型</th> <td>{$withdrawInfo.biz_type_cn}</td> </tr>
+<tr> <th>业务批次号</th> <td>{$withdrawInfo.merchant_batch_no}</td> </tr>
+<tr> <th>代发商户</th> <td>{$withdrawInfo.merchant_id} &nbsp;&nbsp; <a href="/m.php?m=WithdrawProxy&a=viewMerchantMoney&merchantId={$withdrawInfo.merchant_id}">查看代发商户余额</a></td> </tr>
+<tr> <th>代发重试次数</th> <td>{$withdrawInfo.retry_counter}</td> </tr>
+<tr> <th>下次代发重试将于</th> <td>{$withdrawInfo.next_retry_time_format}</td> </tr>
+<tr> <th>失败重新代发次数</th> <td>{$withdrawInfo.total_redo_times}</td> </tr>
+<tr> <th>通知业务结果</th> <td>{$withdrawInfo.notify_service_success}</td> </tr>
+<tr> <th>通知业务次数</th> <td>{$withdrawInfo.notify_retry_counter}</td> </tr>
+<tr> <th>下次业务通知将于</th> <td>{$withdrawInfo.next_notify_time_format}</td> </tr>
+</table>
+</div>
+<include file="Public:footer" />

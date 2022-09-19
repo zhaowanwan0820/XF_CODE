@@ -1,0 +1,283 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<script type="text/javascript">
+    function contract(id){
+        window.location.href = ROOT + '?m=ContractGold&a=index&deal_id='+id;
+    }
+
+    function edit(id, role, readonly)
+    {
+        location.href = ROOT+"?m=GoldDeal&a=lent&id="+id+"&role="+role+"&readonly="+readonly;
+    }
+    // csv导出
+    function export_csv_file()
+    {
+        var confirm_msg = "\n\r大数据量请增加筛选条件缩小结果集条数，以免导出失败";
+        confirm_msg = "确认要导出csv文件数据吗？" + confirm_msg + "\n\r导出过程中请耐心等待，不要关闭页面。";
+        if (!confirm(confirm_msg)) {
+            return;
+        }
+        var parm = $('#search_form').serialize();
+        window.open(ROOT+'?'+parm+'&a=export_csv');
+    }
+</script>
+
+<php>
+    function a_get_deal_type($type,$id)
+    {
+        $deal = M("Deal")->getById($id);
+        if($deal['is_coupon'])
+        return l("COUNT_TYPE_".$deal['deal_type']);
+        else
+        return l("NO_DEAL_COUPON_GEN");
+
+    }
+
+    function get_real_name($id) {
+        return $GLOBALS['db']->getOne("SELECT `real_name` FROM firstp2p_user WHERE `id`='" . $id . "'");
+    }
+
+    function get_loan_money_type_by_project_id($id) {
+        $loanMoneyType = $GLOBALS['db']->getOne("SELECT `loan_money_type` FROM firstp2p_deal_project WHERE `id`='" . $id . "'");
+        if($loanMoneyType == 0 || $loanMoneyType == 1) {
+            $result = "实际放款";
+        } else if($loanMoneyType == 2) {
+            $result = "非实际放款";
+        } else if($loanMoneyType == 3) {
+            $result = "受托支付";
+        }
+        return $result;
+    }
+
+
+</php>
+<div class="main">
+    <div class="main_title"><if condition="$role eq 'b'">待审核列表<else/>待放款列表</if></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" id="search_form" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" style="width:100px;" />
+
+        产品名称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" />
+        运营方姓名：
+        <input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="10" />
+        运营方用户名：
+        <input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="10"/>
+
+        <br/>
+        满标时间：
+            <input type="text" class="textbox" style="width:140px;" name="success_time_start" id="success_time_start" value="{$_REQUEST['success_time_start']}" onfocus="this.blur(); return showCalendar('success_time_start', '%Y-%m-%d 00:00:00', false, false, 'btn_success_time_start');" title="满标时间开始" />
+            <input type="button" class="button" id="btn_success_time_start" value="{%SELECT_TIME}" onclick="return showCalendar('success_time_start', '%Y-%m-%d %H:%M:00', false, false, 'btn_success_time_start');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="success_time_end" id="success_time_end" value="{$_REQUEST['success_time_end']}" onfocus="this.blur(); return showCalendar('success_time_end', '%Y-%m-%d 23:59:59', false, false, 'btn_success_time_end');" title="满标时间结束" />
+            <input type="button" class="button" id="btn_success_time_end" value="{%SELECT_TIME}" onclick="return showCalendar('success_time_end', '%Y-%m-%d %H:%M:59', false, false, 'btn_success_time_end');" />
+
+      <!--  <br/>
+        运营方是否签署合同：
+        <select name="sign_borrow">
+            <option value="0" <if condition="$_REQUEST['sign_borrow'] eq 0">selected</if>>全部</option>
+            <option value="1" <if condition="$_REQUEST['sign_borrow'] eq 1">selected</if>>已签</option>
+            <option value="2" <if condition="$_REQUEST['sign_borrow'] eq 2">selected</if>>未签</option>
+        </select>
+-->
+        <if condition="$role neq 'b'">
+        审核状态：
+        <select name="audit_status">
+            <option value="9999" <if condition="$_REQUEST['audit_status'] eq 9999">selected</if>>请选择</option>
+            <foreach name="audit_status_list" key="key" item="item">
+                <option value="{$key}" <if condition="$_REQUEST['audit_status'] eq $key">selected="selected"</if>>{$item}</option>
+            </foreach>
+        </select>
+        <else/>
+            申请人:
+            <input type="text" class="textbox" name="admin_name" value="{$_REQUEST['admin_name']}" size="10"/>
+        </if>
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="GoldDealLoan" name="m" />
+
+        <input type="hidden" value="{$role}" name="role" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv_file();" />
+       <!-- <input type="button" class="button" value="导出" onclick="export_csv();" />-->
+        <if condition="$_REQUEST['role'] eq 'b'">
+            <input type="button" class="button" value="一键放款" id="batch_submit" />
+        <else/>
+            <input type="button" class="button" value="一键提交" id="batch_submit" />
+        </if>
+
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="22" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th>编号</th>
+            <th>标的名称</th>
+            <th>单次上线克重</th>
+            <th>延期提货补偿率</th>
+            <th>期限</th>
+            <th>黄金及支付补偿方式</th>
+            <th>用户类型</th>
+            <th>运营方ID/姓名/手机号</th>
+            <th>标的售卖状态</th>
+            <th>状态</th>
+            <th>满标时间</th>
+            <th>运营方合同签署状态</th>
+            <if condition="$role eq b">
+            <th>申请人</th>
+            </if>
+            <th>审核状态</th>
+            <th style="width:150px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="deal">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$deal.id}">
+            </td>
+            <td>
+                &nbsp;{$deal.id}
+            </td>
+            <td>
+                &nbsp;
+                {$deal.name}
+
+            </td>
+            <td>
+                &nbsp;{$deal.borrowAmount}
+            </td>
+            <td>
+                &nbsp;{$deal.rate}%
+            </td>
+            <td>
+                &nbsp;{$deal.repayTime}<if condition="$deal.loantype eq 5">天<else/>个月</if>
+            </td>
+            <td>
+                <if condition="$deal.loantype eq 5">已购黄金及补偿克重到期一次性交付</if>
+
+                <if condition="$deal.loantype eq 6">已购黄金到期交付，补偿克重按季度交付</if>
+               <!--&nbsp;{$deal.loantype|get_loantype}-->
+            </td>
+            <td>
+                &nbsp;{$deal.userId|getUserTypeName}
+            </td>
+            <td>
+                &nbsp;
+                {$deal['userId']}/
+                {$listOfBorrower[$deal['userId']]['real_name']} /
+                {$listOfBorrower[$deal['userId']]|getUserFieldUrl='mobile'}
+            </td>
+
+            <td>
+                &nbsp;满标
+            </td>
+            <td>
+                &nbsp;{$deal.isEffect|get_is_effect=$deal[id]}
+            </td>
+            <td>
+                &nbsp;<php> echo date("Y-m-d H:i:s",$deal['successTime'])</php>
+            </td>
+
+            <td>
+            &nbsp;{$deal.contractStatus}
+            </td>
+
+
+            <if condition="$role eq b">
+            <td>
+                <if condition="isset($audit_deal_list[$deal['id']])">
+                    &nbsp;{$audit_deal_list[$deal['id']]['submit_user_name']}
+                </if>
+            </td>
+            </if>
+            <td>
+                    <if condition="$role eq b">
+                    &nbsp;放款待审核
+                    <else/>
+                        <if condition="isset($audit_deal_list[$deal['id']])">
+                            &nbsp;{$audit_deal_list[$deal['id']]['status']}
+                        <else/>
+                            &nbsp;放款待处理
+                        </if>
+                    </if>
+            </td>
+
+            <td>
+                <if condition="$deal.is_entrust_zx neq 1">
+                <if condition="$role eq 'b'">
+                    <a href="javascript:edit('{$deal.id}','b','0')">操作放款</a>
+                <else/>
+                    <if condition="$audit_deal_list[$deal['id']]['status'] == '放款待审核'">
+                        <!--<a href="javascript:edit('{$deal.id}', 'a', '0')">审核中</a>-->
+                    <else/>
+                        <a href="javascript:edit('{$deal.id}', 'a', '0')">操作放款</a>
+                    </if>
+                </if>
+                &nbsp;
+                <a href="javascript:contract('{$deal.id}')">合同列表</a>
+                </if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+function open_coupon_list(id) {
+    window.location.href=ROOT+'?m=CouponLog&a=index&deal_id='+id;
+}
+    $(function(){
+        $("#batch_submit").click(function(){
+            if($("input[name='key']:checked").length <=0) {
+                alert('请至少选择一个标的');
+                return false;
+            }
+
+            deal_ids = new Array;
+            $($("input[name='key']:checked").each(function(){
+                deal_ids.push($(this).val());
+            }));
+            $("#batch_submit").attr("disabled","disabled");
+            var act = "{$role}";
+            url = (act == 'b') ? 'm.php?m=GoldDeal&a=batch_enqueue' : 'm.php?m=GoldDeal&a=batch_submit';
+
+            $.ajax({
+                type:"POST",
+                url:url,
+                dataType:'json',
+                data:{
+                    "deal_ids":deal_ids.join(","),
+                },
+                success:function(res){
+                    if(res.status == 1){
+                        alert('提交成功' + res.succ_num +'笔；提交失败' + res.fail_num + '笔，标id为'+res.deal_ids);
+                        location.reload();
+                    }else{
+                        $("#batch_submit").attr("disabled","");
+                        alert('提交失败');
+                    }
+                }
+            });
+
+        });
+    })
+</script>
+<include file="Public:footer" />
+

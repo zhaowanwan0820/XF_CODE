@@ -1,0 +1,89 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<div class="main">
+<div class="main_title">第三方余额汇总 <a href="#" onclick="history.go(-1); return false;" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<foreach name="balanceEnum" item="balanceDetail" key="balanceType">
+<div class="blank5"></div>
+<div class="main_title">
+    {$typeDesc.$balanceType} &nbsp;&nbsp;&nbsp;&nbsp;
+    <a class="button" href="/m.php?m=UserThirdBalance&a=syncBalance&userId={$_REQUEST['userId']}&type={$balanceType}">同步{$typeDesc.$balanceType}余额</a>
+</div>
+<div class="blank5"></div>
+
+<table class="form" cellpadding=0 cellspacing=0>
+<tr>
+    <td colspan=3 class="topTd"></td>
+</tr>
+<tr>
+    <th>金额类类型</th>
+    <th>资产中心</th>
+    <th>{$typeDesc.$balanceType}</th>
+</tr>
+<foreach name="balanceDetail" item="item" key="key">
+<tr id="{$key}">
+    <td class="item_title">{$item.desc}</td>
+    <td class="item_input">{$balance.$balanceType.$key}</td>
+    <td class="item_input">{$realBalance.$balanceType.$key}</td>
+</tr>
+</foreach>
+<tr>
+    <td class="item_title">待收本金</td>
+    <td class="item_input">{$summary.corpus}</td>
+    <td class="item_input">{$summary.cg_principal}</td>
+</tr>
+<tr>
+    <td class="item_title">待收利息</td>
+    <td class="item_input">{$summary.income}</td>
+    <td class="item_input">{$summary.cg_income}</td>
+</tr>
+<tr>
+    <td colspan=3 class="bottomTd"></td>
+</tr>
+</table>
+</foreach>
+
+<?php if (!empty($userInfo['userId']) && empty($p2pUserInfo['payment_user_id'])) { ?>
+    <a class="button" id="button" href="/m.php?m=User&a=updatePaymentUserId&id=<?php echo $p2pUserInfo['id']; ?>" >更新payment_user_id</a>
+<?php } ?>
+<?php if (!empty($p2pUserInfo['payment_user_id'])) { ?>
+    <a class="button" id="button" href="/m.php?m=User&a=resetPaymentUserId&id=<?php echo $p2pUserInfo['id']; ?>" >删除payment_user_id</a>
+<?php } ?>
+
+<?php if (!empty($p2pUserInfo['mobile']) && !empty($p2pUserInfo['payment_user_id']) && $p2pUserInfo['mobile'] != $userInfo['phone']) { ?>
+    <a class="button" id="button" href="/m.php?m=User&a=updatePaymentPhone&id=<?php echo $p2pUserInfo['id']; ?>" >更新用户手机号</a>
+<?php } ?>
+
+<script type="text/javascript">
+jQuery(function() {
+    //同步认证类型
+    $("#_js_sync_cert_status").click(function () {
+        var uid = $('#_js_bankinfo_uid').val();
+        if (uid == 0) {
+            alert("没有用户信息！");
+            return false;
+        }
+        if (uid > 0) {
+            $.ajax({
+                type: "POST",
+                url: ROOT + '?m=User&a=syncCertStatus',
+                data: "uid=" + uid,
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.code !== '0000') {
+                        return alert(msg.msg);
+                    }
+                }
+            });
+        }
+        return false;
+    });
+})
+</script>
+
+<include file="Public:footer" />

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/yx.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+<div class="heihua"></div>
+<div class="text_fu"></div>
+    <div class="main">
+        <div class="ht_bg"></div>
+        <div class="he_text">
+            <a href="{$detailLink}" class="rule">活动规则</a>
+        </div>
+        <div class="u_head">{if $referUserInfo.headimgurl}<img src="{$referUserInfo.headimgurl}" />{else}<img src="<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/default/def.png', 1);?>"/>{/if}</div>
+        <div class="blessing">
+            <div id="blessing_con"></div>
+            <p class="friend">—— by<strong>{if $referUserInfo.nickname}{$referUserInfo.nickname}{else}{$referMobileShow}{/if}</strong></p>
+        </div>
+        <div class="rob-tel">
+            <form id="register-form" action="YxHongbaoGet" method="get">
+                <input type="tel" class="tel-box" id="input-mobile" name = 'mobile' placeholder='请输入您的手机号码' maxlength="11" value='{$mobile}'>
+                <?php echo token_input(); ?>
+                <input type="hidden" value = "{$sn}" name = 'sn'>
+                <input type="hidden" value = "{$site_id}" name = 'site_id'>
+                <input type="hidden" value = "{$referUsn}" name = 'referUsn'>
+                <input type="hidden" value = "{$gid}" name = 'gid'>
+                <input type="submit" class="tel-btn" value="">
+                <a href="#" class="fa_btn"></a>
+            </form>
+        </div>
+        <div class="errorDiv">{if $only_new_user}{$only_new_user}{else}新用户可获10元迎新贺卡红包，领用人投资后，红包发送人再获10元奖励红包。{/if}</div>
+    </div>
+    <script type="text/javascript">
+        var index = {$gid};
+        window.onorientationchange = function(){
+            changeDivHeight();
+        }
+        function changeDivHeight(){
+            var bHeight= Math.max(document.documentElement.clientHeight, 490);
+            $('body').css({"background-size":"100% " + bHeight + "px", "height": bHeight});
+            $('.main').css({"top": (bHeight-490)/2+'px'});
+        }
+
+        //随机文案
+        var arr = [
+        "<p>一句誓言，海誓山盟，凝聚诚心；</p><p>一份真情，缠绵悱恻，缘定真心。</p><p>祝新年快乐，开心永远。</p>",
+        "<p>您是灯塔，默默指引我回家；</p><p>您是峻岭，为我撑起一片天；</p><p>尽管您总是无言，但无声的爱却永在身边。</p>",
+        "<p>沧桑的岁月里，总避免不了困难；</p><p>还好有您的指导，让幸福的轨迹不会变。</p><p>祝福依然，愿纷繁生活幸福永远。</p>",
+        "<p>走在幸福的路上，喜气洋“羊”；</p><p>开创美好的未来，斗志昂“羊”；</p><p>愿您羊年更有新气象，三“羊”开泰发财忙！</p>",
+        "<p>灯火辉煌是羊年最灿烂的记忆；</p><p>合家团圆是羊年最美丽的风景；</p><p>羊年到了，愿新年大吉大利！</p>",
+        "<p>好友总是心连心，知心好友值千金；</p><p>新春佳节思贤友，小小祝福传佳音；</p><p>祝三羊开泰日，万事亨通年</p>",
+        ];
+        document.getElementById("blessing_con").innerHTML=arr[index];
+
+        $(function(){
+            changeDivHeight();
+            //fix ios 7 input focus bug.
+            var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "";
+            var iosVersion = 0;
+            var iosmatches = userAgentString.match(/IPHONE OS ([0-9_]*)/i);
+            if (iosmatches && iosmatches.length > 1) {
+                iosVersion = parseInt(iosmatches[1].substring(0, 1), 10);
+            }
+            if (iosVersion == 7) {
+                $('.tel-box').focus(function(){
+                    window.scroll(0, 200);
+                });
+            }
+			
+			// fix andorid keyborad change webview size bug.
+			if (/android/i.test(userAgentString)) {
+				//hack for andorid
+	            var _firstInit = true;
+	            setTimeout(function(){
+	                _firstInit = false;
+	            }, 1000);
+	            window.onresize = function() {
+	                if (_firstInit) {
+	                    var bHeight= Math.max($(window).height(), 490);
+	                    $('body').css({"background-size":"100% " + bHeight + "px", "height": bHeight});
+	                    $('.main').css({"top": (bHeight-490)/2+'px'});
+	                }
+	            }
+	            $("#input-mobile").blur(function(event) {
+	                setTimeout(function(){window.scrollTo(0, 0)}, 10);
+	            });
+			}
+			
+			
+            $('.tel-btn').click(function(){
+                $('#register-form').attr('action', 'YxHongbaoGet');
+                var mobileRegEx = /^1[3456789]\d{9}$/;
+                var tel= $('.tel-box').val()
+                if(!tel || tel==null){
+                    $('.errorDiv').html('手机号不能为空！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else if(!mobileRegEx.test(tel)){
+                    $('.errorDiv').html('手机号码格式不正确！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else{
+                    return true;
+                }
+            });
+            $('.fa_btn').click(function(){
+                $('#register-form').attr('action', 'YxHongbaoSend');
+                var mobileRegEx = /^1[3456789]\d{9}$/;
+                var tel= $('.tel-box').val()
+                if(!tel || tel==null){
+                    $('.errorDiv').html('手机号不能为空！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else if(!mobileRegEx.test(tel)){
+                    $('.errorDiv').html('手机号码格式不正确！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else{
+                    return $('#register-form').submit();
+                }
+            });
+        });
+    </script>
+{include file="web/views/hongbao/yx/show_menu_js.html"}
+</body>
+</html>

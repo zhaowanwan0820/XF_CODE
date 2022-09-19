@@ -1,0 +1,45 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<div class="main">
+<div class="main_title">批量导入提现申请 <a href="{:u('UserCarry/index')}" class="back_list">返回提现列表</a></div>
+<div class="blank5"></div>
+<form name="upload" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">选择CSV文件</td>
+        <td class="item_input">
+            <input type='file' name='upfile' style='width:150px'>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <span class='tip_span'>
+                (文件格式为csv, 表格首行为"提现会员ID,提现后剩余金额"
+                <a href="http://static.firstp2p.com/attachment/201604/20/16/4c24217fe2909963647bbced25926d5e/c5f7fd07bb294847f83c63398bb608b7.csv" target="_blank">下载模板</a>)
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="user_id" value="{$user_info.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserCarry" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="doimport" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="导入" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

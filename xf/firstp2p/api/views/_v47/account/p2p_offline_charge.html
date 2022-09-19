@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>网贷账户大额充值</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.7/css/p_account_charge.css');?>" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    {include file="api/views/_v492/common/zhugemaidian.html"}
+    <div class="p_account_charge p_p2p_charge" style="overflow-x: hidden;">
+        <div class="white_bg">
+            <div class="user_title">
+                大额充值操作步骤
+            </div>
+            <div class="big_charge_setp">
+            </div>
+        </div>
+        <div class="big_charge_box">
+            <div>充值金额</div>
+            <input type="number" class="big_charge_input" name="amount" value="{$money}"/>
+            <div class="user_money">{$offlineChargeName}现金余额:{$userInfo.svCashMoney}元</div>
+        </div>
+        <div class="big_btn">
+            <input type="submit" class="JS_goto_big_charge big_charge_btn gray_btn" value="下一步" disabled="disabled">
+        </div>
+    </div>
+    <script>
+        function changeBtn() {
+            var amount = $(".big_charge_input").val();
+            if(amount != "" && parseFloat(amount) > 0){
+                $(".JS_goto_big_charge").removeAttr("disabled").removeClass("gray_btn");
+            } else {
+                $(".JS_goto_big_charge").attr("disabled","disabled").addClass("gray_btn");
+            }
+        }
+        $(function(){
+            zhuge.track('进入网贷账户大额充值输入金额页');
+            //加载时检查输入框金额
+            changeBtn();
+            $(".big_charge_input").on("input onpropertychange",function(){
+                changeBtn();
+            });
+            $(".JS_goto_big_charge").click(function(){
+                zhuge.track('网贷账户大额充值输入金额页_点击下一步')
+                $(".JS_big_charge_btn").remove();
+                var amount = $(".big_charge_input").val();
+                var orderId = "{$orderId}";
+                var wxVersion = "{$wxVersion}";
+                var return_url = "{$returnUrl}";
+                var big_charge = '{"srv":"p2pOfflineCharge","orderId":"'+orderId+'","return_url":"'+ return_url +'" ,"amount":"'+ amount +'" , "wxVersion":"'+wxVersion+'"}';
+                var _big_chargeUlr = location.origin + "/payment/Transit?params=" + encodeURIComponent(big_charge);
+                var _big_chargeUlr_all = 'storemanager://api?type=webview&gobackrefresh=true&url='+encodeURIComponent(_big_chargeUlr);
+                $("body").append('<a href="'+_big_chargeUlr_all+'" class="JS_big_charge_btn"></a>');
+                $(".JS_big_charge_btn").click();
+            });
+        });
+    </script>
+</body>
+</html>

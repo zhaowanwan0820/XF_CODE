@@ -1,0 +1,165 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+<load href='__TMPL__Common/js/jquery.min.js'/>
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<load href='__TMPL__Common/js/jquery.ui.widget.js'/>
+<load href='__TMPL__Common/js/jquery.weebox.js'/>
+<load href='__TMPL__Common/js/bootstrap.min.js'/>
+<load href='__TMPL__Common/js/user.js'/>
+<load href='__TMPL__Common/style/weebox.css'/>
+<load href='__TMPL__Common/style/bootstrap.min.css'/>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js"></script>
+<load href='__TMPL__Common/js/calendar/calendar.css'/>
+<load href='__TMPL__Common/js/calendar/calendar.js'/>
+<style>
+    .tooltip {
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+    .tooltip-inner {
+        text-align: left;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<div class="main">
+    <div class="main_title">借款材料管理表</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            用户ID:
+            <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}"
+                   style="width:70px;"/>
+            联系方式:
+            <input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:70px;"/>
+            <input type="hidden" name="m" value="House"/>
+            <input type="hidden" name="a" value="loanMaterial"/>
+            <input type="submit" class="button" value="{%SEARCH}"/>
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 style="text-align: center;">
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr>
+            <th>用户ID</th>
+            <th>借款人姓名</th>
+            <th>联系电话</th>
+            <th>身份证号码</th>
+            <th>身份证材料</th>
+            <th>房产编号</th>
+            <th>房产所在城市</th>
+            <th>房产所在市辖区</th>
+            <th>房产详细地址</th>
+            <th>房产面积</th>
+            <th>抵押房产评估价值</th>
+            <th>房本信息</th>
+        </tr>
+        <foreach name="list" item="item" key="key">
+            <tr>
+                <td rowspan="<?= count($house[$key]) ?>">{$item.userId}</td>
+                <td rowspan="<?= count($house[$key]) ?>">{$item.realName}</td>
+                <td rowspan="<?= count($house[$key]) ?>">{$item.mobile}</td>
+                <td rowspan="<?= count($house[$key]) ?>">{$item.idno}</td>
+                <td rowspan="<?= count($house[$key]) ?>">
+                    <a class="viewIdCardMaterial" href="javascript:void(0)" data-id="{$item.userId}"
+                       data-href="m.php?m=House&a=idCardMaterial&userId={$item.userId}">详情浏览</a>
+                </td>
+                <td>1</td>
+                <td><?= $house[$key][0]['house_city'] ?></td>
+                <td><?= $house[$key][0]['house_district'] ?></td>
+                <td><?= $house[$key][0]['house_address'] ?></td>
+                <td><?= $house[$key][0]['house_area'] ?>㎡</td>
+                <td>
+                    <a class="viewHouseValue" href="javascript:void(0)" data-id="{$house[$key][0]['id']}"
+                       data-href="m.php?m=House&a=houseValue&houseId={$house[$key][0]['id']}">详情浏览</a>
+                </td>
+                <td>
+                    <a class="viewHouseMaterial" href="javascript:void(0)" data-id="{$house[$key][0]['id']}"
+                       data-href="m.php?m=House&a=houseMaterial&houseId={$house[$key][0]['id']}">详情浏览</a>
+                </td>
+            </tr>
+            <foreach name="house[$key]" item="house_item" key="key1">
+                <?php if ($key1>0): ?>
+                <tr>
+                    <td><?= $key1+1 ?></td>
+                    <td><?= $house_item['house_city'] ?></td>
+                    <td><?= $house_item['house_district'] ?></td>
+                    <td><?= $house_item['house_address'] ?></td>
+                    <td><?= $house_item['house_area'] ?>㎡</td>
+                    <td>
+                        <a class="viewHouseValue" href="javascript:void(0)" data-id="{$house[$key][$key1]['id']}"
+                           data-href="m.php?m=House&a=houseValue&houseId={$house[$key][$key1]['id']}">详情浏览</a>
+                    </td>
+                    <td>
+                        <a class="viewHouseMaterial" href="javascript:void(0)" data-id="{$house[$key][$key1]['id']}"
+                           data-href="m.php?m=House&a=houseMaterial&houseId={$house[$key][$key1]['id']}">详情浏览</a>
+                    </td>
+                </tr>
+                <?php endif; ?>
+            </foreach>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+    $(function () {
+        $(".viewIdCardMaterial").on('click', function () {
+            var userId = $(this).data('id');
+            $.weeboxs.open("m.php?m=House&a=idCardMaterial&userId=" + userId, {
+                contentType: 'ajax',
+                showButton: false,
+                title: '身份证材料',
+                modal: true,
+                overlay: 5,
+                width: 800,
+                height: 600,
+                onopen: function () {
+                }
+            });
+        });
+    });
+    $(function () {
+        $(".viewHouseValue").on('click', function () {
+            var houseId = $(this).data('id');
+            $.weeboxs.open("m.php?m=House&a=houseValue&houseId=" + houseId, {
+                contentType: 'ajax',
+                showButton: false,
+                title: '抵押房产估价值',
+                modal: true,
+                overlay: 5,
+                width: 800,
+                height: 600,
+                onopen: function () {
+                }
+            });
+        });
+    });
+    $(function () {
+        $(".viewHouseMaterial").on('click', function () {
+            var houseId = $(this).data('id');
+            $.weeboxs.open("m.php?m=House&a=houseMaterial&houseId=" + houseId, {
+                contentType: 'ajax',
+                showButton: false,
+                title: '房本材料',
+                modal: true,
+                overlay: 5,
+                width: 800,
+                height: 600,
+                onopen: function () {
+                }
+            });
+        });
+    });
+</script>
+<include file="Public:footer"/>

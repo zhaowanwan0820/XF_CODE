@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>借款</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/loan_index.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/default.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-common.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="loan_index_new">
+        <div class="biaodi">
+        <a href="/speedloan/index?token={$token}">
+            <div class="top">
+                <img src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/biaodi.png');?>">
+                <p>网信速贷</p>
+            </div>
+            <ul class="bottom">
+                <li><i></i><p>单笔最高可借30万元，500元起借</p><span></span></li>
+                <li><i></i><p>项目到期自动还款</p></li>
+                <li><i></i><p>预计借款成本年化7%-12%</p></li>
+            </ul>
+        </a>
+        </div>
+
+        {if !$is_credit_loan_user and !$is_bxt_user and !$is_job_loan_user}
+        <div class="default">
+            <img src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/Group_null.png');?>">
+            <p>目前该功能仅对部分用户开放</p>
+            <p>过一段时间再来看看吧</p>
+        </div>
+        {else}
+        {if $is_credit_loan_user eq 1}
+        <div class="biaodi">
+        <a href="/creditloan/index?token={$token}">
+            <div class="top">
+                <img src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/biaodi.png');?>">
+                <p>银信通</p>
+            </div>
+            <ul class="bottom">
+                <li><i></i><p>单笔最高可借30万元，500元起借</p><span></span></li>
+                <li><i></i><p>项目到期自动还款</p></li>
+                <li><i></i><p>预计借款成本年化7%-12%</p></li>
+            </ul>
+        </a>
+        </div>
+        {/if}
+        {if $is_bxt_user eq 1}
+        <div class="biaodi">
+        <a href="/account/intention_detail?token={$token}&code={$code_bxt}">
+            <div class="top">
+                <img src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/bianxian.png');?>">
+                <p>变现通</p>
+            </div>
+            <ul class="bottom">
+                <li><i></i><p>最高可借金额依投资额判定，单笔30万元以上起借</p><span></span></li>
+                <li><i></i><p>项目到期自动还款</p></li>
+                <li><i></i><p>预计借款成本年化11.7%~15.3%</p></li>
+            </ul>
+        </a>
+        </div>
+        {/if}
+        {if $is_job_loan_user eq 1}
+        <div class="biaodi">
+            <a href="/account/intention_detail?token={$token}&code={$code_job_loan}">
+            <div class="top">
+                <img src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/Group_3.png');?>">
+                <p>职易贷</p>
+            </div>
+            <ul class="bottom">
+                <li><i></i><p>基础额度最高30万，最高额度上限100万</p><span></span></li>
+                <li><i></i><p>按月付息到期还本，每年可部分提前还款</p></li>
+                <li><i></i><p>预计借款成本年化7.995%，可贷款期限6-36个月</p></li>
+            </ul>
+        </a>
+        </div>
+        {/if}
+        {/if}
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+</body>
+</html>

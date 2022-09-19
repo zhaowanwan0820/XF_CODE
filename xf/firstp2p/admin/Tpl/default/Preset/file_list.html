@@ -1,0 +1,96 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script>
+/*function file_add(id){
+	$.weeboxs.open(ROOT+'?m=Preset&a=file_add&id='+id, {contentType:'ajax',showButton:false,title:'添加',width:650,height:270});
+}*/
+function file_del()
+{
+    idBox = $(".key:checked");
+    if(idBox.length == 0)
+    {
+        alert(LANG['DELETE_EMPTY_WARNING']);
+        return;
+    }
+    idArray = new Array();
+    $.each( idBox, function(i, n){
+        idArray.push($(n).val());
+    });
+    id = idArray.join(",");
+    if(confirm(LANG['CONFIRM_DELETE'])){
+    	$.ajax({ 
+             url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=file_del&ids="+id+"&program_id"+{$program.id}, 
+             data: "ajax=1",
+             dataType: "json",
+             success: function(obj){
+                 $("#info").html(obj.info);
+                 if(obj.status==1){
+                	 alert('删除成功');
+                	 location.href=location.href;
+                 }
+             }
+    	});
+    }
+}
+</script>
+<div class="main">
+    <div class="main_title">{$program.program_name} 附件列表 <a href='{:u("Preset/preset_program")}' class="back_list" >返回</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+	    <div class="button_row">
+	        <!-- <input type="button" class="button" value="{%ADD}" onclick="file_add({$program.id});" /> -->
+	        <input type="button" class="button" value="彻底删除" onclick="file_del();" />&nbsp;&nbsp;&nbsp;&nbsp;
+	        <input type="file" class="textbox" name="attach_file" style="width:150px"/>
+	        <input type="hidden" name="{:conf("VAR_MODULE")}" value="Preset" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="file_add" />
+            <!--隐藏元素-->
+            <input type="hidden" name="id" value="{$program_id}" />
+            <input type="submit" class='button' name="submit" value="上传附件" />
+	    </div>
+    </form>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="14" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th width="50px">编号</th>
+            <th>文件名</th>
+            <th>存储名</th>
+            <th>文件类型</th>
+            <!-- <th>文件描述</th> -->
+            <th>创建时间</th>
+            <th><a href="">操作</a></th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td>&nbsp;{$item.id}</td>
+            <td>&nbsp;{$item.title}</td>
+            <td>&nbsp;<a href='{$item.path}' target='_blank'>{$item.filename}</a></td>
+            <td>&nbsp;{$item.type}</td>
+            <!-- <td>&nbsp;{$item.description}</td> -->
+            <td>&nbsp;{:to_date($item['create_time'])}</td>
+            <td><!-- <a style='cursor:pointer;' onclick='file_edit({$item.id},"{$item.title}")'>修改</a> &nbsp; --><a href="/m.php?m=Preset&a=file_del&ids={$item.id}&program_id={$program.id}&ajax=0" onclick='return confirm("确认彻底删除？");'>删除</a></td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="14" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 --> 
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+/*function file_edit(id,ptitle){
+    $.weeboxs.open(ROOT+'?m=Preset&a=file_edit&id='+id, {contentType:'ajax',showButton:false,title:'修改',width:650,height:270});
+}*/
+</script>
+<include file="Public:footer" />

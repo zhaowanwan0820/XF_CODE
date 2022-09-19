@@ -1,0 +1,154 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__Common/js/calendar/calendar_lang.js' />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="main_title">个人会员投资风险承受能力评估</div>
+    <div class="blank5"></div>
+    <input type="button" class="button" value="新增" onclick="add();" />
+    <form name="search" action="__APP__" method="get">
+        <div class="search_row">
+        问卷评估时间：<input type="text" id="begin" onclick="show_cal(this)" class="textbox" name="begin" value="{:trim($_REQUEST['begin'])}" style="width:100px;" />
+        至<input type="text" id="end" class="textbox" onclick="show_cal(this)" name="end" value="{:trim($_REQUEST['end'])}" style="width:100px;" />
+        <input type="hidden" value="RiskAssessment" name="m" />
+        <input type="hidden" value="export" name="a" />
+        <input type="submit" class="button" value="导出用户风险评估数据" />
+        </div>
+    </form>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr><td colspan="11" class="topTd" >&nbsp; </td></tr>
+        <tr>
+            <th width="100">问卷编号</th>
+            <th width="150">最近启动时间</th>
+            <th width="50">使用状态</th>
+            <th width="150">备注</th>
+            <th width="50">操作</th>
+        </tr>
+        <?php foreach ($questions as $question) { ?>
+        <tr class="row">
+            <td><?php echo 'IR-' . $question['id']; ?></td>
+            <td><?php echo $question['enable_time'] ? date('Y-m-d H:i:s', $question['enable_time']) : ''; ?></td>
+            <td><?php echo $question['status'] ? '使用中' : '停用'; ?></td>
+            <td><?php echo $question['remark']; ?></td>
+            <td>
+                <?php if(!empty($question['enable_time']) && $question['status'] == 0) { ?>
+                <a href="javascript:;" class="enable" data-ques-id="<?php echo $question['id']; ?>">启动</a>
+                <?php } //end if ?>
+                <?php if(!empty($question['enable_time']) && $question['status'] == 1) { ?>
+                <a href="javascript:;" class="disable" data-ques-id="<?php echo $question['id']; ?>">停用</a>
+                <?php } //end if ?>
+
+                <a href="?m=RiskAssessment&a=edit&ques_id=<?php echo $question['id']; ?>">修改</a>
+
+                <?php if(empty($question['enable_time']) && $question['status'] == 0) { ?>
+                <a href="javascript:;" class="delete" data-ques-id="<?php echo $question['id']; ?>">删除</a>
+                <?php } //end if ?>
+            </td>
+        </tr>
+        <?php } //end foreach ?>
+        <tr><td colspan="11" class="bottomTd">&nbsp; </td></tr>
+    </table>
+    <div class="blank5"></div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+       $('.delete').click(function(){
+           //删除问卷
+           if (!window.confirm('确认删除问卷?')) {
+               return false;
+           }
+           var ques_id = $(this).attr('data-ques-id');
+           var that = $(this);
+           that.attr('disabled', 'disabled');
+           $.ajax({
+               url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete",
+               type: 'POST',
+               data: "ques_id=" + ques_id,
+               dataType: "json",
+               success: function(obj){
+                   if (obj.status == '1') {
+                       location.reload();
+                   } else {
+                       alert(obj.msg);
+                   }
+                   that.removeAttr('disabled');
+               }
+           });
+       });
+
+        $('.enable').click(function(){
+            if (!window.confirm('确认开启问卷?')) {
+                return false;
+            }
+            var ques_id = $(this).attr('data-ques-id');
+            var that = $(this);
+            that.attr('disabled', 'disabled');
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=enable",
+                type: 'POST',
+                data: "ques_id=" + ques_id,
+                dataType: "json",
+                success: function(obj){
+                    if (obj.status == '1') {
+                        location.reload();
+                    } else {
+                        alert(obj.msg);
+                    }
+                    that.removeAttr('disabled');
+                }
+            });
+        });
+
+        $('.disable').click(function(){
+            if (!window.confirm('确认关闭问卷?')) {
+                return false;
+            }
+            var ques_id = $(this).attr('data-ques-id');
+            var that = $(this);
+            that.attr('disabled', 'disabled');
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=disable",
+                type: 'POST',
+                data: "ques_id=" + ques_id,
+                dataType: "json",
+                success: function(obj){
+                    if (obj.status == '1') {
+                        location.reload();
+                    } else {
+                        alert(obj.msg);
+                    }
+                    that.removeAttr('disabled');
+                }
+            });
+        });
+    });
+
+
+
+    //开启问卷
+    function enable()
+    {
+
+    }
+
+    //关闭问卷
+    function disable()
+    {
+
+    }
+
+    function show_cal(obj) {
+        obj.blur();
+        return showCalendar(obj.id, '%Y-%m-%d %H:%M:%S', true, false, obj.id);
+    }
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <?php echo $this->asset->renderAppCssV2("reserve_v40"); ?>
+</head>
+<style>
+      .gold_need{background: white !important;color: #909090 !important;font-size: 13px !important;}
+      .p_reservation .btn{padding-top: 10px;}
+</style>
+<body>
+{include file="api/views/_v492/common/zhugemaidian.html"}
+  <div class="p_reservation">
+    <div class="p_detail">
+      <div class="inv-header">
+        <img class="top_bg_img" src="<?php echo $this->asset->makeAppUrl('v4.0/images/reservation/reserve_detail_header_bg1.png');?>"/>
+        <div class="invh_top">
+          <div class="inh-title">
+            <h2>
+              {if $tagBefore }<span class="ui_tips">{$tagBefore}</span>{/if}
+              {if $tagAfter }<span class="ui_tips">{$tagAfter}</span>{/if}
+            </h2>
+          </div>
+          <div class="invh-center">
+            <span class="invh-left">
+              <p class="f13 mbp">{if $product_type eq 1}年化借款利率{else}预期年化{/if}</p>
+              <span class="bold din_alternate">{$rate}</span><em class="f13"> %</em>
+            </span>
+            <span class="invh-right">
+              <p class="f13 mbp">{if $product_type eq 1}出借{else}投资{/if}期限</p>
+              <span class="bold din_alternate">{$invest_line}</span><em class="f13">{if $invest_unit eq 1}天{else}个月{/if}</em>
+            </span>
+          </div>
+        </div>
+        <div class="invh_bottom">
+          <div class="pre_count">
+            {if $userCount}
+              <span>已预约{$userCount} </span>
+            {/if}
+            {if $amountCount && $amountCount neq 0.00}
+              <span>已预约{if $product_type eq 1}出借{else}投资{/if}{$amountCount}</span>
+            {/if}
+            {if $loantypeName}<span class="repayment_way">{$loantypeName}</span>{/if}
+          </div>
+        </div>
+        <img class="bottom_bg_img" src="<?php echo $this->asset->makeAppUrl('v4.0/images/reservation/reserve_detail_header_bg2.png');?>"/>
+      </div>
+      <div class="inv-center">
+        <div class="{if $minAmount}ping{/if}">
+          <p class="start_money">起投金额<span>{$minAmount}元</span></p>
+          <p class="start_money">每万元投资预期收益<span>{$investInterest}</span></p>
+        </div>
+      </div>
+
+      <div class="inv-footer">
+        <div class="invf_top">
+          <ul class="menu">
+            <li class="select" style="width:33%;"><span class="fw">产品详情<em></em></span></li>
+          </ul>
+          <div class="invf_write"></div>
+        </div>
+        <div class="invf_txt">{$description}</div>
+      </div>
+        <!-- <div class="ui_risk_tips"><em class="line"></em><span>市场有风险，{if $product_type eq 1}出借{else}投资{/if}需谨慎</span></div> -->
+    </div>
+    <div class="h114"></div>
+    <div class="btn btn_list">
+      {if $isBookingButtonUnused eq 1 }
+        <span class="reservation_btn disabled_btn mb8">立即预约</span>
+      {else}
+        {if $is_login neq 0 and $is_reserve eq 0}
+          <span class="reservation_btn disabled_btn mb8 gold_need">您的预约已约满</span>
+        {else}
+          {if $is_close eq 1}
+          <span class="reservation_btn disabled_btn mb8">立即预约</span>
+          {else}
+            {if $is_identify eq 1}
+              <a href="{$reserve_button}" class="reservation_btn JS_reservation_btn_maidian">立即预约</a>
+            {else}
+              <span class="reservation_btn disabled_btn mb8">立即预约</span>
+            {/if}
+          {/if}
+        {/if}
+      {/if}
+      <a href="{$reserve_list_button}" class="my_reservation_btn">我的预约记录</a>
+    </div>
+  </div>
+<?php echo $this->asset->renderAppJsV2("app_common_v40"); ?>
+{if $is_identify eq 0 && $is_login > 0}
+<script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.js');?>"></script>
+<script type="text/javascript">
+    WXP2P.UI.showErrorTip("您还未进行身份验证，暂无法预约");
+</script>
+{/if}
+<script>
+    var is_firstp2p = '{$is_firstp2p}';
+    if(!is_firstp2p){
+        // title右上角增加帮助中心
+        location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+        function gobackjsfuncReserve(){
+            location.href = 'firstp2p://api?type=webview&gobackrefresh=false&url='+ encodeURIComponent(location.origin + '/help/faq_list/?cid=227');
+            setTimeout(function(){
+                location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+            },0);
+        }
+    }
+    $(function(){
+        var _top = $(".inv-footer").offset().top;
+        var _windowHeight = $(window).height();
+        var _cha = _windowHeight - _top - 100;
+        $(".inv-footer").css("minHeight",_cha+"px");
+        zhuge.track('进入随心约标的详情页',{
+            "类型": '尊享'
+        })
+        $('.JS_reservation_btn_maidian').click(function() {
+            zhuge.track('随心约标的详情页_点击立即预约',{
+                "类型": '尊享'
+            })
+        });
+    })
+
+    WXP2P.APP.triggerScheme("firstp2p://api?type=local&action=changetitle&newtitle=详情")
+</script>
+</body>
+</html>

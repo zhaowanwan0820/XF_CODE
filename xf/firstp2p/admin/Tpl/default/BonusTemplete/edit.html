@@ -1,0 +1,154 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<style>
+    .file {
+        position: relative;
+        display: inline-block;
+        background: #FFFFFF;
+        border: 0px solid #FFFFFF;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+        text-decoration: underline;
+    }
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+</style>
+
+
+<div class="main">
+    <div class="main_title">编辑<a href="{:u("BonusTemplete/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">所属分站</td>
+                <td class="item_input">
+                    <select name="site_id" class="require">
+                        <foreach name="user_group_list" key="key" item="item">
+                            <option value="{$key}" <if condition="$vo['site_id'] eq $key">selected="selected"</if>>{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">模板名称：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" value="{$vo.name}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">分享标题：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="share_title" value="{$vo.share_title}"/>
+                    &emsp;<span class="tip_span">限28字</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">分享弹框：</td>
+                <td class="item_input">
+                    <textarea type="text" class="textbox require" name="share_content" cols="80" rows="4">{$vo.share_content}</textarea>
+                    &emsp;<span class="tip_span">限28字</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">分享图标：</td>
+                <td class="item_input">
+                    <img id="share_icon_img" src="{$image_host}{$vo.share_icon}" height="200" width="200"/>
+                    <a href="javascript:;" class="file">更改
+                        <input type="file" class="textbox" onchange="preview_share_icon()" name="share_icon" id="share_icon" class="file"/>
+                    </a>
+&nbsp; <span class="tip_span">限制大小150KB</span>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包皮肤：</td>
+                <td class="item_input">
+                    <img id="bg_image_img" src="{$image_host}{$vo.bg_image}" height="200" width="200"/>
+                    <a href="javascript:;" class="file">更改
+                        <input type="file" class="textbox" onchange="preview_bg_image()" name="bg_image" id="bg_image" class="file"/>
+                    </a>
+&nbsp; <span class="tip_span">限制大小300KB</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态：</td>
+                <td class="item_input">
+                    <label><input type="radio" name="status" value="1" <if condition="$vo.status eq 1">checked="checked"</if>>有效</label>
+                    <label><input type="radio" name="status" value="0" <if condition="$vo.status eq 0">checked="checked"</if>>无效</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开始时间：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="start_time" value="{$vo.start_time|to_date}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />&emsp;
+                    <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">失效时间：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="end_time" value="{$vo.end_time|to_date}" id="end_time"  onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />&emsp;
+                    <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('end_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#end_time').val('');" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">备注：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="note" value="{$vo.note}"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="id" value="{$vo.id}" />
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusTemplete" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+                <input type="submit" class="button" value="{%EDIT}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+function preview_share_icon() {
+    var f = document.getElementById('share_icon').files[0];
+    var src = window.URL.createObjectURL(f);
+    if (src != '') {
+        document.getElementById('share_icon_img').src=src;
+    }
+}
+function preview_bg_image() {
+    var f = document.getElementById('bg_image').files[0];
+    var src = window.URL.createObjectURL(f);
+    if (src != '') {
+        document.getElementById('bg_image_img').src=src;
+    }
+}
+</script>
+<include file="Public:footer" />

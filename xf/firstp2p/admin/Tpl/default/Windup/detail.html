@@ -1,0 +1,84 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">混清明细</div>
+<div class="blank5"></div>
+<div class="search_row">
+<form name="search" action="__APP__" method="get">
+批次号：<input type="text" class="textbox" name="batch_id" value="{:trim($_REQUEST['batch_id'])}" size="8"/>
+标的编号：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" size="8"/>
+用户编号：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" size="8"/>
+混清状态：<select id="pay_status" name="pay_status">
+            <option value="">{%ALL}</option>
+            <foreach name="pay_status" key="key" item="payStatusCn">
+                <option value="{$key}" <if condition="isset($_REQUEST['pay_status']) and $_REQUEST['pay_status'] != '' and intval($_REQUEST['pay_status']) eq $key">selected="selected"</if>>{$payStatusCn}</option>
+            </foreach>
+        </select>
+
+<input type="hidden" value="details" name="a" />
+<input type="hidden" value="Windup" name="m" />
+<input type="submit" class="button" name="search" value="{%SEARCH}" />
+<input type="submit" name="export" class="button" value="导出" />
+</form>
+</div>
+<div class="blank5"></div>
+<php>
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '-';
+    }
+    return date('Y-m-d H:i:s', $stamp + 28800);
+}
+function f_cutstr($string) {
+    $subString = $string;
+    if (mb_strlen($string) > 15) {
+        $subString = '<a href="javascript:;" title="'.str_replace('"',"'", $string).'">' . mb_substr($string, 0, 15) . '...</a>';
+    }
+    return $subString;
+}
+
+function f_money($amount) {
+    return number_format(bcdiv($amount, 100, 2), 2).'元';
+}
+function f_status($status) {
+    return $GLOBALS['statusCn'][$status];
+}
+</php>
+<html:list
+id="dataTable"
+style="dataTable"
+name="user"
+checkbox="true"
+datasource="list"
+show="id:明细编号,batch_id:批次编号,pay_user_id:付款用户编号,deal_id:标的编号,user_id:用户编号,amount|f_money:混清金额,pay_status|f_status:打款状态,create_time:创建时间,update_time:更新时间"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+var status = '{$status}';
+var p = '{$p}';
+function view(id) {
+    if (parseInt(p) > 0) {
+        window.location.href = "/m.php?m=Jobs&a=view&status="+status+"&p="+p+"&id="+id;
+        return ;
+    }
+    window.location.href = "/m.php?m=Jobs&a=view&status="+status+"&id="+id;
+}
+function redo(id) {
+    window.location.href = "/m.php?m=Jobs&a=redo&id="+id;
+}
+</script>
+<include file="Public:footer" />
+

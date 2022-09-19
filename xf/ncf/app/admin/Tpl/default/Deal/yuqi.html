@@ -1,0 +1,414 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<script type="text/javascript">
+
+
+    function show_detail(id) {
+        $.weeboxs.open(ROOT+'?m=Deal&a=show_detail&id='+id, {contentType:'ajax',showButton:false,title:LANG['COUNT_TOTAL_DEAL'],width:600,height:330});
+    }
+
+    function force_repay(id){
+        window.location.href = ROOT + '?m=Deal&a=force_repay&deal_id='+id+"&role="+$("#role").val()+'&{$querystring}';
+    }
+
+    function apply_prepay(id,loantype, type) {
+        if(loantype==7) {
+            alert('提前还款不支持公益标');
+            return false;
+        }
+        window.location.href = ROOT + '?m=DealPrepay&a=prepay_index&deal_id=' + id + '&type=' + type+"&role="+$("#role").val()+'&{$querystring}';
+    }
+
+    function export_csv()
+    {
+        idBox = $(".key:checked");
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+
+        var inputs = $(".search_row").find("input");
+        var selects = $(".search_row").find("select");
+        var param = '';
+        for(i=0;i<inputs.length;i++)
+        {
+            if(inputs[i].name != '' && inputs[i].name != 'm'&&inputs[i].name != 'a')
+                param += "&"+inputs[i].name+"="+$(inputs[i]).val();
+        }
+
+        // 获取select
+        for (var i = selects.length - 1; i >= 0; --i) {
+            if (selects[i].name != '') {
+                param += "&" + selects[i].name + "=" + $(selects[i]).val();
+            }
+        }
+        var url= ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=export_repay_list&id="+id;
+        location.href = url+param;
+    }
+
+</script>
+
+<div class="main">
+<if condition="$role eq 'b'">
+<div class="main_title">待审核列表</div>
+<else/>
+<div class="main_title">{$main_title}</div>
+</if>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" size="10"/>
+        借款标题：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" size="10"/>
+        项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        借款人姓名：
+        <input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="10" />
+        最近一期还款日期开始：
+            <input type="text" class="textbox" name="repay_time_begin" id="repay_time_begin" value="{:trim($_REQUEST['repay_time_begin'])}" size="10" onfocus="this.blur();" />
+        最近一期还款日期结束：
+            <input type="text" class="textbox" name="repay_time_end" id="repay_time_end" value="{:trim($_REQUEST['repay_time_end'])}" size="10" onfocus="this.blur();" />
+        <if condition="$role eq 'b'">
+            申请人员：
+            <input type="text" class="textbox" name="submit_uid" value="{$_REQUEST['submit_uid']}" size="10" />
+            还款类型：
+            <select class="require" name="service_type">
+                <option value="0" <if condition="$_REQUEST['service_type'] eq 0">selected="selected"</if>>全部</option>
+                <option value="4" <if condition="$_REQUEST['service_type'] eq 4">selected="selected"</if>>正常还款</option>
+                <option value="5" <if condition="$_REQUEST['service_type'] eq 5">selected="selected"</if>>提前还款</option>
+            </select>
+        <else/>
+            审核状态：
+            <select class="require" name="audit_status">
+                <option value="0" <if condition="$_REQUEST['audit_status'] eq 0">selected="selected"</if>>全部</option>
+                <option value="1" <if condition="$_REQUEST['audit_status'] eq 1">selected="selected"</if>>还款待审核</option>
+                <option value="2" <if condition="$_REQUEST['audit_status'] eq 2">selected="selected"</if>>还款已通过</option>
+                <option value="3" <if condition="$_REQUEST['audit_status'] eq 3">selected="selected"</if>>还款已退回</option>
+                <option value="4" <if condition="$_REQUEST['audit_status'] eq 4">selected="selected"</if>>还款待处理</option>
+            </select>
+
+        </if>
+       存管报备状态：
+        <select name="report_status" id="report_status">
+            <option value="1" <if condition="$_REQUEST['report_status'] eq '1'">selected</if>>已报备</option>
+            <option value="0" <if condition="$_REQUEST['report_status'] eq '0'">selected</if>>未报备</option>
+        </select>
+        本期还款形式：
+        <select name="repay_type" id="repay_type">
+          <option value="" <if condition="!isset($_REQUEST['repay_type']) || strlen($_REQUEST['repay_type']) eq 0">selected="selected"</if>>全部</option>option>
+          <foreach name="deal_repay_type" item="item" key="key">
+             <option value="{$key}"<if condition="strlen($_REQUEST['repay_type']) gt 0 &&  $_REQUEST['repay_type'] eq $key">selected="selected"</if>>{$item}</option>option>
+           </foreach>
+        </select>
+
+        产品类别：
+        <select name="type_id" id='type_id'>
+          <option value="0"<if condition="!isset($_REQUEST['type_id']) || $_REQUEST['type_id'] eq 0">selected="selected"</if>>全部</option>
+          <foreach name="deal_loan_type" item="type_item">
+            <option value="{$type_item.id}"<if condition="$_REQUEST['type_id'] eq $type_item['id']">selected="selected"</if>>{$type_item.name}</option>
+          </foreach>
+        </select>
+        投资状态：
+        <select name="is_during_repay" id="is_during_repay">
+          <option value="" <if condition="!isset($_REQUEST['is_during_repay'])">selected="selected"</if>>全部</option>option>
+          <option value="0" <if condition="strlen($_REQUEST['is_during_repay']) gt 0 &&  $_REQUEST['is_during_repay'] eq 0">selected="selected"</if>>还款中</option>option>
+          <option value="1" <if condition="strlen($_REQUEST['is_during_repay']) gt 0 &&  $_REQUEST['is_during_repay'] eq 1">selected="selected"</if>>还款中正在还款</option>option>
+        </select>
+        约定还款日：
+        <select name="holiday_repay_type" id="holiday_repay_type">
+          <option value="" <if condition="!isset($_REQUEST['holiday_repay_type'])">selected="selected"</if>>全部</option>option>
+          <option value="1" <if condition="$_REQUEST['holiday_repay_type'] eq 1">selected="selected"</if>>节假日提前</option>option>
+          <option value="2" <if condition="$_REQUEST['holiday_repay_type'] eq 2">selected="selected"</if>>节假日当日</option>option>
+          <option value="3" <if condition="$_REQUEST['holiday_repay_type'] eq 3">selected="selected"</if>>节假日顺延</option>option>
+        </select>
+
+        <input type="hidden" value="Deal" name="m" />
+        <input type="hidden" value="yuqi" name="a" />
+        <input type="hidden" value="{$role}" id="role" name="role" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv();" />
+        &nbsp;<a href="m.php?m=Deal&a=download_repay_account">下载还款账户详情</a>
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="22" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px   ">
+                <a href="javascript:sortBy('id','1','Deal','index')" title="按照编号降序排列 ">
+                    编号
+                    <img src="/static/admin/Common/images/desc.gif" width="12" height="17"
+                    border="0" align="absmiddle">
+                </a>
+            </th>
+            <th>
+                    产品类别
+            </th>
+            <th style="width:150px">
+                    借款标题
+            </th>
+            <th>
+                    旧版借款标题
+            </th>
+            <th>
+                    借款金额
+            </th>
+            <th>
+                    年化借款利率
+            </th>
+            <th>
+                    借款期限
+            </th>
+            <th>
+                    放款日期
+            </th>
+            <th>
+                    费用收取方式
+            </th>
+            <th>
+                    还款方式
+            </th>
+            <th>
+                    资产管理方
+            </th>
+            <th>
+                    用户类型
+            </th>
+            <th>
+                    借款人用户名
+            </th>
+            <th>
+                    借款人姓名
+            </th>
+            <th>
+                    借款人id
+            </th>
+            <th>
+                    网贷P2P账户余额
+            </th>
+            <th style="width:100px">
+                    最近一期还款日
+            </th>
+            <th>
+                    本期还款金额
+            </th>
+            <th>
+                    出借状态
+            </th>
+            <th>
+                    审核状态
+            </th>
+            <th>
+                    本期还款形式
+            </th>
+            <if condition="$role eq 'b'">
+            <th>
+                    还款类型
+            </th>
+            <th>
+                    申请人员
+            </th>
+            </if>
+            <th>
+                    约定还款日
+            </th>
+            <th style="width:150px">
+                    操作
+            </th>
+        </tr>
+        <volist name="list" id="deal">
+        <tr class="row" >
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$deal.id}">
+            </td>
+            <td>
+                &nbsp;{$deal.id}
+            </td>
+            <td>
+                &nbsp;{$deal.type_name}
+            </td>
+            <td>
+                &nbsp;{$deal.name}
+            </td>
+            <td>
+                &nbsp;{:getOldDealNameWithPrefix($deal['id'], $deal['project_id'])}
+            </td>
+            <td>
+                &nbsp;{$deal.borrow_amount}
+            </td>
+            <td>
+                &nbsp;{$deal.rate}%
+            </td>
+            <td>
+                &nbsp;{$deal.repay_period}
+            </td>
+            <td>
+
+                <?php echo to_date($deal['deal_info']['repay_start_time'],'Y-m-d');?>
+            </td>
+            <td>
+                {$deal.id|get_deal_ext_fee_type}
+            </td>
+            <td>
+                &nbsp;{$deal.loantype}
+            </td>
+            <td>
+                <if condition="$deal['advisory_id'] && $dealAgency[$deal['advisory_id']]">
+                    &nbsp;{$dealAgency[$deal['advisory_id']]}
+                <else/>
+                    &nbsp;-
+                </if>
+            </td>
+            <td>
+                &nbsp;{$borrower_list[$deal['user_id']]['user_type_name']}
+            </td>
+            <td>
+            <!--                &nbsp;<a href="?m=User&a=index&user_id={$deal.user_id}" target="_blank">{$deal.user_name}</a>  -->
+            &nbsp;{$borrower_list[$deal['user_id']]['user_name_url']}
+            </td>
+            <td>
+              <!--               &nbsp;<a href="?m=User&a=index&user_id={$deal.user_id}" target="_blank">{$deal.real_name}</a> -->
+                &nbsp;{$borrower_list[$deal['user_id']]['real_name_url']}
+            </td>
+            <td>
+                &nbsp;{$deal.user_id}
+            </td>
+            <td <?php if($deal['insufficient']) echo 'style="background: yellow"';?>>
+                &nbsp;{$borrower_list[$deal['user_id']]['money']}
+            </td>
+            <td <?php if($deal['is_repay_delayed']) echo 'style="background: red"';?>>
+                &nbsp;{$deal.repay_time}
+            </td>
+            <td>
+                &nbsp;{$deal.month_need_all_repay_money}
+            </td>
+            <td <?php if($deal['repay_alarm'] == 1) echo 'style="background: red"';?> >
+                &nbsp;{$deal.deal_status|a_get_buy_status=$deal.id}
+                <if condition="$deal.is_during_repay eq 1"><br />正在还款</if>
+            </td>
+            <td>
+                <if condition="$repays[$deal['id']]['status'] or $prepays[$deal['id']]['status']">
+                    <if condition="$repays[$deal['id']]['status'] eq 1 or $prepays[$deal['id']]['status'] eq 1">
+                        还款待审核
+                    </if>
+                    <if condition="$repays[$deal['id']]['status'] eq 2 or $prepays[$deal['id']]['status'] eq 2">
+                        还款已通过
+                    </if>
+                    <if condition="$repays[$deal['id']]['status'] eq 3 or $prepays[$deal['id']]['status'] eq 3">
+                        还款已退回
+                    </if>
+                <else/>
+                    还款待处理
+                </if>
+
+            </td>
+            <td>
+                {$deal_repay_type[$deal['repay_type']]}
+            </td>
+
+            <if condition="$role eq 'b'">
+                <td>
+                    <if condition="$repays[$deal['id']]['service_type'] eq 4">
+                        正常还款
+                    </if>
+                    <if condition="$prepays[$deal['id']]['service_type'] eq 5">
+                        提前还款
+                    </if>
+               </td>
+                <td>
+                    <if condition="$repays[$deal['id']]['submit_user_name']">
+                        {$repays[$deal['id']]['submit_user_name']}
+                    </if>
+                    <if condition="$prepays[$deal['id']]['submit_user_name']">
+                        {$prepays[$deal['id']]['submit_user_name']}
+                    </if>
+                </td>
+            </if>
+            <td>
+                {$holiday_repay_types[$deal['deal_info']['holiday_repay_type']]}
+            </td>
+            <td>
+                &nbsp;
+                <if condition="($deal.deal_status eq 4) && ($deal.parent_id neq 0)">
+                    <a href="javascript:show_detail('{$deal.id}')">出借列表</a>&nbsp;
+                    <if condition="$audits[$deal['id']]['status'] neq 2">
+                        <if condition="$role eq 'b'">
+                            <if condition="$repays[$deal['id']]['status'] eq 1">
+                                <a href="javascript:force_repay('{$deal.id}')">审核</a>&nbsp;
+                            </if>
+                            <if condition="$prepays[$deal['id']]['status'] eq 1">
+                                <a href="javascript:apply_prepay('{$deal.id}','{$deal.loantype}', '1');">审核</a>
+                            </if>
+                        <else/>
+                            <if condition="$repays[$deal['id']]['status'] neq 1 and $prepays[$deal['id']]['status'] neq 1 and $repays[$deal['id']]['status'] neq 2 and $prepays[$deal['id']]['status'] neq 2">
+                            <a href="javascript:force_repay('{$deal.id}')">强制还款</a>&nbsp;
+                            <a href="javascript:apply_prepay('{$deal.id}','{$deal.loantype}', 1)">提前还款</a>
+                            </if>
+                        </if>
+                    </if>
+
+                </if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+    $(document).ready(function(){
+        //投标起始时间必须小于投标终止时间
+        $("#repay_time_begin").blur(function(){
+            return showCalendar('repay_time_begin', '%Y-%m-%d', false, false, 'repay_time_begin',function() {
+                if('' == $("#repay_time_end").val()) {
+                    return true;
+                }
+                var repay_start_times = get_unix_time($("#repay_time_begin").val());
+                var repay_end_times = get_unix_time($("#repay_time_end").val());
+                if(repay_start_times > repay_end_times) {
+                    alert('最近一期还款日期选择有误，请确认！');
+                    $("#repay_time_begin").val('');
+                }
+            });
+        });
+
+        //投标终止时间必须大于投标起始时间
+        $("#repay_time_end").blur(function(){
+            return showCalendar('repay_time_end', '%Y-%m-%d', false, false, 'repay_time_end',function() {
+                if('' == $("#repay_time_begin").val()) {
+                    return true;
+                }
+                var repay_start_times = get_unix_time($("#repay_time_begin").val());
+                var repay_end_times = get_unix_time($("#repay_time_end").val());
+                if(repay_start_times > repay_end_times) {
+                    alert('最近一期还款日期选择有误，请确认！');
+                    $("#repay_time_end").val('');
+                }
+            });
+        });
+    });
+    function get_unix_time(hm) {
+        var date = new  Date();
+        var hms = hm.split('-');
+        var year = hms[0];
+        var month = hms[1];
+        var day = hms[2];
+        var today = new Date(year,month,day,'0','0','00');
+        return today.getTime();
+    }
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,47 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<div class="main">
+<div class="main_title">网信账户自动提现</div>
+<div class="blank5"></div>
+<form name="upload" action="__APP__" method="post">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">用户ID</td>
+        <td class="item_input">
+            <textarea name="user_ids" cols="40" rows="8" >{$userIds}</textarea> <span style="color:red">(注: 多个用户id用,隔开)</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">提现时间</td>
+        <td class="item_input">
+            <input type="text" name="hour" style="width:20px" value="{$hour}" /> 时 <input type='text' name='minute' style="width:20px" value="{$minute}" /> 分 <span style="color:red">(注: 提现时间可设置的时间段为19点至24点)</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">邮件告警地址</td>
+        <td class="item_input">
+            <textarea name="emails" cols="40" rows="8" >{$emails}</textarea> <span style="color:red">(注: 多个邮件地址用,隔开)</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserCarry" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="autoWithdraw" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="保存" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

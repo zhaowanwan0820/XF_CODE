@@ -1,0 +1,222 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+        <style>
+            .item_id{
+                width: 30px;
+                background: #e2e8eb;
+            }
+            .item_name{
+                width: 180px;
+                background: #e2e8eb;
+            }
+
+        </style>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="main_title">{$main_title}</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <foreach name="tab_list" item="site_name">
+            <input type="button" class="button conf_btn" rel="{$key}" value="{$site_name}"/>&nbsp;
+        </foreach>
+    </div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <foreach name="list" key="site_id" item="conf_site">
+            <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="{$site_id}">
+                <tr>
+                    <td colspan=4 class="topTd"></td>
+                </tr>
+                <tr>
+                    <td colspan=2 class="item_title" style="text-align:left;">
+                        <if condition='$site_id gt 1'>
+                        <input type="button" class="button" id="resetConf" onclick="resetSiteConf('{$tab_list[$site_id]}');" value="重置当前分站配置"/>
+                        </if>
+                    </td>
+                    <td colspan=2 class="item_input">{$tab_list.$site_id}</td>
+                </tr>
+                <tr>
+                    <td colspan=4 class="topTd"></td>
+                </tr>
+
+                <tr>
+                    <td class="item_id">ID</td>
+                    <td class="item_name">名称</td>
+                    <td class="item_input">KEY</td>
+                    <td class="item_input">VALUE</td>
+                </tr>
+                <foreach name="conf_site" item="conf_item">
+                    <tr
+                    <if condition="$conf_item['name'] eq 'DB_VOL_MAXSIZE'">style="display:none;"</if>
+                    >
+                    <td class="item_id">{$conf_item['id']}</td>
+                    <td class="item_name">{$conf_item['title']}</td>
+                    <td class="item_input" style="width: 130px;"><div >{$conf_item['name']}</td>
+                    <td class="item_input">
+                        <!--系统配置文本输入-->
+                        <if condition="$conf_item['input_type'] eq 0">
+                            <input type="text" class="textbox " name="{$site_id}_{$conf_item.name}"
+                                   value="{$conf_item.value}" size="80" />
+                        </if>
+                        <!--系统配置文本输入-->
+
+                        <!--系统配置密码框输入-->
+                        <if condition="$conf_item['input_type'] eq 4">
+                            <input type="password" class="textbox " name="{$site_id}_{$conf_item.name}"
+                                   value="{$conf_item.value}"/>
+                        </if>
+                        <!--系统配置文本输入-->
+
+                        <!--系统配置下拉输入-->
+                        <if condition="$conf_item['input_type'] eq 1">
+                            <select name="{$site_id}_{$conf_item.name}">
+                                <foreach name="conf_item.value_scope" key="preset_value" item="preset_value_text">
+                                    <option value="{$preset_value}"
+                                    <if condition="$conf_item['value'] eq $preset_value">selected="selected"</if>
+                                    >
+                                    {$preset_value_text}
+                                    </option>
+                                </foreach>
+                            </select>
+                        </if>
+                        <!--系统配置下拉输入-->
+                        <!--系统配置图片输入-->
+                        <if condition="$conf_item['input_type'] eq 2">
+
+                            <html:imgUpload id="{$site_id}_{$conf_item.name}" name="{$site_id}_{$conf_item.name}"
+                                            value='$conf_item.value'/>
+
+                        </if>
+                        <!--系统配置图片输入-->
+                        <!--系统配置编辑器输入-->
+                        <if condition="$conf_item['input_type'] eq 3">
+                            <html:editor id="{$site_id}_{$conf_item.name}" name="{$site_id}_{$conf_item.name}"
+                                         type="KINDEDITOR" content="{$conf_item.value}"
+                                         style=" height:150px;width:750px;"/>
+                        </if>
+                        <!--系统配置编辑器输入-->
+                        <!--日期时间输入-->
+                        <if condition="$conf_item['input_type'] eq 5">
+
+                            <input type="text" class="textbox" name="{$site_id}_{$conf_item.name}" value="{$conf_item.value}" id="{$site_id}_{$conf_item.name}"  onfocus="this.blur(); return showCalendar('{$site_id}_{$conf_item.name}', '%Y-%m-%d %H:%M:%S', true, false, 'btn_{$site_id}_{$conf_item.name}');" />
+                            <input type="button" class="button" id="btn_{$site_id}_{$conf_item.name}" value="{%SELECT_TIME}" onclick="return showCalendar('{$site_id}_{$conf_item.name}', '%Y-%m-%d %H:%M:%S', true, false, 'btn_{$site_id}_{$conf_item.name}');" />
+                            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#{$site_id}_{$conf_item.name}').val('');" />
+
+                        </if>
+                        <!--日期时间输入-->
+                        <if condition="$conf_item['tip'] neq ''">
+                            <br>
+                            <span class="tip_span">{$conf_item.tip}</span>
+                        </if>
+                    </td>
+                    </tr>
+                </foreach>
+                <tr>
+                    <td colspan=4 class="bottomTd"></td>
+                </tr>
+            </table>
+        </foreach>
+        <div class="blank5"></div>
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=4 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf('VAR_MODULE')}" value="Conf" />
+                    <input type="hidden" name="{:conf('VAR_ACTION')}" value="set_conf" />
+                    <input type="hidden" id="site_id" name="site_id" value="0"/>
+                    <!--隐藏元素-->
+                    <input type="submit" class="button" value="{%EDIT}"/>
+                    <input type="reset" class="button" value="{%RESET}"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan=4 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+    <div class="blank5"></div>
+</div>
+<script type="text/javascript">
+
+    // 配置文本框检查函数
+    var checkConf = {
+        'REGISTER_CHECK_IP_FREQUENCY': {
+            callback: function(value) {
+                if (value.length == 0) return true;// 空字符直接返回
+
+                // 统计配置项个数
+                var preg = /\|/g;
+                var ret = value.match(preg);
+                var total = 1;
+                if (ret instanceof Array) total += ret.length;
+
+                // 检查各项格式
+                preg = /.*?::.*?::\d{4}\\/\\d{2}\/\d{2}\ \\d{2}:\d{2}::\\d{4}\/\d{2}\\/\\d{2} \d{2}:\\d{2}/g;
+                ret = value.match(preg);
+                var checkOKlNum = (ret instanceof Array) ? ret.length : 0;
+
+                // 存在不符合格式的配置项
+                if (checkOKlNum < total) return false;
+                return ret;
+            },
+            'msg': '格式有误请检查',
+        },
+    };
+
+    // 检查文本框类型的配置项
+    $('input[type=submit]').click(function () {
+        var checkOK = true;
+        $('table.form tr').each(function(k, tr) {
+            var confKey = $('td.item_input div', tr).html();
+            if (confKey != null && checkConf[confKey] instanceof Object) {
+                var input = $('td.item_input:last input', tr),
+                    type = input.attr('type');
+                if (type !== 'text') return true;
+                var value = input.val();
+                if (!checkConf[confKey].callback(value)) {
+                    checkOK = false;
+                    alert(confKey + " : " + checkConf[confKey].msg);
+                    return false;
+                }
+            }
+        });
+        if (!checkOK) {
+            return false;
+        }
+    });
+
+    var resetSiteConf=function(sitename){
+        if(confirm("确认要重置["+sitename+"]分站所有配置吗？\r\n(会删除当前分站所有配置，并复制主站所有配置到当前分站)")){
+            location.href = ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=reset_site&site="+sitename;
+        }
+    };
+    $(document).ready(function () {
+        var btns = $(".conf_btn");
+        var tabs = $(".conf_tab");
+        $.each(btns, function (i, btn) {
+            $(btn).bind("click", function () {
+                $(tabs).hide();
+                $(tabs[i]).show();
+                $(btns).removeClass("currentbtn");
+                $(btns[i]).addClass("currentbtn");
+                $("#site_id").val($(btns[i]).attr('rel'));
+                $(btns[i]).blur();
+            });
+        });
+        $(btns[0]).click();
+
+    });
+
+    function add_site() {
+        location.href = ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=add_site";
+    }
+
+</script>
+<include file="Public:footer"/>

@@ -1,0 +1,100 @@
+// 小于12px文字
+.sc(@size, @origin: center center) when(@size < 12) {
+  // 12px以下用scale缩小
+  font-size: 12px;
+  transform-origin: @origin;
+  transform: scale(round((@size / 12) * 100) / 100);
+}
+
+// 最多显示N行 / Vant已经有相应的组件了
+.limit-line(@lineCount) {
+  overflow: hidden;
+  display: flex;
+  -webkit-line-clamp: @lineCount;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+}
+
+/**
+* 溢出省略号
+* @param {Number} 行数
+*/
+.ellipsis(@rowCount: 1) {
+  & when (@rowCount<=1) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  & when not (@rowCount<=1) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: @rowCount;
+    -webkit-box-orient: vertical;
+  }
+}
+
+// 处理 border
+.border(@border) {
+  border-@{border}-width: 1px;
+}
+.each-border(@count, @borders) when (@count > 0) {
+  .each-border((@count - 1));
+  .border(extract(@borders, @count));
+}
+// border-radius
+.add-border-radius(@radius, @ratio) when(length(@radius) = 1) {
+  border-radius: @radius * @ratio;
+}
+.add-border-radius(@radius, @ratio) when not (length(@radius) = 1) {
+  border-radius: extract(@radius, 1) * @ratio extract(@radius, 2) * @ratio extract(@radius, 3) * @ratio
+    extract(@radius, 4) * @ratio;
+}
+
+// 高分辨率下 1px边框
+// https://juejin.im/post/5d70a030f265da03a715f3fd?utm_source=gold_browser_extension
+.thin-border-2019(
+  @directionMaps: top, right, bottom, left;
+  @color: #ccc;
+  @radius: 0, 0, 0, 0;
+  @position: after
+) {
+  // 2倍
+  @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    & {
+      position: relative;
+    }
+    &:@{position} {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 200%;
+      height: 200%;
+      transform: scale(0.5);
+      box-sizing: border-box;
+      padding: 1px;
+      transform-origin: 0 0;
+      pointer-events: none;
+      border-style: solid;
+      border-color: @color;
+      // border direciton
+      .each-border(length(@directionMaps), @directionMaps);
+      // border-radius 1 or 4 角
+      .add-border-radius(@radius, 2);
+    }
+  }
+  // 3倍
+  @media only screen and (-webkit-min-device-pixel-ratio: 3) {
+    &:@{position} {
+      // border-radius 1 or 4 角
+      .add-border-radius(@radius, 3);
+
+      width: 300%;
+      height: 300%;
+      transform: scale(0.33);
+    }
+  }
+}

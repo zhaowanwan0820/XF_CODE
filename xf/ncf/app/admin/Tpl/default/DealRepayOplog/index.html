@@ -1,0 +1,231 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<script type="text/javascript">
+
+    function history()
+    {
+        var url = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=index&is_history=1";
+        location.href = url;
+    }
+</script>
+
+<div class="main">
+    <div class="main_title"><if condition="$_REQUEST['is_history'] eq '1'">1年以前</if>还款操作记录</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            编号：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" size="10" />
+
+            借款标题：<input type="text" class="textbox" name="deal_name" value="{:trim($_REQUEST['deal_name'])}" size="10"/>
+            项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" size="10"/>
+            借款人用户名：
+            <input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="10" />
+
+            借款人姓名：
+            <input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="10" />
+
+            还款类型:
+            <select name="operation_type">
+                <option value="0">不限</option>
+                <option value="1" <?php if ($_REQUEST['operation_type'] == 1) { ?>selected<?php } ?>>正常还款</option>
+                <option value="2" <?php if ($_REQUEST['operation_type'] == 2) { ?>selected<?php } ?>>提前还款</option>
+                <option value="3" <?php if ($_REQUEST['operation_type'] == 3) { ?>selected<?php } ?>>自助还款</option>
+                <option value="4" <?php if ($_REQUEST['operation_type'] == 4) { ?>selected<?php } ?>>代发还款</option>
+            </select>
+
+            操作类型:
+            <select name="audit_type">
+                <option value="9999" <?php if ($_REQUEST['audit_type'] == 9999) { ?>selected<?php } ?>>全部</option>
+                <option value="0" <?php if ($_REQUEST['audit_type'] == 0) { ?>selected<?php } ?>>还款</option>
+                <option value="1" <?php if ($_REQUEST['audit_type'] == 1) { ?>selected<?php } ?>>提交</option>
+                <option value="2" <?php if ($_REQUEST['audit_type'] == 2) { ?>selected<?php } ?>>退回</option>
+                <option value="3" <?php if ($_REQUEST['audit_type'] == 3) { ?>selected<?php } ?>>自动还款</option>
+            </select>
+            退回类型:
+            <select name="return_type">
+                <option value="0" <?php if ($_REQUEST['return_type'] == 0) { ?>selected<?php } ?>>全部</option>
+                <option value="1" <?php if ($_REQUEST['return_type'] == 1) { ?>selected<?php } ?>>差错</option>
+                <option value="2" <?php if ($_REQUEST['return_type'] == 2) { ?>selected<?php } ?>>其他</option>
+            </select>
+
+            申请人：
+            <input type="text" class="textbox" name="submit_user_name" value="{:trim($_REQUEST['submit_user_name'])}" size="10" />
+
+            报备状态:
+            <select name="report_status" id="report_status">
+                <option value="" <if condition="$_REQUEST['report_status'] eq ''">selected</if>>请选择</option>
+                <option value="1" <if condition="$_REQUEST['report_status'] eq '1'">selected</if>>已报备</option>
+                <option value="0" <if condition="$_REQUEST['report_status'] eq '0'">selected</if>>未报备</option>
+            </select>
+            本期还款形式：
+            <select name="repay_type" id="repay_type">
+                <option value="" <if condition="!isset($_REQUEST['repay_type']) || strlen($_REQUEST['repay_type']) eq 0">selected="selected"</if>>全部</option>option>
+                <foreach name="deal_repay_type" item="item" key="key">
+                   <option value="{$key}"<if condition="strlen($_REQUEST['repay_type']) gt 0 &&  $_REQUEST['repay_type'] eq $key">selected="selected"</if>>{$item}</option>option>
+                 </foreach>
+            </select>
+
+            <br />
+            实际还款日期：
+            <input type="text" class="textbox" style="width:140px;" name="real_repay_time" id="real_repay_time" value="{$_REQUEST['real_repay_time']}" onfocus="this.blur(); return showCalendar('real_repay_time', '%Y-%m-%d', false, false, 'btn_real_repay_time');" title="实际还款日期" />
+            <input type="button" class="button" id="btn_real_repay_time" value="{%SELECT_TIME}" onclick="return showCalendar('real_repay_time', '%Y-%m-%d', false, false, 'btn_real_repay_time');" />
+
+            操作人员：
+            <input type="text" class="textbox" name="operator" value="{:trim($_REQUEST['operator'])}" size="10" />
+
+            操作时间：
+            <input type="text" class="textbox" style="width:140px;" name="operation_time" id="operation_time" value="{$_REQUEST['operation_time']}" onfocus="this.blur(); return showCalendar('operation_time', '%Y-%m-%d', false, false, 'btn_operation_time');" title="操作时间" />
+            <input type="button" class="button" id="btn_operation_time" value="{%SELECT_TIME}" onclick="return showCalendar('operation_time', '%Y-%m-%d', false, false, 'btn_operation_time');" />
+            <input type="text" class="textbox" style="width:140px;" name="operation_time_end" id="operation_time_end" value="{$_REQUEST['operation_time_end']}" onfocus="this.blur(); return showCalendar('operation_time_end', '%Y-%m-%d', false, false, 'btn_operation_time');" title="操作时间" />
+            <input type="button" class="button" id="btn_operation_time_end" value="{%SELECT_TIME}" onclick="return showCalendar('operation_time_end', '%Y-%m-%d', false, false, 'btn_operation_time');" />
+            <select style="display:none" name="is_history" id="is_history">
+                <option value="0" <if condition="$_REQUEST['is_history'] eq '0'">selected</if>>1年内</option>
+                <option value="1" <if condition="$_REQUEST['is_history'] eq '1'">selected</if>>1年以前</option>
+            </select>
+
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="DealRepayOplog" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="hidden" value="{:intval($_REQUEST['project_id'])}" name="project_id" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <input type="button" class="button" value="导出" onclick="export_csv();" />
+            <a href="javascript: history()">一年前数据点此链接进行查询</a>
+        </form>
+    </div>
+
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="22" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th>
+                <a href="javascript:sortBy('deal_id','1','Deal','index')" title="按照编号升序排列 ">
+                编号
+                <img src="/static/admin/Common/images/desc.gif" width="12" height="17"
+                     border="0" align="absmiddle">
+                </a>
+            </th>
+            <th>产品类别</th>
+            <th width="150">借款标题</th>
+            <th>旧版借款标题</th>
+            <th width="100">借款金额</th>
+            <th>年化借款利率</th>
+            <th >借款期限</th>
+            <th>还款方式</th>
+            <th>用户类型</th>
+            <th width="120">借款人用户名</th>
+            <th>借款人姓名</th>
+            <th>借款人ID</th>
+            <th>实际还款日期</th>
+            <th>本期已还款金额</th>
+            <th>还款类型</th>
+            <th>操作类型</th>
+            <th>是否报备</th>
+            <th>本期还款形式</th>
+            <th>退回类型</th>
+            <th>退回原因</th>
+            <th>申请人</th>
+            <th>操作人员</th>
+            <th>操作时间</th>
+        </tr>
+        <volist name="list" id="log">
+            <tr class="row">
+                <td>
+                    <input type="checkbox" name="key" class="key" value="{$log.id}">
+                </td>
+                <td width="60">
+                    &nbsp;{$log.deal_id}
+                </td>
+                <td>
+                    &nbsp;{$log.loanTypeName}
+                </td>
+                <td>
+                    &nbsp;{$log.deal_name}
+                </td>
+                <td>
+                    {$log.deal_id|getOldDealNameWithPrefix}
+                </td>
+                <td>
+                    &nbsp;<?php echo number_format($log['borrow_amount'], 2); ?>
+                </td>
+                <td>
+                    &nbsp;{$log.rate}%
+                </td>
+                <td>
+                    &nbsp;{$log.repay_period}
+                </td>
+                <td>
+                    &nbsp;{$log.loantype}
+                </td>
+                <td>
+
+                    &nbsp;
+                    <if condition ="($userinfos[$log['user_id']]['user_type'] eq 1)">
+                       企业用户
+                        <else/>
+                        <span>个人用户</span>
+                    </if>
+                </td>
+                <td>
+                    &nbsp;{$userinfos[$log['user_id']]['user_name']}
+                </td>
+                <td>
+                    &nbsp;{$userinfos[$log['user_id']]['real_name']}
+                </td>
+                <td>
+                    &nbsp;{$log.user_id}
+                </td>
+                <td>
+                    &nbsp;{$log.real_repay_time}
+                </td>
+                <td>
+                    &nbsp;{$log.repay_money}
+                </td>
+                <td>
+                    &nbsp;{$log.operation_type}
+                </td>
+                <td>
+                    &nbsp;{$log.audit_type}
+                </td>
+                <td>
+                    &nbsp;{$log.deal_id|getDealReportStatus}
+                </td>
+                <td>
+                    &nbsp;{$deal_repay_type[$log['repay_type']]}
+                </td>
+                <td>
+                    &nbsp;{$log.return_type}
+                </td>
+                <td>
+                    &nbsp;{$log.return_reason}
+                </td>
+                <td>
+                    &nbsp;{$log.submit_uid}
+                </td>
+                <td>
+                    &nbsp;{$log.operator}
+                </td>
+                <td>
+                    &nbsp;{$log.operation_time}
+                </td>
+            </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

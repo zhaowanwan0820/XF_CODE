@@ -1,0 +1,157 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<title>编辑配置</title>
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<style>
+    .item_title{text-align: center;background: #f2f2f2;width: 160px;}
+    .require{border-left: none;}
+    table.form td{padding: 12px;}
+    .project_id{width: 170px;padding: 3px;}
+    .button{padding: 7px 21px;}
+    .text_bold{width: 100px;}
+    .red_star{color: red;}
+</style>
+<div class="main reservationContent">
+    <div class="main_title">
+        <p>编辑配置</p>
+    </div>
+    <div class="blank5"></div>
+    <form id="formid" action="__APP__" method="post" enctype="multipart/form-data">
+        <table id="dataTable" class="dataTable reservationZone ratio_edit" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="15" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row textDecNone">
+            <th>编号</th>
+            <th>产品类型 <span class="red_star">*<span></th>
+            <th>投资期限 <span class="red_star">*<span></th>
+            <th>比例 <span class="red_star">*<span></th>
+            <th>当日可匹配总金额 <span class="red_star">*<span></th>
+            <th>是否有效 <span class="red_star">*<span></th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+        <if condition="empty($list)">
+        <tr class="row ratio_edit_row">
+            <td>
+                &nbsp;<div class="id_no"></div>
+                <input type="hidden" value="" name="id[1]" class="class_id">
+            </td>
+            <td>
+                <select id="type_id" name="type_id[1]" class="textbox text_bold class_type_id">
+                    <volist name='dealTypeMap' id='item'>
+                    <option value="{$item.id}" >{$item.name}</option>
+                    </volist>
+                </select>
+            </td>
+            <td>
+                <select name="invest_deadline_opt[1]" class="textbox selectW class_invest_deadline_opt">
+                    <foreach name="deadlineConf" key="key" item="invest_conf">
+                    <option value="{$invest_conf['deadline']}|{$invest_conf['deadline_unit']}">{$invest_conf['deadline_format']}</option>
+                    </foreach>
+                </select>
+            </td>
+            <td>
+                <input type="text" value="" name="money_ratio[1]" class="class_money_ratio"> %
+            </td>
+            <td>
+                <input type="text" value="" name="money_limit[1]" class="class_money_limit"> 元
+            </td>
+            <td>
+                <select id="is_effect" name="is_effect[1]" class="textbox text_bold class_is_effect">
+                    <option value="0">无效</option>
+                    <option value="1">有效</option>
+                </select>
+            </td>
+            <td>
+                <textarea name="remark[1]" rows="2" cols="20" class="class_remark">{$data.remark}</textarea>
+            </td>
+            <td>
+                <a href="javascript:;" class="minusBtn investminusBtn">-</a>
+                <a href="javascript:;" class="plusBtn investplusBtn">+</a>
+            </td>
+        </tr>
+        </if>
+
+        <volist name="list" id="data" key="index">
+        <tr class="row ratio_edit_row">
+            <td>
+                &nbsp;<div class="id_no">{$data.id}</div>
+                <input type="hidden" value="{$data.id}" name="id[{$index}]" class="class_id">
+            </td>
+            <td>
+                <select id="type_id" name="type_id[{$index}]" class="textbox text_bold class_type_id">
+                    <volist name='dealTypeMap' id='item'>
+                    <option value="{$item.id}" <if condition="$data['type_id'] eq $item['id']">selected</if> >{$item.name}</option>
+                    </volist>
+                </select>
+            </td>
+            <td>
+                <select name="invest_deadline_opt[{$index}]" class="textbox selectW class_invest_deadline_opt">
+                    <foreach name="deadlineConf" key="key" item="invest_conf">
+                    <option value="{$invest_conf['deadline']}|{$invest_conf['deadline_unit']}" <if condition="$data['invest_deadline_format'] eq $invest_conf['deadline'] . '|' . $invest_conf['deadline_unit']">selected="selected"</if>>{$invest_conf['deadline_format']}</option>
+                    </foreach>
+                </select>
+            </td>
+            <td>
+                <input type="text" value="{$data.money_ratio_percent}" name="money_ratio[{$index}]" class="class_money_ratio"> %
+            </td>
+            <td>
+                <input type="text" value="{$data.money_limit}" name="money_limit[{$index}]" class="class_money_limit"> 元
+            </td>
+            <td>
+                <select id="is_effect" name="is_effect[{$index}]" class="textbox text_bold class_is_effect">
+                    <option value="0" <if condition="$data['is_effect'] eq 0">selected</if> >无效</option>
+                    <option value="1" <if condition="$data['is_effect'] eq 1">selected</if> >有效</option>
+                </select>
+            </td>
+            <td>
+                <textarea name="remark[{$index}]" rows="2" cols="20" class="class_remark">{$data.remark}</textarea>
+            </td>
+            <td>
+                <a href="javascript:;" class="minusBtn investminusBtn">-</a>
+                <a href="javascript:;" class="plusBtn investplusBtn">+</a>
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <br />
+    <div style="text-align:center">
+        <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserReservation" />
+        <input type="hidden" name="{:conf("VAR_ACTION")}" value="money_assign_ratio_edit" />
+        <input type="submit" id="publish" class="button" value="编辑" />
+        <input type="button" id="publish" class="button" value="返回" onclick="location.href='{:u("UserReservation/money_assign_ratio")}'" />
+    </a>
+    </form>
+</div>
+<script>
+</script>
+<script>
+    $(function(){
+        var cnt = {$cnt}?{$cnt}:1;
+        $(".ratio_edit").on('click', '.investminusBtn', function(event) {
+            var thisParent = $(this).parents('.ratio_edit_row');
+            var pLength = $(".ratio_edit").find(".ratio_edit_row").length;
+            //只有一条
+            if(pLength>1){
+                $(this).parents('.ratio_edit_row').remove();
+            }
+        });
+        $(".ratio_edit").on('click', '.investplusBtn', function(event) {
+            cnt += 1;
+            var thisParent = $(this).parents('.ratio_edit_row');
+            var parentData = thisParent.clone(true);
+            parentData.find('.class_id').attr('name', 'id['+cnt+']');
+            parentData.find('.class_id').attr('value', '0');
+            parentData.find('.id_no').html('');
+            parentData.find('.class_type_id').attr('name', 'type_id['+cnt+']');
+            parentData.find('.class_invest_deadline_opt').attr('name', 'invest_deadline_opt['+cnt+']');
+            parentData.find('.class_money_ratio').attr('name', 'money_ratio['+cnt+']');
+            parentData.find('.class_money_limit').attr('name', 'money_limit['+cnt+']');
+            parentData.find('.class_is_effect').attr('name', 'is_effect['+cnt+']');
+            parentData.find('.class_remark').attr('name', 'remark['+cnt+']');
+            $(".ratio_edit").append(parentData);
+        });
+    })
+</script>

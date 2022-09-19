@@ -1,0 +1,49 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">新增单个红包</div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">用户ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="owner_uid" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="money" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用有效期(天数)</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="use_limit_day" value="1" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusSend" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="add" />
+                <input type="submit" class="button" value="{%ADD}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

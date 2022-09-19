@@ -1,0 +1,48 @@
+<!DOCTYPE html> <html> <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>绑卡成功</title>
+<link rel="apple-touch-icon-precomposed" href="<?php echo $this->asset->makeOpenApiUrl('v2/images/favicon.png');?>">
+<link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->asset->makeOpenApiUrl('v2/images/favicon.png');?>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<!--public js&css start-->
+<link href="<?php echo $this->asset->makeOpenApiUrl('v3/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->asset->makeOpenApiUrl('v3/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+<!--public js&css end-->
+<script>
+window['_AJAXSIGN_'] = '{$asgn}';
+var isWapApp = '{$showNav}';
+</script>
+<!--private js&css start-->
+
+<script type="text/javascript">
+    var today = new Date();
+    var  year = today.getFullYear();
+    var month = today.getMonth() + 1;
+    var day= today.getDate();
+    var ymd = year +""+ month+"" + day;
+    var oHead = document.getElementsByTagName('HEAD').item(0); 
+    var oScript= document.createElement("script"); 
+    oScript.type = "text/javascript"; 
+    oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+    oHead.appendChild( oScript); 
+</script>
+<script type="text/javascript" src="<?php echo $this->asset->makeOpenApiUrl('v3/js/zepto.min.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeOpenApiUrl('v3/js/iscroll.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeOpenApiUrl('v3/js/common.js');?>"></script>
+<link href="<?php echo $this->asset->makeOpenApiUrl('v3/css/p-addbank-new.css');?>" rel="stylesheet" type="text/css" />
+<!--private js&css end-->
+{if isset($fzjs)}
+<script type="text/javascript" src="{$fzjs}"></script>
+{/if}
+</head>
+<body>
+    <div class="p_addbank_new">
+        
+		<div class="combine_suc_icon"></div>
+		<p class="tc f15 color_red mt15">身份认证成功</p>
+		<p class="tc color_red f13">绑定银行卡，资金同进出，保障账户安全</p>
+        <a href="{$bindUrl}" class="bank_link">绑定银行卡</a>
+        <p><a href="{$returnUrl}" class="index_link">随便逛逛</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,280 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<div class="main">
+<div class="main_title">修改入口 <a href="{:u("DtProject/entrance")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form id="addform" name="add" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">入口名称:</td>
+        <td class="item_input">
+        <input type="text" class="textbox require" name="name" value="<?php echo $entrance['name'] ?>" id="name" size="50" />
+        <span id="name_tip" style="color:#ff0000"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">自定义标签:</td>
+        <td class="item_input">
+            前tag名称:<input type="text" class="textbox" name="tag_before_name"  id = "tag_before_name" value="<?php echo $entrance['tag_before_name']?>" />
+            描述:<input type="text" class="textbox" size="60" name="tag_before_desc" id = "tag_before_desc" value="<?php echo $entrance['tag_before_desc']?>"> <br>
+            后tag名称:<input type="text" class="textbox" name="tag_after_name"  id = "tag_after_name" value="<?php echo $entrance['tag_after_name']?>" />
+            描述:<input type="text" class="textbox" size="60" name="tag_after_desc" id = "tag_after_desc" value="<?php echo $entrance['tag_after_desc']?>">
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">新用户最低加入限额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="new_user_min_invest" id="new_user_min_invest" value="<?php echo $entrance['new_user_min_invest_money'] ?>" />
+            <span id="new_user_min_invest" style="color:#ff0000"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">最低加入限额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="min_invest" id="min_invest" value="<?php echo $entrance['min_invest_money'] ?>" />
+            <span id="min_invest_tip" style="color:#ff0000"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">锁定天数:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="lock_day" id="lock_day" value="<?php echo $entrance['lock_day'] ?>" />
+            <span id="lock_day_tip" style="color:#ff0000"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">利率:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="min_rate" id="min_rate" value="<?php echo $entrance['min_rate'] ?>" />%-
+            <input type="text" class="textbox require" name="max_rate" id="max_rate" value="<?php echo $entrance['max_rate'] ?>" />%
+            <span id="rate_tip" style="color:#ff0000"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">状态:</td>
+        <td class="item_input">
+            <input type="radio" class="textbox" name="status" value="1" <?php if($entrance['status'] == 1) { ?>checked="true" <?php } ?>>启用
+            <input type="radio" class="textbox" name="status" value="2" <?php if($entrance['status'] == 2) { ?>checked="true" <?php } ?>>禁用
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">站点:</td>
+        <td class="item_input">
+            <select name="site_id_type" id="site_id_type">
+                <option value="0">全部站点</option>
+                <option value="1" <?php if($entrance['site_ids_type'] == 1) { ?>checked="true" <?php } ?>>站点白名单</option>
+                <option value="2" <?php if($entrance['site_ids_type'] == 2) { ?>checked="true" <?php } ?>>站点黑名单</option>
+            </select>
+            <input <?php if($entrance['site_ids_type'] == 0) { ?>style="display: none"<?php } ?> type="text" class="textbox" name="site_id" id="site_id" value="<?php echo $entrance['site_ids'] ?>" size="50" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="DtProject" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveEntrance" />
+            <input type="hidden" name="id" value="<?php echo $entrance['id'] ?>"/>
+            <input type="hidden" id="minLoanMoney" value="<?php echo $minLoanMoney ?>" />
+            <input type="hidden" id="rateYear" value="<?php echo $rateYear ?>" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%SAVE}" id="submit" onclick="return checkSubmit();"/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<script>
+
+$(document).ready(function(){
+    // 检测项目名称是否重名
+    $("input[name='name']").bind("blur",function(){
+        var nameval = $(this).val();
+        if (nameval.length <= 0) {
+            $("#name_tip").text('入口名称不能为空');
+            $("#name").focus();
+            return;
+        }
+        if(nameval.length > 50) {
+            $("#name_tip").text('入口名称限制50字');
+            $("#name").focus();
+            return;
+        }
+        $("#name_tip").text('');
+    });
+
+    // 检测是否为数字
+    $("#min_invest,#lock_day,#min_rate,#max_rate",$new_user_min_invest).bind("blur",function(){
+        var thisval = $(this).val();
+        if(thisval.length>0) {
+            if(isNaN(thisval)){
+                $(this).parent().children("span").text('必须为数字');
+                $(this).val('');
+                $(this).focus();
+                return false;
+            }else{
+                $(this).parent().children("span").text('');
+                return true;
+            }
+        }
+    });
+
+    //最低加入限额必须大于0
+    $("#min_invest").blur(function(){
+        var dt_min_money = Number($("#minLoanMoney").val());
+        var min_invest = Number($("#min_invest").val());
+        if(min_invest <= 0) {
+            $(this).next().text('最低加入限额必须大于0');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        if(min_invest < dt_min_money) {
+            $(this).next().text('最低加入限额不得小于智多新后台的最低加入限额:'+ dt_min_money);
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        if(min_invest >= 10000000) {
+            $(this).next().text('最低加入限额不能超过7位');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+        $(this).next().text('');
+    });
+
+
+    //锁定天数必须大于0
+    $("#lock_day").blur(function(){
+        var lock_day = $("#lock_day").val();
+        if(lock_day <= 0) {
+            $(this).next().text('锁定天数必须大于0');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        if(!Number.isInteger(Number(lock_day))) {
+            $(this).next().text('锁定天数必须是整数');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        if(lock_day >= 100000) {
+            $(this).next().text('锁定天数不能超过5位');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+        $(this).next().text('');
+    });
+
+    //最低收益率必须大于0
+    $("#min_rate").blur(function(){
+        var min_rate = Number($("#min_rate").val());
+        if(min_rate <= 0) {
+            $(this).parent().children("span").text('最低利率必须大于0');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        if(min_rate >= 100000) {
+            $(this).parent().children("span").text('最低利率不能超过5位');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+        $(this).parent().children("span").text('');
+    });
+
+    //最高收益率必须大于0
+    $("#max_rate").blur(function(){
+        var max_rate = Number($("#max_rate").val());
+        var rate_year = Number($("#rateYear").val());
+        if(max_rate <= 0) {
+            $(this).parent().children("span").text('最高利率必须大于0');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        if(max_rate < rate_year) {
+            $(this).next().text('利率上限不得小于智多新后台利率配置:'+ rate_year);
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        if(max_rate >= 100000) {
+            $(this).parent().children("span").text('最高利率不能超过5位');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        var min_rate = Number($("#min_rate").val());
+        if(max_rate < min_rate) {
+            $(this).parent().children("span").text('最高利率不能小于最低利率');
+            $(this).val('');
+            $(this).focus();
+            return;
+        }
+
+        $(this).parent().children("span").text('');
+    });
+
+    $("#site_id_type").change(function(){
+        var site_id_type = $("#site_id_type").val();
+        if(site_id_type > 0) {
+            $("#site_id").show();
+        } else {
+            $("#site_id").hide();
+        }
+    });
+
+});
+
+function checkSubmit() {
+    var site_id_type = $("#site_id_type").val();
+    var site_id = $("#site_id").val();
+
+    if(site_id_type > 0 && site_id == '') {
+        alert('请输入站点');
+        return false;
+    }
+
+    var dt_min_money = Number($("#minLoanMoney").val());
+    var min_invest = Number($("#min_invest").val());
+    if(min_invest < dt_min_money) {
+        alert('最低加入限额不得小于智多新后台的最低加入限额:'+ dt_min_money);
+        return false;
+    }
+
+    var max_rate = Number($("#max_rate").val());
+    var rate_year = Number($("#rateYear").val());
+    if(max_rate < rate_year) {
+        alert('利率上限不得小于智多新后台利率配置:'+ rate_year);
+        return false;
+    }
+
+    return true;
+}
+</script>
+<include file="Public:footer" />

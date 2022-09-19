@@ -1,0 +1,83 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<script src="https://cdn.bootcss.com/jquery/3.3.1/core.js"></script>
+
+<div class="main">
+<div class="main_title">信力充值 <a href="{:u("CandyActivity/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form method='post' id="form" name="form" action="__APP__">
+    <table cellpadding="4" cellspacing="0" border="0" class="form">
+        <tr>
+            <td colspan="2" class="topTd"></td>
+        </tr>
+        <tr>
+            <td class="item_title">用户ID</td>
+            <td class="item_input">
+                <input type="text" id="idu" class="textbox require" name="title"/>
+                &emsp;
+                <span class="tip_span">用户ID用于查询</span>
+            </td>
+        </tr>
+        <td class="item_title">充值信力数量</td>
+        <td class="item_input">
+            <input type="text" id="num" class="textbox" name="value"/>
+            &emsp;
+            <span class="tip_span">请输入数字</span>
+        </td>
+        </tr>
+        <tr>
+            <td class="item_title">类型</td>
+            <td class="item_input">
+                <select name="source_type" id="type">
+                    <?php foreach ($sourceTypeConf as $key => $value) { ?>
+                        <option value="<?php echo $key; ?>"><?php echo $key; ?> - <?php echo $value['key']; ?></option>
+                    <?php } ?>
+                </select>
+                <span class="tip_span">添加被选项</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">备注</td>
+            <td class="item_input">
+                <input type="text" class="textbox" id="note" name="tip"/>
+                &emsp;
+                <span class="tip_span">可空</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title"></td>
+            <td class="item_input">
+                <input type="button" id="xin" class="button" value="新增" />
+                <input type="reset" class="button" value="{%RESET}" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="bottomTd"></td>
+        </tr>
+    </table>
+</form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#xin").click(function(){
+            var userId = $("#idu").val();
+            var activity = $("#num").val();
+            var type = $("#type").attr('value');
+            var note = $("#note").val();
+            $.post("/m.php?m=CandyActivity&a=applySingle",
+                {
+                    'userId' : userId,
+                    'activity' : activity,
+                    'type' : type,
+                    'note' : note,
+                },
+                function(res){
+                    alert(res.info);
+                    setTimeout(function(){window.location.reload();},200);
+                },'json');
+        })
+    });
+</script>
+
+<include file="Public:footer" />

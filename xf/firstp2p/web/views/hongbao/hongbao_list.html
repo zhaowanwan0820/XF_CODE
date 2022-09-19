@@ -1,0 +1,38 @@
+<div class="hong-jieguo">
+    <div class="hong-list">
+        <!--<h2><div class="hong-img">
+                {if $userInfo.headimgurl neq NULL && $userInfo.headimgurl neq ''}
+                <img style="width:30px;height:30px" src="{$userInfo.headimgurl}" >
+                {else}
+                <img style="width:30px;height:30px" src="<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/def.jpg', 1);?>" >
+                {/if}
+        </div>我可用的红包总额<em class="color-red f18">{$totalMoney}元</em></h2>
+        -->
+
+        <h2><span class="color-gray">{$mobile}</span>账户的有效金额<em class="color-red f18">{$totalMoney}元</em></h2>
+
+        <h3><em></em><span>看朋友们手气如何</span></h3>
+        <ul>
+            {foreach from=$bonusUserList item='item' key="key"}
+            <li>
+            {if $item.wxInfo.nickname neq '' && $item.wxInfo.nickname neq NULL}
+            <em>{$item.money}元{if $group_max_money > 0 && $item.money eq $group_max_money}<span>手气最佳</span>{/if}</em>
+                {if $item.wxInfo.headimgurl neq NULL && $item.wxInfo.headimgurl neq ''}
+                <div class="hong-img"><img style="width:30px;height:30px" src="{$item.wxInfo.headimgurl}"></div>
+                {else}
+                <div class="hong-img"><img style="width:30px;height:30px" src="<?php echo $this->asset->makeUrl('v1/images/rob-hongbao/def.jpg', 1);?>"></div>
+                {/if}
+                <div class="hong-text">
+                    <h4>{$item.wxInfo.nickname}</h4>
+                    <p>{$item.created_at}</p>
+                </div>
+            {else}
+                <em>{$item.money}元{if $group_max_money > 0 && $item.money eq $group_max_money}<span>手气最佳</span>{/if}</em>
+                <span class="hong-tel">{$item.mobile_view}</span>
+                <span class="hong-time">{$item.created_at}</span>
+            {/if}
+                </li>
+            {/foreach}
+            </ul>
+        </div>
+    </div>

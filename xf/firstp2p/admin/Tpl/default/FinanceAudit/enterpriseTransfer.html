@@ -1,0 +1,212 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<PHP>
+    function get_username($user1,$row=null){
+        if($row['type'] !=3){
+            $str = '投资人：<a target="_blank" href="/m.php?m=User&a=index&user_name='.urlencode($user1).'">'.$user1.'</a>';
+            if($row['attach_name']){
+                $str .=  '&nbsp;<br>&nbsp;推荐人：<a target="_blank" href="/m.php?m=User&a=index&user_name='.urlencode($row['attach_name']).'">'.$row['attach_name'].'</a>';
+            }
+            if($row['agency_name']){
+                $str .=  '&nbsp;<br>&nbsp;机构：<a target="_blank" href="/m.php?m=User&a=index&user_name='.urlencode($row['agency_name']).'">'.$row['agency_name'].'</a>';
+            }
+            return $str;
+        }else{
+            $str = '注册人：<a target="_blank" href="/m.php?m=User&a=index&user_name='.urlencode($user1).'">'.$user1.'</a>';
+            if($row['attach_name']){
+                $user_info = M('User')->where("user_name='".$row['attach_name']."'")->select();
+                $user_info = $user_info[0];
+                //$coupon_level_service = new \core\service\CouponLevelService();
+                //$user_level = $coupon_level_service->getUserLevel($user_info['id']);
+                $group_name = M("UserGroup")->where("id=".$user_info['group_id'])->getField("name");
+                $str .=  '&nbsp;<br>&nbsp;邀请人：<a target="_blank" href="/m.php?m=User&a=index&user_name='.urlencode($row['attach_name']).'">'.$row['attach_name'].'</a>（'.$group_name.'-'.$user_level.'）';
+            }
+            if($row['agency_name']){
+                $str .=  '&nbsp;<br>&nbsp;机构：<a target="_blank" href="/m.php?m=User&a=index&user_name='.urlencode($row['agency_name']).'">'.$row['agency_name'].'</a>';
+            }
+            return $str;
+        }
+    }
+    function get_type($type){
+        if($type == 2){
+            return '优惠码结算';
+        }elseif($type == 1){
+            return '会员转账';
+        }elseif($type == 3){
+            return '注册返利';
+        }
+    }
+    function get_money($money,$row){
+        $str = $row['money'].'&nbsp;&nbsp;'.$row['into_name'];
+        if($row['attach_name']){
+            $str .= '<br>&nbsp;'.$row['attach_money'].'&nbsp;&nbsp;'.$row['attach_name'];
+        }
+        if($row['agency_name']){
+            $str .= '<br>&nbsp;'.$row['agency_money'].'&nbsp;&nbsp;'.$row['agency_name'];
+        }
+        return $str;
+    }
+    function get_finance_status($status){
+        if($status == 1){
+            return "A角色待审核";
+        }elseif($status == 2){
+            return "B角色待审核";
+        }elseif($status == 3){
+            return "审核通过";
+        }elseif($status == -1){
+            return "已拒绝";
+        }
+    }
+
+    function get_action_list($status,$row){
+    	if ($row['type'] == 2 && ($status == 1 || $status == 2)){
+    		$refuse = ($status ==1 )? 'refuse1' : 'refuse2';
+    		return '<a href="javascript:finance_edit(' . $row['id'] . ",'".$refuse."'" . ');">拒绝</a>';
+    	}
+        if($status == 1){
+            return '<a href="javascript:finance_edit(' . $row['id'] . ",'step1'" . ');">A角色通过</a>  <a href="javascript:finance_edit(' . $row['id'] . ",'refuse1'" . ');">拒绝</a>';
+        }elseif($status == 2){
+            return '<a href="javascript:finance_edit(' . $row['id'] . ",'step2'" . ');">B角色通过</a>  <a href="javascript:finance_edit(' . $row['id'] . ",'refuse2'" . ');">拒绝</a>';
+        }elseif($status == 3){
+            return "审核通过";
+        }elseif($status == -1){
+            return "已拒绝";
+        }
+        
+    }
+
+</PHP>
+<div class="main">
+<div class="main_title">企业用户转账审核</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+    <input type="button" class="button" value="通过" onclick="batch_edit('{$auth_action.p}',this);" />
+    <input type="button" class="button" value="拒绝" onclick="batch_edit('{$auth_action.r}',this);" />
+    </div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" id="search_form" action="__APP__" method="get">
+        <select name="backup" id="backup">
+            <option value="0" <if condition="intval($_REQUEST['backup']) eq 0">selected="selected"</if>>近3个月</option>
+            <option value="1" <if condition="$_REQUEST['backup'] eq 1">selected="selected"</if>>3个月前</option>
+        </select>
+        转入账户会员名称：<input type="text" class="textbox" name="into_name" value="{:trim($_REQUEST['into_name'])}" style="width:100px;" />
+        转出账户会员名称：<input type="text" class="textbox" name="out_name" value="{:trim($_REQUEST['out_name'])}" style="width:100px;" />
+        申请时间：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['apply_time_start'])}" name="apply_time_start" id="apply_time_start"  onfocus="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        至 <input type="text" value="{:trim($_REQUEST['apply_time_end'])}" name="apply_time_end" id="apply_time_end" class="textbox" onfocus="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        类型:
+        <select name="type" id="js_type">
+            <option value="4" <if condition="intval($_REQUEST['type']) eq 4 ">selected="selected"</if>>企业用户转账</option>
+        </select>
+        状态:
+        <select name="status">
+            <option value="0" <if condition="intval($_REQUEST['status']) eq 0 ">selected="selected"</if>>全部</option>
+            <option value="2" <if condition="intval($_REQUEST['status']) eq 2 ">selected="selected"</if>>B角色待审核</option>
+            <option value="3" <if condition="intval($_REQUEST['status']) eq 3 ">selected="selected"</if>>审核通过</option>
+            <option value="-1" <if condition="intval($_REQUEST['status']) eq -1 ">selected="selected"</if>>已拒绝</option>
+        </select>
+
+        <input type="hidden" value="FinanceAudit" name="m" />
+        <input type="hidden" value="enterpriseTransfer" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+
+    <input type="button" class="button" value="导入" onclick="import_csv(this);" />
+    <input type="button" class="button" value="导出" onclick="export_csv();" />
+</div>
+<div class="blank5"></div>
+<html:list 
+	id="dataTable"
+    checkbox="true"
+    style="dataTable"
+	name="link"
+	datasource="list" 
+	show="id:{%ID}|50px,deal_load_id:投资ID,type|get_type:类型,into_user_names:转入账户会员|200px,into_name|userNameToUserNum:转入账户编号,out_user_names:转出账户会员,out_name|userNameToUserNum:转出账户编号,money|get_money=$link:转账金额,status|get_finance_status:审核状态,log:审批记录,apply_user:申请人,create_time|to_date:申请时间|80px,info:备注,status|get_action_list=$link:操作|110px"
+	 />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<SCRIPT type="text/javascript">
+    var bool = false;
+    function finance_edit(id, action, is_ajax) {
+        if (is_ajax != 1) {
+            if (!confirm("确认要进行操作？")) {
+                return;
+            }
+        }
+        if (!arguments[2]) is_ajax = 0;
+        if (!bool) {
+            bool = true;
+            $.post("/m.php?m=FinanceAudit&a=" + action, { id: id, ajax: is_ajax }, function(rs) {
+                var rs = $.parseJSON(rs);
+                if (rs.status) {
+                    //alert("操作成功！");
+                    alert(rs.data);  
+                    window.location.reload();
+                } else {
+                    alert("操作失败！" + rs.data + rs.info);
+                }
+            });
+            bool = false;
+        } else {
+            alert("请不要重复点击");
+            return false;
+        }
+        
+    }
+
+    //csv导入
+    function import_csv(btn) {
+        $(btn).css({ "color": "grey", "background-color": "#CCC" }).attr("disabled", "disabled");
+        if (confirm("确定此操作吗？")) {
+            $.weeboxs.open(ROOT + '?m=FinanceAudit&a=import', { contentType: 'ajax', showButton: false, title: '导入', width: 550, height: 200 });
+        } 
+        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+    }
+    //-->
+    //csv 导出
+    function export_csv(){
+        var type = $('#js_type').val();
+        if(type !=4 ){
+            alert("请选择导出类型！");
+            return false;
+        }
+        var parm = $('#search_form').serialize();
+        window.open(ROOT+'?'+parm+'&a=export');
+    }
+
+    //通过拒绝 批量操作
+    function batch_edit(action,btn) {
+        $(btn).css({ "color": "grey",  "background-color":"#CCC" }).attr("disabled", "disabled");
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert('请选择未处理的提现申请记录！');
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+        str = '确认批量处理您选择的记录？';
+        if(confirm(str)){
+            finance_edit(id,action,1);
+        }
+        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+    }
+</SCRIPT>

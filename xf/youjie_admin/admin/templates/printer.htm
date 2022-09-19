@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>客户列表</title>
+    <link rel="stylesheet" href="../js/calendar/init.css">
+    <style>
+        table{border-collapse: collapse;border-spacing: 0;table-layout: fixed;}
+        thead{border:1px solid #EEE;height: 40px;line-height: 40px;}
+        th{font-size: 14px;font-weight: 700;border-right: 1px solid #eee;}
+        .conter-tr{white-space: nowrap; text-align: center;height: 40px;line-height: 40px;background-color: #faf8f8;border-bottom: 1px solid #eee;}
+        .conter-tr td{font-size: 14px;border-right: 1px solid #eee;border-bottom: 1px solid #eee;}
+        .button-c{margin: 0;padding: 0;border: 1px solid transparent;outline: none;background-color: #fff;cursor: pointer;border-radius: 3px;width: 70px;height: 30px;line-height: 30px;text-align: center;font-size: 16px;letter-spacing: 2px;}
+        .btn-blue{background-color: #108ee9;color: #fff;border:#108ee9;   }
+        .btn-red{background-color: #fb3a40;color: #fff;border:#fb3a40;}
+        .coverup{width: 100%;position: fixed;top: 0;left: 0;background-color:rgba(0,0,0,0.2);display: none;}
+        .coverup-box{width: 36%;max-height:400px;z-index: 9999;overflow-y: auto;background-color: #fff;border-radius: 4px;margin: 4% auto 0;}
+        .coverup-title{width: 100%;height: 40px;line-height: 40px;text-indent: 20px;background-color: #eee;font-size: 14px;font-weight: 800;color: #222;}
+        .coverup-x{float: right;margin-top: 10px;margin-right: 30px;cursor: pointer;}
+        .coverup-conter{margin: 40px auto 0;font-size: 14px;}
+        input {border: none;outline: none;-webkit-appearance: none;}
+        input{height: 30px;line-height: 30px;font-size: 16px;border:1px solid #eee;border-radius: 3px;text-indent: 6px;}
+        .coverup-conter span{font-weight: 800;}
+        .tips{height: 50px;line-height:50px;text-align: center;}
+        .tips-h{height: 100px;line-height: 100px;}
+        .coverup-textarea{width: 240px;height: 100px;max-width: 240px;max-height: 100px;resize:none;border:1px solid #eee;font-size: 14px;text-indent: 6px;vertical-align: -webkit-baseline-middle;}
+        .coverup-footer{width:80%;margin: 20px auto 20px; text-align: center;}
+        .coverup-btn,.coverup-cancel{display: inline-block;width: 70px;height: 30px;background-color:#108ee9;border-radius: 3px; line-height: 30px;text-align: center;color: #fff;margin: 0 20px;cursor: pointer;}
+        .coverup-btn{background-color: #fb3a40;}
+        .marginbor{margin: 20px 70px;}
+        .select { width: 160px;height: 34px;line-height: 34px;border:1px solid #eee; }
+        .select option {font-size: 14px;line-height: 34px;}
+        label{
+            display: inline-table;
+            width:160px;
+            text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="condition clearfix">
+        <div class="button-c btn-blue float marginbor" id="addcoverup">添加</div>
+    </div>
+    <table class="layui-table" width="100%">
+        <thead>
+            <tr>
+                <th width="50">
+                    序号
+                </th>
+                <th>
+                    打印机名称
+                </th>
+                <th width="200">
+                    操作
+                </th>
+
+            </tr>
+        </thead>
+        <tbody id="shops-site">
+            <tr style="white-space: nowrap; text-align: center;"> 
+                
+            </tr>
+        </tbody>
+        <div class="msg"></div>
+    </table>
+    <div class="coverup">
+        <div class="coverup-box">
+           <div class="coverup-title clearfix">
+               <span></span>
+               <img class="coverup-x" src="./images/x.png" alt="" width="16" height="16">
+           </div>
+           <div class="coverup-conter">
+               <div class="tips">
+                <label>打印机名称：</label>
+                <input class="coverup-input" type="text" value="" name="printerName" autocomplete="off" />
+              </div>
+           </div>
+           <div class="coverup-footer">
+               <div class="coverup-btn">提交</div>
+               <div class="coverup-cancel">取消</div>
+           </div>
+        </div>
+    </div>
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        {insert_scripts files="../js/util.js"}
+    <script>
+        $(function () {
+            $('.coverup').css('height',window.innerHeight);
+            const suppId = {$suppliersId};
+            /*
+                获取列表信息
+                url express.php?act=show_business_printer_list
+                suppliersId 商家id
+            */
+            function shopsSite(){
+                let obj = {
+                    type:'GET',
+                    site:'express.php?act=show_business_printer_list',
+                    data:{suppliersId:suppId}
+                };
+                U.https(obj).then(data=>{
+                    let datas= data.data, str = '';
+                    console.log(datas)
+                    if(datas.length>0){
+                        datas.forEach((item,i,arr) => {
+                            str+=`<tr class="conter-tr"><td>${i+1}</td><td>${item.printerName}</td><td><button class="button-c btn-blue btn-click" data-id="${item.id}" data-printername="${item.printerName}">编辑</button><button style="margin:0 10px;" class="button-c btn-red btn-delete" data-id="${item.id}">删除</button></td></tr>`;
+                        });
+                        $('#shops-site').html(str);
+                    }else{
+                        $('#shops-site').html('<tr class="conter-tr">暂无数据！</tr>');
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
+            shopsSite();
+            /*
+            *   获取列表信息
+            *   url express.php?act=show_business_printer_list
+            *   suppliersId 商家id
+            */
+            function addEdit(obj) {
+                U.https(obj).then(data=>{
+                    console.log(data)
+                    if(obj.data.type == 'add'){
+                        alert('新增成功！')
+                    }else if(obj.data.type == 'edit'){
+                        alert('修改成功！')
+                    }else if(obj.data.type == 'delete'){
+                        alert('删除成功！')
+                    }
+                    $('.coverup').fadeOut(300);
+                    shopsSite()
+                }).catch(err=>{
+                    console.log(err)
+                    alert(err.msg)
+                    $('.coverup').fadeOut(300);
+                })
+            }
+
+            //关闭
+            $('.coverup-x').on('click',function () {
+                $('.coverup').fadeOut(300);
+            })
+            $('.coverup-cancel').on('click',function () {
+                $('.coverup').fadeOut(300);
+            })
+            //添加
+            $('#addcoverup').on('click',function (e) {
+                $('.coverup').fadeIn(300);
+                $('.coverup-title span').text('添加打印机');
+                $('.coverup-btn').attr('data-id','');
+                $('.coverup-btn').attr('data-type','add');
+                $('input[name=printerName]').val('');
+            })
+            //编辑
+            $('#shops-site').on('click','.btn-click',function (e) {
+                $('.coverup').fadeIn(300);
+                $('.coverup-title span').text('编辑打印机');
+                let a = e.target.dataset
+                console.log(a)
+                $('input[name=printerName]').val(a.printername);
+                $('.coverup-btn').attr('data-id',a.id);
+                $('.coverup-btn').attr('data-type','edit');
+            })
+            //删除
+            $('#shops-site').on('click','.btn-delete',function (e) {
+                let a = e.target.dataset;
+                console.log(a)
+                let obj={
+                    type:'GET',
+                    site:'express.php?act=del_business_printer',
+                    data:{id:a.id,suppliersId:suppId,type:'delete'}
+                }
+                addEdit(obj)
+            })
+            //提交
+            $('.coverup-btn').on('click',function (e) {
+                console.log(e.target.dataset)
+                let s = e.target.dataset;
+                let printerName = $('input[name=printerName]').val();
+                let obj={
+                    type:'GET',
+                    site:'express.php?act=add_business_printer',
+                    data:{suppliersId:suppId,printerName,type:'add'}
+                }
+                if(s.type == 'edit'){
+                    obj.data.id = s.id;
+                    obj.data.type = 'edit';
+                }
+                addEdit(obj)
+            })
+        })
+    </script>
+</body>
+</html>

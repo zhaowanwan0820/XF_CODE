@@ -1,0 +1,143 @@
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    var appid = '{$appid}';
+    var nonceStr = '{$nonceStr}';
+    var timeStamp = '{$timeStamp}';
+    var signature = '{$signature}';
+    wx.config({
+        appId:appid,
+        timestamp:timeStamp,
+        nonceStr:nonceStr,
+        signature:signature,
+        jsApiList:[
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'hideOptionMenu',
+            'showOptionMenu',
+            'closeWindow'
+        ],
+    });
+    wx.ready(function(){
+        wx.hideOptionMenu();
+    });
+</script>
+<script>
+    var imgUrl = '{$shareIcon}';
+    var lineLink = '{$shareLink}';
+    var descContent = '{$shareSummary}';
+    var shareTitle = '{$shareTitle}';
+    wx.ready(function() {
+        wx.showOptionMenu();
+        wx.onMenuShareTimeline({
+            title: shareTitle, // 分享标题
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+        });
+        wx.onMenuShareAppMessage({
+            title: shareTitle, // 分享标题
+            desc: descContent, // 分享描述
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+        });
+    });
+</script>
+<script>
+    function onBridgeReady(){
+        WeixinJSBridge.call('showOptionMenu');
+    }
+
+    if (typeof WeixinJSBridge == "undefined"){
+        if( document.addEventListener ){
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        }else if (document.attachEvent){
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    }else{
+        onBridgeReady();
+    }
+    function shareFriend() {
+        WeixinJSBridge.invoke('sendAppMessage',{
+            "appid": appid,
+            "img_url": imgUrl,
+            "img_width": "200",
+            "img_height": "200",
+            "link": lineLink,
+            "desc": descContent,
+            "title": shareTitle
+        }, function(res) {
+            //_report('send_msg', res.err_msg);
+        })
+    }
+    function shareTimeline() {
+        WeixinJSBridge.invoke('shareTimeline',{
+            "img_url": imgUrl,
+            "img_width": "200",
+            "img_height": "200",
+            "link": lineLink,
+            "desc": descContent,
+            "title": shareTitle
+        }, function(res) {
+               //_report('timeline', res.err_msg);
+        });
+    }
+    // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+        // 发送给好友
+        WeixinJSBridge.on('menu:share:appmessage', function(argv){
+            shareFriend();
+        });
+        // 分享到朋友圈
+        WeixinJSBridge.on('menu:share:timeline', function(argv){
+            shareTimeline();
+        });
+    }, false);
+</script>
+<script type="text/javascript">
+    $(function(){
+        function weixinFacility() {
+            var userAgentString = window.navigator ? window.navigator.userAgent : "";
+            var weixinreg = /MicroMessenger/i;
+            return weixinreg.test(userAgentString);
+        };
+        var wHeight = $(window).height();
+        $('body').append('<div class="share_wrap"><div class="share_cover"></div><div class="share_box"></div></div>');
+            if(weixinFacility()){
+              $('.share_wrap').append('<div class="wx_tip"></div>');
+              $('.share_box').append('<div class="line"><div class="part"><a class="wx_hy">微信好友</a></div><div class="part"><a class="wx_pyq">朋友圈</a></div><div class="part"><a class="jiathis_button_tsina">新浪微博</a></div><div class="part"><a class="jiathis_button_tqq">腾讯微博</a></div></div><div class="line"><div class="part"><a class="jiathis_button_qzone">QQ空间</a></div><div class="part"><a class="jiathis_button_douban">豆瓣</a></div><div class="part"></div><div class="part"></div></div>');
+              $('.wx_hy,.wx_pyq').click(function(event) {
+                $('.share_icon ,.ui_mask').show();
+                $('.share_wrap').removeClass('show');
+              });
+              $('.share_icon').click(function(event) {
+                $('.ui_mask , .share_icon').hide();
+                setTimeout(function(){
+                    $('.ui_share_box ,.scroll').css('z-index','10');  
+                },200); 
+              });
+            } else {
+              $('.share_box').append('<div class="line"><div class="part"><a class="jiathis_button_tsina">新浪微博</a></div><div class="part"><a class="jiathis_button_tqq">腾讯微博</a></div><div class="part"><a class="jiathis_button_qzone">QQ空间</a></div><div class="part"><a class="jiathis_button_douban">豆瓣</a></div></div>');
+            }
+            $('.JS-share_btn').click(function(event) {
+                $('.share_wrap').addClass('show');
+                $('.ui_share_box,.scroll').css('z-index','0');
+            });
+            $('.share_wrap .share_cover').click(function(event) {
+                $('.share_wrap').removeClass('show');
+                setTimeout(function(){
+                    $('.ui_share_box ,.scroll').css('z-index','10');  
+                },200);  
+            });
+        var title = "{$shareTitle}";
+        var url = "{$shareLink}";
+        var img = "{$shareIcon}";
+        var sinalink = "http://service.weibo.com/share/share.php?title=" + title + "&url=" + url + "&pic=" + img;
+        var qqlink = "http://share.v.t.qq.com/index.php?c=share&a=index&title=" + title + "&url=" + url + "&pic=" + img;
+        var qzonelink = "http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=" + url + "&title=" + title + "&pics=" + img;
+        var doubanlink = "http://www.douban.com/share/service?href=" + url + "&text=" + title + "&image=" + img;
+        $(".jiathis_button_tsina").attr("href", sinalink).attr("target", "_blank");
+        $(".jiathis_button_tqq").attr("href", qqlink).attr("target", "_blank");
+        $(".jiathis_button_qzone").attr("href", qzonelink).attr("target", "_blank");
+        $(".jiathis_button_douban").attr("href", doubanlink).attr("target", "_blank");
+    });
+</script>

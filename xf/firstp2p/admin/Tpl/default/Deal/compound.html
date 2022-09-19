@@ -1,0 +1,222 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script type="text/javascript">
+function show_detail(id) {
+    $.weeboxs.open(ROOT+'?m=Deal&a=show_detail&id='+id, {contentType:'ajax',showButton:false,title:LANG['COUNT_TOTAL_DEAL'],width:600,height:330});
+}
+function preview(id) {
+    window.open("{:get_www_url('')}deal/"+id+"?preview=1");
+}
+function contract(id){
+    window.location.href = ROOT+'?m=Contract&a=index&deal_id='+id;
+}
+function compound_repay_schedule(id) {
+    $.weeboxs.open(ROOT+'?m=Deal&a=compound_repay_schedule&id='+id, {contentType:'ajax',showButton:false,title:'还款计划',width:450,height:230});
+}
+var fuzhilock = false;
+function copy_deal(id, btn) {
+    $(btn).css({ "color": "grey" }).attr("disabled", "disabled");
+    if (!fuzhilock) {
+        fuzhilock = true;
+        if (window.confirm('确认复制？\n如果该标有优惠码返利规则，新标也会复制其优惠码返利规则，否则会新标会复制全局优惠码返利规则。')) {
+            $.ajax({
+                url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=copy_deal&id=" + id,
+                data: "ajax=1",
+                dataType: "json",
+                success: function (obj) {
+                    fuzhilock = false;
+                    $("#info").html(obj.info);
+                }
+            });
+        }
+        fuzhilock = false;
+    } else {
+        alert("请不要重复点击");
+    }
+    $(btn).css({ "color": "#4e6a81" }).removeAttr("disabled");
+}
+
+    function export_csv1() {
+        var href = ROOT+'?m=Deal&a=export_csv&deal_id='+$('#search_id').val()+"&name="+encodeURI($('#search_name').val())+"&deal_type=1";
+        window.location.href=href;
+    }
+</script>
+<div class="main">
+<div class="main_title">通知贷标列表</div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+    编号：<input type="text" class="textbox" id="search_id" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+    借款标题：<input type="text" class="textbox" name="name" id="search_name" value="{:trim($_REQUEST['name'])}" />
+    项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="Deal" name="m" />
+        <input type="hidden" value="compound" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="BUTTON" class="button" value="{%EXPORT}" onclick="export_csv1();"/>
+        <!--        <input type="button" class="button" value="{%DEL}" onclick="del();" />  -->
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="25" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>编号</th>
+            <th>借款标题</th>
+            <th>旧版借款标题</th>
+            <th>借款金额</th>
+            <th>日利率</th>
+            <th>年化利率</th>
+            <th>借款期限</th>
+            <th>还款方式</th>
+            <th>
+                用户类型
+            </th>
+            <th width='180px'>借款人id/姓名/<br>用户名/手机</th>
+            <th>放款审批单编号</th>
+            <!-- <th width='70px'>终止日期</th> -->
+            <th>赎回周期</th>
+            <th>已赎本金</th>
+            <th>已赎利息</th>
+            <th>赎中本金</th>
+            <th>赎中利息</th>
+
+            <th>状态</th>
+            <th>是否有效</th>
+<!--             <th>
+                借款人合同委托签署
+            </th>
+            <th>
+                借款人合同委托签署代理人
+            </th> -->
+            <th>
+                借款人签署状态
+            </th>
+            <!-- <th>
+                担保方合同委托签署
+            </th>
+            <th>
+                担保方合同委托签署代理人
+            </th> -->
+            <th>
+                担保方签署状态
+            </th>
+<!--             <th>
+                资产管理方合同委托签署
+            </th>
+            <th>
+                资产管理方合同委托签署代理人
+            </th> -->
+            <th>
+                资产管理方签署状态
+            </th>
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="deal">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$deal.id}"
+                <php>
+                if (($deal['deal_status ']== 3) || (intval($deal['load_money']) == 0)) {} else {
+                    echo 'disabled="disabled"';
+                }
+                </php>
+                >
+            </td>
+            <td>{$deal.id}</td>
+            <td><a href="javascript:edit ('{$deal.id}')">{$deal.name}</a></td>
+            <td>
+                &nbsp;{:getOldDealNameWithPrefix($deal['id'], $deal['project_id'])}
+            </td>
+            <td>{$deal.borrow_amount}</td>
+            <td>{$deal.rate_day}%</td>
+            <td>{$deal.rate}%</td>
+
+            <td>
+                &nbsp;{$deal.repay_time}<if condition="$deal.loantype eq 5">天<else/>个月</if>
+            </td>
+            <td>
+                &nbsp;{$deal.loantype|get_loantype}
+            </td>
+            <td>
+                &nbsp;{$deal.user_id|getUserTypeName}
+            </td>
+            <td>
+                {$deal['user_id']}/{:!empty($listOfBorrower[$deal['user_id']]['company_name']) ? getUserFieldUrl($listOfBorrower[$deal['user_id']], 'company_name') : getUserFieldUrl($listOfBorrower[$deal['user_id']], 'real_name')}
+                <br/>
+                {$listOfBorrower[$deal['user_id']]|getUserFieldUrl='user_name'}
+                <br/>
+                {$listOfBorrower[$deal['user_id']]|getUserFieldUrl='mobile'}
+            </td>
+            <td>{$deal.approve_number}</td>
+            <td>{$deal.redemption_period} 天</td>
+
+            <td>{$deal.redeemed_principal}</td>
+            <td>{$deal.redeemed_interest}</td>
+            <td>{$deal.redeeming_principal}</td>
+            <td>{$deal.redeeming_interest}</td>
+            <!--    <td>{$deal.lock_period}</td>    -->
+            <!-- <td>{$deal.redemption_limit}%</td> -->
+            <!-- <td>{$deal.end_date|to_date}</td> -->
+            <td>
+                {$deal.deal_status|a_get_buy_status=$deal.id}
+                <if condition="($deal.deal_status eq 4) && ($deal.is_has_loans eq 2)"><br />正在放款</if>
+                <if condition="$deal.is_during_repay eq 1"><br />正在还款</if>
+                <if condition="($deal.deal_status eq 3) && ($deal.is_doing eq 1)"><br />正在流标</if>
+            </td>
+            <td>{$deal.is_effect|get_is_effect=$deal[id]}</td>
+            <!-- <td>
+                &nbsp;{$deal.project_id|get_project_entrust_sign='entrust_sign'}
+            </td>
+            <td>
+                &nbsp;{:get_entrustor_name($deal['id'], $deal['user_id'])}
+            </td> -->
+            <td>
+                &nbsp;{$deal.id|get_deal_contract_status="0"}
+            </td>
+            <!-- <td>
+                &nbsp;{$deal.project_id|get_project_entrust_sign='entrust_agency_sign'}
+            </td>
+            <td>
+                &nbsp;{:get_entrustor_name($deal['id'], 0, $deal[agency_id])}
+            </td> -->
+            <td>
+                &nbsp;{$deal.id|get_deal_contract_sign_status=$deal[agency_id]}
+            </td>
+            <!-- <td>
+                &nbsp;{$deal.project_id|get_project_entrust_sign='entrust_advisory_sign'}
+            </td>
+            <td>
+                &nbsp;{:get_entrustor_name($deal['id'], 0, $deal[advisory_id])}
+            </td> -->
+            <td>
+                &nbsp;{$deal.id|get_deal_contract_sign_status=$deal[advisory_id]}
+            </td>
+            <td>
+                <a href="javascript:edit('{$deal.id}')">编辑</a>&nbsp;
+                <if condition="($deal.deal_status eq 3) || ($deal.load_money eq 0)">
+                <a href="javascript:del('{$deal.id}')">删除</a>
+                </if>
+                <input type="button" class="ts-input"  onclick="copy_deal('{$deal.id}',this)" value="复制"></input>
+                &nbsp; &nbsp;
+                <a href="javascript:show_detail('{$deal.id}')">投资列表</a><br/>
+                <a href="javascript:contract('{$deal.id}')">合同列表</a>
+                <a href="javascript:compound_repay_schedule('{$deal.id}')">还款计划</a>
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

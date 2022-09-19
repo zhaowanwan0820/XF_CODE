@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>登录</title>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/m-base.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/m-common.css');?>">
+</head>
+<body  class="p_onlinereg_login">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/login.css');?>">
+  <!--login-->
+      <div class="errorTip">{$error}</div>
+      <form action="/user/doLogin{$querystring}" id="form_id" method="POST">
+        <div class="form_box">
+        <?php echo token_input(); ?>
+        <input type="hidden" name="tpl" value="onlineregistration" />
+          <!--tips不显示时, 显示is_hide_tips-->
+          <div class="tel_container is_hide_tips clearfix">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/activity/onlinereg/login_tel_img.png');?>" class="tel_img">
+            <input type="text" placeholder="请输入手机号" name="username" id="accountInput" autoComplete="off" class="tel"/>
+          </div>
+          <p class="tel_tips tips" style="display: none">手机号输入有误</p>
+
+          <div class="psd_container is_hide_tips clearfix">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/activity/onlinereg/login_psd_img.png');?>" class="psd_img">
+            <input type="password" placeholder="请输入密码" name="password" id="pasInput" autoComplete="off" class="password"/>
+          </div>
+          <p class="psd_tips tips" style="display: none">密码错误</p>
+          {if isset($show_vcode) && $show_vcode eq '1'}
+          <div class="verify_container is_hide_tips clearfix">
+              <img src="<?php echo $this->asset->makeUrl('v3/images/activity/onlinereg/login_verify_img.png');?>" class="code_img">
+              <input type="text" placeholder="请输入验证码" name="captcha"  autoComplete="off" class="verify_code"/>
+            <div class="verify_img_wrap">  
+            <img src="/verify.php?rb=0" class="verify_img">
+            </div>
+          </div>
+          <p class="verify_tips tips" style="display: none">验证码错误</p>
+          {/if}
+          <input type="submit" value="登录" class="login_btn">
+        </div>
+          
+      </form>
+      <div class="regist_container clearfix">
+        <a href="https://m.ncfwx.com/user/register?activity_from=onlineregistration" class="regist_fast">快速注册</a>
+      </div>
+    <!--end-->
+    <script src="<?php echo $this->asset->makeUrl('v3/js/activity/onlinereg/jquery-1.10.2.min.js');?>"></script>
+    <script type="text/javascript">
+      var today = new Date();
+      var  year = today.getFullYear();
+      var month = today.getMonth() + 1;
+      var day= today.getDate();
+      var ymd = year +""+ month+"" + day;
+      var oHead = document.getElementsByTagName('HEAD').item(0); 
+      var oScript= document.createElement("script"); 
+      oScript.type = "text/javascript"; 
+      oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+      oHead.appendChild( oScript); 
+    </script>
+</body>
+
+<script>
+  var verify_img = $(".verify_container .verify_img"),/*验证码*/
+      login_btn = $("#form_id .login_btn");/*登录按钮*/
+
+  $("#form_id input.tel,#form_id input.password,#form_id input.verify_code").on("focus",function(){
+    $(this).css({"color":"#000"})
+  })
+  /*验证用户账号*/
+  function CheckUserName(val){
+    return /^\S{6,20}$/.test(val)
+  }
+  /* 验证码正则验证 */
+  function CheckCaptcha(val) {
+   return /^\d{4,10}$/.test(val)
+  }
+  /*密码正则验证*/
+  function CheckPassword(val){
+    return /^[a-zA-Z0-9`~!@#\$%\^&\*\(\)_\-\\\+\=<>\?:\"{},\.\/;\'\[\]|]{6,20}$/.test(val)
+  }
+
+  /*验证码*/
+  function changeVerify(){
+    var url = "/verify.php?rb=0" + Date.now()
+    verify_img.attr("src",url)
+  }
+  /*end*/
+
+  function verifyForm(){
+    var flag = true,
+        tel = $("#form_id .tel_container .tel"),/*登录手机号input*/
+        password = $("#form_id .psd_container .password"),/*登录密码input*/
+        verify_code = $("#form_id .verify_container .verify_code"),/*登录验证码*/
+        tel_tips = $(".form_box .tel_tips"),/*手机号错误提示*/
+        psd_tips = $(".form_box .psd_tips"),/*密码错误提示*/
+        verify_tips = $(".form_box .verify_tips")/*验证码错误提示*/
+     if(!CheckUserName(tel.val()) || !CheckPassword(password.val()) || (verify_code[0] && !CheckCaptcha(verify_code.val()))){
+       if(!CheckUserName(tel.val())){
+          tel_tips.show()
+          $(".tel_container").removeClass("is_hide_tips")
+       }else{
+          tel_tips.hide()
+          $(".tel_container").addClass("is_hide_tips")
+       }
+
+       if(!CheckPassword(password.val())){
+         psd_tips.show()
+         $(".psd_container").removeClass("is_hide_tips")
+       }else{
+          psd_tips.hide()
+          $(".psd_container").addClass("is_hide_tips")
+       }
+
+       if(!CheckCaptcha(verify_code.val())){
+         verify_tips.show()
+         $(".verify_container").removeClass("is_hide_tips")
+       }else{
+         verify_tips.hide()
+         $(".verify_container").addClass("is_hide_tips")
+       }
+
+       flag = false
+       return flag
+     }else{
+      /*表单输入完整*/
+      flag = true
+      return flag
+     }
+  }
+
+  verify_img.click(function(){
+    changeVerify()
+  })
+
+  login_btn.click(function(event){
+    if(!verifyForm()){
+      event.preventDefault()
+    }else{
+      /*调接口*/
+      $("#form_id").submit()
+    }
+  });
+
+</script>
+</html>

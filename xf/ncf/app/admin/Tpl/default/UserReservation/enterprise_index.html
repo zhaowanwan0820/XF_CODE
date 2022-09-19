@@ -1,0 +1,125 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="blank5"></div>
+      <div class="blank5"></div>
+      <div class="button_row">
+          <input type="button" class="button" value="添加用户预约" onclick="location.href='{:u("UserReservation/enterprise_reserve")}'" />
+      </div>
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>预约列表查询条件</p>
+    </div>
+    <div class="blank5"></div>
+    <div>
+        <form name="search" action="__APP__" method="get">
+            预约状态：
+            <select name="reserve_status" class="textbox selectW">
+                <option value="-1" <if condition="intval($_REQUEST['reserve_status']) eq -1">selected="selected"</if>>全部</option>
+                <option value="0" <if condition="intval($_REQUEST['reserve_status']) eq 0">selected="selected"</if>>预约中</option>
+                <option value="1" <if condition="intval($_REQUEST['reserve_status']) eq 1">selected="selected"</if>>预约结束</option>
+            </select>
+            用户ID：
+            <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" />
+            用户名：
+            <input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="10" />
+            用户手机号：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" />
+            <input type="hidden" value="UserReservation" name="m" />
+            <input type="hidden" value="enterprise_index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>预约列表</p>
+    </div>
+    <table id="dataTable" class="dataTable reservationZone" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="18" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row textDecNone">
+            <th width="100px">预约ID</th>
+            <th>预约结束时间</th>
+            <th>预约提交时间</th>
+            <th>预约来源</th>
+            <th>账户ID</th>
+            <th>用户名</th>
+            <th>手机号</th>
+            <th>预约状态</th>
+            <th>预约金额</th>
+            <th>已出借金额</th>
+            <th>出借笔数</th>
+            <th>剩余出借金额</th>
+            <th>预约出借期限</th>
+            <th>年化借款利率</th>
+            <th>还款方式</th>
+            <th>优惠券ID</th>
+            <th>优惠券状态</th>
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="reservation">
+        <tr class="row">
+            <td>
+                &nbsp;{$reservation.id}
+            </td>
+            <td>
+                &nbsp;{$reservation.end_time|format_date}
+            </td>
+            <td>
+                &nbsp;{$reservation.start_time|format_date}
+            </td>
+            <td>
+                &nbsp;{$reservation.referer}
+            </td>
+            <td>
+                &nbsp;{$reservation.user_id}
+            </td>
+            <td>
+                &nbsp;{$reservation.real_name}
+            </td>
+            <td>
+                &nbsp;{$reservation.mobile}
+            </td>
+            <td>
+                &nbsp;{$reservation.reserve_status_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.reserve_amount_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.invest_amount_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.invest_count}
+            </td>
+            <td>
+                &nbsp;{$reservation.need_amount_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.invest_deadline_format}
+            </td>
+            <td>
+                &nbsp;{$reservation.invest_rate}%
+            </td>
+            <td>
+                &nbsp;{$reservation.loantype_name}
+            </td>
+            <td>
+                &nbsp;{$reservation.discount_id}
+            </td>
+            <td>
+                &nbsp;{$reservation.discount_status_desc}
+            </td>
+            <td>
+                &nbsp;<if condition="$reservation.is_cancel eq 1"><a href="{:u('UserReservation/reserve_cancel', array('id'=>$reservation['id'],'uid'=>$reservation['user_id']))}" onclick="if(confirm('你确定取消此次预约？')==false){return false;}">取消预约</a></if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+</div>
+<div class="blank5"></div>
+<div class="page">{$page}</div>

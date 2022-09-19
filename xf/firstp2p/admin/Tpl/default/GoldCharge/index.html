@@ -1,0 +1,209 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">黄金充值申请列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="location.href='{:u("GoldCharge/apply_list")}'" />
+    <input type="button" class="button" value="批准" onclick="batch_edit('doAudit','1',this);" />
+    <input type="button" class="button" value="拒绝" onclick="batch_edit('doAudit','2',this);" />&nbsp;
+</div>
+<div class="blank5"></div>
+<script>
+//编辑跳转
+function edit(id, uid)
+{
+  var url = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=edit&orderId="+id+'&uid='+uid;
+  location.href = url;
+}
+function multi_redo() {
+    idBox = $(".key:checked");
+
+    var param = '';
+    if(idBox.length == 0){
+        idBox = $(".key");
+    }
+
+    idArray = new Array();
+    $.each( idBox, function(i, n){
+        idArray.push($(n).val());
+    });
+
+    if(idArray.length == 0){
+        alert('无可导出的数据！');
+        return false;
+    }
+
+    id = idArray.join(",");
+    var url= ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=multi_redo&id="+id;
+    window.location.href = url;
+}
+</script>
+
+<php>
+function f_get_username($userId, $row) {
+    return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>".$row['userName']."</a>";
+}
+function f_get_realname($userId, $row) {
+    return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>".$row['realName']."</a>";
+}
+function f_get_mobile($userId, $row) {
+    return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>".$row['mobile']."</a>";
+}
+function get_action_list($status, $row){
+    if ($status == 0) {
+        return "<a href=\"javascript:edit('".$row['orderId']."', '".$row['userId']."');\">编辑</a>    <a href=\"javascript:auditPass('".$row['id']."', 0, this);\">批准</a>    <a href=\"javascript:auditRefuse('".$row['id']."', 0, this);\">拒绝</a>";
+    }else{
+        return '';
+    }
+}
+</php>
+<div class="search_row">
+    <form name="search" id="search_form" action="__APP__" method="get">
+        申请时间：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['start_time'])}" name="start_time" id="start_time"  onfocus="return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        至 <input type="text" value="{:trim($_REQUEST['end_time'])}" name="end_time" id="end_time" class="textbox" onfocus="return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        状态:
+        <select name="audit_status">
+            <option value="-1" <if condition="intval($_REQUEST['audit_status']) eq -1 ">selected="selected"</if>>全部</option>
+            <foreach name="auditMap" item="auditItem">
+                <option value="{$auditItem.key}" <if condition="intval($_REQUEST['audit_status']) eq $auditItem['key']">selected="selected"</if>>{$auditItem.value}</option>
+            </foreach>
+        </select>
+        <input type="hidden" value="GoldCharge" name="m" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv_file();" />
+    </form>
+
+</div>
+<div class="blank5"></div>
+
+<html:list
+    id="dataTable"
+    checkbox="true"
+    style="dataTable"
+    name="link"
+    datasource="list"
+    show="orderId:编号,operateName:操作人,gold:克重,userId|f_get_username=$link:会员名称,userId|f_get_realname=$link:姓名,userId|f_get_mobile=$link:手机号,auditMsg:状态,auditRecord:审核记录,createTime:申请时间,waterLine:流水单,remark:备注,auditStatus|get_action_list=$link:操作"
+    />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    var p = '{$p}';
+    function auditPass(id, is_batch, btn) {
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+        if (is_batch == 0) {
+            if (!confirm('确认要批准该条申请记录吗？')) {
+                $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                return false;
+            }
+        }
+
+        $.post("/m.php?m=GoldCharge&a=doAudit", {
+            'id':id,
+            'is_batch':is_batch,
+            'audit_status':1,
+            'ajax':1,
+        }, function(data) {
+            console.log(data);
+            if(typeof(data) != "object") {
+                var data = $.parseJSON(data);
+            }
+            if (data.status == 1) {
+                alert(data.info);
+                window.location.reload();
+            } else {
+                alert(data.info);
+            }
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+        });
+        return true;
+   }
+   function auditRefuse(id, is_batch) {
+       var btn = $('#refuseBtn');
+       $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+       if (is_batch == 0) {
+           if (!confirm('确认要拒绝该条申请记录吗？')) {
+               $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+               return false;
+           }
+       }
+
+       $.post("/m.php?m=GoldCharge&a=doAudit", {
+           'id':id,
+           'is_batch':is_batch,
+           'audit_status':2,
+           'ajax':1,
+       }, function(data) {
+           console.log(data);
+           if(typeof(data) != "object") {
+               var data = $.parseJSON(data);
+           }
+           if (data.status == 1) {
+               alert(data.info);
+               window.location.reload();
+           } else {
+               alert(data.info);
+           }
+           $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+       });
+       return true;
+    }
+
+    //通过拒绝 批量操作
+    function batch_edit(action,status,btn) {
+        $(btn).css({ "color": "grey",  "background-color":"#CCC" }).attr("disabled", "disabled");
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert('请选择未处理的申请充值记录！');
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        ids = idArray.join(",");
+        str = '确认批量处理您选择的记录吗？';
+        if(confirm(str)){
+            if(action == 'doAudit') {
+                if(status == 1) {
+                    auditPass(ids, 1);
+                }else{
+                    auditRefuse(ids, 1);
+                }
+            }
+        }
+        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+    }
+    // csv导出
+    function export_csv_file()
+    {
+        var confirm_msg = "\n\r大数据量请增加筛选条件缩小结果集条数，以免导出失败";
+        confirm_msg = "确认要导出csv文件数据吗？" + confirm_msg + "\n\r导出过程中请耐心等待，不要关闭页面。";
+        if (!confirm(confirm_msg)) {
+            return;
+        }
+        var parm = $('#search_form').serialize();
+        window.open(ROOT+'?'+parm+'&a=export_csv');
+    }
+
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,42 @@
+{include file="web/views/v3/header.html"}
+<div class="p_account_editmb">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_account_editmb.css');?>" rel="stylesheet" type="text/css">
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                <h2>
+            <i></i>修改安全手机
+        </h2>
+            </div>
+            <div class="emb-mid">
+                <div class="third-tep"></div>
+                <div class="edit-step3 edit-step3-txt">
+                    <div class="edit-success  ">
+                        <i class="edit-suc"></i><span class="font20">{$mobile}已经被设置成为您的安全手机</span>
+                        <ul>
+                            <li><i></i>交易提醒将被发送到此手机上</li>
+                            <li><i></i>可以使用此手机号登录网信</li>
+                        </ul>
+                    </div>
+                     <span class="tzhuan">系统将在<span id="jumpTime">3</span>秒后自动跳转，如果没有跳转，请点击 <a href="/account" class="blue">这里</a> 跳转</span>
+                        <script>
+                           var jumpTime = 3,
+                           setJump = setInterval(function(){
+                                jumpTime--;
+                                if(jumpTime < 0){
+                                    clearInterval(setJump);
+                                    location.href = "/account";
+                                }else{
+                                    $("#jumpTime").html(jumpTime);
+                                }
+                           },1000);
+                        </script>
+                    <span class="blank80"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+{include file="web/views/v3/footer.html"}

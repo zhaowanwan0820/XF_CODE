@@ -1,0 +1,63 @@
+{include file="web/views/v3/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v3/css/p_paying.css');?>"  rel="stylesheet" type="text/css">
+<div class="p_paying">
+    <div class="user_title"><h1><i class="ico_chongzhi"></i>未支付订单</h1></div>
+    <div class="remind_text">您有一笔尚未完成的充值订单，是否立即前往充值</div>
+    <div class="charge_msg">充值账户：<span>{$chargeAccountName}</span></div>
+    <div class="charge_msg">充值金额：<span>{$chargeAmount}</span></div>
+    <div class="charge_msg">订单号：{$outOrderId}</div>
+    <div class="charge_btn">
+        <a href="{$paymentAction}" target="_blank"><div class="charge_now">立即充值</div></a>
+        <a href="/"><div class="go_index">返回首页</div></a>
+    </div>
+    <div style="width:400px; padding:10px; display: none" id="paying_tip">
+        <p style="font-size:18px; color:#656565; text-align:center;">
+            {$LANG.PAYMENT_INFO_TIP}
+        </p>
+        <div class="blank"></div>
+        <p class="notice">
+            {$LANG.PAYMENT_NOTICE_TIP_1}
+            <br />
+            {$LANG.PAYMENT_NOTICE_TIP_2}
+        </p>
+        <div class="blank"></div>
+        <p >
+            <input type="button" value="{$LANG.PAYMENT_HAS_DONE}" class="paybutton" onclick="location.href='{$actionUrl}';" >
+            <input type="button" value="{$LANG.PAYMENT_ERROR}" class="paybutton paybutton-gray" style="width:220px" onclick="location.href='{$reUrl}';">
+        </p>
+    
+    </div>
+</div>
+<script type="text/javascript">
+    var payButtonClickTime = 0;
+    var orderSn = '{$outOrderId}';
+    var checkInterval = 2000;
+    
+    $(document).ready(function(){
+        $(".charge_now").bind("click",function(){
+            $.weeboxs.open("#paying_tip", {contentType:'text',showButton:false,title:LANG['PAYMENT_TIP'],width:448,height:230,type:'wee'});
+            payButtonClickTime = (new Date()).getTime();
+            autoCheckStatus();
+        });
+    });
+    
+    function autoCheckStatus() {
+        var cost = (new Date()).getTime() - payButtonClickTime;
+        if (cost > 600000) {
+            return;
+        }
+        if (cost < 10000) {
+            setTimeout('autoCheckStatus()', checkInterval);
+            return;
+        }
+    
+        $.getJSON('/payment/payCheckAsyn', {orderSn:orderSn}, function(data) {
+            if (data.status != 1) {
+                setTimeout('autoCheckStatus()', checkInterval);
+                return;
+            }
+            location.href = '{$actionUrl}&autoCheck=1';
+        });
+    }
+</script>
+{include file="web/views/v3/footer.html"}

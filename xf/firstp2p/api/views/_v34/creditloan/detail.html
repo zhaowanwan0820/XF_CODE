@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>借款详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/detail.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-common.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="p_application_content">
+        <div class="one_jine">
+            {if $credit_loan_record.status eq 5}
+            <span class="use_money">已还款金额(元)</span>
+            {else}
+            <span class="use_money">使用金额(元)</span>
+            {/if}
+            <span class="use_num" id="format_num">{$credit_loan_record.total_money}</span>
+        </div>
+        <div class="loan_details">
+            <h2 class="h2_title">借款明细(实际金额以银行还款结果为准)</h2>
+            <div class="loan_cont">
+            {if $credit_loan_record.status eq 0}
+            <!--申请中 -->
+                <ul class="lc_list">
+                    <li><span>预计利息</span><span class="loan_num">-</span></li>
+                    <li><span>业务信息服务费</span><span class="loan_num">-</span></li>
+                    <li><span>可使用天数</span><span class="loan_num">-</span></li>
+                </ul>
+            {elseif $credit_loan_record.status eq 2}
+            <!--使用中 -->
+                <ul class="lc_list">
+                    <li><span>预计利息</span><span class="loan_num">{$credit_loan_record.interest}元</span></li>
+                    <li><span>业务信息服务费</span><span class="loan_num">{$credit_loan_record.service_fee}元</span></li>
+                    <li class="repay_days"><span>可使用天数</span><span class="loan_num repay_time">{$credit_loan_record.use_days}天<span class="p_time">预计于{$credit_loan_record.plan_time}自动还款</span></span></li>
+                </ul>
+            {elseif $credit_loan_record.status eq 3 or $credit_loan_record.status eq 4 or $credit_loan_record.status eq 6}
+            <!--还款中 -->
+                <ul class="lc_list">
+                    <li><span>预计利息</span><span class="loan_num">{$credit_loan_record.interest}元</span></li>
+                    <li><span>业务信息服务费</span><span class="loan_num">{$credit_loan_record.service_fee}元</span></li>
+                    <li class="repay_days"><span>可使用天数</span><span class="loan_num repay_time">{$credit_loan_record.use_days}天<span class="p_time">预计于{$credit_loan_record.plan_time}自动还款</span></span></li>
+                </ul>
+            {elseif $credit_loan_record.status eq 5}
+            <!--已还清 -->
+                <ul class="lc_list">
+                    <li><span>已还本金</span><span class="loan_num">{$credit_loan_record.money}元</span></li>
+                    <li><span>已还利息</span><span class="loan_num">{$credit_loan_record.interest}元</span></li>
+                    <li><span>业务信息服务费</span><span class="loan_num">{$credit_loan_record.service_fee}元</span></li>
+                    <li><span>实际还款日</span><span class="loan_num">{$credit_loan_record.finish_time}</span></li>
+                </ul>
+            {elseif $credit_loan_record.status eq 1}
+            <!--已取消 -->
+                <ul class="lc_list">
+                    <li><span>预计利息</span><span class="loan_num">-</span></li>
+                    <li><span>业务信息服务费</span><span class="loan_num">-</span></li>
+                    <li><span>可使用天数</span><span class="loan_num">-</span></li>
+                </ul>
+            {/if}
+            </div>
+        </div>
+        <div class="loan_state">
+            <h2 class="h2_title">借款状态</h2>
+            <div class="loan_stateCont">
+            {if $credit_loan_record.status eq 0}
+            <!--申请中 -->
+                <ul class="ls_list">
+                    <li class="current"><i></i><span class="tit">申请中</span><span class="f11">{$credit_loan_record.create_time}</span></li>
+                    <li><i></i><span class="tit c_gray">使用中(申请成功)</span></li>
+                    <li><i></i><span class="tit c_gray">还款中(银行处理中)</span></li>
+                    <li><i></i><span class="tit c_gray">已还清</span></li> 
+                </ul>
+            {elseif $credit_loan_record.status eq 2}
+            <!--使用中 -->
+                <ul class="ls_list">
+                    <li><i></i><span class="tit">申请中</span><span class="f11">{$credit_loan_record.create_time}</span></li>
+                    <li class="current"><i></i><span class="tit">使用中(申请成功)</span><span class="f11">{$credit_loan_record.loan_time}</span></li>
+                    <li><i></i><span class="tit c_gray">还款中(银行处理中)</span></li>
+                    <li><i></i><span class="tit c_gray">已还清</span></li>
+                </ul>
+            {elseif $credit_loan_record.status eq 3 or $credit_loan_record.status eq 4 or $credit_loan_record.status eq 6}
+            <!--还款中 -->    
+                <ul class="ls_list">
+                    <li><i></i><span class="tit">申请中</span><span class="f11">{$credit_loan_record.create_time}</span></li>
+                    <li><i></i><span class="tit">使用中(申请成功)</span><span class="f11">{$credit_loan_record.loan_time}</span></li>
+                    <li class="current"><i></i><span class="tit">还款中(银行处理中)</span><span class="f11">{$credit_loan_record.repay_time}</span></li>
+                    <li><i></i><span class="tit c_gray">已还清</span></li>               
+                </ul>
+
+            {elseif $credit_loan_record.status eq 5}
+            <!--已还清 -->
+                <ul class="ls_list">
+                    <li><i></i><span class="tit">申请中</span><span class="f11">{$credit_loan_record.create_time}</span></li>
+                    <li><i></i><span class="tit">使用中(申请成功)</span><span class="f11">{$credit_loan_record.loan_time}</span></li>
+                    <li><i></i><span class="tit">还款中(银行处理中)</span><span class="f11">{$credit_loan_record.repay_time}</span></li>
+                    <li class="current"><i></i><span class="tit">已还清</span><span class="f11">借款利息截止至银行成功受理日，差额将由银行退还至您在网信绑定的银行卡中</span><span class="f11">{$credit_loan_record.finish_time}</span></li>
+                </ul>
+            {elseif $credit_loan_record.status eq 1}
+            <!--已取消 -->
+                <ul class="ls_list">
+                    <li><i></i><span class="tit">申请中</span><span class="f11">{$credit_loan_record.create_time}</span></li>
+                    <li class="current"><i></i><span class="tit">已取消(申请失败)</span><span class="f11">{$credit_loan_record.update_time}</span></li>
+                </ul>
+            {/if}
+            </div>
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/creditloan/apply_loan.js');?>"></script>
+</body>
+</html>

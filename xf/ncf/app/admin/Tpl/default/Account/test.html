@@ -1,0 +1,43 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<div class="main">
+<div class="main_title">添加账户（临时）<a href="#" onclick="history.go(-1); return false;" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form method="POST" action="?m=Account&a=test" >
+<table class="form" cellpadding=0 cellspacing=0>
+<tr>
+    <td colspan=2 class="topTd"></td>
+</tr>
+<tr>
+    <td class="item_title">账户类型</td>
+    <td class="item_input">
+    <select name="type" >
+    <option value="-1" selected="true" >请选择用户类型</option>
+    <?php foreach ($types as $typeid => $typeName): ?>
+    <option value="<?php echo $typeid;?>" ><?php echo $typeName;?></option>
+    <?php endforeach; ?>
+    </td>
+</tr>
+<tr>
+    <td class="item_title">用户ID</td>
+    <td class="item_input"><input type="text" name="user_id"><td>
+</tr>
+</tr>
+<tr>
+    <td class="item_title">账户余额</td>
+    <td class="item_input"><input type="text" name="money" value="1000000"> 分<td>
+</tr>
+<tr>
+    <td class="item_input" colspan="2"><input class="button" type="SUBMIT" value="添加"></td>
+</tr>
+<tr>
+    <td colspan=2 class="bottomTd"></td>
+</tr>
+</table>
+</form>
+<include file="Public:footer" />

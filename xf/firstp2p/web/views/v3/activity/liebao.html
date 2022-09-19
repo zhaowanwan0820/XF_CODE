@@ -1,0 +1,146 @@
+{include file="web/views/v3/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/jiathis_share.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/share.v1.css');?>" />
+<link href="<?php echo $this->asset->makeUrl('v3/css/activity/newUserPage.css');?>" type="text/css" rel="stylesheet">
+<script src="<?php echo $this->asset->makeUrl('v3/js/common/jquery-1.10.2.min.js');?>" type="text/javascript"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/vendor/ZeroClipboard.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/share/share.v1.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/qrcode/qrcode.v1.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/activity/newUserPage.js?v=11');?>" type="text/javascript"></script>
+<style>
+    .layAppTopnew .isNewUser_11626, .layAppTopnew .app{ display:none; }
+    .new_platform_2 .knowMore{padding-bottom: 30px;}
+    .img_wangxin{padding:0;}
+   .p_new_user_page .new_deal .have_deal .scroll_center .bg_linear_top {
+        background-image: -webkit-linear-gradient(top, transparent 50%, rgba(255, 238, 177, 0) 100%);
+        background-image: linear-gradient(180deg, transparent 50%, rgba(255, 238, 177, 0) 100%);
+        top: 0px;
+    }
+    .p_new_user_page .new_deal .have_deal .scroll_center .bg_linear_bottom {
+        background-image: -webkit-linear-gradient(bottom, transparent, rgba(255, 238, 177, 0));
+        background-image: linear-gradient(0deg, transparent, rgba(255, 238, 177, 0));
+        bottom: 0px;
+    }
+    .p_new_user_page .bannerBox {
+        background: url('//event.ncfwx.com/upload/image/20180105/11-15-123111111111_03.jpg') no-repeat center top #4e009a;
+        height: 500px;
+        position: relative;
+    }
+    .p_new_user_page .iframe_register{background: transparent;}
+</style>
+<div class="p_new_user_page main">
+    <input type="hidden" value="{$userStatus.isRegister}" id="isRegister" />
+    <input type="hidden" value="{$userStatus.isInvest}" id="isInvest" />
+    <input type="hidden" value="{$userStatus.isInvite}" id="isInvite" />
+    <!-- banner图-->
+    <div class="{if !$user_info}bannerBox{else}_bannerBox{/if}" id="bannerBox">
+        <div class="xs_content part_1">
+            {if !$user_info}
+            <iframe src="/user/register?modal=1" frameborder="0" width="100%" height="100%" class="iframe_register" id="ifm" name="ifm" allowTransparency="true"></iframe>
+            {/if}
+        </div> 
+    </div>
+
+    <!-- 去注册-->
+    <div class="new_register">
+        <div class="xs_content part_2"><img src="//event.ncfwx.com/upload/image/20180104/11-03-yellow_03.jpg" alt="" class="two"/></div>
+    </div>
+
+    <!-- 投资赚钱 begin -->
+    <div class="new_deal">
+        <div class="kep_2"><img src="//event.ncfwx.com/upload/image/20180104/11-03-rouzi_05.jpg" alt="" class="two"/></div>
+        <div class="xs_content">
+            <div class="contentBox new_platform_3">
+                <div class="list_cont">
+                    <ul class="ui_p2p_list">
+                        {foreach from=$newUserDealsList item=dealItem}
+                        <li>
+                            <a href="{$dealItem.url}" class="title">{$dealItem.name}</a>
+                            <div class="info clearfix">
+                                <div class="rate">
+                                    <span class="text">预期年化收益率：</span>   
+                                    <span class="data">{$dealItem.rate}
+                                        <span>%</span>
+                                    </span>
+                                </div>
+                                <div class="time">
+                                    <span class="text">投资期限：</span>
+                                    <span class="data">{$dealItem.repayTime}
+                                        <span>{if $dealItem.loanType eq 5}天{else}个月{/if}</span>
+                                    </span>
+                                </div>
+                                <a href="{$dealItem.url}" class="invest_btn newbie_invest">立即投资</a>
+                            </div>
+                        </li>
+                        {/foreach}
+                    </ul>
+                </div>
+                <div class="have_deal">
+                    <div class="count_deal">今日已有
+                        <span class="red">{$loadUserCount}</span>位用户投资</div>
+                    <div class="scroll_center">
+                        <div class="bg_linear_top"></div>
+                        <div class="bg_linear_bottom"></div>
+                        <div class="scroll_list">
+                            <ul class="scroll_list_ul" id="scrollListUl" data-list='{$loadList}'>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="statementBox">
+                    <div class="title">特别申明</div>
+                    <ul class="statementUl">
+                        <li>投资券、红包有效期均为30天，自收到时开始计算；</li>
+                        <li>投资券仅适用于投资P2P、专享、智多鑫产品，不适用于投资"新手专区"项目或通过"随心约"投资；</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 平台介绍 begin -->
+    <div class="new_platform contentBox">
+        <div class="xs_content img_wangxin"><img src="<?php echo $this->asset->makeUrl('v3/images/activity/new_user_page/four.jpg');?>" class="four_img"/></div>
+    </div>
+    <!-- 平台介绍002 begin -->
+    <div class="new_platform_2 contentBox">
+        <div class="xs_content img_2">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/activity/new_user_page/five.jpg');?>"/>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <div class="foot">
+        <img src="<?php echo $this->asset->makeUrl('v3/images/activity/new_user_page/logo.png');?>" alt="" class="logo">
+        <div class="foot_content">
+            <p>北京经讯时代科技有限公司 客服电话：400-890-9888</p>
+            <p>公司总部：北京市朝阳区霄云路28号网信大厦A座</p>
+            <p>市场有风险 投资需谨慎</p>
+        </div>
+    </div>
+
+    <script id="scrollUl_tpl" type="text/html">
+        <% var item=null; %>
+        <% for( var i=0,max=arr.length;i<max;i++){ %>
+        <% item=arr[i]; %>
+            <li>用户<%= item.mobile %> 刚刚投资了<%= item.money %>元</li>
+        <% } %>
+        <% for( var i=0;i<4;i++){ %>
+        <% item=arr[i]; %>
+        <li>用户<%= item.mobile %> 刚刚投资了<%= item.money %>元</li>
+        <% } %>
+    </script>
+    <script type='text/javascript'>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?99c51ca2f40d8b431183dd922ed9d09c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"&uf=pc","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+    (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+    </script>
+ 
+
+ 

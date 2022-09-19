@@ -1,0 +1,169 @@
+{include file="web/views/header.html"}
+<div class="p_user_register">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_register.css');?>" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_charge.css');?>" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/weebox.css');?>">
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_pwdrule.css');?>" type="text/css" rel="stylesheet">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/oauth/pas_strength.js');?>" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var today = new Date();
+        var  year = today .getFullYear();
+        var month = today .getMonth() + 1;
+        var day= today .getDate();
+        var ymd = year +""+ month+"" + day;
+        var oHead = document.getElementsByTagName('HEAD').item(0);
+        var oScript= document.createElement("script");
+        oScript.type = "text/javascript";
+        oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+        oHead.appendChild( oScript);
+    </script>
+    <style type="text/css">
+    .ui-form .er-icon, .ui-form .error-wrap{display: none;}
+    .p_user_register .ui-form li { overflow: visible; }
+    </style>
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                {if false == $source }
+                    <h2><i></i>个人会员注册</h2>
+                    <div class="r-menu"> <a href="/enterprise/register" class="blue">企业用户注册 ></a></div>
+                {else /}
+                    <h2><i></i>会员注册</h2>
+                    <input data-label="注册来源" type="hidden" id="input-source" name="source" value="{$source}" jump-url="{$bedev}" />
+                {/if}
+            </div>
+            <div class="reg-mid">
+                <div class="ui-form">
+                    <form action="/user/doRegister{$querystring}?from=reg" method="post" id="reg_v2">
+                        <input type="hidden" name="thirdPage" id="thirdPage" value="1">
+                        <?php echo token_input(); ?>
+                            <input data-label="短信验证码" type="hidden" id="input-code" name="code" value="">
+                            <ul class="clearfix">
+                            <!-- 得到焦点时添加类名ipt-focus -->
+                                <li class="tel-ver clearfix" style="*z-index:2">
+                                    <label> 手机号
+                                    </label>
+                                    <div class="select_box" data-name="country_code" id="" style="z-index:11">
+                                        <div class="j_select"></div>
+                                        <ul class="select_ul none j_selectContent">
+                                            {if isset($mobile_codes) }
+                                                {foreach from=$mobile_codes item=val}
+                                                    {if $val.is_show}
+                                                    <li data-value="{$val.code}" data-name="{$val.country}"><i class="icon-{$val.country}"></i>{$val.name}</li>
+                                                    {/if}
+                                                {/foreach}
+                                                {else}
+                                                  <li data-value="86" data-name="cn"><i class="icon-cn"></i>中国大陆</li>
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                    <div class="ipt-wrap w224">
+                                        <!--<div class="areacode" id="areacode">+86</div>areacode-->
+                                        <input type="text" value="{$data.mobile}" data-con="require" placeholder="手机号" name="mobile" id="input-mobile" class="txt-tel int_placeholder" data-placeholder="手机号" autocomplete="off">
+                                    </div>
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text">{$error.mobile}</div>
+                                    </div>
+                                </li>
+
+                                <li class="pwd-item clearfix" id="pwd-item">
+                                    <label> 登录密码
+                                    </label>
+                                    <span>
+                                    <input type="password" style="display:none;" autocomplete="off">
+                                        <input type="password" value="" data-con="require" placeholder="6-20位数字 / 字母 / 标点符号" name="password" id="input-password" class="txt int_placeholder" data-placeholder="6-20位数字 / 字母 / 标点符号" data-stretype="0" autocomplete="off" maxlength="20">
+                                    </span>
+                                    <div class="pwd-sprite form-sprite pwd-show"></div>
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i><span><span></span></span></div>
+                                        <div class="e-text">{$error.password}</div>
+                                    </div>
+                                    <div id="" class="pass-item-tip-password">
+                                        <div class="pwd-checklist-wrapper"><span class="pwd-checklist-arrow"><em class="arrowa">◆</em><em class="arrowb">◆</em></span>
+                                            <ul id="pwd-checklist" class="pwd-checklist">
+                                                <li class="safety-level"> <span class="pr9">安全程度：</span><span class="process low"></span><span class="process"></span><span class="process"></span><span class="ml4 color-low">低</span>
+                                                </li>
+                                                <li id="" data-rule="len" class="pwd-checklist-item pwd-checklist-item-error">6-20位</li>
+                                                <li id="" data-rule="cha" class="pwd-checklist-item pwd-checklist-item-success">支持数字、大小写字母、标点符号</li>
+                                                <li id="" data-rule="spa" class="pwd-checklist-item pwd-checklist-item-error">不允许有空格</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="clearfix">
+                                    <label> 邀请码
+                                    </label>
+                                    <input type="text" value="{$cn}" data-con="require" placeholder="选填" name="invite" id="input-invite" class="txt int_placeholder" data-placeholder="选填">
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text">邀请码不对</div>
+                                    </div>
+                                </li>
+                                <li class="graph-ver clearfix">
+                                    <label> 图形验证
+                                    </label>
+                                    <input type="text" value="" data-con="require" placeholder="右侧数字" name="captcha" id="input-captcha" class="txt int_placeholder" data-placeholder="右侧数字">
+                                    <div class="img-Veri">
+                                        <img title="点击刷新" src="/verify.php?w=50&h=36&rb=0" id="captcha" width="100">
+                                    </div>
+                                    <div class="refresh">换一张</div>
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text">{$error.captcha}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="btn-w30">
+                                {if false == $source }
+                                    <input class="btn-sub" type="submit" id="submit_button" value="下一步">
+                                {else /}
+                                    <input class="btn-sub" type="submit" id="submit_button" value="完成">
+                                {/if}
+                            </div>
+                            <div class="p2p-ui-checkbox pad_left">
+                                <div class="fl">
+                                    <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal check-select"></a>
+                                    <span>我已阅读并同意<a href="/help/register_terms" class="blue" target="_blank">《注册协议》</a></span>
+                                </div>
+                                <div class="error-wrap" id="agreement_msg">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text">不同意注册协议无法完成注册</div>
+                                </div>
+                                <input data-con="require" type="hidden" name="agreement" value="1" id="agree">
+                                <i></i>
+                            </div>
+                            <div class="gray tc">网贷有风险，投资需谨慎</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+<!-- 短信验证码弹出框 -->
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.bgiframe.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.weebox.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/p2p-ui-checkbox.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/p2p_validate.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/user_reg.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/jquery_placeholder-1.0.js');?>"></script>
+var nogetCode = '{function name="get_adv" x="短信验证码获取文案_2015"}';
+if (nogetCode == "") {
+    nogetCode = '如未收到验证码，我们将以18401558140~18401558149号段再次发送，或拨打客服热线 <span style="color:#f75939;">400-890-9888</span>（工作时间 8:00-20:00）。';
+}
+</script>
+{include file="web/views/baidutongji.html"}
+{include file="web/views/v2/footer.html"}

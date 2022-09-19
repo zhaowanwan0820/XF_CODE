@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>编辑收货地址</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/js/picker/picker.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/widget/dialog/dialog.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/widget/dialog/dialog.iOS7.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/edit_address.css');?>" rel="stylesheet" />
+
+</head>
+<body>
+<div class="check-page" id="checkPage" style="display: block;">
+<form action="/address/updateAddr" id="form" data-lock="0">
+<input type="hidden" name="params" id="params" value="{$params}">
+<input type="hidden" name="entryType" id="entryType" value="{$entryType}">
+<input type="hidden" name="returnUrl" id="returnUrl" value="{$returnUrl}">
+<input type="hidden" name="token" id="token" value="{$token}">
+<input type="hidden" name="id" id="id" value="{$address.id}">
+<input type="hidden" name="area" id="area" value="{$address.area}">
+    <div class="common-wrapper ">
+      <div class="address02">
+        <div class="editInoutAll">
+          <div class="fixed-top">
+            <div class="s-item bdb-1px not-over-see">
+              <div class="sitem-l sitem-pad">
+                <div class="sattr-add">收货人:</div>
+                <div class="svalue">
+                  <input type="text" id="consignee" name="consignee" maxlength="25" value="{$address.consignee}" class="ad-name"></div>
+              </div>
+              <span class="s-close" id="clearUserName">
+                <i>
+                </i>
+              </span>
+            </div>
+            <div class="s-item bdb-1px not-over-see">
+              <div class="sitem-l sitem-pad">
+                <div class="sattr-add">联系电话:</div>
+                <div id="mobileInputDiv" class="svalue">
+                  <input type="tel" id="mobile" maxlength="11" name="mobile" value="{$address.mobile}" class="ad-mobile"></div>
+              </div>
+              <span class="s-close" id="clearPhone">
+                <i>
+                </i>
+              </span>
+            </div>
+          </div>
+          <div class="address-big bdb-1px">
+            <div class="fixed-bottom" id="fixed-bottom" style="width: 100%;">
+              <div class="col02" id="selectAddressBtn" region-data="">
+                <div class="s-item bdb-1px">
+                  <div class="sitem-l sitem-pad add-box">
+                    <div class="sattr-add">所在地区:</div>
+                    <div class="svalue-add">
+                      <span class="svalue-add" id="svalue-add" data-value="{$address.area}">{$address.area}</span>
+                    </div>
+                  </div>
+                  <span class="s-point" id="addressLabelId"></span>
+                </div>
+              </div>
+              <div class="s-item change-padd">
+                <div class="sitem-l sitem-pad change-wid">
+                  <div class="sattr-add change-padding">详细地址:</div>
+                  <div class="svalue w65 change-po">
+                    <span class="grey" id="detailedAddressId"></span>
+                    <textarea class="textauto change-sty not-over-see" name="address" id="address" placeholder="请输入详细地址，不少于5个字" maxlength="410" rows="1" data-autosize-on="true" style="word-wrap: break-word; height:40px;">{$address.address}</textarea>
+
+                  </div>
+                </div>
+                <span class="s-text-close" id="clearAddress">
+                  <i>
+                  </i>
+                </span>
+              </div>
+            </div>
+            <div style="clear:both"></div>
+          </div>
+          <div class="search-result"></div>
+        </div>
+
+       <div class="s-item bdb-1px set-default j_addr_del" data-url="/address/del" style="margin-top:10px;background:#fff;" data-id="{$address.id}">
+          <div class="sitem-m sitem-pad change-wp">
+            <div class="sattr change-fl" style="color:#EE4634">删除地址</div>
+           </div>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="popup-w"></div>
+    </form>
+</div>
+<div id="dialog2" title="提示">
+        <p>确定要删除吗？</p>
+    </div>
+<script type="text/javascript">
+   var triggerScheme = function(scheme) {
+     var iframe = document.createElement("iframe");
+     iframe.src = scheme;
+     iframe.style.display = "none";
+     document.body.appendChild(iframe);
+ };
+ triggerScheme("firstp2p://api?type=rightbtn&title=保存&callback=add_submit");
+</script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.72/js/common/zepto.min.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.72/js/common/common.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.72/js/picker/city.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.72/js/picker/picker.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/widget/core/core.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/widget/dialog/dialog.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/widget/dialog/$position.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.72/js/address/index.js');?>"></script>
+<!-- <a href="javascript:add_submit();">保存</a> -->
+</body>
+</html>

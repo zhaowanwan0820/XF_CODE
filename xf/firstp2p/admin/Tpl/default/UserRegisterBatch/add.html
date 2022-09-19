@@ -1,0 +1,174 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">新增用户 <a href="{:u("User/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">用户名称</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="user_name" />
+                    选填，不填默认H+手机号
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">手机号码</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="mobile" />
+                    必填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">姓名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" />
+                    必填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">身份证号</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="idno" />
+                    必填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%USER_GROUP}:</td>
+                <td class="item_input">
+                    <select name="group_id" id="group_id" class="require">
+                        <foreach name="group_list" item="group_item">
+                            <option value="{$group_item.id}" <if condition="$group_item.name eq '产融贷_渠道'">selected="selected"</if>>{$group_item.name}</option>
+                        </foreach>
+                    </select>
+                    必填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%USER_COUPON_LEVEL}:</td>
+                <td class="item_input">
+                    <select name="coupon_level_id" id="coupon_level_id" class="require">
+                    </select>
+                    {%USER_GROUP}下需要有对应{%USER_COUPON_LEVEL}，并包含返利规则
+                </td>
+            </tr>
+            <!--<tr>
+                <td class="item_title">用户组ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="group_id" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">Coupon Level ID</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="coupon_level_id" />
+                </td>
+            </tr>-->
+            <tr>
+                <td class="item_title">邮箱</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="email" />
+                    必填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行名称</td>
+                <td class="item_input">
+                    <select name="bank" id="bank">
+                        <option value="">请选择</option>
+                        <foreach name="bank_list" item="bank_item">
+                            <option value="{$bank_item.id}">{$bank_item.name}</option>
+                        </foreach>
+                    </select>
+                    选填
+                    <!--<input type="text" class="textbox" name="bank" />-->
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行卡号</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="acno" />
+                    选填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">转出账户</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="transfer_ac" value="{$transfer_ac}" />
+                    选填，用户名称
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">转账金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="transfer_money" value="{$transfer_money}" />
+                    选填，0~30元
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">备注</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="transfer_comment" value="{$transfer_comment}" />
+                    选填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">注册邀请码</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="invite" value="{$invite}" />
+                    选填
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="idtype" value="0" />
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserRegisterBatch" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="add" />
+                <input type="submit" class="button" value="{%ADD}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    function changeLevelSelect(){
+        var url = "/m.php?m=CouponLevel&a=get_level_select";
+        var current_coupon_level_id = '3';
+        var default_coupon_level = '05';
+        $.getJSON(url,{group_id:$("#group_id").val()},function(json){
+            var coupon_level_id = $("#coupon_level_id");
+            $("option",coupon_level_id).remove(); //清空原有的选项
+            $.each(json,function(index,array){
+                var selected_str = '';
+                if(array['level'] == default_coupon_level){
+                    selected_str = 'selected="selected"';
+                }
+                var option = "<option value='"+array['id']+"' "+selected_str+">"+array['level']+"</option>";
+                coupon_level_id.append(option);
+            });
+        });
+    }
+
+    changeLevelSelect();
+    $("#group_id").change(function(){
+        $("#group_factor_text").html($(this).find("option:selected").attr("factor"));
+        changeLevelSelect();
+    });
+
+</script>
+
+<include file="Public:footer" />

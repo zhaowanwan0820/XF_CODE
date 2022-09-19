@@ -1,0 +1,25 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'batch_id',
+  2 => 'repay_time',
+  3 => 'repay_money',
+  4 => 'principal',
+  5 => 'interest',
+  6 => 'invest_adviser_fee',
+  7 => 'publish_server_fee',
+  8 => 'consult_fee',
+  9 => 'guarantee_fee',
+  10 => 'hang_server_fee',
+  11 => 'status',
+  12 => 'create_time',
+  13 => 'update_time',
+  14 => 'is_plan',
+  15 => 'is_actually',
+  16 => 'pay_time',
+  17 => 'impose_fee',
+  18 => 'penalty_fee',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

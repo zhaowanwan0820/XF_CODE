@@ -1,0 +1,66 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+    function cont_type_add(){
+        $.weeboxs.open(ROOT+'?m=DtContract&a=contTypeAdd', {contentType:'ajax',showButton:false,title:'添加分类',width:420,height:210});
+    }
+    function cont_type_edit(id){
+        $.weeboxs.open(ROOT+'?m=DtContract&a=contTypeEdit&id='+id, {contentType:'ajax',showButton:false,title:'修改分类',width:420,height:210});
+    }
+</script>
+<div class="main">
+    <div class="main_title">智多鑫合同模板分类</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <input type="button" class="button" value="{%ADD}" onclick="cont_type_add();" />
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="14" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th width="50px">编号</th>
+            <th>分类名称</th>
+            <th>分类标识</th>
+            <th>借款类型</th>
+            <th>状态</th>
+            <th>当前合同版本</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+                <td>{$item.id}</td>
+                <td>{$item.typeName}</td>
+                <td>{$item.typeTag}</td>
+                <td>
+                    <if condition='$item.typeTag neq ""'>
+                        <if condition='$item.contractType eq 0'>个人借款<else />公司借款</if>
+                    </if>
+                </td>
+                <td><if condition='$item.useStatus eq 1'>当下使用<else />历史使用</if></td>
+                <td>{$item.contractVersion}</td>
+                <td>{$item.createTime|to_date}</td>
+                <td>
+                    <a href="javascript:void(0)" onclick="javascript:cont_type_edit('{$item.id}')">修改</a> &nbsp;
+                    <a href="/m.php?m=DtContract&a=showTemplates&typeId={$item.id}&contractVersion={$item.contractVersion}">查看模板</a> &nbsp;
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

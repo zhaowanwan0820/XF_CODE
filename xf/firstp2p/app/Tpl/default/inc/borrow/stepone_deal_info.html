@@ -1,0 +1,1142 @@
+<script type='text/javascript'  src='/static/admin/kindeditor/kindeditor.js'></script>
+<script type="text/javascript">
+	var VAR_MODULE = "m";
+	var VAR_ACTION = "a";
+	var ROOT = '{$APP_ROOT}/file.php';
+	var ROOT_PATH = '{$APP_ROOT}';
+	var can_use_quota = "{$can_use_quota}";
+	
+	function round(num,dec){ 
+	    var sNum = num + ''; 
+	    var idx = sNum.indexOf("."); 
+	    if(idx<0)  
+	        return num; 
+	    var n = sNum.length - idx -1; 
+	    if(dec < n){ 
+	        var e = Math.pow(10,dec); 
+	        return Math.round(num * e) / e; 
+	    }else{ 
+	        return num; 
+	    }
+    } 
+</script>
+<style type="text/css">
+  .var-box {
+  	height: 178px;
+  	position: relative;
+  	margin-top: 15px;
+  	padding-top: 15px;
+  	border-top: 1px dotted #ddd;
+  }
+  
+  #contactertable .var-box:first-child{
+	padding-top: 0px;
+  	border-top: none;
+  }
+  
+  .var-box-delete {
+  	position: absolute;
+  	right: 60px;
+  	top: 20px;
+  }
+	.user_info_box_green .field{
+		width: 525px;
+	}
+	.item_group_green {
+		height: 31px;
+		margin: 0 auto;
+	}
+	.item_group_green .green_left {
+		background: url("{$TMPL}/images/group_green_left.png") no-repeat;
+		float: left;
+		height: 31px;
+		width: 3px;
+	}
+	.item_group_green .green_center {
+		background: url("{$TMPL}/images/group_green_center.png") repeat-x;
+		float: left;
+		height: 31px;
+		text-align: center;
+		color: white;
+		font-weight: bold;
+		line-height: 31px;
+	}
+	.item_group_green .green_right {
+		background: url("{$TMPL}/images/group_green_right.png") no-repeat;
+		float: left;
+		height: 31px;
+		width: 3px;
+	}
+	.user_info_box_green {
+		border: 1px solid #759E1A;
+		height: auto;
+		margin: 0 auto;
+		padding: 10px;
+	}
+	.user_info_box_green .field{ margin-top:0px;margin-bottom:0px;}
+	.user_info_box_green .field label{ width:110px; padding-right:5px; font-size:12px}
+	.ke-toolbar td { padding:0}
+	.user_info_item span.w115{ display:inline-block;}
+</style>
+<form action="{url x="index" r="borrow#savedeal"}" method="post" id="J_save_deal_form">
+	 
+	<div class="clearfix b_box b_box2">
+
+		<span class="t_title f_l">借款基本信息</span>		
+		<!-- 
+		<div class="field">
+			<label>借款图片：</label> 
+			<input type="radio" value="upload" onclick="selImgSource(this);" {if $deal.icon_type eq 1}checked="checked"{/if} name="imgtype" />
+			&nbsp;上传借款图片&nbsp;&nbsp; 
+			<input type="radio" value="userImg" onclick="selImgSource(this);" {if $deal.icon_type eq 2}checked="checked"{/if} name="imgtype"<?php if (check_user_avatar($this->_var['user_info']['id'],'middle') == false): ?> disabled="disabled"<?php endif; ?> />
+			&nbsp;使用用户头像&nbsp;&nbsp; 
+			<input type="radio" value="systemImg" onclick="selImgSource(this);" {if $deal.icon_type eq 3}checked="checked"{/if} name="imgtype" />
+			&nbsp;使用系统头像&nbsp;&nbsp;
+		</div>
+		<div id="upload" class="field" style="*height:50px;" style="display:none;">
+			<label>&nbsp;</label> 
+			{function name="show_ke_image" v="icon" cn="$deal.icon"}
+		</div>
+		
+		<div id="systemImg" style="display:none">
+			<div class="field lh28">
+				<label>系统图片：</label>
+				<div class="blank"></div>
+				<div class="clearfix" style="width:502px;">
+					<input type="hidden" id="systemimgpath" name="systemimgpath">
+					<div id="systemImgTab" class="clearfix f_l">
+						{foreach from=$loan_type_list item=item}
+						<div class="item f_l" style=" border:1px solid #ccc;" dataid="{$item.id}">
+							<div class="f_l tc" style="clear:both;height:98px;width:98px">
+								<img width="98px" height="98px" class="f_l" src="{$item.icon}">
+							</div>
+							<div class="tc" style="clear:both;">{$item.name}</div>
+						</div>
+						{/foreach}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="upload_tip" class="field" style="display:none;">
+			<label>&nbsp;</label> 
+			<span class="f_gray">（推荐使用您的生活近照，或其他与借款用途相关的图片，有助增加借款成功几率。
+				<span class="f_blue">严禁使用他人照片</span>）
+			</span>
+		</div>
+		 -->
+		<div class="field field3">
+			<label class="f12">借款用途：</label> 
+			<select name="borrowtype" id="borrowtype">
+				{foreach from=$loan_type_list item=item}
+				<option value="{$item.id}" {if $item.id eq $deal.type_id}selected="selected"{/if}>
+					{$item.name}
+				</option>
+				{/foreach}
+			</select>
+			
+		</div>	
+		<div class="field field3">
+		    
+			<label class="f12">借款标题：</label> 
+			<input type="text" value="{$deal.name}" style="width: 300px" class="f-input" name="borrowtitle" id="borrowtitle">
+			<span class="lh30">&nbsp;2至30个字</span>
+		</div>
+		<div class="field field3" style="clear: both;">
+			<label class="f12">详细描述：</label> 
+			<textarea tabindex="0" name="borrowdesc" id="borrowDesc" rows="10" style="width: 300px" class="f-text">{$deal.description|nl2br}</textarea>
+			<span >&nbsp;5至1000个字</span>
+		</div>
+		<div class="field field3">
+			<label class="f12">借款金额：</label> 
+			<span class="lh30"> 
+				<input type="text" value="{$deal.borrow_amount}" name="borrowamount" id="borrowamount" class="f-input" style="width:100px" onchange="changeRepay();">
+				&nbsp;元  
+				<!-- （借款金额<?php echo number_format(app_conf("MIN_BORROW_QUOTA")); ?>-<?php echo number_format(app_conf("MAX_BORROW_QUOTA")); ?>）  -->
+			</span>
+			<span class="lh30">&nbsp;{$min_money}~{$max_money}万</span>
+		</div>
+		<div class="field field3">
+            <label class="f12">还款方式：</label> 
+            <select id="loanType" name="loantype" onchange="changeRepay();">
+                {foreach from=$loan_type key=type_key item=type_val}
+                <option value="{$type_key}" {if $deal.loantype eq $type_key}selected="selected"{/if}>{$type_val}</option>
+                {/foreach}
+            </select>
+        </div>
+		<div class="field field3" id="jkqx_1">
+			<label class="f12">借款期限：</label> 
+			<span> 
+			<select id="repaytime" name="repaytime" style="height: 22px" onchange="changeRepay();">
+				{foreach from=$repay_time key=time_k item=time_val}
+				<option value="{$time_k}" {if $deal.repay_time eq $time_k}selected="selected"{/if}>{$time_val}</option>
+				{/foreach}
+				<!-- 				
+				//2013-06-28 Liwei 隐藏无用信息
+				<option value="18" {if $deal.repay_time eq 18}selected="selected"{/if}>18个月</option>
+				<option value="24" {if $deal.repay_time eq 24}selected="selected"{/if}>24个月</option>
+				-->
+			</select>
+			</span>
+			
+		</div>
+		
+		<div class="field field3" id="jkqx_2">
+            <label class="f12">借款期限：</label> 
+            <span> 
+                <input type="text" value="" name="repaytime_other" id="repaytime_other" class="f-input" style="width:100px" onchange="changeRepay();"><span class="lh30">&nbsp;天</span>
+            </span>
+            
+        </div>
+		
+		<!-- <div class="field field3">
+			<label class="f12">客户经理：</label> 
+			<span class="lh30"> 
+				<input type="text" value="{$deal.manager}" name="manager" id="manager" class="f-input" style="width:100px" > 
+			</span>
+		</div>
+		<div class="field field3">
+			<label class="f12">客户经理手机号：</label> 
+			<span class="lh30"> 
+				<input type="text" value="{$deal.manager_mobile}" name="manager_mobile" id="manager_mobile" class="f-input" style="width:100px" > 
+			</span>
+		</div> -->
+		<!--
+		<div class="field field3">
+			<label class="f12">还款周期：</label> <span class="lh30">按月还款</span>
+		</div>
+		-->
+		
+        <div class="field field3">
+            <label class="f12">年化借款利率：</label> 
+            <span class="lh30"> 
+                <input type="hidden" value="{$deal.rate}" name="apr" id="apr_hide">
+                <input type="text" value="{$deal.rate}" id="apr" class="f-input" style="width:50px" disabled="disabled">&nbsp;%
+                <!-- &nbsp;%（<b>可接受年化利率上限</b> 利率精确到小数点后一位<span id="rateFanwei">，并且大于等于<span id="rate"> {$deal.rate}</span>%
+            </span>）  -->
+            </span>
+        </div>
+        <!--
+        <div class="field lh30 field3">
+            <label>&nbsp;</label> 
+            <span style="color: black;">借款最低利率由您的借款期限确定，一般来说借款利率越高，借款速度越快</span>
+        </div>
+         -->
+		<div class="field field3">
+		
+			<label class="f12">筹标期限：</label>
+			<span class="pt5 lh30">
+			<!--
+			<select name="enddate" style="height: 22px">
+				{if $deal.enddate gt 0}
+				<option value="{$deal.enddate}">{$deal.enddate}</option>
+				{else}
+				<option value="{$level_list.enddate.$user_info.level_id}">{$level_list.enddate.$user_info.level_id}</option>
+				{/if}
+			</select>天</span>
+			-->
+			<select name="enddate" style="height: 22px">
+				<option value="1" {if $deal.enddate eq 1}selected="selected"{/if}>1</option>
+				<option value="2" {if $deal.enddate eq 2}selected="selected"{/if}>2</option>
+				<option value="3" {if $deal.enddate eq 3}selected="selected"{/if}>3</option>
+				<option value="4" {if $deal.enddate eq 4}selected="selected"{/if}>4</option>
+				<option value="5" {if $deal.enddate eq 5}selected="selected"{/if}>5</option>
+				<option value="6" {if $deal.enddate eq 6}selected="selected"{/if}>6</option>
+				<option value="7" {if $deal.enddate eq 7}selected="selected"{/if}>7</option>
+				<option value="8" {if $deal.enddate eq 8}selected="selected"{/if}>8</option>
+				<option value="9" {if $deal.enddate eq 9}selected="selected"{/if}>9</option>
+				<option value="10" {if $deal.enddate eq 10}selected="selected"{/if}>10</option>
+				<option value="11" {if $deal.enddate eq 11}selected="selected"{/if}>11</option>
+				<option value="12" {if $deal.enddate eq 12}selected="selected"{/if}>12</option>
+				<option value="13" {if $deal.enddate eq 13}selected="selected"{/if}>13</option>
+				<option value="14" {if $deal.enddate eq 14}selected="selected"{/if}>14</option>
+				<option value="15" {if $deal.enddate eq 15}selected="selected"{/if}>15</option>
+				<option value="16" {if $deal.enddate eq 16}selected="selected"{/if}>16</option>
+				<option value="17" {if $deal.enddate eq 17}selected="selected"{/if}>17</option>
+				<option value="18" {if $deal.enddate eq 18}selected="selected"{/if}>18</option>
+				<option value="19" {if $deal.enddate eq 19}selected="selected"{/if}>19</option>
+				<option value="20" {if $deal.enddate eq 20}selected="selected"{/if}>20</option>
+				<option value="21" {if $deal.enddate eq 21}selected="selected"{/if}>21</option>
+				<option value="22" {if $deal.enddate eq 22}selected="selected"{/if}>22</option>
+				<option value="23" {if $deal.enddate eq 23}selected="selected"{/if}>23</option>
+				<option value="24" {if $deal.enddate eq 24}selected="selected"{/if}>24</option>
+				<option value="25" {if $deal.enddate eq 25}selected="selected"{/if}>25</option>
+				<option value="26" {if $deal.enddate eq 26}selected="selected"{/if}>26</option>
+				<option value="27" {if $deal.enddate eq 27}selected="selected"{/if}>27</option>
+				<option value="28" {if $deal.enddate eq 28}selected="selected"{/if}>28</option>
+				<option value="29" {if $deal.enddate eq 29}selected="selected"{/if}>29</option>
+				<option value="30" {if $deal.enddate eq 30}selected="selected"{/if}>30</option>
+			</select> 天</span>
+		</div>
+		<!-- 
+		<div class="field field3" id="monthRepayMoney_box1">
+			<label class="f12">年化收益率：</label> 
+			<span style="color: #cd1223;" id="period_rate" class="lh30"> 0.00%</span>
+		</div>
+		<div class="field field3" id="monthRepayMoney_box2">
+			<label class="f12">期间收益率：</label> 
+			<span style="color: #cd1223;" id="back_period" class="lh30"> 0.00%</span>
+		</div>	
+		 -->
+		<div class="field field3" id="monthRepayMoney_box">
+			<label class="f12">每季还本息：</label> 
+			<span style="color: #cd1223;" id="monthRepayMoney" class="lh30">￥0.00</span>
+		</div>
+		<div class="field field3" id="monthRepayMoney_box2" style="display:none;">
+			<label class="f12">最后一期本金：</label> 
+			<span style="color: #cd1223;" id="total_loan_amount" class="lh30">￥0.00</span>
+		</div>
+		<div class="field field3" style="clear: both;">
+			<label>借款服务费率：</label>
+			<input type="text" value="{if $deal.loan_fee_rate}{$deal.loan_fee_rate}{else}{$default_loan_fee_rate}{/if}" name="loan_fee_rate" id="loan_fee_rate" class="f-input" style="width:50px">&nbsp;%
+			<span class="lh30">平台收取</span>
+		</div>
+		<div class="field field3" style="clear: both;">
+			<label>借款担保费率：</label>
+			<input type="text" value="{if $deal.guarantee_fee_rate}{$deal.guarantee_fee_rate}{else}{$default_guarantee_fee_rate}{/if}" name="default_guarantee_fee_rate" id="default_guarantee_fee_rate" class="f-input" style="width:50px">&nbsp;%
+			<span class="lh30">担保公司收取</span>
+		</div>
+		<div class="field field3">
+			<label>总借款手续费：</label>
+			<span style="color: #cd1223;" id="total_cost_for_loan" class="lh30">￥0.00</span>
+		</div>
+		<style type="text/css">
+				.uc_r_bl_box .field label{ width:140px}
+				.cashdraw_tips {position:absolute; z-index:99999; }
+				.cashdraw_tips .cashdraw_tip_header { background: url("{$TMPL}/images/reg_tip_header_t.gif") no-repeat scroll 0 17px transparent; float: left; height: 47px; position: relative; width: 6px; z-index: 1000; }
+				.cashdraw_tips .cashdraw_tip_body_container { background: url("{$TMPL}/images/reg_tip_bg_bottom.gif") repeat-x scroll center bottom transparent; float: left; margin-left: -1px; padding-bottom: 2px; position: relative; }
+				.cashdraw_tips .cashdraw_tip_body { background: none repeat scroll 0 0 #FFFFFF; border: 1px solid #BBBBBB; float: left; }
+				.cashdraw_tips .cashdraw_tip_body .cashdraw_tip_content { color: #666666; display: block; padding: 5px 9px 4px; width:291px; line-height:20px;}
+				.tiptable { background:#ccc}
+				.tiptable tr.bg td{ background:#fff; padding: 0 5px;text-align:center;}
+		</style>
+		<div style="clear:both"></div>
+		
+		<div class="clearfix">
+			<span class="t_title field field3">收款账号</span>
+	       <div class="field field3">
+	           <label>开户名：</label>
+	           <span><input type="text" readonly="readonly" name="real_name" id="Jcarry_real_name" class="f-input readonly" style="width:100px;" value="{$bankcard_info.card_name}"></span>
+	       </div>
+	       <div class="field field3">
+	          <label> 帐户类型：</label>
+	          <span style="color: #cd1223;" class="lh30">借记卡&nbsp;&nbsp;<span class="f_red">(不支持信用卡)</span></span>
+	       </div>
+		   <div class="field field3">
+				<label class="f12">选择银行：</label>
+				<span class="pt5 lh30" style="float:left;">
+	              <select id="Jcarry_bank_id" name="bank_id" disabled="true">
+	                		<option value="">请选择</option>
+							{foreach from="$bank_list" item="item"}
+							<option value="{$item.id}" day="{$item.day}" {if $item.id eq $bankcard_info.bank_id}selected="selected"{/if}>{$item.name}</option>
+							{/foreach}
+					</select>
+				</span>
+	       </div>
+			<script type="text/javascript" src="{$APP_WEB_STATIC}region.js"></script>	
+			<div class="field field3">
+                <input type="hidden" value="{$bankcard_info.id}" name="bankcard_id">
+                <input type="hidden" value="{$bankcard_info.region_lv1}" id="deflv1">
+                <input type="hidden" value="{$bankcard_info.region_lv2}" id="deflv2">
+                <input type="hidden" value="{$bankcard_info.region_lv3}" id="deflv3">
+                <input type="hidden" value="{$bankcard_info.region_lv4}" id="deflv4">
+				<label class="f12">开户行所在地：</label>
+				<span style="color: #cd1223;" class="lh30">{$LANG.REGION_LV1}</span>
+				<select name="region_lv1" disabled="true">
+						    <option value="0">={$LANG.SELECT_PLEASE}=</option>
+							{foreach from=$region_lv1 item=lv1}
+							<option {if $bankcard_info.region_lv1 eq $lv1.id}selected="selected"{/if} value="{$lv1.id}">{$lv1.name}</option>
+							{/foreach}
+				</select>
+				<span style="color: #cd1223;" class="lh30">{$LANG.REGION_LV2}</span>
+				<select name="region_lv2" disabled="true">
+					<option value="0">={$LANG.SELECT_PLEASE}=</option>
+				</select>
+				<span style="color: #cd1223;" class="lh30">{$LANG.REGION_LV3}</span>
+				<select name="region_lv3" disabled="true">
+					<option value="0">={$LANG.SELECT_PLEASE}=</option>	
+				</select>
+				<span style="color: #cd1223;" class="lh30">{$LANG.REGION_LV4}</span>
+				<select name="region_lv4" id="Jcarry_region_lv4" disabled="true">
+					<option value="0">={$LANG.SELECT_PLEASE}=</option>
+				</select>
+			</div>
+			<div class="field field3" style="clear: both;">
+				<label>开户行网点：</label>
+				<span><input type="text" name="bankzone"  readonly="readonly" id="Jcarry_bankzone" class="f-input readonly" style="width:270px;" value="{$bankcard_info.bankzone}"></span>
+				<span class="lh30">&nbsp;&nbsp;</span>
+			</div>
+			<div class="field field3" style="clear: both;">
+				<label>银行卡号：</label>
+				<span><input type="text" name="bankcard" readonly="readonly" class="f-input readonly"  id="Jcarry_bankcard" style="width:270px;" value="{$bankcard_info.bankcard}"></span>
+			</div>
+			<!-- 
+			<div class="field field3" style="clear: both;">
+				<label>确认卡号：</label>
+				<span><input type="text" name="reBankcard" class="f-input" id="Jcarry_rebankcard" style="width:270px;" value="{$bankcard_info.bankcard}"></span>
+			</div>
+			-->
+			<div class="blank20"></div>
+		</div>
+		
+		<script type="text/javascript">
+			$("#Jcarry_bank_id").change(function(){
+				if($(this).val()=="other"){
+					$("#Jcarry_otherbank").removeClass("hide");
+				} else {
+					$("#Jcarry_otherbank").addClass("hide");
+					$("#Jcarry_otherbank").val("");
+				}
+			});
+			$(document).ready(function(){
+				$("select[name='region_lv1']").bind("change",function(){
+					load_select("1");
+				});
+				$("select[name='region_lv2']").bind("change",function(){
+					load_select("2");
+				});
+				$("select[name='region_lv3']").bind("change",function(){
+					load_select("3");
+				});	
+				$("select[name='region_lv4']").bind("change",function(){
+					load_select("4");
+				});
+				
+				// init region
+				var devlv1Option = $("select[name='region_lv1'] option[value='" + $("#deflv1").val() + "']")[0];
+				if (devlv1Option) {
+					devlv1Option.selected = true;
+					load_select("1");
+					var devlv2Option = $("select[name='region_lv2'] option[value='" + $("#deflv2").val() + "']")[0];
+					if (devlv2Option) {
+					    devlv2Option.selected = true;
+						load_select("2");
+						var devlv3Option = $("select[name='region_lv3'] option[value='" + $("#deflv3").val() + "']")[0];
+						if (devlv3Option) {
+							devlv3Option.selected = true;
+							load_select("3");
+							var devlv4Option = $("select[name='region_lv4'] option[value='" + $("#deflv4").val() + "']")[0];
+							if (devlv4Option) {
+								devlv4Option.selected = true;
+							}
+						}
+					}
+				}
+			});
+			function load_select(lv)
+			{
+				var name = "region_lv"+lv;
+				var next_name = "region_lv"+(parseInt(lv)+1);
+				var id = $("select[name='"+name+"']").val();
+				
+				if(lv==1)
+				var evalStr="regionConf.r"+id+".c";
+				if(lv==2)
+				var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+id+".c";
+				if(lv==3)
+				var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+$("select[name='region_lv2']").val()+".c.r"+id+".c";
+				
+				if(id==0)
+				{
+					var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+				}
+				else
+				{
+					var regionConfs=eval(evalStr);
+					evalStr+=".";
+					var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+					for(var key in regionConfs)
+					{
+						html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+					}
+				}
+				$("select[name='"+next_name+"']").html(html);
+			}
+		</script>
+		
+		
+		<!--
+		<div class="field" id="monthRepayMoney_box">
+			<label>每月还本息：</label> 
+			<span style="color: #cd1223;" id="monthRepayMoney" class="lh30">￥0.00</span>
+		</div>
+		<div class="field" id="LastRepayMoney_box" style="display:none;">
+			<label class="f12">到期需还本金：</label>
+			<span style="color: #cd1223;" id="LastRepayMoney" class="lh30">￥0.00</span>
+		</div>
+		<div class="field">
+			<label class="f12">每月交借款管理费：</label> 
+			<span style="color: #cd1223;" id="managerFee" class="lh30">￥0.00</span>
+		</div>
+		<div class="field">
+			<label class="f12">成交服务费：</label> 
+			<span style="color: red;width: 405px;float: left;display:inline" class="pt5">
+				即风险准备金。借款成功后按照借款成交额一次性从借款中扣除，标准为：{foreach from=$level_list.list item=item name="levelf"}{$item.name}级 {$item.services_fee}%{if !$smarty.foreach.levelf.last}；{/if}{/foreach}。实际收取比例以最终审核评定级别为准。
+			</span>
+		</div>
+		-->
+
+	</div>
+    
+    <!-- 借款保证人信息start by zrs-->
+    <div class="clearfix b_box b_box2">
+	
+		<span class="t_title">借款保证人 </span>
+        <div id="contactertable">
+        </div>
+		<br/>
+        <input type="button" id="addcontacter" value="增加借款保证人" style="position:relative;top:-10px;right:0;margin-left:36px;" />
+        
+    </div>
+    <!-- 借款保证人信息end -->
+	 
+	<div class="clearfix b_box">
+		
+		<span class="t_title">借款基本信息</span>
+		<div class="user_info_item pt15 pb15 pl40">
+			<span class="txt_sty5">发布借款后，您的以下信息将会公开给投资者，作为投资者投资的参考依据。</span>
+		</div>
+		<div style="margin:0 0 0 40px;padding-bottom:15px;border-bottom:1px dashed #ececec">
+				<div class="user_info_item">
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="年龄"> 
+						年龄</label>
+					</span>
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="性别"> 
+						性别</label></span>
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="工作城市"> 
+						工作城市 </label>
+					</span>
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="学历"> 
+						学历</label>
+					</span> 
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="毕业学校"> 
+						毕业学校</label>
+					</span>
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="入学年份"> 
+						入学年份 </label>
+					</span>
+				</div>
+				<div class="user_info_item">
+		  			<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="公司类别"> 
+						公司类别 </label>
+					</span>
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="公司行业"> 
+						公司行业 </label>
+					</span>
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="公司规模"> 
+						公司规模 </label>
+					</span>
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="在现单位工作时间"> 
+						现单位工作时间</label>
+					</span> 
+				</div>
+				
+				<div class="user_info_item">
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="是否结婚"> 
+						是否结婚 </label>
+					</span> 
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="有无购房">
+						有无购房 </label>
+					</span> 
+					<span class="w115">
+						<label><input type="checkbox" disabled="" checked="" value="有无购车"> 
+						有无购车 </label>
+					</span>
+					<span class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="有无车贷"> 
+						有无车贷 </label>
+					</span> 
+					<span style="width: 110px;" class="w115"> 
+						<label><input type="checkbox" disabled="" checked="" value="有无房贷"> 
+						有无房贷 </label>
+					</span>
+				</div>
+			</div>
+			<div class="user_info_item pt15 pb15 pl40">
+				<span class="txt_sty5">以下信息，您可以选择公开给出借人。</span>
+			</div>
+			<div style="padding-left:40px;">
+				<div class="user_info_item">
+					<span class="w115">
+						<label><input type="checkbox" value="1" {if $deal.voffice eq 1}checked="checked"{/if} name="voffice"> 
+						公司名称 </label>
+					</span>
+					<span class="w115"> 
+						<label><input type="checkbox" {if $deal.vposition eq 1 || !$deal}checked="checked"{/if} value="1" name="vposition"> 
+						职位 </label>
+					</span>
+				</div>
+	</div>
+	
+    <!-- 担保公司start -->
+   
+    <div class="clearfix b_box2">
+		
+		<span class="t_title">借款担保公司</span>
+        <div class="pl40" id='redio_check'>
+            {foreach from=$agency key=k item=item}
+            <input type="radio" name='agency_id' value='{$item.id}' {if $deal.agency_id eq $item.id}checked{elseif $k eq 0}checked{/if}><label>{$item.name}</label>
+            {/foreach}
+            <!--<br/>
+             &nbsp;&nbsp;担保费率1.5%&nbsp;&nbsp;担保费率1.5%&nbsp;&nbsp;担保费率1.5% 
+            <br/>-->
+            <div class="agreement-container">
+            	<div class="agreement-content">
+                    {$warrant_temp}
+	            </div>
+	          </div>
+        </div>
+    </div>
+    <!-- 担保公司end -->
+	
+	<div class="clearfix">
+		<span class="t_title">平台服务协议</span>
+		<div style="padding-left:40px;">
+			<div class="agreement-container">
+                  	<div class="agreement-content" id='js_loan_fee_rate'>
+                    {$borrowProtocal_tmp}
+	                 </div>
+	          </div>
+				<div class="user_info_item" style="margin-left: 25px;">
+					<span style="display:block;"><label>
+						<input type="checkbox" id="treaty1" {if $deal.id gt 0}checked{/if}> &nbsp;&nbsp;本人同意使用该担保公司，接受《委托担保合同协议》的所有条款，同意由此发生<span id="guarantee_fee_rate">{if $deal.guarantee_fee_rate}{$deal.guarantee_fee_rate}{else}{$default_guarantee_fee_rate}{/if}</span>%委托担保费用
+					</label></span>
+					<span style="display:block;"><label>
+						<input type="checkbox" id="treaty2" {if $deal.id gt 0}checked{/if}> &nbsp;&nbsp;本人接受《借款人平台服务协议》的所有条款，同意由此发生<span id='fee_rate'>{if $deal.loan_fee_rate}{$deal.loan_fee_rate}{else}{$default_loan_fee_rate}{/if}</span>%服务费用
+					</label></span>
+					<span style="display:block;"><label>
+						<input type="checkbox" id="treaty3" {if $deal.id gt 0}checked{/if}> &nbsp;&nbsp;本人接受《借款合同》、《委托担保合同》的所有条款，同意签署
+					</label></span>
+					<span style="display:block;"><label>
+						<input type="checkbox" id="treaty4" {if $deal.id gt 0}checked{/if}> &nbsp;&nbsp;本人同意以上信息披露要求
+					</label></span>
+				</div>
+			</div>
+		   <div class="blank10"></div>
+		</div>
+		
+		 <!-- 推荐人 begin -->
+	    <div class="clearfix pb20">
+			<span class="t_title">推荐人</span>
+    		<div class="user_info_item pt15 pb15 pl40">
+				<span class="txt_sty5">通常是您联系的信贷经理，可不填</span>
+			</div>
+			<span class="field2 pl40">
+				<label class="f12 b">推荐人姓名</label>：
+				<input type="text" style="width: 155px" class="f-input" value="{$deal.manager}" name="manager">
+			</span>
+			<span class="field2" style="margin-left:180px">
+				<label class="f12 b">联系电话</label>：
+				<input type="text" style="width: 155px" class="f-input" value="{$deal.manager_mobile}" name="manager_mobile">
+			</span>
+		</div>
+		<!-- 推荐人 end -->
+	</div>
+	
+
+	
+	<div class="b_box2" style="text-align: center; margin: 10px 0; color: #4A74CA;">
+		<input type="button" id="saveBtn" class="mbtn save" value="" onclick="saveAndPreview('save');">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input type="button" id="publishBnt" class="mbtn publish" value="" onclick="saveAndPreview('publish');">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input type="submit" id="previewBtn" class="mbtn preview" value="" onclick="$('#J_save_deal_form').attr('target','_blank');$('#J_save_deal_form').attr('action','{url x="index" r="deal#preview"}');">
+	</div>
+</form>
+<div style="display:none" id="hidecontacter">
+    <div class="pid var-box">
+        <div class="field" style="width:100%;">
+            <label>借款保证人姓名：</label> 
+            <input type="text" value="" style="width: 300px" class="f-input" name="guarantorname[]">
+            <input type="hidden" value="" name="guarantorid[]">
+        </div>
+        <div class="field" style="width:100%;">
+            <label>手机号码：</label> 
+            <input type="text" value="" style="width: 300px" class="f-input" name="guarantormobile[]">
+        </div>
+        <div class="field" style="width:100%;">
+            <label>Email：</label> 
+            <input type="text" value="" style="width: 300px" class="f-input" name="guarantoremail[]">
+        </div>
+        <div class="field" style="width:100%;">
+            <label>借款保证人关系：</label> 
+            <span> 
+            <select name="guarantorrelation[]" style="width:150px;height:24px;">
+                <option value="0">请选择</option>
+                {foreach from=$guarantor_relation_list item=item key=key}
+                <option value="{$key}">{$item}</option>
+                {/foreach}
+            </select>
+            </span>
+        </div>
+        <input type='button' onclick='delcontacter($(this));' value='删除' class="var-box-delete">
+    </div>
+</div>
+<script type="text/javascript">
+/**
+ * 获取年化利率
+ *
+ * @copyright  2012-2013	FirstP2P
+ * @since      File available since Release 1.0 -- 2013-06-27 下午23:47:00
+ * @author     Liwei
+ * 
+ */
+jQuery(window).load(function() {
+    changeRepay();
+}); 
+function changeRepay(){
+	var repay_mode = jQuery("#loanType").val();
+	var repay_period = jQuery("#repaytime").val();
+	var loan_demand = jQuery("#borrowamount").val();
+	var rate = $("#apr_hide").val();
+    var manage_fee_rate = $("#loan_fee_rate").val();
+    
+    
+    // 如果是按天到期支付本金收益
+    if(repay_mode == 5)
+    {
+    	$('#jkqx_1').hide();
+    	$('#jkqx_2').show();
+    	repay_period = jQuery("#repaytime_other").val();
+    }
+    else
+    {
+    	$('#jkqx_2').hide();
+        $('#jkqx_1').show();
+    }
+	
+	var url = "{function name="get_domain"}/index.php?ctl=ajax&act=getRepayMoney&repay_mode="+repay_mode+"&repay_period="+repay_period+"&total_loan_amount="+loan_demand+"&rate="+rate+"&manage_fee_rate="+manage_fee_rate;
+	jQuery.getJSON(url,function(json){
+		if(json.status == 1){
+			if(json.data['annualized_rate'] && json.data['annualized_rate'].length>1){
+				var annualized_rate = json.data['annualized_rate'];
+				jQuery("#apr,#apr_hide").val(annualized_rate.replace('%',''));
+				//jQuery("#apr_span").html(annualized_rate.replace('%',''));
+				//jQuery("#rate").html(annualized_rate.replace('%',''));
+			}
+			if(json.data['repay_money']){
+				var repay_money = json.data['repay_money'];
+				jQuery("#monthRepayMoney").html('￥' + round(repay_money,2));
+				jQuery("#total_loan_amount").html('￥' + round(json.data['total_loan_amount'],2));
+			}
+		}
+	});
+}
+    function delcontacter(obj){
+        obj.parent().remove();
+    }
+	var min_rate = 10;
+	jQuery(function(){
+        $('#addcontacter').click(function(){
+            var connum = $('#contactertable .pid').size();
+            if(connum < 10){
+                $('#contactertable').append($('#hidecontacter').html());
+            }else{
+                $.showErr('最多只能添加10个借款保证人！');
+            }
+        });
+        
+		$("#systemImgTab .item").click(function(){
+			$("#systemImgTab .item").css({"border":"1px solid #ccc"});
+			$(this).css({"border":"1px solid red"});
+			$("#systemimgpath").val($(this).attr("dataid"));
+		});
+		
+		$("#J_save_deal_form").submit(function(){
+			if(!checkSaveDealForm(false)){
+				return false;
+			}
+			return true;
+		});
+		
+		$("#repaytime").bind("change",function(){
+			var val= parseInt($(this).val());
+			switch(val){
+				case 3 :
+					min_rate = 10;
+					break;
+				case 6 :
+					min_rate = 11;
+					break;
+				case 9 :
+					min_rate = 12;
+					break;
+				case 12 :
+				case 18 :
+				case 24 :
+					min_rate = 15;
+					break;
+				default:
+					min_rate = 10;
+					break;
+			}
+			
+			$("#minRate").html(min_rate+"%"); 
+		});
+		
+		$("#loanType").bind("change",function(){
+			var val = $(this).val();
+			switch(parseInt(val))
+			{
+				case 1:
+					$("#monthRepayMoney_box label").html("每季还本息：");
+                                        $("#monthRepayMoney_box2").hide();
+					break;
+				case 2:
+					$("#monthRepayMoney_box label").html("每月还本息：");
+                                        $("#monthRepayMoney_box2").hide();
+					break;
+				case 3:
+					$("#monthRepayMoney_box label").html("一次性还本息：");
+                                        $("#monthRepayMoney_box2").hide();
+                                        break;
+				case 4:
+					$("#monthRepayMoney_box label").html("每期还息：");
+                                        $("#monthRepayMoney_box2").show();
+					break;
+				case 5:
+                    $("#monthRepayMoney_box label").html("一次性还本息：");
+                    $("#monthRepayMoney_box2").hide();
+                     break;
+			}
+		});
+		
+		$("#loan_fee_rate, #default_guarantee_fee_rate").keyup(function(){
+            var percent = parseFloat($(this).val());
+            $(".guarantee_fee_rate_change").html(percent);
+            if (percent < 0 || percent >= 100) {
+            	alert('输入值必须在0-100之间');
+            	$(this).val('');
+            }
+        });
+		
+		$("#loan_fee_rate").keyup(function(){
+			$("#fee_rate,#weiyi_rate").html($(this).val());
+            $("#fee_rate_in_contract,#weiyi_rate").html($(this).val());
+		});
+		
+		$("#default_guarantee_fee_rate").keyup(function(){
+            $("#guarantee_fee_rate").html($(this).val());
+        });
+		
+		var js_content = $('#js_loan_fee_rate').html();
+		new_content = js_content.replace("loan_fee_rate","<span id='weiyi_rate'>{if $deal.loan_fee_rate}{$deal.loan_fee_rate}{else}{$default_loan_fee_rate}{/if}</span>");
+		$('#js_loan_fee_rate').html(new_content)
+		
+		$("#borrowamount,#apr,#repaytime,#loanType,#loan_fee_rate,#default_guarantee_fee_rate").bind("blur keyup change",function(){
+			CalculateDeal();
+		});
+		CalculateDeal();
+	});
+	function checkBankInfo(){
+		/*
+		if($("#Jcarry_real_name").val()==""){
+			$.showErr("请输入开户名",function(){
+				$("#Jcarry_real_name").focus();
+			});
+			return false;
+		}
+		if($("#Jcarry_bank_id").val()==""){
+			$.showErr(LANG.PLASE_ENTER_CARRY_BANK,function(){
+				$("#Jcarry_bank_id").focus();
+			});
+			return false;
+		}
+		if($("#Jcarry_bank_id").val()=="other" && $("#Jcarry_otherbank").val()==""){
+			$.showErr(LANG.PLASE_ENTER_CARRY_BANK,function(){
+				$("#Jcarry_bank_id").focus();
+			});
+			return false;
+		}
+		if($("#Jcarry_region_lv4").val()=="0"){
+			$.showErr("请选择开户行所在地",function(){
+				$("#Jcarry_region_lv4").focus();
+			});
+			return false;
+		}
+		*/
+		/*
+		if($("#Jcarry_bankzone").val()==""){
+			$.showErr("请输入开户行网点",function(){
+				$("#Jcarry_bankzone").focus();
+			});
+			return false;
+		}
+		*/
+		/*
+		if($.trim($("#Jcarry_bankcard").val())==""){
+			$.showErr(LANG.PLASE_ENTER_CARRY_BANK_CODE,function(){
+				$("#Jcarry_bankcard").focus();
+			});
+			return false;
+		}
+		if($.trim($("#Jcarry_rebankcard").val())==""){
+			$.showErr(LANG.PLASE_ENTER_CARRY_CFR_BANK_CODE,function(){
+				$("#Jcarry_rebankcard").focus();
+			});
+			return false;
+		}
+		if($.trim($("#Jcarry_bankcard").val())!=$.trim($("#Jcarry_rebankcard").val())){
+			$.showErr(LANG.TWO_ENTER_CARRY_BANK_CODE_ERROR,function(){
+				$("#Jcarry_rebankcard").focus();
+			});
+			return false;
+		}
+		*/
+		return true;
+	};
+	function checkSaveDealForm(checkpic){
+		//$("#icon").val(KE.util.getData('icon'));
+		if($.trim($("#J_save_deal_form #borrowtitle").val())==""){
+			$.showErr("请输入借款标题",function(){
+				$("#J_save_deal_form #borrowtitle").focus();
+			});
+			return false;
+		}
+		
+		if($('#J_save_deal_form #borrowtitle').val().length<2 || $('#J_save_deal_form #borrowtitle').val().length>30){
+			$.showErr("借款详细描述应限制在2-30字之间",function(){
+				$("#J_save_deal_form #borrowtitle").focus();
+			});
+			return false;
+		}
+		
+		
+		
+		/*
+		if(checkpic==true){
+			switch($("#J_save_deal_form input[name='imgtype']:checked").val()){
+				case "upload":
+					if($.trim($("#J_save_deal_form #icon").val())==""){
+						$.showErr("请上传图片",function(){
+							$("body").scrollTop($("#J_save_deal_form #img_icon").offset().top);
+						});
+						return false;
+					}
+					break;
+				case "userImg":
+					break;
+				case "systemImg":
+					if($.trim($("#J_save_deal_form #systemimgpath").val())==0){
+						$.showErr("请选择借款图片",function(){
+							$("#J_save_deal_form #systemimgpath").focus();
+						});
+						return false;
+					}
+					break;
+			}
+		}
+		*/
+		
+		var min_money = {function name="app_conf" v="MIN_BORROW_QUOTA"};
+		var max_money = {function name="app_conf" v="MAX_BORROW_QUOTA"};
+		if($.trim($('#borrowamount').val())=="" || parseInt($('#borrowamount').val()) < min_money || parseInt($('#borrowamount').val()) > max_money){
+			$.showErr("借款金额应该在 "+min_money+" 元至 "+max_money+" 元之前",function(){
+				$("#J_save_deal_form #borrowamount").focus();
+			});
+			return false;
+		}
+		if(parseInt({$user_info.quota}) > 0){
+			if(parseInt($.trim($('#borrowamount').val())) > parseInt(can_use_quota)){
+				$.showErr("输入借款的借款金额超过您的可用额度<br>您当前可用额度为："+can_use_quota,function(){
+					$("#J_save_deal_form #borrowamount").focus();
+				});
+				return false;
+			}
+		}
+		//此处为按照投资期限判断最小借款利率，因为数值暂时不明确，所以暂时隐藏。
+		//2013/06/28 Liwei
+		//if($.trim($('#J_save_deal_form #apr').val())=="" || parseInt($('#J_save_deal_form #apr').val()) > 24 || parseInt($('#J_save_deal_form #apr').val()) < min_rate){
+		//	$.showErr("请正确输入借款利率",function(){
+		//		$("#J_save_deal_form #apr").focus();
+		//	});
+		//	return false;
+		//}
+		
+		if($.trim($('#J_save_deal_form #borrowDesc').val())==""){
+			$.showErr("请输入借款详细描述",function(){
+				$("#J_save_deal_form #borrowDesc").focus();
+			});
+			return false;
+		}
+		
+		if($('#J_save_deal_form #borrowDesc').val().length<5 || $('#J_save_deal_form #borrowDesc').val().length>1000){
+			$.showErr("借款详细描述应限制在5-1000字之间",function(){
+				$("#J_save_deal_form #borrowDesc").focus();
+			});
+			return false;
+		}
+		
+		//检查银行卡信息
+		if (!checkBankInfo()) {
+			return false;
+		}
+		
+		var contacters = $("#contactertable .pid");
+		var hasValidateContacter = false;
+		var emailRegEx = /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/
+        , mobileRegEx = /^1[3456789]\d{9}$/;
+		for (var i = 0; i < contacters.length; i++) {
+			var contacter = $(contacters[i]);
+			var conMob = contacter.find('[name="guarantormobile[]"]').val();
+			var conEmail = contacter.find('[name="guarantoremail[]"]').val();
+			var conRelative = contacter.find('[name="guarantorrelation[]"]').val();
+			
+			if ($.trim(contacter.find('[name="guarantorname[]"]').val())=="")
+            {
+                $.showErr('借款保证人姓名不能为空', function(){
+				    contacter.find('[name="guarantorname[]"]').focus();
+				});
+                return false;
+            }
+			
+			if ($.trim(conMob)=="")
+            {
+                $.showErr('借款保证人手机号码不能为空', function(){
+				    contacter.find('[name="guarantormobile[]"]').focus();
+				});
+                return false;
+            }
+			if (!mobileRegEx.test(conMob))
+            {
+                $.showErr('借款保证人手机号码格式不正确', function(){
+				    contacter.find('[name="guarantormobile[]"]').focus();
+				});
+                return false;
+            }
+			
+			if ($.trim(conEmail)=="")
+            {
+                $.showErr('借款保证人邮箱不能为空', function(){
+				    contacter.find('[name="guarantoremail[]"]').focus();
+				});
+                return false;
+            }
+			if (!emailRegEx.test(conEmail))
+            {
+                $.showErr('借款保证人邮箱格式不正确', function(){
+				    contacter.find('[name="guarantoremail[]"]').focus();
+				});
+                return false;
+            }
+			if (!(conRelative - 0))
+            {
+                $.showErr('请选择借款保证人关系', function(){
+				    contacter.find('[name="guarantorrelation[]"]').focus();
+				});
+                return false;
+            }
+		}
+		
+		if($("#redio_check :radio:checked").length == 0){ 
+			$.showErr("请选择担保公司");
+			return false;
+		}
+		if($("#J_save_deal_form #treaty1:checked").length==0){
+			var rate = "{$default_guarantee_fee_rate}";
+			var manage_fee_rate = $("#default_guarantee_fee_rate").val();
+			if(manage_fee_rate>0){
+				rate = manage_fee_rate;
+			}
+			$.showErr("请同意使用该担保公司，接受《委托担保合同协议》的所有条款，并同意由此发生"+rate+"%委托担保费用",function(){
+				$("#J_save_deal_form #treaty1").focus();
+			});
+			return false;
+		}
+		if($("#J_save_deal_form #treaty2:checked").length==0){
+			var rate = "{$default_loan_fee_rate}";
+			var manage_fee_rate = $("#loan_fee_rate").val();
+			if(manage_fee_rate>0){
+				rate = manage_fee_rate;
+			}
+			$.showErr("请接受《借款人平台服务协议》的所有条款，并同意由此发生"+rate+"%服务费用",function(){
+				$("#J_save_deal_form #treaty2").focus();
+			});
+			return false;
+		}
+		if($("#J_save_deal_form #treaty3:checked").length==0){
+			$.showErr("请接受《借款合同》、《委托担保合同》的所有条款，并同意签署",function(){
+				$("#J_save_deal_form #treaty3").focus();
+			});
+			return false;
+		}
+		if($("#J_save_deal_form #treaty4:checked").length==0){
+			$.showErr("请同意以上信息披露要求",function(){
+				$("#J_save_deal_form #treaty4").focus();
+			});
+			return false;
+		}
+		return true;
+	}
+	function selImgSource(o){
+		var v =  $(o).val();
+		switch(v){
+			case "upload" :
+				$("#upload").show();
+				$("#systemImg").hide();
+				$("#upload_tip").show();
+				break;
+			case "userImg" :
+				$("#upload").hide();
+				$("#systemImg").hide();
+				$("#upload_tip").hide();
+				break;
+			case "systemImg" :
+				$("#upload").hide();
+				$("#systemImg").show();
+				$("#upload_tip").show();
+				break;
+		}
+	}
+	function saveAndPreview(act){
+		if(!checkSaveDealForm(true)){
+			return false;
+		}
+		var url = '{url x="index" r="borrow#savedeal" p="t=save"}';
+		if(act=="publish")
+		{
+			if(!confirm("确定发布吗？发布后将无法修改！")){
+				return false;
+			}
+			url = '{url x="index" r="borrow#savedeal" p="t=publish"}';
+		}
+		
+		$('#J_save_deal_form').attr('target','');
+		$("#J_save_deal_form").attr("action",url);
+		$("#J_save_deal_form").submit();
+		
+	}
+	
+	function CalculateDeal(){
+		if(parseFloat($.trim($("#borrowamount").val())) >0 && parseFloat($.trim($("#apr").val())) > 0){
+			var amo = parseFloat($.trim($("#borrowamount").val()));
+			var inter =  parseFloat($.trim($("#apr").val()));
+			var inters=inter * 100 / 12 /(100 * 100);
+	        var loantype = $("#loanType").val();
+			var value = 0;
+			var load_fee_percent = parseFloat($('#loan_fee_rate').val().replace('%', ''));
+			var guarantee_fee_percent = parseFloat($('#default_guarantee_fee_rate').val().replace('%', ''));
+			//if(parseInt(loantype)==1){
+			//	value = amo*inters;
+			//	$("#LastRepayMoney").html("￥"+formatNum(amo));
+			//}
+			//else{
+	        //	value=amo*(inters * Math.pow(1+inters, $("#repaytime").val())) / (Math.pow(1+inters, $("#repaytime").val())-1);
+	        //}
+			//$("#monthRepayMoney").html("￥"+formatNum(value));
+			//$("#managerFee").html("￥"+formatNum(amo * {function name="app_conf" v="MANAGE_FEE"}/100));
+			$('#total_cost_for_loan').html("￥" + formatNum((load_fee_percent+guarantee_fee_percent) * amo / 100));
+		}
+	}
+</script>

@@ -1,0 +1,118 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script type="text/javascript" src="__TMPL__region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+<div class="main">
+<div class="main_title">{%EDIT}黄金账户冻结申请 <a href="{:u("GoldCharge/apply_list?p=$currentPage")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<form name="edit"  id="formId" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">用户会员名称:</td>
+        <td class="item_input">{$userName}</td>
+    </tr>
+    <tr>
+        <td class="item_title">当前黄金账户余额:</td>
+        <td class="item_input">{$gold}</td>
+    </tr>
+    <tr>
+        <td class="item_title">冻结克重:</td>
+        <td class="item_input"><input type="text" class="textbox require" id="gold" name="gold" value="" onkeyup="value=value.replace(/[^(\-)(\d+)\.(\d\d\d)]/g,'')" style="ime-mode:Disabled" />g&nbsp;&nbsp;&nbsp;&nbsp;<font color='red'>正数为增加冻结克重，负数为减少冻结克重</font></td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+
+<div class="blank5"></div>
+    <table class="form" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan=2 class="topTd"></td>
+        </tr>
+        <tr>
+            <td class="item_title"></td>
+            <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" id="uid" name="uid" value="{$uid}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="GoldCharge" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="lock_gold" />
+            <!--隐藏元素-->
+            <input type="button" class="button" id="submitBtn" value="确认" onclick="checkParams();" />&nbsp;&nbsp;
+            <input type="reset" class="button" value="{%RESET}" onclick="formReset()" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2 class="bottomTd"></td>
+        </tr>
+    </table>
+</form>
+</div>
+
+<script type="text/javascript">
+    function formReset()
+    {
+        document.getElementById('formId').reset();
+    }
+    function checkParams() {
+        var btn = $('#submitBtn');
+        var $input = $('#hkop');
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+
+        var doms = $(".require");
+        var check_ok = true;
+        $.each(doms,function(i, dom){
+            if($.trim($(dom).val()) == '')
+            {
+                 var title = $(dom).parent().parent().find(".item_title").html();
+                 if(!title)
+                 {
+                     title = '';
+                 }
+                 if(title.substr(title.length-1,title.length)==':')
+                 {
+                     title = title.substr(0,title.length-1);
+                 }
+                 if($(dom).val()=='')
+                 TIP = LANG['PLEASE_FILL'];
+                 if($(dom).val()=='0')
+                 TIP = LANG['PLEASE_SELECT'];
+                 alert(TIP+title);
+                 $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                 $(dom).focus();
+                 check_ok = false;
+                 return false;
+            }
+        });
+        if (!check_ok)
+            return false;
+
+        if (confirm("确定要进行此操作吗？")) {
+            $.post("/m.php?m=GoldCharge&a=lock_gold", {
+                'uid':$("#uid").val(),
+                'gold':$("#gold").val(),
+            }, function(rs){
+                var rsobj = eval( "(" + rs +  ")");
+                alert(rsobj.msg);
+                if (rsobj.code >= 1) {
+                    window.location.href = '{$jumpUrl}';
+                }
+                $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            });
+            return true;
+        } else {
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return false;
+        }
+    }
+</script>
+
+<include file="Public:footer" />

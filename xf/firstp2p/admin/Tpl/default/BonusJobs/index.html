@@ -1,0 +1,70 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">批量发送规则</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();"/>
+    <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+    </div>
+    <div class="blank5"></div>
+    
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>编号</th>
+            <th>规则名</th>
+            <th>红包组数/人次</th>
+            <th>每组红包个数</th>
+            <th>每组红包总额</th>
+            <th>红包使用限制</th>
+            <th>领用人会员组号</th>
+            <th>领用人tag</th>
+            <th>多个tag之间的关系</th>
+            <th>红包组有效天数</th>
+            <th>红包使用有效天数</th>
+            <th>发送开始时间</th>
+            <th>发送结束时间</th>
+            <th>添加规则时间</th>
+            <th>有效状态</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td>{$item.id}</td>
+            <td>{$item.name}</td>
+            <td>{$item.group_count}</td>
+            <td>{$item.bonus_count}</td>
+            <td>{$item.group_money}</td>
+            <td>{$item.use_type_name}</td>
+            <td>{$item.user_group}</td>
+            <td>{$item.user_tag}</td>
+            <td>{$item.tag_relation}</td>
+            <td>{$item.group_validity}</td>
+            <td>{$item.bonus_validity}</td>
+            <td>{$item.start_time|to_date}</td>
+            <td>{$item.end_time|to_date}</td>
+            <td>{$item.create_time|to_date}</td>
+            <td><if condition="$item['is_effect'] eq 1">有效<else/>无效</if></td>
+            <td>
+                <a href="javascript:edit('{$item.id}')">编辑</a>&nbsp;
+                <a href='/m.php?m=BonusJobs&a=mobile_csv&id={$item.id}'>导出手机号</a>&nbsp;
+                <!-- <a href=''>发送记录</a> -->
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 --> 
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

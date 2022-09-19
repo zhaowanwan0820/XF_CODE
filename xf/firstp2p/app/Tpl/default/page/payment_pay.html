@@ -1,0 +1,34 @@
+{include file="inc/header_v1.html"}
+
+<!--private js&css start-->
+<link href="{$TMPL_NEW}/css/user.css" rel="stylesheet" type="text/css">
+<!--private js&css end-->
+
+
+<div class="w980 mauto clearfix">
+
+    <section>
+        <div class="pay">
+            <h1>立即支付</h1>
+            <div class="pay_con">
+                <p class="mb15">立即支付<span class="pay_con_span">[</span>订单号：{$payment_notice.notice_sn}<span class="pay_con_span">]</span></p>
+                <p>
+                    <a href="#" class="pay_button" onclick="window.open('{$payment_action}','payment')">
+                        {if $payment_id eq 4}前往先锋在线支付{else}前往易宝在线支付{/if}
+                    </a>
+                </p>
+                <p>支付总额：<span class="color-red1">{$payment_notice.money}</span></p>
+                <p class="pay_other"><a href="{url x="index" r="uc_order#modify" p="id=$order.id"}">选择其他银行支付</a>
+                    <!--<a href="#">充值记录</a>--></p>
+            </div>
+        </div>
+    </section>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".pay_button,.payLink").bind("click",function(){
+            $.weeboxs.open(APP_ROOT+"/index.php?ctl=payment&act=tip&id={$payment_notice.id}", {contentType:'ajax',showButton:false,title:LANG['PAYMENT_TIP'],width:460,height:150,type:'wee'});
+        });
+    });
+</script>
+{include file="inc/footer.html"}

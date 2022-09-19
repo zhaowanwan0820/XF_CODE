@@ -1,0 +1,33 @@
+<!-- $Id -->
+
+{include file="pageheader.htm"}
+
+
+
+
+<form name="theForm" action="order.php?act=user_debt_rollback" method="post"  onsubmit="return checkSubmit()">
+  <div class="list-div">
+    <table cellpadding="3" cellspacing="1">
+      <tr>
+        <td colspan="3"><strong>{$lang.order_sn}：</strong><input name="order_sn" type="text"  size="30" autocomplete="off"/></td>
+      </tr>
+    </table>
+  </div>
+  <p align="center">
+    <input type="submit" class="button" id="submit" value="{$lang.sure}"/>
+    <input type="button" value="{$lang.button_cancel}" class="button" onclick="history.back()" />
+  </p>
+</form>
+
+
+{insert_scripts files="uploader/jquery.js"}
+{literal}
+<script language="JavaScript">
+  function checkSubmit(){
+    $("#submit").attr('disabled','disabled');
+    return true;
+  }
+</script>
+{/literal}
+
+{include file="pagefooter.htm"}

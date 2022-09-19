@@ -1,0 +1,71 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__Common/js/tablesort.js' />
+<div class="main">
+<div class="main_title">批量用户绑卡查询-【易宝支付】</div>
+<div class="blank5"></div>
+
+<?php foreach ($result as $userId => $data) { ?>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="11" class="topTd" >&nbsp; </td></tr>
+    <tr class="row" >
+        <th width="50">用户ID</th>
+        <th width="120">用户名</th>
+        <th width="80">姓名</th>
+        <th width="80">P2P可用</th>
+        <th width="80">P2P冻结</th>
+        <th width="100" class="sort-num">P2P总额</th>
+        <th>操作</th>
+    </tr>
+    <tr class="row" >
+        <td width="50"><?php echo $userId;?></td>
+        <td width="120"><?php echo $userInfo[$userId]['user_name'];?></td>
+        <td width="80"><?php echo $userInfo[$userId]['real_name'];?></td>
+        <td width="80"><?php echo $userInfo[$userId]['money'];?></td>
+        <td width="80"><?php echo $userInfo[$userId]['lock_money']?></td>
+        <td width="100" class="sort-num"><?php echo $userInfo[$userId]['sump2p'];?></td>
+        <td>
+            <a href="?m=User&a=account_detail&id=<?php echo $userId; ?>&listRows=200" target="_blank">明细</a>
+            <a href="?m=PaymentCheck&a=yeepayOrder&id=<?php echo $userId; ?>" target="_blank">订单对账</a>
+            <a href="?m=PaymentCheck&a=userLog&id=<?php echo $userId; ?>" target="_blank">资金记录对账</a>
+            </td>
+    </tr>
+    <tr class="row" >
+        <td colspan="7">
+            <?php if (empty($data)):?>
+            暂无绑定银行卡!
+            <?php else:?>
+            <table class="dataTable" style="border:none;">
+                <tr>
+                    <th width="200">绑定银行卡名称</th>
+                    <th width="200">绑定银行卡</th>
+                    <th width="100">银行短码</th>
+                    <th width="120">绑定关系ID</th>
+                    <th width="100">操作</th>
+                </tr>
+                <?php $yeepayService = new \core\service\YeepayPaymentService();?>
+    <?php foreach($data as $id => $item) { ?>
+    <?php $bankName = $yeepayService->getBankNameByCode($item['bankcode']);?>
+                <tr>
+                    <td><?php echo $bankName;?></td>
+                    <td><?php echo $item['cardtop'].'******'.$item['cardlast'];?></td>
+                    <td><?php echo $item['bankcode'];?></td>
+                    <td><?php echo $item['bindid']?></td>
+                    <td><a href="?m=PaymentCheck&a=yeepayResetCard&bindId=<?php echo $item['bindid']?>&id=<?php echo $userId;?>&cardtop=<?php echo $item['cardtop'];?>&cardlast=<?php echo $item['cardlast'];?>">解绑</a></td>
+                </tr>
+    <?php } //end foreach ?>
+    <?php endif;?>
+            </table>
+        </td>
+    </tr>
+</table>
+<?php } //end foreach ?>
+
+<div class="blank5"></div>
+</div>
+<include file="Public:footer" />

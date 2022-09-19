@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我收到的红包</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/m-base.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/m-common.css" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/hongbao.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <input type="hidden" id="hiddenToken" value="{$token}">
+    <!--下面注视的是贺卡红包banner-->
+    {if $happy_new_year_status eq 1}
+        <div class="hb_banner"><img src="{$STATIC_SITE}/mobile/app/v2/images/640-206.jpg" width="100%" height="103"></div>
+    {/if}
+    <div class="hb-mian">
+    	
+        {if $hyjkMember}
+        <!--汇源1盒-->
+        {if $regGiftTag && !$regGiftRevTag}
+    	<div class="hb-center huiyuan clearfix">
+                <div class="fl hbc_left hbc_pad">
+                    <img src="{$STATIC_SITE}/mobile/app/v2/images/hy_img03.jpg">
+                </div>
+                <div class="hbc_right">
+                   <h3>汇源金玉米果汁1L*1盒</h3>
+                   <h4>汇源集团员工专享</h4>
+                   <p>5月16~18现场指定地点兑换</p>
+                   <!-- <div class="received_1"></div> -->
+                </div>
+        </div>
+        {/if}
+        <!--汇源1箱-->
+        {if $dealGiftTag && !$dealGiftRevTag}
+        <div class="hb-center huiyuan clearfix">
+                <div class="fl hbc_left hbc_pad">
+                    <img src="{$STATIC_SITE}/mobile/app/v2/images/hy_img03.jpg">
+                </div>
+                <div class="hbc_right">
+                   <h3>汇源金玉米果汁1L*6盒</h3>
+                   <h4>汇源集团员工专享</h4>
+                   <p>5月16~18现场指定地点兑换</p>
+                   <!-- <div class="received_1"></div> -->
+                </div>
+        </div>
+        {/if}
+        <!--汇源1盒已领取-->
+        {if $regGiftRevTag}
+        <div class="hb-center huiyuan clearfix">
+                <div class="fl hbc_left hbc_pad">
+                    <img src="{$STATIC_SITE}/mobile/app/v2/images/hy_img03.jpg">
+                </div>
+                <div class="hbc_right">
+                   <h3>汇源100%果汁1L装1盒</h3>
+                   <h4>汇源集团员工专享</h4>
+                   <p>现场指定地点兑换</p>
+                   <div class="received"></div>
+                </div>
+        </div>
+        {/if}
+        {if $dealGiftRevTag}
+        <!--汇源1箱已领取-->
+        <div class="hb-center huiyuan clearfix">
+                <div class="fl hbc_left hbc_pad">
+                    <img src="{$STATIC_SITE}/mobile/app/v2/images/hy_img03.jpg">
+                </div>
+                <div class="hbc_right">
+                   <h3>汇源金玉米果汁1L*6盒</h3>
+                   <h4>汇源集团员工专享</h4>
+                   <p>现场指定地点兑换</p>
+                   <div class="received"></div>
+                </div>
+        </div>
+        {/if}
+        <!--汇源结束-->
+        {/if}
+        
+        <div class="invf_top">
+            <ul id="menu">
+                <li class="select"><span>待使用<em></em></span></li>
+                <li><span>已使用<em></em></span></li>
+                <li><span>已过期<em></em></span></li>
+            </ul>
+        </div>
+        <div class="invf_txt">
+            <div id="tb0">
+                <div class="tb0_main">
+                    {foreach from=$usefulList.list item=bonus}
+                    <div class="hb-center clearfix">
+                        <a class="clearfix hb_black" href="/bonus/show?id={$bonus.id}&site_id={$site_id}">
+                            <div class="fl hbc_left {if $bonus.type neq 14}hbc_pad{/if}">
+                                <h1>{$bonus.bonus_type}</h1>
+                                <!--h2>投资10000.00元以上使用</h2-->
+                                <h3>有效期限：{$bonus.expired_format}</h3>
+                                {if $bonus.type eq 14}
+                                    <h2>{$bonus.from_type}</h2>
+                                {/if}
+                            </div>
+                            <div class="fr hbc_right">
+                                <em>￥</em><span>{function name="format_price" v="$bonus.money" b=0}</span>
+                            </div>
+                        </a>
+                    </div>
+                    {/foreach}
+                </div>
+                <div class="hb-more">
+                    {if $usefulList.count gt 10}
+                    <a href="javascript:void(0);" class="tb0-more">点击加载更多</a>
+                    {else}
+                        <p class='pb10 f16'>没有更多红包</p>
+                    {/if}
+                </div>
+            </div>
+            <div id="tb1">
+                <div class="tb1_main">
+                    {foreach from=$usedList.list item=bonus}
+                    <div class="hb-center clearfix">
+                        <a class="clearfix hb_black" href="/bonus/show?id={$bonus.id}&site_id={$site_id}">
+                            <div class="fl hbc_left {if $bonus.type neq 14}hbc_pad{/if}">
+                                <h1>
+                                    {$bonus.bonus_type}</h1>
+                                <!--h2>
+                                投资10000.00元以上使用</h2-->
+                                <h3>
+                                    有效期限：{$bonus.expired_format}</h3>
+                                {if $bonus.type eq 14}
+                                    <h2>{$bonus.from_type}</h2>
+                                {/if}
+                            </div>
+                            <div class="fr hbc_right">
+                                <em>￥</em><span>{function name="format_price" v="$bonus.money" b=0}</span>
+                            </div>
+                        </a>
+                    </div>
+                    {/foreach}
+                </div>
+                <div class="hb-more">
+                    {if $usedList.count gt 10}
+                    <a href="javascript:void(0);" class="tb1-more">点击加载更多</a>
+                    {else}
+                        <p class='pb10 f16'>仅显示最近30天内的红包</p>
+                    {/if}
+                </div>
+            </div>
+            <div id="tb2">
+                <div class="tb2_main">
+                    {foreach from=$expiredList.list item=bonus}
+                    <div class="hb-center clearfix">
+                        <a class="clearfix hb_black" href="/bonus/show?id={$bonus.id}&site_id={$site_id}">
+                            <div class="fl hbc_left {if $bonus.type neq 14}hbc_pad{/if}">
+                                <h1>
+                                    {$bonus.bonus_type}</h1>
+                                <!--h2>
+                                投资10000.00元以上使用</h2-->
+                                <h3>
+                                    有效期限：{$bonus.expired_format}</h3>
+                                {if $bonus.type eq 14}
+                                    <h2>{$bonus.from_type}</h2>
+                                {/if}
+                            </div>
+                            <div class="fr hbc_right">
+                                <em>￥</em><span>{function name="format_price" v="$bonus.money" b=0}</span>
+                            </div>
+                        </a>
+                    </div>
+                    {/foreach}
+                </div>
+                <div class="hb-more">
+                    {if $expiredList.count gt 10}
+                    <a href="javascript:void(0);" class="tb2-more">点击加载更多</a>
+                    {else}
+                        <p class='pb10 f16'>仅显示最近30天内的红包</p>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{$STATIC_SITE}/mobile/app/v2/js/zepto.js" type="text/javascript"></script>
+    <script src="{$STATIC_SITE}/mobile/app/v2/js/touch.min.js" type="text/javascript"></script>
+    <script src="{$STATIC_SITE}/mobile/app/v2/js/hongbao.js" type="text/javascript"></script>
+<script>
+(function ($) {
+    $(function () {
+        (function () {
+            var site_id = '{$site_id}';
+            var $navli = $("#menu li");
+            $navli.bind("click", function () {
+                $(this).addClass("select").siblings().removeClass("select");
+                var index = $navli.index(this);
+                $(".invf_txt>div").eq(index).show()
+                        .siblings().hide();
+            });
+
+            //点击加载更多
+            var token = $("#hiddenToken").val();
+
+            var $tb0 = $(".tb0_main");
+            var page0 = 1;
+            $(".tb0-more").bind("click", function () {
+                page0++;
+                $.ajax({
+                    url: '/bonus/ajaxGet?token='+token+'&type=1&page='+page0,
+                    type: 'POST',
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        var dataObj = eval(data);
+                        console.log(dataObj);
+                        $.each(dataObj.data.list, function(idx, item) {
+                            var html = '';
+                            html += '<div class="hb-center clearfix">';
+                            html += '    <a class="clearfix hb_black" href="/bonus/show?id='+item.id+'&site_id='+site_id+'">';
+                            if(item.type == 14){
+                                html += '        <div class="fl hbc_left">';
+                            }else {
+                                html += '        <div class="fl hbc_left hbc_pad">';
+                            }
+                            html += '            <h1>';
+                            html += '                '+item.bonus_type+'</h1>';
+                            html += '            <!--h2>';
+                            html += '            投资10000.00元以上使用</h2-->';
+                            html += '            <h3>';
+                            html += '                有效期限：'+item.expired_format+'</h3>';
+                            if(item.type == 14){
+                                html += '<h2>';
+                                html += ''+item.from_type+''
+                                html += '</h2>';
+                            }
+                            html += '        </div>';
+                            html += '        <div class="fr hbc_right">';
+                            html += '            <em>￥</em><span>'+item.money+'</span>';
+                            html += '        </div>';
+                            html += '    </a>';
+                            html += '</div>';
+                            $tb0.append(html);
+                        });
+                        if (page0 * 10 >= dataObj.data.count) {
+                            $(".tb0-more").html("<p class='pb10 f16'>没有更多红包</p>").addClass("hb-no").removeClass("tb0-more");
+                        }
+                    }
+                });
+            });
+
+            var $tb1 = $(".tb1_main");
+            var page1 = 1;
+            $(".tb1-more").bind("click", function () {
+                page1++;
+                $.ajax({
+                    url: '/bonus/ajaxGet?token='+token+'&type=2&page='+page1,
+                    type: 'POST',
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        var dataObj = eval(data);
+                        console.log(dataObj);
+                        $.each(dataObj.data.list, function(idx, item) {
+                            var html = '';
+                            html += '<div class="hb-center clearfix">';
+                            html += '    <a class="clearfix hb_black" href="/bonus/show?id='+item.id+'&site_id='+site_id+'">';
+                            if(item.type == 14){
+                                html += '        <div class="fl hbc_left">';
+                            }else {
+                                html += '        <div class="fl hbc_left hbc_pad">';
+                            }
+                            html += '            <h1>';
+                            html += '                '+item.bonus_type+'</h1>';
+                            html += '            <!--h2>';
+                            html += '            投资10000.00元以上使用</h2-->';
+                            html += '            <h3>';
+                            html += '                有效期限：'+item.expired_format+'</h3>';
+                            if(item.type == 14){
+                                html += '<h2>';
+                                html += ''+item.from_type+''
+                                html += '</h2>';
+                            }
+                            html += '        </div>';
+                            html += '        <div class="fr hbc_right">';
+                            html += '            <em>￥</em><span>'+item.money+'</span>';
+                            html += '        </div>';
+                            html += '    </a>';
+                            html += '</div>';
+                            $tb1.append(html);
+                        });
+                        if (page1 * 10 >= dataObj.data.count) {
+                            $(".tb1-more").html("<p class='pb10 f16'>仅显示最近30天内的红包</p>").addClass("hb-no").removeClass("tb1-more");
+                        }
+                    }
+                });
+            });
+
+            var $tb2 = $(".tb2_main");
+            var page2 = 1;
+            $(".tb2-more").bind("click", function () {
+                page2++;
+                $.ajax({
+                    url: '/bonus/ajaxGet?token='+token+'&type=3&page='+page2,
+                    type: 'POST',
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        var dataObj = eval(data);
+                        console.log(dataObj);
+                        $.each(dataObj.data.list, function(idx, item) {
+                            var html = '';
+                            html += '<div class="hb-center clearfix">';
+                            html += '    <a class="clearfix hb_black" href="/bonus/show?id='+item.id+'&site_id='+site_id+'">';
+                            if(item.type == 14){
+                                html += '        <div class="fl hbc_left">';
+                            }else {
+                                html += '        <div class="fl hbc_left hbc_pad">';
+                            }
+                            html += '            <h1>';
+                            html += '                '+item.bonus_type+'</h1>';
+                            html += '            <!--h2>';
+                            html += '            投资10000.00元以上使用</h2-->';
+                            html += '            <h3>';
+                            html += '                有效期限：'+item.expired_format+'</h3>';
+                            if(item.type == 14){
+                                html += '<h2>';
+                                html += ''+item.from_type+''
+                                html += '</h2>';
+                            }
+                            html += '        </div>';
+                            html += '        <div class="fr hbc_right">';
+                            html += '            <em>￥</em><span>'+item.money+'</span>';
+                            html += '        </div>';
+                            html += '    </a>';
+                            html += '</div>';
+                            $tb2.append(html);
+                        });
+                        if (page2 * 10 >= dataObj.data.count) {
+                            $(".tb2-more").html("<p class='pb10 f16'>仅显示最近30天内的红包</p>").addClass("hb-no").removeClass("tb2-more");
+                        }
+                    }
+                });
+            });
+
+
+        })();
+    });
+
+})(Zepto);
+</script>
+</body>
+</html>
+

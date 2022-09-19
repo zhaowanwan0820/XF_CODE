@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="format-detection" content="telephone=no,email=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>授权绑定</title>
+        <link rel="apple-touch-icon-precomposed" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.png');?>">
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.png');?>">
+        <link href="<?php echo $this->asset->makeUrl('v3/css/event/m-base.css');?>" rel="stylesheet" type="text/css">
+        <link href="<?php echo $this->asset->makeUrl('v3/css/event/m-common.css');?>" rel="stylesheet" type="text/css">
+        <link href="<?php echo $this->asset->makeUrl('v3/css/virtual.css');?>" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/event/zepto.min.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/event/common.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/virtual.js');?>"></script>
+        <style class="JS-old_style">
+            body {background: #f5f5f9;}
+            .ts_dialog { top: 30%;}
+            .p_login_new .reg_top {margin: 0 15px;color: #909ba8;}
+            .hd_dialog .dialog_con .dialog_text{overflow-y:auto;}
+            .p_login_new .ui_title{ height:45px; text-align:center; font-size:18px; line-height:45px; background:#fafafa; position:relative; border: 1px solid #d9d9d9; color: #41474d;}
+            .p_login_new .ui_title a{ color:#41474d; font-size:14px;}
+            .p_login_new .ui_title .ui_back{ position:absolute; left:10px;}
+            .p_login_new .ui_icon_back{ background:url(<?php echo $this->asset->makeUrl('v3/images/oauth/mobile/back.png');?>) no-repeat; width:9px; height:20px; display:inline-block; background-size:9px 17px; margin:0 5px 0 0px; vertical-align:middle;}
+        </style>
+    </head>
+    <body>
+        <div class="p_login_new">
+            <div class="ui_title">快速注册或绑定账户</div>
+            <div style="margin:10px;text-align:center;">
+                <div style="display:inline-block;">
+                <img style="float:left;width:30px;height:30px;" src="{$appInfo.appLogo}">
+                <div style="float:left;width:30px;height:30px;margin:0px 10px;display:inline-block;"><img style="width:19px;height:12px;margin-top:8px;" src="<?php echo $this->asset->makeUrl('v3/images/common/wx_arrow.png');?>"></div>
+                <img style="float:left;width:30px;height:30px;" src="<?php echo $this->asset->makeUrl('skins/default/images/favicon.png');?>">
+                </div>
+            </div>
+            <div class="f14 tc gray">
+                {if $mobile}
+                    验证即登录，未注册将自动创建理财帐号    
+                {else}
+                    立刻创建理财账号
+                {/if}
+            </div>
+            <div id="JS-regpanel" class="ui_register">
+                <div class="form_box">
+                    <div class="border_b">
+                        <div class="ui_tel_tips">+86</div>
+                        <input {if $mobile } readonly="readonly" {/if} type="tel" class="ui_reg_input JS-input_mobile_sc" placeholder="手机号码（用于接收验证码）" value="{$mobile_sc}">
+                        <input type="hidden" class="ui_reg_input JS-input_mobile"  value="{$mobile}">
+                    </div>
+                    <div class="border_b">
+                        <!--<div class="ui_input code_input ui_reg_input JS-input_captcha"></div>-->
+                        <input type="tel" class="ui_reg_input JS-input_captcha" placeholder="右侧数字">
+                        <div class="yz_img"><img class="JS-verifyimg" src="" width="80"></div>
+                    </div>
+                </div>
+                <div>
+                    <a class="JS-regbtn reg_finish_btn reg_finish_btn_dis" href="javascript:void(0);">同意协议并绑定</a>
+                </div>
+                <p class="tc pt10 f14 gray">同意<span class="JS-regterm blue" style="cursor: pointer">《绑定协议》</span></p>
+            </div>
+            <div id="JS-regverifypanel" class="ui_mask" style="display:none;">
+                <div class="ui_dialog ts_dialog">
+                    <div class="ui_dialog_close JS-closebtn"></div>
+                    <div class="dialog_con">
+                        <div class="title">填写短信验证码</div>
+                        <div class="dialog_text">
+                            <p class="JS-mobilelabel">已向186××××0001发送验证短信</p>
+                            <p>请输入其中6位数字</p>
+                        </div>
+                        <div class="ipt_box">
+                            <input class="ui_yz_input fl JS-input_vcode" placeholder="短信验证码" type="tel">
+                            <!--<div class="ui_input dx_input ui_yz_input fl JS-input_vcode"></div>-->
+                            <span class="reset_btn JS-mcodebtn">重新发送</span>
+                        </div>
+                        <input type="submit" value="完成" class="reg_finish_btn reg_finish_btn_dis JS-regbtn">
+                    </div>
+                </div>
+            </div>
+            <script>
+                $("body").height(window.screen.height);
+                $(function() {
+                    //var vir_input = new virtualKey($(".dx_input"), {
+                    //    placeholder: "短信验证码",
+                    //    delayHiden: function() {
+                    //        //checkInput();
+                    //        _updateFinishRegBtn();
+                    //    },
+                    //    focusFn: function() {
+                    //        _updateFinishRegBtn();
+                    //    }
+                    //});
+                    //var vir_input2 = new virtualKey($(".code_input"), {
+                    //    placeholder: "右侧数字",
+                    //    delayHiden: function () {
+                    //        //checkInput();
+                    //        _updateMcodeRegbtn();
+                    //    },
+                    //    focusFn: function () {
+                    //        _updateMcodeRegbtn();
+                    //    }
+                    //});
+
+                    $.getUrlParam = function (name) {
+                        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                        var r = window.location.search.substr(1).match(reg);
+                        if (r != null) return unescape(r[2]); return null;
+                    }
+                    var new_height = window.screen.height;
+                    if ($.getUrlParam("app_height") != null) {
+                        new_height = $.getUrlParam("app_height");
+                    }
+                    $("body").height(new_height + "px");
+                });
+                // 验证码逻辑
+                $('#JS-regpanel .JS-verifyimg').click(function() {
+                    $('#JS-regpanel .JS-verifyimg').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+                });
+                $('#JS-regpanel .JS-verifyimg').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+
+                // 点击注册时发送验证码逻辑
+                var _tmpRegData = {};
+                var _inMcodeRequest = false;
+                var _mcoderegbtnenable = false;
+                // 更新点击注册领红包按钮状态
+                function _updateMcodeRegbtn() {
+                    //无手机号bug修复
+                    var mobile = $("#JS-regpanel .JS-input_mobile").val().trim();
+                    var mobile_sc = $("#JS-regpanel .JS-input_mobile_sc").val().trim();
+                    if ("" != mobile_sc && "" == mobile) {
+                        mobile = mobile_sc;
+                    }
+
+                    var enable = !_inMcodeRequest && mobile != "" && $("#JS-regpanel .JS-input_captcha").val().trim() != "";
+
+                    if (enable) {
+                        $("#JS-regpanel .JS-regbtn").removeClass("reg_finish_btn_dis");
+                    } else {
+                        $("#JS-regpanel .JS-regbtn").addClass("reg_finish_btn_dis");
+                    }
+                    _mcoderegbtnenable = enable;
+                }
+                $("#JS-regpanel .JS-input_mobile").bind("input", _updateMcodeRegbtn);
+                $("#JS-regpanel .JS-input_captcha").bind("input", _updateMcodeRegbtn);
+                $("#JS-regpanel .JS-regbtn").bind("click", function(){
+                    if (_inMcodeRequest == true || !_mcoderegbtnenable) return;
+                    var mobile = $("#JS-regpanel .JS-input_mobile").val().trim();
+                    var mobile_sc = $("#JS-regpanel .JS-input_mobile_sc").val().trim();
+                    var captcha = $("#JS-regpanel .JS-input_captcha").val().trim();
+                    if ("" != mobile_sc && "" == mobile) {
+                        mobile = mobile_sc;
+                    }
+                    //var captcha = $(".code_input .btn_key").html()*1;
+                    if (!P2PWAP.util.checkCaptcha(captcha)) {
+                        P2PWAP.ui.showErrorTip('图形验证码不正确');
+                        return;
+                    }
+                    _tmpRegData['type'] = 11;
+                    _tmpRegData['active'] = 1;
+                    _tmpRegData['mobile'] = mobile;
+                    _tmpRegData['mobile_sc'] = mobile_sc;
+                    _tmpRegData['captcha'] = captcha;
+                    _inMcodeRequest = true;
+                    _updateMcodeRegbtn();
+                    P2PWAP.util.ajax('/user/MCode', 'post', function(json) {
+                        _inMcodeRequest = false;
+                        _updateMcodeRegbtn();
+                        if (json['code'] == 1) {
+                            _showVerifyMobileDialog();
+                        } else {
+                            _tmpRegData = {};
+                            P2PWAP.ui.showErrorTip(json['message']);
+                        }
+                    }, function(msg) {
+                        _tmpRegData = {};
+                        _inMcodeRequest = false;
+                        _updateMcodeRegbtn();
+                        P2PWAP.ui.showErrorTip(msg);
+                    }, _tmpRegData);
+                });
+
+                // 验证手机框逻辑
+                var _inRegRequest = false;
+                var _reMcodeAjax = null;
+                var _reMcodeTimer = null;
+                var _finishRegbtnenable = false;
+                function _updateFinishRegBtn() {
+                    var enable = !_inRegRequest && $("#JS-regverifypanel .JS-input_vcode").val().trim() != "";
+                    //var enable = !_inRegRequest && $(".dx_input .btn_key").html() * 1 != "";
+                    if (enable) {
+                        $("#JS-regverifypanel .JS-regbtn").removeClass("reg_finish_btn_dis");
+                    } else {
+                        $("#JS-regverifypanel .JS-regbtn").addClass("reg_finish_btn_dis");
+                    }
+                    _finishRegbtnenable = enable;
+                }
+                $("#JS-regverifypanel .JS-input_vcode").bind("input", _updateFinishRegBtn);
+
+                // 重新获取验证码逻辑
+                var _reMcodeBtn = $("#JS-regverifypanel .JS-mcodebtn");
+                function _cleanMcodeBtn() {
+                    if (_reMcodeTimer == null) return;
+                    clearInterval(_reMcodeTimer);
+                    _reMcodeTimer = null;
+                    _reMcodeBtn.removeClass('dis_reset').text('重新发送');
+                }
+                function _updateMcodeBtn() {
+                    var timeRemained = 60;
+                    _reMcodeBtn.addClass('dis_reset').text(timeRemained + '秒后可重发');
+                    _reMcodeTimer = setInterval(function() {
+                        timeRemained--;
+                        if (timeRemained < 1) {
+                            _cleanMcodeBtn();
+                        } else {
+                            _reMcodeBtn.text(timeRemained + '秒后可重发');
+                        }
+                    }, 1000);
+                }
+                _reMcodeBtn.bind("click", function() {
+                    if (_reMcodeAjax != null || _reMcodeTimer != null) return;
+                    _reMcodeBtn.addClass('dis_reset').text('正在发送');
+                    _reMcodeAjax = P2PWAP.util.ajax('/user/MCode', 'post', function(obj) {
+                        _reMcodeAjax = null;
+                        if (obj.code == 1){
+                            _updateMcodeBtn();
+                        } else {
+                            P2PWAP.ui.showErrorTip(obj.message);
+                            _reMcodeBtn.removeClass('dis_reset').text('重新发送');
+                        }
+                    }, function(msg) {
+                        _reMcodeAjax = null;
+                        P2PWAP.ui.showErrorTip(msg);
+                        _reMcodeBtn.removeClass('dis_reset').text('重新发送');
+                    }, _tmpRegData);
+                });
+                function _showVerifyMobileDialog() {
+                    $("#JS-regverifypanel .JS-mobilelabel").text("已向" + _tmpRegData['mobile_sc'] + "发送短信验证码");
+                    //$(".ui_input .btn_key").html("");
+                    $("#JS-regverifypanel .JS-input_vcode").val("");
+                    _updateMcodeBtn();
+                    P2PWAP.ui.addModalView($("#JS-regverifypanel")[0]);
+                    $("#JS-regverifypanel").show();
+                }
+                $("#JS-regverifypanel .JS-closebtn").bind("click", function() {
+                    if (_inRegRequest) return;
+                    if (_reMcodeAjax) {
+                        _reMcodeAjax.abort();
+                        _reMcodeAjax = null;
+                    }
+                    _cleanMcodeBtn();
+                    P2PWAP.ui.removeModalView($("#JS-regverifypanel")[0]);
+                    $("#JS-regverifypanel").hide();
+                });
+
+                //注册逻辑
+                $("#JS-regverifypanel .JS-regbtn").bind("click", function(){
+                    if (_inRegRequest || !_finishRegbtnenable) return;
+                    if (_reMcodeAjax != null) return;
+                    //var vcode = $(".dx_input .btn_key").html() * 1;
+                    var vcode = $("#JS-regverifypanel .JS-input_vcode").val().trim();
+                    if (!P2PWAP.util.checkMcode(vcode)) {
+                        P2PWAP.ui.showErrorTip('请填写6位数字验证码');
+                        return;
+                    }
+                    _inRegRequest = true;
+                    _updateFinishRegBtn();
+
+                    var regdata = {};
+                    regdata['mobile'] = _tmpRegData['mobile'];
+                    regdata['code'] = vcode;
+                    regdata['device'] = "wap";
+                    regdata['open_client_id'] = "{$open_client_id}";
+                    P2PWAP.util.ajax('/bind/done', 'post', function(json) {
+                        _inRegRequest = false;
+                        _updateFinishRegBtn();
+                        if (!json) {
+                            P2PWAP.ui.showErrorTip("服务器忙，请稍后重试");
+                        } else if (json.code == 0) {
+                            window.location.href = json.data.jump;
+                        } else {
+                            P2PWAP.ui.showErrorTip(json.msg);
+                        }
+                    }, function(msg) {
+                        _inRegRequest = false;
+                        _updateFinishRegBtn();
+                        P2PWAP.ui.showErrorTip(msg);
+                    }, regdata);
+                });
+                var xy_html = '<div class="msb_center">\
+                <p>在您申请创建{$appInfo.appName}账户或申请将您的{$appInfo.appName}账户与网信帐号绑定之前，\
+            请仔细阅读本确认书，并同意本确认书。一旦点击“创建帐号并绑定”或“同意协议并绑定”按钮，即默认您充分了解并同意本确认书所有内容。</p>\
+            <p>一、账号绑定后实现的功能 </p>\
+            <p>1.您的{$appInfo.appName}账户是已登录状态，进入网信提供的理财频道，同意授权页面后，网信会获取您的{$appInfo.appName}账户的相关注册信息</p>\
+            <p>2.首次进入理财频道，网信会自动帮您创建或者您自行绑定已有的网信账户。</p>\
+            <p>3.账号绑定完成后，您可以在理财频道进行投资等相关操作。</p>\
+            <p>二、授权 </p>\
+            <p>为实现上述功能，您同意并授权网信通过技术方式实现如下操作： 您的{$appInfo.appName}账户的相关注册信息\
+                    （包括唯一用户编号、手机号、身份证、银行卡）同步给网信。 </p>\
+                <p>三、账号绑定解除</p>\
+                <p>若您不想继续使用上述功能，在符合账号解除绑定条件的前提下，您可主动申请解除账号绑定。 </p>\
+                <p>此外，在以下情形下您的账户绑定关系也将被解除：</p>\
+                <p>（1） 因账户安全等安全因素考虑，网信强制解除您账号绑定关系；</p>\
+                <p>（2） 建立绑定关系的两个账号中，任一方账号注销成功，绑定关系将自动解除； </p>\
+                <p>（3） 用户违反法律法规国家政策的； </p>\
+                <p>（4） 用户违反本确认书、网信服务协议、微博用户协议或其相关规定的；</p>\
+                <p>（5） 其他需要解除绑定的。</p>\
+            </div>';
+
+                $(".JS-regterm").bind("click", function(){
+                    P2PWAP.ui.showNoticeDialog('网信账号绑定服务协议', xy_html);
+                });
+            </script>
+        </div>
+    </body>
+</html>

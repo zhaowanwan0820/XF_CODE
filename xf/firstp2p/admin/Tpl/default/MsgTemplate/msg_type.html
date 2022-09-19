@@ -1,0 +1,89 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+function msg_type_add(){
+    $.weeboxs.open(ROOT+'?m=MsgTemplate&a=msg_type_add', {contentType:'ajax',showButton:false,title:'添加分类',width:420,height:150});
+}
+function msg_type_edit(id){
+    $.weeboxs.open(ROOT+'?m=MsgTemplate&a=msg_type_edit&id='+id, {contentType:'ajax',showButton:false,title:'修改分类',width:420,height:150});
+}
+function msg_type_copy(id,type_name){
+    $.weeboxs.open(ROOT+'?m=MsgTemplate&a=msg_type_copy&id='+id, {contentType:'ajax',showButton:false,title:'将复制“'+type_name+'”下的所有模板',width:450,height:150});
+}
+
+function msg_type_del()
+{
+    idBox = $(".key:checked");
+    if(idBox.length == 0)
+    {
+        alert(LANG['DELETE_EMPTY_WARNING']);
+        return;
+    }
+    idArray = new Array();
+    $.each( idBox, function(i, n){
+        idArray.push($(n).val());
+    });
+    id = idArray.join(",");
+    if(confirm(LANG['CONFIRM_DELETE'])){
+        $.ajax({ 
+             url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=msg_type_del&id="+id, 
+             dataType: "json",
+             success: function(obj){
+                 $("#info").html(obj.info);
+                 if(obj.status==1){
+                     alert('删除成功');
+                     location.href=location.href;
+                 }
+             }
+        });
+    }
+}
+</script>
+<div class="main">
+    <div class="main_title">短信、邮件模板分类</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="msg_type_add();" />
+    <input type="button" class="button" value="批量删除" onclick="msg_type_del();" />
+    </div>
+    <div class="blank5"></div>
+
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="14" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check"
+                onclick="CheckAll('dataTable')"></th>
+            <th width="50px">编号</th>
+            <th>分类名称</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td>{$item.id}</td>
+            <td>{$item.type_name}</td>
+            <td>{$item.create_time|to_date}</td>
+            <td>
+            <a href="javascript:void(0)" onclick="javascript:msg_type_edit('{$item.id}')">修改</a> &nbsp;
+            <a href="/m.php?m=MsgTemplate&a=index&id={$item.id}&from=msg_type">查看模板</a> &nbsp;
+            <a href="/m.php?m=MsgTemplate&a=msg_type_del&id={$item.id}" onclick="return confirm('确定要删除吗?')">删除</a>
+        </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 --> 
+    <div class="blank5"></div>
+</div>
+<include file="Public:footer" />

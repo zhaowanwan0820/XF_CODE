@@ -1,0 +1,315 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user_web2.css');?>" />
+<link rel="stylesheet" type="text/css" href="/static/v1/js/widget/ui/jquery-ui-1.10.3.custom.min.css">
+<script src="/static/v1/js/widget/ui/jquery-ui-1.10.3.custom.js"></script>
+
+
+<div class="user_right">
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1 class="fl"><i class="ico_huankuan"></i>还款计划</h1>
+            <div class="fg_line"></div>
+            <ul class="huank_nav fl">
+            <li>
+                <a href="{url x="index" r="account/refund"}">还 款</a>
+            </li>
+            <li>
+                <a href="{url x="index" r="account/refund?status=1"}">已还清</a>
+            </li>
+            <li class="select">
+                <a href="#">还款详情</a>
+            </li>
+        </ul>
+        </div>
+        
+        <div class="tab_con">
+            <ul  class="info-hk">
+                <h2>{$deal.name}</h2>
+                <li>
+                    借款金额： <em class="color-yellow1">{function name="format_price" v=$deal.borrow_amount}</em>
+                </li>
+                <li>
+                    年化借款利率： <em class="color-yellow1">{function name="number_format" v=$deal.rate f=2}%</em>
+                </li>
+                <li>
+                    期限：
+                    <em class="color-yellow1">{if $deal.loantype == 5}
+                    {$deal.repay_time}天
+                {else}
+                    {$deal.repay_time}个月
+                {/if}</em>
+                </li>
+                <li>
+                    已还总额：
+                    <em class="color-yellow1">{function name="format_price" v=$deal.repay_money f=2}</em>
+                </li>
+                <li>
+                    待还余额：
+                    <em class="color-yellow1">{function name="format_price" v=$deal.remain_repay_money f=2}</em>
+                </li>
+                <li>
+                    借款类型：
+                    <em class="color-yellow1">{$deal.loantype_name}</em>
+                </li>
+            </ul>
+            <form onsubmit="javascript:return false;">
+            <section>
+                <div class="clearfix lh30 pt15">
+                    <div class="list-div clearfix">
+                        <table cellpadding="1" cellspacing="1" class="datatable mb30">
+                            <colgroup>
+                            <!--<col width="50">-->
+                            <col width="122">
+                            <col width="100">
+                            <col width="100">
+                            <col width="100">
+                            <col width="70">
+                            <col width="70">
+                            <col width="70">
+                            <col width="70">
+                            <col width="80"></colgroup>
+                        <thead>
+                            <tr>
+                                <!--<th></th>-->
+                                <th>还款日</th>
+                                <th>已还(元)</th>
+                                <th>待还(元)</th>
+                                <th>待还本息(元)</th>
+                                <th>咨询费(元)</th>
+                                <th>担保费(元)</th>
+                                <th>手续费(元)</th>
+                                <th>逾期(元)</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $idx=0;?>
+                            {foreach from=$loan_list item=loan key=key}
+                            <tr>
+                                <!--异步处理，去除前台还款，20141228-->
+                                <!--<td>
+                                    {if $loan.status neq 0}
+                    &nbsp;
+                    {else}
+                                    <?php ++$idx;?>
+                                    <input type="radio" name="periodNumber" {if $loan.can_repay } <?php if($idx==1):?>
+                                    checked="checked"
+                                    <?php endif;?>
+                                    {/if} {if !$loan.can_repay } disabled="disabled" {/if} value="{$loan.id}">
+                    {/if}
+                                </td>-->
+                                <td id="repay_time_{$loan.id}">{function name="to_date" v=$loan.repay_time f="Y-m-d"}</td>
+                                <td>
+                                    <em class="color-gray">
+                                        {if $loan.status neq 0}
+                                                {function name="number_format" v=$loan.repay_money f=2}
+                                            {else}
+                                                0.00
+                                            {/if}
+                                    </em>
+                                </td>
+                                <td>
+                                    <em class="color-yellow1">
+                                        {if $loan.status eq 0}
+                                                {function name="number_format" v=$loan.repay_money f=2}
+                                            {else}
+                                                0.00
+                                            {/if}
+                                    </em>
+                                </td>
+                                <td>
+                                    <em class="color-gray" id="waiting_{$loan.id}">
+                                        {if $loan.status eq 0}
+                                                {function name="number_format" v=$loan.printerest f=2}
+                                            {else}
+                                                0.00
+                                            {/if}
+                                    </em>
+                                </td>
+                                <td>
+                                    <em class="color-gray" id="consult_fee_{$loan.id}">
+                                        {if $loan.status eq 0}
+                                            {function name="number_format" v=$loan.consult_fee f=2}
+                                        {else}
+                                            0.00
+                                        {/if}
+                                    </em>
+                                </td>
+                                <td>
+                                    <em class="color-gray" id="guarantee_fee_{$loan.id}">
+                                        {if $loan.status eq 0}
+                                            {function name="number_format" v=$loan.guarantee_fee f=2}
+                                        {else}
+                                            0.00
+                                        {/if}
+                                    </em>
+                                </td>
+                                <td>
+                                    <em class="color-gray" id="loan_fee_{$loan.id}">
+                                        {if $loan.status eq 0}
+                                        	{function name="number_format" v=$loan.loan_fee f=2}
+                                        {else}
+                                            0.00
+                                        {/if}
+                                    </em>
+                                </td>
+                                <td>
+                                    <em class="color-yellow1" id="overdue_{$loan.id}">
+                                        {if $loan.status eq 0}
+                                                {function name="number_format" v=$loan.fee_of_overdue f=2}
+                                            {else}
+                                                0.00
+                                            {/if}
+                                    </em>
+                                </td>
+                                <td>
+                                    <em class="color-red">
+                                        {if $loan.status eq 0}
+                    待还
+                    {elseif $loan.status eq 1}
+                    准时还款
+                    {elseif $loan.status eq 2}
+                    逾期还款
+                    {elseif $loan.status eq 3}
+                    严重逾期
+                    {elseif $loan.status eq 4}
+                    提前还款
+                    {/if}
+                                    </em>
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                    <p class="lh30 clearfix">
+                        总计还款：{function name="format_price" v=$deal.total_repay_money f=2}
+                        <br/>
+                        我的可用余额：
+                        <span class="color-yellow1">{function name="format_price" v=$user_info.money}</span>
+                        <a href="/account/charge" class="blue">充值</a>
+                        <br/>
+                        <!-- <input type="submit" id="J_repay_borrow_money" class="{if $applied_prepay}but-gray{else}but-gray but-blue{/if}" {if $applied_prepay}disabled="disabled"{/if} value="确认还款"> --> <!--异步处理，去除前台还款，20141228-->
+                        <!--<a href="javascript:void();" class="{if $cannot_prepay || $applied_prepay || $overdue }but-gray{else}but-gray but-blue{/if}" {if $cannot_prepay || $applied_prepay || $overdue } disabled="disabled" {/if}>提前还款</a>
+                    {if $applied_prepay}
+                    <div class="mt15">*已提交提前还款申请，请等待审核通过</div>
+                    {/if}-->
+                </p>
+            </div>
+        </div>
+    </section>
+</form>
+</div>
+<span class="blank20"></span>
+</div>
+</div>
+<span class="blank20"></span>
+
+<div id="dialog-message" title="还款明细" style="display:none;">
+<table class="datatable">
+<tr>
+    <td width="150">还款日</td>
+    <td id="dialog-repay_time"></td>
+</tr>
+<tr>
+    <td>待还本息</td>
+    <td id="dialog-waiting"></td>
+</tr>
+<tr>
+    <td>逾期费用</td>
+    <td id="dialog-overdue"></td>
+</tr>
+</table>
+</div>
+
+<script type="text/javascript">
+    var is_repay_lock = false;
+    jQuery(function(){
+        $("#refundTab tr").hover(function(){
+            if(!$(this).hasClass('highlight')){
+                $(this).addClass("cur");
+            }
+        },function(){
+            $(this).removeClass("cur");
+        });
+
+        $("#prepay").click(function(){
+            var url = APP_ROOT+"/index.php?ctl=uc_deal&act=prepay&id={$deal.id}";
+            $.weeboxs.open(url,
+                {boxid:'prepay_box'
+                ,contentType:'iframe'
+                ,showButton:true
+                ,showCancel:false
+                ,showOk:false
+                ,title:"提前还款申请"
+                ,width:450
+                ,height:360
+                ,type:'wee'});
+        });
+
+        var do_submit = function(){
+            if($("input[name='periodNumber']:checked").length == 0){
+                $.showErr("还款失败,请顺序还款!","","提示");
+                return false;
+            }
+            if(is_repay_lock){
+                $.showErr("正在处理中，请稍后!","","提示");
+                return false;
+            }
+            $("#payTip").show();
+            is_repay_lock = true;
+            var query = new Object();
+            query.ids = "";
+            $("input[name='periodNumber']:checked").each(function(){
+                query.ids += $(this).val()+",";
+            });
+            query.ids = query.ids.substr(0,query.ids.length - 1);
+            $.ajax(
+                {url:APP_ROOT + "/account/repay?id={$deal.id}",
+                data:query,
+                type:"post",
+                dataType:"json",
+                success:function(result){
+                    is_repay_lock = false;
+                    $("#payTip").hide();
+                    if(result.status==1){
+                        $("#J_repay_borrow_money").removeAttr("disabled").css("background" , "#25aae2");
+                        $.showErr("还款成功！",
+                            function(){
+                            window.location.href = '{url x="index" r="account/refund"}';
+                            }
+                        ,"提示");
+                    }else{
+                        alert(result.info);
+                    }
+                }});
+        };
+        $("#J_repay_borrow_money").removeAttr("disabled").click(function(){
+            var repay_id = $('input:radio[name="periodNumber"]:checked').val();
+            var $t = $(this);
+            if(!repay_id){
+                $.showErr("还款失败,请顺序还款!","","提示");
+                return false;
+            };
+
+            $("#dialog-repay_time").html($("#repay_time_"+repay_id).html());
+            $("#dialog-waiting").html($("#waiting_"+repay_id).html());
+            $("#dialog-overdue").html($("#overdue_"+repay_id).html());
+            $("#dialog-message").dialog({
+                //autoOpen: false,
+                height: 240,
+                width: 300,
+                modal: true,
+                dialogClass : "convention",
+                buttons: {
+                    确认: function(){
+                        $t.css("background" , "#e8ebf2").attr("disabled" , "disabled");
+                        $(this).dialog("close");
+                        do_submit();
+                    },
+                    取消: function(){
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        });
+    });
+</script>

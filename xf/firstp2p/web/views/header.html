@@ -1,0 +1,161 @@
+{if app_conf('TPL_HEADER')}
+<?php echo $this->fetch(app_conf('TPL_HEADER')); ?>
+{else}
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if isset($page_title) && $page_title}{$page_title} - {/if}{if isset($show_site_titile) && ($show_site_titile eq 1)}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+<link rel="apple-touch-icon-precomposed" href="{$APP_SKIN_PATH}images/favicon.png" type="image/x-icon" />
+<link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.png" type="image/x-icon" />
+<meta name="keywords" content="{if isset($page_keyword) && $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+<meta name="description" content="{if isset($page_description) && $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+<script>
+   var  status_switch = {function name="app_conf" v="SWITCH_DEAL_INFO_DISPLAY"};
+<?php /** 限制图片大小*/ ?>
+   var VAR_FILESIZE = {$max_image_size};
+<?php /** 是否企业用户*/ ?>
+   var isEnterprise = {if $user_info.user_type eq 1}1{else}0{/if};
+<?php /** 是否强制密码修改 */ ?>
+   var forceChangePwd = {if $user_info.force_new_passwd eq 1}1{else}0{/if};
+</script>
+
+{if isset($rss_title) && $rss_title}
+<link title="{$rss_title}" type="application/rss+xml" rel="alternate" href="{$rss_url}" />
+{/if}
+
+    {if isset($is_index) && $is_index eq 1}
+<?php echo $this->asset->renderAll(1); ?>
+{else}
+<!--[if lte IE 9]>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/html5shiv.js');?>"></script>
+<![endif]-->
+<?php echo $this->asset->renderAll(); ?>
+{/if}
+
+{if app_conf("TEMPLATE_ID") neq 1}
+<link rel="stylesheet" type="text/css" href="{function name="parse_css_site" v="css/style.css"}" />
+{/if}
+<script type="text/javascript">
+var APP_ROOT = '{$APP_ROOT}';
+{if app_conf("APP_MSG_SENDER_OPEN") eq 1}
+var send_span = {function name="app_conf" v="SEND_SPAN"}000;
+{/if}
+var USER_INFO = {if $user_info}1{else}0{/if};
+</script>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/header_footer.css');?>" />
+
+<!--public js&css end -->
+
+</head>
+
+<body>  <!--头部开始-->
+    <header class="m_header clearfix">
+        <div class="top">
+            <div class="w1100 clearfix">
+                <div class="fl color_red public">{function name="get_adv" x="首页通告_2015"}</div>
+                {insert name="load_user_tip"}
+            </div>
+        </div>
+        <div class="clearfix bg_whtie">
+            <div class="w1100 clearfix">
+                <a class="logo" href="/"></a>
+                <div class="my_account">
+                <div class="drop_t"></div>
+                <div class="drop_b">
+                    <a href="/account"><i class="ac_icon ml15"></i>我的账户<i class="icon_arrow ml5"></i></a>
+                     {foreach from=$nav_list item=nav_item key=key}
+                        {if $nav_item.name eq "我的p2p"}
+                            {if $nav_item.sub_nav}
+                            <ul>
+                                {foreach from=$nav_item.sub_nav item=sub_item key=sub_key}
+                                    <li {if $sub_key eq count($nav_item.sub_nav) -1}class="nobor"{/if}><a href="{$sub_item.url}" target="{if $sub_item.blank eq 1}_blank{/if}">{$sub_item.name}</a></li>
+                                {/foreach}
+                            </ul>
+                            {/if}
+                        {/if}
+                     {/foreach}
+                </div>
+            </div>
+                <nav>
+                    <ul>
+                         {foreach from=$nav_list item=nav_item key=key}
+                            {if $nav_item.name neq "我的p2p"}
+                                {if $nav_item.name neq "基金理财" || !$isEnterprise}
+                                <li class="{if $nav_item.sub_nav}j_showMenu{/if} {if isset($nav_item.current) && $nav_item.current eq 1}select{/if}">
+                                    <a href="{$nav_item.url}" target="{if $nav_item.blank eq 1}_blank{/if}">
+                                        {if $nav_item.sub_nav}<span>{$nav_item.name}</span><i class="g-pos-i"></i>{else}{$nav_item.name}{/if}
+                                    </a>
+                                </li>
+                                {/if}
+                            {/if}
+                         {/foreach}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <!--头部结束-->
+
+    {if $MODULE_NAME eq "deal" && $ACTION_NAME eq "index" && (app_conf('TEMPLATE_ID') eq 1 || app_conf('TEMPLATE_ID') eq 7 || app_conf('TEMPLATE_ID') eq 6)}
+        {if $deal.type_id eq 11}
+        <adv adv_id="详情页车贷banner">
+        {elseif $deal.type_id eq 12}
+        <adv adv_id="详情页房贷banner">
+        {/if}
+    {/if}
+
+    <!--面包屑导航开始-->
+    {if isset($nav) && $nav}
+    <section>
+        <div class="fix_width">
+            <div class="m-nav">
+                <a href="/">首页</a>
+                    {foreach from=$nav item=n}
+                    <i></i> <label>{if isset($n.url) && $n.url}<a href="{$n.url}">{$n.text}</a>{else}{$n.text}{/if}</label>
+                    {/foreach}
+            </div>
+        </div>
+    </section>
+    {/if}
+    <!--面包屑导航结束-->
+
+    <div class="{if isset($in_preset_page) && $in_preset_page eq 1}{else}wrap{/if}">
+{/if}
+<script type="text/javascript">
+(function($){
+    var config = null;
+
+    $(function() {
+        //启动我的账户逻辑
+        if (USER_INFO == 1) {
+            myAccount();
+        }
+    })
+    //我的账户
+    function myAccount() {
+        var ele = $('.my_account');
+        var ele_msg = $('.j_showMenu2');
+        ele.hover(
+            function(){
+                ele.addClass("select");
+            },
+            function(){
+                ele.removeClass("select");
+            }
+        );
+        ele_msg.hover(
+            function(){
+                ele_msg.addClass("select");
+            },
+            function(){
+                ele_msg.removeClass("select");
+            }
+        )
+    }
+})(jQuery, "firstp2p common.js");
+</script>

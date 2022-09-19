@@ -1,0 +1,45 @@
+{if $lend_list}
+<table class="data-table">
+  <thead>
+    <tr>
+      <th style="padding-left:15px;text-align:left">投资标题</th>
+      <th></th>
+      <th style="text-align:left">年化收益率</th>
+      <th style="text-align:left">投资金额</th>
+      <th style="text-align:left">借款期限</th>
+      <th>状态</th>
+      <th>投资时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    {foreach from=$lend_list item="lend"}
+    <tr>
+      <td class="cell-icon">
+        <!-- <i class="icon-type icon-type-{$lend.type_id}"></i> -->
+        <img src="{$lend.loan_icon}" width="60" height="60" class="img_b" alt="{$lend.loan_name}" title="{$lend.loan_name}">
+      </td>
+      <td class="cell-type"><a href="{url x="index" r="deal" p="id=$lend.deal_id"}" title='{$lend.loan_name}'>{function name="cutstr" v=$lend.loan_name}</a></td>
+      <td class="cell-interest">{function name="format_rate_for_show" value=$lend.rate}%</td>
+      <td class="cell-money">{function name="format_price" v=$lend.money}</td>
+      <td class="cell-term">{$lend.repay_time}{if $lend.loantype == 5}天{else}个月{/if}</td>
+      <td class="cell-status">
+        {if $lend.deal_status eq 2 || $lend.deal_status eq 4 || $lend.deal_status eq 5}
+        <img src="{$TMPL}/images/check_ok.png">
+        {elseif  $lend.deal_status eq 3}
+        <img src="{$TMPL}/images/check_error.png">
+        {else}
+        <img src="{$TMPL}/images/wait.png">
+        {/if}
+      </td>
+      <td class="cell-date">
+        {function name="to_date" v=$lend.create_time f="Y-m-d"}
+        {function name="to_date" v=$lend.create_time f="H:i"}
+      </td>
+    </tr>
+    {/foreach}
+  </tbody>
+</table>
+<div class="pages">{$pages}</div>
+{else}
+<div class="empty-box">没有记录</div>
+{/if}

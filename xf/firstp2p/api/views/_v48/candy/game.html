@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>信宝游戏</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        .gameAll{
+            padding:25px 15px 0 15px;
+        }
+        .gameAll .recommend{
+            margin-bottom:2px;
+        }
+        .gameAll .recommend i{
+            display:inline-block;
+            width:2px;
+            height:12px;
+            background:#EE4634;
+        }
+        .gameAll .recommend span{
+            font-size:15px;
+            font-weight:700;
+            margin-left:2px;
+        }
+        .gameAll .game_banner{
+            list-style: none;
+            padding-left:5px;
+            padding-right:5px;
+        }
+        .gameAll .game_banner li{
+            padding-top:11px;
+            padding-bottom:24px;
+            border-top:1px solid #DDDDDF;
+        }
+        .gameAll .game_banner .border_none{
+            border:none;
+        }
+        .gameAll .game_banner li span{
+            display:inline-block;
+            font-size:14px;
+        }
+        .gameAll .game_banner li a{
+            display: block;
+            background-size:100% 100%;
+            width:100%;
+            height:190px;
+            margin-top: 12px;
+        }
+        .gameAll .game_banner li .game_a1{
+            background-image: url('<?php echo $this->asset->makeAppUrl("v4.8/images/candy/tree.png");?>');
+        }
+        .gameAll .game_banner li .game_a2{
+            background-image: url('<?php echo $this->asset->makeAppUrl("v4.8/images/candy/guess.png");?>');
+        }
+    </style>
+</head>
+<body>
+    {include file="api/views/_v492/candysnatch/snatch_zhuge.html"}
+    <div class="gameAll">
+        <div class="recommend">
+            <i></i>
+            <span>今日推荐</span>
+        </div>
+        <ul class="game_banner">
+            <li class="border_none JS_xbs">
+                <span>信宝树经典继续，多倍信宝等您拿</span>
+                <a href="https://game.ncfwx.com/game/xbtreev2/index.html?code=9bzEX7&from=ncfwx&token={$token}&wxb=true" class="game_a1"></a>
+            </li>
+            <li class="JS_hlcyc">
+                <span>欢乐猜一猜经典继续，多倍信宝等您拿</span>
+                <a href="https://game.ncfwx.com/game/xb666v2/index.html?code=4OrnbA&from=ncfwx&token={$token}&site_id=1&wxb=true" class="game_a2"></a>
+            </li>
+        </ul>
+    </div>
+    <script>
+        window.onload = function(){
+            setTimeout(function(){
+                zhuge.track("进入信宝游戏集合页");
+            },1000)
+        }
+        var JS_xbs = document.getElementsByClassName("JS_xbs")[0];
+        var JS_hlcyc = document.getElementsByClassName("JS_hlcyc")[0];
+        JS_xbs.onclick=function(){
+            zhuge.track("信宝游戏集合页_点击情况",{
+                "游戏入口":"信宝树"
+            })
+        }
+        JS_hlcyc.onclick=function(){
+            zhuge.track("信宝游戏集合页_点击情况",{
+                "游戏入口":"欢乐猜一猜"
+            })
+        }
+    </script>
+</body>
+</html>

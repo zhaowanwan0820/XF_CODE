@@ -1,0 +1,59 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        项目编号：<input type="text" class="textbox" name="project_id" value="{:trim($_REQUEST['project_id'])}" size="8"/>
+        <input type="hidden" value="DtProject" name="m" />
+        <input type="hidden" value="assetDetail" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />&nbsp;<a href="{:u("DtProject/index")}" class="back_list">{%BACK_LIST}</a>
+    </form>
+</div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr>
+        <td rowspan="2" class="row">余额</td>
+        <td>待投本金金额</td>
+        <td><?=$data['noMappingMoney'];?></td>
+    </tr>
+    <tr>
+        <td>已投资产余额</td>
+        <td><?=$data['hasMappingMoney'];?></td>
+    </tr>
+    <tr>
+        <td rowspan="3" class="row">转让/退出</td>
+        <td>转让/退出未到账金额</td>
+        <td><?=$data['redeemingPrincipal'];?></td>
+    </tr>
+    <tr>
+        <td>待转让/退出本金</td>
+        <td><?=$data['noredeemPrincipal'];?></td>
+    </tr>
+    <tr>
+        <td>已转让/退出本金</td>
+        <td><?=$data['redeemPrincipal'];?></td>
+    </tr>
+    <tr>
+        <td rowspan="2" class="row">利息</td>
+        <td>待付利息</td>
+        <td><?=$data['norepayInterest'];?></td>
+    </tr>
+    <tr>
+        <td>已付利息</td>
+        <td><?=$data['repayInterest'];?></td>
+    </tr>
+    <tr>
+        <td rowspan="2" class="row">标的利息</td>
+        <td>标的已收利息</td>
+        <td><?=$data['p2pRepayEarnings'];?></td>
+    </tr>
+    <tr>
+        <td>标的待收利息</td>
+        <td><?=$data['p2pNorepayEarnings'];?></td>
+    </tr>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,672 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/duotou.js' />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("DtProject/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form id="addform" name="add" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">项目名称:</td>
+        <td class="item_input">   <!-- <span class="tip_span"></span> -->
+        <input type="text" class="textbox require" name="name" id="name"  value="<?= $data['name']?>" />
+        <span id="name_tip" style="color:red"></span>
+        </td>
+
+    </tr>
+    <tr>
+        <td class="item_title">自定义标签:</td>
+        <td class="item_input">
+            前tag名称:<input type="text" class="textbox" name="tag_before_name"  id = "tag_before_name" value="<?php echo $data['tagBeforeName']?>" />
+            描述:<input type="text" class="textbox" size="60" name="tag_before_desc" id = "tag_before_desc" value="<?php echo $data['tagBeforeDesc']?>"> <br>
+            后tag名称:<input type="text" class="textbox" name="tag_after_name"  id = "tag_after_name" value="<?php echo $data['tagAfterName']?>" />
+            描述:<input type="text" class="textbox" size="60" name="tag_after_desc" id = "tag_after_desc" value="<?php echo $data['tagAfterDesc']?>">
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">分类:</td>
+        <td class="item_input">
+        <select name="category_id">
+            <option value="0" <?php if($data['categoryId']==0):?> selected="selected" <?php endif;?>>无</option>
+            <option value="1" <?php if($data['categoryId']==1):?> selected="selected" <?php endif;?>>机构担保标</option>
+        </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">担保机构:</td>
+        <td class="item_input">
+            <select name="guarantee_id">
+                <option value="0">==无担保机构==</option>
+                <foreach name="deal_agency" item="agency_item">
+                    <option value="{$agency_item.id}" <if condition="$data['guaranteeId'] eq $agency_item['id']">selected="selected"</if>>
+                        <if condition="$agency_item['short_name'] neq ''">{$agency_item.short_name}({$agency_item.name})<else/>{$agency_item.name}</if>
+                    </option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">咨询机构:</td>
+        <td class="item_input">
+            <select name="consult_id" class="require" >
+                <option value="0">=={%NO_SELECT_AGENCY}==</option>
+                <foreach name="deal_advisory" item="advisory_item">
+                    <option value="{$advisory_item.id}" <if condition="$data['consultId'] eq $advisory_item['id']">selected="selected"</if>>
+                        <if condition="$advisory_item['short_name'] neq ''">{$advisory_item.short_name}<else/>{$advisory_item.name}</if>
+                    </option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">管理机构:</td>
+        <td class="item_input">
+            <select name="manage_id" class="require">
+                <option value="0">=={%NO_SELECT_AGENCY}==</option>
+                <foreach name="deal_manage" item="agency_item">
+                    <option value="{$agency_item.id}" <if condition="$data['manageId'] eq $agency_item['id']">selected="selected"</if>>
+                    <if condition="$agency_item['short_name'] neq ''">{$agency_item.short_name}({$agency_item.name})<else/>{$agency_item.name}</if>
+                    </option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">基础年化收益率:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="rate_year_base" id="rate_year_base" value="<?=$data['rateYearBase']?>" />%
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">年化收益率:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="rate_year" id="rate_year" value="<?=$data['rateYear']?>" />%
+            日利率：<input type="text" class="textbox require" name="rate_day" id="rate_day" value="<?=$data['rateDay']?>" disabled/>%
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">结息日:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="expiry_interest" id="expiry_interest" value="<?=$data['expiryInterest']?>"> 英文逗号(,)分隔结息日(限制1~28日)
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">管理费:</td>
+        <td class="item_input">
+            持有天数:<input type="text" class="textbox require" name="fee_days" id="fee_days" value="<?=$data['feeDays']?>">天 费率
+            <input type="text" class="textbox require" name="fee_rate" id="fee_rate" value="<?=$data['feeRate']?>">%
+        </td>
+    </tr>
+    <tr id="use_user_id">
+        <td class="item_title">每日加入限额:</td>
+        <td class="item_input">
+            <input type="hidden" id="money_limit_day_copy" value="<?php echo $data['moneyLimitDay']?>">
+            <input type="text" class="textbox require" id="money_limit_day" name="money_limit_day" value="<?php echo $data['moneyLimitDay']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">老用户每日加入限额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" id="old_user_money_limit_day" name="old_user_money_limit_day" value="<?php echo $data['oldUserMoneyLimitDay']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">个人单笔最低投资金额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="single_min_loan_money" id="single_min_loan_money" value="<?=$data['singleMinLoanMoney']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">个人单笔最高投资金额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="single_max_loan_money" id="single_max_loan_money" value="<?=$data['singleMaxLoanMoney']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">个人笔数次数限制:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="loan_count" id="loan_count" value="<?=$data['loanCount']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">企业单笔最低投资金额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="single_enterprise_min_loan_money" id="single_enterprise_min_loan_money" value="<?=$data['singleEnterpriseMinLoanMoney']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">企业单笔最高投资金额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="single_enterprise_max_loan_money" id="single_enterprise_max_loan_money" value="<?=$data['singleEnterpriseMaxLoanMoney']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">企业笔数次数限制:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="enterprise_loan_count" id="enterprise_loan_count" value="<?=$data['enterpriseLoanCount']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">1天可申转让/退出笔数次数限制:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="quick_loan_count" id="quick_loan_count" value="<?=$data['quickLoanCount']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">往期转让/退出成功时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="min_transfer_days" id="min_transfer_days" value="<?=$data['minTransferDays']?>">
+            -<input type="text" class="textbox require" name="max_transfer_days" id="max_transfer_days" value="<?=$data['maxTransferDays']?>">
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投标起始时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="loan_start_time" id="loan_start_time" value="<?=$data['loanStartTime']?>" onfocus="this.blur();">
+            <input type="button" class="button" value="清空时间" onclick="$('#loan_start_time').val('');">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投标终止时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="loan_end_time" id="loan_end_time" value="<?=$data['loanEndTime']?>" onfocus="this.blur();">
+            <input type="button" class="button" value="清空时间" onclick="$('#loan_end_time').val('');">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">返利系数:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="rebate_factor" id="rebate_factor" value="<?=$data['rebateFactor']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+	<tr>
+        <td class="item_title">赎回锁定期:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="redemption_lock_period" id="redemption_lock_period" value="<?=$data['redemptionLockPeriod']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">赎回起始时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="redemption_start_time" id="redemption_start_time" value="<?=$data['redemptionStartTime']?>" onfocus="this.blur();">
+            <input type="button" class="button" value="清空时间" onclick="$('#redemption_start_time').val('');">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">赎回终止时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="redemption_end_time" id="redemption_end_time" value="<?=$data['redemptionEndTime']?>" onfocus="this.blur();">
+            <input type="button" class="button" value="清空时间" onclick="$('#redemption_end_time').val('');">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">每日赎回限额:</td>
+        <td class="item_input">
+            个人：<input type="text" class="textbox require" name="max_day_redemption" id="max_day_redemption" value="<?=$data['maxDayRedemption']?>">
+            <span class="tip_span"></span>
+            企业：<input type="text" class="textbox require" name="enterprise_max_day_redemption" id="enterprise_max_day_redemption" value="<?=$data['enterpriseMaxDayRedemption']?>">
+            <span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">赎回周期:</td>
+        <td class="item_input">
+            最短赎回周期：<input type="text" class="textbox require" name="min_redemption_period" id="min_redemption_period" value="<?=$data['minRedemptionPeriod']?>"/><span class="tip_span"></span><br>
+            最长赎回周期：<input type="text" class="textbox require" name="max_redemption_period" id="max_redemption_period" value="<?=$data['maxRedemptionPeriod']?>"/><span class="tip_span"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">合同类型</td>
+        <td class="item_input">
+            <select name="contract_type">
+                <foreach name="contractCategory" item="item">
+                    <option value="{$item.id}" <if condition="$data['contractType'] eq $item['id']"> selected="selected" </if>>{$item.typeName}</option>
+                </foreach>
+            </select>
+            &nbsp;<a href="javascript:void(0)" onclick="javascript:showChangeLog(1)" >更改记录</a> &nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款状态</td>
+        <td class="item_input">
+            <div>
+                <input type="radio" class="textbox" name="status" id="status" value="0" <if condition="$data['status'] eq 0">checked="checked"</if><if condition="$data['status'] eq 2 or $data['status'] eq 4"> disabled </if>>等待状态
+            </div>
+            <div>
+                <input type="radio" class="textbox" name="status" id="status" value="1" <if condition="$data['status'] eq 1">checked="checked"</if><if condition="$data['status'] eq 2 or $data['status'] eq 4"> disabled </if>>进行中
+            </div>
+            <div>
+                <input type="radio" class="textbox" name="status" id="status" value="4" <if condition="$data['status'] eq 4">checked="checked"</if> <if condition="$data['status'] eq 2 or $data['status'] eq 4"> disabled </if>>清盘
+            </div>
+            <if condition="$data['status'] eq 2 ">
+                <div>
+                    <input type="radio" class="textbox" name="status" id="status" value="2" <if condition="$data['status'] eq 2">checked="checked" disabled </if>>已清盘
+                </div>
+            </if>
+
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">前台显示:</td>
+        <td class="item_input">
+            <input type="radio" class="textbox" name="is_show" value="1"  <if condition="$data['isShow'] eq 1"> checked="true" </if>>有效
+            <input type="radio" class="textbox" name="is_show" value="0" <if condition="$data['isShow'] eq 0"> checked="true" </if>>无效
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">是否发起投资:</td>
+        <td class="item_input">
+            <input type="radio" class="textbox" name="is_effect" value="1" <if condition="$data['isEffect'] eq 1"> checked="true" </if>>开启
+            <input type="radio" class="textbox" name="is_effect" value="0" <if condition="$data['isEffect'] eq 0"> checked="true" </if>>关闭
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">活动详情:</td>
+        <td class="item_input">
+        <script id="editor" name="description" type="text/plain" style="width:800px;height:200px; float:left;">{$data['description']}</script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">活动状态:</td>
+        <td class="item_input">
+            <input type="radio" class="textbox" name="activity_pop" value="1" <if condition="$data['activityPop'] eq 1"> checked="true" </if>>启用
+            <input type="radio" class="textbox" name="activity_pop" value="0" <if condition="$data['activityPop'] eq 0"> checked="true" </if>>禁用
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="DtProject" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            <input type="hidden" id="project_id" name="project_id" value="{$data['id']}">
+            <input type="hidden" name="old_contract_type" value="{$data['contractType']}" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%SAVE}" id="submit" onclick="return checkSubmit();"/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<script>
+
+$(document).ready(function(){
+    // 检测项目名称是否重名
+    $("input[name='name']").bind("blur",function(){
+        if($(this).val().length>0) {
+            $.ajax({
+                url:ROOT+"?"+VAR_MODULE+"=DtProject&"+VAR_ACTION+"=getCntByName&ajax=1&name="+$(this).val(),
+                dataType:"json",
+                success:function(result){
+                    if(result == 1) {
+                        $("#name_tip").text('项目名称已经存在');
+                        $("#name").focus();
+                    }else{2017/3/7
+                         $("#name_tip").text('');
+                    }
+                }
+            });
+        }
+    });
+
+    // 检测借款总额是否为数字
+    $("#single_min_loan_money,#single_max_loan_money,#loan_count,single_enterprise_min_loan_money,#single_enterprise_max_loan_money,#enterprise_loan_count,#rebate_factor,#redemption_lock_period,#max_day_redemption,#enterprise_max_day_redemption,#rate_year").bind("blur",function(){
+        if($(this).val().length>0) {
+            if(isNaN($(this).val())){
+                $(this).next().text('金额必须为数字');
+                $(this).val('');
+                $(this).focus();
+                return false;
+            }else{
+                $(this).next().text('');
+            }
+        }
+    });
+
+    $("#rate_year").blur(function(){
+        if($("#rate_year").val().length>0) {
+            rate_day = $("#rate_year").val()/360;
+            $("#rate_day").val(rate_day.toFixed(5));
+        }
+    });
+
+    //每日加入限额必须大于0
+    $("#money_limit_day").blur(function(){
+        var money_limit_day = $("#money_limit_day").val();
+        if(money_limit_day <= 0 ) {
+            $(this).next().text('每日加入限额必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+    $("#old_user_money_limit_day").blur(function(){
+        var old_user_money_limit_day = parseFloat($("#old_user_money_limit_day").val());
+        var money_limit_day = parseFloat($("#money_limit_day").val());
+
+        if(old_user_money_limit_day < 0 || old_user_money_limit_day > money_limit_day) {
+            $(this).next().text('老用户每日加入限额需小于每日加入限额且不能为空');
+            $(this).val('');
+            $(this).focus();
+        } else {
+            $(this).next().text('');
+        }
+    });
+
+	//个人单笔最低资金投资金额
+	$("#single_min_loan_money").blur(function(){
+        var single_min_loan_money = $("#single_min_loan_money").val();
+        if(single_min_loan_money <= 0) {
+            $(this).next().text('个人单笔最低资金投资金额必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+	//个人单笔最高投资金额
+	$("#single_max_loan_money").blur(function(){
+        var single_max_loan_money = $("#single_max_loan_money").val();
+        if(single_max_loan_money <= 0) {
+            $(this).next().text('个人单笔最高投资金额必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+	//个人笔数次数限制
+	$("#loan_count").blur(function(){
+        var loan_count = $("#loan_count").val();
+        if(loan_count <= 0) {
+            $(this).next().text('个人笔数次数限制必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+	//企业单笔最低投资金额
+	$("#single_enterprise_min_loan_money").blur(function(){
+        var single_enterprise_min_loan_money = $("#single_enterprise_min_loan_money").val();
+        if(single_enterprise_min_loan_money <= 0) {
+            $(this).next().text('企业单笔最低投资金额必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+	//企业单笔最高投资金额
+	$("#single_enterprise_max_loan_money").blur(function(){
+        var single_enterprise_max_loan_money = $("#single_enterprise_max_loan_money").val();
+        if(single_enterprise_max_loan_money <= 0) {
+            $(this).next().text('企业单笔最高投资金额必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+	//企业笔数次数限制
+	$("#enterprise_loan_count").blur(function(){
+        var enterprise_loan_count = $("#enterprise_loan_count").val();
+        if(enterprise_loan_count <= 0) {
+            $(this).next().text('企业笔数次数限制必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+	//返利系数
+	$("#rebate_factor").blur(function(){
+        var rebate_factor = $("#rebate_factor").val();
+        if(rebate_factor <= 0) {
+            $(this).next().text('返利系数必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+	//赎回锁定期
+	$("#redemption_lock_period").blur(function(){
+        var redemption_lock_period = $("#redemption_lock_period").val();
+        if(redemption_lock_period <= 0) {
+            $(this).next().text('赎回锁定期必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+
+    //个人每日赎回限额必须大于0
+    $("#max_day_redemption").blur(function(){
+        var max_day_redemption = $("#max_day_redemption").val();
+        if(max_day_redemption <= 0 ) {
+            $(this).next().text('个人每日赎回限额必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+    //企业每日赎回限额必须大于0
+    $("#enterprise_max_day_redemption").blur(function(){
+        var enterprise_max_day_redemption = $("#enterprise_max_day_redemption").val();
+        if(enterprise_max_day_redemption <= 0 ) {
+            $(this).next().text('企业每日赎回限额必须大于0');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+    //最短赎回周期必须小于等于最长赎回周期
+    $("#min_redemption_period").blur(function(){
+        if('' == $("#max_redemption_period").val()) {
+            return true;
+        }
+
+        var min_redemption_period = parseInt($("#min_redemption_period").val());
+        var max_redemption_period = parseInt($("#max_redemption_period").val());
+        if(min_redemption_period > max_redemption_period ) {
+            $(this).next().text('最短赎回周期必须小于等于最长赎回周期');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+    //最长赎回周期必须大于等于最短赎回周期
+    $("#max_redemption_period").blur(function(){
+        if('' == $("#min_redemption_period").val()) {
+            return true;
+        }
+
+        var min_redemption_period = parseInt($("#min_redemption_period").val());
+        var max_redemption_period = parseInt($("#max_redemption_period").val());
+        if(min_redemption_period > max_redemption_period ) {
+            $(this).next().text('最长赎回周期必须大于等于最短赎回周期');
+            $(this).val('');
+            $(this).focus();
+         } else {
+            $(this).next().text('');
+         }
+    });
+
+//投标起始时间必须小于投标终止时间
+    $("#loan_start_time").blur(function(){
+        return showCalendar('loan_start_time', '%H:%M', false, false, 'loan_start_time',function() {
+            if('' == $("#loan_end_time").val()) {
+                return true;
+            }
+            var loan_start_times = get_unix_time($("#loan_start_time").val());
+            var loan_end_times = get_unix_time($("#loan_end_time").val());
+            if(loan_start_times <= loan_end_times) {
+                $("#loan_start_time").next().text('');
+            }else{
+                $("#loan_start_time").click();
+                //$("#loan_start_time").focus();
+                $("#loan_start_time").next().next().text('投标起始时间必须小于投标终止时间');
+            }
+        });
+    });
+
+    //投标终止时间必须大于投标起始时间
+    $("#loan_end_time").blur(function(){
+        return showCalendar('loan_end_time', '%H:%M', false, false, 'loan_end_time',function() {
+            if('' == $("#loan_start_time").val()) {
+                return true;
+            }
+            var loan_start_times = get_unix_time($("#loan_start_time").val());
+            var loan_end_times = get_unix_time($("#loan_end_time").val());
+
+            if(loan_start_times <= loan_end_times) {
+                $("#loan_end_time").next().text('');
+            }else{
+                $("#loan_end_time").val('');
+                $("#loan_end_time").next().next().text('投标终止时间必须大于投标起始时间');
+            }
+        });
+    });
+
+    //赎回起始时间必须小于赎回终止时间
+    $("#redemption_start_time").blur(function(){
+        return showCalendar('redemption_start_time', '%H:%M', false, false, 'redemption_start_time',function() {
+            if('' == $("#redemption_end_time").val()) {
+                return true;
+            }
+            var redemption_start_times = get_unix_time($("#redemption_start_time").val());
+            var redemption_end_times = get_unix_time($("#redemption_end_time").val());
+            if(redemption_start_times <= redemption_end_times) {
+                $("#redemption_start_time").next().text('');
+            }else{
+                $("#redemption_start_time").click();
+                //$("#redemption_start_time").focus();
+                $("#redemption_start_time").next().next().text('赎回起始时间必须小于赎回终止时间');
+            }
+        });
+    });
+
+    //赎回终止时间必须大于赎回起始时间
+    $("#redemption_end_time").blur(function(){
+        return showCalendar('redemption_end_time', '%H:%M', false, false, 'redemption_end_time',function() {
+            if('' == $("#redemption_start_time").val()) {
+                return true;
+            }
+            var redemption_start_times = get_unix_time($("#redemption_start_time").val());
+            var redemption_end_times = get_unix_time($("#redemption_end_time").val());
+
+            if(redemption_start_times <= redemption_end_times) {
+                $("#redemption_end_time").next().text('');
+            }else{
+                $("#redemption_end_time").val('');
+                $("#redemption_end_time").next().next().text('赎回终止时间必须大于赎回起始时间');
+            }
+        });
+    });
+
+    UE.getEditor('editor');
+});
+function get_unix_time(hm) {
+    var date = new  Date();
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var day = date.getDate();
+    var hms = hm.split(':');
+    var h = hms[0];
+    var m = hms[1];
+    var today = new Date(year,month,day,h,m,'00');
+    return today.getTime();
+}
+
+function checkSubmit() {
+    var single_min_loan_money = parseInt($("#single_min_loan_money").val());
+    var single_max_loan_money = parseInt($("#single_max_loan_money").val());
+	var single_enterprise_min_loan_money = parseInt($("#single_enterprise_min_loan_money").val());
+    var single_enterprise_max_loan_money = parseInt($("#single_enterprise_max_loan_money").val());
+
+    if(single_max_loan_money < single_min_loan_money) {
+        alert('个人单笔最高投资限额必须大于等于个人单笔最低投资金额');
+        return false;
+    }
+    if(single_enterprise_max_loan_money < single_enterprise_min_loan_money) {
+        alert('企业单笔单笔投资限额必须大于等于企业单笔最低投资金额');
+        return false;
+    }
+
+
+    return true;
+}
+
+function showChangeLog(p){
+    var id = $("#project_id").val();
+    // 手动分页处理
+    var page = $("#page").val();
+    if(p == "next"){
+      p = Number(page) + 1;
+    }else if(p == "pre"){
+      p = Number(page) - 1;
+    }
+    if(p < 1){
+      alert("已经是第一页了,没有上一页");
+      return;
+    }
+
+    $.weeboxs.open(ROOT+'?m=DtProject&a=showChangeLog&p='+p+'&id='+id, {boxid:'changelog',contentType:'ajax',showButton:false,title:'更改记录',width:420,height:260});
+}
+
+</script>
+<include file="Public:footer" />

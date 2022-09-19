@@ -1,0 +1,968 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<style>
+.item_title_no { 
+text-align:right; width:130px; color:#000; background:#e2e8eb;
+}
+table td.item_title:before {
+ content: '*';
+ color: red;
+}
+.moveBtn{text-decoration: none;background: #8ba9c0;color:#fff;margin:0 5px;padding:5px;border-radius: 4px;}
+.moveBtn:hover{color:#fff;text-decoration: none;}
+.btn_disabled{background: #ccc;cursor: default;}
+.fl{float: left;}
+.upfile_word{width: 0px;}
+.file {position: relative;display: inline-block;
+    border: 0px solid #FFFFFF;padding: 0px 12px;overflow: hidden;color: #1E88C7;padding-top:10px;padding-bottom: 20px;top:19px;
+    text-decoration: none;text-indent: 0;line-height: 20px;text-decoration: underline; }
+.file input {position: absolute;font-size: 100px;right: 0;top: 0;opacity: 0;}
+.changeWord{text-decoration: none;width: 100px;display: block;margin-left: 10px;cursor: pointer;}
+.textbox{display: inline-block!important;}
+.urlTips{color:red;}
+.img_center{width: 100px;height:100px;min-height: 60px;}
+.img_center:hover{text-decoration: none;}
+img.sign_up_banner_img{width:80px;height: 80px;}
+.tip_span{position: absolute;bottom:-3px;left:2px;font-size: 12px;}
+.zanwu_tips{width: 80px;height: 80px;text-align: center;
+    line-height: 100px;float: left;text-decoration: none;cursor: default;color:#000;}
+.advContentType{height:27px;}
+.title_img{margin-right: 10px;display: block;float: left;line-height: 100px;}
+img{width:100px;height:100px;}
+
+</style>
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<link rel="stylesheet" href="__TMPL__Common/style/bootstrap.min.css">
+<script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+
+
+<php>
+$list = array_flip(range(1,9));
+function get_prize_conf($prize_conf,$key,$location){
+        return $prize_conf[$location][$key];
+}
+function escape($value){
+  return htmlspecialchars($value);
+}
+</php>
+
+
+<div class="main">
+<div class="main_title"> 编辑 <a href="{:u("FestivalActivities/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="update" action="__APP__" method="post" enctype="multipart/form-data">
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">活动名称:</td>
+        <td class="item_input"><input type="text" des='活动名称' class="textbox require" name="name" onblur="checkActivityName(this,{$vo['id']})" placeholder="<=10个字" value="{$vo['name']|escape}"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">活动形式:</td>
+        <td class="item_input">
+        <select name="type">
+            <if condition="$vo['type'] eq 0">
+                <option value = "0" selected>物品掉落</option>
+                <else />
+                <option value = "0" >物品掉落</option>
+            </if>
+
+        </select></td>
+    </tr>
+    <tr>
+        <td class="item_title">活动持续时间:</td>
+        <td class="item_input"><input type="text" des='活动持续时间' class="textbox require" name="duration" onblur="check_value(this)" placeholder="秒" value="{$vo['duration']}"/></td>
+    </tr>
+    <tr class="sortList sortList_{$i}">
+        <td class="item_title">首页下拉配置:</td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px;">
+                <span class="title_img">下拉图:</span>
+
+                    <if condition="$img_conf['activity_pull']['activity_pull_src'] neq ''">
+                        <a class="img_center">
+                            <img id="activity_pull_img" class="activity_pull_img" data-src="{$img_conf['activity_pull']['activity_pull_src']}" src="{$img_conf['activity_pull']['activity_pull_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('activity_pull')" name="activity_pull" id="activity_pull" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['activity_pull']['activity_pull_src'] eq ''">
+                        <img id="activity_pull_img" class="activity_pull_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('activity_pull')" name="activity_pull" id="activity_pull" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+
+                 <span class="item_title" style = "background:White;">下拉文案：</span>
+                 <input type="text" des='下拉文案' class="textbox" name="img_conf[activity_pull][pull_text]" onblur="check(this)" placeholder="<=10个字"
+                 <if condition="$img_conf['activity_pull']['pull_text'] eq ''">value="下拉有惊喜" <else />value="{$img_conf[activity_pull][pull_text]|escape}"</if>/>
+                 <span class="item_title" style = "background:White;">释放文案：</span>
+                 <input type="text" des='释放文案' class="textbox" name="img_conf[activity_pull][release_text]" onblur="check(this)" placeholder="<=10个字"
+                 <if condition="$img_conf['activity_pull']['release_text'] eq ''">value="释放进入游戏" <else /> value="{$img_conf[activity_pull][release_text]|escape}"</if>/>
+            <input id = "activity_pull_src" class= "zhimg require" des='配置图片' type="hidden" name = "img_conf[activity_pull][activity_pull_src]" value="{$img_conf['activity_pull']['activity_pull_src']}"/>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">活动首页配置:</td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px;display:table-cell;">
+                    <span class="title_img">背景图:</span>
+
+                    <if condition="$img_conf['activity_home']['activity_home_src'] neq ''">
+                        <a class="img_center">
+                            <img id="activity_home_img" class="activity_home_img" data-src="{$img_conf['activity_home']['activity_home_src']}" src="{$img_conf['activity_home']['activity_home_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('activity_home')" name="activity_home" id="activity_home" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['activity_home']['activity_home_src'] eq ''">
+                        <img id="activity_home_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('activity_home')" name="activity_home" id="activity_home" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "activity_home_src" class= "zhimg require" des='配置图片' type="hidden" name = "img_conf[activity_home][activity_home_src]" value="{$img_conf['activity_home']['activity_home_src']}"/>
+                    </div>
+                    <div style="min-height:60px; display:table-cell;">
+                    <span class="title_img"> 参与按钮背景:</span>
+
+                    <if condition="$img_conf['activity_home']['activity_in_button_src'] neq ''">
+                        <a class="img_center">
+                            <img id="activity_in_button_img" class="activity_in_button_img" data-src="{$img_conf['activity_home']['activity_in_button_src']}" src="{$img_conf['activity_home']['activity_in_button_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('activity_in_button')" name="activity_in_button" id="activity_in_button" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['activity_home']['activity_in_button_src'] eq ''">
+                        <img id="activity_in_button_img" class="activity_in_button_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('activity_in_button')" name="activity_in_button" id="activity_in_button" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "activity_in_button_src" class= "zhimg require" des='配置图片' type="hidden" name = "img_conf[activity_home][activity_in_button_src]" value="{$img_conf['activity_home']['activity_in_button_src']}"/>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">活动获奖页配置:</td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px; display:table-cell;">
+                    <span class="title_img">背景图:</span>
+
+                    <if condition="$img_conf['activity_prize']['activity_prize_src'] neq ''">
+                        <a class="img_center">
+                            <img id="activity_prize_img" class="activity_prize_img" data-src="{$img_conf['activity_prize']['activity_prize_src']}" src="{$img_conf['activity_prize']['activity_prize_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('activity_prize')" name="activity_prize" id="activity_prize" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['activity_prize']['activity_prize_src'] eq ''">
+                        <img id="activity_prize_img" class="activity_prize_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('activity_prize')" name="activity_prize" id="activity_prize" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "activity_prize_src" class= "zhimg require" des='配置图片' type="hidden" name = "img_conf[activity_prize][activity_prize_src]" value="{$img_conf['activity_prize']['activity_prize_src']}"/>
+       </div>
+
+                    <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img">领奖按钮背景图:</span>
+
+                    <if condition="$img_conf['activity_prize']['prize_button_src'] neq ''">
+                        <a class="img_center">
+                            <img id="prize_button_img" class="prize_button_img" src="{$img_conf['activity_prize']['prize_button_src']}" data-src="{$img_conf['activity_prize']['prize_button_src']}" />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('prize_button')" name="prize_button" id="prize_button" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['activity_prize']['prize_button_src'] eq ''">
+                        <img id="prize_button_img" class="prize_button_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('prize_button')" name="prize_button" id="prize_button" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "prize_button_src" class= "zhimg require" des='配置图片' type="hidden" name = "img_conf[activity_prize][prize_button_src]" value="{$img_conf['activity_prize']['prize_button_src']}"/>
+                    </div>
+
+                    <div style="min-height:60px;display:table-cell;">
+                    <span class="title_img">分享按钮背景:</span>
+
+                    <if condition="$img_conf['activity_prize']['prize_sharebutton_src'] neq ''">
+                        <a class="img_center">
+                            <img id="prize_sharebutton_img" class="prize_sharebutton_img" src="{$img_conf['activity_prize']['prize_sharebutton_src']}" data-src="{$img_conf['activity_prize']['prize_sharebutton_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('prize_sharebutton')" name="prize_sharebutton" id="prize_sharebutton" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['activity_prize']['prize_sharebutton_src'] eq ''">
+                        <img id="prize_sharebutton_img" class="prize_sharebutton_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('prize_sharebutton')" name="prize_sharebutton" id="prize_sharebutton" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "prize_sharebutton_src" class= "zhimg require" des='配置图片' type="hidden" name = "img_conf[activity_prize][prize_sharebutton_src]" value="{$img_conf['activity_prize']['prize_sharebutton_src']}"/>
+                    </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">掉落物品:</td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img">物品01:</span>
+
+                    <if condition="$img_conf['drop_01']['drop_01_src'] neq ''">
+                        <a class="img_center">
+                            <img id="drop_01_img" class="drop_01_img" src="{$img_conf['drop_01']['drop_01_src']}" data-src="{$img_conf['drop_01']['drop_01_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_01')" name="drop_01" id="drop_01" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_01']['drop_01_src'] eq ''">
+                        <img id="drop_01_img" class="drop_01" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_01')" name="drop_01" id="drop_01" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "drop_01_src" class= "zhimg require" des='配置图片' type="hidden" name = "img_conf[drop_01][drop_01_src]" value="{$img_conf['drop_01']['drop_01_src']}"/>
+               </div>
+
+                    <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品点击01:</span>
+
+                    <if condition="$img_conf['drop_01']['img_hit_01_src'] neq ''">
+                        <a class="img_center">
+                            <img id="img_hit_01_img" class="img_hit_01_img" src="{$img_conf['drop_01']['img_hit_01_src']}" data-src="{$img_conf['drop_01']['img_hit_01_src']}" />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_01')" name="img_hit_01" id="img_hit_01" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_01']['img_hit_01_src'] eq ''">
+                        <img id="img_hit_01_img" class="img_hit_01_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_01')" name="img_hit_01" id="img_hit_01" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "img_hit_01_src" class= "zhimg require" des='配置图片' type="hidden" name = "img_conf[drop_01][img_hit_01_src]" value="{$img_conf['drop_01']['img_hit_01_src']}"/>
+            <span class="item_title" style = "background:White;">出现个数:</span>
+            <input type="text" des='出现个数' class="textbox require" style="width:60px;" name="img_conf[drop_01][drop_img_count_01]" onblur="check_value(this)" placeholder="个" value="{$img_conf[drop_01][drop_img_count_01]}"/>
+            <span class="item_title" des='得分' style = "background:White;">得分:</span>
+            <input type="text" class="textbox require" style="width:60px;" name="img_conf[drop_01][drop_img_score_01]" onblur="check_value(this)" placeholder="分" value="{$img_conf[drop_01][drop_img_score_01]}"/>
+            <span class="item_title" style = "background:White;">掉落速度:</span>
+            <input type="text" des='掉落速度' class="textbox require" style="width:85px;" name="img_conf[drop_01][drop_img_speed_01]" onblur="check_value(this)" placeholder="毫秒" value="{$img_conf[drop_01][drop_img_speed_01]}"/>
+            </div>
+
+        </td>
+
+    </tr>
+    <tr>
+        <td class="item_title_no"></td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品02:</span>
+
+                    <if condition="$img_conf['drop_02']['drop_02_src'] neq ''">
+                        <a class="img_center">
+                            <img id="drop_02_img" class="drop_02_img" src="{$img_conf['drop_02']['drop_02_src']}" data-src="{$img_conf['drop_02']['drop_02_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_02')" name="drop_02" id="drop_02" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_02']['drop_02_src'] eq ''">
+                        <img id="drop_02_img" class="drop_02_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_02')" name="drop_02" id="drop_02" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "drop_02_src" type="hidden" name = "img_conf[drop_02][drop_02_src]" value="{$img_conf['drop_02']['drop_02_src']}"/>
+               </div>
+
+                     <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品点击02:</span>
+
+                    <if condition="$img_conf['drop_02']['img_hit_02_src'] neq ''">
+                        <a class="img_center">
+                            <img id="img_hit_02_img" class="img_hit_02_img" src="{$img_conf['drop_02']['img_hit_02_src']}" data-src="{$img_conf['drop_02']['img_hit_02_src']}" />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_02')" name="img_hit_02" id="img_hit_02" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_02']['img_hit_02_src'] eq ''">
+                        <img id="img_hit_02_img" class="img_hit_02_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_02')" name="img_hit_02" id="img_hit_02" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "img_hit_02_src" type="hidden" name = "img_conf[drop_02][img_hit_02_src]" value="{$img_conf['drop_02']['img_hit_02_src']}"/>
+            <span class="item_title" style = "background:White;">出现个数:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_02][drop_img_count_02]" onblur="check_value(this)" placeholder="个" value="{$img_conf[drop_02][drop_img_count_02]}"/>
+            <span class="item_title" style = "background:White;">得分:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_02][drop_img_score_02]" onblur="check_value(this)" placeholder="分" value="{$img_conf[drop_02][drop_img_score_02]}"/>
+            <span class="item_title" style = "background:White;">掉落速度:</span>
+            <input type="text" class="textbox" style="width:85px;" name="img_conf[drop_02][drop_img_speed_02]" onblur="check_value(this)" placeholder="毫秒" value="{$img_conf[drop_02][drop_img_speed_02]}"/>
+            </div>
+
+
+        </td>
+
+    </tr>
+    <tr>
+        <td class="item_title_no"></td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品03:</span>
+
+                    <if condition="$img_conf['drop_03']['drop_03_src'] neq ''">
+                        <a class="img_center">
+                            <img id="drop_03_img" class="drop_03_img" src="{$img_conf['drop_03']['drop_03_src']}" data-src="{$img_conf['drop_03']['drop_03_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_03')" name="drop_03" id="drop_03" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_03']['drop_03_src'] eq ''">
+                        <img id="drop_03_img" class="drop_03_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_03')" name="drop_03" id="drop_03" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "drop_03_src" type="hidden" name = "img_conf[drop_03][drop_03_src]" value="{$img_conf['drop_03']['drop_03_src']}"/>
+                </div>
+
+                     <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品点击03:</span>
+
+                    <if condition="$img_conf['drop_03']['img_hit_03_src'] neq ''">
+                        <a class="img_center">
+                            <img id="img_hit_03_img" class="img_hit_03_img" src="{$img_conf['drop_03']['img_hit_03_src']}" data-src="{$img_conf['drop_03']['img_hit_03_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_03')" name="img_hit_03" id="img_hit_03" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_03']['img_hit_03_src'] eq ''">
+                        <img id="img_hit_03_img" class="img_hit_03_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_03')" name="img_hit_03" id="img_hit_03" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "img_hit_03_src" type="hidden" name = "img_conf[drop_03][img_hit_03_src]" value="{$img_conf['drop_03']['img_hit_03_src']}"/>
+            <span class="item_title" style = "background:White;">出现个数:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_03][drop_img_count_03]" onblur="check_value(this)" placeholder="个" value="{$img_conf[drop_03][drop_img_count_03]}"/>
+            <span class="item_title" style = "background:White;">得分:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_03][drop_img_score_03]" onblur="check_value(this)" placeholder="分" value="{$img_conf[drop_03][drop_img_score_03]}"/>
+            <span class="item_title" style = "background:White;">掉落速度:</span>
+            <input type="text" class="textbox" style="width:85px;" name="img_conf[drop_03][drop_img_speed_03]" onblur="check_value(this)" placeholder="毫秒" value="{$img_conf[drop_03][drop_img_speed_03]}"/>
+            </div>
+
+
+        </td>
+
+    </tr>
+    <tr>
+        <td class="item_title_no"></td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品04:</span>
+
+                    <if condition="$img_conf['drop_04']['drop_04_src'] neq ''">
+                        <a class="img_center">
+                            <img id="drop_04_img" class="drop_04_img" src="{$img_conf['drop_04']['drop_04_src']}" data-src="{$img_conf['drop_04']['drop_04_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_04')" name="drop_04" id="drop_04" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_04']['drop_04_src'] eq ''">
+                        <img id="drop_04_img" class="drop_04_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_04')" name="drop_04" id="drop_04" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "drop_04_src" type="hidden" name = "img_conf[drop_04][drop_04_src]" value="{$img_conf['drop_04']['drop_04_src']}"/>
+                </div>
+
+                     <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品点击04:</span>
+
+                    <if condition="$img_conf['drop_04']['img_hit_04_src'] neq ''">
+                        <a class="img_center">
+                            <img id="img_hit_04_img" class="img_hit_04_img" src="{$img_conf['drop_04']['img_hit_04_src']}" data-src="{$img_conf['drop_04']['img_hit_04_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_04')" name="img_hit_04" id="img_hit_04" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_04']['img_hit_04_src'] eq ''">
+                        <img id="img_hit_04_img" class="img_hit_04_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_04')" name="img_hit_04" id="img_hit_04" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "img_hit_04_src" type="hidden" name = "img_conf[drop_04][img_hit_04_src]" value="{$img_conf['drop_04']['img_hit_04_src']}"/>
+            <span class="item_title" style = "background:White;">出现个数:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_04][drop_img_count_04]" onblur="check_value(this)" placeholder="个" value="{$img_conf[drop_04][drop_img_count_04]}"/>
+            <span class="item_title" style = "background:White;">得分:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_04][drop_img_score_04]" onblur="check_value(this)" placeholder="分" value="{$img_conf[drop_04][drop_img_score_04]}"/>
+            <span class="item_title" style = "background:White;">掉落速度:</span>
+            <input type="text" class="textbox" style="width:85px;" name="img_conf[drop_04][drop_img_speed_04]" onblur="check_value(this)" placeholder="毫秒" value="{$img_conf[drop_04][drop_img_speed_04]}"/>
+            </div>
+        </td>
+    </tr>
+
+    </tr>
+    <tr>
+        <td class="item_title_no"></td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品05:</span>
+
+                    <if condition="$img_conf['drop_05']['drop_05_src'] neq ''">
+                        <a class="img_center">
+                            <img id="drop_05_img" class="drop_05_img" src="{$img_conf['drop_05']['drop_05_src']}" data-src="{$img_conf['drop_05']['drop_05_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_05')" name="drop_05" id="drop_05" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_05']['drop_05_src'] eq ''">
+                        <img id="drop_05_img" class="drop_05_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_05')" name="drop_05" id="drop_05" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "drop_05_src" type="hidden" name = "img_conf[drop_05][drop_05_src]" value="{$img_conf['drop_05']['drop_05_src']}"/>
+                </div>
+
+                     <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品点击05:</span>
+
+                    <if condition="$img_conf['drop_05']['img_hit_05_src'] neq ''">
+                        <a class="img_center">
+                            <img id="img_hit_05_img" class="img_hit_05_img" src="{$img_conf['drop_05']['img_hit_05_src']}" data-src="{$img_conf['drop_05']['img_hit_05_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_05')" name="img_hit_05" id="img_hit_05" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_05']['img_hit_05_src'] eq ''">
+                        <img id="img_hit_05_img" class="img_hit_05_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_05')" name="img_hit_05" id="img_hit_05" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "img_hit_05_src" type="hidden" name = "img_conf[drop_05][img_hit_05_src]" value="{$img_conf['drop_05']['img_hit_05_src']}"/>
+            <span class="item_title" style = "background:White;">出现个数:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_05][drop_img_count_05]" onblur="check_value(this)" placeholder="个" value="{$img_conf[drop_05][drop_img_count_05]}"/>
+            <span class="item_title" style = "background:White;">得分:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_05][drop_img_score_05]" onblur="check_value(this)" placeholder="分" value="{$img_conf[drop_05][drop_img_score_05]}"/>
+            <span class="item_title" style = "background:White;">掉落速度:</span>
+            <input type="text" class="textbox" style="width:85px;" name="img_conf[drop_05][drop_img_speed_05]" onblur="check_value(this)" placeholder="毫秒" value="{$img_conf[drop_05][drop_img_speed_05]}"/>
+            </div>
+        </td>
+    </tr>
+
+    </tr>
+    <tr>
+        <td class="item_title_no"></td>
+        <td class="item_input"  width="92%">
+            <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品06:</span>
+
+                    <if condition="$img_conf['drop_06']['drop_06_src'] neq ''">
+                        <a class="img_center">
+                            <img id="drop_06_img" class="drop_06_img" src="{$img_conf['drop_06']['drop_06_src']}" data-src="{$img_conf['drop_06']['drop_06_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_06')" name="drop_06" id="drop_06" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_06']['drop_06_src'] eq ''">
+                        <img id="drop_06_img" class="drop_06_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('drop_06')" name="drop_06" id="drop_06" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "drop_06_src" type="hidden" name = "img_conf[drop_06][drop_06_src]" value="{$img_conf['drop_06']['drop_06_src']}"/>
+                </div>
+
+                     <div style="min-height:60px;display:table-cell;" >
+                    <span class="title_img"> 物品点击06:</span>
+
+                    <if condition="$img_conf['drop_06']['img_hit_06_src'] neq ''">
+                        <a class="img_center">
+                            <img id="img_hit_06_img" class="img_hit_06_img" src="{$img_conf['drop_06']['img_hit_06_src']}" data-src="{$img_conf['drop_06']['img_hit_06_src']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_06')" name="img_hit_06" id="img_hit_06" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$img_conf['drop_06']['img_hit_06_src'] eq ''">
+                        <img id="img_hit_06_img" class="img_hit_06_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                         <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                         <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('img_hit_06')" name="img_hit_06" id="img_hit_06" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                    </if>
+                    <input id = "img_hit_06_src" type="hidden" name = "img_conf[drop_06][img_hit_06_src]" value="{$img_conf['drop_06']['img_hit_06_src']}"/>
+            <span class="item_title" style = "background:White;">出现个数:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_06][drop_img_count_06]" onblur="check_value(this)" placeholder="个" value="{$img_conf[drop_06][drop_img_count_06]}"/>
+            <span class="item_title" style = "background:White;">得分:</span>
+            <input type="text" class="textbox" style="width:60px;" name="img_conf[drop_06][drop_img_score_06]" onblur="check_value(this)" placeholder="分" value="{$img_conf[drop_06][drop_img_score_06]}"/>
+            <span class="item_title" style = "background:White;">掉落速度:</span>
+            <input type="text" class="textbox" style="width:85px;" name="img_conf[drop_06][drop_img_speed_06]" onblur="check_value(this)" placeholder="毫秒" value="{$img_conf[drop_06][drop_img_speed_06]}"/>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">奖励配置:</td>
+        <td class="item_input">
+        <div class="pid var-box">
+        <select name="prize_conf[0][type]" style="height:32px;">
+            <if condition="$prize_conf[0][type] eq 0">
+                <option value = "0" selected>礼券</option>
+                <else />
+                <option value = "0" >礼券</option>
+            </if>
+
+            <if condition="$prize_conf[0][type] eq 1">
+                <option value = "1" selected>投资券</option>
+                <else />
+                <option value = "1">投资券</option>
+            </if>
+
+            <if condition="$prize_conf[0][type] eq 2">
+                <option value = "2" selected>信力</option>
+                <else />
+                <option value = "2">信力</option>
+            </if>
+        </select>
+         <span class="item_title" style = "display:none;background:White;">券组id或信力值</span>
+         <input type="text" des='券组id' class="textbox require" name="prize_conf[0][prize_id]" style="width:200px;" placeholder="券组id" value="{$prize_conf['0']['prize_id']}"/>
+         <span class="item_title" style = "background:White;">库存数量:</span>
+         <input type="text" des='库存数量' class="textbox require" name="prize_conf[0][count]" style="width:100px;" onblur="check_value(this)" placeholder="个" value="{$prize_conf[0][count]}"/>
+         <span class="item_title" style = "background:White;">得分区间：</span>
+         <input type="text" des='得分区间' class="textbox require" name="prize_conf[0][low]" id="prize_conf0low" style="width:100px;" onblur="check_value(this)" placeholder=">=分" value="{$prize_conf['0']['low']}"/>
+         <input type="text" des='得分区间' class="textbox require" name="prize_conf[0][high]" style="width:100px;" onblur="check_score(this,0)" placeholder="<分" value="{$prize_conf['0']['high']}"/>
+        </div>
+        
+        </td>
+        
+
+    </tr>
+    <foreach name="list" item="key">
+    <tr>
+        <td class="item_title_no"></td>
+        <td class="item_input">
+        <div class="pid var-box">
+        <select name="prize_conf[{$key}][type]" style="height:32px;">
+            <if condition="$prize_conf[$key][type] eq 0">
+                <option value = "0" selected>礼券</option>
+                <else />
+                <option value = "0" >礼券</option>
+            </if>
+            <if condition="$prize_conf[$key][type] eq 1">
+                <option value = "1" selected>投资券</option>
+                <else />
+                <option value = "1">投资券</option>
+            </if>
+
+            <if condition="$prize_conf[$key][type] eq 2">
+                <option value = "2" selected>信力</option>
+                <else />
+                <option value = "2">信力</option>
+            </if>
+        </select>
+         <input type="text" class="textbox" name="prize_conf[{$key}][prize_id]" style="width:200px;" placeholder="券组id或信力值" value="{$prize_conf|get_prize_conf='prize_id',$key}"/>
+          库存数量：<input type="text" class="textbox" name="prize_conf[{$key}][count]" style="width:100px;" onblur="check_value(this)" placeholder="个" value="{$prize_conf|get_prize_conf='count',$key}"/>
+                得分区间：<input type="text" class="textbox" name="prize_conf[{$key}][low]" id="prize_conf{$key}low" style="width:100px;" onblur="check_value(this)" placeholder=">=分" value="{$prize_conf|get_prize_conf='low',$key}"/>
+            <input type="text" class="textbox" name="prize_conf[{$key}][high]" style="width:100px;" onblur="check_score(this,{$key})" placeholder="<分" value="{$prize_conf|get_prize_conf='high',$key}"/>
+        </div>
+        
+        </td>
+        
+
+    </tr>
+
+    </foreach>
+    <tr>
+        <td class="item_title_no">用户参与限制:</td>
+        <td class="item_input"> 单用户每日参与次数:
+                    <if condition="$vo['count_limit_day'] eq 0">
+                        <input class="textbox" name="count_limit_day" onblur="check_value(this)" placeholder="次" value = ""/> 单用户参与次数上限:
+                        <else />
+                        <input class="textbox" name="count_limit_day" onblur="check_value(this)" placeholder="次" value = "{$vo['count_limit_day']}"/> 单用户参与次数上限:
+                    </if>
+                    <if condition="$vo['count_limit'] eq 0">
+                        <input class="textbox" name="count_limit" onblur="check_value(this)" placeholder="次" value = ""/><font color="red"> 选填，不填默认为用户参与次数无上限</font>
+                        <else />
+                        <input class="textbox" name="count_limit" onblur="check_value(this)" placeholder="次" value = "{$vo['count_limit']}"/><font color="red"> 选填，不填默认为用户参与次数无上限</font>
+                    </if>
+             
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title_no">活动有效期:</td>
+        <td class="item_input">
+            <if condition="$vo['is_effect'] eq 1">
+                <input type="text" class="textbox" style="width:150px;" placeholder="年/月/日" readonly="readonly" name="start_time" id="Activity_start" value="{$vo['start_time']}" id="Activity_start"/>
+                <else />
+                <input type="text" class="textbox" style="width:150px;" placeholder="年/月/日" name="start_time" id="Activity_start" value="{$vo['start_time']}" onfocus="this.blur(); return showCalendar('Activity_start', '%Y-%m-%d %H:%M:%S', false, false, 'Activity_start');" />
+            <input type="button" style="border:none;background-color:transparent;" id="Activity_start"/>
+            </if>
+            至 <input type="button"  style="outline:none;width:0.1px;border:none;background-color:transparent;" />
+            <input type="text" class="textbox" style="width:150px;" placeholder="年/月/日" name="end_time" id="Activity_end" value="{$vo['end_time']}" onfocus="this.blur(); return showCalendar('Activity_end', '%Y-%m-%d %H:%M:%S', false, false, 'Activity_end');" />
+            <input type="button" style="border:none;background-color:transparent;" id="Activity_end" />
+           <font color="red">选填，不填开始时间默认为生效后即时开启，不填结束时间默认为不会自动失效</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title_no">状态:</td>
+        <td class="item_input">
+            <if condition="$vo['is_effect'] eq 1">
+                <label><input type="radio" value="1" name="is_effect" checked="checked" >有效</label>
+                <else /><label><input type="radio" value="1" name="is_effect">有效</label>
+            </if>
+            <if condition="$vo['is_effect'] eq 0">
+                <label><input type="radio" value="0" name="is_effect" checked="checked" >无效</label>
+                <else />
+                <label><input type="radio" value="0" name="is_effect" >无效</label>
+            </if>
+
+        </td>
+    </tr>
+        <tr>
+            <td class="item_title_no"></td>
+            <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="FestivalActivities" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+            <input type="hidden" name="id" value="{$vo['id']}" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" id="button_submit" onclick="checktosubmit()" value="{%EDIT}" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2 class="bottomTd"></td>
+        </tr>
+
+</form>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    if(!placeholderSupport()){   // 判断浏览器是否支持 placeholder
+        $('[placeholder]').focus(function() {
+            var input = $(this);
+            if (input.val() == input.attr('placeholder')) {
+                input.val('');
+                input.removeClass('placeholder');
+            }
+        }).blur(function() {
+            var input = $(this);
+            if (input.val() == '' || input.val() == input.attr('placeholder')) {
+                input.addClass('placeholder');
+                input.val(input.attr('placeholder'));
+            }
+        }).blur();
+    };
+    })
+    function placeholderSupport() {
+        return 'placeholder' in document.createElement('input');
+    }
+//上传成功  图片显示 且赋值自定义属性
+function tryUploadInput(img) {
+        var _id = img;
+        var img_id = _id+'_img';
+        var img_scr = _id+'_src';
+        var _hasSrc = $("#" + img_id).attr("data-src");
+        $.ajaxFileUpload({
+            url: '/m.php?m=FestivalActivities&a=loadFile',
+            secureuri: false,
+            fileElementId:_id,
+            dataType: 'json',
+
+            success: function (data, status) {
+                if(data.code == 1){
+                    var src = data.imgUrl;
+                    if (src != '') {
+                        if(!_hasSrc){
+                            $("#" + img_id).show();
+                        }
+                        $("#" + img_id).attr("src",src);
+                        $("#" + img_id).attr("data-src",src);
+                        
+                        $("#" + img_id).siblings(".zanwu_tips").hide();
+                        $("#" + img_scr).val(src);
+                    }
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data, status, e) {
+                alert("上传错误");
+            }
+        })
+    }
+//异步校验活动名称是否已经存在
+function checkActivityName(input,active_id) {
+        if (input.value.length > 10)
+            {
+            alert('输入不能大于10个字');
+            return false;
+            }
+        if (input.value) {
+            var _name = input.value;
+            $.ajax({
+                url: ROOT+"?m=FestivalActivities&a=checkActivityIdName&name="+_name+"&active_id="+active_id,
+                data: '',
+                dataType: "json",
+                success: function(obj){
+                    if(obj.errno == 0) {
+                        alert("活动名称已存在，请更换活动名称");
+                    }
+                }
+            });
+        }
+    }
+function check(input) {
+    if (input.value.length > 10)
+    alert('输入不能大于10个字');
+}
+function check_speed(input) {
+    if (input.value && (parseInt(input.value) > 10 || parseInt(input.value < 1)))
+    alert('数字只能为1-10');
+}
+function check_value(input) {
+    if (input.value && (input.value < 0 || isNaN(input.value)))
+    alert('只能输入正数');
+}
+function check_score(input,key) {
+    if (input.value && (input.value < 0 || isNaN(input.value)))
+        {
+    	   alert('只能输入正数');
+    	   return false;
+        }
+    if ($("#prize_conf"+key+"low").val() && (parseInt($("#prize_conf"+key+"low").val()) > parseInt(input.value)))
+    {
+       alert('你输入的分数小于前面的分数');
+       return false;
+    }
+}
+function checktosubmit() {
+	$("form").unbind();
+	init_word_box();
+    $("#info").ajaxStart(function(){
+         $(this).html(LANG['AJAX_RUNNING']);
+         $(this).show();
+    });
+    $("#info").ajaxStop(function(){
+
+        $("#info").oneTime(2000, function() {
+            $(this).fadeOut(2,function(){
+                $("#info").html("");
+            });
+        });
+    });
+    $("form").bind("submit",function(){
+        var btn=$('form input[type="submit"]');
+        var $input = $('#hkop');
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+    	var doms = $(".require");
+    	var check_ok = true;
+    	$.each(doms,function(i, dom){
+    		if($.trim($(dom).val())=='')
+            {
+                    var title = $(dom).attr('des');
+                    if(!title)
+                    {
+                        title = '';
+                    }
+                    if(title.substr(title.length-1,title.length)==':')
+                    {
+                        title = title.substr(0,title.length-1);
+                    }
+                    if($(dom).val()=='')
+                    TIP = LANG['PLEASE_FILL'];
+                    if($(dom).val()=='0')
+                    TIP = LANG['PLEASE_SELECT'];
+                    alert(TIP+title);
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    $(dom).focus();
+                    check_ok = false;
+                    return false;
+            }
+    	});
+        if(!check_ok)
+        return false;
+    	if($("form").attr("name")=="search"){
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return true;
+            }else{
+                if (confirm("确定此操作吗？")) {
+                    //$input.val(btn.val());
+                    $(this).append($input);
+                     return true;
+                } else {
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    return false;
+                }
+            }
+    });
+}
+//$("form").bind("submit",function()
+</script>
+
+
+<include file="Public:footer" />

@@ -1,0 +1,18 @@
+用户提现申请
+申请部门：产品部
+付款金额（大写）{$usercarry.money|floatval|get_amount}                     （小写）{$usercarry.money|format_price} 
+支付方式：易宝支付 
+收款方名称：{$bank.card_name}
+收款方开户行：{$bank.bankName}{$bank.bankzone}  
+收款方账号：{$bank.bankcard} 
+付款内容：{$deal.name}放款 付款备注：{$user.real_name}款项 
+付款日期                             付款编号                       
+申&nbsp;&nbsp;请&nbsp;&nbsp;人：                
+出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;纳：                
+财务&nbsp;&nbsp;副总：
+
+{$user_info.real_name}用户明细 &nbsp;会员id：{$user_info.id}&nbsp;会员名称：{$user_info.user_name}  {$tips} <br>
+    编号     类型     操作时间     资金变动     冻结(+)/解冻(-) 
+<foreach name="dealLog" item="dealLog_item">
+    {$dealLog_item.id}    {$dealLog_item.log_info}    {$dealLog_item.log_time|to_date}     {$dealLog_item.money|format_price}    {$dealLog_item.lock_money|format_price}<br>
+</foreach>  

@@ -1,0 +1,336 @@
+{include file="web/views/v3/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/feedback/index.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/feedback/do_complain.css');?>" />
+<div class="feedback-nav">
+    <a class="feedback-nav-link" href="/">网信普惠</a>
+    <span class="feedback-nav-gap">></span>
+    <a class="feedback-nav-link" href="/feedback/feedback">消费者纠纷解决中心</a>
+    <span class="feedback-nav-gap">></span>
+    <a class="feedback-nav-link" javascript:;>投诉举报</a>
+</div>
+<script>
+
+</script>
+<section class="main">
+    <div class="report-wrapper">
+        <form action="" id="jubao_form">
+            <div class="report-tips">
+                <p class="mb20">您若发现违法违规、侵犯您或他人合法权益等行为，需要向平台进行投诉、举报的，可以在线举报，也可以通过平台的投诉举报电话、邮箱告知我 们，平台将在7个工作日内向您反馈处理结果。
+                </p>
+                <p>您也可以通过电话/邮件方式进行投诉举报：</p>
+                <p>投诉电话：400-890-9888 转 4</p>
+                <p>举报电话：400-890-9888 转 9</p>
+                <p>举报邮箱：service@ncfwx.com</p>
+            </div>
+            <div class="report-content">
+                <header class="report-header">在线举报需按照要求填写举报内容：</header>
+                <div class="report-profle">
+                    <div class="report-item">
+                        <div class="report-title">
+                            举报人信息
+                        </div>
+                        <div class="report-item-content">
+                            <div class="report-item-line report-profile-line">
+                                <div class="report-line-dd">
+                                    <em class="report-dd-title">
+                                        举报人姓名/昵称：
+                                    </em>
+                                    <div class="input-wrapper contact-items" >
+                                        <input class="report-dd-input" name="contact_name"/>
+                                    </div>
+                                </div>
+                                <div class="report-line-dd clearfix">
+                                    <em class="report-dd-title">
+                                        联系电话：
+                                    </em>
+                                    <div class="input-wrapper contact-items" >
+                                        <input class="report-dd-input"  name="contact_mobile" />
+                                    </div>
+                                </div>
+                                <div class="report-line-dd">
+                                    <em class="report-dd-title">
+                                        电子邮箱：
+                                    </em>
+                                    <div class="input-wrapper contact-items" >
+                                        <input class="report-dd-input w255" name="contact_email" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="report-item-line report-type-wrapper report-profile-line">
+                                <span type="checkbox"  id="anonymous-btn" class="report-type-input"></span>
+                                <span class="report-type-text">匿名举报</span>
+                                <input type="hidden" name="is_anony" value="1" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-item">
+                        <div class="report-title">
+                            举报对象信息
+                        </div>
+                        <div class="report-item-content">
+                            <div class="report-item-line mb44">
+                                <span class="report-line-dd contact-item">
+                                    <em class="report-dd-title">
+                                        举报对象姓名/昵称：
+                                    </em>
+                                    <div class="input-wrapper" >
+                                        <input class="report-dd-input"  name="for_name" />
+                                    </div>
+                                </span>
+                                <span class="report-line-dd contact-item">
+                                    <em class="report-dd-title">
+                                        举报对象类型：
+                                    </em>
+                                    <div class="ui_select_box JS_select_box" data-name="for_type">
+                                        <div class="j_select"></div>
+                                        <ul class="select_ul j_selectContent none">
+                                            <li data-value=''>请选择</li>
+                                            {foreach from=$for_type item=type key=key}
+                                            <li data-value="{$key}" {if $search.money_type eq $key}data-select="1"{/if}>{$type}</li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </span>
+                                <span class="report-line-dd contact-item">
+                                    <em class="report-dd-title">
+                                        关联产品/项目：
+                                    </em>
+                                    <div class="input-wrapper" >
+                                        <input class="report-dd-input w226" name="for_product" />
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="report-detail">
+                    <div class="report-item">
+                        <div class="report-title">
+                            举报详情
+                        </div>
+                        <div class="report-item-content">
+                            <div class="report-item-line clearfix mb18">
+                                <div class="report-detail-title fl">
+                                    标题：
+                                </div>
+                                <div class="input-wrapper" >
+                                    <input class="report-detail-title-input fl"  name="title" />
+                                </div>
+                            </div>
+                            <div class="report-item-line clearfix mb19">
+                                <div class="report-detail-title fl">
+                                    事件描述：
+                                </div>
+                                <div class="input-wrapper" >
+                                    <textarea class="report-detail-desc-input fl" name="content" ></textarea>
+                                </div>
+                            </div>
+                            <div class="report-item-line clearfix mb20">
+                                <div class="report-detail-title fl">
+                                    上传图片：
+                                </div>
+                                <div class="report-detail-upload-input-wrapper">
+                                    点击上传图片
+                                    <span type="file"  class="report-detail-upload-input" id="btn"> </span>
+                                    <input hidden name="image_url" />
+                                </div>
+                                <ul id="filelist" class="filelist"></ul>
+                                <div id="errorbox" class="errorbox"></div>
+                            </div>
+                            <div class="report-item-line clearfix mb50 event-report">
+                                <div class="report-detail-title fl">
+                                    事件类别：
+                                </div>
+                                <div class="ui_select_box JS_select_box" data-name="event_type">
+                                    <div class="j_select"></div>
+                                    <ul class="select_ul j_selectContent none">
+                                        <li data-value=''>请选择</li>
+                                        {foreach from=$event_type item=type key=key}
+                                        <li data-value="{$key}" {if $search.money_type eq $key}data-select="1"{/if}>{$type}</li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="report-btn-wraps">
+                    <button  type="submit" class="report-submit-btn" id="report-submit-btn">
+                        提交举报信息
+                    </button>
+                </footer>
+            </div>
+        </form>
+    </div>
+</section>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/validator/validator.v1.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/plupload/plupload.full.min.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/plupload/i18n/zh_CN.js');?>"></script>
+<script>
+
+    $("#jubao_form").validator({
+        fields: {
+            contact_name: $('#anonymous-btn').get().checked ? '' : 'required',
+            contact_mobile: $('#anonymous-btn').get().checked ? '' : 'required; mobile',
+            contact_email: $('#anonymous-btn').get().checked ? '' : 'required; email',
+            for_name: 'required',
+            for_type: 'required',
+            for_product: 'required',
+            title: 'required; length(~20)',
+            content: 'required; length(~200)',
+            image_url: 'required',
+            event_type: 'required'
+        },
+        mobile: [/^1[3456789]\d{9}$/, '请检查手机号格式'],
+        messages: {
+            required: "不能为空",
+            email: "Please enter a valid email address.",
+        },
+        msgWrapper: 'p',
+        msgMaker: function(opt){
+            return '<span class="valid-msg">' + opt.msg + '</span>';
+        },
+        valid: function() {
+
+            $('#report-submit-btn').attr('disabled', 'disabled')
+            $.ajax({
+                method: 'POST',
+                url: '/feedback/complain',
+                data: getData('#jubao_form')
+            }).done(function (data) {
+                var res = JSON.parse(data)
+                $.weeboxs.open(res.msg, {
+                    boxid : null,
+                    contentType : 'text',
+                    showButton : true,
+                    showCancel : false,
+                    showOk : true,
+                    okBtnName: '确定',
+                    title : '提示',
+                    width : 430,
+                    type : 'wee',
+                    onclose : function() {
+                        null
+                    },
+                    onok : function() {
+
+                        $('#report-submit-btn').removeAttr('disabled')
+                        res.data && (location.href="/feedback/feedback");
+                        $.weeboxs.close();
+                    }
+                });
+            })
+        }
+    });
+
+    // 初始化选框
+    $(".JS_select_box").select();
+
+    //  生成提交对象
+    function getData(selector) {
+        var data = {}
+        $(selector).find('input, textarea').each(function (index, value) {
+            var key = $(value).attr('name')
+            var value = $(value).val()
+            key && (data[key] = value)
+        })
+        return data
+    }
+
+    // 上传图片
+    var uploader = new plupload.Uploader({
+        browse_button: 'btn', // this can be an id of a DOM element or the DOM element itself
+        url: '/feedback/uploadImage',
+        flash_swf_url: "<?php echo $this->asset->makeUrl('v3/js/widget/plupload/Moxie.swf');?>",
+        filters: {
+            mime_types : [
+                { title : "Image files", extensions : "jpg,jpeg,png,pjpeg"}
+            ],
+            max_file_size: '3mb'
+        },
+        multi_selection: false
+    });
+
+    // 绑定事件
+    uploader.init();
+    uploader.bind('FilesAdded', function(up, files) {
+        var html = '';
+        plupload.each(files, function(file) {
+            html += '<li id="' + file.id + '" class="filelist-item">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></li>';
+        });
+        document.getElementById('filelist').innerHTML += html;
+
+        uploader.start();
+    });
+
+    uploader.bind('UploadProgress', function(up, file) {
+        if (file.percent === 100) {
+            document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>上传完成</span>';
+        }
+    });
+    uploader.bind('Error', function(up, err) {
+        if (err.code == -600) {
+            $('#errorbox').html("文件大小不能超过3mb")
+        }
+        $('#filelist li').eq(0).remove()
+        $('[name=image_url]').val('')
+    });
+    uploader.bind('FileFiltered', function(up, file) {
+        $('#errorbox').html('')
+    });
+    uploader.bind('QueueChanged', function(up, err) {
+        if (up.files[1]) {
+            up.removeFile(up.files[0])
+            $('#filelist li').eq(0).remove()
+        }
+    });
+    uploader.bind('FileUploaded', function(up, file, result) {
+        var res = JSON.parse(result.response);
+
+        // 将图片url防止到input里
+        var imgUrl = res.message.url;
+        $('[name=image_url]').val(imgUrl);
+
+        // 显示上传结果
+        var msgBox = $('#errorbox')
+        var errorCode = res.code
+        if (errorCode === '0000') {
+            msgBox.val('上传成功');
+        } else if (errorCode === '4001' || errorCode === '4000') {
+            msgBox.val(res.message);
+        }
+    });
+
+    // 是否匿名选框
+    $('#anonymous-btn').on('click', function (ev) {
+        this.checked = !this.checked
+
+        /**
+         * 根据匿名改变选填必填
+         * 2 代表匿名
+         * 1 代表不匿名
+        */
+        if (this.checked) { // 匿名
+            $('[name=is_anony]').val(2);
+            $('.contact-items input').attr('disabled', 'disabled')
+            $('.contact-items input').val('')
+            $('.contact-items .valid-msg').html('')
+
+        } else { // 不匿名
+            $('[name=is_anony]').val(1);
+            $('.contact-items input').removeAttr('disabled')
+        }
+
+        $(this).toggleClass('report-type-input-checked')
+
+        ev.preventDefault();
+    })
+    $('.report-type-wrapper').on('mousedown', function (ev) {
+        ev.preventDefault()
+    })
+
+</script>
+<style>
+
+</style>
+{include file="web/views/v3/footer.html"}

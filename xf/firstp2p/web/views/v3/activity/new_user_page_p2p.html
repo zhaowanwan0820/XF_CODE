@@ -1,0 +1,60 @@
+{include file="web/views/v3/header_p2p_newuser.html"}
+<div class="p_new_user_p2p">
+    <link href="<?php echo $this->asset->makeUrl('v4/css/activity/p_new_user_p2p.css?v=1" type="text/css');?>" rel="stylesheet">
+    <!-- banner图-->
+    <div class="{if !$user_info}bannerBox{else}_bannerBox{/if}" id="bannerBox">
+        <div class="cont_mid h620">
+            {if !$user_info}
+            <iframe src="/user/register?modal=1" frameborder="0" width="100%" height="100%" class="iframe_register" id="ifm" name="ifm"></iframe>
+            {/if}
+        </div>
+    </div>
+    {function name="get_adv" x="网信普惠PC_新手专区TOP_2018"}
+    <div class="newuser_recommend">
+        <div class="cont_mid">
+            {if !empty($newUserDealsList) } 
+                {foreach from=$newUserDealsList item="item" key=key} 
+                    {if $key < 3} 
+                    <div class="pro_con_list fl">
+                        <h3>{$item.name}
+                            <em>新手推荐</em>
+                        </h3>
+                        <dl>
+                            <dt>{$item.rate}<ins>%</ins>
+                            </dt>
+                            <dd class="color_gray">年化借款利率</dd>
+                            <dd class="pro_mt">
+                                <i>期限：</i>
+                                {if $item.loanType eq 5}
+                                    {$item.repayTime}天
+                                    {else}
+                                    {$item.repayTime}个月
+                                {/if}
+                            </dd>
+                        </dl>
+                        <h4>
+                            <a href="{$item.url}">立即出借</a>
+                        </h4>
+                    </div>
+                    {/if} 
+                {/foreach} 
+            {/if}
+        </div>
+    </div>
+    {function name="get_adv" x="网信普惠PC_新手专区BOTTOM_2018"}
+</div>
+<script type='text/javascript'>
+    var _ncf = { "prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "&uf=pc", "pck": { "channel": "channel", "fpid": "fpid" }, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": [] };
+    (function (p, h, s) { var o = document.createElement(h); o.src = s; p.appendChild(o) })(document.getElementsByTagName("HEAD")[0], "script", "/static/default/js/ncfpb.1.5.min.js");
+    $(function(){
+        $('.scroll_top').click(function(){
+        $('html,body').animate({scrollTop: '0px'}, 800);});
+    });
+ 
+    window.onload = function() {
+            zhuge.track('进入新手专区页面');
+        }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="main_title">添加标签</div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post">
+    <div>
+        <table id="tag_tab">
+            <foreach name="tag_names" key="key" item="tag_name">
+                <tr>
+                    <td>
+                        <input type="text" name="tag_names[]" class="textbox" value="{$tag_name}" style="width:280px;"/>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" onclick="deltr(this)" class="del">删除</a>
+                    </td>
+                </tr>
+            </foreach>
+        </table>
+        <a href="javascript:void(0)" id="btn_tag_id">新增</a>
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+    <input type="hidden" name="post" value="1" />
+    <input type="hidden" name="m" value="Deal" />
+    <input type="hidden" name="a" value="p2p_zone" />
+    <input type="submit" class="button" value="{%SAVE}" />
+</form>
+<script type="text/javascript">
+
+$(function() {
+    $('#btn_tag_id').click(function() {
+        var trline = '<tr><td><input type="text" class="textbox" name="tag_names[]" style="width:280px;"/><span></span>';
+        trline += '</td><td><a href="javascript:void(0)" onclick="deltr(this)" class="del">删除</a></td></tr>';
+        $(trline).appendTo('#tag_tab')
+    })
+});
+
+function deltr(obj)
+{
+    $(obj).parent().parent().remove()
+}
+</script>
+<include file="Public:footer" />

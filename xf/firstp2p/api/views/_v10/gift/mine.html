@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>我的优惠券</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <!--public js&css start-->
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>">
+        <!--<script type="text/javascript" src="{$STATIC_SITE}/mobile/app/v2/js/my_bonus.js"></script>
+        public js&css end-->
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="p_coupon_list">
+                <div class="tab">
+                    <!--全部-->
+                    <div class="tab_con">
+                        {if $couponList}
+                        {foreach from=$couponList item=coupon}
+                            <div class="items_bg_left">
+                                <div class="items_bg_right">
+                                    <dl class="coupon_items clearfix">
+                                        <a data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="myCoupon" data-title="礼券详情" data-identity="couponDetail" data-needback="true" data-needrefresh="true" href="{$APP_HOST}/gift/MineDetail?couponId={$coupon.id}&token={$usertoken}">
+                                            <dt><img src="{$coupon.pic}"></dt>
+                                            <dd class="clearfix">
+                                                <div class="draw_text">
+                                                    <h3 class="{if $coupon.status eq 2}color_gray ui_line_through{elseif $coupon.status eq 3}color_gray{/if}">{$coupon.productName}</h3>
+                                                    <p class="color_red {if $coupon.status eq 2 || $coupon.status eq 3}color_gray{/if}">
+                                                        {if $coupon.goodPrice neq 0}<em class="f15">{$coupon.goodPrice}元</em>{/if}
+                                                        {if $coupon.useRules eq 1}
+                                                        <span class="coupon_tips">限本人使用</span>
+                                                        {/if}
+                                                        {if $coupon.status eq 1}
+                                                        <span class="coupon_tips">待兑换</span>
+                                                        {elseif $coupon.status eq 2}
+                                                        <span class="coupon_tips_gray disnone">已兑换</span>
+                                                        <span class="ts_redspan">{$coupon.couponExchangedDesc}</span>
+                                                        {elseif $coupon.status eq 3}
+                                                        <span class="coupon_tips_gray">已过期</span>
+                                                        {elseif $coupon.status eq 5}
+                                                        <span class="coupon_tips">兑换待确认</span>
+                                                        {/if}
+                                                    </p>
+                                                    <p>
+                                                        有效期至：{function name="date" v="Y.m.d" b=$coupon.useEndTime}
+                                                    </p>
+                                                </div>
+                                                <div class="draw_btn"><span class="btn"></span></div>
+                                            </dd>
+                                        </a>
+                                    </dl>
+                                </div>
+                            </div>
+                        {/foreach}
+                        {/if}
+                    </div>
+                    <div class="tab_more tb0-more">{if $couponListCount > 9}<a href="javascript:void(0);">点击加载更多</a>{else}没有更多了{/if}</div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+        <script>
+            (function ($) {
+                var loadmore = new WXP2P.UI.P2PLoadMore($(".tab_con")[0], $('.tb0-more')[0], '{$APP_HOST}/gift/ajaxMine?token={$usertoken}',2);
+                loadmore.createItem = function(item){
+                    var dl = document.createElement("div");
+                    var html = "";
+                    html +='<div class="items_bg_right">'
+                    html +='<dl class="coupon_items clearfix">'
+                    html += '    <a data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="myCoupon" data-title="礼券详情" data-identity="couponDetail" data-needback="true" data-needrefresh="true" href="{$APP_HOST}/gift/MineDetail?couponId=' + item.id + '&token={$usertoken}">'
+                    html += '    <dt>';
+                    html +='        <img src="'+item.pic+'">'
+                    html += '    <dd>';
+                    html += '    <div class="draw_text">';
+                    if(item.status == 2){
+                        html +='        <h3 class="color_gray ui_line_through">';
+                        html +='            '+ item.productName +'</h3>';
+                        html +='        <p class="color_gray">';
+                    }else if(item.status ==3 ){
+                        html +='        <h3 class="color_gray">';
+                        html +='            '+ item.productName +'</h3>';
+                        html +='        <p class="color_gray">';
+                    }else{
+                        html +='        <h3>';
+                        html +='            '+ item.productName +'</h3>';
+                        html +='        <p class="color_red">';
+                    }
+                    if (item.goodPrice != 0) {
+                        html +='            <em class="f15">';
+                        html +='            '+ item.goodPrice +'元</em>';
+                    }
+                    if (item.useRules == 1){
+                        html +='<span class="coupon_tips">限本人使用</span>';
+                    }
+                    if (item.status == 1){
+                        html +='<span class="coupon_tips">待兑换</span>';
+                    } else if(item.status == 2){
+                        html += '<span class="coupon_tips_gray disnone">已兑换</span>';
+                        html += ' <span class="ts_redspan">' + item.couponExchangedDesc + '</span>';
+                    } else if(item.status == 3){
+                        html +='<span class="coupon_tips_gray">已过期</span>';
+                    } else if(item.status == 5) {
+                        html +='<span class="coupon_tips">兑换待确认</span>';
+                    }
+
+                    html +='</p>        <p>';
+
+                    var timeStr = item.useEndTime; //php time()函数输出的时间戳
+                    var DateStr = new Date(parseInt(timeStr) * 1000);
+                    var DateMonth = DateStr.getMonth()+1;
+                    var DateDay = DateStr.getDate();
+                    var useEndTime= DateStr.getFullYear()+'.'+(DateMonth < 10 ? '0' + DateMonth : DateMonth )+'.'+(DateDay < 10 ? '0' + DateDay : DateDay );
+
+                    html +='        有效期至：';
+                    html +=useEndTime
+                    html +='</p>';
+                    html +='</div>'
+                    html +='<div class="draw_btn"><span class="btn"></span></div>';
+                    html += '    </dd>';
+                    html +='</a>';
+                    html +='</dl>';
+
+                    html +='</div>';
+                    dl.innerHTML = html;
+                    dl.className="items_bg_left";
+                    WXP2P.APP.batchWarpAnchorSchema($(dl).find('a'));
+                    return dl;
+                };
+            })(Zepto);
+        </script>
+    </body>
+</html>

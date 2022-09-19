@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file='web/views/hongbao/shareLogo.html'}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/888hongbao.css', 1);?>" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="light_box">
+    <div class="light"></div>
+</div>
+{include file="web/views/hongbao/xql/logo.html"}
+<!-- <a href="#" class="rule">活动规则</a> --> 
+    <div class="top">
+        <div class="rob-tel">
+            <div class="p-title">
+                <p><span class="f48">{$bonusDetail.money}</span>元礼包</p>
+            </div>
+            <form id="register-form" action="GetHongbao" method="get">
+                <input type="tel" class="tel-box" id="input-mobile" name = 'mobile' placeholder='输入手机号码立即领取' maxlength="11">
+                <?php echo token_input(); ?>
+                <input type="hidden" value = "{$sn}" name = 'sn'>
+                <input type="hidden" value = "{$site_id}" name = 'site_id'>
+                <div class="errorDiv"></div>
+                <input type="submit" class="tel-btn" value="点击领取">
+            </form>
+        </div>
+        <div class="p-tips">
+            <p>投资还可享更多收益哦！</p>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            var bHeight=document.documentElement.clientHeight-416;
+			$('body').css({'height':'416px'});
+			$('.top').css({"margin-top":(bHeight/2)+'px'})
+            $('.tel-btn').click(function(){
+                var mobileRegEx = /^1[3456789]\d{9}$/;
+                var tel= $('.tel-box').val()
+                if(!tel || tel==null){
+                    $('.errorDiv').html('手机号不能为空！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else if(!mobileRegEx.test(tel)){
+                    $('.errorDiv').html('手机号码格式不正确！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else{
+                    return true;
+                }
+            });
+        });
+    </script>
+{include file="web/views/hongbao/js.html"}
+</body>
+</html>

@@ -1,0 +1,97 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+
+</php>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        状态：
+        <select name="status" id="status">
+                <option value="10000" <if condition="intval($_REQUEST['status']) eq 10000">selected="selected"</if>>==请选择==</option>
+                <foreach name="statusMap" item="status" key="key">
+                    <option value="{$key}" <if condition="$_REQUEST['status'] eq $key">selected="selected"</if>>{$status}</option>
+                </foreach>
+        </select>
+        长度范围:
+        <input type="text" class="textbox" name="len_gt" value="{:trim($_REQUEST['len_gt'])}" style="width:40px;" /> - <input type="text" class="textbox" name="len_lt" value="{:trim($_REQUEST['len_lt'])}" style="width:40px;" />
+        用户ID:
+        <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:70px;" />
+        时间段：
+        <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        -
+        <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="FinanceQueue" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<div style="background:#edf3f7;border-radius:3px;border:#8ba9c0 1px solid; padding:10px;">
+队列统计：
+<?php echo to_date($statStart); ?> ~
+<?php echo to_date($statEnd); ?>
+&nbsp;/&nbsp;
+任务数：<b><?php echo $statAll['total']; ?></b>
+&nbsp;/&nbsp;
+处理成功：<b><?php echo $statDone['total']; ?></b>
+&nbsp;/&nbsp;
+未处理及失败：<b><?php echo $statAll['total'] - $statDone['total']; ?></b>
+&nbsp;/&nbsp;
+平均延时：<b style="color:red;"><?php echo round($statDone['cost'] / $statDone['total']); ?></b> 秒
+</div>
+
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="finance_queue"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px,create_time|to_date:创建时间,content:内容,type|getTypeName:类型,status|getStatusName:操作结果,req_status|getReqStatusName:请求结果,req_time|to_date:请求时间,priority:优先级"
+    actionlist="set_priority:加权重,resetTransfer:重置转账状态" />
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+$(document).ready(function(){
+    $(".row").each(function() {
+        $(this).attr('id', $.trim($(this).find('td').first().text()));
+    });
+});
+function set_priority(id){
+    var value = $.trim($("#"+id+" td:nth-child(8)").text());
+    value++;
+    $.post("m.php?m=FinanceQueue&a=updatePriority", { id:id, priority:value}, function (rs){
+        var rs = $.parseJSON(rs);
+        if (!rs.status) {
+            alert(rs.info);
+        }
+    });
+    $("#"+id+" td:nth-child(8)").html("&nbsp;"+value);
+}
+function resetTransfer(id){
+    $.post("m.php?m=FinanceQueue&a=resetTransfer", { id:id}, function (rs){
+        var rs = $.parseJSON(rs);
+        if (!rs.status) {
+            alert(rs.info);
+        }
+    });
+}
+
+</script>
+<include file="Public:footer" />

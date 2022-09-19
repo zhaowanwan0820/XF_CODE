@@ -1,0 +1,67 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<div class="main">
+    <div class="main_title">新增调账申请 <a href="{:u('MoneyAdjust/index')}" class="back_list">返回申请列表</a></div>
+    <div class="blank5"></div>
+    <form name="doadd" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">类型:</td>
+                <td class="item_input">
+                    <select name="type" id="js_type">
+                        <foreach name="money_adjust_type" item="type" key="key">
+                            <option value="{$key}">{$type}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">金额:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="money" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">调减账会员编号:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="decr_idno" />
+                    &nbsp;&nbsp;<span class="check_user_name"></span><a href="/m.php?m=User&a=index&" target="_blank">会员列表</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">调减账户备注:</td>
+                <td class="item_input"><textarea class="textbox require" name="decr_note"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">调增账会员编号:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="incr_idno" />
+                    &nbsp;&nbsp;<span class="check_user_name"></span><a href="/m.php?m=User&a=index&" target="_blank">会员列表</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">调增账户备注:</td>
+                <td class="item_input"><textarea class="textbox require" name="incr_note"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="MoneyAdjust" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="doadd" />
+                    <!--隐藏元素-->
+                    <input type="submit" class="button" value="{%ADD}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>接待预约</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no, viewport-fit=cover">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-base.css?v=20180723');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-common.css?v=20180723');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.100/css/booking/p_booking.css?v=123');?>">
+</head>
+
+<body>
+    <div class="p_booking">
+        {if !$screen}
+        <div class="title">请选择预约城市</div>
+        <ul class="city_item clearfix">
+          {foreach from=$citys item=list key=key}
+          {if $key eq 1}
+          <li class="active">
+            {$list}
+          </li>
+          {else}
+          <li>
+            {$list}
+          </li>
+          {/if}
+          {/foreach}
+        </ul>
+
+        <div class="title">请选择预约时间</div>
+        {foreach from=$sessions item=session key=city}
+        <ul class="time_item item_{$city}" {if $city!=1}style="display:none;"{/if}>
+          {if $session}
+          {foreach from=$session item=list key=key}
+          {if $list.status eq 1}
+          <li>  
+              <label>
+                  <span class="ipt_radio_box"></span> 
+                  <input type="radio" name="screen" class="ipt_radio" value="{$key}">{$list.sessionDesc}
+              </label>
+          </li>
+          {else}
+          <li class="disabled">
+              <label>
+                  <span class="ipt_radio_box disabled"></span> 
+                  <input type="radio" name="screen" class="ipt_radio" disabled="disabled" value="{$key}">{$list.sessionDesc}
+              </label>
+          </li>
+          {/if}
+          {/foreach}
+          {else}
+          <div class="empty">
+            <img src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/empty.png');?>" width="150">
+            <p>当前暂无可预约场次</p>
+          </div>
+          {/if}
+      </ul>
+      {/foreach}
+
+        <div class="book_btn bg_gray">提交预约</div>
+        {else}
+        <div class="title">您已预约了如下城市和时间（如需更改先取消当前预约）</div>
+        <ul class="booked">
+            <li>城市：{$screen.cityName}</li>
+            <li>时间：{$screen.sessionDesc}</li>
+        </ul>
+        <div class="book_btn JS_cancel">取消预约</div>
+        {/if}
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/zepto.min.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+    <script>
+        $(function(){
+          var screen;
+          $(".city_item li").click(function() {
+            var city = $('.city_item .ipt_radio:checked').val();
+            $(this).addClass("active").siblings().removeClass("active");
+            var indexCity = $(this).index();
+            $(".time_item").hide();
+            $(".time_item").eq(indexCity).show();
+            $(".time_item li").removeClass("active")
+            $(".book_btn").addClass("bg_gray").removeClass("JS_submit")
+          });
+
+          $(".time_item li").click(function(){
+            if($(this).hasClass("disabled")) return;
+            var screen = $('.time_item .ipt_radio:checked').val();
+            $(this).addClass("active").siblings().removeClass("active");
+            if(screen){
+              $(".book_btn").removeClass("bg_gray").addClass("JS_submit")
+            }else {
+              $(".book_btn").addClass("bg_gray").removeClass("JS_submit")
+            }
+          });
+
+          $(".p_booking").on("click",".JS_submit",function(){
+            var screen = $('.time_item .ipt_radio:checked').val();
+            $.ajax({
+              type:"post",
+              url:"/booking/book",
+              dataType:"json",
+              data:{
+                "screen":screen,
+                "token":"{$token}"
+              },
+              success:function(json){
+                if(json.errno == 0){
+                  WXP2P.UI.toast("预约成功")
+                  setTimeout(function(){
+                    location.reload();
+                  },2000) 
+                } else {
+                  WXP2P.UI.toast(json.error)
+                }
+              },
+              error:function(){
+                WXP2P.UI.toast("网络错误，请重试！")
+              }
+            })
+          })
+          $(".JS_cancel").click(function(){
+            $.ajax({
+              type:"post",
+              url:"/booking/cancel",
+              dataType:"json",
+              data:{
+                "screen":"{$screen.reserved_session}",
+                "token":"{$token}"
+              },
+              success:function(json){
+                if(json.errno == 0){
+                  WXP2P.UI.toast("取消成功")
+                  setTimeout(function(){
+                    location.reload();
+                  },2000)
+                } else {
+                  WXP2P.UI.toast(json.error)
+                }
+              },
+              error:function(){
+                WXP2P.UI.toast("网络错误，请重试！")
+              }
+            })
+          })
+        });
+        WXP2P.APP.triggerScheme('firstp2p://api?type=rightbtn&title=');
+    </script>
+</body>
+
+</html>

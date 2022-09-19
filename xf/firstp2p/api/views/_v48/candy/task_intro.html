@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>信力任务说明</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    {include file="api/views/_v48/candy/candy_header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/p_task_intro.css?v=3');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_task_intro">
+      <ul class="task_list_box">
+        <li class="item_duotou">
+          <h3>加入智多新</h3>
+          <p>{$activityConf.DT.desc}</p>
+        </li>
+        <li class="item_qiandao">
+          <h3>每日签到</h3>
+          <p>{$activityConf.CHECKIN.desc}</p>
+        </li>
+        <li class="item_choujiang">
+          <h3>每日抽奖</h3>
+          <p>{$activityConf.LOTTERY.desc}</p>
+        </li>
+        {if $showConfig['BONUS_ON']}
+        <li class="item_fenxiang">
+          <h3>分享任务</h3>
+          <p>{$activityConf.BONUS.desc}</p>
+        </li>
+        {/if}
+        <li class="item_yaoqing">
+          <h3>邀请好友</h3>
+          <p>{$activityConf.INVITE.desc}</p>
+        </li>
+        <li class="item_p2p">
+          <h3>网贷-网信普惠</h3>
+          <p>{$activityConf.P2P.desc}</p>
+        </li>
+        {if $showConfig.ZHUANXIANG}
+        <li class="item_zx">
+          <h3>投资尊享</h3>
+          <p>{$activityConf.ZHUANXIANG.desc}</p>
+        </li>
+        {/if}
+        {if $showConfig.BALANCE}
+        <li class="item_yue">
+          <h3>余额得信力</h3>
+          <p>{$activityConf.BALANCE.desc}</p>
+        </li>
+        {/if}
+        <li class="item_activity">
+          <h3>活动奖励</h3>
+          <p>{$activityConf.SHARE.desc}</p>
+        </li>
+      </ul>
+    </div>
+    <!--public js-->
+    <script type="text/javascript">
+      /*webViewDidFinishLoad: 4.10.1版本才有的方法，等到强升版本至少到4.10.1时再将埋点延时window.onload方法换成webViewDidFinishLoad  */
+      // function webViewDidFinishLoad(){
+      //   zhuge.track('进入信力任务说明');
+      // }
+      /* end */
+
+      $(function(){
+          zhuge.track('进入信力任务说明');
+          localStorage.clear();
+          P2PWAP.app.triggerScheme("firstp2p://api?type=rightbtn&title=");
+          if(!p2pBrowser.iosApp){
+              P2PWAP.app.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+          }
+      })
+      function gobackjsfunc() {
+          window.location.reload();
+      }
+    </script>
+</body>
+
+</html>

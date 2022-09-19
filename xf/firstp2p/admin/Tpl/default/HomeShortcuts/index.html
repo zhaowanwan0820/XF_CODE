@@ -1,0 +1,89 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">首页入口配置</div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <form action="/m.php?m=HomeShortcuts&a=confupdate" method="post">
+    <table id="confTable" class="dataTable" cellpadding="0" cellspacing="0">
+        <tr class="row">
+            <th width="330"><a>我的快捷入口初始配置</a><i> (输入图标编号，并以英文逗号分隔)</i></th>
+            <th width="330"><a><input type="text" name="confType1" id="shortcutsType1" value="{$confType1}"></a></th>
+            <th width="330"><a><input type="text" name="confType2" id="shortcutsType2" value="{$confType2}"></a></th>
+            <th width="330"><a><input type="text" name="confType3" id="shortcutsType3" value="{$confType3}"></a></th>
+        </tr>
+        <tr class="row" height="150">
+            <td><textarea id="mine" name="mine" style="width: 100%;height:150px;">{$mine}</textarea></td>
+            <td><textarea id="welfare" name="welfare" style="width: 100%;height:150px;">{$welfare}</textarea></td>
+            <td><textarea id="assets" name="assets" style="width: 100%;height:150px;">{$assets}</textarea></td>
+            <td><textarea id="service" name="service" style="width: 100%;height:150px;">{$service}</textarea></td>
+        </tr>
+    </table>
+        <div class="button_row" align="right"><input type="submit" class="button" value="保存" /></div>
+    </form>
+    <div ><hr></div>
+    <div class="button_row" align="right"><input type="button" class="button" value="{%ADD}" onclick="add();" /></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="9" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="50px"><a>编号</a></th>
+            <th width=""><a>图标</a></th>
+            <th width="120px"><a>名称</a></th>
+            <th width="150px"><a>跳转类型</a></th>
+            <th width="150px"><a>置顶</a></th>
+            <th width="120px">操作</th>
+        </tr>
+        <foreach name="list" key="key" item="item">
+            <tr class="row" >
+                <td>&nbsp;{$item.id}</td>
+                <td>
+                    <img border="0"   src="{$item['value']['imageUrl']}" height="100" width="100"></td>
+                <td>
+                    {$item.title}
+                </td>
+                <td><foreach name="item['value']" key="item_key" item="val"><php>if($item_key=='type')echo $turnType[$val];</php></foreach></td>
+                <td>
+                    <if condition="$item['value']['isStick'] eq 1 && $item['value']['isStick'] neq ''">是 <else/>否</if>
+                </td>
+                <td><a href="javascript:edit('{$item.id}')"><?php echo L("EDIT");?> </a>
+                    <a href="#" class="data-del">删除</a></td>
+                <input type="hidden" name="jumpUrl" value="{$jumpUrl}" />
+
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="9" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+</div>
+<script>
+
+    $(function(){
+        $(".data-del").bind("click", function(){
+            id = parseInt($(this).parent().parent().children()[0].innerText);
+            var jumpUrl = $("input[name='jumpUrl']").val();
+            $.ajax({
+                url: "/m.php?m=HomeShortcuts&a=delete",
+                type: "POST",
+                dataType: 'JSON',
+                data: {
+                    "id":id
+                },
+                success: function(data){
+                    message = JSON.parse(data);
+                    alert(message['info']);
+                    if(message['status'] == 1){
+                        window.location.href = jumpUrl;
+                    }
+                }
+            });
+        });
+    })
+
+</script>
+
+<include file="Public:footer" />

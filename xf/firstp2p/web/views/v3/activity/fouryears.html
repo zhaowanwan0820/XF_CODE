@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta name="format-detection" content="telephone=no">
+	<title>网信四周年生日快乐</title>
+	<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/fouryears/base.css?v=2017070501011');?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/fouryears/user.css?v=201707060206');?>">
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/fouryears/zepto.js');?>"></script>
+	<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/fouryears/common.js');?>"></script>
+	<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/fouryears/countup.js');?>"></script>
+	<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/fouryears/bless.js?v=201707060103');?>"></script>
+	<script>
+        //分享控制
+        var shareOpt={//分享信息json对象
+            'title':'网信生日季，邀你送祝福！',
+            'content':'网信4岁生日季，声声的祝福，深深的情谊。7月，不平凡的日子……感恩相伴！',
+            'url':location.protocol+'//'+location.hostname+'/activity/bless',
+            'img':location.protocol + '//' + location.hostname + '/static/v3/images/fouryears/share.jpeg'
+        };
+        var sharetitle = shareOpt.title;
+        shareOpt.title = shareOpt.title;
+        shareOpt.content = shareOpt.content;
+        var appid = '{$appid}';
+        var nonceStr = '{$nonceStr}';
+        var timeStamp = '{$timeStamp}';
+        var signature = '{$signature}';
+        wx.config({
+            appId:appid,
+            timestamp:timeStamp,
+            nonceStr:nonceStr,
+            signature:signature,
+            jsApiList:[
+                'onMenuShareTimeline',
+                'onMenuShareAppMessage',
+                'hideOptionMenu',
+                'showOptionMenu',
+                'closeWindow'
+            ],
+        });
+        wx.ready(function(){
+            wx.onMenuShareAppMessage({
+                title: shareOpt.title,
+                desc: shareOpt.content,
+                link: shareOpt.url, // 分享链接
+                imgUrl: shareOpt.img
+            });
+            wx.onMenuShareTimeline({
+                title: shareOpt.title,
+                link: shareOpt.url,
+                imgUrl: shareOpt.img
+            });
+        });
+	</script>
+</head>
+<body class="">
+	<div class="event-loading" id="JS-loading">
+        <div class="robot"><img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/robot.png');?>" width="100%"></div>
+        <div class="loading-area"><span>Loading<font>0</font>%<em></em></span></div>
+    </div>
+
+	<div class="topHeader">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/index_top.jpg');?>" width="100%" >
+	</div>
+	<div class="textZone">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/textzone.png');?>" width="100%" >
+		<div class="inputZone">
+			<span class="changeLine"></span>
+			<textarea class="input italic" name="userWords" id="userWords" width="100%" >祝网信四周年生日快乐!</textarea>
+		</div>
+	</div>
+	<div class="phoneZone">
+		<p class="tips" style="display:none;">请输入正确的手机号</p>
+		<input type="text" name="userPhone" id="userPhone" class="phoneNumber" placeholder="请输入参与抽奖的手机号">
+	</div>
+	<div class="sendBless">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/button.png');?>" width="100%" >
+		<p id="sendBless">送祝福</p>
+	</div>
+	<div class="activityTime">
+		活动时间:2017年7月10日~2017年7月12日
+	</div>
+	<div class="moreActivity">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/moreActivity.png');?>" width="100%" class="more">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/qrCode.png');?>" width="100%" class="qrcode">
+	</div>
+	<div class="footer">
+		<img src="<?php echo $this->asset->makeUrl('v3/images/fouryears/footer.png');?>" width="100%" >
+	</div>
+    <?php echo token_input(); ?>
+
+</body>
+<script>
+    var winW = document.documentElement.clientWidth;
+    var winH = document.documentElement.clientHeight;
+    var fontSize = winW / 750 * 100;
+    document.documentElement.style.fontSize = fontSize + "px";
+</script>
+</html>

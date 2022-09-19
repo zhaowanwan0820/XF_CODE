@@ -1,0 +1,160 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery-1.10.2.min.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+.span_block{
+    display:block;
+}
+.content{width: 100%;overflow:hidden;}
+.content .left{width:50%;float: left;overflow:hidden;}
+.content .right{width: 50%;float: left;}
+.content .info{height: 20px;line-height: 20px;}
+/*.image{
+    width:400px;
+    overflow:hidden;
+}*/
+/*#status_div{width:175px;float: left}*/
+#status_div .failReasonSpan{display: block;float: left;}
+#passedBox{position: relative;}
+.status_value{width: 171px;text-indent: 5px;border:2px solid #ccc;}
+.case_list{width: 171px;border:2px solid #A6C8FF;background: #fff;border-top:none;position: absolute;z-index: 222;left:5px;top:26px;}
+.case_list li{cursor: pointer;}
+.case_list>li.case_li{padding:5px;position: relative;}
+.case_list>li.case_li:hover{color:#fff;background: #1E90FF;}
+.case_list>li.case_li_noClick:hover{color:#fff;background: #1E90FF;}
+.case_list>li.case_li_noClick:hover ul{color:#666;display: block;}
+.directionR{position: absolute;right:10px;font-style: normal;font-weight: 700;}
+.case_list>li.case_li_noClick ul{min-width: 150px;border:2px solid #A6C8FF;background: #fff;
+    position: absolute;left: 170px;top:-100px;z-index: 990;display: none;}
+.case_list>li.case_li_noClick ul li{padding:5px 10px;text-align: center;}
+.case_list>li.case_li_noClick ul li:hover{color:#fff;background: #1E90FF;}
+.case_list li.case_li_noClick{padding:5px;position: relative;cursor: default;}
+</style>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" />
+        姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" />
+        证件类型：
+        <select id="id_type" name="id_type">
+            <option value="-1" <if condition="$_REQUEST['status'] eq -1">selected</if>>全部</option>
+            <foreach name="idTypes" item="type" key="key">
+            <option value="{$key}" <if condition="$_REQUEST['id_type'] eq $key">selected</if>>{$type}</option>
+            </foreach>
+        </select>
+        证件号：<input type="text" class="textbox" name="idno" value="{:trim($_REQUEST['idno'])}" />
+        请求号：<input type="text" class="textbox" name="order_id" value="{:trim($_REQUEST['order_id'])}" />
+        状态：
+        <select id="status" name="status">
+            <option value="-1" <if condition="$_REQUEST['status'] eq -1">selected</if>>全部</option>
+            <option value="0" <if condition="$_REQUEST['status'] eq 0">selected</if>>待人工审核</option>
+            <option value="1" <if condition="$_REQUEST['status'] eq 1">selected</if>>已通过</option>
+            <option value="2" <if condition="$_REQUEST['status'] eq 2">selected</if>>已拒绝</option>
+        </select>
+
+        <br />
+         申请时间：<input type="text" class="textbox" id="apply_start" name="apply_start" value="{:trim($_REQUEST['apply_start'])}" onfocus="return showCalendar('apply_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+至
+                  <input type="text" class="textbox" name="apply_end" id="apply_end" value="{:trim($_REQUEST['apply_end'])}"  onfocus="return showCalendar('apply_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:150px;" />
+            <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+         完成时间：<input type="text" class="textbox" id="finish_start" name="finish_start" value="{:trim($_REQUEST['finish_start'])}" onfocus="return showCalendar('finish_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_deal_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_deal_time_start" value="选择" onclick="return showCalendar('finish_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_deal_time_start');" />
+至
+                  <input type="text" class="textbox" name="finish_end" id="finish_end" value="{:trim($_REQUEST['finish_end'])}"  onfocus="return showCalendar('finish_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_deal_time_end');" style="width:150px;" />
+            <input type="button" class="button" id="btn_deal_time_end" value="选择" onclick="return showCalendar('finish_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_deal_time_end');" />
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="userIdentityModifyLog" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<php>
+
+function get_id_type_name($id_type) {
+    $idTypes = $GLOBALS['dict']['ID_TYPE'];
+    return isset($idTypes[$id_type]) ? $idTypes[$id_type] : '未知';
+}
+
+function get_user_identity_status($status) {
+    $statusMap = \\core\\dao\\UserIdentityModifyLogModel::$statusMap;
+    return isset($statusMap[$status]) ? $statusMap[$status] : '未知';
+}
+
+</php>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:序号|50px,user_id:会员编号,real_name:姓名,id_type|get_id_type_name:证件类型,idno:证件号,order_id:请求号,status|get_user_identity_status:状态,create_time|format_date:创建时间,update_time|format_date:完成时间,fail_reason:审核失败原因"
+    actionlist="getUserIdentityModifyInfo:查看"
+     />
+
+<div class="blank5"></div>
+
+<!-- 查看 -->
+<div id='dialogbox_msg' class="dialog-box dialogbox" style="display: none; position: absolute; overflow: hidden; z-index: 999; width: 800px; top: 200px; right: 200px;">
+    <div class="dialog-header">
+        <div class="dialog-title">详情</div>
+        <div class="dialog-close" onclick='close_div()'></div>
+    </div>
+    <div class="dialog-content" id="bankInfo" >
+    </div>
+</div>
+<!--  -->
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function close_div() {
+    $('.dialogbox').hide();
+}
+function open_div(id,user_name,des) {
+    $('#aid').val(id);
+    $('#user_name').text(user_name);
+    //$('#msgarea').val(des);
+    $('#dialogbox_div').show();
+    $('#dialogbox_msg').hide();
+    // 清空上一个弹框赋的值
+    $("#status_value").val("");
+    $("input[name='status']").val("");
+    $("input[name='failReasonType']").val("");
+}
+//获取银行信息
+function getUserIdentityModifyInfo(id) {
+    if(id) {
+        $.ajax({
+               type: "POST",
+               url: "/m.php?m=User&a=getUserIdentityModifyInfo",
+               data: "id="+id,
+               dataType:'json',
+               success: function(msg){
+                       if(msg.code == '0000') {
+                       $('#bankInfo').html(msg.msg);
+                       $('#dialogbox_msg').show();
+                       $('#dialogbox_div').hide();
+                    }else{
+                        alert(msg.msg);
+                    }
+               }
+        });
+    }else{
+        alert('参数id不能为空');
+    }
+}
+</script>
+<include file="Public:footer" />

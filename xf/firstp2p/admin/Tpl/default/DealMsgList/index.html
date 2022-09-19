@@ -1,0 +1,168 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript">
+	function show_content(id) {
+		$.weeboxs.open(ROOT+'?m=DealMsgList&a=show_content&id='+id, {contentType:'ajax',showButton:false,title:LANG['SHOW_CONTENT'],width:600});
+	}
+	
+	function send(id)
+	{
+		$.ajax({ 
+				url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=send&id="+id, 
+				data: "ajax=1",
+				success: function(msg){
+					alert(msg);
+				}
+		});
+	}
+
+    function sendNow(id)
+    {
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=sendMailNow&id="+id,
+            data: "ajax=1",
+            success: function(msg){
+                var msg = $.parseJSON(msg);
+                alert(msg.info);
+            }
+        });
+    }
+
+	function resend() {
+		$.ajax({
+			url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=resend", 
+			data: "ajax=1",
+	        dataType: "json",
+			success: function(msg){
+				alert(msg.info);
+			}
+		});
+	}
+	
+	//批量重复发送
+	function batchResendData() {
+		var select_value = jqchk();
+		if(select_value.length >0) {
+			if(confirm('批量重发')) {
+				$.ajax({
+					   type: "POST",
+					   url: '/m.php?m=DealMsgList&a=batchResend',
+					   data: "ids="+select_value,
+					   dataType:"json",
+					   success: function(data){
+						   if(data.code != '0000') {
+							   alert(data.message);
+							   return false;
+						   }else{
+							   var querySting = $('#queryString').val();
+							   window.location.href='/m.php?m=DealMsgList&a=index&'+querySting;
+						   }
+					   }
+				});
+			}	
+		}else{
+			alert('你还没有选择任何内容！');
+		}
+	}
+	
+	
+	//全选
+	function jqchk(){  
+		var chk_value =[];    
+		$('input[name="key"]:checked').each(function(){    
+			  chk_value.push($(this).val());    
+		});  
+		return chk_value;
+	}    
+</script>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <!--  <input type="button" class="button" value="{%ADD}" onclick="location.href='{:u("DealMsgList/add_msg")}';" />-->
+	<input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+	
+	<input type="button" id="reset_sending" class="button" value="重发七天内处理失败的短信与邮件" onclick="resend();" />
+	
+	<input type="button" class="button" value="批量重发" onclick="batchResendData();" />
+	
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+	<form name="search" action="__APP__" method="get">	
+	<input type='hidden' id='queryString' value='{$queryString}'>
+		{%SEND_DEST}：<input type="text" class="textbox" name="dest" value="{:trim($_REQUEST['dest'])}" style="width:100px;" />
+		{%CONTENT}：<input type="text" class="textbox" name="content" value="{:trim($_REQUEST['content'])}" />
+		<select name='send_type'> 
+		   
+			<option value='0' <if condition="intval($_REQUEST['send_type']) eq 0">selected="selected"</if>> 短信</option>
+			<option value='1' <if condition="intval($_REQUEST['send_type']) eq 1">selected="selected"</if>> 邮件</option>
+			<option value="" <if condition="$_REQUEST['send_type'] eq ''">selected="selected"</if>>全部</option>
+		</select>
+		发送结果：
+		<select name='is_success' >
+                <option value="0" <if condition="intval($_REQUEST['is_success']) eq 0">selected="selected"</if>>发送到队列失败</option>
+                <option value="1" <if condition="intval($_REQUEST['is_success']) eq 1">selected="selected"</if>>队列处理成功</option>
+                <option value="2" <if condition="intval($_REQUEST['is_success']) eq 2">selected="selected"</if>>发送到队列</option>
+                <option value="3" <if condition="intval($_REQUEST['is_success']) eq 3">selected="selected"</if>>队列处理失败</option>
+                <option value="" <if condition="$_REQUEST['is_success'] eq ''">selected="selected"</if>>全部</option>
+         </select>
+		<input type="hidden" value="DealMsgList" name="m" />
+		<input type="hidden" value="index" name="a" />
+		<input type="submit" class="button" value="{%SEARCH}" />
+	</form>
+</div>
+<div class="blank5"></div>
+<php>
+	function get_sms_success($result) {
+		if($result == 0) {
+			return '发送到队列失败';
+		}elseif($result == 2){
+			return '发送到队列';
+		}elseif($result == 1){
+			return '队列处理成功';
+		}elseif($result == 3){
+			return '队列处理失败';
+		}
+	}
+    function get_email_status($status,$type){
+        if ($type == 0) {
+                return '-';
+        }
+        if($status==0)
+            return L("NO");
+        else
+            return L("YES");
+    }
+</php>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="msg" 
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|50px
+	,send_type|get_send_type_msg:{%SEND_TYPE}
+	,dest:{%SEND_DEST}
+	,user_id|get_user_name:{%USER_NAME}
+	,title:{%TITLE}|200px
+	,content|show_content=$msg['id']:{%CONTENT}
+	,create_time|to_date:{%CREATE_TIME}
+	,send_time|to_date:{%SEND_TIME}
+	,is_send|get_is_send:{%SEND_STATUS}
+	,is_received|get_email_status=$msg['send_type']:送达状态
+	,is_opened|get_email_status=$msg['send_type']:打开状态
+	,is_success|get_sms_success:{%SEND_RESULT}
+	,result:{%SEND_INFO}|100px" 
+	actionlist="sendNow:立即发送,send:{%SEND_NOW},foreverdel:{%FOREVERDEL}" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

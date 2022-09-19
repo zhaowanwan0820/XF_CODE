@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="apple-mobile-web-app-title" content="" />
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui"/>
+<title>微信分享红包</title>
+<!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/888hongbao.css', 1);?>" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="light_box">
+    <div class="light"></div>
+</div>
+{include file="web/views/fenzhan/hongbao/xql/logo.html"}
+<!-- <a href="#" class="rule">活动规则</a> --> 
+<div class="top">
+        <div class="rob-tel">
+            <div class="p-title1">
+                <p><span class="f48">{$bonusDetail.money}</span>元</p>
+            </div>
+            <div class="dao-btn mt10">
+                <span class="btn">仗义发红包</span>
+            </div>
+        </div>
+        <div class="p-tips">
+            <p class="f14 pt10">快去发红包给小伙伴～</p>
+        </div>
+    </div>
+<div class="mark"></div>
+<div class="pop_icon"></div>
+ <script type="text/javascript">
+    $(function(){
+          var bHeight=document.documentElement.clientHeight-416;
+			$('body').css({'height':'416px'});
+			$('.top').css({"margin-top":(bHeight/2)+'px'})
+            $('.btn').click(function(){
+        $('.mark,.pop_icon').addClass('dis_block');
+        })
+        $('.mark,.pop_icon').click(function(){
+            $('.mark,.pop_icon').removeClass('dis_block');
+        })
+    })
+</script>
+
+{include file="web/views/fenzhan/hongbao/jsapi_config.html"}
+<script>
+    var imgUrl = '{$img}';
+    var lineLink = "{$host}/hongbao/GetHongbao?sn={$sn}&site_id={$site_id}";
+    var descContent = '{$desc}';
+    var shareTitle = '{$title}';
+    wx.ready(function() {
+        wx.showOptionMenu();
+        wx.onMenuShareTimeline({
+            title: shareTitle, // 分享标题
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function () { 
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () { 
+                // 用户取消分享后执行的回调函数
+            }
+        });
+        wx.onMenuShareAppMessage({
+            title: shareTitle, // 分享标题
+            desc: descContent, // 分享描述
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function () { 
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () { 
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    });
+</script>
+<script>
+        function shareFriend() {
+            WeixinJSBridge.invoke('sendAppMessage',{
+                "appid": appid,
+                "img_url": imgUrl,
+                "img_width": "200",
+                "img_height": "200",
+                "link": lineLink,
+                "desc": descContent,
+                "title": shareTitle
+            }, function(res) {
+                //_report('send_msg', res.err_msg);
+            })
+        }
+        function shareTimeline() {
+            WeixinJSBridge.invoke('shareTimeline',{
+                "img_url": imgUrl,
+                "img_width": "200",
+                "img_height": "200",
+                "link": lineLink,
+                "desc": descContent,
+                "title": shareTitle
+            }, function(res) {
+                   //_report('timeline', res.err_msg);
+            });
+        }
+        function shareWeibo() {
+            WeixinJSBridge.invoke('shareWeibo',{
+                "content": descContent,
+                "url": lineLink,
+            }, function(res) {
+                //_report('weibo', res.err_msg);
+            });
+        }
+        // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            // 发送给好友
+            WeixinJSBridge.on('menu:share:appmessage', function(argv){
+                shareFriend();
+            });
+            // 分享到朋友圈
+            WeixinJSBridge.on('menu:share:timeline', function(argv){
+                shareTimeline();
+            });
+            // 分享到微博
+            WeixinJSBridge.on('menu:share:weibo', function(argv){
+                shareWeibo();
+            });
+        }, false);
+</script>
+
+
+</body>
+</html>

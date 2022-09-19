@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <title>还款计划</title>
+    {include file="api/views/_v32/header.html"}
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/repayment_plan.css');?>">
+    <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+</head>
+<body>
+  <!-- 还款计划页面 -->
+  <div class="repayment_plan_container">
+    <!-- 还款计划的头部部分 -->
+    <div class="repayment_plan_header">
+      <div class="top">
+        {if !$repayPlanNot}
+        <span>已结清本金(元)</span>
+        <span>{$payback_plan_result.main_money}</span>
+        {else}
+        <span>{$endNotRepayPlanDate.month}月{$endNotRepayPlanDate.day}日应还款(元)</span>
+        <span>{$endNotRepayPlanDate.money}</span>
+        {/if}
+      </div>
+      <ul class="bottom">
+        <li class="clearfix">
+          <span>应还金额(元)</span>
+          <span>已还金额(元)</span>
+          <span>剩余金额(元)</span>
+        </li>
+        <li class="clearfix">
+          <span>{$payback_plan_result.init_money}</span>
+          <span>{$payback_plan_result.paybacked_money}</span>
+          <span>{$payback_plan_result.remainder_money}</span>
+        </li>
+      </ul>
+    </div>
+    <!-- 还款计划列表部分 -->
+    <div class="repayment_cleared_lists">
+      {if $repayPlanNot}
+      <div class="repayment_cleared">待还款</div>
+        {foreach from = $repayPlanNot item = "plan"}
+      <ul class="repayment_cleared_list" >
+        <li class="clearfix">
+          <span>
+            <i style="color:#000">第{$plan.index}/{$payback_plan_result.payback_plan.payback_period}期 {$plan.all_money}元</i>
+            {if $plan.status eq 2}
+            <i style="color:rgb(238,70,52)">{$plan.status_info}</i>
+            {else}
+            <i>{$plan.status_info}</i>
+            {/if}
+          </span>
+          <span><i>{$plan.payback_date_format}应还</i><i class="click_popoup" data-index="{$plan.index}"></i></span>
+        </li>
+      </ul>
+        {/foreach}
+      {/if}
+      {if $repayPlanFinish}
+        {if $repayPlanNot}
+      <div class="repayment_cleared">已还款</div>
+        {else}
+      <div class="repayment_cleared">已结清</div>
+        {/if}
+        {foreach from = $repayPlanFinish item = "plan"}
+      <ul class="repayment_cleared_list">
+        <li class="clearfix">
+          <span><i>第{$plan.index}/{$payback_plan_result.payback_plan.payback_period}期 {$plan.all_money}元</i><i>{$plan.status_info}</i></span>
+          <span><i>{$plan.actual_payback_date_format}已还</i><i class="click_popoup" data-index="{$plan.index}"></i></span>
+        </li>
+      </ul>
+        {/foreach}
+      {/if}
+    </div>
+    <div class="bottom_tips2"></div>
+    <!-- 还款列表每一期还款详情弹窗 -->
+    <div class="repayment_popup_foreach" style="display:none">
+      <div class="repayment_popup_foreach_content">
+        <div class="top">
+          <span class="top_period"></span>
+          <span class="top_status"></span>
+        </div>
+        <div class="content">
+          <span><i>应还本金</i><i class="init_money"></i></span>
+          <span><i>应还利息</i><i class="extra_money"></i></span>
+          <span><i>逾期天数</i><i class="over_days"></i></span>
+          <span><i>罚息</i><i class="over_money"></i></span>
+          <span><i>开始逾期日期</i><i class="over_date"></i></span>
+          <span><i>本期应还总金额</i><i class="all_money"></i></span>
+          <span><i>还款日期</i><i class="payback_date"></i></span>
+        </div>
+      </div>
+      <div class="repayment_popup_close">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/wx_loan_close.png');?>"/>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  $(function(){
+    /* 还款列表每一期还款详情弹窗 */
+    $(".repayment_cleared_list .click_popoup").click(function(e){
+      var height1,body_scrolltop = $("body").scrollTop()
+      if($(".repayment_plan_container").height()>document.body.clientHeight){
+        $(".repayment_plan_container").addClass("plan_container_fixed")
+        e.stopPropagation()
+        height1 = $(".repayment_plan_container").height() + 'px'
+      }else{
+        height1 = document.body.clientHeight + 'px'
+      }
+        $(".repayment_popup_foreach").css({
+          "display":"block",
+          "height" : height1,
+          "z-index" : "100"
+        })
+        var index = $(this).data("index")
+        var planList = {$planList};
+        var period = "{$payback_plan_result.payback_plan.payback_period}"
+        var period_text = "第"+index+"/"+period+"期"
+        for (i in planList) {
+            if (i == index - 1) {
+                $(".top_period").text(period_text)
+                if(planList[i].status == 2){
+                  $(".top_status").text(planList[i].status_info).css({"color":"rgb(238,70,52)","border-color":"rgb(238,70,52)"})
+                }else{
+                  $(".top_status").text(planList[i].status_info).css({"color":"rgb(144,144,144)","border-color":"rgb(144,144,144)"})
+                }
+                $(".init_money").text(planList[i].init_money + "元")
+                $(".extra_money").text(planList[i].extra_money + "元")
+                $(".over_days").text(planList[i].over_days)
+                $(".over_money").text(planList[i].over_money)
+                $(".over_date").text(planList[i].over_date)
+                $(".all_money").text(planList[i].all_money + "元")
+                if (planList[i].status == 2 || planList[i].status == 0) {
+                    $(".payback_date").text(planList[i].payback_date_format)
+                } else {
+                    $(".payback_date").text(planList[i].actual_payback_date_format)
+                }
+            }
+        }
+    })
+    $(".repayment_popup_close img").click(function(){
+      $(".repayment_plan_container").removeClass("plan_container_fixed")
+      $(".repayment_popup_foreach").css({
+        "display":"none"
+      })
+    })
+    var  repayment_plan_container = $(".repayment_plan_container"),
+         container_height = repayment_plan_container.height()
+    _html(repayment_plan_container[0],container_height,"0.2rem","none") 
+  })
+</script>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>提交预约</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('css/common/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.75/css/p_reservation_p2p.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/css/virtual.v1.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/css/format_money.v1.css');?>" rel="stylesheet" />
+    <script>
+        window['_isQuickBidAuth_'] = "{$isQuickBidAuth}";
+        window['_isSupervisionReserve_'] = "{$isSupervisionReserve}";
+        window['_userClientKey_'] = "{$userClientKey}";
+        window['_isServiceDown_'] = "{$isServiceDown}";
+        window['needGrantStr'] = "{$grantInfo.needGrantStr}";
+        window['isBankcard'] = "{$isBankcard}";
+        window['is_firstp2p'] = "{$is_firstp2p}";
+    </script>
+</head>
+
+<body>
+    {include file="api/views/_v492/common/zhugemaidian.html"}
+    <div class="p_reserve_p2p">
+        <input type="hidden" name="ketou_money" id="ketou_money" value="{if $svInfo.isSvUser neq 0 && $isSupervisionReserve eq 1}{$total_money}{else}{$user_total_money}{/if}"
+        />
+        <input type="hidden" id="token" value="{$token}">
+        <input type="hidden" id="site_id" value="{$siteId}">
+        <input type="hidden" id="product_type" value="{$product_type}">
+        <input type="hidden" name="user_id" id="user_id" value="{$user_id}" />
+        <input type="hidden" name="userClientKey" id="userClientKey" value="{$userClientKey}" />
+        <input type="hidden" name="asgn" id="asgn" value="{$asgn}" />
+        <div class="ditf_list bg-white pt15">
+            <div class="color_black f14">期限/年化借款利率</div>
+            <div class="f12 color_gray">具体标的及借款利率以实际出借成功的标的为准</div>
+            <div class="pop_qx_list">
+                <div class="p_discount_friend JS_p_discount_friend {if count($invest_conf) gt 6}friend_list{/if}">
+                    {foreach from=$invest_conf item=data key=key}
+                    <div class="item JS_item {if count($invest_conf) eq 1}{if $invest_line gt 0 and $invest_unit gt 0}active onlyone{else}onlyone{/if}{/if}"
+                        data-projectrisk="{$data.is_check_project_risk}" data-reserveinfo='{"min_amount": "{$data.min_amount}","max_amount": "{$data.max_amount}","authorizeAmountString":"{$data.authorizeAmountString}","deal_type":"{$data.deal_type}","deadline_days":"{$data.deadline_days}"}'
+                        data-message="{$data.deadline_tag}">
+                        <span class="icon_yes fr"></span>
+                        <span class="qx_con">
+                            {if count($invest_conf) eq 1}
+                            <span class="deadline">
+                                <em class="qxc_l">期限
+                                    <br/>
+                                </em>
+                                <em class="qxc_r">
+                                    <i class="f22">{$data.deadline}</i>
+                                    <i class="f14">{$data.deadline_unit_string}</i>
+                                </em>
+                            </span>
+                            <span class="rate">
+                                <em class="qxc_l">年化借款利率
+                                    <br/>
+                                </em>
+                                <em class="qxc_r">
+                                    <i class="f22">{$data.rate}</i>
+                                    <i class="f14">%</i>
+                                </em>
+                            </span>
+                            {else}
+                            <span class="deadline">
+                                <em class="qxc_l">期限</em> |
+                                <em class="qxc_r">{$data.deadline}{$data.deadline_unit_string}</em>
+                            </span>
+                            <span class="rate">
+                                <em class="qxc_l">年化借款利率</em> |
+                                <em class="qxc_r">{$data.rate}%</em>
+                            </span>
+                            {/if}
+                        </span>
+                    </div>
+                    {/foreach}
+                </div>
+                {if count($invest_conf) gt 6}
+                <div class="reserve_arr JS_reserve_arr">
+                    <i></i>
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class="ditf_list bg-white mt10 pt15">
+            <h2 class="sq_money f14">授权金额</h2>
+            <div class="f12 color_gray">预约有效期内请保证账户可用余额充足，以免预约失败</div>
+            <div class="input_deal mt10">
+                <div class="p2p_ipt clearfix">
+                    <a id="quantou_all" class="qtou_all" href="javascirpt:void(0)">全部
+                        <br/>预约</a>
+                    <div class="show_daxie"></div>
+                    <div class="ui_input clearfix"></div>
+                </div>
+
+                <span class="dit_yq color_yellow f11"></span>
+                {if $invest_line lte 0 || $invest_unit lte 0}
+                <div class="no_choose_reserve JS_no_choose_reserve"></div>
+                {/if}
+            </div>
+            <div class="tips clearfix">
+                <div class="remain_money_text fl">可用余额:<span class="JS_remain_money">{$user_bank_money}</span>元
+                    {if $bonus_money > 0} (含{$new_bonus_title}<span class="JS_bonus">{$bonus_money}</span>{$new_bonus_unit}) {/if}
+                </div>
+            </div>
+        </div>
+
+        <!-- 优惠券 -->
+        {if $o2oDiscountSwitch eq 1 and $o2oReserveDiscountSwitch eq 1}
+        <div class="JS-youhuiquanpannel new_guide_box">
+            <div class="discount_list disn_border">
+                <div class="JS-touziyindao new_guide_icon" style="display:none;"></div>
+                <a class="to_youhuiquanList f14" href="#">
+                    <i class="icon_arrow fr"></i>
+                    <span class="JS-couponnum_label pr10 f12 fr">未选择</span>
+                    优惠券
+                    <span class="can_use color_red" style="display:none;">
+                        <span class="JS_coupon_num num_canuse"></span>张可用</span>
+                </a>
+            </div>
+            <div class="discount_list JS-selected_discount" style="display:none;" style="border-top:1px solid #d9d9d9;">
+                <div class="coupon_detail">
+                    <span class="icon_coupon fl"></span>
+                    <i class="close_btn fr JS_close"></i>
+                    <div class="con">计算中...</div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <div class="bg_whtie mt10 reserve_list">
+            <div class="ditf_list JS_to_yxq gold_need">
+                <a href="javascript:void(0)" class='to_yxq f14'>
+                    <span class="fr">
+                        <span class="JS_yxq_selcet_text color_gray f13">请选择</span>
+                        <span class="active_yxq f12 color_red"></span>
+                        <i class="icon_arrow"></i>
+                    </span>预约有效期
+                </a>
+            </div>
+        </div>
+        <div class="box mt20 need_top">
+            <h3>您可能预约的项目类型</h3>
+            <h3>P2P
+                <a href="#" class="color_blue to_contractpre_p2p">《查看合同协议》</a>
+            </h3>
+            <h3>
+                <span class="color_gray">查看</span>
+                <a href="#" class="color_blue  to_contractpre_reserve">《预约协议》</a>
+            </h3>
+            <h3>
+                <span class="color_gray">查看</span>
+                <a href="#" class="color_blue  to_disclosure_reserve">&nbsp;&nbsp;随心约信息披露</a>
+            </h3>
+        </div>
+        {if $needForceAssess eq 1}
+        <input type="hidden" class="needForceAssess" value="{$needForceAssess}">
+        <div class="needForceAssess_box tc">
+            <div class="group_icon"></div>
+            <h2 class="title">请您先完成风险承受能力评估</h2>
+            <a href="#" class="needForceAssess_link">立即参与评估</a>
+            <a href="javascrpit:void(0)" class="needForceAssess_link_no">暂不评估</a>
+        </div>
+        {/if}
+        <!-- 点击“提交预约”后，如果个人会员投资人评级低于项目评级，弹窗提示。 -->
+        <div class="ui_conf_risk bid_conf" id="ui_conf_risk" style="display:none;">
+            <div class="opacity"></div>
+            <div class="confirm_donate">
+                <p class="confirm_donate_title">提示</p>
+                <p class="confirm_donate_text">
+                    {if $user_risk.user_risk_assessment} 当前您的风险承受能力
+                    <br/> 为“{$user_risk.user_risk_assessment}”，与项目要求不符 {/if}
+                    <span class="sy_num color_gray f13">本年度剩余评估{$user_risk.remaining_assess_num}次</span>
+                </p>
+                <div class="confirm_donate_but">
+                    {if $user_risk.remaining_assess_num > 0}
+                    <input type="button" class="confirm_donate_but_del" id="JS-cancel" value="暂不评估">
+                    <a class="confirm_donate_but_yes" id="JS-confirm" href="">重新评估</a>
+                    {else}
+                    <input type="button" class="confirm_donate_but_yes w240" id="JS-know" value="知道了"> {/if}
+                </div>
+            </div>
+        </div>
+
+        <div class="bg_cover" style="display:none"></div>
+        <div class="JS_assess" style="display:none"></div>
+        <div class="pop_yxq_list" id="pop_yxq_list">
+            <div class="ui_title">
+                <a class="ui_back" id="back_but" href="javascript:void(0)">
+                    <i class="ui_icon_back"></i>
+                </a>选择有效期</div>
+            <div class="move_now">
+                {foreach from=$reserve_conf item=data}
+                <div class="item JS_item" data-message="{$data.expire_tag}">
+                    <span class="icon_yes fr"></span>
+                    <span class="qx_con">{$data.expire}{$data.expire_unit_string}</span>
+                </div>
+                {/foreach}
+                <div class="sxy_tips">
+                    1、预约有效期是指用户提交预约后系统自动进行匹配出借的有效期限，包含3天、5天、7天。
+                    <br/> 2、有效期内系统会一直进行匹配出借，预约金额全部出借完成本次预约结束，若未达到预约金额系统会一直匹配出借，有效期到期后（不管预约金额是否全部出借成功）本次预约结束。
+                </div>
+            </div>
+        </div>
+        {if ($svInfo.isSvUser eq 0 && $isSupervisionReserve eq 1) || ($isSupervisionReserve eq 1 && $svInfo.isSvUser eq 1 && $svInfo.isActivated eq 0)}<!-- 未开存管 --><!-- 已开存管未激活 -->
+        <div class="JS_is_open_p2p" style="position: fixed;height: 100%;width: 100%;left: 0px;top: 0px;z-index: 1000;-webkit-transform-origin: 0px 0px 0px;-webkit-transform: translateZ(2px);">
+            <div class="cunguan_bg"></div>
+            <div class="alert_evaluate">
+                <img class="open_p2p" src="<?php echo $this->asset->makeAppUrl('v4.5/images/open_p2p.png');?>">
+                <div class="free_title">{if ($svInfo.isSvUser eq 0 && $isUpgradeAccount eq 1) || ($svInfo.isSvUser eq 1 && $isActivated eq 0)}升级{else}开通{/if}{$p2pAccountConfig.name}</div>
+                <p class="free_text">根据国家法律法规和相关监管规定,为保障客户资金安全, 出借网贷P2P产品需在银行开设专门资金存管账户。</p>
+                <div class="sc_footer clearfix">
+                    <div class="left_div">
+                        <a href="firstp2p://api?type=closeallpage" class="a_left MD_open_p2p_cancel_btn">取消</a>
+                    </div>
+                    <div class="left_div">
+                        <a href="" class="a_right JS_open_p2p_btn MD_open_p2p_next_btn">继续</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {elseif !$allowReserve}
+        <!-- 非投资户不允许投资 -->
+        <div class="JS_can_not_bid">
+            <div class="not_bid_bg"></div>
+            <div class="not_bid_box">
+                <div class="title">提示</div>
+                <i class="sc_no_bid"></i>
+                <p>非投资户不允许出借</p>
+                <a href="firstp2p://api?type=native&name=home">返回首页</a>
+            </div>
+        </div>
+        {elseif $grantInfo}
+        <!-- 开通存管账户之后开通免密投资和免密缴费 -->
+        <div class="JS_open_free_psd">
+            <div class="mianmi_bg"></div>
+            <div class="mianmi_box">
+                <div class="title">提示</div>
+                <div class="remind">根据国家法律法规监管要求，办理该业务需在存管银行开通如下授权:</div>
+                <ul class="mianmi_list">
+                {foreach from=$grantInfo.needGrantArr item=list}
+                    <li>
+                        <i class="{if $list == 1}free_loan_icon{elseif $list == 2}free_loan_icon{elseif $list == 3}free_pay_icon{/if}"></i>
+                        <div class="">
+                            <p class="free_box_title">{if $list == 1}免密投标授权{elseif $list == 2}免密还款授权{elseif $list == 3}免密缴费授权{/if}</p>
+                            <p class="free_detail">{if $list == 1}用于出借时自动匹配标的{elseif $list == 2}{elseif $list == 3}用于收取智多鑫赎回时可能产生的费用{/if}</p>
+                        </div>
+                    </li>
+                {/foreach}
+                </ul>
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="firstp2p://api?type=local&action=closeself" class="a_left JS_open_free_close">取消</a></div>
+                    <div class="left_div"><a href="javascript:void(0);" class="a_right JS_open_free_btn">去开通</a></div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <div class="sub_btn">
+            <div class="plr15 mt10">
+                <input type="button" id="JS-pay_btn" class="reservation_btn disabled_btn" value="同意协议并提交预约" disabled="disabled" style="width:100%; margin:0px;"
+                />
+            </div>
+        </div>
+        {if $o2oDiscountSwitch eq 1 and $o2oReserveDiscountSwitch eq 1}
+        <div class="JS-touziyindao ui_mask_touziyindao" style="display:none"></div>
+        <div class="JS-touziyindao ui_mask_white" style="display:none"></div>
+        {/if}
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/virtual.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/formatMoney.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.75/js/reservation/p_reservation_p2p.js?v=223');?>"></script>
+    <script>
+        //显示返回按钮  or 关闭按钮
+        //如果是从预约成功页面跳过来的显示关闭按钮or显示返回按钮
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+
+        }
+        var isShowClose = getQueryString("isShowClose");
+        if (isShowClose == 1) {
+            WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=2");
+        } else {
+            WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+
+        }
+    </script>
+    <script type='text/javascript'>
+        var _ncf = { "prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "&uf=app", "pck": { "channel": "channel", "fpid": "fpid" }, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": [] };
+        (function (p, h, s) { var o = document.createElement(h); o.src = s; p.appendChild(o) })(document.getElementsByTagName("HEAD")[0], "script", "//assets.firstp2p.com/default/js/ncfpb.1.5.min.js?v=201503101911");
+    </script>
+</body>
+
+</html>

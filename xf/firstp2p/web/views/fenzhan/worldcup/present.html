@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>网信理财送红包</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+	<link href="<?php echo $this->asset->makeUrl('worldcup/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+	<link href="<?php echo $this->asset->makeUrl('worldcup/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+</head>
+<body>
+    <section>
+        <!--private js&css start-->
+		<link href="<?php echo $this->asset->makeUrl('worldcup/css/world-cup.css');?>" rel="stylesheet" type="text/css" />
+        <!--private js&css end-->
+        <div class="cup-true">
+            <h2 class="f16">感谢参与!</h2> 
+            <div class="cup-name">
+				<h3>您挑选的<span>最帅球员为<em>{$data.int-renyuan}</em></span></h3>
+				<h4>最牛球队为<em>{$data.int-ball}</em></></h4>
+            </div>
+            <h5>恭喜您获得红包邀请码<span class="ts-color f14">{$hongbao_code}</span></h5>
+            <h5>使用它注册后，您可以获得5-100元随机金额的红包！</h5>
+            <h5 class="ts-color">马上去领：<a class="ts-linkcolor" href="http://{$host}/user/register?cn={$hongbao_code}&type=h5" title="网信理财">www.firstp2p.com</a></h5>
+            <h2 class="f16 cup-tip">提示：</h2>
+            <div class="cup-tb">
+                <table>
+                    <colgroup>
+                        <col width="5%"/>
+                        <col width="95%"/>
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th>1、</th>
+                            <td>邀请码有效期至2014年7月31日，请及时领取红包以免失效。 </td>
+                        </tr>
+                          <tr>
+                            <th>2、</th>
+                            <td>注册时切记填入邀请码，完成注册并验证身份后即可领取红包。</td>
+                        </tr>
+						<tr>
+							<td colspan="2" align="center"><img src="<?php echo $this->asset->makeUrl('worldcup/images/reg.png');?>" width="88%"></td>
+						</tr>
+                    </tbody>
+                </table>
+            </div>
+            <h6>点击右上角分享好友<i class="cup-fenxiang"></i></h6>
+            <div class="cup-footer">
+              	<a href="http://www.firstp2p.com/?cn={$hongbao_code}"></a>
+            </div>
+        </div>
+       
+    </section>
+<script>
+        var imgUrl = "http:<?php echo $this->asset->makeUrl('worldcup/images/share.png');?>";
+        var lineLink = "http://{$host}/worldcup/view";
+        var descContent = '彩票中奖太渺茫。嘀嘀红包太难抢！网信理财送你“世界杯红包”！100%得，最高100元！';
+        var shareTitle = '边看球边挣钱，网信理财送你"世界杯红包"！';
+        var appid = '';
+         
+        function shareFriend() {
+            WeixinJSBridge.invoke('sendAppMessage',{
+                "appid": appid,
+                "img_url": imgUrl,
+                "img_width": "200",
+                "img_height": "200",
+                "link": lineLink,
+                "desc": descContent,
+                "title": shareTitle
+            }, function(res) {
+                //_report('send_msg', res.err_msg);
+            })
+        }
+        function shareTimeline() {
+            WeixinJSBridge.invoke('shareTimeline',{
+                "img_url": imgUrl,
+                "img_width": "200",
+                "img_height": "200",
+                "link": lineLink,
+                "desc": descContent,
+                "title": shareTitle
+            }, function(res) {
+                   //_report('timeline', res.err_msg);
+            });
+        }
+        function shareWeibo() {
+            WeixinJSBridge.invoke('shareWeibo',{
+                "content": descContent,
+                "url": lineLink,
+            }, function(res) {
+                //_report('weibo', res.err_msg);
+            });
+        }
+        // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            // 发送给好友
+            WeixinJSBridge.on('menu:share:appmessage', function(argv){
+                shareFriend();
+            });
+            // 分享到朋友圈
+            WeixinJSBridge.on('menu:share:timeline', function(argv){
+                shareTimeline();
+            });
+            // 分享到微博
+            WeixinJSBridge.on('menu:share:weibo', function(argv){
+                shareWeibo();
+            });
+        }, false);
+</script>
+<?php if (preg_match('/^(www\.)?firstp2p\.(com|cn)$/', $_SERVER['HTTP_HOST'])) : ?>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-43032470-1', 'firstp2p.com');
+  ga('send', 'pageview');
+
+</script>
+
+<script type='text/javascript'>
+var _agt=_agt||[];
+_agt.push(['_atscu','AG_707063_AUFB']);
+_agt.push(['_atsdomain','firstp2p.com']);
+{if $agrant_id eq 101}
+_agt.push(['_atsev','101']);
+_agt.push(['_atsusr','<?php echo $this->_var['user_info']['user_name']; ?>']);
+{elseif $agrant_id eq 200}
+_agt.push(['_atsev','200']);
+_agt.push(['_atsavc','<?php echo $this->_var['user_info']['user_name']; ?>']);
+{/if}
+(function(){
+var ag=document.createElement('script'); 
+ag.type='text/javascript'; 
+ag.async = true;
+ag.src=(document.location.protocol=='https:'?'https':'http')+'://'+'t.agrantsem.com/js/ag.js';
+var s=document.getElementsByTagName('script')[0]; 
+s.parentNode.insertBefore(ag,s);})();
+</script>
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-43032470-5']);
+_gaq.push(['_setDomainName', 'firstp2p.com']);
+_gaq.push(['_trackPageview']);
+_gaq.push(['_addOrganic', 'baidu', 'word']);
+_gaq.push(['_addOrganic', 'baidu', 'kw']);
+_gaq.push(['_addOrganic', 'so.360.cn', 'q']);
+_gaq.push(['_addOrganic', 'sogou', 'query']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<?php endif; ?>
+
+<script type='text/javascript'>
+var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"channel":{}};
+(function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.1.min.js');?>");
+</script>
+</body>
+</html>

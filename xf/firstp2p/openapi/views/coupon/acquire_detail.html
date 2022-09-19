@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>优惠券详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/m-base.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/m-common.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/o2o_coupon.css');?>">
+    <script type="text/javascript" src="<?php echo $this->asset->makeApiUrl('v3/js/zepto.min.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeApiUrl('v3/js/o2o/common.js');?>"></script>
+    <!--public js&css end-->
+    <style type="text/css">
+        #useBtn{ display: none!important;}
+        ._O2O_COUPON_GROUP_DETAIL{}
+        ._O2O_COUPON_ACQUIRE_SUC{display:none !important;}
+        ._O2O_MY_COUPON_DETAIL{display:none !important;}
+    </style>
+    <script>
+        window['_MOBILE_'] = "{$userInfo.mobile}";
+        window['p2pTriggerTime'] = "{$coupon.p2pTriggerTime}" * 1000;
+        window['currentTime'] = "<?php echo time();?>" * 1000;
+    </script>
+</head>
+
+
+<body>
+    <div class="m-main">
+        {if $IS_APP}
+        {else}
+        <div class="ui_title">
+            {if !$returnBtn}<a class="ui_back" href="javascript:void(0)" onclick="window.history.back();"><i class="ui_icon_back"></i>返回</a>{/if}
+            优惠券详情
+        </div>
+        {/if}
+        <div class="p_coupon_detailed">
+            <div class="goods">
+                <dl class="clearfix">
+                    <dt><img src="{$coupon.pic}"></dt>
+                    <dd>
+                        <h3>{$coupon.productName}</h3>
+                        {if $coupon.goodPrice neq 0}
+                        <p class="color_red"><span class="f15">{$coupon.goodPrice}元</span></p>
+                        {/if}
+                        {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                            {if $coupon.useTimeType eq 2}
+                        <p>有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                            {/if}
+                        {/if}
+                    </dd>
+                </dl>
+                {if $coupon.useRules eq 1 || $coupon.useRules eq 2 || $coupon.useRules eq 7 || $coupon.useRules eq 8 || $coupon.useRules eq 9 || $coupon.useRules eq 10}
+                <div class="JS-btn_box"><a href="/coupon/acquireExchange?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&useRules={$coupon.useRules}&storeId={$coupon.storeId}&oauth_token={$oauth_token}" class="btn_red">领取</a></div>
+                {elseif $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                <div><a href="/coupon/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&oauth_token={$oauth_token}" class="btn_red">填写收货地址</a></div>
+                {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                    {if $formConfig.phone.require}
+                <div><a href="/coupon/acquireExchange?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&useRules={$coupon.useRules}&storeId={$coupon.storeId}&oauth_token={$oauth_token}&phone={$userInfo.mobile}" class="btn_red">充入账户<span class="format_mobile">{$userInfo.mobile}</a></div>
+                <div><a href="/coupon/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&oauth_token={$oauth_token}" class="btn_white">充入其他账户</a></div>
+                    {else}
+                <div><a href="/coupon/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&oauth_token={$oauth_token}" class="btn_red">填写充值信息</a></div>
+                    {/if}
+                {/if}
+            </div>
+            <div class="detailed_text">
+                <div class="detail_line">
+                    <h2>礼券详情</h2>
+                    <div class="p">{function name='htmlspecialchars_decode' v=$coupon.couponDesc}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+(function(){
+    var _anchorlockstate = false;
+    $("a").bind("click", function(){
+        if (!_anchorlockstate) {
+            _anchorlockstate = true;
+            setTimeout(function(){
+                _anchorlockstate = false;
+            }, 5000);
+            return true;
+        }
+        return false;
+    });
+    var $mobileList = $('.format_mobile');
+    $mobileList.each(function(k,v){
+        var str = $(v).html();
+        $(v).html(str.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3'));
+    });
+})();
+</script>
+{include file="openapi/views/baidutongji.html"}
+</html>

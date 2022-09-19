@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的{$new_bonus_title}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base_v32.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common_v32.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-bonus.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <input type="hidden" id="hiddenToken" value="{$token}">
+    <div class="p_bonus">
+        <div class="p_bonus_top">
+            {if $showShare}
+            <p class="share"><a href="firstp2p://api?type=webview&url={$sendUrl}"><span></span> 分享列表</a></p>
+            {/if}
+            <p class="icon"><span class="wxb_icon"></span></p>
+            <p class="wxb_total">
+                <span class="wxb_total_span">
+                    { $userInfo.usableMoney }<span>{$new_bonus_unit}</span><i>1网信币=1元</i>
+                </span>
+            </p>
+        </div>
+        {if $userInfo.expireSoon }
+            <p class="wxb_date">{ $userInfo.expireSoon.expireDate } 即将过期 <span>{ $userInfo.expireSoon.money }{$new_bonus_unit}</span></p>
+        {/if}
+        {if $shareCount and $showShare}
+        <p class="wxb_group">
+            <a href="firstp2p://api?type=webview&url={$sendUrl}">{$shareCount}组{$new_bonus_title}待分享<i class="redDot"></i><span class="arrow"></span></a>
+        </p>
+        {/if}
+        <div class="p_bonus_bot">
+            <p class="wxb_list_title">{$new_bonus_title}明细</p>
+            <p class="leiji">累计使用 {$userInfo.usedMoney}{$new_bonus_unit}</p>
+        </div>
+        {if $all.list}
+        <div class="list">
+            {foreach from=$all.list item=bonus}
+            <a class="clearfix hb_black" href="javascript:;">
+                <dl>
+                    <dt>
+                        <div class="btn">
+                            <p class="{if $bonus.status eq 1}color_red{else}color_green{/if} f15">
+                                {if $bonus.status eq 1}+{else}-{/if}{$bonus.money}<span class="yuan">{$new_bonus_unit}</span>
+                            </p>
+                            <p>{$bonus.createTime}</p>
+                        </div>
+                    </dt>
+                    <dd>
+                        <h3 class="color_blackB">
+                            {$bonus.title}
+                        </h3>
+                        <p class="list_date">{$bonus.info}
+                        </p>
+                    </dd>
+                </dl>
+            </a>
+            {/foreach}
+        </div>
+
+        <div class="hb-more">
+            {if $all.count gt 10}
+            <a href="javascript:void(0);" class="tb1-more jia_zai">点击加载更多</a>
+            {else}
+            <p class='pb10 f16'>仅显示最近30天内的{$new_bonus_title}</p>
+            {/if}
+        </div>
+        <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>" type="text/javascript"></script>
+        <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/touch.min.js');?>" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(function () {
+                var $tb0 = $(".list");
+                var page0 = 1;
+                var site_id = '{$site_id}';
+                var new_bonus_title = '{$new_bonus_title}';
+                var new_bonus_unit = '{$new_bonus_unit}';
+                $(".jia_zai").bind("click", function () {
+                    page0++;
+                    $.ajax({
+                        url: '/bonus/ajaxLog?token={$token}&page=' + page0,
+                        type: 'POST',
+                        dataType: 'json',
+                        async: false,
+                        beforeSend: function (request) {
+                            request.setRequestHeader("VERSION", "410");
+                        },
+                        success: function (data) {
+                            var dataObj = eval(data);
+                            if (page0 * 10 > dataObj.data.count) {
+                                $(".tb1-more").html("<p class='pb10 f16'>仅显示最近30天内的"+new_bonus_title+"</p>").addClass("hb-no").removeClass("jia_zai");
+                            }
+                            $.each(dataObj.data.list, function (idx, item) {
+                                var html = "";
+                                html += '<a class="clearfix hb_black" href="javascript:;">';
+                                html += '<dl><dt><div class="btn">';
+                                if (item.status == 1) {
+                                    html += '<p class="color_red f15">' + '+' + item.money + '<span class="yuan">'+new_bonus_unit+'</span>';
+                                } else {
+                                    html += '<p class="f15 color_green">' +'-'+ item.money +'<span class="yuan">'+ new_bonus_unit+'</span>';
+                                }
+                                html += '</p><p class="list_date">'+item.createTime+'</p></div></dt>';
+                                html +='<dd><h3 class="color_blackB">'+ item.title +'</h3><p class="list_date">'+ item.info;
+                                html += '</p></dd></dl></a>';
+                                $tb0.append(html);
+                            });
+                        }
+                    });
+                });
+            });
+
+        </script>
+
+        {else}
+        <!-- <div class="ui_un_tips">
+            <i class="ui_icon_un"></i>
+            <p>这里空空如也</p>
+        </div> -->
+        <div class="no_coupon2"><p>这里空空如也</p></div>
+        {/if}
+
+
+    </div>
+
+{include file="api/views/_v32/footer.html"}

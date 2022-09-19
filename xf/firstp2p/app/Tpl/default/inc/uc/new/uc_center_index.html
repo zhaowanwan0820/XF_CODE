@@ -1,0 +1,209 @@
+<link rel="stylesheet" type="text/css" href="{$TMPL_NEW}/css/user.css" />
+<link href="{$TMPL_NEW}/css/investment_view.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{$TMPL_NEW}/js/investment/investment_view.js"></script>
+<style>
+.shouyi{
+	font-family:'Microsoft YaHei';	
+}
+</style>
+<div class="user_right">
+        <div class="user_right_box  mb20 pb20">
+        	<div class="user_title"><h1><i class="ico_yonghu"></i>用户信息</h1></div>
+            <table class="user_tab f14 mt15">
+            	<colgroup>
+                	<col width="130">
+                    <col width="260">
+                    <col width="105">
+                    <col width="260">
+                </colgroup>
+                <tbody>
+                	<tr>
+                    	<th>姓名：</th>
+                        <td>{if $user_info.real_name}{$user_info.real_name}（{function name="idnoFormat" value=$user_info.idno}）{/if}</td>
+                        {if $bankcard.status eq 1}
+                        <th>开户名：</th>
+                        <td>{$bankcard.card_name}</td>
+                        	{else}
+                        	<td colspan="2" rowspan="5" valign="top">
+                        	<div class="addbank">
+                            	<a href="/uc_money-bank">
+                                    <i class="icon_add"></i>
+                                    <p>添加银行卡信息</p>
+                                </a>
+                            </div>
+                        </td>
+                        {/if}
+                    </tr>
+                    <tr>
+                    	<th>手机：</th>
+                        <td>{function name="moblieFormat" value=$user_info.mobile} {if $user_info.mobilepassed eq 1}<span class="yanzheng"> <i></i>已验证</span>{/if}</td>
+                        {if $bankcard.status eq 1}
+                        <th>银行：</th>
+                        <td>{$bankcard.name}</td>
+                        {/if}
+                    </tr>
+                    <tr>
+                    	<th>邮箱：</th>
+                        <td>{function name="mailFormat" value=$user_info.email} 
+						<a href="{url x="index" r="user#edit_email"}" class="color-blue1 underline">修改</a>
+						</td>
+                        {if $bankcard.status eq 1}
+                        <th>开户行城市：</th>
+                        <td>{$bankcard.city}</td>
+                        {/if}
+                    </tr>
+                    <tr>
+                    	<th>登录密码：</th>
+                        <td><a href="{url x="index" r="uc_account#re_password"}" class="color-blue1 underline">修改</a></td>
+                        {if $bankcard.status eq 1}
+                        <th>开户行网点：</th>
+                        <td>{$bankcard.bankzone}</td>
+                        {/if}
+                    </tr>
+                    <tr>
+                    	<th></th>
+                        <td></td>
+                        {if $bankcard.status eq 1}
+                        <th>银行卡号：</th>
+                        <td>{function name="formatBankcard" value=$bankcard.bankcard}{if $is_audit neq 1}&nbsp;&nbsp;<a  href='javascript:void(0);' onclick='editor_bankInfo()' class="color-blue1 underline">修改</a>{else}<span class='tl pl15 color-yellow1 shouyi'>新银行卡审核中<i class="ico_sigh" title="银行卡号:{$bankcard.newbankcard}"></i></span>{/if}</td>
+                        {/if}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="user_right_box  mb20 pb20">
+        	<div class="user_title"><h1><i class="ico_zhanghu"></i>账户信息</h1></div>
+            <table class="yh_tab f14 mt20">
+            	<colgroup>
+                	<col width="130">
+                    <col width="300">
+                    <col width="180">
+                    <col width="170">
+                </colgroup>
+                <tbody>
+                	<tr>
+                    	<th>可用金额：</th>
+                        <td><em class="color-yellow1">{function name="format_price" value=$user_info.money b=0}元</em><a href="{url x="index" r="uc_money#incharge"}" class="button_cz">充值</a> <a href="{url x="index" r="uc_money#carry"}" class="button_tx">提现</a></td>
+                        <th></th>
+                        <td></td>
+                    </tr>
+                    <tr>
+                    	<th>冻结金额：</th>
+                        <td>{function name="format_price" value=$user_info.lock_money b=0}元</td>
+                        <th rowspan="2"><div class="tl"><i class="ico_tou"></i>总投资额 </div></th>
+                        <td rowspan="2"><strong class="color-yellow1">{function name="format_price" v=$user_statics.load_money b=0}元</strong></td>
+                    </tr>
+                    <tr>
+                    	<th>待收本金：</th>
+                        <td>{function name="format_price" v="$user_statics.principal" b=0}元</td>
+                    </tr>
+                    <tr>
+                    	<th>待收收益：</th>
+                        <td>{function name="format_price" v="$user_statics.interest" b=0}元</td>
+                        <th rowspan="2"><div class="tl"><i class="ico_shou"></i>总收益 </div></th>
+                        <td rowspan="2"><strong class="color-yellow1">{function name="format_price" v="$user_statics.earning_all" b=0}元</strong></td>
+                    </tr>
+                    <tr>
+                    	<th>资产总额：</th>
+                        <td><em class="color-yellow1">{function name="format_price" v="$user_statics.money_all" b=0}元</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="user_right_box mb20">
+        	<div class="user_title"><a class="f14 fr pr30 color-black" href="{url x="index" r="uc_invest#index"}">更多<i class="ico_more"></i></a><h1><i class="ico_toubiao"></i>投标概况</h1></div>
+            <div class="w710 mauto pb20">
+            	<table class="plan">
+                	<colgroup>
+                    	<col width="210">
+                        <col width="235">
+                        <col width="260">
+                    </colgroup>
+                    <thead>
+                    	<tr>
+                        	<th><div class="tl pl15">状态</div></th>
+                            <th>笔数</th>
+                            <th><div class="tr pr15">金额（元）</div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$invest item=item key=key}
+                    	<tr {if $key mod 2 eq  1}class="tr_bg"{/if}>
+                        	<td><div class="tl pl15 {if $key neq 3}color-yellow1{/if}">{$item.text}</div></td>
+                            <td>{if $item.counts}{$item.counts}{else}0{/if}</td>
+                            <td><div class="tr pr15 f16">{function name="format_price" value=$item.money b=0}</div></td>
+                        </tr>
+                    {/foreach}    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="user_right_box mb20">
+        	<div class="user_title"><a class="f14 fr pr30 color-black" href="{url x="index" r="uc_invest#loan_repay_list"}">更多<i class="ico_more"></i></a><h1><i class="ico_huikuan"></i>回款计划</h1></div>
+            <div class="w710 mauto pb20">
+            	<table class="plan">
+                	<colgroup>
+                    	<col width="210">
+                        <col width="235">
+                        <col width="260">
+                    </colgroup>
+                    <thead>
+                    	<tr>
+                        	<th><div class="tl pl15">时间</div></th>
+                            <th>笔数</th>
+                            <th><div class="tr pr15">金额（元）</div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$deal_repay item=item key=key}
+                    	<tr {if $key mod 2 eq  1}class="tr_bg"{/if}>
+                        	<td><div class="tl pl15 {if $key neq 3}color-yellow1{/if}">{$item.text}</div></td>
+                            <td>{if $item.counts}{$item.counts}{else}0{/if}</td>
+                            <td><div class="tr pr15 f16">{function name="format_price" value=$item.money b=0}</div></td>
+                        </tr>
+                    {/foreach} 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="user_right_box mb20">
+        	<div class="user_title"><a class="f14 fr pr30 color-black" href="{url x="index" r="uc_money#index" p="t=money"}">更多<i class="ico_more"></i></a><h1><i class="ico_jilu"></i>资金记录</h1></div>
+            <div class="w710 mauto pb20">
+            	<table class="plan">
+                	<colgroup>
+                    <col width="160">
+                    <col width="140">
+                    <col width="162">
+                    <col width="130">
+                    <col width="120">
+                </colgroup>
+                    <thead>
+                    	<tr>
+                        	<th>时间</th>
+                            <th>类型</th>
+                            <th><div class="tl pl20">冻结/解冻（元）</div></th>
+                            <th><div class="tl pl20">资金变动（元）</div></th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$log item=item key=key}
+                    	<tr {if $key mod 2 eq  1}class="tr_bg"{/if}>
+                        	<td><div class="tl pl15"><?php echo to_date($this->_var['item']['log_time'],"Y-m-d H:i"); ?></div></td>
+                            <td>{$item.log_info}</td>
+                            <td><div class="tl pl15">{if $item.lock_money neq 0}<em class="color-green1">{function name="format_price" value=$item.lock_money c=0}</em>{/if}</div></td>
+                            <td><div class="tl pl15">{if $item.money neq 0}<em class="color-yellow1">{function name="format_price" value=$item.money c=0}</em>{/if}</div></td>
+                            <td>{$item.note}</td>
+                        </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> 
+    <script>
+  //修改
+	function editor_bankInfo() {
+		window.location.href='/uc_money-editorBank';
+	}
+    </script>

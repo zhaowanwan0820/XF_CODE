@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的预约</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <?php echo $this->asset->renderAppCssV2("reserve_my_v40"); ?>
+</head>
+<body>
+{include file="api/views/_v492/common/zhugemaidian.html"}
+<div class="p_bespeak" >
+    <input type="hidden" name="userKey" id="userKey" value="{$userClientKey}"/>
+    <input type="hidden" name="asgn" id="asgn" value="{$asgn}"/>
+    <input type="hidden" name="isBookingButtonUnused" id="isBookingButtonUnused" value="{$isBookingButtonUnused}"/>
+    <div class="yuyue">
+
+    </div>
+    <div class="try_again reserve_next" style="display:none;">
+        {if $isBookingButtonUnused eq 1 }
+        <span class="reservation_btn disabled_btn">再约一笔</span>
+        {else}
+        <a href="/deal/reserveIndex?userClientKey={$userClientKey}&site_id={$site_id}&token={$token}" class="reservation_btn">再约一笔</a>
+        {/if}
+    </div>
+    <div class="load_more"></div>
+</div>
+<div class="dialog hide">
+    <div class="b_dialog"></div>
+    <div class="cancel">
+        <p class="confirm">你确定取消本次预约吗？</p>
+        <div class="dialogBtn">
+            <button class="j_cancel d_btn">取消</button>
+            <button class="j_confirm c_btn" data-id="">确定</button>
+        </div>
+    </div>
+</div>
+<?php echo $this->asset->renderAppJsV2("reserve_my_v40"); ?>
+<script type="text/javascript">
+    var loadmore = new WXP2P.UI.P2PLoadMore($(".yuyue")[0], $('.load_more')[0], "/deal/reserveList?userClientKey={$userClientKey}&site_id={$site_id}&product_type={$product_type}", 1, 'get', 20);
+    {if $reserve_list.count>0}
+    $('.try_again').show();
+    loadmore.loadNextPage();
+    loadmore.createItem = function(item){
+
+        var dl = document.createElement("div");
+        var _this_id = item.id;
+        var parentClass='itemId'+'_'+_this_id;
+        $(dl).addClass(parentClass);
+        var html = "";
+        if(item.reserve_status==0){
+        html += '<div class="b_header">';
+        html += '   <div class="clock">';
+        html += '       <p class="yy">正在为您预约</p>';
+        html += '       <p class="time">还剩<span class="red">' + (typeof item.remain_time != 'undefined' ? item.remain_time : '&nbsp') + '</span></p>';
+        html += '   </div>';
+        html += '   <div class="btn_cont"><button class="j_yy btn" data-message="'+item.id+'" data-parent="'+parentClass+'">取消预约</button></div>';
+        html += '</div>';
+        html += '<div class="b_info">';
+        html += '   <div><span class="gray">{if $product_type eq 1}实际出借金额{else}实际投资金额{/if}</span><span class="fr"><em class="red">' + (typeof item.actual_amount != 'undefined' ? item.actual_amount : '&nbsp') + '元</em>(共'+item.actual_count+'笔)</span></div>';
+        html += '   <div><span class="gray">预约金额</span><span class="fr">' + (typeof item.reserve_amount != 'undefined' ? item.reserve_amount : '&nbsp') + '元</span></div>';
+        html += '   <div><span class="gray">期限/{if $product_type eq 1}年化借款利率{else}预期年化{/if}</span><span class="fr">' + (typeof item.invest_deadline_rate != 'undefined' ? item.invest_deadline_rate : '&nbsp') + '</span></div>';
+        if (typeof item.discount_id != 'undefined' && item.discount_id > 0) {
+            html += '   <div><span class="gray">优惠券</span><span class="fr">' + item.discount_desc + '(<em class="red">' + item.discount_status_desc + '</em>)</span></div>';
+        }
+        html += '   <div class="r_mb"><span class="gray">预约时间</span><span class="fr">' + (typeof item.start_time != 'undefined' ? item.start_time : '&nbsp') + '</span></div>';
+        html += '</div>';
+        }else if(item.reserve_status==1){
+        html += '<div class="title">预约结束</div>';
+        html += '<div class="b_info">';
+        html += '   <div><span class="gray">{if $product_type eq 1}实际出借金额{else}实际投资金额{/if}</span><span class="fr gray change_colo">' + (typeof item.actual_amount != 'undefined' ? item.actual_amount : '&nbsp') + '元(共'+item.actual_count+'笔)</span></div>';
+        html += '   <div><span class="gray">预约金额</span><span class="fr gray">' + (typeof item.reserve_amount != 'undefined' ? item.reserve_amount : '&nbsp') + '元</span></div>';
+        html += '   <div><span class="gray">期限/{if $product_type eq 1}年化借款利率{else}预期年化{/if}</span><span class="fr gray">' + (typeof item.invest_deadline_rate != 'undefined' ? item.invest_deadline_rate : '&nbsp') + '</span></div>';
+        if (typeof item.discount_id != 'undefined' && item.discount_id > 0) {
+            html += '   <div><span class="gray">优惠券</span><span class="fr gray">' + item.discount_desc + '(' + item.discount_status_desc + ')</span></div>';
+        }
+        html += '   <div class="r_mb"><span class="gray">预约时间</span><span class="fr gray">' + (typeof item.start_time != 'undefined' ? item.start_time : '&nbsp') + '</span></div>';
+        html += '</div>';
+        }
+        dl.innerHTML = html;
+        return dl;
+    };
+    {else}
+        $(".yuyue").html('<div class="empty_list"><p>开启预约之门</p><p>一起先发制人</p><div class="go_cont"><a href="/deal/reserve_index?token={$token}&site_id={$site_id}&product_type={$product_type}">立即预约</a></div></div>');
+        if ($('#isBookingButtonUnused').val() == 1) {
+            $(".yuyue").find('a').addClass('disabled_btn').attr('href','javascript:;');
+        }
+    {/if}
+    //显示返回按钮  or 关闭按钮
+    //如果是从预约成功页面跳过来的显示关闭按钮or显示返回按钮
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+
+    }
+    var isShowClose = getQueryString("isShowClose");
+    if(isShowClose == 1){
+        WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=2");
+    }else{
+        WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+
+    }
+    var is_firstp2p = '{$is_firstp2p}';
+    if(!is_firstp2p){
+        // title右上角增加帮助中心
+        location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+        function gobackjsfuncReserve(){
+            location.href = 'firstp2p://api?type=webview&gobackrefresh=false&url='+ encodeURIComponent(location.origin + '/help/faq_list/?cid=227');
+            setTimeout(function(){
+                location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+            },0)
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<link href="/static/v1/css/user.css" rel="stylesheet" type="text/css">
+
+	<div class="user_right">
+        <div class="user_right_box">
+        	<div class="user_title"><h1><i class="ico_xiangmu"></i>投资的项目</h1></div>
+
+            <form id="search" action='{url x="index" r="uc_invest"}' method="get">
+            <div class="screening clearfix mb30">
+                <div class="select_box" data-name="status">
+                    <div class="j_select"></div>
+                    <ul class="select_ul none j_selectContent">
+                        <li data-value="0" {if $status eq 0}data-select="1"{/if}>全部投资状态</li>
+                        <li data-value="1" {if $status eq 1}data-select="1"{/if}>投标中</li>
+                        <li data-value="2" {if $status eq 2}data-select="1"{/if}>满标</li>
+                        <li data-value="4" {if $status eq 4}data-select="1"{/if}>回款中</li>
+                        <li data-value="5" {if $status eq 5}data-select="1"{/if}>已回款</li>
+                    </ul>
+                </div>
+                <div class="sel_time">
+                    <span>时间</span>
+                    <input type="text" class="time_box" id="dateInput1" name="date_start" value="{$date_start}"> - 
+                    <input type="text" class="time_box" id="dateInput2" name="date_end" value="{$date_end}">
+                </div>
+                <input type="submit" value="筛选" class="button_shaixian fr">
+            </div>
+            </form>
+
+        </div>
+
+        {if $list}
+        {foreach from=$list item="item"}
+        <section>
+            <div class="project clearfix">
+                    <div class="project_l fl">
+                        {if $item.deal.deal_status eq 1}
+                        <i class="pro_state_tbz"></i>
+                        {elseif $item.deal.deal_status eq 2}
+                        <i class="pro_state_mb"></i>
+                        {elseif $item.deal.deal_status eq 4}
+                        <i class="pro_state_hkz"></i>
+                        {elseif $item.deal.deal_status eq 5}
+                        <i class="pro_state_yhk"></i>
+                        {/if}
+                        <h1>
+                            <span title="{$item.deal.name}" class="pro_name">{$item.deal.name}</span>
+                            <span class="pro_nub"><em class="color-gray1">项目编号：</em> {$item.deal_id}</span>
+                            {if $item.contracts || $item.loan_repay_list}
+                            <span class="pro_button">
+                                <a href="#none" class="j_por_Show">查看详情<i class="ico_proShow"></i></a><a href="#none" class="j_por_Hide" style="display:none">收起详情<i class="ico_proHide"></i></a>
+                            </span>
+                            {/if}
+                        </h1>
+                        <div class="por_con">
+                            <table>
+                                <colgroup>
+                                    <col width="214">
+                                    <col width="165">
+                                    <col width="130">
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <td><em class="color-gray1">投资额度:</em>  <em class="color-yellow1">{function name="number_format" v="$item.money" f="2"}元</em></td>
+                                        <td><em class="color-gray1">年利率:</em>  <em class="color-yellow1">{function name="number_format" v="$item.deal.income_fee_rate" f="2"}%</em></td>
+                                        <td><em class="color-gray1">计息日:</em>  {$item.repay_start_time}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><em class="color-gray1">收益方式: </em> {$item.loantype_name} </td>
+                                        <td><em class="color-gray1">{if $item.is_lease eq 1}融资方{else}借款人{/if}: </em> {$item.deal.user_deal_name}</td>
+                                        <td><em class="color-gray1">投资期限: </em> <em class="color-yellow1">{$item.deal.repay_time}</em> {if $item.deal.loantype eq 5}天{else}个月{/if} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="project_r fr">
+                        <p>应获收益</p>
+                        <p><strong class="f24 color-yellow1">{function name="number_format" v="$item.income" f="2"}元</strong></p>
+                        <p class="p_line"></p>
+                        <p>已获收益</p>
+                        <p><strong class="f24 color-green">{function name="number_format" v="$item.real_income" f="2"}元</strong></p>
+                    </div>
+
+                    {if $item.contracts || $item.loan_repay_list}
+                    <div class="pro_detailed clearfix j_table_tab"  style="display:none;">
+                        {if $item.contracts}
+                        <h2 class="sub_title"><span>合同</span></h2>
+                        <div class="contract clearfix">
+                            {foreach from=$item.contracts item="contract" key="k"}
+                            <div class="jk_contract{if $k eq 1} xy_contract{/if}" >
+                                <i class="ico_jilu fl"></i>
+                                <div class="con_title">
+                                <p title="{$contract.title}">{$contract.title}</p>
+                                <span class="con_nub">{$contract.number}</span>
+                                <a class="action action-view j_view" href="javascript:clickopen({$contract.id});" data-id="{$contract.id}" title="查看"><i class="ico_see"></a></i>
+                                <a class="action action-download" href="/uc_center-download/id-{$contract.id}-tag-download" title="下载PDF"><i class="ico_down"></a></i>
+                                </div>
+                            </div>
+                            {/foreach}
+                        </div>
+                        {/if}
+
+                        {if $item.loan_repay_list}
+                        <h2 class="sub_title"><span>回款计划</span></h2>
+                        <table class="plan">
+                            <colgroup>
+                                <col width="110">
+                                <col width="160">
+                                <col width="130">
+                                <col width="110">
+                                <col width="205">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th><div class="tl pl10">回款日</div></th>
+                                    <th><div class="tl pl20">金额（元）</div></th>
+                                    <th>类型</th>
+                                    <th>实际回款日</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+
+                            {foreach from=$item.loan_repay_list item="repay_list"}
+                            <tbody class="tabContent">
+
+                                {foreach from=$repay_list item="repay" key="k"}
+                                {if $k%2==0}<tr>{else}<tr class="tr_bg">{/if}
+                                    <td>{function name="to_date" v="$repay.time" f="Y-m-d"}</td>
+                                    <td><div class="tl pl20"><em class="color-yellow1">{function name="number_format" v="$repay.money" f="2"}</em></div></td>
+                                    <td>{if $repay.type > 2}<em class="color-red1">{/if}{$repay.money_type}{if $repay.type >2}</em>{/if}</td>
+                                    <td>{if $repay.is_delay eq 1}<em class="color-red1">{$repay.real_time}<br>（逾期）</em>{else}{$repay.real_time}{/if}</td>
+                                    <td>{if $repay.status eq 2}<em class="color-red1">{/if}{$repay.money_status}{if $repay.status eq 2}</em>{/if}</td>
+                                </tr>
+                                {/foreach}
+
+                            </tbody>
+                            {/foreach}
+
+                        </table>
+
+                        <div class="pages"> 
+                            {foreach from=$item.loan_page item="p"}
+                            <a href="#" class="current tab">{$p}</a>
+                            {/foreach}
+                        </div>
+                        {/if}
+                    </div>
+                    {/if}
+            </div>
+        </section>
+        {/foreach}
+        <div class="pages">{$pages}</div>
+
+        {else}
+        <div class="main">
+            <div class="empty-box">没有投资项目</div> 
+        </div> 
+        {/if}
+    </div>    
+
+<script>
+function clickopen(id){
+    var url = APP_ROOT+"/index.php?ctl=uc_center&act=download&id="+id;
+    $.weeboxs.open(url, {boxid:null,contentType:'iframe',showButton:true, showCancel:false, showOk:false,title:'合同详情',width:750,height:550,type:'wee',onclose:function(){null}});
+}
+</script>

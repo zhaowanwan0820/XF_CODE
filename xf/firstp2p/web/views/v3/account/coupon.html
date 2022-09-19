@@ -1,0 +1,273 @@
+<div class='p_account_coupon'>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/jiathis_share.css');?>" />
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.2.css');?>" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_coupon.css?v=123');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/share.v1.css');?>" />
+    <!-- 查询 -->
+    <script src="<?php echo $this->asset->makeUrl('v3/js/common/jquery_placeholder-1.0.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/share/share.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/qrcode/qrcode.v1.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/account/account_coupon.js?v=456');?>"></script>
+    <div>
+        {if $is_not_code}
+        <div class="account_user_title">
+            <h1><i class="ico_yaoqing"></i>邀请好友</h1>
+        </div>
+        <div class="user-nocont">
+            <div class="f14 color-gray tc">完成 <a href="/account/addbank" class="color-blue f18">身份认证</a>，即可获得专属邀请码，享邀请{if $bonus_coupon_trun_on eq '1'}红包奖励{else}返利{/if}！</div>
+        </div>
+        {else}
+        <div class="account_user_title">
+            <h1>
+                {if !$showSiteCoupon}
+                <span class="f14 pr15 fr"><adv adv_id="邀请好友配置链接_2015"/></span>
+                {/if}
+                <i class="ico_yaoqing"></i>
+                <span class="titleSpan fl">邀请好友</span>
+            </h1>
+        </div>
+        <div class="bannerBox">
+          <img src="/static/v3/images/account/invitebanner.jpg"/>
+          {if !$showSiteCoupon}
+          <div class="contBox clearfix">
+              <div class="item">
+                  <p class="title">邀请人数(人)</p>
+                  <p class="text">{$totalInviteNumber}</p>
+              </div>
+              <div class="item mid">
+                  <p class="title">已奖励金额(元)</p>
+                  <p class="text">{function name="number_format" v=$rotalRefererRebateAmount.referer_rebate_amount f="2"}</p>
+              </div>
+              <div class="item">
+                  <p class="title">待奖励金额(元)</p>
+                  <p class="text">{function name="number_format" v=$rotalRefererRebateAmount.referer_rebate_amount_no f="2"}</p>
+              </div>
+          </div>
+          {/if}
+        </div>
+        <div class="myinvite">
+            {if !$showSiteCoupon}
+                <p class="ftP">
+                  <span class="text">邀请码：</span><span class="code">{$coupon.short_alias}</span>
+                </p>
+                <p class="scP">
+                  <a href="javascript:;" id="js_flsm">奖励规则</a>
+                </p>
+            {else}
+              <p class="ftP">
+                <span class="text">邀请码：</span><span class="code">{$site_invite_code}</span>
+              <p>
+            {/if}
+        </div>
+        <div class="inviteWay">
+            {if !$showSiteCoupon}
+            <div class="title"><adv adv_id="PC我的邀请码标题"/></div>
+            <div class="infor">
+                {if $showcashbonus eq 1}
+                <adv adv_id="PC我的邀请码说明"/>
+                {else}
+                <adv adv_id="PC我的邀请码说明_非红包"/>
+                <!--将带有邀请码的注册链接发送给好友 ，好友完成注册且投资，您将获得返利。-->
+                {/if}
+            </div>
+            {/if}
+            <div class="inviteUrl clearfix">
+                <span id="clipTar" class="fl" {if $showSiteCoupon}style='font-size:14px'{/if}>{$share_url}</span>
+                <textarea id="inputHidden"></textarea>
+                <a class="copy-link fl" href="javascript:;" data-clipboard-target="clipTar">复制链接</a>
+            </div>
+            <div class="shareTo clearfix" id="jiaThisShareBox" data-share-data='{"url":"{$share_url_escape}","summary":"{$share_msg}"}'>
+                <div class="fl">分享到：</div>
+                <div class="jiathis_style_32x32 clearfix fl" data-url="{$share_url_escape}" data-summary="{$share_msg}">
+                    <a class="jiathis_button_weixin j-jiathis" title="分享到微信" data-platname="weixin"
+                    ><div id="share32"></div><!-- <span class="jiathis_txt jtico jtico_weixin"></span> --></a>
+                    <a class="jiathis_button_tsina j-jiathis" title="分享到微博" data-platname="sinaminiblog"><span class="jiathis_txt jtico jtico_tsina"></span></a>
+                    <a class="jiathis_button_qzone j-jiathis" title="分享到QQ空间" data-platname="qzone"><span class="jiathis_txt jtico jtico_qzone"></span></a>
+                    <a class="jiathis_button_renren j-jiathis" title="分享到人人网" data-platname="renren"><span class="jiathis_txt jtico jtico_renren"></span></a>
+                    <a class="jiathis_button_tqq j-jiathis" title="分享到腾讯微博" data-platname="qqmb"><span class="jiathis_txt jtico jtico_tqq"></span></a>
+                    <a title="分享到QQ好友" class="jiathis_button_cqq j-jiathis" data-platname="qqim"><span class="jiathis_txt jtico jtico_cqq"></span></a>
+                </div>
+            </div>
+        </div>
+        {/if}
+        {if !$showSiteCoupon}
+        <div class="tabBox">
+            <ul class="tabTitle clearfix" id="tabTitle">
+                <li class="active" data-tabName="reg">邀请注册</li>
+                {foreach from=$couponModelTypes name='couponModelTypes' key='key' item='modelName'}
+                {if $key != 'reg'}
+                <li data-tabName="{$key}">{$modelName}</li>
+                {/if}
+                {/foreach}
+            </ul>
+            <div class="tabCont" id="tabCont">
+                <div class="item">
+                    <div class="gridWrap">
+                        <table  class="frListTable">
+                            <colgroup>
+                                <col width="220">
+                                <col width="auto">
+                                <col width="140">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <td>好友名</td>
+                                <td class="sc">注册时间</td>
+                                <td>状态</td>
+                            </tr>
+                            </thead>
+                            <tbody id="tabs_content02">
+                            </tbody>
+                        </table>
+                        <div class="no_record" >
+                            <i></i>
+                            <span>暂无记录</span>
+                        </div>
+                    </div>
+                    <div class="pagination">
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="gridWrap">
+                        <div class="searchBox clearfix">
+                            <a class="historyInviteAward" href="/account/invitedaward" target="_blank">历史邀请奖励<i></i></a>
+                        </div>
+                        <table  class="scListTable">
+                          <colgroup>
+                            <col width="145">
+                            <col width="145">
+                            <col width="145">
+                            <col width="145">
+                            <col width="auto">
+                          </colgroup>
+                          <thead>
+                            <!-- 页面加载显示tr -->
+                            <tr id="inviteAwardTitle">
+                              <td>项目</td>
+                              <td>获奖时间</td>
+                              <td>奖励类型</td>
+                              <td>奖励内容</td>
+                              <td>备注</td>
+                            </tr>
+                            <!-- end -->
+                          </thead>
+                          <tbody>
+                          </tbody>
+                        </table>
+                        <div class="no_record" >
+                          <i></i>
+                          <span>暂无记录</span>
+                        </div>
+                    </div>
+                    <div class="pagination"></div>
+                </div>
+                <div class="item">
+                    <div class="gridWrap">
+                        <div class="searchBox clearfix">
+                            <input type="text" class="searchInput fl int_placeholder" placeholder="{$select_content}" data-placeholder="{$select_content}" value="{$content}" data-content="{$content}" />
+                            <input name="is_big_user" class="is_big_user" type="hidden" value="{$isBigUser}">
+                            <input type="button" value="查询" class="searchBtn fl" data-type-name=""/>
+                            <span class="errorTip fl color-red">{$select_content}格式不正确！</span>
+                        </div>
+                        <table  class="scListTable">
+                            <colgroup>
+                                <col width="145">
+                                <col width="145">
+                                <col width="145">
+                                <col width="145">
+                                <col width="auto">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <td>状态</td>
+                                <td>获奖时间</td>
+                                <td>加入时间</td>
+                                <td>好友名</td>
+                                <td>备注</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div class="no_record" >
+                            <i></i>
+                            <span>暂无记录</span>
+                        </div>
+                    </div>
+                    <div class="pagination">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <div class="busInfor">{if !$showSiteCoupon}北京经讯时代科技有限公司保留对本活动的最终解释权。{/if}</div>
+    </div>
+</div>
+<script id="reg_data" type="text/html">
+    <% if (data.list.length > 0) { %>
+    <% for (var i = 0; i < data.list.length; i++) { %>
+    <% if(i%2==0){ %>
+    <tr class="odd">
+        <% }else{ %>
+    <tr class="even">
+        <% } %>
+        <td title="<%= data.list[i].consume_real_name %>"><%= data.list[i].consume_real_name %><% if (data.list[i].consume_real_name && data.list[i].mobile != ""){ %> ( <% } %> <%= data.list[i].mobile %><% if (data.list[i].consume_real_name){ %> ) <% } %></td>
+        <td class="sc"><%=# data.list[i].create_time %></td>
+        <td><%= data.list[i].pay_status_text %></td>
+    </tr>
+    <% } %>
+    <% } %>
+</script>
+<script id="invest_data" type="text/html">
+  <!-- 智多新列表模板 -->
+  <% if (data.list.length > 0) { %>
+    <% for (var i = 0; i < data.list.length; i++) { %>
+      <% if(i % 2 == 0) {%>
+        <tr class="odd historyInviteAwardTr" style="display: none;">
+      <% }else{ %>
+        <tr class="even historyInviteAwardTr" style="display: none;">
+      <% } %>
+        <td>
+          <div class="dataTr02">
+            <% if(data.list[i].deal_type != 1){ %>
+            <%=# data.list[i].pay_status_text %>
+            <% if(data.list[i].pay_status_text == "已返"){ %>
+            <span class="color-red2"><%=# data.list[i].pay_money %></span> 元
+            <% } else { %>
+            <%=# data.list[i].pay_money %> 元
+            <% } %>
+            <% }else{ %>
+            <%  if(data.list[i].pay_status != 5 && data.list[i].pay_status != 2 && data.list[i].pay_status != 1){ %>
+            <%=# data.list[i].pay_status_text   %>
+            <% }else{ %>
+            已返 <span class="color-red2"><%=# data.list[i].count_pay %></span> 次 <br/> 共 <span class="color-red2"><% if(!!data.list[i].pay_money){ %><%=# data.list[i].pay_money %>
+                            <% } else { %>0<% } %></span> 元<% } %>
+            <% } %>
+          </div>
+        </td>
+        <td><div class="dataTr"><%=# dateFormat(data.list[i].pay_time) %></div></td>
+        <td><div class="dataTr"><%=# dateFormat(data.list[i].create_time) %></div></td>
+        <td>
+          <div class="dataTr">
+            <p title="<%= data.list[i].consume_real_name %>"><%= data.list[i].consume_real_name %></p>
+            <p><%= data.list[i].mobile %></p>
+          </div>
+        </td>
+        <td><div class="dataTr02"><%= data.list[i].note %></div></td>
+      </tr>
+    
+    <% if(i % 2 == 0) {%>
+      <tr class="odd historyInviteAwardTr" style="display: none;">
+    <% }else{ %>
+      <tr class="even historyInviteAwardTr" style="display: none;">
+    <% } %>
+      <td colspan="5"><div class="textTr"><%= data.list[i].log_info %></div></td>
+    </tr>
+    <% } %>
+  <% } %>
+<!-- end -->
+</script>
+<!-- 我的邀请码示例_2015 HTMl代码  -->
+<script type="text/template" id="js_flsm_tel">
+    <adv adv_id="我的邀请码示例_new_2015" />
+</script>

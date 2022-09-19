@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>未领取优惠券</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>">
+    </head>
+    <body>
+    <div class="m-main">
+        <div class="p_coupon_list">
+        <div class="tab">
+                <div class="tab_con">
+                    {foreach from=$unPickList item=unPick}
+                        <div class="items_bg_left">
+                            <div class="items_bg_right">
+                                {if $unPick.expired eq 1}
+                                    <dl class="coupon_items clearfix unused">
+                                        <dt>
+                                            <h3{if $unPick.money eq 0} class="pb5"{/if}>{$unPick.deal_name}</h3>
+                                            {if $unPick.money > 0}<p>投资金额：{function name="format_price" v="$unPick.money" b=0}</p>{/if}
+                                            <p>领券截止时间：{function name="format_date_by_type" b=$unPick.expire_time}</p>
+                                        </dt>
+                                        <dd>
+                                            <div class="draw_btn"><span class="btn btn_disabled">已过期</span></div>
+                                        </dd>
+                                    </dl>
+                                {else}
+                                    <dl class="coupon_items clearfix unused">
+                                        <a data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="myCoupon" data-title="礼券领取" data-identity="couponList" data-needback="true" data-needrefresh="true" href="{$APP_HOST}/gift/pickList?action={$unPick.trigger_mode}&load_id={$unPick.deal_load_id}&token={$usertoken}&deal_type={$unPick.deal_type}">
+                                            <dt>
+                                                <h3{if $unpick.money eq 0} class="pb5" {/if}>{$unPick.deal_name}</h3>
+                                                {if $unPick.money > 0}<p>投资金额：{function name="format_price" v="$unPick.money" b=0}</p>{/if}
+                                                <p>领券截止时间：{function name="format_date_by_type" b=$unPick.expire_time}</p>
+                                            </dt>
+                                            <dd>
+                                                <div class="draw_btn"><span class="btn"></span></div>
+                                            </dd>
+                                        </a>
+                                    </dl>
+                                {/if}
+                            </div>
+                         </div>
+                    {/foreach}
+                </div>
+                <div class="tab_more">
+                {if $unPickListCount eq 10}
+                <a href="javascript:void(0);" class="tb0-more">点击加载更多</a>
+                {else}
+                没有更多了
+                {/if}
+            </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/touch.min.js" type="text/javascript');?>"></script>
+    <script type="text/javascript">
+        (function ($) {
+            $(function () {
+                (function () {
+                    var pickTab =  new WXP2P.UI.P2PLoadMore($(".tab_con")[0], $(".tab_more")[0], '/gift/ajaxUnpickList?token={$usertoken}',2);
+                    pickTab.createItem = function(item){
+                        var dl = document.createElement("div");
+                        var html = "";
+                        html +='<div class="items_bg_right">';
+                        html +='<dl class="coupon_items clearfix unused">';
+                        if(item.expired==1){
+                            html += '    <dt>';
+                            html +='<h3' + (item.money > 0 ? '' : ' class="pb5"')  + '>';
+                            html +='       '+item.deal_name+'';
+                            html +='</h3>';
+                            if (item.money > 0) {
+                                html +='<p>';
+                                html +='投资金额：' + item.money + '</p>';
+                            }
+                            html +='<p>';
+                            var DateStr = new Date(parseInt(item.expire_time) * 1000);
+                            var DateYear = DateStr.getFullYear();
+                            var DateMonth = DateStr.getMonth()+1;
+                            var DateDay = DateStr.getDate();
+                            var DateHour = DateStr.getHours();
+                            var DateMin = DateStr.getMinutes();
+                            var DateSec = DateStr.getSeconds();
+                            html +='领券截止时间：' + DateYear+'.'+(DateMonth < 10 ? '0' + DateMonth : DateMonth )+'.'+(DateDay < 10 ? '0' + DateDay : DateDay ) +' '+(DateHour < 10 ? '0' + DateHour : DateHour )+':'+(DateMin < 10 ? '0' + DateMin : DateMin )+':'+(DateSec < 10 ? '0' + DateSec : DateSec ) + '</p>'
+                            html += '    </dt>';
+                            html += '    <dd>';
+                            html +='<div class="draw_btn">';
+                            html +='<span class="btn btn_disabled">已过期</span>'
+                            html +='</div>'
+                            html += '    </dd>';
+                        } else {
+                            html +=' <a data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="myCoupon" data-title="礼券领取" data-identity="couponList" data-needback="true" data-needrefresh="true" href="{$APP_HOST}/gift/pickList?action=' + item.trigger_mode + '&load_id=' + item.deal_load_id + "&token={$usertoken}&deal_type=" + item.deal_type + '>';
+                            html += '    <dt>';
+                            html +='<h3' + (item.money > 0 ? '' : ' class="pb5"')  + '>';
+                            html +='       '+item.deal_name+'';
+                            html +='</h3>';
+                            if (item.money > 0) {
+                                html +='<p>';
+                                html +='投资金额：' + item.money + '</p>';
+                            }
+                            html +='<p>';
+                            var DateStr = new Date(parseInt(item.expire_time) * 1000);
+                            var DateYear = DateStr.getFullYear();
+                            var DateMonth = DateStr.getMonth()+1;
+                            var DateDay = DateStr.getDate();
+                            var DateHour = DateStr.getHours();
+                            var DateMin = DateStr.getMinutes();
+                            var DateSec = DateStr.getSeconds();
+                            html +='领券截止时间：' + DateYear+'.'+(DateMonth < 10 ? '0' + DateMonth : DateMonth )+'.'+(DateDay < 10 ? '0' + DateDay : DateDay ) +' '+(DateHour < 10 ? '0' + DateHour : DateHour )+':'+(DateMin < 10 ? '0' + DateMin : DateMin )+':'+(DateSec < 10 ? '0' + DateSec : DateSec ) + '</p>'
+                            html += '    </dt>';
+                            html += '    <dd>';
+                            html +='<div class="draw_btn">';
+                            html +='<span class="btn"></span>'
+                            html +='</div>'
+                            html += '    </dd>';
+                            html += '</a>';
+                        }
+                        html +='</dl>';
+                        html +='</div>';
+
+                        dl.innerHTML = html;
+                        dl.className="items_bg_left";
+                        WXP2P.APP.batchWarpAnchorSchema($(dl).find('a'));
+                        return dl;
+                    };
+                })();
+            });
+        })(Zepto);
+        (function(){
+            var _anchorlockstate = false;
+            $("a").bind("click", function(){
+                if (!_anchorlockstate) {
+                    _anchorlockstate = true;
+                    setTimeout(function(){
+                        _anchorlockstate = false;
+                    }, 5000);
+                    return true;
+                }
+                return false;
+            });
+        })();
+    </script>
+</body>
+</html>

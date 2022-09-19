@@ -1,0 +1,35 @@
+<div class="main">
+<if condition="$path"><div class="main_title">{$path}</div></if>
+<form name="edit" id="_js_form" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <input type="hidden" name="parent_id" value="{$parent_id}" >
+    <tr class="_jsedit">
+        <td class="item_title">金额：</td>
+        <td class=""><input type="text" class="textbox require" name="money" value=""/></td>
+    </tr>
+    <tr class="_jsedit">
+        <td class="item_title">还款方：</td>
+        <td class="">
+            <select type="select" name="repay_user_type_part" id='repay_user_part'
+            <if condition="$role eq 'b'">
+                disabled = 'disabled'
+                </if>
+            >
+            <foreach name="repay_user" item="repay_user_item">
+                <option value="{$repay_user_item.type}"
+                    <if condition="$repay_user_item.type eq $repay_user_type">
+                        selected="selected"
+                    <else />
+                        <if condition="$role neq 'b' AND $repay_user_item.is_selected eq 1">
+                            selected="selected"
+                        </if>
+                    </if>
+                >{$repay_user_item.userName}</option>
+            </foreach>
+            </select>
+        </td>
+    </tr>
+
+</table>
+</form>
+</div>

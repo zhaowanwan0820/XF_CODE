@@ -1,0 +1,244 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/carry.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script>
+
+    //通过拒绝 批量操作
+    var lock = false;
+    function waitPass(audit, btn) {
+        if (!!lock) return;
+        lock = true;
+        $(btn).css("background-color", "gray").attr("disabled", "disabled");
+
+        idBox = $(".key:checked");
+        if (idBox.length == 0) {
+            alert('请选择未处理的提现申请记录！');
+            lock = false;
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return;
+        }
+        idArray = new Array();
+        $.each(idBox, function (i, n) {
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+
+        var str = '';
+        if (audit == "pass") {
+            str = '确认批准您选择的提现申请记录？';
+        }
+        if (audit == "refuse") {
+            str = '确认拒绝您选择的提现申请记录？';
+        }
+
+        if (confirm(str)) {
+            $.ajax({
+                url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=doAudit&batch=1&id=" + id + "&audit=" + audit,
+                data: "ajax=1",
+                dataType: "json",
+                success: function (obj) {
+                    // $("#info").html(obj.info);
+                    if (obj.status == 1) {
+                        alert(obj.info);
+                        location.href = location.href;
+                    } else {
+                        alert(obj.info);
+                    }
+                    lock = false;
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                },
+                error: function () {
+                    alert('请求失败！');
+                    lock = false;
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                }
+            });
+        } else {
+            lock = false;
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+        }
+    }
+
+
+</script>
+
+<div class="main">
+<div class="main_title"></div>
+<div class="blank5"></div>
+<div class="button_row">
+    <!--
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    -->
+    <input type="button" class="button" value="{%DEL}" onclick="wdel();" />
+    <input type="button" class="button" value="批准" onclick="waitPass('pass',this);" />
+    <input type="button" class="button" value="拒绝" onclick="waitPass('refuse',this);" />
+</div>
+<php>
+    function get_limit_status($status)
+    {
+        $status = intval($status);
+        $statusdesc = array(
+            0 => '待审核',
+            1 => '审核通过',
+            2 => '拒绝',
+        );
+        return $statusdesc[$status];
+    }
+
+    function get_limit_type($type){
+        $type = intval($type);
+        $typedesc = array(
+            0 => '变现通',
+            1 => '贷后管理',
+            2 => '法律合规',
+            3 => '其他',
+            );
+       return $typedesc[$type];
+    }
+
+
+
+    //读取用户姓名
+    function get_user_money($user_id){
+        $money =  M("User")->where("id='".$user_id."'")->getField("money");
+        if($money){
+            return format_price($money);
+        }else{
+            return '';
+        }
+    }
+
+    function show_withdraw_time($status, $time)
+    {
+        if(($status == 1 || $status == 2) && $time) {
+            return '<br>'.to_date($time);
+        } else {
+            return '';
+        }
+    }
+
+    function get_opt($id, $status, $adm_id, $cur_adm_id)
+    {
+        if($status == 0 and $adm_id != $cur_adm_id)
+            return "<a class='ts-input' type='button' href='m.php?m=WithdrawLimit&a=doAudit&id=$id&status=1' >批准</a><a class='ts-input' type='button' href='m.php?m=WithdrawLimit&a=doAudit&id=$id&status=2'>拒绝</a>";
+        else if ($status == 1 and $adm_id != $cur_adm_id)
+            return "<a class='ts-input' type='button' href='m.php?m=WithdrawLimit&a=doAudit&id=$id&status=2'>拒绝</a>";
+        else if ($status == 2 )
+            return "<a class='ts-input' type='button' href='m.php?m=WithdrawLimit&a=doAudit&id=$id&status=0'>加入待审核列表</a>";
+        else
+            return '';
+    }
+
+</php>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        用户编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+        按提现处理时间：<input type="text" class="textbox" id="withdraw_time_start"  name="withdraw_time_start" value="{:trim($_REQUEST['withdraw_time_start'])}" style="width:150px;" onfocus="return showCalendar('withdraw_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('withdraw_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+至
+                  <input type="text" class="textbox" name="withdraw_time_end" id="withdraw_time_end" value="{:trim($_REQUEST['withdraw_time_end'])}" style="width:150px;" onfocus="return showCalendar('withdraw_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('withdraw_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        {%USER_NAME}：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" style="width:100px;" />
+        状态：<select id="status" name="status">
+            <option value="">{%ALL}</option>
+            <option value="0" <if condition="$_REQUEST['status']!='' && intval($_REQUEST['status']) eq 0">selected="selected"</if>>{%CARRY_STATUS_0}</option>
+            <option value="1" <if condition="intval($_REQUEST['status']) eq 1">selected="selected"</if>>{%CARRY_STATUS_1}</option>
+            <option value="2" <if condition="intval($_REQUEST['status']) eq 2">selected="selected"</if>>{%CARRY_STATUS_2}</option>
+            <option value="3" <if condition="intval($_REQUEST['status']) eq 3">selected="selected"</if>>{%CARRY_STATUS_3}</option>
+            <option value="4" <if condition="intval($_REQUEST['status']) eq 4">selected="selected"</if>>{%CARRY_STATUS_4}</option>
+        </select>
+
+        <input type="hidden" value="WithdrawLimit" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+<tr><td colspan="20" class="topTd" >&nbsp; </td></tr>
+    <tr class="row" >
+        <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+        <th width="50px"><a href="javascript:sortBy('id','<?php echo ($sort); ?>','UserCarry','index')" title="按照<?php echo L("ID");?>
+        <?php echo ($sortType); ?> "><?php echo L("ID");?><?php if(($order)  ==  "id"): ?>
+        <img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a>
+        </th>
+        <th><a href="javascript:sortBy('user_id','<?php echo ($sort); ?>','UserCarry','index')" title="按照用户ID<?php echo ($sortType); ?> ">用户ID<?php if(($order)  ==  "user_id"): ?>
+        <img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle"><?php endif; ?></a>
+        </th>
+
+        <th><a href="javascript:sortBy('user_id','<?php echo ($sort); ?>','UserCarry','index')" title="按照<?php echo L("USER_NAME");?>
+        <?php echo ($sortType); ?> "><?php echo L("USER_NAME");?><?php if(($order)  ==  "user_id"): ?>
+        <img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle"><?php endif; ?></a>
+        </th>
+        <th>会员余额</th>
+        <th><a href="javascript:sortBy('money','<?php echo ($sort); ?>','UserCarry','index')" title="按照提现金额<?php echo ($sortType); ?> ">限制提现资金
+        <?php if(($order)  ==  "money"): ?><img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a>
+        </th>
+        <th><a href="javascript:sortBy('create_time','<?php echo ($sort); ?>','UserCarry','index')" title="按照申请时间<?php echo ($sortType); ?> ">申请时间
+        <?php if(($order)  ==  "create_time"): ?><img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a>
+        </th>
+        <th><a href="javascript:sortBy('status','<?php echo ($sort); ?>','UserCarry','index')" title="按照状态<?php echo ($sortType); ?> ">状态
+        <?php if(($order)  ==  "status"): ?><img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a></th>
+        <th><a href="javascript:sortBy('status','<?php echo ($sort); ?>','UserCarry','index')" title="按照状态<?php echo ($sortType); ?> ">类型
+        <?php if(($order)  ==  "status"): ?><img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a></th>
+        <th><a href="javascript:sortBy('desc','<?php echo ($sort); ?>','UserCarry','index')" title="按照备注<?php echo ($sortType); ?> ">备注
+        <?php if(($order)  ==  "desc"): ?><img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a>
+        </th>
+        <th style="width:">操作</th>
+    </tr>
+<?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$limit): ++$i;$mod = ($i % 2 )?>
+<tr class="row" >
+    <td><input type="checkbox" name="key" class="key" value="<?php echo ($limit["id"]); ?>">
+        </td>
+    <td>&nbsp;<?php echo ($limit["id"]); ?></td><td>&nbsp;<?php echo ($limit["user_id"]); ?></td>
+    <td>&nbsp;<?php echo (get_user_name($limit["user_id"])); ?></td>
+    <td>&nbsp;<?php echo get_user_money($limit["user_id"]); ?></td>
+    <td>&nbsp;<?php echo (format_price($limit["amount"])); ?></td>
+    <td>&nbsp;<?php echo (date('Y-m-d H:i:s', $limit["create_time"])); ?></td>
+    <td>&nbsp;<?php echo (get_limit_status($limit["state"],$limit['id'])); ?></td>
+    <td>&nbsp;<?php echo (get_limit_type($limit["type"],$limit['id'])); ?></td>
+    <td>&nbsp;<?php echo ($limit["memo"]); ?></td>
+    <td>&nbsp;<?php echo (get_opt($limit["id"],$limit['state'], $limit['adm_id'], $cur_adm_id)); ?>&nbsp;</td>
+</tr>
+    <?php endforeach; endif; else: echo "" ;endif; ?>
+<tr>
+    <td colspan="20" class="bottomTd">&nbsp; </td>
+</tr>
+</table>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+    function get_query_string() {
+        var id_str = arguments[0] || 'id';
+        querystring = '';
+        querystring += "&"+id_str+"="+$("input[name='id']").val();
+        querystring += "&withdraw_time_start="+$("input[name='withdraw_time_start']").val();
+        querystring += "&withdraw_time_end="+$("input[name='withdraw_time_end']").val();
+        querystring += "&user_name="+$("input[name='user_name']").val();
+        querystring += "&status="+$("#status").val();
+        querystring += "&type="+$("#type").val();
+        querystring += "&withdraw_status="+$("#withdraw_status").val();
+        querystring += "&roll="+$("#applyer").val();
+
+
+        return querystring;
+    }
+
+
+</script>
+<include file="Public:footer" />

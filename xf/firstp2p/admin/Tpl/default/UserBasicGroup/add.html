@@ -1,0 +1,59 @@
+
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+	<div class="main_title">新增 <a href="{:u("UserBasicGroup/index")}" class="back_list">{%BACK_LIST}</a></div>
+	<div class="blank5"></div>
+	<form method='post' id="form" name="form" action="__APP__">
+		<table cellpadding="4" cellspacing="0" border="0" class="form">
+			<tr>
+				<td colspan="2" class="topTd"></td>
+			</tr>
+			<tr>
+				<td class="item_title">政策组名称</td>
+				<td class="item_input">
+					<input type="text" class="textbox require" name="name" value="{$vo.name}"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="item_title">活动持续时间</td>
+				<td class="item_input">
+					<input type="text" class="textbox" name="rebate_effect_days"  value="{$vo.rebate_effect_days}"/>
+					<label class="control-label text-muted">填0或不填为不限量</label>
+				</td>
+			</tr>
+			<!--<tr>
+				<td class="item_title">返点比例</td>
+				<td class="item_input">
+					<input type="text" class="textbox" name="refer_rebate_ratio"  value="{$vo.refer_rebate_ratio}"/>
+				</td>
+			</tr>-->
+			<tr>
+				<td class="item_title">备注</td>
+				<td class="item_input">
+					<input type="text" class="textbox" name="remark" value="{$vo.remark}" />
+				</td>
+			</tr>
+			<tr>
+				<td class="item_title"></td>
+				<td class="item_input">
+					<input type="hidden" name="{:conf("VAR_MODULE")}" value="UserBasicGroup" />
+					<input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+					<input type="submit" class="button" value="保存" />
+					<input type="reset" class="button" value="{%RESET}" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="bottomTd"></td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<include file="Public:footer" />

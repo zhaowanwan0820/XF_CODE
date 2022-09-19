@@ -1,0 +1,52 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__searchselect/jquery.searchableselect.js' />
+<load href='__TMPL__searchselect/searchableselect.css' />
+<style>
+     .alarm { padding-top:100px; text-align:center; color:#F00; font-size:14px;}
+     .right{text-align:right;}
+     .left {text-align:left;}
+     .center{text-align:center;}
+</style>
+
+<php>
+</php>
+<div class="main center">
+    <if condition="$errorMsg neq ''">
+        <p class="alarm">{$errorMsg}</p>
+    <else />
+    <form name="userForm" action="__APP__" method="get">
+        <table class="center" width="100%">
+        <tr><td class="right">会员编号</td><td class="left"><input type="text" class="textbox" style="width:200px;" name="userId" value="{$userInfo['userId']}" readonly="true" /></td></tr>
+        <tr><td class="right">会员名称</td><td class="left"><input type="text" class="textbox" style="width:200px;"  name="username" value="{$userInfo['username']}" readonly="true"/></td></tr>
+        <tr><td class="right">机构名称</td><td class="left"><input type="text" class="textbox" style="width:200px;"  name="realname" value="{$userInfo['realname']}" readonly="true"/></td></tr>
+        <tr><td class="right">代理人手机号</td><td class="left"><input type="text" style="width:200px;"  class="textbox" name="agencyMobile" value="" /></td></tr>
+        <tr><td class="right">法人姓名</td><td class="left"><input type="text" class="textbox" style="width:200px;"  name="corporation" value="" /></td></tr>
+        <tr><td class="right">法人证件号</td><td class="left"><input type="text" class="textbox" style="width:200px;"  name="corporationCard" value="" /></td></tr>
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="doEditAgencyUserInfo" name="a" />
+        <!-- <input type="button" class="button" value="{%EXPORT}" onclick="export_csv();" /> -->
+        <tr><td colspan="2" style="text-align:center;"><input type="button" class="button" value="修改" id="submitBtn" /></td></tr>
+    </form>
+    </if>
+<div class="blank5"></div>
+<script>
+
+    $('#submitBtn').click(function(){
+        var data = $('form[name=userForm]').serialize();
+        $.post('/m.php?m=User&a=doEditAgencyUserInfo', data, function(resp){
+            if (resp.errCode != 0)
+            {
+                alert(resp.errMsg);
+            } else {
+                alert('修改成功');
+                $.weeboxs.closeall();
+            }
+            console.log(resp);
+        }, 'json');
+    })
+</script>

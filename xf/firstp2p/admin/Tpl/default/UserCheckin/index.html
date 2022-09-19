@@ -1,0 +1,102 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript">
+    var IMAGE_SIZE_LIMIT = '0.5';
+</script>
+    <div class="main">
+    <div class="main_title">签到配置</div>
+    <div class="blank5"></div>
+    <form id="formData" name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">每轮总天数:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="roundDay" value="{$roundDay}"/></td>
+            </tr>
+            <tr>
+                <td class="item_title">每轮总次数:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="roundCount" value="{$roundCount}"/></td>
+            </tr>
+
+            <tr>
+                <td class="item_title">签到SLOGON:</td>
+                <td class="item_input">
+                    <html:imgUpload name="bgImg" id="img_gray" value="$bgImg" />
+                    <span class="tip_span">图片不超过500K</span>
+                </td>
+             </tr>
+
+             <tr>
+                <td class="item_title">节点配置</td>
+                <td class="item_input">
+                    <div class="blank5"></div>
+                    <table style="width:95%" id="dataMain">
+                        <tr>
+                            <th width="15%">签到次数</th>
+                            <th width="35%">奖励券ID</th>
+                            <th width="20%">奖品名称</th>
+                            <th width="20%">奖励说明</th>
+                            <th width="10%">操作</th>
+                        </tr>
+                        <foreach name="roundData" key="node" item="nodeData">
+                        <tr class="data-list">
+                            <td><label><input type="text" class="textbox require" name="times[]" value="{$node}" style="width:50px;"/> 次</label></td>
+                            <td>
+                                <select name="awardType[]">
+                                    <option value="3" <if condition="$nodeData.awardType eq 3"> selected="selected" </if> >规则ID</option>
+                                    <option value="1" <if condition="$nodeData.awardType eq 1"> selected="selected" </if> >投资券</option>
+                                    <option value="2" <if condition="$nodeData.awardType eq 2"> selected="selected" </if> >礼券</option>
+                                </select>
+                                <input type="text" class="textbox require" name="awards[]" value="{$nodeData.awards}"/></td>
+
+                            <td><input type="text" class="textbox require" name="prize[]" value="{$nodeData.prize}"/>
+                            <td><input type="text" class="textbox" name="remark[]" value="{$nodeData.remark}"/>
+                            </td>
+                            <td><a href="#" class="data-del">删除</a></td>
+                        </tr>
+                        </foreach>
+                    </table>
+                    <span style="font-size:14px; padding:10px;"><a href="#" class="data-add">+添加</a></span>
+                    <div class="blank5"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%IS_EFFECT}:</td>
+                <td class="item_input">
+                    <lable><input type="radio" name="is_effect" value="1" <if condition="$isEffect eq 1">checked="checked"</if> />启用</lable>
+                    <lable><input type="radio" name="is_effect" value="0" <if condition="$isEffect eq 0">checked="checked"</if> />关闭</lable>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserCheckin" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="save" />
+                    <!--隐藏元素-->
+                    <input id="submitBut" type="submit" class="button" value="{%SAVE}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+    $(function(){
+        $(".data-del").bind("click", function(){
+            $(this).parent().parent().remove();
+        });
+        $(".data-add").bind("click", function(){
+            html = $(".data-list").last().clone(true);
+            html.find("input,select").attr("value", "");
+            html.appendTo("#dataMain");
+        });
+    })
+</script>
+<include file="Public:footer" />

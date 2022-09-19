@@ -1,0 +1,66 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<php>
+    function get_deal_edit($id,$deal)
+    {
+        return "<a href='".u("Deal/edit",array("id"=>$id))."'>审核</a>";
+    }
+
+</php>
+<div class="main">
+<div class="main_title">通知贷未审核贷款</div>
+<div class="blank5"></div>
+<!-- <form name="edit" action="__APP__" method="post" enctype="multipart/form-data"> -->
+<div class="button_row">
+    <!-- <input type="button" class="button" value="{%ADD}" onclick="add();" /> -->
+    <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="hidden" name="{:conf("VAR_MODULE")}" value="Deal" />
+    <input type="hidden" name="{:conf("VAR_ACTION")}" value="douploadcsv" />
+    <input type='file' name='upfile' style='width:150px'> <input type='submit' name='submit' value='批量导入借款申请' class="button"> 
+    <input type='button' value='下载模板文件' class="button" onclick='window.location.href="/static/admin/Common/images/upload.xlsx"'>
+    <span style="color:red;">编辑好.xlsx文件之后，先另存为.csv格式，再进行上传</span> -->
+</div>
+<!-- </form> -->
+
+<div class="search_row">
+    <form name="search" action="__APP__" method="get" id="ThreeGetForm">    
+        项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        <input type="hidden" value="Deal" name="m" />
+        <input type="hidden" value="compound_publish" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<!--
+        ,user_id|get_user_name:借款人用户名
+        ,user_id|get_user_name='real_name':借款人姓名
+        ,user_id:借款人id 
+-->
+<html:list 
+    id="dataTable" 
+    style="dataTable" 
+    name="deal" 
+    checkbox="true" 
+    action="true" 
+    datasource="list" 
+    show="id:{%ID}|50px
+        ,name|msubstr:借款标题
+        ,id|getOldDealNameWithPrefix:旧版借款标题
+        ,repay_time:借款期限
+        ,lock_period:锁定期
+        ,redemption_period:赎回期
+        ,rate_day:日利率
+        ,rate:年化利率
+        ,user_id|getUserTypeName:用户类型
+        ,list_name:借款人ID/用户名/姓名
+        ,create_time|to_date:发布时间
+        ,id|get_deal_edit=$deal:审核" 
+    actionlist="foreverdel:{%FOREVERDEL}" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

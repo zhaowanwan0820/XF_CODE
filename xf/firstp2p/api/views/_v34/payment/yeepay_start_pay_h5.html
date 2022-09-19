@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script>
+window['_AJAXSIGN_'] = '{$asgn}';
+</script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3.3/css/p-yibao.css');?>">
+<title>易宝支付</title>
+</head>
+<body>
+    <div class="ui_title"><a class="ui_back" href="javascript:void(0)" onclick="window.history.back();"><i class="ui_icon_back"></i>返回</a>易宝支付</div>
+    <div class="p_test_succeed">
+        <div class="middle_main">
+            <div class="middle">
+                <div class="middle_top">
+                    <span class="middle_top_text">充值金额</span>
+                    <span class="middle_top_num">&yen;{$amount}</span>
+                </div>
+                <ul class="middle_bottom">
+                    <li>{$bankName}</li>
+                    <li>{$bankCard}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="test_suc_but">
+            <input id="JS-pay_btn" type="button" value="确认充值">
+        </div>
+    </div>
+    <div class="ui_yibao_text_tips">
+        <p>本服务由易宝支付提供</p>    
+    </div>
+    <!-- 点击确认充值时显示加载中遮罩层 -->
+    <div class="loan_record_popup" style="display:none;">
+        <div class="loading">
+          <div class="loading_img"><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/loading.jpg');?>" width="38px" height="38px"/></div>
+          <div class="oninloading">加载中</div>
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/common.js');?>"></script>
+    <script>
+    var payButtonClickTime = 0;
+    var checkInterval = 1000;
+    var skipUrlPath = '';
+    var jumpTimer = null;
+    $(function(){
+        $('#JS-pay_btn').bind("click", function(){
+            var $this = $(this);
+            $this.attr('disabled', 'disabled');
+            $(".loan_record_popup").css("display","block")
+            P2PWAP.util.request('/payment/yeepayRequestPayAjax', function(obj) {
+                skipUrlPath = obj.url;
+                // 5s后，跳转处理中页面，不管接口返回的是啥
+                jumpTimer = setTimeout(function(){
+                    window.location.href = skipUrlPath;
+                },5000)
+                // 轮询接口，查询支付状态
+                payButtonClickTime = (new Date()).getTime();
+                autoCheckStatus();
+            }, function(msg, errorCode) {
+                clearTimeout(jumpTimer);
+                $(".loan_record_popup").css("display","none");
+                $this.removeAttr('disabled');
+                P2PWAP.ui.showErrorTip(msg);
+                if (errorCode == P2PWAP.Const.ErrorCode.UNLOGIN) {
+                    setTimeout(function() {
+                        P2PWAP.app.triggerScheme("{$returnLoginUrl}");
+                    }, 3000);
+                }
+            }, 'post', {
+                'userClientKey':'{$userClientKey}',
+                'appVersion':'{$appVersion}'
+            });
+        });
+    });
+    function autoCheckStatus() {
+        var cost = (new Date()).getTime() - payButtonClickTime;
+        if (cost > 600000) {
+            return;
+        }
+        // if (cost < 10000) {
+        //     setTimeout('autoCheckStatus()', checkInterval);
+        //     return;
+        // }
+        P2PWAP.util.request('/payment/yeepayResultQuery', function(res) {
+            if (res.status == 0) {//0为处理中，处理中时继续轮询
+                setTimeout('autoCheckStatus()', checkInterval);
+                return;
+            }
+            if(res.status == 1){//支付成功
+                $(".loan_record_popup").css("display","none");
+                window.location.href = skipUrlPath + '&paySuccess=1';
+            }else if(res.status == 2){//支付失败，toast错误信息
+                clearTimeout(jumpTimer);
+                $(".loan_record_popup").css("display","none");
+                P2PWAP.ui.showErrorTip(res.msg);
+                $('#JS-pay_btn').removeAttr('disabled');
+            }
+        }, function(msg, errorCode) {
+            clearTimeout(jumpTimer);
+            $('#JS-pay_btn').removeAttr('disabled');
+            $(".loan_record_popup").css("display","none");
+            P2PWAP.ui.showErrorTip(msg);
+            if (errorCode == P2PWAP.Const.ErrorCode.UNLOGIN) {
+                setTimeout(function() {
+                    P2PWAP.app.triggerScheme("{$returnLoginUrl}");
+                }, 3000);
+            }
+        }, 'post', {
+            'userClientKey':'{$userClientKey}',
+            'appVersion':'{$appVersion}'
+        });
+    }
+    </script>
+</body>
+</html>

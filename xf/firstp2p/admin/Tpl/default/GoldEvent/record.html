@@ -1,0 +1,143 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+function del(id) {
+    if(!id) {
+        idBox = $(".key:checked");
+        if(idBox.length == 0) {
+            alert(LANG['DELETE_EMPTY_WARNING']);
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+    }
+
+    if (!window.confirm("确认删除该记录吗？")) {
+        return;
+    }
+
+    $.ajax({
+        url: ROOT+"?m=GoldEvent&a=deleteRecord&id="+id,
+        data: "ajax=1",
+        dataType: "json",
+        success: function(obj){
+            $("#info").html(obj.info);
+            alert(obj.info);
+            if(obj.status==1) {
+                location.href=ROOT+"?m=GoldEvent&a=record";
+            }
+        }
+    });
+}
+</script>
+
+<div class="main">
+    <div class="main_title">列表</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <form method="post" enctype="multipart/form-data" action="__APP__">
+        <input type="file" name="upfile" >
+        <input name="a" value="importRecord" type="hidden">
+        <input name="m" value="GoldEvent" type="hidden">
+        <input class="button" value="导入" type="submit">
+        <input type="button" class="button" value="{%DEL}" onclick="del();" />
+        <span style="color:red;">注：导入文件中 1 鑫里有底儿活动赠金,2 豪底气活动赠金</span>
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" id="search_form" action="__APP__" method="get">
+            用户ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+            活动来源
+            <select name="event_id">
+                <option value="" <if condition="trim($_REQUEST['event_id']) eq ''">selected="selected"</if>>==请选择==</option>
+                <option value="1" <if condition="intval($_REQUEST['event_id']) eq 1">selected="selected"</if>>鑫里有底儿活动赠金</option>
+                <option value="2" <if condition="intval($_REQUEST['event_id']) eq 2">selected="selected"</if>>豪底气活动赠金</option>
+            </select>
+                        备注：<input type="text" class="textbox" name="remark" value="{:trim($_REQUEST['remark'])}" style="width:100px;" />
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input name="a" value="record" type="hidden">
+            <input type="hidden" value="GoldEvent" name="m" />
+            <input type="submit" class="button" value="筛选" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="19" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="50px">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">全选
+            </th>
+            <th width="100px">编号</th>
+            <th>用户ID</th>
+            <th>赠金克重</th>
+            <th>活动来源</th>
+            <th>备注</th>
+            <th>操作人</th>
+            <th>创建日期</th>
+            <th>执行时间</th>
+            <th>状态</th>
+            <th style="width:250px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="record">
+            <tr class="row">
+                <td>
+                    <input type="checkbox" name="key" class="key" value="{$record.id}" >
+                </td>
+                <td>
+                    &nbsp;{$record.id}
+                </td>
+                <td>
+                    &nbsp;{$record.user_id}
+                </td>
+                <td>
+                    &nbsp;{$record.gold}克
+                </td>
+                <td>
+                    &nbsp;{$record.event_id}
+                </td>
+                <td>
+                    &nbsp;{$record.remark}
+                </td>
+                <td>
+                    &nbsp;{$record.admin_id}
+                </td>
+                <td>
+                    &nbsp;{$record.create_time}
+                </td>
+                <td>
+                    &nbsp;{$record.finish_time}
+                </td>
+                <td>
+                    &nbsp;&nbsp;{$record.status_txt}
+                </td>
+                <td>
+                    <if condition="$record.status eq 0 || $record.status eq -1">
+                    <a href="javascript:del({$record.id})">删除</a>
+                    &nbsp;
+                    <else/>
+                    --
+                    </if>
+                </td>
+            </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />
+

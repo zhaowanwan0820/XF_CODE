@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>更换银行卡</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-base_v32.css');?>" rel="stylesheet" />
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-common_v32.css');?>" rel="stylesheet"/>
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.100/css/payment/p_change_bankcard.css');?>" rel="stylesheet"/>
+</head>
+
+<body>
+    {include file="api/views/_v492/common/zhugemaidian.html"}
+    <input value="{$freeze}" class="isFreeze" type="hidden"/>
+    {if $error}
+    <div class="p_changecard_error">
+      <div class="inreview_img_error"></div>
+      <div class="inreview_instr">换卡失败</div>
+      <div class="error_text">{$error}</div>
+      <div class="plr15">
+          <div class="ui_btn_red_h40"><a href="firstp2p://api?type=closeall">完成</a></div>
+      </div>
+      <div class="inreview_foot f12">如有疑问请联系客服 <a href="tel:95782"><span>95782</span></a></div>
+    </div>
+    {else}
+    <div class="p_change_bankcard">
+      <div class="type_text">请选择一个身份验证方式：</div>
+      <div class="verify_type">
+        <ul>
+          <a class="face_verify" href="javascript:void(0);">
+            <li>
+              <img src="<?php echo $this->asset->makeAppUrl('v4.100/images/payment/face_img.png');?>"/>
+              <p class="title">人脸识别验证（推荐）</p>
+              <p>人脸识别认证</p>
+              <i></i>
+            </li>
+          </a>
+          <a class="person_verify" href="/payment/Editbank?token={$token}&data={$data}">
+            <li>
+              <img src="<?php echo $this->asset->makeAppUrl('v4.100/images/payment/card_img.png');?>"/>
+              <p class="title">人工审核</p>
+              <p>上传本人手持身份证和银行卡照片</p>
+              <p>( 3个工作日内审核 )</p>
+              <i></i>
+            </li>
+          </a>
+        </ul>
+      </div>
+    </div>
+    {/if}
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+    <script>
+      window.onload = function(){
+        setTimeout(function(){
+          zhuge.track('更换银行卡_进入选择验证方式页');
+        },1000)
+        $(".face_verify").click(function(){
+          zhuge.track('更换银行卡_点击选择验证方式',{
+            '验证方式':'人脸'
+          })
+          if($(".isFreeze").val()){//用户被冻结
+            P2PWAP.ui.toast($(".isFreeze").val());
+          }else{
+            location.href = "firstp2p://api?type=faceauthen&scene=100&callback=getVerifyResult";
+          }
+        })
+        $(".person_verify").click(function(){
+          zhuge.track('更换银行卡_点击选择验证方式',{
+            '验证方式':'人工'
+          })
+        })
+      }
+
+      function getVerifyResult(data, verifyToken){
+        // 1为人脸识别成功,跳成功页
+        if (data == 1){
+          $("body").append('<a class="JS_changebank_success" href="/payment/audit_ing?token={$token}&data={$data}&verify=' + verifyToken + '"></a>');
+          $("body .JS_changebank_success").click();
+          zhuge.track('更换银行卡_人脸换卡识别成功');
+        }
+      }
+    </script>
+</body>
+
+</html>

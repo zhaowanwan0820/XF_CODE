@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{$deal.title}</title>
+    {include file="api/views/_v32/header.html"}
+    <meta name="format-detection" content="telephone=no" />
+    <?php echo $this->asset->renderAppCssV2("deal_confirm_v46_css"); ?>
+    <script>
+        window["_BIDTYPE_"] = "{$deal.loantype}";
+        window["_P2P_APPVERSION_"] = "{$appversion}";
+        window['_userid_'] = "{$userId}";
+        window['_needForceAssess_'] = "{$needForceAssess}";
+        window['_isFreePayment_'] = "{$svInfo.isFreePayment}";
+        window['_report_status_'] = "{$deal.report_status}"
+        window['_is_check_risk_'] = "{$deal.project_risk.is_check_risk}";
+        window['deal_type'] = "{$deal.deal_type}";
+        window['siteId'] = "{$siteId}";
+        window['version'] = "470";
+        window['allowBid'] = "{$allowBid}";
+        window['isBankcard'] = "{$isBankcard}";
+        window['source_type'] = "{$source_type}"
+        window['JS_timelimit'] = "{$deal.timelimit}"
+    </script>
+<!--普惠增加单独样式判断-->
+{if $siteId eq 100}
+<style type="text/css">
+    .p_affirm .new_guide_box {display: none;}
+</style>
+{/if}
+</head>
+<body>
+    {include file="api/views/_v492/common/zhugemaidian.html"}
+    <div class="p2p_main m-main p_affirm">
+    <!-- mask -->
+        <div class="mask JS_dealDetail">
+            <div class="mask_cont">
+                <div class="cont_tit">{if $deal.deal_type == 0}{$deal.p2pAccountConfig.name}{else}{$deal.wxAccountConfig.name}{/if}现金余额不足</div>
+                <div class="cont_cont">充值<span class="recharge JS_recharge"></span>元后可进行投资</div>
+                <a  {if $deal.deal_type == 0}href="firstp2p://api?type=recharge&channel=cg"{else}href="firstp2p://api?type=recharge&channel=main"{/if} class="mask_btn">充值</a>
+                <div class="mask_txt">您也可以将{if $deal.deal_type == 0}{$deal.wxAccountConfig.name}{else}{$deal.p2pAccountConfig.name}{/if}现金余额<span class="withdraw JS_withdraw"><a {if $deal.deal_type == 0}href="firstp2p://api?type=withdraw&channel=main"{else}href="firstp2p://api?type=withdraw&channel=cg"{/if}>提现</a></span>至银行卡，提现到账后再充值到{if $deal.deal_type == 0}{$deal.p2pAccountConfig.name}{else}{$deal.wxAccountConfig.name}{/if}</div>
+                <div class="mask_back JS_maskBack"><img src="<?php echo $this->asset->makeAppUrl('v4.83/images/btn_back.png');?>" /></div>
+            </div>
+        </div>
+        <div class="pa_top conf_top">
+          <img class="top_bg_img" src="<?php echo $this->asset->makeAppUrl('v4.0/images/reservation/reserve_detail_header_bg1.png');?>"/>
+          {if $deal.loantype neq 7}
+            <div class="top_content">
+              <div class="pre_rate">
+                <span class="fs13">{if $deal.deal_type == 0}年化借款利率{else}预期年化{/if}</span></br>
+                <span class="fs24 pt4 din_alternate">{$deal.income_base_rate}<i class="fs14"> %</i>{if $deal.deal_type == 1}起{/if}</span>
+              </div>
+              <div class="pre_limit_day">
+                <span class="fs13">期限</span></br>
+                <span class="fs24 pt4"><i class="JS_num din_alternate"></i><i class="fs13 JS_unit"></i></span>
+              </div>
+            </div>
+            <div class="can_choose fs13">
+              <span class="pr15">{if $deal.deal_type == 0}可出借金额{else}可投金额{/if}{$deal.avaliable}元{if $deal.is_entrust_zx} / {$deal.expected_repay_start_time}{/if}</span>
+              <span>{$deal.repayment}</span>
+            </div>
+          {else}
+            <p class="pt10">可捐赠金额 {$deal.avaliable}元{if $deal.is_entrust_zx} / {$deal.expected_repay_start_time}{/if}</p>
+          {/if}
+          <img class="bottom_bg_img" src="<?php echo $this->asset->makeAppUrl('v4.0/images/reservation/reserve_detail_header_bg2.png');?>"/>
+        </div>
+        <div class="disnone">
+            <em class="perpent">{$deal.period_rate}</em>
+            <!--项目ID-->
+            <i class="investmentID">{$deal.productID}</i>
+            <!--可投金额-->
+            <em class="ketou_money">{if $siteId eq 100}{$cnMoneyTtl}{else}{$userMoneyTtl}{/if}</em>
+            <em class="deal_money">{$deal.dealMoneyLeft}</em>
+            <!--<em class="val_code">{if $deal.couponIsFixed != 1 && $codeInfo}{$codeInfo.short_alias}{else}{$deal.couponStr}{/if}</em>-->
+            <!-- <em class="val_code">{if $data.forceCodeEmpty != 1 && $deal.couponIsFixed != 1 && $codeInfo}{$codeInfo.short_alias}{elseif $data.forceCodeEmpty != 1}{$deal.couponStr}{/if}</em> -->
+            <em class="val_code">{if $deal.couponIsFixed}{$deal.couponStr}{else}{$data.code}{/if}</em>
+            <em class="val_money">{$data.money}</em>
+            <em class="val_mini">{$deal.mini}</em>
+            <em class="is_fixed">{$deal.couponIsFixed}</em>
+            <!--多少起投-->
+            <em class="pl_tip">{$deal.mini}起投</em>
+            <em class="istongzhi">{$deal.deal_type}</em>
+            <em class="token">{$usertoken}</em>
+            <em class="val_discount_id">{$discount_id}</em>
+            <em class="val_discount_group_id">{$discount_group_id}</em>
+            <em class="val_discount_sign">{$discount_sign}</em>
+            <em class="val_discount_goodprice"></em>
+            <em class="val_discount_bidAmount">{$discount_bidAmount}</em>
+            <em class="val_discount_type">{$discount_type}</em>
+            <em class="backurl">{$backurl}</em>
+            <em class="deal_bonus">{$deal.bonus}</em>
+            <input type="hidden" value="{$o2oDiscountSwitch}" id="o2oDiscountSwitch">
+            <input type="hidden" value="{$deal.bonus}" id="JS_bonus">
+            <input type="hidden" value="{$deal.deal_type}" id="deal_type">
+            <input type="hidden" value="{$svInfo.svBalance}" id="p2pMoney">
+            <input type="hidden" value="{$wxMoney}" id="specialMoney">
+
+        </div>
+        <div class="pa_center clearfix">
+            <div class="tit fw">输入金额</div>
+            <div class="input_deal">
+              <div class="p2p_ipt clearfix">
+                {if $deal.loantype neq 7}
+                <input type="button" value="{if $deal.deal_type == 0}全部出借{else}全投{/if}" id="quantou_all" class="qtou_all">
+                {/if}
+                <div class="show_daxie"></div>
+                <div class="ui_input clearfix"></div>
+              </div>
+            </div>
+            {if $deal.loantype neq 7}
+            <!-- 预期收益 -->
+            <p class="dit_yq color_yellow f11"></p>
+            {/if}
+            <!-- <div class="ditm_right fr">
+                <a class="a_lock to_recharge" href="invest://api?type=recharge">充值</a>
+            </div> -->
+            <div class="ditm_left">
+                <div class="ditm_top">
+                <!-- 当是公益标和通知贷的时候 -->
+                {if $siteId neq 100}
+                    <a class="fs13 color_blue cz_btn JS_charge" {if $deal.deal_type == 0}href="firstp2p://api?type=recharge&channel=cg"{else}href="firstp2p://api?type=recharge&channel=main"{/if}>充值</a>
+                {else}
+                    <a class="fs13 color_blue JS_charge" href="invest://api?type=recharge">充值</a>
+                {/if}
+                <div class="remain_money clearfix">
+              <!--   <div class="remain_money_text fl">可用余额：<span class="JS_remian_money">{if $siteId eq 100}{$cnMoneyTtl}{elseif $svInfo.isSvUser eq 1}{$totalMoney}{else}{$deal.remain}{/if}</span>元 -->
+              <div class="remain_money_text fl">可用余额：<span class="JS_remian_money">{$avaliableBalance}</span>元
+                {if $deal.bonus > 0}
+                    (含{$new_bonus_title}{$deal.bonus}{$new_bonus_unit} {if $deal.loantype neq 7}{/if})
+                {/if}
+                </div>
+                <!-- {if $svInfo.status eq 1 && $siteId neq 100}<i class="point_open fl down_img"></i>{/if} -->
+                </div>
+                {if $svInfo.status eq 1 && $siteId neq 100}
+                <div class="account_money">
+                {if $deal.deal_type == 0}
+                    {if $svInfo.isSvUser neq 0}
+                    <div>-{$deal.p2pAccountConfig.name}现金余额: <span class="val_svBalance">{$svInfo.svBalance}</span>元{if $isServiceDown eq 1}<span class="color_red">(海口联合农商银行系统维护，暂不可用)</span>{/if}</div>
+                    {else}
+                    <div>-尚未开通{$deal.p2pAccountConfig.name}</div>
+                    {/if}
+                    <div>-{$deal.wxAccountConfig.name}现金余额: <span class="val_wxMoney">{$wxMoney}</span>元</br><span class="val_tip">(该账户不适用于该产品)</span></div>
+                {/if}
+                {if $deal.deal_type == 3 || $deal.deal_type == 2}
+                    <div>- {$deal.wxAccountConfig.name}现金余额: <span class="val_wxMoney">{$wxMoney}</span>元</div>
+                    {if $svInfo.isSvUser neq 0}
+                    <div>- {$deal.p2pAccountConfig.name}现金余额: <span class="val_svBalance">{$svInfo.svBalance}</span>元</br><span class="val_tip">&nbsp (该账户不适用于该产品)</span>{if $isServiceDown eq 1}<span class="color_red">(海口联合农商银行系统维护，暂不可用)</span>{/if}</div>
+                    {else}
+                    <div>-尚未开通{$deal.p2pAccountConfig.name}</div>
+                    {/if}
+                {/if}
+                </div>
+                {/if}
+            </div>
+            {if $deal.loantype neq 7}
+                {if $isShowVip}
+                    {if $vipInfo.raiseInterest}
+                        <div class="vip_tips">{$vipInfo.vipGradeName}享受<span class="increase_interest">{$vipInfo.raiseInterest}%加息</span></div>
+                    {/if}
+                {/if}
+            {/if}
+        </div>
+            <div class="dit_list">
+
+                <!-- <p>现金：{$deal.cash}元</p> -->
+            </div>
+        </div>
+        {if $deal.loantype neq 7}
+            {if $o2oDiscountSwitch eq 1}
+                <div class="tit tit_youhui fw">优惠券</div>
+                <div class="JS-youhuiquanpannel dit_footer new_guide_box" style="display:block;">
+                    <div class="ditf_list disn_border">
+                        <div class="JS-touziyindao new_guide_icon" style="display:none;"></div>
+                        <a class='to_youhuiquanList' href="#">
+                            <i class="icon_arrow fr"></i>
+                            <span class="JS-couponnum_label pr10 fr" style="font-size:13px;">更多</span>
+                            <span class="can_use color_normal JS_display JS_red" style="display:none;"><span class="JS_coupon_num color_normal JS_red"></span>张可用</span>
+                            <img src="<?php echo $this->asset->makeAppUrl('v4.75/images/reserve/no_choose.png');?>" class="no_choose JS_display">
+                        </a>
+                    </div>
+                    <input type="hidden" name="isChoose" value="{$discount_id}">
+                    <div class="ditf_list JS-selected_discount" style="display:none;" style="border-top:1px solid #d9d9d9;">
+                        <div class="coupon_detail">
+                            <span class="con">计算中...</span>
+                            <i class="close_btn JS_close"></i>
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
+            {if !$deal.couponIsFixed && $siteId neq 100}
+            <div class="tit tit_youhui fw">邀请码</div>
+            <div class="ditf_list pl15">
+                <a href="#" class='to_coupon'><span class="fr JS_icon_arrow" style="display:none;">修改<i class="icon_arrow fr"></i></span><span class="place JS_place">请输入邀请码（选填）</span><em class="invite_num">{if $data.code}{$data.code}{/if}</em></a>
+            </div>
+            {/if}
+            <div class="plnone">
+                <div class="contract">
+                    {if $deal.project_risk.name}
+                    <div class="title">
+                        {if $deal.deal_type != 0}<span class="list_1 fs13">投资风险提示</span></br>{/if}
+                        <span class="list_1 fs13">{if $deal.deal_type == 0}风险评估结果{else}投资人要求{/if}</span>
+                    </div>
+                    <div class="content">
+                        {if $deal.deal_type != 0}<span class="list_2 fs13">{$deal.project_risk.describe}</span></br>{/if} 
+                        <span class="list_2 fs13">风险承受能力“{$deal.project_risk.name}”及以上</span>                       
+                    </div>
+                    {/if}
+                    <a class='to_contractList' href="#"><span class="color_normal">合同和协议</span><i class="icon_a"></i></a>
+                </div>
+            </div>
+        {/if}
+        <div class="dit_btn">
+            <input type="submit" class="sub_btn" data-showDiscount="0" disabled="disabled" value="{if $deal.loantype eq 7}捐赠{else}同意合同和协议并{if $deal.deal_type == 0}出借{else}投资{/if}{/if}" />
+        </div>
+
+        <!-- 出借人风险提示  -->
+        {if $deal.deal_type == 0}<div class="lender_risk_tips">{$riskWarningReminder}</div>{/if}
+        
+        {if $deal.loantype neq 7}
+            {if $deal.rebateRatio && $deal.couponIsFixed}
+            <div class="dit_fcode_txt">您可获额外年化{$deal.rebateRatio}%的返利，返利的计算及发放时间参见具体项目详情页内的规则描述。</div>
+            {/if}
+        {/if}
+        {if $deal.loantype eq 7}
+        <div class="JS-gongyiconfirm ui_mask" style="display:none"></div>
+        <div id="JS-confirmdonate" class="alert_donate" style="display:none">
+            <div class="gy_icon"></div>
+            <div class="alert_con tc">
+                <h2>确认捐赠吗?</h2>
+                <p>此次为公益捐赠行为，您所捐赠的金</p>
+                <p>额将全部用于支持公益活动开展。</p>
+                <h3><span class="J_no cancel_btn">取消</span><a href="javascript:void(0);" class="J_ok confirm_btn">确认</a></h3>
+            </div>
+        </div>
+        {/if}
+        {if $needForceAssess}
+        <div class="is_eval" style="display:none;"></div>
+        <div id="JS-is-evaluate" class="alert_evaluate" style="display:none;">
+            <img class="evaluate_img" src="<?php echo $this->asset->makeAppUrl('v4.0/images/is_evaluate_pop.png');?>">
+            <p>请您先完成风险承受能力评估</p>
+            <a class="eval_btn" href="">立即参与评估</a>
+            <div class="no_eval">暂不评估</div>
+        </div>
+        {/if}
+        <!-- 点击“确认投资”后，如果个人会员投资人评级低于项目评级，弹窗提示。 -->
+        <div class="ui_conf_risk bid_conf" id="ui_conf_risk" style="display:none;">
+            <div class="opacity"></div>
+            <div class="confirm_donate">
+                <p class="confirm_donate_title">提示</p>
+                <p class="confirm_donate_text">
+                {if $deal.project_risk.user_risk_assessment}
+                当前您的风险承受能力<br/>
+                为“{$deal.project_risk.user_risk_assessment}”，与项目要求不符
+                {/if}
+                <span class="sy_num color_gray f13">本年度剩余评估{$deal.project_risk.remaining_assess_num}次</span>
+                </p>
+                <div class="confirm_donate_but">
+                    {if $deal.project_risk.remaining_assess_num > 0}
+                    <input type="button" class="confirm_donate_but_del" id="JS-cancel" value="暂不评估">
+                    <a class="confirm_donate_but_yes"  id="JS-confirm" href="">重新评估</a>
+                    {else}
+                    <input type="button" class="confirm_donate_but_yes w240" id="JS-know" value="知道了">
+                    {/if}
+                    </div>
+            </div>
+        </div>
+        <!-- 单笔限额 begin -->
+        <div class="ui_confirm bid_conf" id="ui_confirm" style="display:none;">
+        <div class="opacity"></div>
+        <div class="confirm_donate">
+            <p class="confirm_donate_title">提示</p>
+            <p class="confirm_donate_text">
+                <!--当前您的投资风险承受能力<br/>为“XXXX型”，
+                暂不能投资此项目
+                <span class="sy_num color_gray f13">本年度剩余评估2次</span>-->
+            </p>
+            <div class="confirm_donate_but">
+                <a href="javascript:;" class="confirm_donate_but_del">暂不评估</a>
+                <a href="javascript:;" class="confirm_donate_but_yes" >重新评估</a>
+                <a href="javascript:;" class="confirm_donate_but_yes w240">知道了</a>
+            </div>
+        </div>
+        </div>
+        <input id="limitMoney" type="hidden" value='{$limitMoneyData.limitMoney}'/>
+        <input id="levelName" type="hidden" value='{$limitMoneyData.levelName}'/>
+        <input id="remainingAssessNum" type="hidden" value='{$limitMoneyData.remainingAssessNum}'/>
+        <input id="dealType" type="hidden" value='{$deal.deal_type}'/>
+        <!-- 单笔限额 end -->
+
+        <!-- 验密余额划转 -->
+        {if $svInfo.isSvUser eq 1}
+        <div class="JS_is_transfer JS_open_box" style="display:none">
+            <div class="cunguan_bg"></div>
+            <div id="JS_balance_transfer" class="alert_evaluate">
+                <div class="free_title">余额划转</div>
+                <div class="trans_money JS_trans_money">20000元</div>
+                {if $deal.report_status neq 1}
+                <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.5/images/balance_img.png');?>">
+                <div><span class="text_length">网贷P2P账户</span><span>网信账户</span></div>
+                <p class="free_text">网信账户现金余额不足，需从网贷P2P账户转账<span class="trans_m JS_trans_money">20,000</span>至网信账户，转账后网贷P2P账户现金余额为<span class="remain_m">40,000</span>元</p>
+                {else}
+                <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.5/images/balance_img1.png');?>">
+                <div><span class="text_length">网信账户</span><span>网贷P2P账户</span></div>
+                <p class="free_text">网贷P2P账户现金余额不足，需从网信账户转账<span class="trans_m JS_trans_money">20,000</span>至网贷P2P账户，转账后网信账户现金余额为<span class="remain_m">40,000</span>元</p>
+                {/if}
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="javascript:void(0)" class="a_left JS_close_transfer MD_trans_to_super_cancel">取消</a></div>
+                    <div class="left_div"><a href="" class="a_right JS_transfer_btn MD_trans_to_super_ok" style="margin-left:0px;">确定</a></div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <!-- 提示余额划转 -->
+        <div class="JS_is_transfer_tips JS_open_box" style="display:none;">
+            <div class="cunguan_bg"></div>
+            <div id="JS_balance_transfer" class="alert_evaluate">
+                <div class="free_title">余额划转</div>
+                <div class="trans_money JS_trans_money">20000元</div>
+                {if $deal.report_status neq 1}
+                <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.5/images/balance_img.png');?>">
+                {else}
+                <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.5/images/balance_img1.png');?>">
+                {/if}
+                {if $deal.report_status neq 1}
+                <div><span class="text_length">网贷P2P账户</span><span>网信账户</span></div>
+                {else}
+                <div><span class="text_length">网信账户</span><span>网贷P2P账户</span></div>
+                {/if}
+                {if $deal.report_status neq 1}
+                <p class="free_text">网信账户现金余额不足，需从网贷P2P账户转账<span class="trans_m JS_trans_money">20,000</span>至网信账户，转账后网贷P2P账户现金余额为<span class="remain_m">40,000</span>元</p>
+                {else}
+                <p class="free_text">网贷P2P账户现金余额不足，需从网信账户转账<span class="trans_m JS_trans_money">20,000</span>至网贷P2P账户，转账后网信账户现金余额为<span class="remain_m">40,000</span>元</p>
+                {/if}
+                <div class="sc_footer clearfix">
+                    <!-- <div class="left_div"><a href="javascript:void(0)" class="a_left JS_close_transfer">取消</a></div> -->
+                    <!-- <a href="javascript:void(0)" class="a_right JS_transfer_btn" style="margin-left:0px;">确定</a> -->
+                    <input type="button" value="确定" class="a_right JS_transfer_btn JS_select_point" style="margin-left:0px;">
+                    <div class="pt20 color_gray"><span class="tips_icon"><input type="checkbox" class="no_tip_checkbox" value="0"></span>不再提示，下次自动划转</div>
+                </div>
+                <div class="JS_close_transfer_tips close_p2p_btn"></div>
+            </div>
+        </div>
+        <!-- 投资专享标，未开通存管账户，余额划转时显示 -->
+        <div class="JS_is_open_p2p" style="display:none;">
+            <div class="cunguan_bg"></div>
+            <div class="alert_evaluate">
+                <img class="open_p2p" src="<?php echo $this->asset->makeAppUrl('v4.5/images/open_p2p.png');?>">
+                <div class="free_title">升级{$deal.p2pAccountConfig.name}</div>
+                <p class="free_text">根据国家法律法规和相关监管规定,为保障客户资金安全, 需在银行开设专门资金存管账户。</p>
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="javascript:void(0);" class="a_left MD_open_p2p_cancel_btn JS_close_open_p2p">取消</a></div>
+                    <div class="left_div"><a href="javascript:void(0);" class="a_right JS_open_p2p_btn MD_open_p2p_next_btn">继续</a></div>
+                </div>
+            </div>
+        </div>
+        <!-- 开通存管账户 -->
+        {if ($deal.report_status eq 1 && $svInfo.status eq 1 && $svInfo.isSvUser eq 0) || ($deal.report_status eq 1 && $svInfo.status eq 1 && $svInfo.isSvUser eq 1 && $svInfo.isActivated eq 0)}<!-- 未开存管 --><!-- 已开存管未激活 -->
+        <div class="JS_is_open_p2p" style="position: fixed;height: 100%;width: 100%;left: 0px;top: 0px;z-index: 1000;-webkit-transform-origin: 0px 0px 0px;-webkit-transform: translateZ(2px);">
+            <div class="cunguan_bg"></div>
+            <div class="alert_evaluate">
+                <img class="open_p2p" src="<?php echo $this->asset->makeAppUrl('v4.5/images/open_p2p.png');?>">
+                <div class="free_title">{if ($svInfo.isSvUser eq 0 && $isUpgradeAccount eq 1) || ($svInfo.isSvUser eq 1 && $isActivated eq 0)}升级{else}开通{/if}{$deal.p2pAccountConfig.name}</div>
+                <p class="free_text">根据国家法律法规和相关监管规定,为保障客户资金安全, 需在银行开设专门资金存管账户。</p>
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="firstp2p://api?type=local&action=closeself" class="a_left MD_open_p2p_cancel_btn">取消</a></div>
+                    <div class="left_div"><a href="javascript:void(0);" class="a_right JS_open_p2p_btn MD_open_p2p_next_btn">继续</a></div>
+                </div>
+            </div>
+        </div>
+        {/if}
+    </div>
+    <div class="ui_risk_tips"></div>
+    {if $o2oDiscountSwitch eq 1}
+    <div class="JS-touziyindao ui_mask_touziyindao" style="display:none"></div>
+    <div class="JS-touziyindao ui_mask_white" style="display:none"></div>
+    {/if}
+    <div class="investBg disnone"></div>
+    <div class="investList">
+        <h2 class="listTitle">使用一张优惠券吗? <span><a href="javascript:;" id="closeInvest"></a></span></h2>
+        <div class="tab_con tab_con2">
+            <div class="load_box">
+
+            </div>
+            <div class="load_more tb0-more"></div>
+        </div>
+        <p class="investChoose disnone">
+            <a href="javascript:;" class="chooseNo">放弃使用</a>
+            <a href="javascript:;" class="chooseYes">确认使用</a>
+        </p>
+    </div>
+    <script>
+        var zx_p2p = '{$deal.deal_type}';
+    </script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/fastclick.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/virtual.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/formatMoney/formatMoney.v1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.v2.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.83/js/common/deal_investment.js?v=1324567');?>"></script>
+    
+    <script>
+        var discount_id = '{$dealId}',usertoken = '{$usertoken}',siteId = '{$siteId}',discountListNum = 0,remainNum= '{$deal.remainSrc}';
+        {if $svInfo.isSvUser eq 1} var totalMoney ='{$totalMoney}'{else} var totalMoney = '{$deal.remain}' {/if};
+        totalMoney = totalMoney.replace(/,/g,"");
+        var deal_money = $(".deal_money").html();
+        totalMoney = Math.min(totalMoney,deal_money);
+    </script>
+    <script type='text/javascript'>
+        $(function(){
+            zhuge.track('进入尊享投资确认页');
+        })
+    var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"&uf=app","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+    (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","//assets.ncfwx.com/default/js/ncfpb.1.5.min.js?v=201503101911");
+    </script>
+{include file="api/views/_v32/footer.html"}

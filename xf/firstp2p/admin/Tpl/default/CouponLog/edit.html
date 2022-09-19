@@ -1,0 +1,199 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<!--div class="main_title">{%EDIT} <a href="javascript:history.back(-1);" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div-->
+
+<form name="edit" action="__APP__" class="yh-form" method="post" enctype="multipart/form-data">
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+	<!--tr>
+		<td colspan=2 class="topTd"></td>
+	</tr-->
+    <tr>
+        <td class="item_title">ID:</td>
+        <td class="item_input">{$vo.id}</td>
+    </tr>
+    <tr>
+        <td class="item_title">投标ID:</td>
+        <td class="item_input">{$vo.deal_load_id}</td>
+    </tr>
+    <tr>
+        <td class="item_title">订单ID:</td>
+        <td class="item_input">{$vo.deal_id}</td>
+    </tr>
+    <tr>
+        <td class="item_title">投资人:</td>
+        <td class="item_input">
+            {$vo.consume_user_id}&nbsp;&nbsp;&nbsp;{$vo.consume_user_id|get_user_name}&nbsp;&nbsp;&nbsp;{$vo.consume_user_id|get_user_name="real_name"}
+
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资人客户系数:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" id="discount_ratio" name="discount_ratio" value="{$vo.discount_ratio}"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">产品系数:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" id="product_ratio" name="product_ratio" value="{$vo.product_ratio}"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">服务人会员ID:</td>
+        <td class="item_input"><input type="text" class="textbox require check_user_id" id="refer_user_id" name="refer_user_id" value="{$vo.refer_user_id}"/>
+            &nbsp;&nbsp;<span class="check_user_name"></span>&nbsp;&nbsp;<a href="/m.php?m=User&a=index&" target="_blank">会员列表</a>
+            <br><span>{%COUPON_TIPS_LOG_REFER_USER_ID}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">机构会员ID:</td>
+        <td class="item_input"><input type="text" class="textbox require check_user_id" id="agency_user_id" name="agency_user_id" value="{$vo.agency_user_id}"/>
+            &nbsp;&nbsp;<span class="check_user_name"></span>
+            <br><span>{%COUPON_TIPS_LOG_AGENCY_USER_ID}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">服务人邀请码:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="short_alias" id="short_alias" value="{$vo.short_alias}"/>
+            <br><span>{%COUPON_TIPS_LOG_SHORT_ALIAS}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">返利天数</td>
+        <td class="item_input">
+            <if condition="$vo['deal_type'] eq 1">
+                {$vo.deal_repay_days}
+                <else />
+            <input type="text"  class="textbox require" name="rebate_days" value="{$vo.rebate_days}"/>
+                </if>
+            <br />
+                <span class="tip_span" style="color:red;">按月计算的标，返利天数=月数*30(如3个月填90天，一年填360天)。修改后相应的优惠码记录的返点比例金额会按该返利天数重新计算，返点金额不变。</span></td>
+    </tr>
+    <tr>
+        <td class="item_title">投资人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" id="rebate_amount" name="rebate_amount" value="{$vo.rebate_amount}"/>
+            <br><span>{%COUPON_TIPS_LOG_REBATE_AMOUNT}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" id="rebate_ratio" name="rebate_ratio" value="{$vo.rebate_ratio}"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">投资人返点比例金额:</td>
+        <td class="item_input">{$vo.rebate_ratio_amount}</td>
+    </tr>
+    <tr>
+        <td class="item_title">服务人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" id="referer_rebate_amount" name="referer_rebate_amount" value="{$vo.referer_rebate_amount}"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">服务人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" id="referer_rebate_ratio" name="referer_rebate_ratio" value="{$vo.referer_rebate_ratio}"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">服务人返点比例金额:</td>
+        <td class="item_input">{$vo.referer_rebate_ratio_amount}</td>
+    </tr>
+    <tr>
+        <td class="item_title">机构返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" id="agency_rebate_amount" name="agency_rebate_amount" value="{$vo.agency_rebate_amount}"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">机构返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" id="agency_rebate_ratio" name="agency_rebate_ratio" value="{$vo.agency_rebate_ratio}"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">机构返点比例金额:</td>
+        <td class="item_input">{$vo.agency_rebate_ratio_amount}</td>
+    </tr>
+    <tr>
+        <td class="item_title">结算返点比例系数:</td>
+        <td class="item_input">{$vo.referer_rebate_ratio_factor}</td>
+    </tr>
+
+    <input type="hidden" name="id" value="{$vo.id}" />
+    <input type='hidden' name='deal_id' value='{$vo.deal_id}'>
+    <input type='hidden' name='type' value='<php>echo htmlspecialchars($_GET['type']);</php>'>
+	<input type="hidden" name="{:conf("VAR_MODULE")}" value="CouponLog" />
+	<input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+	<tr>
+	<td class="item_title"></td>
+	<td>
+		<input type="submit" class="button" value="{%EDIT}" />
+		<input type="reset" class="button" value="{%RESET}" />
+	</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+</form>
+
+<script>
+
+  jQuery(function(){
+      //优惠码检测
+      var dom = $("#short_alias");
+      $(dom).bind("blur",function(){
+          var title = $(dom).parent().parent().find(".item_title").html();
+          var short_alias = $(this).val();
+          if(short_alias.length>0){
+              $.ajax({
+                  url:ROOT+"?"+VAR_MODULE+"=CouponLog&"+VAR_ACTION+"=check_short_alias&deal_id={$vo.deal_id}&short_alias="+short_alias+'&type='+'<php>echo htmlspecialchars($_GET['type']);</php>',
+                  dataType:"json",
+                  success:function(result){
+                      if(result.status ==1){
+                          $("#refer_user_id").val(result.data.refer_user_id);
+                          $("#agency_user_id").val(result.data.agency_user_id);
+                          <php> if (!empty($_GET['type']) && $_GET['type'] == 'duotou'){</php>
+                              $("#rebate_amount").val('0.00');
+                              $("#rebate_amount").attr("disabled", "disabled");
+                              $("#referer_rebate_amount").val('0.00');
+                              $("#referer_rebate_amount").attr("disabled", "disabled");
+                              $("#agency_rebate_amount").val('0.00');
+                             <php>}else{</php>
+                              $("#rebate_amount").val(result.data.rebate_amount);
+                              $("#referer_rebate_amount").val(result.data.referer_rebate_amount);
+                              $("#agency_rebate_amount").val(result.data.agency_rebate_amount);
+                          <php>}</php>
+
+                          $("#rebate_ratio").val(result.data.rebate_ratio);
+
+                          $("#referer_rebate_ratio").val(result.data.referer_rebate_ratio);
+                          $("#agency_rebate_ratio").val(result.data.agency_rebate_ratio);
+                          $("#refer_user_id").blur();
+                          $("#agency_user_id").blur();
+                      }else{
+                          alert(title+" "+short_alias+" "+result.message);
+                      }
+                  }
+              });
+          } else {
+              alert(title+"必填");
+          }
+      });
+
+  });
+  $(".yh-form").bind("submit", function () {
+      var btn = $('form input[type="submit"]');
+      $(btn).css({ "color": "gray", "background": "#ccc" }).attr("disabled", "disabled");
+
+      if (confirm("确定此操作吗？")) {
+          return true;
+      } else {
+          $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+          return false;
+      }
+  });
+</script>
+
+<include file="Public:footer" />

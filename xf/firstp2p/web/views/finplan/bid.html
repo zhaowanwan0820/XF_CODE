@@ -1,0 +1,368 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/investment_view_web2.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/duotou/p-finplan-bid.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/duotou/investment_view.js');?>"></script>
+<script>
+    var userInfo = {if $user_info}1{else}0{/if};
+</script>
+    <!--面包屑导航开始-->
+    <section>
+    <div class="fix_width">
+        <div class="m-nav"><a href="/">首页</a><i></i>
+            <label>投资确认</label>
+        </div>
+    </div>
+    </section>
+
+    <!--面包屑导航结束-->
+
+    <form action="/finplan/dobid" method="post" name="BidForm" id="BidForm">
+    <input type="hidden" id='deal_id' name="id" value="{$id}" />
+    <?php echo token_input(); ?>
+        <div class="box p_finplan_bid">
+            <section>
+            <div class="touzi_top clearfix">
+                <div class="tztop_left w982">
+                    <div class="title_box">
+                        <h1 class="fl"><i class="danbao"></i>
+                        <span class="dt-tit">
+                        {if isset($deal.shortName) && $deal.shortName != ''}
+                            {$deal.shortName}
+                        {else}
+                            {$deal.name}
+                        {/if}
+                        </span>
+                        <em class="f14 pl15">编号: {$deal.id}</em>
+                        {if isset($deal.tagBeforeName) && $deal.tagBeforeName != ''}
+                        <span class="icon_new" style="top:0px" title="{$deal.tagBeforeDesc}">{$deal.tagBeforeName}</span>
+                        {/if}
+                        {if isset($deal.tagAfterName) && $deal.tagAfterName != ''}
+                        <span class="icon_new" style="top:0px" title="{$deal.tagAfterDesc}">{$deal.tagAfterName}</span>
+                        {/if}
+                        </h1>
+                    </div>
+                    <div class="number clearfix">
+                        <dl class="clearfix">
+                            <dt>年化收益率：</dt>
+                            <dd class="yellwo w285">
+                            {$deal.rate_year}<span class="gray">%</span>
+                            </dd>
+                            <dt>管理费：</dt>
+                            <dd class="w320">
+                            {if $deal.projectInfo.feeDays gt 0 && $deal.projectInfo.feeRate gt 0}年化{function name="number_format" v="$deal.projectInfo.feeRate" f="2"}%（持有满{$deal.projectInfo.feeDays}天免费）<i class="ico_sigh" title='管理费={function name="number_format" v="$deal.projectInfo.feeRate" f="2"}% *投资金额*实际持有天数 /360。实际持有天数=到帐日-计息日。持有满{$deal.projectInfo.feeDays}天免费'></i>{else}免费{/if}
+                            </dd>
+                            <dt>还款方式：</dt>
+                            <dd>
+                            一次性还本，按月付息
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            </section>
+            <section>
+            <div  class="main clearfix" style="padding-bottom:0px;">
+                <div class="box_title"><i class="danbao"></i>投资</div>
+                <div class="con_width">
+                    <table class="tab_touzi mb25">
+                        <colgroup>
+                            <col width="100">
+                            <col width="700">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>可投金额：</th>
+                                <td><span class="yellwo">{function name="number_format" v=$deal.need_money_decimal f=2}元</span></td>
+                            </tr>
+                            <tr>
+                                <th>账户余额：</th>
+                                <td class="btn_pb14"><span class="yellwo pr20">{function name="number_format" v=$total_money f=2}元</span>
+                                    <a id="incharge" href="/account/charge" target="_blank" class="validBt  j_valid">充值</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="pt25">投资金额：</th>
+                                <td class="pt25">
+                                    <input type="text" id="J_BIDMONEY" name="bid_money" class="amount_box" value="{$money}" data-perpent="{$deal.projectInfo.rateYear}%" data-min="{$deal.min_loan_money}" data-unit="{$deal.unit_loan_money}">
+                                    <span class="color-gray">元 <span class="color-yellow1">（最低投资金额{$deal.min_loan_money}元，且为{$deal.unit_loan_money}元的整数倍）</span>
+                                    </span>
+                                   <!-- <br />
+                                    <span class="color-gray tip">总额限投<em>{$deal.projectInfo.accountMaxLoanMoney}</em>元</span>-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>每日收益：</th>
+                                <td><span class="yellwo"><span id="income_confirm">0.00</span>元</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                {if $turn_on_coupon}
+                {if !$coupon.is_fixed}
+                <div class="coupon">
+                    <table class="tab_touzi tab_touzi1">
+                        <colgroup>
+                            <col width="186">
+                            <col width="600">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="chk" {if $coupon.short_alias}checked{/if}>&nbsp;&nbsp;填写推荐人邀请码</th>
+                            <td>
+                                <div id="coupon_tr_input" class="{if !$coupon.short_alias}none{/if}">
+                                <input type="text" id="coupon_input" value="{$coupon.short_alias}" class="amount_box" autocomplete="off"> <em id="coupon_tr_error" class="none"><span class="text color-red mr15" id="coupon_tr_error_msg">邀请码无效，请重新输入</span></em><i class="icon_yes mr15"></i><span class="none coupon_ren"></span></div>
+                            </td>
+                        </tr>
+                        </thead>
+                        <tbody id="coupon_tbody">
+                        <input type="hidden" id="coupon_id" name="coupon_id" value="{$coupon.short_alias}"/>
+                        <input type="hidden" id="coupon_is_fixed" name="coupon_is_fixed" value="{$coupon.is_fixed}"/>
+                        <tr id="coupon_tr_desc" class="{if !$coupon.short_alias}none{/if}">
+                            <th>所享优惠</th>
+                            <td id="coupon_html_desc">{$coupon.remark}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {else}
+                   {if $coupon.short_alias}
+                   <div class="coupon">
+                    <table class="tab_touzi tab_touzi1">
+                        <colgroup>
+                            <col width="186">
+                            <col width="600">
+                        </colgroup>
+                        <tbody id="coupon_tbody">
+                        <input type="hidden" id="coupon_id" name="coupon_id" value="{$coupon.short_alias}"/>
+                        <input type="hidden" id="coupon_is_fixed" name="coupon_is_fixed" value="{$coupon.is_fixed}"/>
+                        <tr id="coupon_tr_desc">
+                            <th>所享优惠</th>
+                            <td id="coupon_html_desc">{$coupon.remark}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                	</div>
+                	{/if}
+                {/if}
+                {/if}
+
+            </div>
+            </section>
+            <section>
+            <div  class="main clearfix">
+                <div class="box_title"><i class="ico_jiedai"></i>收款账号</div>
+                <div class="con_width bid_sk">
+                    <table class="tab_touzi">
+                        <colgroup>
+                            <col width="110">
+                            <col width="700">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>开户名：</th>
+                                <td>{$bankcard_info.card_name}</td>
+                            </tr>
+                            <tr>
+                                <th>账户类型：</th>
+                                <td>借记卡</td>
+                            </tr>
+                            <tr>
+                                <th>银行：</th>
+                                <td>{$bank.name}<span class="yellwo"></span></td>
+                            </tr>
+                            <tr>
+                                <th>开户所在地：</th>
+                                <td>{$region_lv1} {$region_lv2} {$region_lv3} {$region_lv4}</td>
+                            </tr>
+                            <tr>
+                                <th>开户行网点：</th>
+                                <td>{$bankcard_info.bankzone}</td>
+                            </tr>
+                            <tr>
+                                <th>银行卡号：</th>
+                                <td>{function name="formatBankcard" value=$bankcard_info.bankcard}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </section>
+
+            <section>
+            <div class="main clearfix">
+                <div class="box_title"><i class="ico_hetong"></i>合同协议</div>
+                <div class="con_width bid_xy">
+                    <h2 class="line_bg">
+                        <span>{$contpre.dtb_cont.contract_title}</span>
+                    </h2>
+                    <h3 class="text pb10">合同摘要</h3>
+                    <table class="f14 hl30" width="964">
+                        <colgroup>
+                            <col width="355">
+                            <col width="360">
+                            <col width="249">
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td><span class="text pr15">平台方：</span>北京东方联合投资管理有限公司</td>
+                            <td><span class="text">管理方：</span>{$advisory_name}</td>
+                            <td><span class="text">年化利率：</span><span class="yellwo">{$deal.rate_year}%</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="text pr15">投资人：</span>{$user_info.real_name}</td>
+                            <td><span class="text">还款方式：</span>一次性还本，按月付息</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="more_hetong"><a href="javascript:void(0)" id="show_detail1" name="show_detail" data="1">展开合同详情<i class="ico_ht_more"></i></a></div>
+                    <div class="hetong" id="hetong1">
+                        <div class="con" id='dtb_pre'></div>
+                        <div class="ht_but">
+                            <div class="fr"><a href="javascript:void(0)" class="but_shouqi f14" id="hide_detail1" name="hide_detail" data="1">收起合同详情<i class="ico_ht_moreon"></i></a></div>
+                            <a href="javascript:void(0);" class="button_bigtongyi1"  name="btn_agree" id="btn_agree1" data="1"></a>
+                            <div name="agree_txt1" class="yanzheng algin_c f14" style="display:none;"><i></i>已同意并签署</div>
+                        </div>
+                    </div>
+                    <div class="ht_state">
+                        <table class="f14 hl30 text mauto" width="{if $contpre.buyback_cont}600{else}500{/if}" align="center">
+                            <colgroup>
+                                <col width="300">
+                                <col width="120">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td>同意《{$contpre.dtb_cont.contract_title}》的所有条款并签署</td>
+                                    <td id="td_agree_btn1"><div class="algin_c"><a href="javascript:void(0);" class="button_subtongyi1" name="btn_agree" data="1"></a></div></td>
+                                    <td name="agree_txt1" style="display:none;" class="postSuc"><div class="yanzheng algin_c"><i></i>已同意并签署</div></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="algin_c"><input type="button" id="J_bid_submit" class="button_confirm1 " value="确认投资" /></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </section>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        jQuery(function(){
+            $("#J_bid_submit").removeAttr("disabled");
+            var agreed1 = false;
+           $("a[name='btn_agree']").click(function(){
+                    var value = $(this).attr('data');
+                    $("*[name='agree_txt"+value+"']").show();
+                    $("#td_agree_btn"+value).hide();
+                    $("#btn_agree"+value).hide();
+                    eval("agreed"+value+"=true");
+                });
+            var earning = function(){
+                     var borrow_money =  $("#J_BIDMONEY").val();
+                     if(!isNaN(borrow_money) && borrow_money>= 0){
+                         $("#borrow_amount").text(borrow_money+"元");
+                         $.getJSON('/deal/async',
+                             {
+                                 deal_id: "{$deal.id}",
+                                 deal_type: "duotou",
+                                 principal: borrow_money
+                             },
+                             function(data) {
+                                 $("#earning_money").text(data.money+"元");
+                                 $("#earning_rate").text(data.rate+"%");
+                                 $("#dtb_pre").html(data.dtb);
+                                 $("#loan_money_repay").text(data.money_repay+"元");
+                                 if(data.tips){
+                                     $("#bid_tips").html('<br />' + data.tips);
+                                 }
+                             });
+                         }
+                         else
+                         {
+                             $("#earning_money").text("元");
+                         }
+                 }
+                  earning();
+                  $("#J_BIDMONEY").blur(earning);
+                 $("a[name='show_detail']").click(function(){
+                    var value = $(this).attr('data');
+                    $(this).hide();
+                    $("#hide_detail"+value).show();
+                    $("#hetong"+value).show();
+                });
+                 $("a[name='hide_detail']").click(function(){
+                    var value = $(this).attr('data');
+                    $(this).hide();
+                    $("#show_detail"+value).show();
+                    $("#hetong"+value).hide();
+                });
+              $("#J_bid_submit").click(function(){
+                    $("#BidForm").submit();
+                });
+              $("#BidForm").submit(function(){
+                    var bidVal = parseFloat($("#J_BIDMONEY").val());//用户输入金额
+                    var re = /^\d+(\.\d{1,2})?$/;
+                    var min_loan_money = {function name="round" v=$deal.min_loan_money f=2};
+                    var min = parseFloat($("#J_BIDMONEY").data("min")); //最低起投金额,如：1000
+                    var unit = parseFloat($("#J_BIDMONEY").data("unit")); //投资金额必须是unit元的整数倍,如100
+                    if($.trim($("#J_BIDMONEY").val())=="" || !$.checkNumber($("#J_BIDMONEY").val()) || bidVal<=0){
+                        $.showErr(LANG.BID_MONEY_NOT_TRUE,function(){
+                            $("#J_BIDMONEY").focus();
+                        });
+                        return false;
+                    }
+                    if (bidVal < min || !!isNaN(bidVal)) {
+                        $.showErr("您的投资金额须大于等于" + min + "元");
+                         return false;
+                    }
+                    if(!agreed1){
+                        $.showErr("请仔细阅读《{$contpre.dtb_cont.contract_title}》，并点击“同意”签署合同。",'','还差一步就投资成功了');
+                        return false;
+                    }
+
+                    var query = $(this).serialize();
+                    var postBtn=$('#J_bid_submit');
+                    $.ajax({
+                        url:APP_ROOT + "/finplan/dobid",
+                        data:query,
+                        dataType:"json",
+                        beforeSend:function(){
+                            postBtn.addClass('ui-btn-disable').attr('disabled', 'disabled').val('正在提交中...');
+                                    /* 投资失败，投资金额，勾选状态不清空
+                                    $('#td_agree_btn1,#td_agree_btn2,#td_agree_btn3,#td_agree_btn4').show();
+                                    $('.postSuc').hide();
+                                    $('#J_BIDMONEY').val("0");
+                                    */
+                        },
+
+                        success:function(result){
+                            if(result.status==1){
+                                    window.location.href=result.jump;
+                                    /* $.showErr('您可以在我的P2P里查看投资记录。',
+                                         function(){
+                                            window.location.href=result.jump;
+                                         }
+                                         ,result.info);
+                                    agreed1 = false;
+                                    agreed2 = false;
+                                    agreed3 = false;
+                                    postBtn.val('投资成功'); */
+                            } else{
+                                $.showErr(result.info);
+                                postBtn.removeClass('ui-btn-disable').removeAttr('disabled').val('确认投资');
+                            }
+                        },
+                        error:function(ajaxobj){
+                             postBtn.removeClass('ui-btn-disable').removeAttr('disabled').val('确认投资');
+                        }
+                   });
+                    return false;
+                });
+        });
+</script>
+{include file="web/views/footer.html"}

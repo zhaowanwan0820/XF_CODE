@@ -1,0 +1,88 @@
+{include file="web/views/header.html"}
+<div class="p_account_forgetpwdmobile">
+
+    <link href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.1.2.css');?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/validator/validator.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/pas_strength.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/account_forgetpwdmobile.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_pwdrule.css');?>" type="text/css" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/temp/passport.js')?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_account_forgetpwdmobile.css');?>" rel="stylesheet" type="text/css">
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.css')?>">
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="r-title">
+                <h2 class="JS_set_psd_title">个人会员找回密码</h2>
+            </div>
+            <div class="pwd-mid">
+                <div class="ui-form">
+                    <form method="post" action="/user/DoForgetPwdP2p" id="forgetpwdmobile_form" autocomplete="off">
+                    <input type="hidden" name="" id="jump_url" value="/user/ForgetPwd">
+                        <?php echo token_input(); ?>
+                        <ul>
+                        <!-- 得到焦点时添加类名ipt-focus -->
+                            <li class="tel-ver clearfix" style="*z-index:2">
+                                <label> 注册手机号
+                                </label>
+                                <div class="select_box" data-name="country_code" id="" style="z-index:11">
+                                    <div class="j_select"></div>
+                                    <ul class="select_ul none j_selectContent">
+                                        {if isset($mobile_codes) }
+                                            {foreach from=$mobile_codes item=val}
+                                                {if $val.is_show}
+                                                <li data-value="{$val.code}" data-name="{$val.country}"><i class="icon-{$val.country}"></i>{$val.name}</li>
+                                                {/if}
+                                            {/foreach}
+                                            {else}
+                                              <li data-value="86" data-name="cn"><i class="icon-cn"></i>中国大陆</li>
+                                        {/if}
+                                    </ul>
+                                </div>
+                                <div class="ipt-wrap">
+                                    <input type="text" value="" data-url="/user/DoForgetPwdP2p" placeholder="手机号" name="mobile" id="mobile" class="txt int_placeholder phone_num" data-placeholder="手机号" autocomplete="off">
+                                </div>
+                            </li>
+                            <li class="clearfix">
+                                <label>证件号</label>
+                                <div class="ipt-wrap">
+                                    <input type="text" value="" data-url="/user/DoForgetPwdP2p" placeholder="实名认证时填写的证件号" name="idno" id="idno" class="txt int_placeholder idno " data-placeholder="实名认证时填写的证件号" autocomplete="off">
+                                </div>
+                            </li>
+                            <li class="clearfix">
+                                <label> 图形验证码</label>
+                                <input type="text" value="" data-url="/user/captchaCheck" placeholder="右侧数字" name="captcha" id="captcha" class="txt verify_input" autocomplete="off" maxlength="25">
+                                <img align="absbottom" title="点击刷新" src="/verify.php?w=93&h=34&rb=0" id="img_captcha"  width="93" class="ml15 fl img_verify">
+                                <span class="msg-box n-right" for="captcha" id="code-err"></span>
+                            </li>
+                        </ul>
+                        <div class="btn-w30">
+                            <input class="common-sprite btn-red-h46 btn-sub" id="submit_btn" type="submit" value="确定">
+                        </div>
+                        <div class="company_pwd JS_company_pwd"><a href="/user/forgetpwdCompany">企业用户找回密码</a></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+    <script>
+        $(function(){
+            //取url中的参数值
+            function getQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]); return null;
+            }
+            if(getQueryString("setpsd") == 1){
+                document.title = "设置密码";
+                $(".JS_set_psd_title").html("设置密码");
+                $(".JS_company_pwd").hide();
+                $("body").append('<input type="hidden" id="JS_setpsd" value="1">');
+            }
+        })
+    </script>
+</div>
+{include file="web/views/footer.html"}

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="icon" href="<?php echo $this->asset->makeUrl('skins/diyifangdai/images/favicon.ico');?>" type="image/x-icon" />
+        <link rel="shortcut icon" href="<?php echo $this->asset->makeUrl('skins/diyifangdai/images/favicon.ico');?>" type="image/x-icon" />
+
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/oauth/common.css');?>" />
+        <link href="<?php echo $this->asset->makeUrl('v1/css/oauth/weebox.css');?>" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('skins/default/css/style.css');?>" />
+        <link rel="stylesheet" type="text/css" href="{function name="parse_css_site" v="css/style.css"}" />
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/jquery-1.10.2.min.js');?>"></script>
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/jquery.weebox.js');?>"></script>
+
+        <title>{$page_title} - {$website}</title>
+        <style>
+            #form-action-row:after,#form-action-row span{
+                display:inline-block;
+                *display:inline;
+                *zoom:1;
+                width:0;
+                height:100%;
+                vertical-align:middle;
+            }
+            #form-action-row:after{
+                content:'';
+            }
+            #form-action-row input{
+                display:inline-block;
+                *display:inline;
+                *zoom:1;
+                vertical-align:middle;
+            }
+        </style>
+        <script type="text/javascript">
+            function refresh() {
+            document.getElementById("captcha").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+            }
+            $(function(){
+                    $(".mobile-app").hover(function(){
+                        $("#opcode_app").show() 
+                        });
+                    $(".wx").hover(function(){
+                        $("#opcode_wx").show()  
+                        });
+                    $(".wx").mouseleave(function(){
+                        $("#opcode_wx").hide();
+                        });
+                    $(".mobile-app").mouseleave(function(){
+                        $("#opcode_app").hide()
+                        });
+                    });
+        </script>
+    </head>
+
+    <body style="position:relative;">
+<script type="text/javascript" src="/api/fzjs"></script>
+        <div id="header">
+            <div class="top">
+                <div class="inner">
+                <div class="top_1">投资服务热线 400-667-7058111　借款服务热线 400-682-6336（工作日：9:00-18:00）</div>
+                <div class="top_2">
+                    <a href="javascript:;" class="wx">微信</a>
+                    <div class="tapp" id="opcode_wx">
+                        <img src="/static/skins/diyifangdai/images/opcode_wx.jpg">
+                        <span>温馨提示：打开微信，点击底部的“发现”，使用“扫一扫”即可关注第一房贷官方微信。</span>
+                    </div>
+                    <a href="http://weibo.com/u/5149590072" class="wb" target="_blank">新良微博</a>
+                    <a href="http://www.diyifangdai.com/appdownload" class="mobile-app" target="_blank">APP</a>
+                    <div class="tapp" id="opcode_app">
+                        <img src="/static/skins/diyifangdai/images/opcode_app.png">
+                        <span>温馨提示：扫一扫即可下载第一房贷官方APP。</span>
+                    </div>
+                </div>
+                <div class="top_3">
+                    <a href="http://www.diyifangdai.com/special/guideline" target="_blank">新手引导</a>|<a href="http://bbs.diyifangdai.com/" target="_blank">论坛</a>
+                </div>
+                </div>
+            </div>
+            <div class="nav">
+                <div class="inner">
+                <div class="logo">
+                    <div class="site_logo"><a href="http://www.diyifangdai.com/" title="房贷网首页"></a></div>
+                    <div class="site_line"></div>
+                    <div class="site_read"><img src="/static/skins/diyifangdai/images/logo_txt.gif"></div>
+                </div>
+                <div class="nav_list">
+                    <ul>
+                        <li><a href="http://www.diyifangdai.com/">首页</a></li>
+                        <li><a href="/" class="hover">我要投资</a></li>
+                        <li><a href="http://www.diyifangdai.com/borrow">我要借款</a></li>
+                        <li><a href="http://www.diyifangdai.com/special/safety">安全保障</a></li>
+                        <li><a href="http://www.diyifangdai.com/special/about">关于我们</a></li>
+                    </ul>
+                </div>
+                <div class="reg">
+                    <a href="http://fangdai.firstp2p.com/user/register?client_id=6440ab83d8e24400dc2daaa4&redirect_uri=http%3A%2F%2Fwww.diyifangdai.com%2F&response_type=code&state=getToken&reg=1" class="reg_left">注册</a>
+                    <a href="http://fangdai.firstp2p.com/user/login?client_id=6440ab83d8e24400dc2daaa4&redirect_uri=http%3A%2F%2Fwww.diyifangdai.com%2F&response_type=code&state=getToken" class="reg_right">登录</a></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ft">
+            <div class="grid-m">
+                <div class="main-warp">
+                    <!--LOGIN|START-->
+                    <div class="ste_part">
+                        <div class="sign_in_box">
+                            <div class="ps_pad02">
+                                <div class="sign_in_wrap">
+                                    <div id="login-panel-header">会员登录</div>
+                                    <form method="post" action="/user/doLogin{$querystring}"  id="loginForm">
+                                        <?php echo token_input(); ?>
+                                        <ul class="ps_form login_form">
+                                            <li id="error-row">
+                                                {if isset($error)}{$error}{/if}
+                                            </li>
+                                            <li id="j_persional_username" class="input-row">
+                                                <label class="ps_label">
+                                                    <img width="26" height="20" src="<?php echo $this->asset->makeUrl('v1/images/oauth/login-label-username.gif');?>" alt="用户名">
+                                                </label>
+                                                <input class="ps_text" id="user" name="username" type="text" placeholder="用户名/手机号">
+                                            </li>
+
+                                            <li class="input-row">
+                                                <label class="ps_label">
+                                                    <img width="20" height="20" src="<?php echo $this->asset->makeUrl('v1/images/oauth/login-label-password.gif');?>" alt="密码">
+                                                </label>
+                                                <input id="input-password" class="ps_text" name="password" type="password"
+                                                       placeholder="密码">
+                                            </li>
+                                            {if isset($show_vcode) && $show_vcode eq '1'}
+                                            <li class="input-row yanzheng">
+                                                <input type="text" placeholder="验证码" name="captcha" class="ps_text_val" id="input-captcha">
+                                                <img align="absbottom" title="点击刷新" src="/verify.php?w=91&h=36&rb=0" id="captcha" onclick="refresh()">
+                                            </li>
+                                            {/if}
+
+                                            <li style="display:none">
+                                                <div class="ps_mar_l01 for_ps">
+                                                    <input name="remember_name" class="ver_align" type="checkbox" />
+                                                    <label>记住账户</label>
+                                                </div>
+                                            </li>
+                                            <li id="form-action-row">
+                                                <input type="submit" class=" enter_btn" value="登 录" />
+                                                <div class="register-button" id="j_p_r">
+                                                    <a href="/user/register{$querystring}" class="register-btn">注 册</a>
+                                                </div>
+                                            </li>
+                                            <li id="forget-password-row">
+                                                <a href="/user/forgetPassword">忘记密码？</a>
+                                            </li>
+                                        </ul>
+                                    </form>
+                                    <div class="gonggao none" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/login.js');?>">
+                    </script>
+                    <!--LOGIN|END-->
+                </div>
+            </div>
+        </div>
+
+        <link href="<?php echo $this->asset->makeUrl('v1/css/oauth/ssologin.css');?>" type="text/css" rel="stylesheet" />
+        <!--底部开始-->
+        {function name="get_adv" x="底部导航"}
+        <!--底部结束-->
+      <script type='text/javascript'>
+var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+(function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+</script>
+    </body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>智多新</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/p_activity.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="p_dt_activity">
+        <input type="hidden" name="token" id="token" value="{$token}">
+        <div class="top_cont">
+            <img src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/activity_title.png');?>" width="173" height="21">
+            <p class="userAccount">现已加入{$peopleCount}人</p>
+            <div class="introduce">
+                <div class="act_left">
+                    <p>轻松加入</p>
+                    <p>灵活加入灵活转让/退出</p>
+                </div>
+                <div class="act_right">
+                    <p>分散匹配</p>
+                    <p>智能匹配优质债权</p>
+                </div>  
+            </div>
+        </div>
+        <adv adv_id="智多新活动页banner"/>
+        <div class="activity_tit">
+            <h2><i></i>智多新<a href="/duotou/PublishRule?is_allow_access=1&token={$token}" class="fr">信息披露</a></h2>
+        </div>
+        {foreach from=$activity_list item="activity" key="k"}
+        <div class="bottom_cont j_entrance">
+            <a href="javascript:;" data-id="{$activity.id}">
+                <div class="entrance">
+                    <p class="entrance_title">{$activity.name}<span class="min_money">{if $isNewUser&&$activity.new_user_min_invest_money>0}{$activity.new_user_min_invest_money}{else}{$activity.min_invest_money}{/if}元起</span></p>
+                    <div class="entrance_detail">
+                        <div class="detail_left">
+                            <p class="rate_text">预期年化</p>
+                            <p class="rate">{$activity.min_rate}<span class="f14">%</span>&nbsp;~&nbsp;{$activity.max_rate}<span class="f14">%</span></p>
+                        </div>
+                        <div class="detail_right">
+                            <p class="term_text">期限</p>
+                            <p class="term">{if $activity.lock_day eq 1 || $activity.lock_day eq 0 }<span class="f18">灵活转让／退出</span>{else}{$activity.lock_day}<span class="day_text">天可转让／退出</span>{/if}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {/foreach}
+        <input id="activityPop" type="hidden" value='{$project.activityPop}'/>
+        <input id="userId" type="hidden" value='{$unique_id}'/>
+        {if $project.activityPop eq 1}
+        <div class="activity_dialog JS_activity_box hide">
+            <div class="dialog_bg"></div>
+            <div class="act_box">
+                <div class="sc_content">
+                    {$project.description}
+                </div>
+                <div class="JS_close close_p2p_btn"></div>
+            </div>
+        </div>
+        {/if}
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/lib/lib.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/slider.js');?>"></script>
+    <!-- 拼接投资页地址 -->
+    <script type="text/javascript">
+        $(function() {
+            var origin_url = location.origin,
+                _token = $('#token').val();
+            $(".j_entrance a").each(function (index, domEle) {
+                var activity_id = $(domEle).data('id');
+                $(domEle).attr('data-href', origin_url + '/duotou/DealDetail?is_allow_access=1&is_detail=1&activity_id='+ activity_id +'&token='+ _token +'');
+            });
+            $(".j_entrance a").click(function(event) {
+                var href = $(this).attr('data-href');
+                window.location.href = href;
+            });
+            // banner
+            $('#slider').slider({
+                loop: true,
+                autoPlay: true,
+                imgZoom: false,
+                arrow: false
+            });
+            //活动弹窗
+            if ($('#activityPop').val() == 1) {
+                $(".JS_activity_box").on("click",".JS_close",function(){
+                    $(".JS_activity_box").hide();
+                });
+                //首次进入弹出活动弹窗
+                var _ZDX_COOKIE_NAME_ = '_app_zdx_activity_' + $('#userId').val(),
+                    zdx_activity_cookie = WXP2P.APP.getCookie(_ZDX_COOKIE_NAME_);
+                if(zdx_activity_cookie != 1){
+                    $(".JS_activity_box").show();
+                    WXP2P.APP.setCookie(_ZDX_COOKIE_NAME_,1, 365);
+                    WXP2P.APP.triggerScheme("firstp2p://api?type=synccookie");   
+                }
+            }
+        });
+    </script>
+</body>
+</html>

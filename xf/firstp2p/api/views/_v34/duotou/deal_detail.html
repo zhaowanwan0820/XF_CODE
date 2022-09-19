@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/invest_detail.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="invest_detail">
+        <div class="bid_detail">
+        
+            <p class="top">{if isset($deal.tagBeforeName) && $deal.tagBeforeName != ''}<span class="lhs">{$deal.tagBeforeName}</span>{/if}{if isset($deal.tagAfterName) && $deal.tagAfterName != ''}<span class="lhs">{$deal.tagAfterName}</span>{/if}<span class="bid_name">{function name="msubstr" v=$deal.projectInfo.name f=0 l=10}</span></p>
+            <ul class="middle">
+                <li><p class="text">预期年化</p><p class="num">{$deal.rate_year}%</p></li>
+                <li class="t_c j-msg-area">
+                    <div class="text" id="payment">
+                        <span>手续费</span>
+                        <i class="sxf" >
+                        <p class="pop_bottom dis_none">手续费={function name="number_format" v="$deal.projectInfo.feeRate" f="2"}% *投资金额*实际持有天数 /360。实际持有天数=到帐日-计息日。持有满{$deal.projectInfo.feeDays}天免费
+                        <span class="triangle"></span></p></i>
+                    </div>
+                    <p class="num j-triangle">
+                        <span class="nh">{if $deal.projectInfo.feeDays gt 0 && $deal.projectInfo.feeRate gt 0}年化</span>
+                        {function name="number_format" v="$deal.projectInfo.feeRate" f="2"}%
+                        {else}免费{/if}
+                    </p>
+                </li>
+                <li class="t_r"><p class="text">已加入人数</p><p class="num">{$deal.buyCount}</p></li>
+            </ul>
+            <div class="bottom"><p class="f_left">{function name="number_format" v="$deal.min_loan_money" f="2"}元起丨按月支付收益</p><p class="f_right">持有满{$deal.projectInfo.feeDays}天免手续费</p></div>
+        </div>
+        <p class="income_text">预期收益简述</p>
+        <div class="income_day">每万元投资每日收益<span>{$deal.earning_day}元</span></div>
+        <div class="product">
+            <p class="pro_text">产品介绍</p>
+            <p class="pro_detail">{$deal.projectInfo.description}</p>
+        </div>
+        <!-- <div class="yuyue">
+            <a class="yuyue_but" href="/duotou/BidConfirm?token={$token}">预约</a>
+        </div> -->
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('js/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/duotou/base.js');?>"></script>
+    <script type="text/javascript">
+    $(function(){
+        $(document).on("tap", function(e){
+            var pop_bottom = $(".pop_bottom");
+            var $e = $(e.target),
+            $li = $e.closest('li') ;
+            if($e.hasClass('j-msg-area') || $li.hasClass('j-msg-area')){
+                if($e.data("lock")  != '1'){
+                    pop_bottom.removeClass('dis_none');
+                    $e.data("lock" , 1)
+                }else{
+                    pop_bottom.addClass('dis_none');
+                    $e.data("lock" , 0)
+                }
+            }else if($e.hasClass('pop_bottom') || $e.hasClass('triangle')){
+                pop_bottom.removeClass('dis_none');
+               
+            }else{
+                pop_bottom.addClass('dis_none');
+                
+            }  
+        });
+    });
+    </script>
+</body>
+</html>

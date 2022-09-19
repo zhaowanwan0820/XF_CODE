@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        登录 - 网信理财
+    </title>
+    <!--public js&css start-->
+
+    <link rel="stylesheet" type="text/css" href="/static/v1/css/oauth/oauth_style.css" />
+    <link rel="stylesheet" type="text/css" href="/static/v1/css/oauth/oauth_login.css" />
+    <link rel="stylesheet" type="text/css" href="/static/v1/css/oauth/global.css" />
+    <link rel="stylesheet" type="text/css" href="/static/v1/css/oauth/public.css" />
+
+    <link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico">
+    <script type="text/javascript" src="{$TMPL_NEW}/js/common/jquery-1.10.2.min.js">
+    </script>
+    <script type="text/javascript">
+        var today = new Date();
+        var expireDay = new Date();
+        var msPerWeek = 24 * 60 * 60 * 1000 * 7;
+        expireDay.setTime(today.getTime() + msPerWeek);
+        function setCookie(Key, Value) {
+            document.cookie = Key + "=" + Value + ";expires=" + expireDay.toGMTString();
+        }
+        function getCookie(Key) {
+            var search = Key + "=";
+            begin = document.cookie.indexOf(search);
+            if (begin != -1) {
+                begin += search.length;
+                end = document.cookie.indexOf(";", begin);
+                if (end == -1) end = document.cookie.length;
+                return document.cookie.substring(begin, end);
+            }
+        }
+
+        function select_user_type(type) {
+            if ('p' == type || 'PERSIONAL' == type) {
+                $("#j_persional_login").removeClass("login_way").addClass("login_current");
+                $("#j_industory_login").removeClass("login_current").addClass("login_way");
+                $("#j_persional_username").show();
+                $("#j_industory_username").hide();
+                $('input[name="usertype"]').val("PERSIONAL");
+                $("#j_p_r").show();
+                $("#j_i_r").hide();
+                $("#j_persional_fogot_pass").show();
+                $("#j_industory_fogot_pass").hide();
+            } else {
+                $("#j_persional_login").removeClass("login_current").addClass("login_way");
+                $("#j_industory_login").removeClass("login_way").addClass("login_current");
+                $("#j_industory_username").show();
+                $("#j_persional_username").hide();
+                $('input[name="usertype"]').val("INDUSTORY");
+                $("#j_p_r").hide();
+                $("#j_i_r").show();
+                $("#j_persional_fogot_pass").hide();
+                $("#j_industory_fogot_pass").show();
+            }
+        }
+        function check_form() {
+            var username1 = $('input[name="persional_user_name"]').val();
+            var username2 = $('input[name="industory_user_name"]').val();
+            var pass = $('input[name="password"]').val();
+            var captcha = $('input[name="vdcode"]').val();
+            if (username1 == '' || username1 == '用户名') {
+                $("input[name='persional_user_name']").focus();
+                $('#error-row').html('请输入用户名');
+                return false;
+            }
+            if (pass == '') {
+                $("input[name='password']").focus();
+                $('#error-row').html('请输入密码');
+                return false;
+            }
+            <!--{if $showcode}-->
+            if(captcha == '')
+            {
+                    $("input[name='vdcode']").focus();
+                    $('#error-row').html('请输入验证码');
+                    return false;
+            }
+            <!--{/if}-->
+
+            var remember_name = $('input[name="remember_name"][type="checkbox"]').is(':checked');
+            var usertype = $('input[name="usertype"]').val();
+            if (remember_name == true) {
+                setCookie('PHPREMEMBER', true);
+                setCookie('PHPUSERTYPE', usertype);
+                if (usertype == 'PERSIONAL') {
+                    setCookie('username', username1);
+                } else {
+                    setCookie('username', username2);
+                }
+            } else {
+                setCookie('PHPUSERTYPE', 'PERSIONAL');
+                setCookie('PHPREMEMBER', false);
+                setCookie('username', '');
+            }
+            return true;
+        }
+
+        $(function() {
+            var remeber = getCookie('PHPREMEMBER');
+            var username = getCookie('username');
+            var usertype = getCookie('PHPUSERTYPE');
+            if (remeber == 'true') {
+                if (usertype == 'PERSIONAL') $('input[name="persional_user_name"]').val(username);
+                else $('input[name="industory_user_name"]').val(username);
+
+                $('input[name="remember_name"][type="checkbox"]').attr('checked', true);
+            } else {
+//                 $('input[name="persional_user_name"]').val('用户名/邮箱/手机号');
+//                 $('input[name="industory_user_name"]').val('用户名');
+//                 $('input[name="remember_name"][type="checkbox"]').attr('checked',false);
+            }
+
+        });
+        <!--{if !empty($usertype)}-->
+        select_user_type("{$usertype}");
+        <!--{/if}-->
+    </script>
+</head>
+<body style="position:relative;">
+    <!--HEADER|START-->
+    <div id="hd">
+        <div class="grid-m">
+            <div class="main-warp">
+                <div class="box J_TBox">
+                    <div class="kc_20130424_header">
+                        <div class="bd">
+                            <div class="logo">
+                                <a href="/">
+                                    <img src="{$TMPL_NEW}/images/oauth/logo.png" alt="网信理财">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--HEADER|END-->
+    <div id="ft">
+    <div class="grid-m">
+        <div class="main-warp">
+            <!--LOGIN|START-->
+            <div class="ste_part">
+                <div class="sign_in_box">
+                <div class="ps_pad02">
+                        <div class="sign_in_wrap">
+                            <div id="login-panel-header">
+                                    会员登录
+                            </div>
+                            <!--div class="clearfix login_way_box">
+                                    <a name="login_page01"></a>
+                                    <a class="login_current fleft ps_mar_r01" href="javascript:;" onclick="select_user_type('p');return false;" id="j_persional_login"><span>会员登录</span></a>
+                                    <a class="login_way fleft" href="javascript:;" onclick="select_user_type('i');return false;" id="j_industory_login"><span>企业会员登录</span></a>
+                            </div-->
+                            <form method="post" action="/user-login" onsubmit="return check_form();">
+                                <ul class="ps_form login_form">
+                                    <li id="error-row">
+                                        {$logerr}
+                                    </li>
+                                    <li  id="j_persional_username" class="input-row">
+                                        <label class="ps_label">
+                                            <img width="20" height="20" src="{$TMPL_NEW}/images/oauth/login-label-username.gif" alt="用户名">
+                                        </label>
+                                        <label style="display:none">用户名/手机号/邮箱</label>
+                                        <input class="ps_text" name="persional_user_name" type="text" placeholder="用户名/手机号/邮箱"/>
+                                    </li>
+                                    <li style="display:none;" id="j_industory_username" class="input-row">
+                                            <label class="ps_label">
+                                                <img width="20" height="20" src="{$TMPL_NEW}/images/oauth/login-label-username.gif" alt="用户名">
+                                            </label>
+                                            <label style="display:none">用户名</label>
+                                            <input class="ps_text" name="industory_user_name">
+                                    </li>
+                                    <li class="input-row">
+                                            <label class="ps_label">
+                                                <img width="20" height="20" src="{$TMPL_NEW}/images/oauth/login-label-password.gif" alt="密码">
+                                            </label>
+                                            <label style="display:none">密码</label>
+                                            <input id="input-password" class="ps_text" name="password" type="password" placeholder="密码">
+                                    </li>
+                                    {if $showcode}
+                                    <li class="input-row">
+                                            <label class="ps_label">
+                                                <img width="20" height="20" src="{$TMPL_NEW}/images/oauth/login-label-captcha.gif" alt="验证码">
+                                            </label>
+                                            <label style="display:none">验证码</label>
+                                            <input id="input-captcha" class="ps_text" name="vdcode" type="text" placeholder="验证码">
+                                            <img title="点击刷新" src="verify.php?rb=0" align="absbottom" id="captcha-image" 
+                                                 onclick="this.src='verify.php?rb=0&rand=?'+Math.random();">
+                                    </li>
+                                    {/if}
+                                    <li style="display:none">
+                                        <div class="ps_mar_l01 for_ps">
+                                            <input name="remember_name" class="ver_align" type="checkbox" /><label>记住账户</label> 
+                                        </div>
+                                    </li>
+                                    <li id="form-action-row">
+                                        <!--{loop $auth_params  $k $v}-->
+                                        <input type="hidden" name="{echo $k;}" value="{echo $v;}" />
+                                        <!--{/loop}-->
+                                        <input type="hidden" name="gp_action" id="gp_action" value="login">
+                                        <input type="hidden" name="gp_url" value="{$url}">
+                                        <input type="hidden" name="usertype" value="PERSIONAL">
+                                        <input type="submit" class=" enter_btn" value=""/>
+                                        <div class="register-button" id="j_p_r"><a href="<!--{$reurl}-->"></a></div>
+                                        <div class="register-button" id="j_i_r" style="display:none;"><a href="http://www.9888.cn/index.php?mod=user&act=register"></a>
+                                    </li>
+                                    <li id="forget-password-row">
+                                            <a href="{$locat_url}">忘记密码？</a>
+                                    </li>
+                                    <!--li id="third-party-row">
+                                            <div class="third-party-label"><div>合作网站账号登录</div></div>
+                                            <p>
+                                                    <a id="login-qq" href="#"></a>
+                                                    <a id="login-weibo" href="#"></a>
+                                            </p>
+                                    </li-->
+                                </ul>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <script src="{$TMPL_NEW}/js/widget/placeholder/placeholder.v1.js">
+        </script>
+        <!--LOGIN|END-->
+        <!--FOOTER|START-->
+        <div class="footer">
+            <p>
+                电话：400-890-9888 周一至周六 9:00-18:00 京ICP证130046号
+                <br>
+                北京东方联合投资管理有限公司
+                <br>
+                © 2013 网信理财 All rights reserved
+        </div>
+        <!--FOOTER|END-->
+        </div>
+        </div>
+        </div>
+        <script>
+            (function(i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] ||
+                function() { (i[r].q = i[r].q || []).push(arguments)
+                },
+                i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-43032470-1', 'firstp2p.com');
+            ga('send', 'pageview', {
+                'page': '/login',
+                'title': 'Login'
+            });
+        </script>
+        <!--请将js代码嵌入到html中body标签结束之前。（整个body部分最后边）-->
+        <script type='text/javascript'>
+            var _agt = _agt || [];
+            _agt.push(['_atscu', 'AG_707063_AUFB']);
+            _agt.push(['_atsdomain', 'firstp2p.com']);
+            /*请将.com*/
+            (function() {
+                var ag = document.createElement('script');
+                ag.type = 'text/javascript';
+                ag.async = true;
+                ag.src = (document.location.protocol == 'https:' ? 'https': 'http') + '://' + 't.agrantsem.com/js/ag.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(ag, s);
+            })();
+        </script>
+</body>
+
+</html>

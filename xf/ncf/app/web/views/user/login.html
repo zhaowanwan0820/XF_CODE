@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    {if !empty($appInfo.appLogo) }
+        <link rel="shortcut icon" href="{$appInfo.appLogo}" type="image/x-icon" />
+    {else}
+        <link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.png" type="image/x-icon" />
+    {/if}
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v3/css/base.css')?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v3/css/common.css')?>">
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/common/jquery-1.10.2.min.js')?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/common/html5shiv.js')?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/common/common.js')?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('/v3/css/user_charge.css')?>" type="text/css" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('/v3/css/user_doLogin.css')?>" type="text/css" rel="stylesheet">
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/common/jquery_placeholder-1.0.js')?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('/v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/widget/select/select.v1.1.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('/v3/js/temp/weebox.css')?>" type="text/css" rel="stylesheet">
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/temp/jquery.weebox.1.2.js')?>"></script>
+
+    <script type="text/javascript">
+        var today = new Date();
+        var  year = today .getFullYear();
+        var month = today .getMonth() + 1;
+        var day= today .getDate();
+        var ymd = year +""+ month+"" + day;
+        var oHead = document.getElementsByTagName('HEAD').item(0);
+        var oScript= document.createElement("script");
+        oScript.type = "text/javascript";
+        oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+        oHead.appendChild( oScript);
+    </script>
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/temp/passport.js')?>"></script>
+    <!-- 短信登录 -->
+    {if isset($smLogin) && $smLogin eq '1'}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('/v3/js/common/p2p_validate.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('/v3/js/oauth/user_login_new.js');?>"></script>
+    {/if}
+    <title>{$page_title} - {$website}普惠</title>
+    <script type="text/javascript">
+    function refresh() {
+        document.getElementById("captcha").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+    }
+    </script>
+    <!-- 诸葛统计 -->
+    <script>
+      var isOnLineAPPKEY = document.domain =='www.firstp2p.cn'? '225796fea53a4cedaf56b2d18a3bb2f4': 'c1b0b022bd1f44f7b2194eab97ca119e';
+    </script>
+    <script type="text/javascript">
+    window.zhuge = window.zhuge || [];window.zhuge.methods = "_init debug identify track trackLink trackForm page".split(" ");
+    window.zhuge.factory = function(b) {return function() {var a = Array.prototype.slice.call(arguments);a.unshift(b);
+    window.zhuge.push(a);return window.zhuge;}};for (var i = 0; i < window.zhuge.methods.length; i++) {
+    var key = window.zhuge.methods[i];window.zhuge[key] = window.zhuge.factory(key);}window.zhuge.load = function(b, x) {
+    if (!document.getElementById("zhuge-js")) {var a = document.createElement("script");var verDate = new Date();
+    var verStr = verDate.getFullYear().toString()+ verDate.getMonth().toString() + verDate.getDate().toString();
+    a.type = "text/javascript";a.id = "zhuge-js";a.async = !0;a.src ='https://stat.ncfwx.com/zhuge.js?v=' + verStr;
+    a.onerror = function(){window.zhuge.identify = window.zhuge.track = function(ename, props, callback){if(callback && Object.prototype.toString.call(callback) === '[object Function]')callback();};};
+    var c = document.getElementsByTagName("script")[0];c.parentNode.insertBefore(a, c);window.zhuge._init(b, x)}};
+    window.zhuge.load(isOnLineAPPKEY,{superProperty:{PlatformType:'web'},autoTrack:true});//配置应用的AppKey
+    </script>
+    <!-- 神策统计 -->
+    <script type='text/javascript'>
+    (function(para) {
+      var p = para.sdk_url, n = para.name, w = window, d = document, s = 'script',x = null,y = null;
+      w['sensorsDataAnalytic201505'] = n;
+      w[n] = w[n] || function(a) {return function() {(w[n]._q = w[n]._q || []).push([a, arguments]);}};
+      var ifs = ['track','quick','register','registerPage','registerOnce','trackSignup', 'trackAbtest', 'setProfile','setOnceProfile','appendProfile', 'incrementProfile', 'deleteProfile', 'unsetProfile', 'identify','login','logout','trackLink','clearAllRegister','getAppStatus'];
+      for (var i = 0; i < ifs.length; i++) {
+        w[n][ifs[i]] = w[n].call(null, ifs[i]);
+      }
+      if (!w[n]._t) {
+        x = d.createElement(s), y = d.getElementsByTagName(s)[0];
+        x.async = 1;
+        x.src = p;
+        x.setAttribute('charset','UTF-8');
+        y.parentNode.insertBefore(x, y);
+        w[n].para = para;
+      }
+    })({
+      sdk_url: 'https://static.sensorsdata.cn/sdk/1.9.11/sensorsdata.min.js',
+      heatmap_url: 'https://static.sensorsdata.cn/sdk/1.9.11/heatmap.min.js',
+      name: 'wxsa',
+      web_url: 'https://wangxin.cloud.sensorsdata.cn/?project=production',
+      server_url: 'https://wangxin.cloud.sensorsdata.cn:4006/sa?token=4175318fdc7df657&project=production',
+      heatmap:{},
+      show_log:false
+    });
+    wxsa.registerPage({PlatformType:'web'});
+    wxsa.quick('autoTrack');
+    </script>
+
+    {if $is_firstp2p}
+        <script type="text/javascript" src="//{$wxlc_domain}/user/Session?code={$code}"></script>
+    {else}
+        <script type="text/javascript" src="//{$firstp2p_cn_domain}/user/Session?code={$code}{if isset($params_to_p2pcn)}$params_to_p2pcn{/if}"></script>
+    {/if}
+</head>
+<body class="p_user_dologin">
+    <textarea style="display:none;" id="test_coding">{function name="get_adv" x="pc登录滑块验证测试代码勿动"}</textarea>
+    {if (app_conf('VERIFY_SWITCH') eq 1)}<textarea style="display:none;" id="test_switch">1</textarea>{/if}
+    <div class="p_user_dologin">
+        {if $is_wxlc eq 1}
+        <div class="log-header">
+            <a href="/" title="{$website}">
+                <img src="{$APP_SKIN_PATH}images/logo-big_wx.png?v=20170112" alt="{$website}">
+            </a>
+        </div>
+        {elseif $is_firstp2p eq 1}
+        <div class="log-header">
+            <a href="/" title="{$website}">
+                <img src="<?php echo $this->asset->makeUrl('v4/images/p2p/20180426184952.png')?>" alt="{$website}">
+            </a>
+        </div>
+        {else}
+            {$webTemplPublicHead}
+            <div style="height: 40px"></div>
+        {/if}
+        <div class="log-main" >
+            <div class="log-wrap">
+                <div class="form-wrap" >
+                    <div class="ipt-form" >
+                        <div class="reg-head">
+                            <div class="sub-tit color_gray">没有账号? <a href={if !$isEnterpriseSite }"/user/register{$querystring}"{else}"/enterprise/register{$querystring}"{/if} class="blue JS_reg">免费注册</a></div>
+                            <h2>登录</h2>
+                        </div>
+                        <div class="log-mid" >
+                            <div class="height_placeholder">
+                                <div class="login_err" {if isset($error)} style="display:block;"><span class="false_for_user"></span>{$error}{else if}>{/if}</div>
+                            </div>
+                            <form method="post" action="/user/doLogin{$querystring}" id="loginForm" name="forms">
+                                {if isset($paAuthRes)}
+                                <input type="hidden" id="valid_phone" value="{$paAuthRes.ppUserInfo.mobile}" name="valid_phone">
+                                {elseif isset($mobileNeedVerify)}
+                                <input type="hidden" id="valid_phone" value="{$mobileNeedVerify}" name="valid_phone">
+                                {else}
+                                <input type="hidden" id="valid_phone" value="" name="valid_phone">
+                                {/if}
+                                <?php echo token_input(); ?>
+                                    <div class="log-form clearfix">
+                                        <!-- 用户选择下拉列表中中国时 -->
+                                        <div class="log-item clearfix" style="z-index:21;">
+                                            {if !$isEnterpriseSite}
+                                            <div class="select_box" data-name="country_code">
+                                                <div class="j_select"></div>
+                                                <ul class="select_ul none j_selectContent">
+                                                    {if isset($mobile_codes) }
+                                                        {foreach from=$mobile_codes item=val}
+                                                            {if $val.is_show}
+                                                            <li data-value="{$val.code}" data-name="{$val.country}"><i class="icon-{$val.country}"></i>{$val.name}</li>
+                                                            {/if}
+                                                        {/foreach}
+                                                        {else}
+                                                            <li data-value="86" data-name="cn"><i class="icon-cn"></i>中国大陆</li>
+                                                    {/if}
+                                                </ul>
+                                            </div>
+                                            {/if}
+                                            {if !$isEnterpriseSite}
+                                            <div class="ipt-wrap w224">
+                                                <!--<div class="areacode" id="areacode" style="display:none;">+86</div>-->
+                                                <input type="text" tabindex="1" value="" data-con="require" placeholder="手机号/网信通行证" name="username" id="user" class="txt-tel w197 int_placeholder" data-placeholder="手机号" autocomplete="off">
+                                            </div>
+                                            {else}
+                                            <input type="hidden" value="{$isEnterpriseSite}" id="isEnterpriseSite">
+                                            <div class="log-item">
+                                                <input type="text" tabindex="1" value="" data-con="require" placeholder="用户名" name="username" id="user" class="txt-input padd-l47 int_placeholder" data-placeholder="用户名" autocomplete="off">
+                                            </div>
+                                            {/if}
+                                        </div>
+                                        <div class="log-item">
+                                            <span id="close_eye"><a id="img_eye" href="javascript:showps()"></a></span>
+                                            <!-- <label class="pwd log-sprite"></label> -->
+                                            <input type="password" autocomplete="off" style="display:none;">
+                                            <span id="box"><input id="input-password" class="txt-input padd-l47 int_placeholder" type="password" name="password" placeholder="登录密码" data-placeholder="登录密码" tabindex="2"></span>
+                                        </div>
+                                        <div class="log-item item-veri clearfix">
+                                            <!-- 图形验证码 -->
+                                            {if isset($show_vcode) && $show_vcode eq '1'}
+                                            <input type="text" tabindex="3" placeholder="右侧数字" id="input-captcha" name="captcha" class="txt-input int_placeholder" data-placeholder="右侧数字">
+                                            <div class="img-Veri">
+                                                <img id="captcha" src="/verify.php?w=91&h=36&rb=0" onclick="refresh()">
+                                            </div>
+                                            <div class="refresh" onclick="refresh()">换一张</div>
+                                            <!-- 滑块验证码 当VERIFY_SWITCH为1时，显示滑块，为0时隐藏滑块-->
+                                            {elseif (app_conf('VERIFY_SWITCH') eq 1)}
+
+                                            <div class="ln">
+                                                <div id="dom_id"></div>
+                                            </div>
+                                            <input type='hidden' id='csessionid' name='csessionid'/>
+                                            <input type='hidden' id='sig' name='sig'/>
+                                            <input type='hidden' id='risk_token' name='risk_token'/>
+                                            <input type='hidden' id='scene' name='scene'/>
+                                            {/if}
+                                            {if isset($smLogin) && $smLogin eq '1'}
+                                            <a href="javascript:void(0);" class="j_transLogin blue mgLogin">短信快捷登录</a>
+                                            {/if}
+                                            {if !$isEnterpriseSite}
+                                            <a href="/user/ForgetPwd" class="forget-pwd blue JS_forgetPwd">忘记密码</a>
+                                            {else}
+                                            <a href="/user/forgetpwdCompany" class="forget-pwd blue">忘记密码</a>
+                                            {/if}
+                                            <a class="passport-info"  href="/user/permit_help" target="_blank">什么是网信通行证</a>
+                                        </div>
+                                        <div class="log-item">
+                                            <div class="log-form-btn">
+                                                <input type="submit" value="登录" class="btn-sub  log-sprite JS_log">
+                                            </div>
+                                        </div>
+                                    </div>
+                            </form>
+                            {if isset($smLogin) && $smLogin eq '1'}
+                            <form action="/user/SmDoLogin{$querystring}" method="post" id="login_v2" style="display:none;">
+                                <?php echo token_input(); ?>
+                                <input data-label="短信验证码" type="hidden" id="input-code" name="code" value="">
+                                <input type="hidden" value="{$smLoginToken}" name="smLoginToken" id="smLoginToken">
+                                <input type="hidden" value="{if isset($appInfo.inviteCode) && $appInfo.inviteCode}{$appInfo.inviteCode}{else /}{$cn}{/if}" data-con="require" placeholder="邀请码选填" name="invite" id="input-invite" class="txt int_placeholder" data-placeholder="邀请码选填">
+                                <ul class="clearfix">
+                                    <!-- 得到焦点时添加类名ipt-focus -->
+                                    <li class="tel-ver clearfix" style="*z-index:2;">
+                                        <div class="select_box" data-name="country_code" style="z-index:11">
+                                            <div class="j_select"></div>
+                                            <ul class="select_ul none">
+                                                {if isset($mobile_codes) } {foreach from=$mobile_codes item=val} {if $val.is_show}
+                                                <li data-value="{$val.code}" data-name="{$val.country}"><i class="icon-{$val.country}"></i>{$val.name}</li>
+                                                {/if} {/foreach} {else}
+                                                <li data-value="86" data-name="cn">
+                                                    <i class="icon-cn"></i>中国大陆</li>
+                                                {/if}
+                                            </ul>
+                                        </div>
+                                        <div class="ipt-wrap w224">
+                                            <input type="text" value="{$data.mobile}" data-con="require" placeholder="手机号" name="mobile" id="input-mobile" class="txt-tel int_placeholder" data-placeholder="手机号" autocomplete="off">
+                                        </div>
+                                        <div class="ui-form">
+                                            <div class="error-wrap">
+                                                <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                                <div class="e-text">{$error.mobile}</div>
+                                            </div>
+                                        </div>
+
+                                    </li>
+                                    <li class="logintips">未注册手机号将自动注册为网信用户</li>
+                                    {if isset($show_vcode) && $show_vcode eq '1'}
+                                    <li class="graph-ver clearfix">
+                                        <!-- 图形验证码 -->
+                                        <input type="text" value="" data-con="require" placeholder="右侧数字" name="captcha" id="input-captcha-message" class="txt int_placeholder" data-placeholder="右侧数字">
+                                        <div class="img-Veri">
+                                            <img title="点击刷新" src="/verify.php?w=50&h=36&rb=0" id="captcha_message" width="100" height="38">
+                                        </div>
+                                        <div class="changeCap"><a href="javascript:void(0);" class="refresh_message">换一张</a></div>
+                                        <div class="ui-form">
+                                            <div class="error-wrap">
+                                                <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                                <div class="e-text"></div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {/if}
+                                </ul>
+                                <div class="log-form">
+                                    <div class="log-form-btn">
+                                        <input type="submit" value="获取短信验证码" class="btn-sub log-sprite" id="submit_button">
+                                    </div>
+                                </div>
+                                <div class="log-form pwdLogin"><a href="javascript:void(0);" class="j_transLogin">账号密码登录</a></div>
+                                <div class="loginProtocol">
+                                    <div class="ml70">
+                                        <span>我已阅读并同意<a href="/help/register_terms" class="blue" target="_blank">《注册协议》</a></span>
+                                    </div>
+                                </div>
+                            </form>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 此段必须要引入 -->
+    <div id="_umfp" style="display:inline;width:1px;height:1px;overflow:hidden"></div>
+    <!-- 引入结束 -->
+    <script src="<?php echo $this->asset->makeUrl('v3/js/oauth/login.js');?>"></script>
+   {include file="web/views/footer.html"}
+    <!-- 此段必须要引入 t为小时级别的时间戳 -->
+    <link type="text/css" href="//g.alicdn.com/sd/ncpc/nc.css?t=1469604520917" rel="stylesheet"/>
+    <script type="text/javascript" src="//g.alicdn.com/sd/ncpc/nc.js?t=1469604520917"></script>
+    <!-- 引入结束 -->
+    {if isset($paAuthRes)}
+    <script>
+        {if $paAuthRes.showAuth}
+        var authObject = {companyTitle : "网信理财"};
+        setTimeout("authorization(authObject)",500);
+        {elseif $paAuthRes.needVerify}
+        var message = {mobile:"{$paAuthRes.ppUserInfo.mobile}", mobile_code:"86", redirect_url:"/account/index"};
+        setTimeout("getPhoneMessage(message)", 500);
+        {/if}
+    </script>
+    {/if}
+    {if isset($mobileNeedVerify)}
+    <script>
+        var message = {mobile:"{$mobileNeedVerify}", mobile_code:"86", redirect_url:"/index"};
+        setTimeout("getPhoneMessage(message)", 500);
+    </script>
+    {/if}
+    {if isset($showErrorLoginTips) }
+    <script type="text/javascript">
+        //非企业投资用户请使用个人用户入口登录
+        $.weeboxs.open('<div class="tc">{$error}<p class="f12 pt10">正在为您跳转至<a href="{$loginRedirectUrl}" class="blue">{$siteTitleTips}</a>，剩余<span class="surplus_time">5</span>秒</p></div>', {
+            boxid : null,
+            contentType : 'text',
+            showButton : true,
+            showCancel : false,
+            showOk : false,
+            title : '提示',
+            width : 430,
+            type : 'wee'
+        });
+        // $.weeboxs.close();
+        function close(){
+            $.weeboxs.close();
+            location.href="{$loginRedirectUrl}";
+            var surplus_time = 5;
+
+        }
+        var surplus_time = 5;
+        function timeRefresh(){
+            $(".surplus_time").html(surplus_time);
+            surplus_time -= 1;
+        }
+        setInterval("timeRefresh()",1000);
+        setTimeout("close()",5000);
+        //非企业投资用户请使用个人用户入口登录 end
+    </script>
+    {/if}
+    {if isset($third_auto_reg_resetpwd) && $third_auto_reg_resetpwd}
+    <script type="text/javascript">
+        //设置密码
+        $.weeboxs.open('<div class="tips_icon"><p>您已开通网信账号，但是未设置登陆密码，</p><p>为了您的账号安全，请立即设置密码。</p></div>', {
+            boxid : null,
+            contentType : 'text',
+            showButton : true,
+            showCancel : false,
+            showOk : true,
+            title : '提示信息',
+            width : 390,
+            type : 'wee',
+            okBtnName: "设置密码",
+            onok:function(){
+                location.href = "/user/ForgetPwd?setpsd=1"
+            }
+        });
+    </script>
+    {/if}
+
+    <script type='text/javascript'>
+    var _ncf = {
+        "prd": "firstp2p",
+        "pstr": "",
+        "pfunc": null,
+        "pcon": "",
+        "pck": {
+            "channel": "channel",
+            "fpid": "fpid"
+        },
+        "trid": "",
+        "channel": ['pubid', 'mediumid', 'adid', 'adsize'],
+        "rfuniq": [],
+        "rfmuti": []
+    };
+    (function(p, h, s) {
+        var o = document.createElement(h);
+        o.src = s;
+        p.appendChild(o)
+    })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+
+        function showps(){
+        if (this.forms.password.type="password") {
+            document.getElementById("box").innerHTML="<input id=\"input-password\" class=\"txt-input  padd-l47 int_placeholder\" type=\"text\" name=\"password\" placeholder=\"登录密码\" data-placeholder=\"登录密码\" tabindex=\"2\";' value="+this.forms.password.value+">";
+            document.getElementById("close_eye").innerHTML="<a id='img_eye' href=\"javascript:hideps()\"></a>"
+            var con=document.getElementById("img_eye");
+            con.style.backgroundPosition = "-5px -125px";
+        }
+    }
+    function hideps(){
+        if (this.forms.password.type="text") {
+            document.getElementById("box").innerHTML="<input id=\"input-password\" class=\"txt-input  padd-l47 int_placeholder\" type=\"password\" name=\"password\" placeholder=\"登录密码\" data-placeholder=\"登录密码\" tabindex=\"2\";' value="+this.forms.password.value+">";
+            document.getElementById("close_eye").innerHTML="<a id='img_eye' href=\"javascript:showps()\"></a>"
+            var con=document.getElementById("img_eye");
+            con.style.backgroundPosition = "-5px -101px";
+        }
+    }
+    </script>
+    <!-- 此段必须要引入 -->
+    <script>
+        var test_coding = $("#test_coding").val();
+        if(test_coding){
+            eval(test_coding);
+        }else{
+            var nc = new noCaptcha();
+            var nc_appkey = 'XHZA';  // 应用标识,不可更改
+            var nc_scene = 'login';  //场景,不可更改
+            var nc_token = [nc_appkey, (new Date()).getTime(), Math.random()].join(':');
+            var nc_option = {
+                renderTo: '#dom_id',//渲染到该DOM ID指定的Div位置
+                appkey: nc_appkey,
+                scene: nc_scene,
+                token: nc_token,
+                // trans: '{"name1":"code100"}',//测试用，特殊nc_appkey时才生效，正式上线时请务必要删除；code0:通过;code100:点击验证码;code200:图形验证码;code300:恶意请求拦截处理
+                callback: function (data) {// 校验成功回调
+                    document.getElementById('csessionid').value = data.csessionid;
+                    document.getElementById('sig').value = data.sig;
+                    document.getElementById('risk_token').value = nc_token;
+                    document.getElementById('scene').value = nc_scene;
+                }
+            };
+            nc.init(nc_option);
+        }
+
+    </script>
+    <!-- 引入结束 -->
+</body>
+<style>.jinggong{color:#888;}.jinggong:hover{text-decoration:underline;}.nc-lang-cnt{font-size:14px;}</style>
+<script>
+    //埋点
+    $(function(){
+        zhuge.track('进入登录页面')
+    })
+    function zhugeTrack(place, name, id, content){
+        $('html').on('click',place,function(){
+            var data = {};
+            data[id] = content;
+            zhuge.track(name, data)
+        })
+    }
+    zhugeTrack('.JS_log','登录_点击登录按钮','','')
+    zhugeTrack('.JS_reg','登录_点击免费注册','','')
+    zhugeTrack('.JS_forgetPwd','登录_点击忘记密码','','')
+</script>
+</html>

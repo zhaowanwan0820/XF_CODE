@@ -1,0 +1,142 @@
+{include file="inc/borrow/fileupload/credit_header.html"} 
+<style type="text/css">
+	#ctemp_box .dialog-button{ display:none!important;}
+</style>
+<div class="hd-bg">
+	<form action="{url x="index" r="borrow#file_upload_save"}" method="post" id="uploadCreditForm" name="uploadCreditForm">
+		<div id="item">
+	    	<div class="blank20"></div>
+	        <div style="width:90%;background:#FEFEFC;border:1px solid #CCC;padding:10px;margin:0 auto;">
+	            <div class="f16 b pt5 pb5" style="color:#003C85;">
+				个人信用报告认证
+	            </div>
+	            <div class="f_dgray" style="text-indent: 2em;">
+				个人信用报告是由中国人民银行出具，全面记录个人信用活动，反映个人信用基本状况的文件。本报告是{function name="app_conf" v="SHOP_TITLE"}了解您信用状况的一个重要参考资料。 您信用报告内体现的信用记录，和信用卡额度等数据，将在您发布借款时经{function name="app_conf" v="SHOP_TITLE"}工作人员整理，在充分保护您隐私的前提下披露给{function name="app_conf" v="SHOP_TITLE"}投资者，作为投资者投资的依据。 
+				</div>
+	        </div>
+	        <div class="blank20"></div>
+	        <div id="explain" style="width:80%;padding-left:40px;margin:0 auto;">
+                <p class="f_dgray b">
+                	认证说明：
+                </p>
+                <div id="explain_item">
+                    <div style="padding-left:20px">
+                        <div class="lh22">
+                        	1、个人信用报告需<span class="f_red">15日内</span>开具。
+                        </div>
+                         <div class="lh22">	
+                            2、上传您的<span class="f_red">个人信用报告原件</span>的照片，每页信用报告需独立照相，并将整份信用报告按页码先后顺序完整上传。
+                            <br> <a href="#creditDiv" id="creditGuy">如何办理个人信用报告？</a>
+                            <br> <a href="http://www.pbccrc.org.cn/kefuzhongxin_303.html" target="_blank">全国各地征信中心联系方式查询</a>
+                        </div>
+                        <div class="lh22">
+                            3、请确认您上传的资料是清晰的、未经修改的数码照片或扫描图片。
+                        </div>
+                    </div>
+                </div>
+                <p class="lh24">
+                    <span class="f_dgray b">认证条件：</span>
+                    <span>信用记录良好</span>
+                </p>
+                <p class="lh24">
+                    <span class="f_dgray b">审核时间：</span>
+                    <span>3个工作日内</span>
+                </p>
+                <p class="lh24">
+                    <span class="f_dgray b">认证有效期：</span>
+                    <span>6个月</span>
+                </p>
+                <div class="blank5">
+                </div>
+                <div class="dot">
+                </div>
+                <div class="blank20">
+                </div>
+	        </div>
+	       	<div>
+				<span style="padding-left:83px" class="f_red b">*</span>上传央行信用报告：
+				<div style="width:83%;padding-left:39px;margin:0 auto;" id="upload_file_box">
+					<div class="blank5"></div>
+	       			<div class="plupload_header_text pl10">每张图片最大限制为3MB，图片格式为JPG,GIF,PNG,PDF</div>
+					<div class="blank5"></div>
+					{function name="show_ke_image" v="file1"}
+					{function name="show_ke_image" v="file2"}
+				</div>
+			</div>
+	        <div class="blank20"></div>
+	        <div class="blank20"></div>
+	        <div style="text-align: center">
+	            <input type="hidden" id="path" value="{$path}" name="path"/>
+				<input type="hidden" id="auth" value="{$auth}" name="auth"/>
+	            <input type="hidden" id="uploaded" name="uploaded" value="0"/>
+	            <input type="submit" value="提交审核" class="saveSettingBnt"/>
+	        </div>
+		</div>
+	</form>
+</div>
+<div class="hide" id="creditGuyTemp">
+    <div class="clearfix bddf">
+        <div class="gray_title f14">
+           	如何办理个人信用报告
+        </div>
+        <div class="f_dgray"  style="padding: 5px 12px;">
+            <div style="padding:5px 0" class="f12 lh22">
+                <div>
+                	 办理个人信用报告，可由本人或委托他人到中国人民银行征信中心办理本人的信用报告，其中被委托人称为代理人。
+                </div>
+                <p>
+                	（一）本人查询信用报告
+                </p>
+                <div>
+                	携带本人有效身份证件原件及一份复印件（其中复印件留给征信分中心备查），到中国人民银行各地征信分中心查询。
+                </div>
+                <div>
+                	有效身份证件包括：身份证（第二代身份证须复印正反两面）、军官证、士兵证、护照、港澳居民来往内地通行证、
+                </div>
+                <div>
+                	台湾同胞来往内地通行证、外国人居留证等。
+                </div>
+                <p>
+                	（二）委托他人查询信用报告
+                </p>
+                <div>
+                	 需要携带的材料有委托人及代理人双方的身份证件原件及复印件、授权委托书。其中身份证件复印件和授权委托书留给
+                </div>
+                <div>
+                	征信分中心备查。委托书格式请与当地征信分中心联系取得。
+                </div>
+                <br>
+                <p class="p_1">
+                	全国各地征信中心联系方式查询
+                </p>
+                <p>
+                    <a href="http://www.pbccrc.org.cn/kefuzhongxin_303.html" target="_blank">http://www.pbccrc.org.cn/kefuzhongxin_303.html</a>
+                </p>
+            </div>
+        </div>
+    </div>  
+</div>
+<script type="text/javascript">
+	jQuery(function(){
+		$("#creditGuy").click(function(){
+			var html = $("#creditGuyTemp").html();
+			$.weeboxs.open(html, {boxid:'ctemp_box',contentType:'text',showButton:true, showCancel:false, showOk:false,title:"",width:588,height:216,type:'wee'});
+		});
+		$("#uploadCreditForm").submit(function(){
+			var is_upload_file = false;
+			for(var i=1;i<=2;i++){
+				$("#upload_file_box #file"+i).val(KE.util.getData('file'+i));
+				if($.trim($("#upload_file_box #file"+i).val())!=""){
+					is_upload_file = true;
+				}
+			}
+			if(!is_upload_file){
+				$.showErr("请完成文件上传后提交审核。");
+				return false;
+			}
+			
+			return true;
+		});
+	});
+</script>
+{include file="inc/borrow/fileupload/credit_footer.html"} 

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>借款申请</title>
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-borrows.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/virtual.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/default.css');?>" rel="stylesheet" />
+</head>
+<body >
+<div class="p_borrows bodyscroll">
+    {if $has_qualification eq 0}
+    <div class="default">
+        <img src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/Group_null.png');?>">
+        <p>暂未满足借款申请条件</p>
+    </div>
+    {else}
+    <div class="borrows_con">
+        <ul>
+            <li><span class="con_left">{if $type neq 2}变现通邀请码{else}借款邀请码{/if}：</span>{$code}</li>
+            <li class="ts_li clearfix">
+                <div class="span_left">证件信息：</div>
+                <div class="span_right">
+                    <p>{$realName}</p>
+                    <p>{$idNo}</p>
+                </div>
+            </li>
+            <li><span class="con_left">手机号码：</span>{$mobile}</li>
+            <li><span class="con_left">待收本金：</span>{$allAmount}</li>
+            {if $type neq 2}
+            <li><span class="con_left">可申请借款金额：</span>{$miniBorrowMoney}万~100万元</li>
+            {/if}
+        </ul>
+    </div>
+    <div class="borrows_form">
+        <ul>
+            {if $type eq 2}
+            <li>
+                <span>单位名称</span>
+                <input type="text" class="borrow_input inp_company" placeholder="请输入您的单位名称" />
+            </li>
+            <li>
+                <span>员工职级</span>
+                <select class="borrow_select inp_wl">
+                    <option value="高级董事总经理及以上">高级董事总经理及以上</option>
+                    <option value="董事总经理">董事总经理</option>
+                    <option value="董事总经理以下">董事总经理以下</option>
+                </select>
+            </li>
+            {/if}
+            <li>
+                <span>借款金额</span>
+                <div class="input_money">
+                    <div class="ui_input clearfix borrow_input"></div>
+                </div>
+            </li>
+            <li>
+                <span>借款期限</span>
+                <select class="borrow_select inp_time">
+                    {if $type neq 2}
+                    <?php
+                                for ($i=1; $i<=12; $i++) {
+                                    echo '<option value="' . $i . '">' . $i . '个月</option>';
+                    }
+                    ?>
+                    {else}
+                    <?php
+                                for ($i=6; $i<=36; $i++) {
+                                    echo '<option value="' . $i . '">' . $i . '个月</option>';
+                    }
+                    ?>
+                    {/if}
+                </select>
+            </li>
+            <li>
+                <span>手机号码</span>
+                <input type="number" class="borrow_input inp_phone" placeholder="请输入您的手机号码" />
+            </li>
+            {if $type neq 2}
+            <li>
+                <span>联系地址</span>
+                <input type="text" class="borrow_input inp_addr" placeholder="请输入您的常用地址" />
+            </li>
+            {elseif $type eq 2}
+            <li>
+                <span>公司邮箱</span>
+                <input type="text" class="borrow_input inp_email" placeholder="请输入您的公司邮箱" />
+            </li>
+            {/if}
+        </ul>
+    </div>
+    <div class="dit_btn tc">
+        <input type="submit" class="sub_btn sub_gad jc_sub" value="{if $type neq 2}同意协议并申请{else}提交申请{/if}" disabled="disabled" />
+        {if $type neq 2}<p><a class="red product_intro" href="">《变现通产品介绍》</a><a class="show_agreemend" href="">《申请协议》</a></p>{/if}
+    </div>
+    <div class="ui_mask show_form" style="display: none;">
+        <div class="b_ui_alert">
+            <div class="b_title">申请确认</div>
+            <div class="b_con">
+                <p><span class="form_money">1,000.00元</span>借款金额</p>
+                <p><span class="form_time">2个月</span>借款期限</p>
+            </div>
+            {if $type neq 2}
+            <div class="b_tips">{function name="get_adv" x="BXT_CONFIRM_DETAIL"}</div>
+            {else}
+            <div class="b_tips">{function name="get_adv" x="ZYD_CONFIRM_DETAIL"}</div>
+            {/if}
+            <div class="b_btn">
+                <a href="#" class="btn_cancel">取消</a><a href="#" class="btn_ok sub_form">确认</a>
+            </div>
+        </div>
+    </div>
+    <div class="ui_mask show_tip" style="display: none;">
+        <div class="b_ui_alert">
+            <div class="b_title">提示</div>
+            <div class="b_tips">手机号码输入错误！</div>
+            <div class="b_btn">
+                <a href="#" class="btn_ok">知道了</a>
+            </div>
+        </div>
+    </div>
+    {/if}
+</div>
+<script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/virtual.js');?>"></script>
+<script type="text/javascript">
+    $(function () {
+        // 产品介绍链接
+        $('.product_intro').attr('href', 'lendmoney://api?type=contract&url=' + encodeURIComponent('{$APP_HOST}/help/intention_product') + '&title=' + encodeURIComponent('产品介绍'));
+        var type = {$type};
+        //初始化输入框
+        var vir_input = new virtualKey($(".ui_input"), {
+            placeholder: (function(){
+                if (type == 1) {
+                    return '借款金额是1000元的整数倍';
+                } else {
+                    return '最高借款金额为' + {$max_money} / 10000 + '万元';
+                }
+            })(),
+            delayHiden: function () {
+                checkInput();
+            },
+            focusFn: function () {
+                $(".borrow_input").blur();
+                $(".borrow_select").blur();
+            }
+        });
+        $(".borrow_input").bind('input propertychange', function () {
+            checkInput();
+        });
+
+        var $money = $(".btn_key");
+        var $phone = $(".inp_phone");
+        var $addr = $(".inp_addr");
+        var $company = $(".inp_company");
+        var $email = $(".inp_email");
+        var $time = $(".inp_time");
+        var $worklv = $(".inp_wl");
+
+        $(".show_agreemend").attr('href', 'lendmoney://api?type=contract&title=' + encodeURIComponent('申请协议') + '&url=' + encodeURIComponent('{$APP_HOST}/help/intention_agreement'));
+        function checkInput() {
+            var _condition;
+            if (type != 2) {
+                _condition = $money.html() == '' || $phone.val() == '' || $addr.val() == '';
+            } else {
+                _condition = $money.html() == '' || $phone.val() == '' || $company.val() == '' || $email.val() == '';
+            }
+            if (_condition) {
+                $(".jc_sub").attr("disabled", "disabled").addClass("sub_gay").removeClass("sub_red");
+            } else {
+                $(".jc_sub").removeAttr("disabled").addClass("sub_red").removeClass("sub_gay");
+            }
+        }
+
+        function showTip(msg) {
+            $(".borrow_input").blur();
+            $(".show_tip .b_tips").html(msg);
+            //$("body").scrool(0).addClass("bodyscrol");
+            setTimeout(function () {
+                $('html, body').scrollTop(0);
+                $(".show_tip").fadeIn();
+            }, 500);
+            $('.sub_form').attr('href', "");
+        }
+
+        $(".jc_sub").bind("click", function () {
+            var mobileRegEx = /^0?(13[0-9]|15[0-9]|18[0-9]|17[0-9]|14[0-9])[0-9]{8}$/;
+            var emailRegEx = /^([a-z\d]+)([_a-z\d-]+)?@([a-z\d-])+(\.[a-z\d-]+)*\.([a-z]{2,4})$/i;
+            var errormsg = "";
+            var cur_money = $money.html() * 1;
+
+            if (!(cur_money > 0)) {
+                showTip("请填写正确的借款金额");
+                return;
+            }
+            if(cur_money % 1000 != 0){
+                showTip("借款金额需为1000的整数倍");
+                return;
+            }
+            if (type != 2) {
+                if(!(cur_money >= {$miniBorrowMoneyNum}) || !(cur_money <= 3000000)){
+                    showTip("借款金额为{$miniBorrowMoney}万-300万");
+                    return;
+                }
+            } else if (type == 2) {
+                var max_money = {$max_money};
+                if(cur_money > max_money){
+                    showTip("最高借款金额为" + max_money / 10000 + "万元");
+                    return;
+                }
+            }
+            if (!mobileRegEx.test($phone.val())){
+                showTip("请填写正确的手机号码");
+                return;
+            }
+            if ($addr.length > 0 && $addr.val() == ""){
+                showTip("请填写正确的联系地址");
+                return;
+            }
+            if ($company.length > 0 && $company.val() == ""){
+                showTip("请填写正确的单位名称");
+                return;
+            }
+            if ($email.length > 0 && !emailRegEx.test($email.val())){
+                showTip("请填写正确的公司邮箱");
+                return;
+            }
+
+            $(".borrow_input").blur();
+            $(".show_form .form_money").html(cuterMoney($(".btn_key").html()) + "元");
+            $(".show_form .form_time").html($time.val() + "个月");
+            setTimeout(function () {
+                var shref;
+                $('html, body').scrollTop(0);
+                $(".show_form").fadeIn();
+                if (type != 2) {
+                    shref = 'lendmoney://api?type=confirm&title=' + encodeURIComponent("借款申请") + '&money=' + $money.html() + '&time=' + $time.val() + '&phone=' + $phone.val() + '&addr=' + encodeURIComponent($addr.val()) + '&code={$code}&agreement=1';
+                    // shref = '/account/IntentionApply?token={$token}money=' + $money.html() + '&time=' + $time.val() + '&phone=' + $phone.val() + '&addr=' + $addr.val() + '&code={$code}&agreement=1';
+                } else if (type == 2) {
+                    shref = 'lendmoney://api?type=confirm&title=' + encodeURIComponent("借款申请") + '&money=' + $money.html() + '&time=' + $time.val() + '&phone=' + $phone.val() + '&addr=' + encodeURIComponent($email.val()) + '&company=' + encodeURIComponent($company.val()) + '&wl=' + encodeURIComponent($worklv.val()) + '&code={$code}&agreement=1';
+                    // shref = '/account/IntentionApply?token={$token}money=' + $money.html() + '&time=' + $time.val() + '&phone=' + $phone.val() + '&addr=' + $email.val() + '&company=' + $company.val() + '&wl=' + $worklv.val() + '&code={$code}&agreement=1';
+                }
+                $('.sub_form').attr('href', shref);
+            }, 500);
+        });
+        //阻止滚动
+        $(".ui_mask").bind("touchstart", function (event) {
+            event.preventDefault();
+        });
+        $(".show_tip .btn_ok").bind("touchstart", function () {
+            $(".show_tip").fadeOut();
+        });
+        $(".show_form .btn_cancel").bind("touchstart", function () {
+            $(".show_form").fadeOut();
+        });
+        $(".show_form .btn_ok").bind("touchstart", function () {
+            $(this).click();
+            //window.location.href = $('.sub_form').attr('href');
+            $(".show_form").fadeOut();
+
+        });
+        var cuterMoney = function (str) {
+            var n = str.length % 3;
+            if (n) {
+                return str.slice(0, n) + str.slice(n).replace(/(\d{3})/g, ',$1');
+            } else {
+                return str.replace(/(\d{3})/g, ',$1').slice(1);
+            }
+        };
+    });
+</script>
+</body>
+</html>

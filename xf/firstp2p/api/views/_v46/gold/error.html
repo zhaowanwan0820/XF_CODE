@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>提示</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('/v4.6/css/gold/p_gold_error.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body class="p_gold_price_error">
+    <div class="error_box">
+      <div class="error_img_icon"></div>
+      <p>系统繁忙，请稍后重试</p>
+      <p>查看订单请前往我的黄金-提金订单</p>
+      <span class="error_reload_btn">重新加载</span>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.v2.js');?>"></script>
+    <script>
+      $(function(){
+        $(".error_reload_btn").click(function(){
+          location.replace('/gold/DeliverPending?token={$data.token}&orderId={$data.orderId}');
+        })
+      })
+    </script>
+</body>
+</html>

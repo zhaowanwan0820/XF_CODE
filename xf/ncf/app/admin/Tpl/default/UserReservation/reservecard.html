@@ -1,0 +1,65 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>预约入口管理 </p>
+    </div>
+       <div class="blank5"></div>
+       <div class="button_row">
+           <input type="button" class="button" value="{%ADD}" onclick="location.href='{:u("UserReservation/reservecard_add")}'" />
+       </div>
+    <table id="dataTable" class="dataTable reservationZone" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="15" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row textDecNone">
+            <th width="100px">编号</th>
+            <!--<<th>贷款类型</th>-->
+            <th>出借期限</th>
+            <th>年化借款利率</th>
+            <th>还款方式</th>
+            <th>最低预约金额</th>
+            <th>最高预约金额</th>
+            <th>预约入口状态</th>
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="item">
+        <tr class="row">
+            <td>
+                &nbsp;{$item.id}
+            </td>
+            <!--
+            <td>
+                &nbsp;{$item.deal_type_name}
+            </td>
+            -->
+            <td>
+                &nbsp;{$item.invest_line_name}
+            </td>
+            <td>
+                &nbsp;{$item.invest_rate}%
+            </td>
+            <td>
+                &nbsp;{$item.loantype_name}
+            </td>
+            <td>
+                &nbsp;{$item.min_amount_yuan}
+            </td>
+            <td>
+                &nbsp;{$item.max_amount_yuan}
+            </td>
+            <td>
+                &nbsp;<span <if condition="$item.status eq 1">style="color:red"</if> >{$item.status_name}</span>
+            </td>
+            <td>
+                &nbsp;<a href="{:u('UserReservation/reservecard_edit', array('id'=>$item['id']))}">编辑</a>
+            </td>
+        </tr>
+        </volist>
+    </table>
+</div> 

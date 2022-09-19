@@ -1,0 +1,197 @@
+
+        
+        <!--private js&css start-->
+        <link href="<?php echo $this->asset->makeUrl('v1/js/widget/paginate/paginate.v1.css');?>" rel="stylesheet" type="text/css" />
+        <script src="<?php echo $this->asset->makeUrl('v1/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+        <link href="<?php echo $this->asset->makeUrl('v1/js/widget/artDialog/dialog.v1.css');?>" rel="stylesheet" type="text/css" />
+        <script src="<?php echo $this->asset->makeUrl('v1/js/widget/artDialog/dialog.v1.js');?>" type="text/javascript"></script>
+        <script src="<?php echo $this->asset->makeUrl('v2/js/bonus/my_wx_red_paper_v2.js');?>" type="text/javascript"></script>
+        <link href="<?php echo $this->asset->makeUrl('v1/css/red-paper.css');?>" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user_v2.css');?>" />
+        <!--private js&css end-->
+        <style>
+        .ui-content {padding:20px 0px;overflow: hidden;}
+        .ui-content .fl {border-left:1px solid #e3e3e3;padding-left:34px;margin-left:-1px;width:410px;}
+        .ui-content .fl h2{font-size:16px;color:#888;margin:5px 0 15px;padding:0 0 0px 0;}
+        
+        .ui-content .content-up {width:370px;border-bottom:1px solid #e5e5e5;padding:0 0 8px 0;margin:0 43px 8px 0;}
+        .ui-content  span {width:120px;display: inline-block;}
+      	.ui-content .content-up span {color:#888;}
+    	.ui-content .content-down span {font-size: 14px;}
+        </style>
+    
+            <div class="user_right">
+
+            <div class="user_right_box  mb20 pb20">
+                    <div class="user_title">
+                        <h1 class="fl"><i class="ico_reseive"></i>红包总览</h1>
+                        <div class="fg_line"></div>
+                    </div>
+                    <div  class="ui-tabs clearfix ui-content">
+                        <div class="fl">
+                            <h2>我领到的红包</h2>
+                            <div class="clearfix">
+                            <div class="content-up">
+                            <span>待使用红包总额</span>
+                            <span>已使用红包总额</span>
+                            <span>已过期红包总额</span>
+                            </div>
+                            <div class="content-down color-yellow1">
+                                <span>{function name="format_price" value=$bonus_user.get_unused_money}</span>
+                                <span>{function name="format_price" value=$bonus_user.get_used_money}</span>
+                                <span>{function name="format_price" value=$bonus_user.get_expired_money}</span>
+                            </div>
+                            </div>
+                            </div>
+                         <div class="fl">
+                            <h2>我发出的红包</h2>
+                            <div class="clearfix">
+                            <div class="content-up">
+                            <span>被使用红包总数</span>
+                            <span>被领取红包总数</span>
+                           
+                            </div>
+                            <div class="content-down color-yellow1">
+                                <span>{$bonus_user.by_used_count}个</span>
+                                <span>{$bonus_user.by_get_count}个</span>
+                             
+                            </div>
+                            </div>
+                            </div>
+                        
+                        
+                    </div>
+                </div>
+
+
+                <div class="user_right_box  mb20 pb20">
+                    <div id="tabs" class="ui-tabs">
+                    <div class="user_title">
+                        <h1 class="fl"><i class="ico_reseive"></i>我领到的红包</h1>
+                        <div class="fg_line"></div>
+                        <ul class="ui-tabs-nav ui-corner-all">
+                            <li class="ui-tabs-active"> <a data-tab="1" href="javascript:void(0);">待使用的红包</a> </li>
+                            <li> <a data-tab="2" href="javascript:void(0);">已使用的红包</a> </li>
+                            <li> <a data-tab="3" href="javascript:void(0);">已过期的红包</a> </li>
+                        </ul>
+                    </div>
+                    
+                        
+                        <div id="tabs_content">
+                        <!--<div>
+                                <table border="0" class="tab-thead">
+                                    <thead>
+                                        <tr>
+                                            <th width="83">面值</th>
+                                            <th width="98">类型</th>
+                                            <th width="116">投资限制</th>
+                                            <th width="288">有效期</th>
+                                            <th width="137">红包来源</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <table width="100%" border="0" class="tab-tbody">
+                                    <thead>
+                                        <colgroup>
+                                            <col width="93"/>
+                                            <col width="98"/>
+                                            <col width="116"/>
+                                            <col width="288"/>
+                                            <col width="147"/>
+                                        </colgroup>
+                                    </thead>
+                                    <tbody>
+                                         <tr>
+                                            <td><span class="color-yellow1">￥100.00</span></td>
+                                            <td>仅限投资</td>
+                                            <td>￥1000.00</td>
+                                            <td>2014-10-13至2014-10-19</td>
+                                            <td>网站活动派送</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="color-yellow1">￥100.00</span></td>
+                                            <td>仅限投资</td>
+                                            <td>￥1000.00</td>
+                                            <td>2014-10-13至2014-10-19</td>
+                                            <td>好友邀请</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="color-yellow1">￥100.00</span></td>
+                                            <td>仅限投资</td>
+                                            <td>￥1000.00</td>
+                                            <td>2014-10-13至2014-10-19</td>
+                                            <td>好友邀请</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="color-yellow1">￥100.00</span></td>
+                                            <td>仅限投资</td>
+                                            <td>￥1000.00</td>
+                                            <td>2014-10-13至2014-10-19</td>
+                                            <td>好友邀请</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                            </div> -->
+                        </div>
+                        <div id="receBonus"></div>
+                        <div id="pagination_00" class="pagination"></div>
+                    </div>
+                </div>
+                <div class="user_right_box  mb20 pb20">
+                    <div class="user_title">
+                        <h1><i class="ico_send"></i>我发出的红包</h1>
+                    </div>
+                    <table width="100%" border="0" class="red-send zj_tab">
+                        <thead>
+                            <tr>
+                                <th width="220">红包类型</th>
+                                <th width="65">红包数量</th>
+                                <!--<th width="140">红包金额</th>-->
+                                <th width="310">有效期</th>
+                                <th width="135">状态</th>
+                                <th width="130">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <tr>
+                                <td class="text-left">294万一口标，友居贷1号002</td>
+                                <td>12个</td>
+                                <td><span class="color-yellow1">￥1000.00</span></td>
+                                <td>2014-10-13至2014-10-20</td>
+                                <td>全部领取</td>
+                                <td>————</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">294万一口标，<br>
+                                    友居贷1号002</td>
+                                <td>12个</td>
+                                <td><span class="color-yellow1">￥1000.00</span></td>
+                                <td>2014-10-13至2014-10-20</td>
+                                <td>领取2个使用1个</td>
+                                <td><a href="#" class="but-blue">再次发送</a></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">294万一口标，<br>
+                                    友居贷1号002</td>
+                                <td>12个</td>
+                                <td><span class="color-yellow1">￥1000.00</span></td>
+                                <td>2014-10-13至2014-10-20</td>
+                                <td>全部领取</td>
+                                <td>————</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">294万一口标，<br>
+                                    友居贷1号002</td>
+                                <td>12个</td>
+                                <td><span class="color-yellow1">￥1000.00</span></td>
+                                <td>2014-10-13至2014-10-20</td>
+                                <td>全部领取</td>
+                                <td><a href="#" class="but-blue">再次发送</a></td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                    <div id="sendBonus"><div style="text-align:center;margin:30px 0 0;line-height:25px;color:#888;font-size:16px;">仅显示最近30天内的红包</div></div>
+                    <div id="pagination_03" class="pagination"></div>
+                </div>
+            </div>
+        </div>

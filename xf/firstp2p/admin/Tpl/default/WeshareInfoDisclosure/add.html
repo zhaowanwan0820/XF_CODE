@@ -1,0 +1,277 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+<style>
+table.form td.topTd, table.form td.bottomTd{ display:none;}
+
+</style>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<form name="add" action="__APP__" method="post" enctype="multipart/form-data" autocomplete="off">
+
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title"><span style="color:red">*</span>产品类型</td>
+        <td class="item_input">
+            <select class= "pruductType" style="width:125px;height:25px" name=product_type>
+            <option value=1 >闪电消费</option>
+            <option value=2 >现金贷闪信贷</option>
+            <option value=3 >现金贷功夫贷</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资期限</td>
+        <td class="item_input">
+            <input type="text" class="textbox required"  des='投资期限' name="invest_term" onblur="check_input_value(this)" value=''/>
+            <input type="radio" value="1" name="invest_unit" checked="checked">天
+            <input type="radio" value="2" name="invest_unit" >月
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">项目简介</td>
+        <td class="item_input">融资方于<span style="color:red">{ 传入标的时间 }</span> 在 <span style="color:red">{ 地点 }</span> 申请融资用于 <span style="color:red">{ 借款用途 }</span> 。<span style="color:red">系统自动写入无需人工操作</span></td>
+    </tr>
+    <tr>
+        <td class="item_title">还款保障措施</td>
+        <td class="item_input" >
+        <script id="editor" name="repay_guarantee_measur" type="text/plain" style="width:1000px;height:200px; float:left;">
+<p>第一还款来源：融资方拥有稳定的工作收入以偿还借款；</p>
+<p>第二还款来源：由国内大型公司为融资方履约提供担保。</p></script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款用途</td>
+        <td class="item_input">
+            <script id="editor1" name="loan_usage" type="text/plain" style="width:1000px;height:200px; float:left;">日常消费（融资方保证按照借款用途使用资金）</script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">预计起息日</td>
+        <td class="item_input">
+        <script id="editor2" name="expect_intrerst_date" type="text/plain" style="width:1000px;height:200px; float:left;">不晚于项目满标后的下一个工作日。</script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">限额管理</td>
+        <td class="item_input">
+        <script id="editor3" name="limit_manage" type="text/plain" style="width:1000px;height:200px; float:left;"> 融资方该笔借款没有超过监管要求的借款余额上限</script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">项目风险提示</td>
+        <td class="item_input">
+        <script id="editor4" name="project_risk_tip" type="text/plain" style="width:1000px;height:200px; float:left;">
+<p>1) 政策风险</p>
+
+<p>因国家法律、法规、行政规章或政策发生重大调整、变化或其他不可预知的意外事件，可能导致投资人无法实现预期收益乃至本金遭受损失.</p>
+
+<p>2) 信用风险</p>
+
+无论何种原因，当承担偿还责任的融资方不能按时偿付本金和收益，将导致投资人无法实现预期收益，甚至本金遭受损失。
+
+<p>3) 操作风险：</p>
+
+a) 不可预测或无法控制的系统故障、设备故障、通讯故障、停电等突发事故将有可能给投资人造成一定损失；
+
+<br/>b) 由于存在互联网和移动通讯网络的黑客恶意攻击可能性，投资人可能会遭受损失；
+
+<br/>c) 投资人的账号及密码信息有可能被盗，客户身份可能被仿冒，投资人可能遭受因此导致的损失；
+
+<br/>d) 投资人的网络终端设备及软件系统可能会受到非法攻击或病毒感染，导致电子签名合同数据无法传输或传输失败，从而遭受损失；
+
+<br/>e) 网上交易、热键操作完毕，未及时退出，他人进行恶意操作将可能造成投资人损失；
+
+<br/>f) 由于通信故障、系统故障以及其他不可抗力等因素的影响，可能导致投资人无法及时做出合理的决策，造成损失；
+
+<p>4) 其他风险：</p>
+a) 由于自然灾害、战争、法律法规或者政策等无法避免或无法控制的因素出现，将影响市场的正常运行，从而导致投资标的损失；
+
+<br/>b) 金融市场危机、行业竞争、代理商违约等超出融资人自身直接控制能力之外的风险，也可能导致投资人利益受损；
+
+<br/>c) 因其他意外因素和不可抗力而导致的风险。
+</script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"><span style="color:red">*</span>状态</td>
+        <td class="item_input">
+            <label><input type="radio" class="f-radio" value="1" name="is_effect" checked="checked" >有效</label>
+            <label><input type="radio" class="f-radio" value="0" name="is_effect" >无效</label>
+        </td>
+    </tr>
+
+</table>
+
+<div class="blank5"></div>
+    <table class="form" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan=2 class="topTd"></td>
+        </tr>
+        <tr>
+            <td class="item_title"></td>
+            <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="WeshareInfoDisclosure" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" onclick="checktosubmit()" value="{%EDIt}" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2 class="bottomTd"></td>
+        </tr>
+    </table>
+</form>
+</div>
+
+<script>
+  //实例化编辑器
+  UE.getEditor('editor');
+  UE.getEditor('editor1');
+  UE.getEditor('editor2');
+  UE.getEditor('editor3');
+  UE.getEditor('editor4');
+
+</script>
+<script type="text/javascript">
+
+function checktosubmit() {
+    $("form").unbind();
+    init_word_box();
+    $("#info").ajaxStart(function(){
+         $(this).html(LANG['AJAX_RUNNING']);
+         $(this).show();
+    });
+    $("#info").ajaxStop(function(){
+
+        $("#info").oneTime(2000, function() {
+            $(this).fadeOut(2,function(){
+                $("#info").html("");
+            });
+        });
+    });
+    $("form").bind("submit",function(){
+        var btn=$('form input[type="submit"]');
+        var $input = $('#hkop');
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+        var doms = $(".required");
+        var check_ok = true;
+        $.each(doms,function(i, dom){
+            if($.trim($(dom).val())=='')
+            {
+                    var title = $(dom).attr('des');
+                    if(!title)
+                    {
+                        title = '';
+                    }
+                    if(title.substr(title.length-1,title.length)==':')
+                    {
+                        title = title.substr(0,title.length-1);
+                    }
+                    if($(dom).val()=='')
+                    TIP = LANG['PLEASE_FILL'];
+                    if($(dom).val()=='0')
+                    TIP = LANG['PLEASE_SELECT'];
+                    alert(TIP+title);
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    $(dom).focus();
+                    check_ok = false;
+                    return false;
+            }
+        });
+        if(!check_ok)
+            return false;
+
+        if(checkUniqe() == false){
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return false;
+         }
+        var editor={'还款保障措施':'editor','借款用途':'editor1','预计起息日':'editor2','限额管理':'editor3','项目风险提示':'editor4'};
+        $.each(editor,function(name,value){
+            if(UE.getEditor(value).getContent()=='')
+            {
+                    var title = name;
+                    if(!title)
+                    {
+                        title = '';
+                    }
+                    if(title.substr(title.length-1,title.length)==':')
+                    {
+                        title = title.substr(0,title.length-1);
+                    }
+                    TIP = LANG['PLEASE_FILL'];
+                    alert(TIP+title);
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    //$(dom).focus();
+                    check_ok = false;
+                    return false;
+            }
+        });
+        if(!check_ok)
+            return false;
+        if($("form").attr("name")=="addss"){
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return true;
+            }else{
+                if (confirm("确定此操作吗？")) {
+                    //$input.val(btn.val());
+                    $(this).append($input);
+                     return true;
+                } else {
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    return false;
+                }
+            }
+    });
+}
+function check_input_value(input_value) {
+    if (input_value.value && (input_value.value < 0 || isNaN(input_value.value)))
+	    {
+	        alert('投资期限只能输入正数');
+	        input_value.focus();
+	        return false;
+	    }
+    if(input_value.value == '')
+        {
+           alert('投资期限不能为空');
+           input_value.focus();
+           return false;
+        }
+}
+//异步校验产品类型和投资期限是否已经存在
+function checkUniqe() {
+       var _ptype = $(".pruductType").val();
+       var _unit = $('input[name="invest_unit"]:checked').val();
+       var _term = $('input[name="invest_term"]').val();
+       var _flag = true;
+       $.ajax({
+           url: ROOT+"?m=WeshareInfoDisclosure&a=checkUniqe&ptype="+_ptype+"&unit="+_unit+"&term="+_term,
+           data: '',
+           async: false,
+           dataType: "json",
+           success: function(obj){
+               if(obj.errno == 0) {
+                   alert("当前信息披露与编号"+obj.id+"冲突"+",请检查");
+                   flag = false;
+               }else{
+                   flag = true;
+               }
+           }
+       });
+       if(flag == false) {
+            return false;
+       }else{
+            return true;
+       }
+    }
+</script>
+
+<include file="Public:footer" />

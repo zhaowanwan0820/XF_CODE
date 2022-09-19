@@ -1,0 +1,66 @@
+{include file="web/views/fenzhan/header.html"}
+
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>"  rel="stylesheet" type="text/css">
+<!--private js&css end-->
+
+
+<div class="w980 mauto clearfix">
+
+    <section>
+        <div class="pay">
+            <div class="pay_con">
+                <p>充值金额</p>
+                <p><span class="color-red1" style="font-size:24px;">{$userInfo.moneyFormat}</span></p>
+                <p style="border-top:solid 1px gray"/>
+                <p>{$userInfo.bankName}</p>
+                <p>{$userInfo.cardFormat}</p>
+                <p>{$userInfo.noticeSn}</p>
+                <p>{$userInfo.orderId}</p>
+                <p class="pay_other">
+                    <button class="user_button mt10 mb20" type="button">确认充值</a>
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+<div style="width:400px; padding:10px; display: none" id="pay_tip">
+
+    <p style="font-size:14px; font-weight:bold;">
+        {$LANG.PAYMENT_INFO_TIP}
+    </p>
+    <div class="blank"></div>
+    <p class="notice">
+        {$LANG.PAYMENT_NOTICE_TIP_1}
+        <br />
+        {$LANG.PAYMENT_NOTICE_TIP_2}
+    </p>
+    <div class="blank"></div>
+    <p >
+        <input type="button" value="{$LANG.PAYMENT_HAS_DONE}" class="paybutton" onclick="location.href='{$actionUrl}';" >
+        <input type="button" value="{$LANG.PAYMENT_ERROR}" class="paybutton paybutton-gray" style="width:220px" onclick="location.href='{$reUrl}';">
+    </p>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".user_button").bind("click",function(){
+            $.post('/payment/yeepayRequest', {}, function(response){
+                if(response.status == 0)
+                {
+                    alert('充值成功');
+                    window.location.href='/account/';
+                   
+                }
+                else
+                {
+                    alert(response.msg);
+                }
+            },
+            'JSON'
+            )
+        });
+    });
+</script>
+{include file="web/views/fenzhan/footer.html"}

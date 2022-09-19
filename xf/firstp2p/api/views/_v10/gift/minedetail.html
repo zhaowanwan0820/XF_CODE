@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>优惠券详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>">
+    <script>
+        window['_MOBILE_'] = "{$userInfo.mobile}";
+        window['_ZMQStringWithSignature'] = "{$_ZMQStringWithSignature}";
+        window['_O2O_COUPONID_'] = "{$coupon.id}";
+        window['_O2O_FRONTEND_SIGN_'] = "{$o2o_frontend_sign}";
+        window['_O2O_COUPON_USENESS_'] = {if $coupon.status eq 1}false{else}true{/if};
+    </script>
+    <style>
+        ._O2O_COUPON_GROUP_DETAIL{display:none !important;}
+        ._O2O_COUPON_ACQUIRE_SUC{display:none !important;}
+        ._O2O_MY_COUPON_DETAIL{}
+    </style>
+</head>
+<body>
+    <div class="m-main">
+        <div class="p_coupon_detailed">
+        <div class="goods big_bg">
+            <div class="big_bg_top">
+                    <dl class="clearfix">
+                        <dt><img src="{$coupon.pic}"></dt>
+                        <dd>
+                            <h3>{$coupon.productName}</h3>
+                            {if $coupon.goodPrice neq 0 || ($coupon.status eq 1 && $coupon.useRules eq 1)}
+                            <p class="{if $coupon.status eq 1}color_red {/if}f15">{if $coupon.goodPrice neq 0}{$coupon.goodPrice}元{/if}
+                                {if $coupon.status eq 1 && $coupon.useRules eq 1}
+                                    <span class="coupon_tips">限本人使用</span>
+                                {/if}
+                            </p>
+                            {/if}
+                            {if $coupon.status eq 1}
+                            <p>
+                                {if $coupon.useEndTime neq 0}
+                                    有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}
+                                {/if}
+                            </p>
+                            {elseif $coupon.isShowCouponNumber eq 1 && ($coupon.useRules eq 1 || $coupon.useRules eq 2)}
+                            <p>
+                                {if $coupon.status eq 2}
+                                券码：<span class="ui_line_through coupon_num"></span>
+                                {elseif $coupon.status eq 3}
+                                券码：<span class="coupon_num"></span>
+                                {/if}
+                            </p>
+                            {/if}
+                        </dd>
+                    </dl>
+                    {if $coupon.status eq 2}
+                <div class="status_ysy disnone"></div>
+                    {/if}
+                    {if $coupon.status eq 3}
+                    <div class="status_ygq "></div>
+                    {/if}
+                    {if $coupon.status eq 1 && $coupon.isShowCouponNumber eq 1 && ($coupon.useRules eq 1 || $coupon.useRules eq 2)}
+                        <div class="change_code">
+                            <p class="f15">券码：<span class="pr10 coupon_num"></span><!-- <a href="#" class="pl10">复制</a> --></p>
+                        </div>
+                {/if}
+                <div class="new_txt">
+                    {function name='htmlspecialchars_decode' v=$coupon.couponDesc}
+                </div>
+
+                </div>
+            </div>
+            <div class="detailed_text">
+                {if $coupon.status eq 1}
+                    {if $coupon.storeList && ($coupon.useRules eq 1 || $coupon.useRules eq 2)}
+                        <h2>适用门店</h2>
+                        {foreach from=$coupon.storeList item=hash}
+                <p class="txt_show">{$hash.storeAddr}</p>
+                        {/foreach}
+                    {/if}
+                {elseif $coupon.status eq 2}
+                    {if $coupon.p2pUsedDesc.detail}
+                        <h2>{$coupon.p2pUsedDesc.title}</h2>
+                        {foreach from=$coupon.p2pUsedDesc.detail item=detail}
+                <p class="txt_show">{$detail}</p>
+                        {/foreach}
+                    {/if}
+                {/if}
+                <h2>券码来源</h2>
+                <p>{$coupon.fromSourceName}</p>
+                <h2>领取时间</h2>
+                <p>{function name="format_date_by_type" b=$coupon.createTime}</p>
+                {if $coupon.status eq 2}
+                    <h2>兑换时间</h2>
+                    <p>{function name="format_date_by_type" b=$coupon.updateTime}</p>
+                {/if}
+            </div>
+            {if $coupon.isShowCouponNumber eq 1 && !($coupon.useRules eq 1 || $coupon.useRules eq 2)}
+            <div class="online_coupin_num coupon_num"></div>
+            {/if}
+            {if $coupon.status eq 1}
+                {if $coupon.p2pExchangeUrl}
+                    <div class="ui_h56"></div>
+                    <div class="ui_btn_box">
+                        <a data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="couponRedeemDetail" data-title="确认{$coupon.p2pUsedDesc.title}" data-identity="couponConfirmInfo" data-needback="true" data-needrefresh="true" class="btn_red" href="{$APP_HOST}{$coupon.p2pExchangeUrl}&token={$usertoken}">去兑换</a>
+                    </div>
+                {/if}
+            {/if}
+        </div>
+    </div>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    <script>
+        //券码分割
+        var str = '{$coupon.couponNumber}';
+        var couponNumber = '';
+        for(var i = 0; i< str.length; i++){
+           couponNumber += str[i];
+           if((i+1) % 4 == 0) couponNumber += ' ';
+        }
+        $('.coupon_num').html(couponNumber);
+        {if $coupon.status eq 1}
+setTimeout(function(){
+            window.location.reload();
+        },30000);
+        {/if}
+    </script>
+</body>
+</html>

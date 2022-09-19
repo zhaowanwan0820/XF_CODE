@@ -1,0 +1,187 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/carry.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title"></div>
+<div class="blank5"></div>
+<div class="button_row">
+</div>
+<php>
+
+    function get_withdraw_amount($userId, $wlid)
+    {
+        return '0.00';
+    }
+
+    function get_withdraw_limit($id)
+    {
+        return $GLOBALS['db']->getRow("SELECT * FROM firstp2p_withdraw_limit WHERE id = '$id'");
+    }
+
+    function get_limit_status($status)
+    {
+        $status = intval($status);
+        $statusdesc = array(
+            1 => '未还款',
+            2 => '还款中',
+            3 => '已还清',
+            4 => '已取消',
+            5 => '已提清',
+        );
+        return $statusdesc[$status];
+    }
+
+    function get_limit_type($type){
+        $type = intval($type);
+        $typedesc = array(
+            0 => '变现通',
+            1 => '贷后管理',
+            2 => '法律合规',
+            3 => '其他',
+            );
+       return $typedesc[$type];
+    }
+
+    //读取用户姓名
+    function get_user_money($user_id, $platform = 1){
+        // 超级账户
+        $money = 0.00;
+        if ($platform == 2)
+        {
+            $money =  M("User")->where("id='".$user_id."'")->getField("money");
+        } else if ($platform == 1) {
+            $money = M('UserThirdBalance')->where("user_id = '{$user_id}'")->getField('supervision_balance');
+        }
+        // 网贷账户
+        if($money){
+            return format_price($money);
+        }else{
+            return '';
+        }
+    }
+
+    function show_withdraw_time($status, $time)
+    {
+        if(($status == 1 || $status == 2) && $time) {
+            return '<br>'.to_date($time);
+        } else {
+            return '';
+        }
+    }
+
+    function get_opt($id, $status, $adm_id, $cur_adm_id)
+    {
+        if($status == 0)
+            return "<a class='ts-input' type='button' href='m.php?m=WithdrawLimit&a=doAudit&id=$id&status=2' >批准</a>&nbsp;&nbsp;<a class='ts-input' type='button' href='m.php?m=WithdrawLimit&a=doAudit&id=$id&status=3'>拒绝</a>";
+        else if ($status == 1 )
+            return "<a class='ts-input' type='button' href='m.php?m=WithdrawLimit&a=doAudit&id=$id&status=3'>拒绝</a>";
+        else
+            return '';
+    }
+
+</php>
+
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        用户id：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+        会员名称：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" style="width:100px;" />
+        是否还款：<html:select name="status" options="limit_status" selected="_REQUEST[status]" first="请选择"/>
+        类型：<html:select name="type" options="limit_types" selected="_REQUEST[type]" first="请选择"/> 
+
+        <input type="hidden" value="WithdrawLimit" name="m" />
+        <input type="hidden" value="<?php echo $_REQUEST['a'];?>" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+<tr><td colspan="20" class="topTd" >&nbsp; </td></tr>
+    <tr class="row" >
+        <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+        <th width="50px"><a href="javascript:sortBy('id','<?php echo ($sort); ?>','UserCarry','index')" title="按照<?php echo L("ID");?>
+        <?php echo ($sortType); ?> "><?php echo L("ID");?><?php if(($order)  ==  "id"): ?>
+        <img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a>
+        </th>
+        <th> 限制提现记录编号</th>
+        <th><a href="javascript:sortBy('user_id','<?php echo ($sort); ?>','UserCarry','index')" title="按照用户ID<?php echo ($sortType); ?> ">用户ID<?php if(($order)  ==  "user_id"): ?>
+        <img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle"><?php endif; ?></a>
+        </th>
+
+        <th><a href="javascript:sortBy('user_id','<?php echo ($sort); ?>','UserCarry','index')" title="按照<?php echo L("USER_NAME");?>
+        <?php echo ($sortType); ?> "><?php echo L("USER_NAME");?><?php if(($order)  ==  "user_id"): ?>
+        <img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle"><?php endif; ?></a>
+        </th>
+        <if condition="$isSupervision">
+        <th>已提现现额度</th>
+        <th>申请可提现额度</th>
+        <else/>
+        <th>已提现现额度</th>
+        <th>申请可提现额度</th>
+        </if>
+        <th><a href="javascript:sortBy('status','<?php echo ($sort); ?>','UserCarry','index')" title="按照状态<?php echo ($sortType); ?> ">状态
+        <?php if(($order)  ==  "status"): ?><img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a></th>
+        <th><a href="javascript:sortBy('status','<?php echo ($sort); ?>','UserCarry','index')" title="按照状态<?php echo ($sortType); ?> ">类型
+        <?php if(($order)  ==  "status"): ?><img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+        <?php endif; ?></a></th>
+        <th>备注</th>
+        <th>申请时间</th>
+        <if condition="$isSupervision">
+        <th>申请人账户名</th>
+        <th>审核人账户名</th>
+        <th>结束时间</th>
+        <else/>
+        <th>还清时间</th>
+        </if>
+    </tr>
+<?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$limit): ++$i;$mod = ($i % 2 )?>
+<?php
+    $limit['withdraw_amount'] = get_withdraw_amount($limit['user_id'],$limit['wl_id']);
+    $withdrawLimit = get_withdraw_limit($limit['wl_id']);
+?>
+<tr class="row" >
+    <td><input type="checkbox" name="key" class="key" value="<?php echo ($limit["id"]); ?>">
+        </td>
+    <td>&nbsp;<?php echo ($limit["id"]); ?></td>
+    <td>&nbsp;<?php echo ($limit["wl_id"]); ?></td>
+    <td>&nbsp;<?php echo ($limit["user_id"]); ?></td>
+    <td>&nbsp;<?php echo (get_user_name($limit["user_id"])); ?></td>
+    <?php if (bcsub($limit['modify_amount'], '0.00', 2) > 0) $limit['amount'] = $limit['modify_amount']; ?>
+    <if condition="$isSupervision">
+    <td>&nbsp;<?php echo (format_price($limit["withdraw_amount"]/100)); ?></td>
+    <td>&nbsp;<?php echo (format_price($limit["remain_money"]/100)); ?></td>
+    <else/>
+    <td>&nbsp;<?php echo (format_price($limit["money"])); ?></td>
+    <td>&nbsp;<?php echo (format_price($limit["amount"])); ?></td>
+    </if>
+    <td>&nbsp;<?php echo (get_limit_status($limit["status"],$limit['id'])); ?></td>
+    <td>&nbsp;<?php echo (get_limit_type($limit["type"],$limit['id'])); ?></td>
+    <td>&nbsp;<?php echo ($limit["memo"]); ?></td>
+    <td>&nbsp;<?php echo to_date($limit["create_time"]); ?></td>
+    <if condition="$isSupervision">
+    <td>&nbsp;<?php echo ($limit["adm_name"]); ?></td>
+    <td>&nbsp;<?php echo ($limit["audit_adm_name"]); ?></td>
+    <td>&nbsp;<?php echo to_date($limit["update_time"]); ?></td>
+    <else/>
+    <td>&nbsp;<?php echo to_date($limit["update_time"]); ?></td>
+    </if>
+</tr>
+    <?php endforeach; endif; else: echo "" ;endif; ?>
+<tr>
+    <td colspan="20" class="bottomTd">&nbsp; </td>
+</tr>
+</table>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />

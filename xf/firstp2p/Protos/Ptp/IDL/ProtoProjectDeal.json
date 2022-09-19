@@ -1,0 +1,696 @@
+{
+    "author": "liuzhenpeng",
+    "comment": "ProjectDeal",
+    "namespace": "NCFGroup\\Protos\\Ptp",
+    "use": ["NCFGroup\\Common\\Extensions\\Base\\ProtoBufferBase", "Assert\\Assertion"],
+    "extend": "ProtoBufferBase",
+    "properties": [
+        {
+            "name": "id",
+            "comment": "projectID",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "userId",
+            "comment": "userId",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "approveNumber",
+            "comment": "放款审批单编号",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "name",
+            "comment": "标的名称",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "borrowAmount",
+            "comment": "借款总金额",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "loanType",
+            "comment": "还款方式",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "repayReriod",
+            "comment": "借款期限",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "rate",
+            "comment": "借款综合成本(年化)",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "credit",
+            "comment": "项目授信额度",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "projectInfoUrl",
+            "comment": "项目简介（word附件地址）",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "dealType",
+            "comment": "标的类型",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "lockPeriod",
+            "comment": "项目锁定期",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "redemptionPeriod",
+            "comment": "项目赎回期",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "advisoryId",
+            "comment": "咨询机构名称",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "agencyId",
+            "comment": "担保机构名称",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "typeId",
+            "comment": "产品类别(借款用途)",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "manageFeeRate",
+            "comment": "年化借款平台手续费",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "consultFeeRate",
+            "comment": "年化借款咨询费",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "prepayRate",
+            "comment": "提前还款违约金系数",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "prepayPenaltyDays",
+            "comment": "提前还款罚息天数",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "prepayDaysLimit",
+            "comment": "提前还款限制(提前还款锁定天数)",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "overdueRate",
+            "comment": "逾期还款罚息系数",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "overdueDay",
+            "comment": "代偿时间(天)",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "contractTplType",
+            "comment": "合同类型",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "leasingContractNum",
+            "comment": "基础合同编号",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "lesseeRealName",
+            "comment": "基础合同项下承租人名称",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "leasingMoney",
+            "comment": "基础合同交易金额(元)",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "entrustedLoanEntrustedContractNum",
+            "comment": "委托贷款委托合同编号",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "entrustedLoanBorrowContractNum",
+            "comment": "委托贷款借款合同编号",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "baseContractRepayTime",
+            "comment": "基础合同借款到期日",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "guaranteeFeeRate",
+            "comment": "借款担保费",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "packingRate",
+            "comment": "打包费率",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "repayPeriodType",
+            "comment": "借款期限类型",
+            "type": "int",
+            "required": false,
+            "default":1 
+        },
+        {
+            "name": "annualPaymentRate",
+            "comment": "年化支付费率",
+            "type": "float",
+            "required": 0.00,
+            "default":1 
+        },
+        {
+            "name": "lineSiteId",
+            "comment": "上线网站编号",
+            "type": "int",
+            "required": false,
+            "default":0 
+        },
+        {
+            "name": "lineSiteName",
+            "comment": "上线网站名称",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "overdueBreakDays",
+            "comment": "中途逾期强还天数",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "loanFeeRateType",
+            "comment": "年化借款平台手续费类型",
+            "type": "int",
+            "required": false,
+            "default":1
+        },
+        {
+            "name": "consultFeeRateType",
+            "comment": "年化借款咨询费类型",
+            "type": "int",
+            "required": false,
+            "default":1
+        },
+        {
+            "name": "guaranteeFeeRateType",
+            "comment": "年化借款担保费类型",
+            "type": "int",
+            "required": false,
+            "default":1
+        },
+        {
+            "name": "payFeeRateType",
+            "comment": "年化支付服务费",
+            "type": "int",
+            "required": false,
+            "default":1
+        },
+        {
+            "name": "leasingContractTitle",
+            "comment": "基础合同名称",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "contractTransferType",
+            "comment": "转让资产类别",
+            "type": "int",
+            "required": false,
+            "default":1
+        },
+        {
+            "name": "loanApplicationType",
+            "comment": "转让资产类别",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "rateYields",
+            "comment": "投资人收益率",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "loanMoneyType",
+            "comment": "放款方式",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "cardName",
+            "comment": "开户人姓名",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "bankCard",
+            "comment": "银行名称",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "bankZone",
+            "comment": "开户行",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "bankId",
+            "comment": "银行id",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "entrustSign",
+            "comment": "合同是否被委托签署",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "userTypes",
+            "comment": "用户类型",
+            "type": "int",
+            "required": false,
+            "default":2
+        },
+        {
+            "name": "fixedReplay",
+            "comment": "固定还款日",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "advanceAgencyId",
+            "comment": "代偿机构",
+            "type": "int",
+            "required": false,
+            "default":1
+        },
+        {
+            "name": "entrustAgencySign",
+            "comment": "项目担保方合同是否被委托签署",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "entrustAdvisorySign",
+            "comment": "项目资产管理方合同是否被委托签署",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "warrant",
+            "comment": "担保范围",
+            "type": "int",
+            "required": false,
+            "default":2
+        },
+        {
+            "name": "productClass",
+            "comment": "产品类别",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "productName",
+            "comment": "产品名称",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "isAddProject",
+            "comment": "是否添加项目",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "projectId",
+            "comment": "项目id",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "isCredit",
+            "comment": "是否非信贷上标",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "dealTagDesc",
+            "comment": "自定义属性(描述)",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "minLoanMoney",
+            "comment": "最低投资金额",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "maxLoanMoney",
+            "comment": "最高投资金额",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "dealTagName",
+            "comment": "自定义属性",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "attachInfo",
+            "comment": "附件合同模板",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "businessLines",
+            "comment": "业务线",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "isEffect",
+            "comment": "是否有效",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "projectName",
+            "comment": "项目名称",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "projectBorrowAmout",
+            "comment": "项目借款总金额",
+            "type": "float",
+            "required": false,
+            "default":0.00
+        },
+        {    
+            "name": "entrustAgencyId",
+            "comment": "委托机构",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "entrustInvestmentDesc",
+            "comment": "委托投资说明",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "fixedValueDate",
+            "comment": "固定起息日",
+            "type": "int",
+            "required": false,
+            "default":0
+        },
+        {
+            "name": "cardType",
+            "comment": "放款账号类型(1:对公 0:对私)",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "riskBearing",
+            "comment": "风险承受能力",
+            "type": "int",
+            "required": false,
+            "default":"0"
+        },
+        {
+            "name": "productMix1",
+            "comment": "产品结构1级",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "productMix2",
+            "comment": "产品结构2级",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "productMix3",
+            "comment": "产品结构3级",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "loanFeeExt",
+            "comment": "手续费分期信息",
+            "type": "string",
+            "required": false,
+            "default":""
+        },
+        {
+            "name": "generationRechargeId",
+            "comment": "代充值机构id",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "advisoryWarningLevel",
+            "comment": "咨询机构报警级别",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "productWarningLevel",
+            "comment": "产品报警级别",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "advisoryWarningUseMoney",
+            "comment": "咨询机构已经使用的钱数",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "productWarningUseMoney",
+            "comment": "相应产品已经使用的钱数",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "advisoryName",
+            "comment": "咨询机构名称",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "assetsDesc",
+            "comment": "基础资产描述",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "jysId",
+            "comment": "交易所ID",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "jysRecordNumber",
+            "comment": "交易所备案产品号",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "extLoanType",
+            "comment": "放款类型",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "isFloatMinLoan",
+            "comment": "是否启用浮动起投金额 0--否 1--是",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "discountRate",
+            "comment": "平台费折扣率",
+            "type": "float",
+            "required": false,
+            "default": 100.00
+        },
+        {
+            "name": "canalAgencyId",
+            "comment": "渠道机构id",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "canalFeeRate",
+            "comment": "渠道服务费率",
+            "type": "string",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "canalFeeRateType",
+            "comment": "渠道服务费收取方式",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "consultFeePeriodRate",
+            "comment": "分期咨询费率",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+	{    
+	    "name": "loanUserCustomerType",
+            "comment": "客群",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "productClassType",
+            "comment": "产品大类ID",
+            "type": "int",
+            "required": false,
+            "default": 0
+        }
+
+    ]
+}
+

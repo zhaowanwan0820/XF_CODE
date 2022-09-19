@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <title>注册 - 网信理财</title>
+        <script>
+            var _STATIC_VERSION = '201507211440';
+            var _STATIC_PATH = (/firstp2plocal/).test(window.location.host) ?  '/static' : '//assets.firstp2p.com';
+            function _warpstaticpath(relativepath) {
+                 return _STATIC_PATH + "/" + relativepath + "?v=" + _STATIC_VERSION;
+            }
+            (function(){
+                document.write('<link rel="apple-touch-icon-precomposed" href="' + _warpstaticpath('skins/default/images/favicon.png') + '"/>');
+                document.write('<link rel="shortcut icon" type="image/x-icon" href="' + _warpstaticpath('skins/default/images/favicon.png') + '"/>');
+                document.write('<link href="' + _warpstaticpath('v2/css/event/m-base.css') + '" rel="stylesheet" type="text/css"/>');
+                document.write('<link href="' + _warpstaticpath('v2/css/event/m-common.css') + '" rel="stylesheet" type="text/css"/>');
+                document.write('<script src="' + _warpstaticpath('v1/js/risk/frms-fingerprint-min.js') + '"><\/script>');
+                document.write('<script src="' + _warpstaticpath('v2/js/event/zepto.min.js') + '"><\/script>');
+                document.write('<script src="' + _warpstaticpath('v2/js/event/common.js') + '"><\/script>');
+                document.write('<script src="' + _warpstaticpath('v2/js/event/iscroll.js') + '"><\/script>');
+            })();
+            window['_eventRegisterAddParams'] = {"from_platform":"wapshake"};
+        </script>
+        <style>
+        body{ background:#f5f5f9;}
+        .reg_top{margin:0 15px; color:#909ba8;}
+        </style>
+    </head>
+    <body>
+        <div class="p_login_new">
+            <div class="login_banner">
+                <script>document.write('<img src="' + _warpstaticpath('v1/images/oauth//mobile/upload/reg_banner.png') + '" width="100%">');</script>
+            </div>
+            <div class="reg_top tr pt10 f14">已有账号？<a href="http://m.firstp2p.com/account/login">立即登录</a></div>
+            <div id="JS-regpanel" class="ui_register">
+                <div class="form_box">
+                    <div class="border_b">
+                        <div class="ui_tel_tips">+86</div>
+                        <input type="tel" class="ui_reg_input JS-input_mobile" placeholder="手机号码（用于接收验证码）" value="">
+                    </div>
+                    <div class="border_b"><input value="" type="password" class="ui_reg_input JS-input_pwd" placeholder="登录密码（6-20位数字/字母/标点）"></div>
+                    <div class="border_b"><input value="" type="text" class="ui_reg_input JS-input_invite" placeholder="邀请码（选填）"/></div>
+                    <div class="border_b">
+                        <input type="tel" class="ui_reg_input JS-input_captcha" placeholder="右侧数字">
+                        <div class="yz_img"><img class="JS-verifyimg" src="" width="80"></div>
+                    </div>
+                </div>
+                <div>
+                    <a class="JS-regbtn reg_finish_btn reg_finish_btn_dis" href="javascript:void(0);">注册</a>
+                    <p class="tc pt10 f14 JS-regterm">同意<span class="red">《网信理财用户协议》</span></p>
+                </div>
+            </div>
+            <div id="JS-regverifypanel" class="ui_mask" style="display:none;">
+                <div class="ui_dialog">
+                    <div class="ui_dialog_close JS-closebtn"></div>
+                    <div class="dialog_con">
+                        <div class="title">填写短信验证码</div>
+                        <div class="dialog_text">
+                            <p class="JS-mobilelabel">已向186××××2168发送验证短信</p>
+                            <p>请输入其中6位数字</p>
+                        </div>
+                        <div class="ipt_box">
+                            <input class="ui_yz_input fl JS-input_vcode" placeholder="短信验证码" type="tel">
+                            <span class="reset_btn JS-mcodebtn">重新发送</span>
+                        </div>
+                        <input type="submit" value="完成注册" class="reg_finish_btn reg_finish_btn_dis JS-regbtn">
+                    </div>
+                </div>
+            </div>
+            <script>document.write('<script src="' + _warpstaticpath('v2/js/event/registerpanel.js?v=20160104') + '"><\/script>');</script>
+        </div>
+        <script>
+        // 回填手机号
+        (function(){
+            var mobilematches = /[?&]mobile=([0-9]*)/.exec(window.location.search);
+            if (mobilematches && mobilematches[1]) {
+                $(".JS-input_mobile").val(mobilematches[1])
+            }}
+        )();
+        // 禁用微信分享
+        function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+        // 禁用微信分享 end
+
+        var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+        (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+        </script>
+    </body>
+</html>

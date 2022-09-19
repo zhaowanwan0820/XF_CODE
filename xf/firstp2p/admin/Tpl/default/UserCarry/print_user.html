@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title> {$user_info.real_name}-提现申请</title>
+<style type="text/css">
+body{ line-height:25px; font-size:12px; width:680px; margin:0px auto;}
+h3{ font-size:16px; font-weight:normal; margin:0px; margin:15px 0px 5px 0px;}
+td{ padding:0px 10px;}
+</style>
+</head>
+
+<body>
+<h3><strong>用户提现申请</strong></h3>
+<table border="1" cellspacing="0" cellpadding="0" width="680">
+<tr>
+    <td width="612" colspan="2" valign="top">申请部门：产品部
+  </tr>
+<tr>
+    <td width="612" colspan="2" valign="top">
+      付款金额（大写）{$usercarry.money|floatval|get_amount}                     （小写）{$usercarry.money|format_price} </td>
+  </tr>
+ 
+    <td width="131" rowspan="3" valign="top">&nbsp;
+      支付方式：易宝支付 </td>
+    <td width="481" valign="top">收款方名称：{$bank.card_name}</td>
+  </tr>
+  <tr>
+    <td width="481" valign="top">收款方开户行：{$bank.bankName}{$bank.bankzone}  </td>
+  </tr>
+  <tr>
+    <td width="481" valign="top">收款方账号：{$bank.bankcard} </td>
+  </tr>
+  <tr>
+    <td width="612" colspan="2" valign="top">付款内容：{$deal.name}放款<span style="margin-left:130px;">&nbsp;</span>付款备注：{$user.real_name}款项 </td>
+  </tr>
+  <tr>
+    <td width="612" colspan="2" valign="top">付款日期<u>                       </u>      付款编号<u>                       </u>  </td>
+  </tr>
+ 
+</table>
+<h3>申&nbsp;&nbsp;请&nbsp;&nbsp;人：<u>                </u></h3>
+<h3>出&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;纳：<u>                </u></h3>
+<h3>财务&nbsp;&nbsp;副总：<u>                </u></h3>
+
+<h3><strong>{$user_info.real_name}用户明细&nbsp;会员id：{$user_info.id}&nbsp;会员名称：{$user_info.user_name}</strong>  {$tips}</h3>
+<table border="1" cellspacing="0" cellpadding="0" width="680" style='font-size:8px;'> 
+ <tr>
+    <td width="36" valign="top">编号 </td>
+    <td width="75" valign="top">类型 </td>
+    <td width="67" valign="top">操作时间 </td>
+    <td width="57" valign="top">资金变动 </td>
+    <td width="77" valign="top">冻结(+)/解冻(-) </td>
+  </tr>
+<foreach name="dealLog" item="dealLog_item">
+  <tr style='height:16px;line-height:16px;'>
+    <td width="36" valign="top">{$dealLog_item.id}</td>
+    <td width="105" valign="top">{$dealLog_item.log_info}</td>
+    <td width="117" valign="top">{$dealLog_item.log_time|to_date} </td>
+    <td width="57" valign="top">{$dealLog_item.money|format_price}</td>
+    <td width="57" valign="top">{$dealLog_item.lock_money|format_price}</td>
+  </tr>
+</foreach>  
+</table>
+
+
+</body>
+<script>
+window.print();
+</script>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{$title}</title>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/m-base.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/m-common.css');?>">
+</head>
+
+<body>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/p_onlineorg_qs.css');?>">
+  <div class="p_onlineorg_qs">
+    <div class="qs_cont">
+       {if $type eq 1} 
+      <img src="<?php echo $this->asset->makeUrl('v3/images/activity/onlinereg/not_icon@3x.png');?>" width="71" height="71" class="icon_red">
+      <p class="mt32">抱歉，此活动已结束</p>
+        {elseif $type eq 2}
+        <img src="<?php echo $this->asset->makeUrl('v3/images/activity/onlinereg/not_icon_blue@3x.png');?>" width="71" height="71" class="icon_red">
+      <p class="mt32">抱歉，此活动仅限{$userLevel}及以
+          <br/>上VIP会员参加</p>
+        {elseif $type eq 3}
+        <img src="<?php echo $this->asset->makeUrl('v3/images/activity/onlinereg/not_icon@3x.png');?>" width="71" height="71" class="icon_red">
+      <p class="mt32">您已报名此活动
+        <br/>最终入选结果，请以官方通知为准</p>
+        {/if}
+    </div>
+    <a href="firstp2p://api?type=native&name=home" class="btn_red_h40 mt25 JS_go_wx">去网信首页</a>
+  </div>
+
+  <!--end-->
+  <script src="<?php echo $this->asset->makeUrl('v3/js/activity/onlinereg/jquery-1.10.2.min.js');?>"></script>
+  <script>
+    $(function(){
+      var isApp = '{$isApp}';
+      if (isApp == '1') {
+        $('.JS_go_wx').attr('href', 'firstp2p://api?type=native&name=home');
+        window.location.href="firstp2p://api?type=rightbtn&title="
+      } else {
+        $('.JS_go_wx').attr('href', 'https://m.ncfwx.com');
+      }
+    })
+  </script>
+
+</body>
+
+</html>

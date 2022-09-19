@@ -1,0 +1,175 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+<script type="text/javascript">
+    function add(id, typeID) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealQueue&"+VAR_ACTION+"=add_deal&queue_id="+id;
+    }
+    function edit(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=edit&id="+id;
+    }
+    function jump(queue_id, deal_id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealQueue&"+VAR_ACTION+"=add_deal&queue_id="+queue_id+"&jump_id="+deal_id;
+    }
+    function del(queue_id, deal_id) {
+        if(!deal_id) {
+            idBox = $(".key:checked");
+            if(idBox.length == 0) {
+                alert(LANG['DELETE_EMPTY_WARNING']);
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            deal_id = idArray.join(",");
+        }
+        $.ajax({
+            url: ROOT+"?m=DealQueue&a=delete_deal&queue_id="+queue_id+"&deal_id="+deal_id,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                $("#info").html(obj.info);
+                if(obj.status==1) {
+                    location.href=ROOT+"?m=DealQueue&a=show_detail&id="+queue_id;
+                }
+            }
+        });
+    }
+    function move(queue_id, deal_id, direction) {
+        $.ajax({
+            url: ROOT+"?m=DealQueue&a=move_deal&queue_id="+queue_id+"&deal_id="+deal_id+"&direction="+direction, 
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                $("#info").html(obj.info);
+                if(obj.status==1) {
+                    location.href=ROOT+"?m=DealQueue&a=show_detail&id="+queue_id;
+                }
+            }
+        });
+    }
+
+
+</script>
+
+<div class="main">
+<div class="main_title">{$deal_queue.name} <a href="{:u("DealQueue/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add({$deal_queue.id});" />
+    <input type="button" class="button" value="{%DEL}" onclick="del({$deal_queue.id});" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        借款标题：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" />
+        借款人姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" />
+        项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        借款状态：
+        <select name="deal_status">
+            <option value="all" <if condition="$_REQUEST['deal_status'] eq 'all' || trim($_REQUEST['deal_status']) eq ''">selected="selected"</if>>所有状态</option>
+            <option value="0" <if condition="$_REQUEST['deal_status'] neq 'all' && trim($_REQUEST['deal_status']) neq '' && intval($_REQUEST['deal_status']) eq 0">selected="selected"</if>>{%DEAL_STATUS_0}</option>
+            <option value="1" <if condition="intval($_REQUEST['deal_status']) eq 1">selected="selected"</if>>{%DEAL_STATUS_1}</option>
+            <option value="6" <if condition="intval($_REQUEST['deal_status']) eq 6">selected="selected"</if>>{%DEAL_STATUS_6}</option>
+        </select>
+
+            存管报备状态：
+            <select name="report_status" id="report_status">
+                <option value="" <if condition="$_REQUEST['report_status'] eq ''">selected</if>>请选择</option>
+                <option value="1" <if condition="$_REQUEST['report_status'] eq '1'">selected</if>>已报备</option>
+                <option value="0" <if condition="$_REQUEST['report_status'] eq '0'">selected</if>>未报备</option>
+            </select>
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DealQueue" name="m" />
+        <input type="hidden" value="show_detail" name="a" />
+        <input type="hidden" value="{$deal_queue.id}" name="id" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="16" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">队列次序</th>
+            <th width="50px">借款编号</th>
+            <th>借款标题</th>
+            <th>旧版借款标题</th>
+            <th>上标平台</th>
+            <th>借款金额</th>
+            <th>年化利率</th>
+            <th>借款期限</th>
+            <th>还款方式</th>
+            <th>报备状态</th>
+            <!--<th>固定起息日</th>-->
+            <th>借款人用户名</th>
+            <th>借款人姓名</th>
+            <th>借款人id</th>
+            <th>借款人手机</th>
+            <th>出借状态</th>
+            <th>状态</th>
+            <th style="width:100px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="item" key="no">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$item.id}">
+            </td>
+            <td>&nbsp;{$no}</td>
+            <td>&nbsp;{$item.id}</td>
+            <td>
+                &nbsp;<a href="javascript:edit('{$item.id}')">{$item.name}</a>
+            </td>
+            <td>
+                &nbsp;{:getOldDealNameWithPrefix($item['id'], $item['project_id'])}
+            </td>
+            <td>
+                &nbsp;{$item.id|get_deal_domain='true'}
+            </td>
+            <td>&nbsp;{$item.borrow_amount}</td>   
+            <td>&nbsp;{$item.rate}%</td>   
+            <td>&nbsp;{$item.repay_time}<if condition="$item.loantype eq 5">天<else/>个月</if></td>   
+            <if condition="$is_cn">
+                <td>&nbsp;{$item.loantype|get_loantype_cn}</td>
+            <else/>
+                <td>&nbsp;{$item.loantype|get_loantype}</td>
+            </if>
+            <td>&nbsp;{$item.id|getDealReportStatus}</td>
+            <!--<td>&nbsp;{$item.fixed_value_date|to_date='Y-m-d'}</td>-->
+            <td>&nbsp;{$item.user_id|get_user_name}</td>   
+            <td>&nbsp;{$item.user_id|get_user_name="real_name"}</td>   
+            <td>&nbsp;{$item.user_id}</td>   
+            <td>&nbsp;{$item.user_id|get_user_name="mobile"}</td>   
+            <td>&nbsp;{$item.deal_status|a_get_buy_status=$item.id}</td>   
+            <td>&nbsp;{$item.is_effect|get_is_effect=$item.id}</td>   
+            <td>
+                <a href="javascript:jump('{$deal_queue.id}', '{$item.id}')">插队</a>
+                &nbsp;
+                <a href="javascript:move('{$deal_queue.id}','{$item.id}', 2)">上移</a>
+                &nbsp;
+                <a href="javascript:move('{$deal_queue.id}','{$item.id}', 1)">下移</a>
+                &nbsp;
+                <a href="javascript: del('{$deal_queue.id}','{$item.id}')">从队列删除</a>
+                &nbsp;
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+    

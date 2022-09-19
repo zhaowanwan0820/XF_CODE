@@ -1,0 +1,30 @@
+    <div class="p_news_repay">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_news_repay.css');?>">
+                <div class="ui-box">
+                    <div class="h-title">
+                        <h2><i></i>还款公告</h2>
+                    </div>
+                    <div class="new-r">
+                        <!-- 循环 -->
+                        {foreach from=$list item=one}
+                        <div class="news-list">
+                            <h3 class="h-list"><a href="/news/hkgg/{$one.time}"><i></i>{$one.time_readable}平台还款公告</a></h3>
+                            <span class="time"><a href="/news/hkgg/{$one.time}">{$one.fake_create_time} 2:00:00</a></span>
+                            <p>
+                               {$one.time_readable}成功还款项目<span class="color_red">{$one.all}</span>笔，其中正常还款项目{$one.normal_count}笔，提前还款项目{$one.pre_count}笔，逾期还款项目{$one.delay_count}笔。</p>
+                        </div>
+                        {/foreach}
+                        <!-- 分页 -->
+                        <div  class="new-page">
+                        <div class="ui-pages">
+                            {$pages}
+                        </div>
+                    </div>
+                        <!-- //分页 -->
+                    </div>
+                </div>
+            </div>
+            <script>
+    document.title = "还款公告-网信ncfwx.com";
+    </script>
+            

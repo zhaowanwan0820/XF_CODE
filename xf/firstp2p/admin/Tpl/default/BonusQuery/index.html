@@ -1,0 +1,100 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+
+</php>
+<div class="main">
+<div class="main_title">红包查询</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        用户ID:
+        <input type="text" class="textbox" name="owner_uid" value="{:trim($_REQUEST['owner_uid'])}" style="width:70px;" />
+        手机号:
+        <input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:70px;" />
+        红包类型：
+        <select name="type" id="type">
+                <option value=10000 <if condition="intval($_REQUEST['type']) eq 10000">selected="selected"</if>>==请选择==</option>
+                <foreach name="typeMap" item="type" key="key">
+                    <option value="{$key}" <if condition="$_REQUEST['type'] eq $key">selected="selected"</if>>{$type}</option>
+                </foreach>
+        </select>
+        红包任务：
+        <select name="task_id">
+                <option value="0" <if condition="intval($_REQUEST['task_id']) eq 0">selected="selected"</if>>==请选择==</option>
+                <foreach name="taskList" item="task_item">
+                    <option value="{$task_item.id}" <if condition="intval($_REQUEST['task_id']) eq $task_item['id']">selected="selected"</if>>{$task_item.name}</option>
+                </foreach>
+        </select>
+        时间段：
+        <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        -
+        <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="BonusQuery" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="20" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <!--<th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>-->
+        <th>编号</th>
+        <th>姓名</th>
+        <th>注册手机号</th>
+        <th>会员名称</th>
+        <th>红包类型</th>
+        <th>红包金额</th>
+        <th>红包发放时间</th>
+        <th>红包过期时间</th>
+        <th>来源用户</th>
+        <th>来源用户手机号</th>
+        <th>红包金额</th>
+        <th>触发事件</th>
+        <th>触发时间</th>
+        <th>红包发送时间</th>
+        <th>红包过期时间</th>
+    </tr>
+    <foreach name="list" item="item">
+    <tr class="row">
+        <!--<td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>-->
+        <td>{$item.id}</td>
+        <td>{$item.real_name}</td>
+        <td>{$item.mobile}</td>
+        <td>{$item.user_name}</td>
+        <td>{$item.bonusType}</td>
+        <td>{$item.money}</td>
+        <td>{$item.create_time}</td>
+        <td>{$item.expire_time}</td>
+        <td>{$item.referBonus.real_name}</td>
+        <td>{$item.referBonus.mobile}</td>
+        <td>{$item.referBonus.money}</td>
+        <td>{$item.referBonus.desc}</td>
+        <td>{$item.referBonus.trigger_time}</td>
+        <td>{$item.referBonus.create_time}</td>
+        <td>{$item.referBonus.expire_time}</td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="20" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<!-- Think 系统列表组件结束 -->
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

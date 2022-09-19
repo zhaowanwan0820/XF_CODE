@@ -1,0 +1,334 @@
+{include file="inc/header.html"}
+
+<!-- 项目的html代码 -->
+{$pro.program_html}
+
+<!-- 是否要显示投标列表 -->
+{if $pro.program_deals and $deal_list}
+<div class="preorder-deal-box">
+  <div class="box-plain-title" style="border-bottom:0">
+    <a class="action" href="{$APP_ROOT}/deals">更多</a>
+    投资列表
+  </div>
+    {if $deal_list}
+      <table class="deal-list" id="index-deal-list">
+        <tbody>
+          {foreach from=$deal_list item="deal" key=key}
+            {if $deal.is_visible}
+              <tr>
+                <td class="deal-cell-image gap_top" rowspan="2">
+                  <div class="ajax_count_{$key}" style="display:none" attr="{$deal.id},{$deal.repay_time},{$deal.loantype}"></div>
+                  <a href="{$deal.url}" target="_blank">
+                    <img src="{$deal.icon}" width="50" height="50" alt="{$deal.name}" title="{$deal.name}">
+                  </a>
+                </td>
+                <td class="deal-cell-title">
+                  <div class="deal-info-title">
+                    <a href="{$deal.url}" target="_blank" title='{$deal.name}'>{function name="cutstr" v=$deal.name}</a>
+                  </div>
+                  <div class="deal-info-user">
+                    <a href="{$deal.user.url}" target="_blank">{$deal.user_deal_name}</a>
+                  </div>
+                </td>
+                <td class="deal-cell-money">
+                  <div>{$deal.need_money_detail}万 <span class="lesser">/ {$deal.borrow_amount_format_detail}万</span></div>
+                  {if $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                  {else}
+                    <div class="greenProcessBar progressBar prmar">
+                      <div class="p"><div class="c f_l clearfix" style="width:{function name="round" v=$deal.progress_point f=2}%;"></div></div>
+                    </div>
+                  {/if}
+                </td>
+                <td class="deal-cell-interest">
+                  <span>{$deal.rate}</span>
+                  <!--{function name="number_format" v="$deal.rate" f="2"}% -->
+                </td>
+                <td class="deal-cell-term">
+                  <div class="">{$deal.loantype_name}</div>
+                  {if $deal.loantype eq 5}
+                  <div class="lesser">{$deal.repay_time} 天</div>
+                  {else}
+                  <div class="lesser">{$deal.repay_time} 个月</div>
+                  {/if}
+                </td>
+                <td class="deal-cell-action">
+                  {if $deal.is_update eq 1}
+                      <span>等待确认</span>
+                  {elseif $deal.deal_status eq 4}
+                      <span>还款中</span>
+                  {elseif $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                      <span class="f_red">流标</span>
+                  {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                      <span>等待确认</span>
+                  {elseif $deal.deal_status eq 2}
+                      <span>满标</span>
+                  {elseif $deal.deal_status eq 4}
+                      <span>还款中</span>
+                  {elseif $deal.deal_status eq 5}
+                      <span>已还清</span>
+                  {else}
+                      <a class="btn" href="{if $deal.is_update}{$deal.url}{else}{url x="index" r="deal#bid" p="id=$deal.id"}{/if}" target="_blank"><span>我要投资</span></a>
+                  {/if}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  {if $deal.agency_id gt 0}<span style="display:inline-block;"><span class="ico_danbao"></span><span class="ico_label">{$deal.agency_info.short_name}</span></span>{/if}
+                  {if $deal.agency_id gt 0 and $deal.warrant gt 0}<span style="display:inline-block;margin-left:6px;"><span class="ico_baoben"></span><span class="ico_label">{if $deal.warrant eq 1}保本金{else}担保本息{/if}</span></span>{/if}
+                </td>
+                <td>
+                  {if $deal.is_update eq 1}
+                  {elseif $deal.deal_status eq 4}
+                  {elseif $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                  {elseif $deal.deal_status eq 0}
+                  {elseif $deal.deal_status eq 2}
+                  {elseif $deal.deal_status eq 5}
+                  {else}
+                    <p class="time-remained">
+                      {$deal.remain_time_format}
+                    </p>
+                  {/if}
+                </td>
+              </tr>
+            {/if}
+          {/foreach}
+        </tbody>
+      </table>
+    {else}
+      <div class="empty-box">
+        没有记录
+      </div>
+    {/if}
+</div>
+{/if}
+
+<!-- 投标弹出框 -->
+<div class="modal special-modal" id="preorderform-modal" style="display:none">
+<a class="close-button" rel="cancel" href="#"></a>
+<div class="special-modal-content">
+
+<div id="special-form-heading">
+  {if empty($preset)}
+  <a class="btn" href="{url x="shop" u="user#login" }"><span>登录</span></a>
+  {/if}
+</div>
+
+<form id="special-form" action="/huodong" method="post" enctype="multipart/form-data" >
+  <?php echo token_input(); ?>
+  <div id="error-row" style="height:19px;color:red;margin-top:10px;margin-bottom:-10px;padding-left:51px;"></div>
+  <p class="input-row" id="username-row">
+    <b>*</b>
+    <label>姓名</label>
+    <input class="input-text" type="text" name="name" value="{$preset.name}">
+  </p>
+  <p class="input-row" id="mobile-row">
+    <b>*</b>
+    <label>电话</label>
+    <input class="input-text" type="text" name="mobile" value="{$preset.mobile}">
+  </p>
+  <p class="input-row" id="email-row">
+    <b>*</b>
+    <label>邮箱</label>
+    <input class="input-text" type="text" name="email" value="{$preset.email}">
+  </p>
+  <p class="input-row" id="money-row" style="position:relative">
+    <b>*</b>
+    <label>预约金额</label>
+    <input class="input-text" type="text" name="money" value="{$preset.money}">
+    <span id="input-money-affix">元</span>
+  </p>
+  <p class="input-row" id="uname-row">
+    <b>&nbsp;</b>
+    <label>注册用户名</label>
+    <input class="input-text" type="text" name="uname" {if !empty($preset['uname'])} style="color:#666666;" readonly="readonly" {/if} value="{$preset.uname}">
+  </p>
+  
+  {if !empty($preset_area)}
+  <div class="input-row sel_box zvalue" id="pre_sel" style="margin-top:0px; margin-bottom:25px;">
+      <b>*</b>
+      <input type='hidden' name='area' id='area' value='' />
+      <span class="preset_sel">请选择所在地区</span>
+      <ul>
+        {foreach from=$preset_area item="area"}
+        <li title='{$area}'><a href="javascript:;">{$area}</a></li>
+        {/foreach}
+      </ul>
+  </div>
+  {/if}
+  <!-- <input type="hidden" name="code" value="{$code}" /> -->
+  <input type="hidden" name="act" value="{$pro.program_url}" />
+  <input class="btn-yuyue" type="button" name="submit" value="" id="check_form"  />
+</form>
+</div>
+<div class="success-notice" style="display:none">
+  <h1>预约成功</h1>
+  <p>您将收到包含准确开售时间的短信通知</p>
+  <p class="redirect">您可以前往<br>
+    － <a href="/">首页</a><br>
+    － <a href="/deals">投资项目列表</a><br>
+    － <a href="{url x="index" r="uc_invest#booked"}">我的预约</a>
+</div>
+<?php
+$this->_var['formjs'][] = $this->_var['APP_STATIC_PATH']."/js/placeholder.js";
+?>
+<script type="text/javascript" src="{function name="parse_script" v="$formjs"}"></script>
+<script>
+$(document).ready(function(){
+  $('.special-attachments .alert .action').on('click', function(){
+    $('html, body').animate({
+      scrollTop: $(".preorder-deal-box").offset().top
+   }, 800);
+  });
+  $('.btn-preorder').on('click', function(event) {
+    event.preventDefault();
+    $('#preorderform-modal').revealModal();
+  });
+  $("#check_form").bind("click",function(){
+    var name = $('input[name="name"]').val();
+    var mobile = $('input[name="mobile"]').val();
+    var email = $('input[name="email"]').val();
+    var money = $('input[name="money"]').val();
+    if (name == "" || name == "姓名") {
+      $('#error-row').html('请输入姓名');
+      return false;
+    }
+    if (mobile == "" || mobile == "电话" ) {
+      $('#error-row').html('请输入电话');
+      return false;
+    }
+    if (email == "" || email == "邮箱") {
+      $('#error-row').html('请输入邮箱');
+      return false;
+    }
+    if (money == "" || money == "预约金额") {
+      $('#error-row').html('请输入预约金额');
+      return false;
+    }
+    $.ajax({
+      url : "/huodong",
+      type : "POST",
+      data : {
+        "token_id": $('input[name="token_id"]').val(),
+        "token": $('input[name="token"]').val(),
+        "name": name,
+        "mobile": mobile,
+        "email": email,
+        "money": money,
+        "act": $('input[name="act"]').val(),
+        //"code": $('input[name="code"]').val(),
+        "uname": $('input[name="uname"]').val(),
+        "area": $('input[name="area"]').val()
+      },
+      dataType : "html",
+      success: function(rs){
+        if(rs==1){
+          $('.special-modal-content').hide();
+          $('.success-notice').show();
+        }else{
+          $('#error-row').html(rs);
+        }
+      }
+    });
+  });
+});
+
+function addMyEvent(obj,sEv,fn){
+
+    if(obj.attachEvent){
+        obj.attachEvent("on"+sEv,function(){
+            fn.call(obj);
+        })
+    }else{
+    
+        obj.addEventListener(sEv,fn,false);
+    }
+}
+
+function fnselected(obj){
+
+    this.obj=obj;
+    this.oSpan=this.obj.getElementsByTagName("span")[0];
+    this.oUl=this.obj.getElementsByTagName("ul")[0];
+    this.aLi=this.oUl.getElementsByTagName("li");
+    this.oInput=this.obj.getElementsByTagName("input")[0];
+    this.arr=[];
+    this.flag=true;
+    var _this=this;
+    this.oSpan.onclick=function(ev){
+    
+        var ev=ev||event;
+        ev.cancelBubble=true;
+        _this.oUl.style.display="block";
+    }
+    addMyEvent(document,"click",function(){
+    
+        _this.oUl.style.display = 'none';
+    });
+    for(var i=0;i<this.aLi.length;i++){
+        
+        this.aLi[i].onmouseover=function(){
+            this.className="active";
+        }
+        this.aLi[i].onmouseout=function(){
+            if (!this.selected) {
+                this.className = '';
+            }
+        }
+        this.aLi[i].onclick=function(ev){
+            var ev=ev||event;
+            _this.fnClk(ev,this);
+        };
+    }
+    
+}
+fnselected.prototype.fnClk=function(ev,t){
+    
+    for(var i=0;i<this.aLi.length;i++){
+        this.aLi[i].className="";
+        this.aLi[i].selected=false;
+    }
+    t.className="active";
+    t.selected=true;
+    var _this=this;
+    this.oSpan.innerHTML=t.children[0].innerHTML;
+    var jvalue=t.getAttribute("title");
+    this.oInput.value=jvalue;
+    if(this.flag){
+        this.oLi=document.createElement("li");
+        this.oLi.innerHTML="<a href='javascript:;'>请选择所在地区</a>";
+        this.oUl.insertBefore(this.oLi,this.aLi[0]);
+        this.oLi.onmouseover=function(){
+            this.className="active";
+        }
+        this.oLi.onmouseout=function(){
+            if (!this.selected) {
+                this.className = '';
+            }
+        }
+        this.oLi.onclick=function(){
+            for(var i=0;i<_this.aLi.length;i++){
+                _this.aLi[i].className="";
+                _this.aLi[i].selected=false;
+            }
+            this.className="active";
+            this.selected=true;
+            _this.oSpan.innerHTML=this.children[0].innerHTML;
+            _this.oInput.value="";
+        };
+    }
+    this.flag=false;
+}
+
+{if !empty($preset_area)}
+window.onload=function(){
+    var oSel=document.getElementById("pre_sel");
+    new fnselected(oSel);
+}
+{/if}
+</script>
+</div>
+
+<?php $this->_var['plugins'][] = $this->_var['APP_WEB_STATIC']."js/plugins.js"; ?>
+{function name="import_js" v="$plugins"}
+
+{include file="inc/footer.html"}

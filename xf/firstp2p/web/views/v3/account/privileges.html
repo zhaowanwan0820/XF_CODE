@@ -1,0 +1,50 @@
+﻿{include file="web/views/v3/header.html"}
+<div class="p_account_privileges">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_account_privileges.css');?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox_privileges.css');?>" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/account/account_privileges.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/cookie/cookie.js');?>"></script>
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                <h2>
+                    <i></i>授权管理
+                </h2>
+            </div>
+            <div class="privileges-mid">
+                {foreach from=$privileges item=item}
+                <div class="userTypeItem">
+                    <div class="privilegesTitle">{$item.accountPurposeName}</div>
+                    <div class="privilegesList">
+                        {foreach from=$item.authList item=authItem}
+                        <div class="privilegesItem">
+                            <div class="left">
+                                { if $authItem.grantType == 1 }
+                                <div class="icon loan"></div>
+                                { elseif $authItem.grantType == 2 }
+                                <div class="icon loan"></div>
+                                { elseif $authItem.grantType == 3 }
+                                <div class="icon pay"></div>
+                                {/if}
+                                <div class="text">{$authItem.grantName}</div>
+                            </div>
+                            {if !$authItem.isOpen}
+                            <a href="javascript:;" data-grant_list="{$authItem.grant}" data-privilege="{$authItem.grantType}" class="privileges_btn install">授权</a>
+                            {else}
+                            <a href="javascript:;" class="privileges_btn uninstall" data-accountId="{$item.accountId}" data-privilege="{$authItem.grantType}"
+                               data-error-msg="{foreach from=$authItem.msg item=msgItem}{$msgItem}##{/foreach}"
+                               data-confirm-msg="{foreach from=$authItem.confirmMsg item=confirmMsgItem}{$confirmMsgItem}##{/foreach}"
+                            >取消授权</a>
+                            {/if}
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+{include file="web/views/v3/footer.html"}

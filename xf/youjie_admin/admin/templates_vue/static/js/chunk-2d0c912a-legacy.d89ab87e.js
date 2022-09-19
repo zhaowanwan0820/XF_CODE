@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c912a"],{"581b":function(e,n,s){"use strict";s.r(n);var t=function(){var e=this,n=e.$createElement,s=e._self._c||n;return s("div",{staticClass:"shop"},[e._v("提交商品")])},a=[],c={name:"spikeShop"},i=c,o=s("2877"),p=Object(o["a"])(i,t,a,!1,null,"4f86521b",null);n["default"]=p.exports}}]);
+//# sourceMappingURL=chunk-2d0c912a-legacy.d89ab87e.js.map

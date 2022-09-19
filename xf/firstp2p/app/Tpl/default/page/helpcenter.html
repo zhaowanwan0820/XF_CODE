@@ -1,0 +1,26 @@
+{include file="inc/header.html"} 
+<div class="blank"></div>
+<div class="clearfix">
+  <div class="short_uc f_l">
+    <div class="comm2_top"></div>
+    <div class="comm2_con"><div class="nav-aside">
+      {foreach from=$hc_list key=key item=cate}
+        <span class="nav-aside-lv1{if $key eq 0} first{/if}">{$cate.title}</span>
+        {foreach from=$cate.sub item=item}
+          <a class="nav-aside-lv2 {if $item.id eq $article.id}active{/if}" href="{$item.url}">{$item.title}</a>
+        {/foreach}
+      {/foreach}
+    </div></div>
+    <div class="comm2_bot"></div>
+  </div>
+  <div class="inc_box f_r">
+    <div class="comm_top"></div>
+    <div class="comm_con">
+      {include file="inc/inc_article_info.html"}
+    </div>
+    <div class="comm_bot"></div>
+  </div>
+</div>
+<div class="blank"></div>
+
+{include file="inc/footer.html"}

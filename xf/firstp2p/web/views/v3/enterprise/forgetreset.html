@@ -1,0 +1,57 @@
+{include file="web/views/v3/header.html"}
+<div class="p_account_forgetpwdmobile">
+
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/validator/validator.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/pas_strength.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/forgetpwdcompanyreset.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_pwdrule.css');?>" type="text/css" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/oauth/forgetpwdcompanyreset.css');?>" rel="stylesheet" type="text/css">
+
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="r-title">
+                <h2 class="JS_set_psd_title">企业会员找回密码</h2>
+            </div>
+            <div class="pwd-mid">
+                <div class="ui-form">
+                    <form method="post" action="/enterprise/forgetReset" id="forgetreset_form" autocomplete="off">
+                        <?php echo token_input(); ?>
+                        <ul>
+                            <li class="clearfix z_index19">
+                                <label>新密码</label>
+                                <div class="ipt-wrap">
+                                    <input type="password" value="" data-url="/enterprise/checkPwd" placeholder="请输入新的登录密码" name="new_password" id="new_password" class="txt int_placeholder idno " data-placeholder="请输入新的登录密码" autocomplete="off" data-stretype="2">
+                                    <span class="color-gray2 safety-degree">密码安全程度：<span class="color-low">低</span></span>
+                                    <div id="tips-pass" class="pass-item-tip-password">
+                                        <div class="pwd-checklist-wrapper"><span class="pwd-checklist-arrow"><em class="arrowa">◆</em><em class="arrowb">◆</em></span>
+                                            <ul id="pwd-checklist" class="pwd-checklist">
+                                                <li class="safety-level"> <span class="pr9">安全程度 </span><span class="process low"></span><span class="process"></span><span class="process"></span><span class="ml4 color-low">低</span>
+                                                </li>
+                                                <li id="" data-rule="len" class="pwd-checklist-item pwd-checklist-item-error">6-20位</li>
+                                                <li id="" data-rule="cha" class="pwd-checklist-item pwd-checklist-item-success">支持数字、大小写字母、标点符号</li>
+                                                <li id="" data-rule="spa" class="pwd-checklist-item pwd-checklist-item-error">不允许有空格</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="clearfix">
+                                <label>确认登录密码</label>
+                                <div class="ipt-wrap">
+                                    <input type="password" placeholder="请再次输入新的登录密码" name="confirmPassword" id="confirmPassword" class="txt int_placeholder idno " data-placeholder="请再次输入新的登录密码" autocomplete="off" data-url="/enterprise/checkConfirmPwd">
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="btn-w30">
+                            <input class="common-sprite btn-red-h46 btn-sub" id="submit_btn" type="submit" value="确定">
+                        </div>
+                        <div class="bottom_content">如有问题，请拨打客户服务热线：<span class="mobile_color">010-899200159</span>（ 工作时间：周一至周五9:30-18:30 ）, 客服专员将第一时间为您处理。</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+{include file="web/views/v3/footer.html"}

@@ -1,0 +1,231 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script src="__TMPL__Common/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+
+<script type="text/javascript">
+    var IMAGE_SIZE_LIMIT = '{$limitSizeInMB}';
+
+    //判断是否显示url输入框
+    function changeType(){
+        $(".jumpType").each(function(index, el) {
+            var type_num = parseInt($(this).val());
+            //切换html
+            if(type_num == 5 || type_num == 8 || type_num == 23 || type_num == 24){
+                $(this).next(".url").show();
+                $(this).siblings('.urlTips').hide();
+            }else{
+                $(this).next(".url").hide();
+                $(this).siblings('.urlTips').hide();
+            }
+        });
+    }
+
+    //上传成功  图片显示 且赋值自定义属性
+    function tryUploadInput(sign_up_banner_id) {
+        var _id = sign_up_banner_id;
+        var img_id = _id+'_img';
+        var _hasSrc = $("#" + img_id).attr("data-src");
+        $.ajaxFileUpload({
+            url: '/m.php?m=HomeShortcuts&a=loadFile',
+            secureuri: false,
+            fileElementId:_id,
+            dataType: 'json',
+
+            success: function (data, status) {
+                if(data.code == 1){
+                    var src = data.imgUrl;
+                    if (src != '') {
+                        if(!_hasSrc){
+                            $("#" + img_id).show();
+                        }
+                        $("#" + img_id).attr("src",src);
+                        $("#" + img_id).attr("data-src",src);
+                        $("#" + img_id).siblings(".zanwu_tips").hide();
+                    }
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data, status, e) {
+                alert("上传错误");
+            }
+        })
+    }
+
+    $(function(){
+        changeType();
+    });
+
+</script>
+<div class="main">
+    <div class="main_title">{%EDIT} <a href="{:u("HomeShortcuts/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">图标名称:</td>
+                <td class="item_input"><input type="text" class="textbox require"  name="title" value="{$title}" /></td>
+            </tr>
+            <tr>
+                <td class="item_title">副标题:</td>
+                <td class="item_input"><input type="text" class="textbox require"  name="subTitle" value="{$advContent['subTitle']}" /></td>
+            </tr>
+            <tr>
+                <td class="item_title">跳转类型:</td>
+                <td class="item_input">
+                    <select class="jumpType" name="jumpType"  onchange="javascript:changeType();">
+                    <foreach name="turnType" key="key" item="value">
+                        <option value="{$key}" <if condition="$advContent['type'] eq $key">selected="selected"</if>>{$value}</option>
+                    </foreach>
+                    </select>
+                    <input type="text" class='url' name="url" style="width:185px;"   <if condition="$advContent['type'] eq 5 || $advContent['type'] eq 8 || $advContent['type'] eq 23 || $advContent['type'] eq 24"> value="{$advContent['url']}"  placeholder="以http://或https://开头"</if>/>
+                    <span class="urlTips" style="display:none;color:brown;">请输入正确网址</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">置顶:</td>
+                <td class="item_input">
+                    <lable>是<input type="radio" name="isStick" value="1" <if condition="$advContent['isStick'] eq 1">checked="checked"</if> /></lable>
+                    <lable>否<input type="radio" name="isStick" value="0" <if condition="$advContent['isStick'] eq 0">checked="checked"</if> /></lable>
+                </td>
+            </tr>
+            <tr >
+                <td class="item_title">图标图片上传:</td>
+                <td class="item_input">
+                    <if condition="$advContent['imageUrl'] neq ''">
+                        <a class="img_center">
+                            <img id="sign_up_banner_img" class="sign_up_banner_img" src="{$advContent['imageUrl']}" data-src="{$advContent['imageUrl']}"  />
+                            <span class="zanwu_tips" style="display:none;">暂无图片</span>
+                        </a>
+
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('sign_up_banner')" name="sign_up_banner" id="sign_up_banner" class="file"/>
+                            <span class="tip_span">( 限制大小600KB )</span>
+                        </a>
+                    </if>
+                    <if condition="$advContent['imageUrl'] eq ''">
+                        <img id="sign_up_banner_img" class="sign_up_banner_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('sign_up_banner')" name="sign_up_banner" id="sign_up_banner" class="file"/>
+                            <span class="tip_span">( 限制大小600KB )</span>
+                        </a>
+                    </if>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">生效时间:</td>
+                <td class="item_input">
+                    <dd>
+                        <label>开始时间:</label>
+                        <input type="text" class="textbox" name="startTime" value="{$advContent['startTime']}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_start_time');" />
+                        <input type="button" class="button" id="btn_start_time" value="选择" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_start_time');" />
+                        <input type="button" class="button" value="清空" onclick="$('#start_time').val('');" />
+
+                        <label>结束时间:</label>
+                        <input type="text" class="textbox" name="endTime" value="{$advContent['endTime']}" id="end_time"  onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_end_time');" />
+                        <input type="button" class="button" id="btn_end_time" value="选择" onclick="return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_end_time');" />
+                        <input type="button" class="button" value="清空" onclick="$('#end_time').val('');" />
+                    </dd>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%IS_EFFECT}:</td>
+                <td class="item_input">
+                    <lable>{%IS_EFFECT_1}<input type="radio" name="status" value="1" <if condition="$status eq 1">checked="checked"</if> /></lable>
+                    <lable>{%IS_EFFECT_0}<input type="radio" name="status" value="0" <if condition="$status eq 0">checked="checked"</if> /></lable>
+                </td>
+            </tr>
+            <!--<tr>
+                <td class="item_title">{%CITY_IDS}:</td>
+                <td class="item_input"><input type="text" class="textbox" name="city_ids" value="{$vo.city_ids}" /></td>
+            </tr>-->
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="id" value="{$id}" />
+                    <input type="hidden" name="jumpUrl" value="{$jumpUrl}" />
+                    <!--隐藏元素-->
+                    <input type="button" class="save_button" value="{%SAVE}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    $(function(){
+        //表单提交
+        $(".save_button").bind('click', function() {
+            var total =[];
+            var flag = 1;
+
+            var title = $("input[name='title']").val();
+            var subTitle = $("input[name='subTitle']").val();
+            var jumpType = $("select[name='jumpType']").val();
+            var isStick = $("input[name='isStick']:checked").val();
+            var imageUrl = $("#sign_up_banner_img").attr('data-src');
+            var startTime = $("input[name='startTime']").val();
+            var endTime = $("input[name='endTime']").val();
+            var url = $("input[name='url']").val();
+            var data = {};
+            data['subTitle'] = subTitle;
+            data['type'] = jumpType;
+            data['isStick'] = isStick;
+            data['imageUrl'] = imageUrl;
+            data['startTime'] = startTime;
+            data['endTime'] = endTime;
+
+            if(jumpType == 5 || jumpType == 8 || jumpType == 23 || jumpType == 24){
+                if(!url || (url.indexOf("http://")!=0 && url.indexOf("https://")!=0)){
+                    flag = 0;
+                    $(".urlTips").show();
+                    $('body,html').animate({ scrollTop: 0 }, 500);
+                }else{
+                    $(this).find(".urlTips").hide();
+                    data['url'] = url;
+                }
+            }
+
+            var dataPara = JSON.stringify(data);
+            var title = $("input[name='title']").val();
+            var status = $("input[name='status']:checked").val();
+            var jumpUrl = $("input[name='jumpUrl']").val();
+            var id = $("input[name='id']").val();
+            if(flag){
+                $.ajax({
+                    url: "/m.php?m=HomeShortcuts&a=update",
+                    type: "POST",
+                    dataType: 'JSON',
+                    data: {
+                        "value":dataPara,
+                        "status":status,
+                        "id":id,
+                        'title':title
+                    },
+                    success: function(data){
+                        alert(data.info);
+                        if(data.status == 1){
+                            window.location.href = jumpUrl;
+                        }
+                    }
+                });
+            }
+        });
+    })
+</script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<include file="Public:footer" />

@@ -1,0 +1,35 @@
+<div class="main">
+<div class="blank5"></div>
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="blank5"></div>
+    <h3 style="text-align:center">标的ID：{$deal['id']}</h3>
+    <h3 style="text-align:center">借款年利率{$deal['rate']}%,超额收益利率{$deal['excess_rate']}%</h3>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+    <h1 style="text-align:center">是否同意补贴超额收益利率？</h1>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+    <div style="text-align:center">
+        <input type="button" class="button" value="通过" onclick="audit({$deal['excess_id']},1);"/>
+        <input type="button" class="button" value="驳回" onclick="audit({$deal['excess_id']},0);"/>
+    </div>
+</div>
+<script type="text/javascript">
+    var audit = function (excessId,auditStatus) {
+        $.post("/m.php?m=IncomeExcess&a=auditExcessRate", { excessId: excessId, auditStatus: auditStatus }, function(rs) {
+            var rs = $.parseJSON(rs);
+            if (rs.status) {
+                if (auditStatus == 1) {
+                    alert("超额收益审核通过成功！");
+                } else {
+                    alert("超额收益审核驳回成功！");
+                }
+                location.href="/m.php?m=IncomeExcess&a=getIncomeExcessAuditList";
+            } else {
+                alert("操作失败！" + rs.data + rs.info);
+            }
+        });
+    }
+</script>

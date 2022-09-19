@@ -1,0 +1,88 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">编辑 <a href="{:u("ApiConf/index",array('conf_type'=>$vo['conf_type'],'site_id'=>$vo['site_id']))}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">{%API_CONF_ID}</td>
+                <td class="item_input">{$vo.id}</td>
+            </tr>
+            <tr>
+                <td class="item_title">{%API_CONF_TITLE}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="title" value="{$vo.title|htmlentities}"/>
+                    &emsp;
+                    <span class="tip_span">配置项文字说明</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%API_CONF_NAME}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="name" value="{$vo.name|htmlentities}"readonly="true">
+                    &emsp;
+                    <span class="tip_span">KEY, 由大写字母,数字,下划线组成</span>
+                </td>
+            </tr>
+            <td class="item_title">{%API_CONF_VALUE}</td>
+            <td class="item_input">
+                <input type="text" class="textbox" name="value" value="{$vo.value|htmlentities}"/>
+                &emsp;
+                <span class="tip_span">VALUE</span>
+            </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">{%API_CONF_IS_EFFECT}</td>
+                <td class="item_input">
+                    <input type="radio" name="is_effect" value="1" <?php if($vo['is_effect'] == 1) echo 'checked';?>>有效
+                           <input type="radio" name="is_effect" value="0" <?php if($vo['is_effect'] == 0) echo 'checked';?>>无效
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">{%API_CONF_TIP}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="tip" value="{$vo.tip|htmlentities}"/>
+                    &emsp;
+                    <span class="tip_span">可空</span>
+                </td>
+            </tr>
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="ApiConf" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="submit" class="button" value="{%EDIT}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#input_type").bind("change", function () {
+            if ($(this).val() == '1') {
+                $("#tr_value_scope").show();
+            } else {
+                $("#tr_value_scope").hide();
+            }
+        });
+        $("#input_type").change();
+
+    });
+
+</script>
+<include file="Public:footer" />

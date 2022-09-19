@@ -1,0 +1,146 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+//删除
+function delete_feedback(id){
+    var islot = 0;
+    if(!id){
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert(LANG['DELETE_EMPTY_WARNING']);
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+        islot = 1;
+    }
+    if(confirm(LANG['CONFIRM_DELETE'])){
+        $.ajax({ 
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id+"&islot="+islot,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                $("#info").html(obj.info);
+                if(obj.status==1){
+                	location.href=location.href;
+                }
+            }
+        });
+    }
+}
+//获取反馈图片
+function getFeedImage(id) {
+
+    if(id) {
+        $.ajax({
+               type: "POST",
+               url: "/m.php?m=UserFeedback&a=getFeedImage",
+               data: "id="+id,
+               dataType:'json',
+               success: function(msg){
+                    if(msg.code == '0000') {
+                       //$('#feedbackimage').attr("src",msg.msg);
+                       //$('#feedbackimage').attr("width",'1%');
+                       $('#imageInfo').html(msg.msg);
+                       $('#dialogbox_msg').show();
+                       $('#dialogbox_div').hide();
+                    }else{
+                        alert(msg.msg);
+                    }
+               }
+        });
+    }else{
+        alert('参数id不能为空');
+    }
+}
+function close_div() {
+    $('.dialogbox').hide();
+}
+</script>
+
+</style>
+
+<div class="main">
+	<div class="main_title">客户端反馈
+
+	</div>
+	<div class="blank5"></div>
+	<div class="button_row">
+    <input type="button" class="button" value="{%FOREVERDEL}" onclick="delete_feedback();" />
+    </div>
+    <!-- <div class="blank5"></div>
+	<div class="search_row">
+	    <form name="search" action="__APP__" method="get">  
+	                           用户id：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}"/>
+	        <input type="hidden" value="UserFeedback" name="m" />
+	        <input type="hidden" value="index" name="a" />
+	        <input type="submit" class="button" value="{%SEARCH}" />
+	    </form>
+    </div> -->
+    <div class="blank5"></div>
+	<!-- Think 系统列表组件开始 -->
+	<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+		<tr>
+			<td colspan="15" class="topTd">&nbsp;</td>
+		</tr>
+		<tr class="row">
+			<th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+			<th><a href="javascript:sortBy('id','1','UserFeedback','index')" title="按照编号升序排列 ">编号</a></th>
+			<th width='500px'>反馈内容</th>
+			<th>反馈图片</th>
+			<th><a href="javascript:sortBy('user_id','1','Contract','index')">用户名</a></th>
+			<th>手机号</th>
+			<th>系统版本</th>
+			<th>软件版本号</th>
+			<th>手机机型</th>
+			<th>IMEI</th>
+			<th>反馈时间</th>
+			<th>操作</th>
+		</tr>
+		<foreach name="list" item="item">
+		<tr class="row">
+			<td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+			<td>{$item.id}</td>
+			<td><div style="width:480px;word-break:break-all;">{$item.content}</div></td>
+			<td>
+			<a href="javascript:void(0)" onclick='getFeedImage({$item.id});'>查看</a>
+			</td>
+			<td>{$item.user_id|get_user_name}</td>
+			<td>{$item.mobile}</td>
+			<td>{$item.sysver}</td>
+			<td>{$item.softver}</td>
+			<td>{$item.models}</td>
+			<td>{$item.imei}</td>
+			<td>{$item.create_time|to_date}</td>
+            <td>
+                <a href="javascript:void(0)" onclick='delete_feedback({$item.id});'>删除</a>
+            </td>
+		</tr>
+		</foreach>
+		<tr>
+			<td colspan="15" class="bottomTd">&nbsp;</td>
+		</tr>
+	</table>
+	<!-- Think 系统列表组件结束 --> 
+	<!-- 查看 -->
+    <div id='dialogbox_msg' class="dialog-box dialogbox" style="display: none; position: absolute; overflow: hidden; z-index: 999; width: 400px; top: 25%; left: 45%;">
+	    <div class="dialog-header">
+	        <div class="dialog-title">客户端反馈图片</div>
+	        <div class="dialog-close" onclick='close_div()'></div>
+	    </div>
+	    <div class="dialog-content" id="imageInfo">
+	    </div>
+	</div>
+	<!--  -->
+	<div class="blank5"></div>
+	<div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />

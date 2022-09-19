@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if $page_title}{$page_title} - {/if}{if $show_site_titile eq 1}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+<link rel="icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<meta name="keywords" content="{if $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+<meta name="description" content="{if $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+<!--public js&css start-->
+
+
+<?php
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/widget/jquery-1.10.2.min.js";  //新增
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/common.js";                    //新增
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/index.js";                     //新增
+
+$this->_var['pagecss'][] = $this->_var['APP_STATIC_PATH']."/css/style.css";
+$this->_var['pagecss'][] = $this->_var['APP_STATIC_PATH']."/css/weebox.css";
+$this->_var['pagecss'][] = $this->_var['APP_STATIC_PATH']."/css/main.css";
+
+$this->_var['pagecss'][] = $this->_var['APP_STATIC_PATH']."/css/base.css";                   //新增
+$this->_var['pagecss'][] = $this->_var['APP_STATIC_PATH']."/css/common.css";                 //新增
+
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/jquery.js";
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/jquery.bgiframe.js";
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/jquery.weebox.js";
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/jquery.pngfix.js";
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/lazyload.js";
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/script.js";
+$this->_var['pagejs'][] = $this->_var['APP_STATIC_PATH']."/js/op.js";
+
+$this->_var['cpagejs'][] = $this->_var['APP_STATIC_PATH']."/js/script.js";
+$this->_var['cpagejs'][] = $this->_var['APP_STATIC_PATH']."/js/op.js";
+?>
+
+<link rel="stylesheet" type="text/css" href="{function name="parse_css" v="$pagecss"}" />
+<link rel="stylesheet" type="text/css" href="{function name="parse_css_site" v="css/style.css?v=0321"}" />
+<!--[if lte IE 9]>
+<script type="text/javascript" src="{$APP_WEB_STATIC}/js/widget/html5shiv.js"></script>
+<![endif]-->
+
+<script type="text/javascript">
+var APP_ROOT = '{$APP_ROOT}';;
+var LOADER_IMG = '{$TMPL}/images/lazy_loading.gif';
+var ERROR_IMG = '{$TMPL}/images/image_err.gif';
+{if app_conf("APP_MSG_SENDER_OPEN") eq 1}
+var send_span = {function name="app_conf" v="SEND_SPAN"}000;
+{/if}
+</script>
+<script type="text/javascript" src="{$APP_WEB_STATIC}lang.js"></script>
+<script type="text/javascript" src="{function name="parse_script" v="$pagejs" c="$cpagejs"}"></script>
+
+<!--public js&css end -->
+
+</head>
+
+<body>  <!--头部开始-->
+    <header class="m-head">
+        <div class="fix_width">
+            <span><a href="{$APP_ROOT}/"></a></span>
+            <menu>
+                <ul>
+                     {foreach from=$nav_list item=nav_item key=key}
+                        <li class="{if $nav_item.sub_nav}j_showMenu{/if} {if $nav_item.current eq 1}select{/if}">
+                            <a href="{$nav_item.url}" target="{if $nav_item.blank eq 1}_blank{/if}">
+                                {if $nav_item.sub_nav}<span>{$nav_item.name}</span><i class="g-pos-i"></i>{else}{$nav_item.name}{/if}
+                            </a>
+	                        {if $nav_item.sub_nav}
+	                        <ul>
+		                        {foreach from=$nav_item.sub_nav item=sub_item key=sub_key}
+					                <li {if $sub_key eq count($nav_item.sub_nav) -1}class="nobor"{/if}><a href="{$sub_item.url}" target="{if $sub_item.blank eq 1}_blank{/if}">{$sub_item.name}</a></li>
+					            {/foreach}
+					        </ul>
+				            {/if}
+			            </li>
+                        {if $key neq count($nav_list) -1}<li class="bg_li"></li>{/if}
+                     {/foreach}
+                </ul>
+            </menu>
+            <div class="g-head-right">{insert name="load_user_tip"}</div>
+
+
+        </div>
+    </header>
+    <!--头部结束-->
+
+    <!--面包屑导航开始-->
+    <!-- <section>
+        <div class="fix_width">
+            <div class="m-nav">
+                <a href="/">网信理财首页</a>> <label>投资列表</label>
+            </div>
+        </div>
+    </section> -->
+    <!--面包屑导航结束-->
+
+    <div class="{if $in_preset_page}{else}wrap{/if}">

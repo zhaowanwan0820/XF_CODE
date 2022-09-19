@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+{include file="web/views/hongbao/shareLogo.html"}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<title>打开红包</title>
+<link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+<script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+<link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/dayueye.css', 1);?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="p_dayueye">
+        <div class="logo1">
+            <a href="#"></a>
+        </div>
+        <div class="hb_bg hb_bg1">
+        	<div class="tel_box">
+            	<form id="register-form" action="GetHongbao" method="get">
+                    <input type="tel" class="ui_ipt_text"  id="input-mobile" name = 'mobile' placeholder='请输入您的手机号码' maxlength="11">
+                    <?php echo token_input(); ?>
+                    <input type="hidden" value = "{$sn}" name = 'sn'>
+                    <input type="hidden" value = "{$site_id}" name = 'site_id'>
+                    <div class="errorDiv">{if $only_new_user}{$only_new_user}{/if}</div>
+                    <input type="submit" class="ui_btn_open" value="打开红包">
+                </form>
+                <p class="f10">红包将自动存入您的账户</p>
+				<p class="f10">可直接抵用投资现金</p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            var hHeight=document.documentElement.clientHeight
+            	$('body').css('height','hHeight');
+            $('.ui_btn_open').click(function(){
+                var mobileRegEx = /^1[3456789]\d{9}$/;
+                var tel= $('.ui_ipt_text').val()
+                if(!tel || tel==null){
+                    $('.errorDiv').html('手机号不能为空！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else if(!mobileRegEx.test(tel)){
+                    $('.errorDiv').html('手机号码格式不正确！');
+                    //$('.tel-box').focus();
+                    return false;
+                }else{
+                    return true;
+                }
+            });
+        });
+    </script>
+{include file="web/views/hongbao/js.html"}
+    <script>
+        wx.ready(function() {
+            wx.hideOptionMenu();
+        });
+        function onBridgeReady(){
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        }else{
+            onBridgeReady();
+        }
+    </script>
+</body>
+</html>

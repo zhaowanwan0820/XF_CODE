@@ -1,0 +1,66 @@
+{// 引入标签库 }
+<script type="text/javascript">
+    function checkform(){
+        if($('#typeName').val().length == 0 || $('#typeTag').val().length == 0){
+            alert('分类名称和标识不能为空！');
+            return false;
+        }
+        return true;
+    }
+</script>
+<div class="main">
+
+    <form name="search" action="__APP__" method="post">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="3">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">分类名称:</td>
+                <td class="item_input">
+                    <input type='text' name='typeName' id='typeName' value='{$type_info.typeName}'>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">分类标识:</td>
+                <td class="item_input">
+                    <input type='text' name='typeTag' id='typeTag' value='{$type_info.typeTag}'>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">借款类型:</td>
+                <td class="item_input">
+                    <input type='radio' name='contractType' value='0' <if condition="$type_info['contractType'] eq 0">checked</if>>个人借款
+                    <input type='radio' name='contractType' value='1' <if condition="$type_info['contractType'] eq 1">checked</if>>公司借款
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">使用状态:</td>
+                <td class="item_input">
+                    <input type='radio' name='useStatus' value='1' <if condition="$type_info['useStatus'] eq 1">checked</if>>当下使用
+                    <input type='radio' name='useStatus' value='0' <if condition="$type_info['useStatus'] eq 0">checked</if>>历史使用
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">合同版本号:</td>
+                <td class="item_input">
+                    <input type='text' name='contractVersion' id='contractVersion' value='{$type_info.contractVersion}'>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_input" colspan=2 style="text-align:center;">
+                    <input type="hidden" value="true" name="update" />
+                    <input type="hidden" value="DtContract" name="m" />
+                    <input type="hidden" value="contTypeEdit" name="a" />
+                    <input type="hidden" value="{$type_info.id}" name="id" />
+                    <input type="submit" class="button" onclick="return checkform();" value="修改" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>教师节贺卡</title>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-base.css');?>">
+    <link rel="stylesheet" type="text/css"
+          href="<?php echo $this->asset->makeAppUrl('v4.8/css/valentine/normalize.css');?>"/>
+    <link rel="stylesheet" type="text/css"
+          href="<?php echo $this->asset->makeAppUrl('v4.8/css/valentine/swiper-4.3.5.min.css');?>">
+    <link rel="stylesheet" type="text/css"
+          href="<?php echo $this->asset->makeAppUrl('v4.8/css/valentine/index.css');?>"/>
+</head>
+
+<body>
+<div id="pageContainer" class="page-container">
+    <div id="swiperContainer" class="swiper-container">
+        <div class="swiper-wrapper">
+            {foreach from=$blessings item=imgItem}
+            <div class="swiper-slide"><img src="{$imgItem}"></div>
+            {/foreach}
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+    <div class="create name">{$name}</div>
+    <div class="create time">{$time}</div>
+    <img class="trimImg" src="">
+    <div id="share" class="share"></div>
+    <div id="refresh" class="refresh"></div>
+    <div id="qrCode" class="qr-code hide">
+        <img src="{$qrcode}">
+    </div>
+</div>
+<canvas></canvas>
+<div id="imageContainer" class="image-container hide">
+    <div id="browserShare" class="share" style="display: none">长按图片保存分享</div>
+    <img src="" id="html2canvas">
+</div>
+<div id="loadingContainer" style="display: none;">
+    <div class="loading-content">
+        <div class="progress-wrap">
+            <div class="progress-content rowleft">
+                <div class="progress">
+                    <div class="scale"></div>
+                </div>
+                <div class="progress">
+                    <div class="scale scale2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="desc-r">
+            <div style="white-space:nowrap">制作贺卡中...</div>
+        </div>
+    </div>
+</div>
+</body>
+<script type='text/javascript' src="<?php echo $this->asset->makeAppUrl('v4.8/js/valentine/flexible.js');?>
+"></script>
+<script type='text/javascript' src="<?php echo $this->asset->makeAppUrl('v4.8/js/valentine/zepto.min.js');?>
+"></script>
+<script type='text/javascript'
+        src="<?php echo $this->asset->makeAppUrl('v4.8/js/valentine/html2canvas.js');?>"></script>
+<script type='text/javascript'
+        src="<?php echo $this->asset->makeAppUrl('v4.8/js/valentine/swiper-4.3.5.min.js');?>"></script>
+<script type='text/javascript' src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/base.js');?>"></script>
+<script type='text/javascript' src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+<script type='text/javascript' src="<?php echo $this->asset->makeAppUrl('v4.8/js/valentine/index.js');?>"></script>
+<script type='text/javascript' src="<?php echo $this->asset->makeAppUrl('v4.8/js/valentine/wx-share.js');?>"></script>
+<script type='text/javascript'>
+    function phpToJs(variable) {
+        return eval('(' + variable + ')')
+    }
+
+    var backgroungArray = phpToJs('{$backgrounds}'),
+        isLatestVersion = "{$isLatestVersion}",
+        appid = "{$appid}",
+        nonceStr = "{$nonceStr}",
+        timeStamp = "{$timeStamp}",
+        signature = "{$signature}",
+        shareUrl = "{$shareUrl}",
+        imgUrl = "http://backend.event.ncfwx.com/upload/image/20180903/18-38-teacher-day.jpg",
+        lineLink = shareUrl,
+        descContent = "想和您说一句感谢",
+        shareTitle = "教师节贺卡";
+    wx.config({
+        appId: appid,
+        timestamp: timeStamp,
+        nonceStr: nonceStr,
+        signature: signature,
+        jsApiList: [
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage'
+        ],
+    });
+    wx.ready(function () {
+        wx.onMenuShareTimeline({
+            title: shareTitle,
+            link: lineLink,
+            imgUrl: imgUrl
+        });
+        wx.onMenuShareAppMessage({
+            title: shareTitle,
+            desc: descContent,
+            link: lineLink,
+            imgUrl: imgUrl
+        });
+    });
+</script>
+</html>

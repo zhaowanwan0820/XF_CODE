@@ -1,0 +1,124 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/calendar/calendar_lang.js' />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/input-click.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+    <div class="main_title">在线答疑</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            咨询类型：
+            <select name="event_type" id="event_type">
+                <option value="" <if condition="intval($_REQUEST['event_type']) eq 0">selected="selected"</if>>==请选择==</option>
+                <foreach name="event_list" key="key" item="item">
+                    <option value="{$key}" <if condition="intval($_REQUEST['event_type']) eq $key">selected="selected"</if>>{$item}</option>
+                </foreach>
+            </select>
+            咨询时间：<input type="text" id="begin" onclick="show_cal(this)" class="textbox" name="begin" value="{:trim($_REQUEST['begin'])}" style="width:100px;" />
+            -&nbsp; <input type="text" id="end" class="textbox" onclick="show_cal(this)" name="end" value="{:trim($_REQUEST['end'])}" style="width:100px;" />
+            咨询人手机号：<input type="text" id="mobile" class="textbox" name="contact_mobile" value="{:trim($_REQUEST['contact_mobile'])}" style="width:100px;" />
+            状态：<select name="status" id="status">
+                <option <if condition="intval($_REQUEST['status']) eq 0">selected="selected"</if> value="">全部</option>
+                <option <if condition="intval($_REQUEST['status']) eq 1">selected="selected"</if> value="1">未回复</option>
+                <option <if condition="intval($_REQUEST['status']) eq 2">selected="selected"</if> value="2">已回复</option>
+            </select>
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="Answer" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 style="word-wrap:break-word;word-break:break-all;">
+        <tr>
+            <td colspan="15" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+            </th>
+            <th width="50px">编号</th>
+            <th>咨询类型</th>
+            <th>描述</th>
+            <th>附件</th>
+            <th>咨询人姓名</th>
+            <th>咨询人手机号</th>
+            <th>咨询时间</th>
+            <th>当前状态</th>
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="item">
+            <tr class="row">
+                <td>
+                    <input type="checkbox" name="key" class="key" value="{$item.id}">
+                </td>
+                <td>
+                    &nbsp;{$item.id}
+                </td>
+                <td>
+                    &nbsp;{$item.event_type}
+                </td>
+                <td width="50%">
+                    &nbsp;{$item.content}
+                </td>
+                <td>
+                    &nbsp;<a href="{$item.attachment}">查看</a>
+                </td>
+                <td>
+                    &nbsp;{$item.contact_name}
+                </td>
+                <td>
+                    &nbsp;{$item.contact_mobile}
+                </td>
+                <td>
+                    &nbsp;{$item.create_time|to_date}
+                </td>
+                <td>&nbsp;{$item.statusText}</td>
+                <td>&nbsp;<a href="javascript:viewReply({$item.status},{$item.id})"><if condition="$item.status eq 1" >回复<else/>查看回复内容</if></a></td>
+            </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+    function show_cal(obj) {
+        obj.blur();
+        return showCalendar(obj.id, '%Y-%m-%d %H:%M:%S', true, false, obj.id);
+    }
+
+    function viewReply(status,id){
+        if(status == 1){
+            $.weeboxs.open(ROOT+"?m=Answer&a=reply"+"&id="+id, {contentType:'ajax',onok:save,showButton:true,title:false,width:650,height:300});
+        }else{
+            $.weeboxs.open(ROOT+"?m=Answer&a=view"+"&id="+id, {contentType:'ajax',showButton:false,title:false,width:650,height:300});
+        }
+    }
+
+    function save(){
+        reply_context = $("#reply_content").val();
+        id = $("#id").val();
+        $.get("/m.php?m=Answer&a=doReply","id="+id+"&reply_content="+reply_context,function(rs){
+            var rs = $.parseJSON(rs);
+            if(rs.status){
+                alert("操作成功！");
+                window.location.href = "/m.php?m=Answer&a=index";
+            }else{
+                alert(rs.info);
+            }
+        });
+        return false;
+    }
+
+</script>
+
+<include file="Public:footer" />
+

@@ -1,0 +1,61 @@
+{include file="web/views/v3/header.html"}
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+<link href="<?php echo $this->asset->makeUrl('v3/css/p_payment_yeepaybindcard.css');?>"  rel="stylesheet" type="text/css">
+<script src="<?php echo $this->asset->makeUrl('v3/js/payment/p_payment_yeepaybindcard.js');?>" type="text/javascript"></script>
+<!--private js&css end-->
+
+<div class="p_payment_yeepaybindcard">
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                <h2><i></i>新卡绑定</h2>
+            </div>
+            <div class="p_content">
+                <form action="/payment/yeepayValidate" method="POST" name="bankInfoForm" id="bankInfoForm">
+                <div class="ui-form">
+                    <ul>
+                        <li class="clearfix">
+                            <label>真实姓名</label>
+                            <input type="text" name="name" id="name" class="txt int_placeholder" value="{$userInfo.realName}" readonly="readonly">
+                        </li>
+                        <li class="clearfix">
+                            <label>身份证号</label>
+                            <input type="text" name="idno" id="idno" class="txt int_placeholder" value="{function name='idnoFormat' v=$userInfo.idno}" readonly="readonly">
+                        </li>
+                        <li class="clearfix">
+                            <label>借记卡银行</label>
+                            {if $lockFields}
+                            <input type="text" name="bankName" id="bankName" class="txt int_placeholder" value="{$userInfo.bankName}" readonly="readonly">
+                            {else}
+                            <div class="select_box select_bankname" data-name="bankName" id="" style="z-index:11">
+                                <div class="j_select"></div>
+                                <ul class="select_ul none j_selectContent">
+                                {$bankList}
+                                </ul>
+                            </div>
+                            {/if}
+                        </li>
+                        <li class="clearfix">
+                            <label>银行卡号</label>
+                            {if $lockFields}
+                            <input type="text" value="{$userInfo.cardNoDisplay}" name="cardNo" id="cardNo" class="txt int_placeholder" readonly="readonly">
+                            {else}
+                            <input type="text" value="" name="cardNo" id="cardNo" class="txt int_placeholder" aria-required="true">
+                            {/if}
+                        </li>
+                    </ul>
+                    <div class="btn-w30">
+                        <input class="common-sprite btn-red-h46" type="submit" id="" value="下一步">
+                    </div>
+                </div>
+                </form>
+                <div class="ui_payment_statement">本服务由易宝支付提供</div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+{include file="web/views/v3/footer.html"}

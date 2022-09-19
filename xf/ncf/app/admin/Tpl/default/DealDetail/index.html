@@ -1,0 +1,243 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+<script type="text/javascript">
+    function show_detail(id) {
+        $.weeboxs.open(ROOT+'?m=Deal&a=show_detail&id='+id, {contentType:'ajax',showButton:false,title:LANG['COUNT_TOTAL_DEAL'],width:600,height:330});
+    }
+    function edit(id) {
+        window.location.href = ROOT + '?m=Deal&a=edit&id='+id;
+    }
+    function contract(id){
+        window.location.href = ROOT + '?m=Contract&a=index&deal_id='+id;
+    }
+    function edit_note(id) {
+        $.weeboxs.open(ROOT+'?m=Deal&a=edit_note&id='+id, {contentType:'ajax',showButton:false,title:'备注',width:600,height:300});
+    }
+    function preview(id) {
+        window.open("{:get_www_url('')}d/"+id+"?preview=1&debug={:app_conf('DEAL_DETAIL_VIEW_CODE')}");
+    }
+    var fuzhilock = false;
+    function copy_deal(id, btn) {
+        $(btn).css({ "color": "grey" }).attr("disabled", "disabled");
+        if (!fuzhilock) {
+            fuzhilock = true;
+            if (window.confirm('确认复制?')) {
+                $.ajax({
+                    url: ROOT + "?" + VAR_MODULE + "=Deal&" + VAR_ACTION + "=copy_deal&id=" + id,
+                    data: "ajax=1",
+                    dataType: "json",
+                    success: function (obj) {
+                        fuzhilock = false;
+                        $("#info").html(obj.info);
+
+                    }
+                });
+            }
+            fuzhilock = false;
+        } else {
+            alert("请不要重复点击");
+        }
+        $(btn).css({ "color": "#4e6a81" }).removeAttr("disabled");
+    }
+
+</script>
+<div class="main">
+<div class="main_title">{$title_name}</div>
+<div class="blank5"></div>
+<div class="button_row">
+</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%DEL}" onclick="del();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+        借款标题：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" />
+        项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        借款人ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" />
+        借款人用户名：
+        <input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="10" />
+        放款审批单编号：
+        <input type="text" class="textbox" name="approve_number" value="{:trim($_REQUEST['approve_number'])}" size="10" />
+        借款状态
+        <select name="deal_status">
+            <option value="all" <if condition="$_REQUEST['deal_status'] eq 'all' || trim($_REQUEST['deal_status']) eq ''">selected="selected"</if>>所有状态</option>
+            <option value="0" <if condition="$_REQUEST['deal_status'] neq 'all' && trim($_REQUEST['deal_status']) neq '' && intval($_REQUEST['deal_status']) eq 0">selected="selected"</if>>{%DEAL_STATUS_0}</option>
+            <option value="1" <if condition="intval($_REQUEST['deal_status']) eq 1">selected="selected"</if>>{%DEAL_STATUS_1}</option>
+            <option value="2" <if condition="intval($_REQUEST['deal_status']) eq 2">selected="selected"</if>>{%DEAL_STATUS_2}</option>
+            <option value="3" <if condition="intval($_REQUEST['deal_status']) eq 3"> selected="selected"</if>>{%DEAL_STATUS_3}</option>
+            <option value="4" <if condition="intval($_REQUEST['deal_status']) eq 4">selected="selected"</if> >{%DEAL_STATUS_4}</option>
+            <option value="5" <if condition="intval($_REQUEST['deal_status']) eq 5">selected="selected"</if>>{%DEAL_STATUS_5}</option>
+            <option value="6" <if condition="intval($_REQUEST['deal_status']) eq 6">selected="selected"</if>>预约出借中</option>
+        </select>
+        状态：
+        <select name="is_effect" id="is_effect">
+            <option value="" <if condition="$_REQUEST['is_effect'] eq ''">selected</if>>请选择</option>
+            <option value="1" <if condition="$_REQUEST['is_effect'] eq '1'">selected</if>>有效</option>
+            <option value="0" <if condition="$_REQUEST['is_effect'] eq '0'">selected</if>>无效</option>
+        </select>
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="{$module_name}" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="21" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">编号</th>
+            <th>借款标题</th>
+            <th>
+                <a href="javascript:sortBy('borrow_amount','<?php echo ($sort); ?>','DealDetail','index')" title="按照 借款金额  <?php echo ($sortType); ?> ">
+                借款金额
+                </a>
+            </th>
+
+            <th>募集开始时间</th>
+            <th>募集结束时间</th>
+            <th>起息日期</th>
+
+            <th>
+                <a href="javascript:sortBy('income_fee_rate','<?php echo ($sort); ?>','DealDetail','index')" title="按照 出借人利率  <?php echo ($sortType); ?> ">
+                    出借人利率
+                </a>
+            </th>
+
+            <th>
+                <a href="javascript:sortBy('loan_fee_rate','<?php echo ($sort); ?>','DealDetail','index')" title="按照 平台服务费  <?php echo ($sortType); ?> ">
+                    平台服务费
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('consult_fee_rate','<?php echo ($sort); ?>','DealDetail','index')" title="按照 咨询服务费  <?php echo ($sortType); ?> ">
+                    咨询服务费
+                </a>
+            </th>
+
+            <th>借款期限</th>
+            <th>还款方式</th>
+            <th>借款人/代理人ID, 姓名</th>
+            <th>身份证/企业证件号</th>
+            <th>出借状态</th>
+            <th>状态</th>
+            <th>是否逾期</th>
+            <th>本金余额</th>
+            <th>利息余额</th>
+            <th style="width:400px">操作</th>
+        </tr>
+        <volist name="list" id="deal">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$deal.id}"
+                <php>
+                if (($dea['deal_status ']== 3) || (intval($deal['load_money']) == 0)) {
+                } else {
+                    echo 'disabled="disabled"';
+                }
+                </php>
+                >
+            </td>
+            <td>
+                &nbsp;{$deal.id}
+            </td>
+            <td>
+                &nbsp;{$deal.name}
+            </td>
+            <td>
+                &nbsp;{$deal.borrow_amount}
+            </td>
+            <td>
+                &nbsp;{$deal.start_time_format}
+            </td>
+            <td>
+                &nbsp;{$deal.success_time_format}
+            </td>
+            <td>
+                &nbsp;{$deal.repay_start_time_format}
+            </td>
+            <td>
+                &nbsp;{$deal.income_fee_rate}%
+            </td>
+            <td>
+                &nbsp;{$deal.loan_fee_rate}%
+            </td>
+            <td>
+                &nbsp;{$deal.consult_fee_rate}%
+            </td>
+            <td>
+                &nbsp;{$deal.repay_time}<if condition="$deal.loantype eq 5">天<else/>个月</if>
+            </td>
+            <td>
+                &nbsp;{$deal.loantype|get_loantype_cn}
+            </td>
+            <td>
+                &nbsp;
+                {$deal['user_id']}/{:!empty($listOfBorrower[$deal['user_id']]['company_name']) ? $listOfBorrower[$deal['user_id']]['company_name'] : $listOfBorrower[$deal['user_id']]['real_name']}
+            </td>
+            <td>
+                &nbsp;{$deal.id_no}
+            </td>
+            <td>
+                <if condition="($deal.deal_status eq 6)"><br />预约出借中<else/>
+                &nbsp;{$deal.deal_status|a_get_buy_status=$deal.id}
+                <if condition="($deal.deal_status eq 4) && ($deal.is_has_loans eq 2)"><br />正在放款</if>
+                <if condition="$deal.is_during_repay eq 1"><br />正在还款</if>
+                <if condition="($deal.deal_status eq 3) && ($deal.is_doing eq 1)"><br />正在流标</if>
+                </if>
+            </td>
+            <td>
+                &nbsp;{$deal.is_effect|get_is_effect=$deal[id]}
+            </td>
+            <td>
+                &nbsp;否
+            </td>
+            <td>
+                &nbsp;{$deal.principal}
+            </td>
+            <td>
+                &nbsp;{$deal.interest}
+            </td>
+            <td>
+                <a href="javascript:edit('{$deal.id}')">编辑</a>
+                &nbsp;
+                <input type="button" class="ts-input"  onclick="copy_deal('{$deal.id}',this)" value="复制"></input>
+                &nbsp;
+                <a href="javascript:show_detail('{$deal.id}')">出借列表</a>
+
+                <a href="javascript: preview('{$deal.ecid}')">预览</a>
+                &nbsp;
+                <a href="javascript:contract('{$deal.id}')">合同列表</a>
+                &nbsp;
+                <if condition="($deal.deal_status eq 3) || ($deal.load_money eq 0)">
+                    <a href="javascript: del('{$deal.id}')">删除</a>
+                    &nbsp;
+                </if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+function open_coupon_list(id) {
+    window.location.href=ROOT+'?m=CouponLog&a=index&deal_id='+id;
+}
+</script>
+<include file="Public:footer" />
+

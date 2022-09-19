@@ -1,0 +1,114 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_money.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/financial/index.js');?>"></script>
+
+<div class="user_right_box p_account_money">
+
+    <form id="search" action='{url x="index" r="account/money"  }' method="get">
+        <div class="user_title user_zijin_title">
+            <h1>
+                <i class="ico_jilu"></i>资金记录
+                <input type="submit" name="export" value="导出" class="color-blue1 fr" style="text-decoration: none;margin: 16px 40px 0px 20px;border: none;background: none;font-size: 14px;">
+            </h1>
+        </div>
+        <div class="screening screening2 clearfix">
+            <div class="ui_select_box2 JS_select_box clearfix" data-name="log_info">
+                <input type="hidden" name="log_info" id="log_info" value="{if $search_get.log_info neq''}{$search_get.log_info}{/if}">
+                <span class="ui_select_box_type">类别 :</span>
+                <span class="list_more">更多<i class="more_arrow {if $search_get.log_info neq''} more_arrowT{/if}"></i></span>
+                <ul class="select_ul ui_select_box_list {if $search_get.log_info neq''}heightauto{/if}" id="ui_select_box_list">
+                    <li data-value="" {if $search_get.log_info eq''} class="user_selected_type" {/if}>全部</li>
+                    {foreach from=$filter item=log key=key}
+                    <li data-value="{$log}" {if $search_get.log_info eq $log} class="user_selected_type" {/if}>{$log}</li>
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="ui_select_box3">
+                <span class="ui_select_box_type">时间 :</span>
+                <input type="hidden" name="lately" value="{if $search_get.lately neq''}{$search_get.lately}{/if}">
+                <ul class="select_ul ui_select_box_list ui_select_box_time" id="ui_select_box_list2">
+                    <li data-value="" {if $search_get.start eq'' && $search_get.end eq'' && $search_get.lately eq ''} class="user_selected_type" {/if}>全部</li>
+                    <li data-value="1" {if $search_get.lately eq 1} class="user_selected_type" {/if}>最近一周</li>
+                    <li data-value="2" {if $search_get.lately eq 2} class="user_selected_type" {/if}>最近一个月</li>
+                    <li data-value="3" {if $search_get.lately eq 3} class="user_selected_type" {/if}>最近三个月</li>
+                </ul>
+                <p class="calendarT">
+                    <input type="text" class="time_box" id="dateInput1" name="start" value="{$search_get.start}"><i class="calendarIcon"></i>
+                </p>
+                <span class="fl">&nbsp;&nbsp;&nbsp;-</span>
+                <p class="calendarT">
+                    <input type="text" class="time_box j_date" id="dateInput2" name="end" value="{$search_get.end}"><i class="calendarIcon"></i>
+                </p>
+                <input type="submit" value="筛选" class="button_shaixian fr">
+            </div>
+        </div>
+    </form>
+</div>
+<section class="p_account_money">
+    <div class="project project2 clearfix u_zijin">
+        <div class="pro_detailed clearfix">
+            {if empty($list)}
+            <div class="empty-box">没有记录</div>
+            {else}
+            <table class="plan zj_tab">
+                <colgroup>
+                    <col width="273">
+                    <col width="172">
+                    <!-- <col width="200"> -->
+                    <col width="418">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><div class="pr25">类型/时间</div></th>
+                        <th>资金变动（元）</th>
+                        <!-- <th>余额（元）<i class="ico_sigh j_tooltip_top" title="余额=现金金额+冻结金额"></i></th> -->
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {foreach from=$list item=log key=key}
+                    <tr {if $key mod 2 eq  0}class="tr_bg"{/if}>
+                        <td class="tl">
+                        <div class="log_label pl20">
+                        {if $log.label == 1}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/dong.png');?>">
+                        {elseif $log.label == 2}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/zhi.png');?>">
+                        {elseif $log.label == 3}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/jie.png');?>">
+                        {elseif $log.label == 4}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/shou.png');?>">
+                        {elseif $log.label == 5}
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/account/hua.png');?>">
+                        {/if}
+                        </div>
+                        <div class="jl_title ml23">
+                        <span>{$log.log_info}</span><span class="color_gray j_zj_date" data-time="<?php echo $this->_var['log']['log_time']; ?>"><?php echo to_date($this->_var['log']['log_time'],"Y-m-d H:i"); ?></span>
+                        </div>
+                        </td>
+                        <td>
+                            <em class="{if $log.label == 4}color_yellow{elseif $log.label == 2}color_zhi{else}color_gray{/if}">
+                                {if $log.showmoney eq 0}
+                                    0.00
+                                {else}
+                                    {if $log.label == 4}+{/if}
+                                    {function name="format_price" value=$log.showmoney c=0 d=0}
+                                {/if}
+                            </em>
+                        </td>
+                        <!-- <td class="j_zj_change">
+                            {$log.remaining_total_money}
+                        </td> -->
+                        <td>
+                            <div class="text_overf color_gray" title="{function name="htmlspecialchars" value=$log.note}"><?php echo msubstr(htmlspecialchars($this->_var['log']['note']),0,28); ?></div>
+                        </td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            <div class="pages mb30">
+                {$pages}
+            </div>
+            {/if}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,403 @@
+<html>
+    {include file="web/views/header.html"}
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/index/index_p2p.js');?>" type="text/javascript"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/index.css');?>" type="text/css" rel="stylesheet">
+
+    <div class="p_index">
+        <section>
+          {function name="get_adv" x="p2pbanner"}
+
+            <div class="banner_slide">
+               <ul class="banner_view"></ul>
+                <div class="slide_pager_l"></div>
+                <div class="slide_pager_r"></div>
+            </div>
+        </section>
+    </div>
+    <div class="p_deal">
+        <section class="main">
+            <div class="ui_product_tab" id="duotou">
+                <div class="product_type">
+                    <div class="fl title mt20"><i class="icon"></i>智多新</div>
+                    <div class="zdxInfo"><a href="/finplan/Publish?&page_num=1&page_size=10">信息披露</a></div>
+                </div>
+                <div class="ph_zdxlist">
+                    {foreach from=$duotou.activity_list item="item" key=key}
+                    <div class="p2p_product p5">
+                        <div class="clearfix bg_whtie">
+                            <div class="con_l">
+                                <h3 class="f16">
+                                    <a href="/finplan/bid/{$item.id}" title="{$item.name}" alt="{$item.name}" class="deal_tag_name">{function name="msubstr" v=$item.name f=0 l=20}</a>
+                                    {if isset($item.tag_before_name) && $item.tag_before_name != ''}
+                                    <i class="deal_tips bg_blue" title="{$item.tagBeforeDesc}">{$item.tag_before_name}</i>
+                                    {/if}
+                                    {if isset($item.tag_after_name) && $item.tag_after_name != ''}
+                                    <i class="deal_tips bg_blue" title="{$item.tagAfterDesc}">{$item.tag_after_name}</i>
+                                    {/if}
+                                </h3>
+                                <div class="fl w360">
+                                    <p>
+                                        <span>往期年化：</span>
+                                        <span class="f20"><i>{$item.min_rate}%~</i><i>{$item.max_rate}%</i></span>
+                                    </p>
+                                    <p>
+                                        <span>最低加入金额：</span>
+                                        {if $duotou.isNewUser eq 1 and $item.new_user_min_invest_money gt 0} {$item.new_user_min_invest_money}{else}{$item.min_invest_money}{/if}元
+                                    </p>
+                                </div>
+                                <div class="fl w265 progress_rate" total="1000" has="111.0000">
+                                    <p><span>计息方式：</span><i>匹配后按日计算</i></p>
+                                    <!-- 登录后不显示 -->
+                                    <p><span>当前加入：</span>{$item.invest_user_num}人</p>
+                                </div>
+                                <div class="fl w265 progress_rate" >
+                                    <p>
+                                        <span>期限：</span>
+                                        {if $item.lock_day lte 1}
+                                        <em style="color:#474646;font-weight:normal">1天可申请转让/退出</em>
+                                        {else}
+                                        <em style="color:#474646;font-weight:normal">{$item.lock_day}</em>天可申请转让/退出
+                                        {/if}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="product_btn JS_join_zdx">
+                                <a href="/finplan/bid/{$item.id}" class="btn_touzi">加入</a>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+            <div class="ui_product_tab box mb30" id="tabs">
+                <div class="product_type" >
+                    <div class="fl title">
+                        <i class="icon"></i>P2P
+                    </div>
+                    <ul class="nav indexlist-tab-num{$count}">
+                        {foreach from=$deal_type item="type" key=key}
+                        <li class="j_index_tab {if $key eq $cate }active{/if}" >
+                            <a data-inner="{if $key eq 0}全部{else}{$type.name}{/if}" href="/deals{if $key}?cate={$key}{/if}">{if $key eq 0}全部{else}{$type.name}{/if}</a>
+                        </li>
+                        {/foreach}
+                    </ul>
+                    <ul class="p2p_subject clearfix">
+                        <li class="j_index_tab active" data-inner="全部" data-id="0"><a href="/deals?loan_user_customer_type=0">全部</a></li>
+                        {foreach from=$loan_user_customer_types item="type" key=key}
+                        <li class="j_index_tab" data-inner="{$type.name}" data-id="{$type.id}"><a href="/deals?loan_user_customer_type={$type.id}" >{$type.name}</a></li>
+                        {/foreach}
+                    </ul>
+                    <style type="text/css">
+                        .p2p_subject {position: absolute;right:0;top:10px;}
+                        .p2p_subject li , .p2p_subject_type li {float:left;margin-right:30px;font-size:16px;}
+                        .p2p_subject_type {padding:20px;margin:5px auto; }
+                        .p2p_subject_type ul {background:#F5F5F5;display: block;height:56px;padding-left:20px;}
+                        .p2p_subject_type li {font-size:14px;}
+                        .p2p_subject  a:hover , .p2p_subject_type  a:hover {color:#e83d51;}
+                        .p2p_subject .active a , .p2p_subject_type .active a {color:#e83d51;}
+                        .ui_product_tab .p2p_product:first-child {background-image: none;}
+                        .p2p_subject_type li {height:34px;padding:0 10px;line-height:34px;margin-top:11px;}
+                        .p2p_subject_type .active {border:1px solid #e83d51;border-radius: 2px;}
+                        .cancel_search {margin:30px 0 0;}
+                        .cancel_search a {color:#4A90E2;}
+                    </style>
+                </div>
+                <div class="p2p_subject_type">
+                    <ul class="clearfix">
+                        {foreach from=$product_class_types item="type" key=key}
+                        <li class="j_index_tab" data-id="{$type.id}" data-inner="{$type.name}"><a href="/deals?product_class_type={$type.id}" >{$type.name}</a></li>
+                        {/foreach}
+                    </ul>
+                </div>
+                <div class="tabbd">
+                    <div class="con">
+                        <div class="conbd" id="conbd">
+                            {if $deal_list.list}
+                            {foreach from=$deal_list.list item="deal" key=key}
+                            <div class="p2p_product p5">
+                                <div class="clearfix bg_whtie">
+                                    <div class="con_l">
+                                        <h3 class="f16">
+
+
+
+                                            {if $deal.bid_flag eq 1}
+                                            <a title="{$deal.old_name}" alt="{$deal.old_name}"  href="{$deal.url}" target="_blank" >{$deal.name}</a>
+                                            {else}
+                                            <span title="{$deal.old_name}" alt="{$deal.old_name}" class="deal_tag_name">{$deal.name}</span>
+                                            {/if}
+                                            {if isset($deal.deal_tag_name) && $deal.deal_tag_name != ''}
+                                            <i class="deal_tips bg_blue" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name}</i>
+                                            {/if}
+                                            {if isset($deal.deal_tag_name1) && $deal.deal_tag_name1 != ''}
+                                            <i class="deal_tips bg_blue" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name1}</i>
+                                            {/if}
+                                        </h3>
+                                        <div class="fl w360">
+                                            <p>
+                            <span>
+                              {if $deal.deal_type eq 0}年化借款利率{else}预期年化收益率{/if}：
+                              <i class="f20">{$deal.income_base_rate}</i>
+                              <ins class="percent">%</ins>
+                              {if $deal.type_id eq 27}起{/if}
+                            </span>
+                                            </p>
+                                            <p><span>总额：</span>{$deal.borrow_amount_format_detail}万</p>
+                                        </div>
+                                        <div class="fl w265">
+                                            <p>
+                                                <span>{if $deal.deal_type eq 0}借款期限{else}出借期限{/if}：</span>
+                                                {if $deal.loantype eq 5}
+                                                <em><i class="f18">{if $deal.deal_type eq 1}{function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{/if}{$deal.repay_time}</i>天</em>
+                                                {else}
+                                                <em><i class="f18">{$deal.repay_time}</i>个月</em>
+                                                {/if}
+                                            </p>
+                                            <p>
+                                                <span>{if $deal.deal_type eq 0}还款方式{else}收益方式{/if}：</span>
+                                                {if $deal.deal_type eq 1}
+                                                提前{$deal.redemption_period}天申请赎回
+                                                {else}
+                                                {$deal.loantype_name}
+                                                {/if}<br/>
+                                                {if $deal.holiday_repay_type eq 3}<span class='holiday_repay_type'>（遇公休日/节假日还款时间顺延）</span>{/if}
+                                            </p>
+                                        </div>
+                                        <div class="fl w265 progress_rate" total="{$deal.borrow_amount}" has="{$deal.load_money}">
+                                            <p>
+                                                <span>进度：</span><span class="progress">
+                              <i class="ico_bace"></i>
+                              <i class="ico_yitou">进度条</i>
+                            </span><ins class="f12 pl5"></ins>
+                                            </p>
+                                            <p><span>剩余金额：</span>{$deal.need_money_detail}元</p>
+                                        </div>
+                                    </div>
+                                    <div class="product_btn JS_join_p2p">
+                                        {if $deal.deal_type eq 0 || $deal.deal_type eq 2 ||  $deal.deal_type eq 3 || $deal.deal_type eq 5}
+                                        {if $deal.is_crowdfunding eq 0}
+                                        {if $deal.is_update eq 1}
+                                        <a href="#" class="btn_touzi">查看</a>
+                                        {elseif $deal.deal_status eq 4}
+                                        <span class="btn_manbiao">还款中</span>
+                                        {elseif $deal.deal_status eq 0}
+                                        <a href="{$deal.url}" class="btn_touzi">查看</a>
+                                        {elseif $deal.deal_status eq 2}
+                                        <span class="btn_manbiao">满标</span>
+                                        {elseif $deal.deal_status eq 5}
+                                        <span class="btn_manbiao">已还清</span>
+                                        {else}
+                                        <a href="{$deal.url}" class="btn_touzi">出借</a>
+                                        {/if}
+                                        {elseif $deal.is_crowdfunding eq 1}
+                                        {if $deal.is_update eq 1}
+                                        <a href="{$deal.url}" class="btn_touzi">查看</a>
+                                        {elseif $deal.deal_status eq 4}
+                                        <span class="btn_manbiao">已成功</span>
+                                        {elseif $deal.deal_status eq 0}
+                                        <a href="{$deal.url}" class="btn_touzi">查看</a>
+                                        {elseif $deal.deal_status eq 2}
+                                        <span class="btn_manbiao">已成功</span>
+                                        {elseif $deal.deal_status eq 5}
+                                        <span class="btn_manbiao">已成功</span>
+                                        {else}
+                                        <a href="{$deal.url}" class="btn_touzi">捐赠</a>
+                                        {/if}
+                                        {/if}
+                                        {else}
+                                        {if $deal.deal_status eq 0}
+                                        <a href="{$deal.url}" class="btn_touzi">查看</a>
+                                        {/if}
+                                        {if $deal.deal_status eq 1}
+                                        {if $deal.deal_compound_status eq 1}
+                                        <a href="{$deal.url}" class="btn_touzi">已投</a>
+                                        {else}
+                                        <a href="{$deal.url}" class="btn_touzi">出借</a>
+                                        {/if}
+                                        {/if}
+                                        {if $deal.deal_status eq 2}
+                                        <span class="btn_manbiao">满标</span>
+                                        {/if}
+                                        {if $deal.deal_status eq 4}
+                                        {if $deal.deal_compound_status eq 2}
+                                        <span class="btn_manbiao">待赎回</span>
+                                        {/if}
+                                        {if $deal.deal_compound_status eq 3}
+                                        <span class="btn_manbiao">还款中</span>
+                                        {/if}
+                                        {if $deal.deal_compound_status eq 4}
+                                        <span class="btn_manbiao">已还清</span>
+                                        {/if}
+                                        {if $deal.deal_compound_status eq 0}
+                                        <span class="btn_manbiao">还款中</span>
+                                        {/if}
+                                        {/if}
+                                        {if $deal.deal_status eq 5}
+                                        <span class="btn_manbiao">已还清</span>
+                                        {/if}
+                                        {/if}
+                                    </div>
+                                </div>
+                            </div>
+                            {/foreach}
+                            <div id="pagination" class="pagination">
+                                {$pagination}
+                            </div>
+                            {else}
+                            <div class="main">
+                                <div class="empty-box"><i></i>暂无符合条件的项目
+                                    <div class="cancel_search"><a href="/deals#tabs">取消筛选</a></div>
+                                </div>
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.css');?>" >
+        </section>
+    </div>
+    <script type="text/javascript">
+        {if isset($showLocalVerifyTips)}
+        setTimeout("confirmChange()", 500);
+        {/if}
+        (function (){
+            //项目进度
+            progress_rate($('.progress_rate'));
+            function progress_rate(ele) {
+                ele.each(function(i, el) {
+                    var ele = $(el);
+                    var total = ele.attr('total');
+                    var has = ele.attr('has');
+                    var REG = /^[\d\.]+$/;
+                    var percent = 0;
+                    if (!(REG.test(total) && REG.test(has))) {
+                        return;
+                    }
+                    total = Math.floor(total.replace(/\..*/, ''));
+                    has = Math.floor(has.replace(/\..*/, ''));
+                    percent = (Math.floor((has / total) * 10000) / 100).toFixed(2) + "%";
+                    ele.find('.ico_yitou').css("width", percent);
+                    ele.find('.pl5').html(percent);
+                });
+            }
+        })('网贷理财页面');
+
+            //专享，p2p导航栏，点击后样式改变
+            // (function($){
+            //     $(function(){
+            //         var now_searchName = window.location.search,
+            //             now_pathName = window.location.pathname,
+            //             url = now_pathName + now_searchName;
+            //         $("#top_nav>ul>li").each(function(){
+            //             var $t = $(this);
+            //             if($t.find("a").attr("href") == url){
+            //                 $t.closest('li').addClass("select");
+            //             }
+            //         });
+            //     });
+            // })(jQuery);
+            {if !$is_nongdan}
+    </script>
+    <div class="lay_medal_process" id="j_lay_medal_process" style="display:none;">
+        <div class="pro_circel"><a href="/medal/wall"><span class="f20 color_yellow pt25 fs"><span id="j_userBeginnerMedalCount">1</span>/<span id="j_beginnerMedalCount">3</span></span><span class="color_gray">新手任务</span></a></div>
+        <div class="pro_close"><a href="javascript:void(0)" id="j_pro_close"></a></div>
+    </div>
+    {/if}
+    <style>
+        body{background:#f6f7fb;}
+        .p_index .new_announcement{border:none;box-shadow:0 0 0,0 0 0,0px 1px 2px #e8e8ec,0px 1px 3px #e8e8ec;margin-top:2px;}
+        .p_index .new_announcement .inBlock .new_text{font-size:16px;}
+        .text_center{text-align: center;}
+        .color_black{color: #000;font-weight: bold;}
+        .p_deal{padding-top:20px;}
+        .ui_product_tab{border:none;}
+        .ui_product_tab .product_type{border-bottom:none;border-top:2px solid #e83d51;background:#fff;height:52px;}
+        .ui_product_tab .product_type .title{width:auto;font-weight:bold;margin-top: 20px;margin-bottom:20px;padding-left: 16px;}
+        .ui_product_tab .con_l em, .ui_product_tab .con_l i{color:#e83d51;}
+        .ui_product_tab .progress .ico_yitou{background:#e83d51;}
+        .ui_product_tab .con_l h3 a:hover{color:#e83d51;}
+        .icon{background:url(<?php echo $this->asset->makeUrl('v3/images/common/icon_bg.png');?>) no-repeat;width: 24px;height: 21px;display: inline-block;background-position:-443px -160px;margin-right:8px;vertical-align:-2px;}
+        .btn_touzi{background-position: -435px -98px;color:#e73e50;font-weight:bold;line-height:38px;font-size:15px;}
+        .btn_touzi:hover { background-position: -662px -98px;color:#ffffff; text-decoration: none; }
+        .btn_touzi:active { background-position: -662px -98px; color:#ffffff;}
+        .btn_manbiao { background-position: -548px -98px; color: #c8c8c8;font-weight:bold;line-height:38px;font-size:15px;}
+        .pagination{padding-top:50px;padding-bottom:115px;}
+        .pagination ul li span.current{background:#ec5964;}
+        .pagination ul li span.prev, .pagination ul li span.next{background: #FFF;}
+        .ui_product_tab .con h3 .product_name{border: 1px solid #8089b4;color: #8089b4;}
+        .ui_product_tab .con h3 .deal_tips{background: #575ceb; border-bottom: 1px solid #3339d4; }
+        .ui_product_tab .progress .ico_bace{background:#eeeeee;border:none;}
+        .ui_product_tab .progress .ico_yitou{height:5px;}
+        .pagination ul li a:hover{background: #fde3e3;border: 1px solid #fbbfbb;}
+        .percent{color:#e83d51;font-size:14px;font-weight: bold;}
+        .p_index .banner_slide { height: 330px; position: relative; background: url(<?php echo $this->asset->makeUrl('v3/images/common/loading.gif');?>) no-repeat center center; overflow: hidden; }
+        .p_index .banner_slide ul.banner_view { position: relative; height: 330px; }
+        .p_index .banner_slide ul.banner_view li { width: 100%; height: 330px; background-repeat: no-repeat; background-position: center top; position: absolute; left: 0; top: 0; z-index: 0; display: none; }
+        .p_index .banner_slide ul.banner_view li a { display: block; height: 100%; width: 100%; }
+
+        .p_index .slide_pager_l {position:absolute; background: url(<?php echo $this->asset->makeUrl('v3/images/common/arrow_l.png');?>) no-repeat;  float:left;width:53px; height: 85px; z-index: 10; bottom:45%;left:50%;margin-left:-600px;cursor:pointer;}
+        .p_index .slide_pager_r {position:absolute; background: url(<?php echo $this->asset->makeUrl('v3/images/common/arrow_r.png');?>) no-repeat;  float: right; width:53px; height: 85px; z-index: 10; bottom:45%;padding-right:0;right:50%;margin-right:-600px;cursor:pointer;}
+        .p_index .slide_pager_l:hover{background:url(<?php echo $this->asset->makeUrl('v3/images/common/arrow_l_bg.png');?>) no-repeat;}
+        .p_index .slide_pager_r:hover{background:url(<?php echo $this->asset->makeUrl('v3/images/common/arrow_r_bg.png');?>) no-repeat;}
+        body .p2pAccountDg table .dialog-ok{padding:0 30px;}
+        body .p2pAccountDg table .dialog-ok span{padding:0;}
+        body .weedialog table .dialog-content{padding: 32px 35px 10px;}
+        .p_deal .zdxInfo {font-size: 14px;float: right;margin-right: 12px;padding-left: 18px;padding-top: 5px;background: url("<?php echo $this->asset->makeUrl('v3/images/duotou/zdxinfo.jpg');?>") no-repeat 0 21px;background-size: 13px auto;}
+        .p_deal .ui_product_tab .product_type .mt20{margin-top: 20px;}
+        .p_deal .ph_zdxlist{margin-bottom: 30px;background-color: #ffffff;border-bottom:1px solid #c8c8c8;}
+        .p_deal .ph_zdxlist .p2p_product{background: url("<?php echo $this->asset->makeUrl('v3/images/common/bg_line.png');?>") repeat-x 0 bottom;}
+        .p_deal .ph_zdxlist .p2p_product:last-child{background:none;}
+         .ui_product_tab .con_l .bg_blue ,.ui_product_tab .con h3 .deal_tips{background: #6EB4E8;height:21px;line-height:21px;color:#fff;font-size:13px;border-bottom: 0;padding:0px 5px;font-weight: normal;display: inline-block;border-radius:2px;}
+         .holiday_repay_type{display: block; margin-top: -13px; font-size: 7px;}
+         .ui_product_tab .p2p_product .bg_whtie{ height: 151px!important; }
+    </style>
+    {include file="web/views/footer.html"}
+</html>
+<script>
+    //诸葛埋点
+    $(function(){
+        zhuge.track('进入我要出借页面')
+    })
+    var content_top_nav = ''
+    var banner_index = ''
+    var j_index_tab = ''
+    function zhugeTrack(place, name, id, content){
+        $('html').on('click',place,function(){
+            content_top_nav = $(this).attr('data-top-nav')
+            banner_index = $(this).attr('data-index')
+            j_index_tab = $(this).attr('data-inner')
+            //获取顶部导航文案
+            if(!!content_top_nav){
+              content = content_top_nav
+            }
+            //获取banner索引
+            if(!!banner_index){
+              content = banner_index
+            }
+            //获取 我要出借_网贷产品专区筛选按钮 文案
+            if(!!j_index_tab){
+              content = j_index_tab
+            }
+            // alert(name + ' ---' + id + ' ---' + content )
+            var data = {};
+            data[id] = content;
+            zhuge.track(name, data)
+        })
+    }
+    zhugeTrack('.new_logo','我要出借_导航点击情况','位置','网站logo')
+    zhugeTrack('#top_nav a','我要出借_导航点击情况','位置',content_top_nav)
+    zhugeTrack('.login_btn','我要出借_导航点击情况','位置','登录')
+    zhugeTrack('.reg_btn','我要出借_导航点击情况','位置','免费注册')
+    zhugeTrack('.my_account a','我要出借_导航点击情况','位置','我的账户(登录状态下)')
+    zhugeTrack('.JS_phone','我要出借_导航点击情况','位置','手机客户端')
+    zhugeTrack('.JS_ph_class','我要出借_导航点击情况','位置','网信普惠学院')
+    zhugeTrack('.banner_view li a','我要出借_顶部banner点击情况','位置',banner_index)
+    zhugeTrack('.zdxInfo a','我要出借_智多新产品列表区','位置', '信息披露')
+    zhugeTrack('.JS_join_zdx .btn_touzi','我要出借_智多新产品列表区','位置', '加入')
+    zhugeTrack('.j_index_tab','我要出借_网贷产品专区筛选按钮','按钮名称', j_index_tab)
+    zhugeTrack('.JS_join_p2p .btn_touzi','我要出借_网贷产品专区产品列表','', '')
+    zhugeTrack('#pagination ul li','我要出借_网贷产品专区翻页','', '')
+    zhugeTrack('.isNewUser_11626','我要出借_浮动新手专区','', '')
+</script>

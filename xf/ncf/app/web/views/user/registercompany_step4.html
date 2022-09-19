@@ -1,0 +1,174 @@
+{include file="web/views/header.html"}
+<div class="p_user_register">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_register.css');?>" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_charge.css');?>" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/weebox.css');?>">
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/user_pwdrule.css');?>" type="text/css" rel="stylesheet">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/oauth/pas_strength_v2.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/risk/frms-fingerprint-min.js')?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/mulselect/cityData2.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/widget/mulselect/mulselect.v1.1.js');?>" type="text/javascript"></script>
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_register_company_new.css');?>" type="text/css" rel="stylesheet">
+    <style type="text/css">
+        .ui-form .er-icon, .ui-form .error-wrap{display: none;}
+        .p_user_register .ui-form li { overflow: visible; }
+    </style>
+    <script>
+     $(function() {
+            var mul2 = new Firstp2p.mulselect(".cityDom", {
+                mulDom: ".cityDom",
+                defaultdata: ["{$major_contract_region0}", "{$major_contract_region1}","{$major_contract_region2}"],
+                selectsClass: "select",
+                url: cityJson,
+                jsonsingle:"name",
+                jsonid:"id",
+                jsonmany:"s",
+                selectName:"bankzone_region"
+            });
+        });
+    </script>
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="r-title">
+                <h2>企业用户注册</h2>
+            </div>
+            <div class="step_img step_img4"></div>
+            <div class="reg-mid">
+                <div class="ui-form">
+                    <form action="/account" method="post" id="reg_v2">
+                        <input type="hidden" name="step" value="4">
+                        <?php echo token_input(); ?>
+                            <input data-label="短信验证码" type="hidden" id="input-code" name="code" value="">
+                            <ul class="clearfix">
+                                <li class="clearfix" style="*z-index:2">
+                                    <label> 账户管理人姓名
+                                    </label>
+                                    <input type="text" value="{$major_name}" data-con="require" placeholder="输入文本..." name="major_name" id="major_name" class="txt int_placeholder" data-placeholder="输入文本...">
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                                <li class="tel-ver clearfix" style="*z-index:2">
+                                    <label> 账户管理人证件类别
+                                    </label>
+                                    <div class="select_box company_reg_select_box JS_credentials_type" data-value="{$major_condentials_type}" data-value-name="{$major_condentials_type_name}" data-name="major_condentials_type" id="" style="z-index:11">
+                                        <div class="j_select j_select_type"></div>
+                                        <ul class="none j_selectContent">
+                                            {if $major_condentials_type_name ne ''}
+                                            <li data-name="{$major_condentials_type}" data-value="{$major_condentials_type_name}">{$major_condentials_type_name}</option>
+                                            {/if}
+                                            {foreach from=$idTypes item=type key=key}
+                                                {if $type ne $major_condentials_type_name}
+                                                <li data-name="{$key}" data-value="{$type}">{$type}</option>
+                                                {/if}
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                                <li class="clearfix" style="*z-index:2;">
+                                    <label> 账户管理人证件号码
+                                    </label>
+                                    <input type="text" value="{$major_condentials_no}" data-con="require" placeholder="输入文本..." name="major_condentials_no" id="major_condentials_no" class="txt int_placeholder" data-placeholder="输入文本..." onkeyup="value=value.replace(/[\W]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                                <li class="tel-ver clearfix" style="*z-index:2">
+                                    <label> 账户管理人手机号码
+                                    </label>
+                                    <div class="select_box JS_sms_country_code" data-name="sms_country_code" id="">
+                                        <div class="j_select j_mess_select"></div>
+                                        <ul class="select_ul none j_selectContent">
+                                            {if isset($mobile_codes) }
+                                                {foreach from=$mobile_codes item=val}
+                                                    {if $val.is_show}
+                                                    <li data-value="{$val.code}" data-name="{$val.country}"><i class="icon-{$val.country}"></i>{$val.name}</li>
+                                                    {/if}
+                                                {/foreach}
+                                                {else}
+                                                  <li data-value="86" data-name="cn">
+                                                  <i class="icon-cn"></i>中国大陆</li>
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                    <div class="ipt-wrap w224">
+                                        <input type="text" value="{$major_mobile}" data-con="require" placeholder="必填" name="major_mobile" id="input-mobile-mess" class="txt-tel int_placeholder" data-placeholder="必填" autocomplete="off">
+
+                                    </div>
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                                <li class="clearfix" style="*z-index:2;">
+                                    <label> 账户管理人邮箱地址
+                                    </label>
+                                    <input type="text" value="{$major_email}" data-con="require" placeholder="输入文本..." name="major_email" class="txt int_placeholder" data-placeholder="输入文本...">
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                                <li class="clearfix" style="*z-index:2">
+                                    <label style="padding-top:7px;"> 账户管理人联系地址
+                                    </label>
+                                    <div class="clearfix">
+                                        <div class="cityDom" data-major_contract_region0="{$major_contract_region0}" data-major_contract_region1="{$major_contract_region1}" data-major_contract_region2="{$major_contract_region2}"></div>
+                                    </div>
+                                    <input type="text" value="{$major_contract_address}" data-con="require" placeholder="输入详细地址" name="major_contract_address" id="fullname" class="txt int_placeholder ml146 mt20 address" data-placeholder="输入详细地址">
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text"></div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="btn-w30">
+                                {if false == $source }
+                                    <input class="btn-sub" type="submit" id="submit_button" value="提交资料">
+                                {else /}
+                                    <input class="btn-sub" type="submit" id="submit_button" value="完成">
+                                {/if}
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+<!-- 短信验证码弹出框 -->
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.bgiframe.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.weebox.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/p2p-ui-checkbox.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/p2p_validate.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/user_reg_company_step1.js');?>?123124"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/jquery_placeholder-1.0.js');?>"></script>
+<script type="text/javascript">
+var nogetCode = '{function name="get_adv" x="短信验证码获取文案_2015"}';
+if (nogetCode == "") {
+    nogetCode = '如未收到验证码，我们将以18401558140~18401558149号段再次发送，或拨打客服热线 <span style="color:#f75939;">400-890-9888</span>（工作时间 8:00-20:00）。';
+}
+</script>
+{include file="web/views/footer.html"}

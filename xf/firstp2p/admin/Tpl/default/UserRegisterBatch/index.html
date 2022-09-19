@@ -1,0 +1,135 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/calendar/calendar_lang.js' />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">用户列表</div>
+<div class="blank5"></div>
+<input type="button" class="button" value="{%IMPORT}" onclick="import_user();" />
+<input type="button" class="button" value="{%EXPORT}" onclick="export_user();" />
+<input type="button" class="button" value="{%ADD}" onclick="add();" />
+
+<form name="search" action="__APP__" method="get">
+	<div class="search_row">
+	        姓名：<input type="text" id="name" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" style="width:100px;" />
+	        手机号：<input type="text" id="mobile" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:100px;" />
+	        导入时间：<input type="text" id="begin" onclick="show_cal(this)" class="textbox" name="begin" value="{:trim($_REQUEST['begin'])}" style="width:100px;" />
+	        至<input type="text" id="end" class="textbox" onclick="show_cal(this)" name="end" value="{:trim($_REQUEST['end'])}" style="width:100px;" />
+	        <select name="status" id="status">
+	                <option <if condition="intval($_REQUEST['status']) eq 0">selected="selected"</if> value="0">全部</option>
+	                <option <if condition="intval($_REQUEST['status']) eq 1">selected="selected"</if> value="1">成功</option>
+	                <option <if condition="intval($_REQUEST['status']) eq 2">selected="selected"</if> value="2">失败</option>
+	        </select> 
+	        <input type="hidden" id="batchno" value="<?php echo $batchno; ?>" name="batchno" /> 
+	        <input type="hidden" value="UserRegisterBatch" name="m" /> <input
+				type="hidden" value="index" name="a" /> <input type="submit"
+				class="button" value="{%SEARCH}" />
+	</div>
+
+<!-- Think 系统列表组件开始 -->
+	<table id="dataTable" class="dataTable" cellpadding=“0” cellspacing=“0”>
+		<tr>
+			<td colspan="15" class="topTd">&nbsp;</td>
+		</tr>
+		<tr class="row">
+			<th width="8"><input type="checkbox" id="check"
+				onclick="CheckAll('dataTable')"></th>
+			<th width="50px">导入时间</th>
+			<th>姓名</th>
+			<th>手机号</th>
+			<th>邮箱</th>
+			<th>用户组ID</th>
+			<th>证件类型</th>
+			<th>证件号码</th>
+			<th>银行</th>
+			<th>开户行</th>
+			<th>银行卡号</th>
+			<th>转出账户</th>
+			<th>转账金额</th>
+			<th>转账备注</th>
+			<th>状态</th>
+		</tr>
+		<?php if(is_array($list)): 
+				$i = 0; $__LIST__ = $list;
+				if( count($__LIST__)==0 ) : 
+					echo "" ;
+				else: 
+					foreach($__LIST__ as $key=>$item): 
+						++$i;
+						$mod = ($i % 2 );
+					
+		?>
+ 		<tr class="row" align="center">
+			<td><input type="checkbox" name="key" class="key" value="<?php echo ($item['id']);?>"></td>
+			<td>&nbsp;<?php echo $item["created_at"]; ?></td>
+			<td>&nbsp;<?php echo $item['name']; ?></td>
+			<td>&nbsp;<?php echo $item["mobile"]; ?></td>
+			<td>&nbsp;<?php echo $item['email']; ?></td>
+			<td>&nbsp;<?php echo $item['group_id']; ?></td>
+			<td>&nbsp;<?php echo $idTypes[$item['idtype']]; ?></td>
+			<td>&nbsp;<?php echo $item['idno']; ?></td>
+			<td>&nbsp;<?php echo $item['bank']; ?></td>
+			<td>&nbsp;<?php echo $item['branch']; ?></td>
+			<td>&nbsp;<?php echo $item['acno']; ?></td>
+			<td>&nbsp;<?php echo $item['transfer_ac']; ?></td>
+			<td>&nbsp;<?php echo $item['transfer_money']; ?></td>
+			<td>&nbsp;<?php echo $item['transfer_comment']; ?></td>
+			<td>&nbsp;<?php echo $comment[$item['status']]; ?></td>
+		</tr> 
+		<?php endforeach; 
+				endif; 
+			else: 
+				echo "";
+			endif;
+        ?>
+		<tr>
+			<td colspan="15" class="bottomTd">&nbsp;</td>
+		</tr>
+	</table>
+	<!-- Think 系统列表组件结束 -->
+
+	<div class="blank5"></div>
+	<div class="page">{$page}</div>
+
+</form>
+
+<script>
+function import_user(){
+	$.weeboxs.open(ROOT+'?m=UserRegisterBatch&a=openw', {contentType:'ajax',showButton:false,title:'批量导入用户',width:650,height:200});
+}
+function export_user(){
+	var isc = url = "";
+	$(document).ready(function(){
+	    $("#dataTable input[name=key]").each(function(){
+	        if($(this).attr("checked")) //如果被选中
+	            isc += $(this).val() + ","; //获取被选中的值
+	    });
+	    if(isc.length > 0)//如果获取到
+	        isc = isc.substring(0, isc.length - 1); //把最后一个逗号去掉
+	});
+	rowCount = $("table[id$='dataTable']>tbody").children("tr").length;
+	if (rowCount <= 3) {
+		alert("please search data.");
+		return;
+	}
+	url += "&ids="+isc;
+	url += "&name="+$("#name").val();
+	url += "&mobile="+$("#mobile").val();
+	url += "&begin="+$("#begin").val();
+	url += "&end="+$("#end").val();
+	url += "&status="+$("#status").val();
+	url += "&batchno="+$("#batchno").val();
+	window.location.href = ROOT+'?m=UserRegisterBatch&a=export'+url;
+}
+
+function show_cal(obj) {
+	obj.blur(); 
+	return showCalendar(obj.id, '%Y-%m-%d %H:%M:%S', true, false, obj.id);
+}
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3.3/css/p-yibao.css');?>">
+<title>提示</title>
+</head>
+<body>
+    <div class="ui_title">提示</div>
+    <div class="p_charge_succeed">
+        <div class="picture"><img src="<?php echo $this->asset->makeApiUrl('v3.3/images/yeepay/succeed2.png');?>"></div>
+        <div class="text"></div>
+        <div class="but">
+            <a href="{$returnSuccessUrl}">完成</a>
+        </div>
+        <div class="ui_yibao_text_tips">
+            <p>本服务由易宝支付提供</p>
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/common.js');?>"></script>
+    <script>
+    P2PWAP.app.triggerScheme("firstp2p://api?method=updatebacktype&param=2");
+    //取url中的参数值
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    if(getQueryString('paySuccess') == 1){//支付成功，显示成功页
+        $(".text").text('充值成功');
+        $(".picture img").attr('src',"<?php echo $this->asset->makeAppUrl('v3.3/images/yeepay/paySuccess.png');?>")
+        $(".text").addClass("text_success");
+        $(".but").addClass("but_success");
+        $(".picture img").addClass("img_success");
+        $(".but a").addClass("a_success");
+    }else{//支付处理中
+        $(".text").text('支付请求已受理，可能会有5-10分钟的延迟，请耐心等待，谢谢');
+        $(".picture img").attr('src',"<?php echo $this->asset->makeApiUrl('v3.3/images/yeepay/succeed2.png');?>")
+    }
+    </script>
+</body>
+</html>

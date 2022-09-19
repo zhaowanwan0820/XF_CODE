@@ -1,0 +1,87 @@
+html {
+  background-color: @mainbgColor;
+}
+html,
+html body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', SimSun, sans-serif;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: hidden;
+}
+
+html,
+body {
+  /*
+   * Fix 'Unable to preventDefault inside passive event listener due to target being treated as passive'  
+   * see: https://developers.google.com/web/updates/2017/01/scrolling-intervention
+   * 
+   * and fix 300ms click delay
+   */
+  touch-action: manipulation;
+}
+
+div,
+a,
+ul,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+li,
+ol,
+dl,
+button {
+  padding: 0;
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+}
+
+input[type='text'],
+input[type='number'] {
+  -webkit-appearance: none;
+}
+
+::-webkit-search-cancel-button {
+  display: none;
+}
+
+// 避免某些浏览器被Viewport Units Buggyfill调整content导致伪元素::before(:before)或::after（:after）不会显示
+img {
+  content: normal !important;
+}
+
+* {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+button {
+  border: none;
+}
+:focus {
+  outline: 0;
+}

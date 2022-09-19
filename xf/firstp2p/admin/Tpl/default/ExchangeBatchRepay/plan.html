@@ -1,0 +1,86 @@
+<tagLib name="html" />
+
+<include file="Public:header" />
+
+<style>
+#dataTable th { text-align: left; }
+</style>
+
+<div class="main">
+    <div class="main_title">
+        <label>还款计划</label>
+        <a href="{:u("OexchangeBatch/index?pro_id=". $projectInfo['id'])}" class="back_list">{%BACK_LIST}</a>
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <p><input type="button" id="export_btn" value="导出" class="button"/></p>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable">
+        <tr>
+            <th style="text-align:left;width:130px">交易所备案产品编号：</th>
+            <td>{$projectInfo['jys_number']}</td>
+            <th style="text-align:left;width:70px;">批次id：</th>
+            <td>{$batchInfo['id']}</td>
+            <th style="text-align:left;width:120px;">发行人名称：</th>
+            <td>{$publishInfo['real_name']}</td>
+            <th style="text-align:left;width:50px;">期数：</th>
+            <td>{$batchInfo['batch_number']}</td>
+            <th style="text-align:left;width:70px;">咨询机构：</th>
+            <td>{$consultInfo['name']}</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable">
+        <tr class="row">
+            <th>序号</th>
+            <th>还款日</th>
+            <th>还款金额</th>
+            <th>本息</th>
+            <th>投资顾问费</th>
+            <th>发行服务费</th>
+            <th>咨询费</th>
+            <th>担保费</th>
+            <th>挂牌服务费</th>
+            <th>回款明细</th>
+        </tr>
+        <volist name="list" id="item" key="index">
+        <tr class="row">
+            <td>{$pageSize * ($nowPage - 1) + $index}</td>
+            <td>{:date("Y-m-d", $item['repay_time'])}</td>
+            <td>{$item['repay_money'] / 100}</td>
+            <td>{$item['principal'] / 100 + $item['interest'] / 100}</td>
+            <td>{$item['invest_adviser_fee'] / 100}</td>
+            <td>{$item['publish_server_fee'] / 100}</td>
+            <td>{$item['consult_fee'] / 100}</td>
+            <td>{$item['guarantee_fee'] / 100}</td>
+            <td>{$item['hang_server_fee'] / 100}</td>
+            <td>
+                <if condition="$item['principal'] or $item['interest']">
+                    <a href="{:u('ExchangeLoadRepay/planExport?batch_id=' . $batchInfo['id'] . '&repay_id=' . $item['id'])}">回款明细</a>
+                <else />
+                    前收手续费
+                </if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+
+    <div class="page">{$page}</div>
+    <div class="blank5"></div>
+</div>
+
+<script>
+    $(function() {
+        $('#export_btn').click(function() {
+            location.href="/m.php?m=ExchangeBatchRepay&a=planExport&batch_id={$batchInfo['id']}"
+        })
+    })
+</script>
+
+<include file="Public:footer" />

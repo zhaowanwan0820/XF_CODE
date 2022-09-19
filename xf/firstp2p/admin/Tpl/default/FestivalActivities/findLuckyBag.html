@@ -1,0 +1,147 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/user.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+body { background-color: #F0F0F0; }
+.bodydiv{
+    margin:1% 3%;
+
+}
+</style>
+<div class="main">
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<div><font size = "3" color="red"><B>| </B></font><B>活动配置</B></div></div>
+<div><hr width="99%"/></div>
+<div class=bodydiv >
+	<font size = "3">活动时间
+	<input type="text" class="text require" des='活动开始时间' style="width:150px;text-align:center;border-left:white ;padding: 5px; border:1px solid DarkGray;" name="start_time" id="Activity_start" placeholder="年-月-日" value="{$data['start_time']}" onfocus="this.blur(); return showCalendar('Activity_start', '%Y-%m-%d', false, false, 'Activity_start');" />
+	            <input type="button" style="outline:none;width:0.1px;border:none;background-color:transparent;" id="Activity_start"/>
+	            至 <input type="button" style="outline:none;width:0.1px;border:none;background-color:transparent;" />
+	            <input type="text" class="text require" des='活动结束时间' style="width:150px;text-align:center;border-left:white ;padding: 5px; border:1px solid DarkGray;" name="end_time" id="Activity_end" placeholder="年-月-日" value="{$data['end_time']}" onfocus="this.blur(); return showCalendar('Activity_end', '%Y-%m-%d', false, false, 'Activity_end');" />
+	            <input type="button" style="border:none;background-color:transparent;" id="Activity_end" />
+	</font>
+</div>
+
+<div style="margin-left: 0.5%;"><font size = "3" color="red"><B>| </B></font><B>奖励配置</B></div></div>
+
+<div><hr width="99%" style="margin-top: 20px;"/></div>
+<div class=bodydiv >
+    <select name="coupons_type" style="height:28px;">
+    <!--
+          <if condition="$data[coupons_type] eq 0">
+             <option value = "0" selected>礼券</option>
+             <else />
+             <option value = "0" >礼券</option>
+         </if>
+    -->
+         <if condition="$data[coupons_type] eq 1">
+             <option value = "1" selected>投资券</option>
+             <else />
+             <option value = "1">投资券</option>
+         </if>
+    </select>
+	<font size = "3">券ID
+	<input class="text require" des='券ID' style="width:150px;text-align:center; border-left:white ;padding: 5px; border:1px solid DarkGray;" name="coupons_id" onblur="checkCouponsId(this)" value="{$data['coupons_id']}" />
+	&nbsp;&nbsp;&nbsp;个数/天 &nbsp;<input type="text" class="text require" des='个数' style="width:150px;text-align:center;border-left:white ;padding: 5px; border:1px solid DarkGray;" name="coupons_count" onblur="checkCouponsId(this)" value="{$data['coupons_count']}" />
+	</font>
+</div>
+
+<div class=bodydiv style="margin:3% 1%;">
+	<font size = "3">当前状态
+		<if condition="$data['is_effect'] eq 1">
+            <label><input type="radio" value="1" name="is_effect" checked="checked" >有效</label>
+            <else /><label><input type="radio" value="1" name="is_effect">有效</label>
+        </if>
+        <if condition="$data['is_effect'] eq 0">
+            <label><input type="radio" value="0" name="is_effect" checked="checked" >无效</label>
+            <else />
+            <label><input type="radio" value="0" name="is_effect" >无效</label>
+        </if>
+	</font>
+</div>
+<div style="margin-left: 0.5%;color:red;">
+    <input type="hidden" name="{:conf("VAR_MODULE")}" value="FestivalActivities" />
+    <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveFindLuckyBag" />
+    <input type="submit" style="color:#FFFAFA;background:#4169E1;background-image: none;display: inline-block;font-size: 14px; font-weight: 400;padding: 6px 12px;border-radius: 4px;border:none" class="button" id="button_submit" value="保存设置" onclick="checktosubmit()"/>
+</div>
+</form>
+</div>
+
+</div>
+<script type="text/javascript">
+function checkCouponsId(input) {
+	if (!input.value || input.value <= 0 || isNaN(input.value)) {
+		alert('请输入正整数');
+		input.focus();
+	}
+}
+function checktosubmit() {
+    $("form").unbind();
+    init_word_box();
+    $("#info").ajaxStart(function(){
+         $(this).html(LANG['AJAX_RUNNING']);
+         $(this).show();
+    });
+    $("#info").ajaxStop(function(){
+
+        $("#info").oneTime(2000, function() {
+            $(this).fadeOut(2,function(){
+                $("#info").html("");
+            });
+        });
+    });
+    $("form").bind("submit",function(){
+        var btn=$('form input[type="submit"]');
+        var $input = $('#hkop');
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+        var doms = $(".require");
+        var check_ok = true;
+        $.each(doms,function(i, dom){
+            if($.trim($(dom).val())=='')
+            {
+                    var title = $(dom).attr('des');
+                    if(!title)
+                    {
+                        title = '';
+                    }
+                    if(title.substr(title.length-1,title.length)==':')
+                    {
+                        title = title.substr(0,title.length-1);
+                    }
+                    if($(dom).val()=='')
+                    TIP = LANG['PLEASE_FILL'];
+                    if($(dom).val()=='0')
+                    TIP = LANG['PLEASE_SELECT'];
+                    alert(TIP+title);
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    $(dom).focus();
+                    check_ok = false;
+                    return false;
+            }
+        });
+        if(!check_ok)
+        return false;
+        if($("form").attr("name")=="search"){
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return true;
+            }else{
+                if (confirm("确定此操作吗？")) {
+                    //$input.val(btn.val());
+                    $(this).append($input);
+                     return true;
+                } else {
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    return false;
+                }
+            }
+    });
+}
+</script>
+<include file="Public:footer" />

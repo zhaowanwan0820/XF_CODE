@@ -1,0 +1,58 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+    .top_type{background: #edf3f7;text-align: center;}
+    .dataTable{margin-top: 20px;}
+    .control_style{width: 200px;}
+    .second_type{text-align: center;}
+</style>
+<div class="main">
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>标的配置列表</p>
+    </div>
+	<div class="blank5"></div>
+	<div class="button_row">
+	    <input type="button" class="button" value="{%ADD}" onclick="location.href='{:u("UserReservation/reservematch_add")}'" />
+	</div>
+    <table id="dataTable" class="dataTable reservationZone" cellpadding=0 cellspacing=0 >
+        <tr class="top_type">
+            <td>编号</td>
+            <td>预约启动类型</td>
+            <td>产品类型</td>
+            <td width="300">预约入口</td>
+            <td>状态</td>
+            <td>备注</td>
+            <td>操作</td> 
+        </tr>
+        <volist name="list" id="reservation">
+        <tr class="second_type">
+            <td>
+                {$reservation.id}
+            </td>
+            <td>
+                {$reservation.reserve_type_name}
+            </td>
+            <td>
+                {$reservation.type_name}
+            </td>
+            <td>
+                {$reservation.entra_name}
+            </td>
+            <td>
+                <if condition="$reservation.is_effect eq 1"><span style="color:red">有效</span><else/>无效</if>
+            </td>
+            <td>
+                {$reservation.remark}
+            </td>
+            <td>
+                <a href="{:u("UserReservation/reservematch_edit", array('id'=>$reservation['id']))}">编辑</a>
+            </td>
+        </tr>
+        </volist>
+    </table>
+</div>

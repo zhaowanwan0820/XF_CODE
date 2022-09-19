@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>账号登录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <!--public js&css start-->
+    <link href="{$STATIC_PATH}/v3/css/m-base.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_PATH}/v3/css/m-common.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_PATH}/v3/css/p-user-login.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        var today = new Date();
+        var  year = today.getFullYear();
+        var month = today.getMonth() + 1;
+        var day= today.getDate();
+        var ymd = year +""+ month+"" + day;
+        var oHead = document.getElementsByTagName('HEAD').item(0); 
+        var oScript= document.createElement("script"); 
+        oScript.type = "text/javascript"; 
+        oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+        oHead.appendChild( oScript); 
+    </script>
+    <script type="text/javascript" src="{$STATIC_PATH}/v3/js/zepto.min.js"></script>
+    <!--public js&css end-->
+    <!--private js&css start-->
+    <script src="{$STATIC_PATH}/v3/js/head-app.js" type="text/javascript"></script>
+    <script src="{$STATIC_PATH}/v3/js/common.js?v=20151228" type="text/javascript"></script>
+    <!--private js&css end-->
+    <style class="JS-old_style">
+        html { font-size: 62.5%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        body { width: 100%; background-color: #efefef; font-family: "微软雅黑","Microsoft YaHei"; color: #343434; font-size: 14px; overflow-y: auto !important; }
+        *:focus, *:active { outline: none !important; }
+        * { margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline-style: none; }
+        img { border: 0px; }
+        ul, li { list-style-type: none; }
+        a { text-decoration: none;  font-family: "微软雅黑","Microsoft YaHei"; }
+            a:hover { text-decoration: none; }
+            /*a:active, a:visited { color: #666; }*/
+
+        .fontHY { font-family: "微软雅黑","Microsoft YaHei"; }
+        .colorRed { color: #000; }
+        .bgf5 { background-color: #f5f5f5; }
+
+        /*新加的样式*/
+        .icon_msg, .icon_edit, .icon_lock, .icon_red_ok { width: 33px; height: 33px; display: inline-block; margin-top: 15px; vertical-align: middle; }
+        .icon_msg { background: url({$STATIC_PATH}/v3/images/haha/icon.png) left -34px no-repeat; background-size: 33px auto; }
+        .icon_edit { background: url({$STATIC_PATH}/v3/images/haha/icon.png) left -68px no-repeat; background-size: 33px auto; }
+        .icon_lock { background: url({$STATIC_PATH}/v3/images/haha/icon.png) left -1px no-repeat; background-size: 33px auto; }
+        .icon_red_ok { background: url({$STATIC_PATH}/v3/images/haha/icon.png) left -102px no-repeat; margin-top: 0; background-size: 33px auto; }
+
+        .login_text { text-align: right; line-height: 30px; font-size: 14px; }
+
+        .login_promptText { position: relative; padding: 20px 0; padding-top: 10px; text-align: center; }
+            .login_promptText p { color: #343434; font-size: 14px; line-height: 30px; }
+                .login_promptText p:first-of-type { font-size: 16px; }
+
+
+        /*重写的样式*/
+        .ui_title { height: 45px; text-align: center; font-size: 16px; line-height: 45px; background: #ee4634; position: relative;color: #fff; border: none;}
+            .ui_title a { color: #fff; }
+            .ui_title .ui_back { position: absolute; left: 10px; font-size: 14px; }
+        .ui_icon_back { background: url({$STATIC_PATH}/v3/images/haha/icon_back.png?v=20160229) 0px 0px no-repeat; width: 13px; height: 20px; display: inline-block; background-size: 9px 17px; margin: 0 5px 0 0px; vertical-align: middle; }
+
+        .ui_register { padding-bottom: 15px; margin: 0 20px; }
+            .ui_register .form_box { background: #fff; margin: 20px auto 0px; }
+        .ui_reg_input { height: 60px; border: none; border-radius: 0px; font-size: 15px; display: block; -webkit-box-flex: 1; font-family: "微软雅黑","Microsoft YaHei"; min-width: 250px; }
+        .ui_register .border_b { padding: 0px; border: 1px solid #e4e3e8; display: -webkit-box; margin-bottom: 10px; overflow: hidden; border-radius: 3px; background: #fff;}
+            .ui_register .border_b:last-child { border: 1px solid #e4e3e8; }
+        .ui_register .no_border { border: none; }
+        .ui_register .yz_img { display: inline-block; line-height: 60px; width: 80px; padding-left: 18px; }
+            .ui_register .yz_img img { vertical-align: middle; width: 80px; }
+        .ui_register .reg_finish_btn { height: 48px; width: 100%; line-height: 48px; color: #fff; background: #ee4634; border: none; border-radius: 5px; font-size: 18px;  display: block; text-align: center; }
+
+        .ui_footer { padding-top: 15px; font-size: 14px; font-size: 1.4rem; text-align: center; color: #999999; }
+        .ui_register .reg_finish_btn[disabled=disabled] { background-color: #ee4634; color: rgba(255,255,255,0.5); opacity: 1; }
+
+        .re_left { float: left; width: 60px; height: 44px; line-height: 44px; padding-left: 10px; font-size: 15px;}
+        .re_right { width: 80px; float: right; height: 44px; line-height: 44px; }
+        .re_center { margin-left: 70px; margin-right: 82px; height: 44px; line-height: 44px; }
+            .re_center input {width: 100%; height: 44px; border: none; border-radius: 0px; font-size: 15px; display: block; font-family: "微软雅黑","Microsoft YaHei"; }
+        .dl_yanzhengma img { vertical-align: middle; width: 70px; height: 28px; overflow: hidden; margin: -5px 12px 0 7px; }
+        .dl_yanzhengma {  border-left: 1px solid #dadcdd; text-align: right; float: right; }
+        .ui_register .form_box{overflow: hidden; border: none; border-radius: 0px; background: #efefef;}
+        .form_box .colorRed{ line-height: 44px;}
+        .border_b span{ width: 60px; display: inline-block; line-height: 44px; padding-left: 10px; font-size: 15px; color: #000;}
+        .ui_reg_input{height: 44px;}
+        .border_bs{background: #fff;margin-bottom: 10px; overflow: hidden; border-radius: 3px; background: #fff;border: 1px solid #e4e3e8;}
+        .reg_tip{ margin-top: 45px;}
+        .reg_tip a{ height: 40px; border: 1px solid #aaaaaa; display: inline-block; background: #fff; line-height: 40px; color: #0ea8e2; padding: 0 20px; border-radius: 3px;}
+    </style>
+    {if isset($fzjs)}
+    <script type="text/javascript" src="{$fzjs}"></script>
+    {/if}
+</head>
+<body>
+    <div class="p_login_new">
+        <div class="ui_title JS-title">
+            <a class="ui_back" href="https://cytfinance.wangxinlicai.com/Pwap/">
+                <i class="ui_icon_back"></i>返回
+            </a><span class="JS-title_name">登录</span>
+        </div>
+        <div class="login_banner JS-banner">
+            <img src="{$STATIC_PATH}/v3/images/haha/logo_banner.png?v=20160314" width="100%">
+        </div>
+        <div class="ui_register JS-main">
+            <!--表单-->
+            <form id="login_form" class="JS-form" name="login_form" action="doLogin{$querystring}" method="POST">
+                <div class="form_box clearfix form_box2">
+                    <div class="border_b">
+                        <span>账号</span>
+                        <font class="colorRed ui_reg_input">{$mobile}{if !$mobile}{$account}{/if}</font>
+                    </div>
+                    <div class="border_b">
+                        <span>密码</span>
+                        <!--密码-->
+                        <input id="password" name="password" type="password" class="ui_reg_input ui_password_input" placeholder="请输入密码">
+                        <!--注意 此处是手机号码 接收的mobile参数-->
+                        <input hidden="hidden" name="account" type="text" value="{$mobile}{if !$mobile}{$account}{/if}">
+                    </div>
+                    {if $show_vcode == 1}
+                    <div class="border_bs">
+                        <div class="re_left"><span>验证码</span></div>
+                        <div class="re_right dl_yanzhengma"><img title="验证码图片" alt="验证码图片" src="" /></div>
+                        <div class="re_center"><input name="verify" id="verify" type="text" class=" input_yanzhengma" placeholder="右侧验证码"></div>
+                    </div>
+                    <!--<div class="border_b">
+                        <span class="icon_lock"></span>
+                        <input id="verify" name="verify" type="tel" class="ui_reg_input verify_input" placeholder=" 右侧数字">
+                        <div class="yz_img"><img src="" width="80"></div>
+                    </div>-->
+                    {/if}
+                </div>
+                <div class="tr mb20"><a href="https://cytfinance.wangxinlicai.com/user/forgetPwd">忘记密码?</a></div>
+                <div class="JS-submit_btn_box">
+                    <input id="login_btn" type="submit" class="reg_finish_btn fontHY JS-submit_btn" value="提交">
+                    <!-- <p class="ui_footer"><a href=''>忘记安全码？请拨打客服热线：4001100025</a></p> -->
+
+                </div>
+                <div class="reg_tip tc"><a href="https://cytfinance.wangxinlicai.com/Pwap/User/register?mobile={$mobile}{if !$mobile}{$account}{/if}" class="colorRed">没有账户点击注册</a></div>
+            </form>
+        </div>
+        <!--荣信汇 end-->
+        <script>
+            $(function(){
+                // 按钮disable状态逻辑
+                function upateSubmitButton() {
+                    var disabled = $('#password').val() == '' || ($('#verify').length != 0 && $('#verify').val() == '');
+                    if (disabled) {
+                        $('#login_btn').attr('disabled', 'disabled');
+                    } else {
+                        $('#login_btn').removeAttr('disabled');
+                    }
+                }
+                $('#password').bind("input", upateSubmitButton);
+                $('#verify').bind("input", upateSubmitButton);
+                var _upateSubmitButtonCount = 10;
+                var _upateSubmitButtonTimer = setInterval(function(){
+                    upateSubmitButton();
+                    _upateSubmitButtonCount--;
+                    if (_upateSubmitButtonCount < 0) {
+                        clearInterval(_upateSubmitButtonTimer);
+                    }
+                }, 300);
+
+
+                // 图片验证码逻辑
+                function updateCaptchaImg() {
+                    $('.dl_yanzhengma img').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+                }
+                $('.dl_yanzhengma').click(function() {
+                    updateCaptchaImg();
+                });
+                updateCaptchaImg();
+                $(".JS-submit_btn").click(function(){
+                    $('#login_form').submit();
+                    $(this).attr("disabled","disabled").val('登录中');
+                });
+
+                // 显隐密码
+                var _pwdFlag = false;
+                function updatePassWordStyle(show) {
+                    $('#password')[0].type = show ? 'text' : 'password';
+                    $('#pwd_show_btn')[0].innerHTML = show ? '隐藏' : '显示';
+                }
+                $('#pwd_show_btn').bind("click", function(){
+                    _pwdFlag = !_pwdFlag;
+                    updatePassWordStyle(_pwdFlag);
+                });
+
+                // 错误提示 php动态插入
+                {if isset($error)}
+                P2PWAP.ui.showErrorTip('{$error}');
+                {/if}
+
+                // 禁用微信分享
+                function onBridgeReady() {
+                    WeixinJSBridge.call('hideOptionMenu');
+                }
+
+                if (typeof WeixinJSBridge == "undefined") {
+                    if (document.addEventListener) {
+                        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                    } else if (document.attachEvent) {
+                        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                    }
+                } else {
+                    onBridgeReady();
+                }
+                // 禁用微信分享 end
+            });
+        </script>
+        <script type='text/javascript'>
+            var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+            (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+        </script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,452 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script>
+    function export_contract()
+    {
+        idBox = $(".key:checked");
+
+        var param = '';
+        if(idBox.length == 0){
+            idBox = $(".key");
+        }
+
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+
+        if(idArray.length == 0){
+            alert('无可导出的数据！');
+            return false;
+        }
+
+        id = idArray.join(",");
+
+        var inputs = $(".search_row").find("input");
+
+        for(i=0; i<inputs.length; i++){
+            if(inputs[i].name != 'm' && inputs[i].name != 'a')
+                param += "&"+inputs[i].name+"="+$(inputs[i]).val();
+        }
+
+        var url= ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=export_all&id="+id;
+        window.location.href = url+param;
+    }
+    function agree_contract(id, uid) {
+        if (!id) {
+            alert('操作有误');
+            return false;
+        }
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=agree&id="+id+"&uid="+uid,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                if(obj.status==1){
+                    location.href=location.href;
+                } else {
+                    alert(obj.info);
+                    return false;
+                }
+            }
+        });
+    }
+
+    function agree_all(id, type) {
+        if (!confirm('确认操作？')) {
+            return false;
+        }
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"=ContractGold&"+VAR_ACTION+"=agreeAllGold&id="+id+"&type="+type,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                if(obj.status==1){
+                    location.href=location.href;
+                } else {
+                    alert(obj.info);
+                    return false;
+                }
+            }
+        });
+    }
+
+    function recreate(id) {
+        if (!confirm('确认操作？')) {
+            return false;
+        }
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=recreate&id="+id,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                if(obj.status==1){
+                    location.href=location.href;
+                } else {
+                    alert(obj.info);
+                    return false;
+                }
+            }
+        });
+    }
+</script>
+<div class="main">
+    <div class="main_title">合同管理
+
+    </div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <if condition='$deal_id gt 0'>
+            <input type="button" class="button" value="一键签署" onclick="agree_all({$deal_id}, 4);" />
+            <input type="button" class="button" value="代借款人签署" onclick="agree_all({$deal_id}, 1);" />
+
+        </if>
+        <input type="button" class="button" value="导出" onclick="export_contract();" />
+    </div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            合同标题：<input type="text" class="textbox" name="cname" value="{:trim($_REQUEST['cname'])}" size="8"/>
+            合同编号：<input type="text" class="textbox" name="cnum" value="{:trim($_REQUEST['cnum'])}" size="15"/>
+            运营方id：<input type="text" class="textbox" name="cborrow_user_id" value="{:trim($_REQUEST['cborrow_user_id'])}" size="8"/>
+            消费者id：<input type="text" class="textbox" name="cuser_id" value="{:trim($_REQUEST['cuser_id'])}" size="4"/>
+            借款id：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" size="4"/>
+
+            <!-- <input type="hidden" id="page_now" value="{$_GET.p}" name="p" /> -->
+            <input type="hidden" value="ContractGold" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check"
+                                 onclick="CheckAll('dataTable')"></th>
+            <th width="20px">id</th>
+            <th>合同标题</th>
+            <th><a href="javascript:sortBy('number','1','Contract','index')">合同编号 </a></th>
+            <th>角色</th>
+            <th>用户姓名</th>
+            <th>预签状态</th>
+            <th>签署状态</th>
+            <th>签署时间</th>
+            <th width='30px'>借款id</th>
+            <th width='50px'>创建时间 </th>
+            <th>购买克重</th>
+            <th width='148px'>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+
+            <if condition='$item.type eq 99'>
+                <tr class="row">
+                    <td><input type="checkbox" name="key" class="key" value="{$item.deal_id}_{$item.id}" sign = "{$item.is_have_sign}"></td>
+                    <td>{$item.deal_id}_{$item.id}</td>
+                    <td><a href='javascript:void(0)' onclick="opencontract(\'{$item.number}\',{$item.id},{$item.deal_id});">{$item.title}</a></td>
+                    <td>{$item.number}</td>
+                    <td>/</td>
+                    <td>/</td>
+                    <td>已预签</td>
+                    <td>/</td>
+                    <td>/</td>
+
+                    <td><a href='/m.php?m=Deal&a=edit&id={$item.deal_id}'
+                           target='_blank'>{$item.deal_id}</a></td>
+                    <td><?php echo date("Y-m-d H:i:s", $item['create_time']); ?></td>
+
+                    <!-- 需求2481开始 edit by liuty-->
+                    <td><if condition='$item.load_money eq 0'>--<else/>{$item.load_money}</if></td>
+                    <!-- 需求2481结束 -->
+
+                    <td>
+                        <if condition='$item.status eq 1'>
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                            <a href="/m.php?m=ContractGold&a=downloadtsa&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载TSA</a>
+                            <else />
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                        </if>
+                    </td>
+                </tr>
+            </if>
+
+            <if condition='$item.borrow_user_id gt 0'>
+                <tr class="row">
+                    <td><input type="checkbox" name="key" class="key" value="{$item.deal_id}_{$item.id}" sign = "{$item.is_have_sign}"></td>
+                    <td>{$item.deal_id}_{$item.id}</td>
+                    <td><a href='javascript:void(0)' onclick="opencontract(\'{$item.number}\',{$item.id},{$item.deal_id});">{$item.title}</a></td>
+                    <td>{$item.number}</td>
+                    <td>运营方</td>
+                    <td>
+                        <a href='/m.php?m=User&a=index&user_id={$item.borrow_user_id}' target='_blank'>{$item.borrow_user_name}</a>
+                    </td>
+
+                    <td>--</td>
+
+                    <td>
+                        <if condition='$item.borrower_sign_time gt 0'>
+                            <font color="green">已签</font><br />
+                            <else />
+                            <font color="#FF4040">未签</font> <br />
+                        </if>
+                    </td>
+
+                    <td><if condition='$item.borrower_sign_time neq 0'><?php echo date("Y-m-d H:i:s", $item['borrower_sign_time']); ?></if>
+                    </td>
+
+                    <td><a href='/m.php?m=Deal&a=edit&id={$item.deal_id}'
+                           target='_blank'>{$item.deal_id}</a></td>
+                    <td><?php echo date("Y-m-d H:i:s", $item['create_time']); ?></td>
+
+                    <!-- 需求2481开始 edit by liuty-->
+                    <td><if condition='$item.load_money eq 0'>--<else/>{$item.load_money}</if></td>
+                    <!-- 需求2481结束 -->
+
+                    <td>
+                        <if condition='$item.status eq 1'>
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                            <a href="/m.php?m=ContractGold&a=downloadtsa&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载TSA</a>
+                            <else />
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                        </if>
+                    </td>
+                </tr>
+            </if>
+
+            <if condition='$item.user_id gt 0'>
+                <tr class="row">
+                    <if condition='$item.borrow_user_id eq 0'>
+                        <td><input type="checkbox" name="key" class="key" value="{$item.deal_id}_{$item.id}" sign = "{$item.is_have_sign}"></td>
+                        <td>{$item.deal_id}_{$item.id}</td>
+                        <td><a href='javascript:void(0)' onclick="opencontract(\'{$item.number}\',{$item.id},{$item.deal_id});">{$item.title}</a></td>
+                        <td>{$item.number}</td>
+                        <else />
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </if>
+                    <td>消费者</td>
+                    <td>
+                        <a href='/m.php?m=User&a=index&user_id={$item.user_id}' target='_blank'>{$item.user_name}</a>
+                    </td>
+
+                    <td>已预签</td>
+
+                    <td>
+                        /
+                    </td>
+
+                    <td>
+                        /
+                    </td>
+
+                    <td><a href='/m.php?m=Deal&a=edit&id={$item.deal_id}'
+                           target='_blank'>{$item.deal_id}</a></td>
+                    <td><?php echo date("Y-m-d H:i:s", $item['create_time']); ?></td>
+
+                    <!-- 需求2481开始 edit by liuty-->
+                    <td><if condition='$item.load_money eq 0'>--<else/>{$item.load_money}</if></td>
+                    <!-- 需求2481结束 -->
+
+                    <td>
+                        <if condition='$item.status eq 1'>
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                            <a href="/m.php?m=ContractGold&a=downloadtsa&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载TSA</a>
+                            <else />
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                        </if>
+                    </td>
+                </tr>
+            </if>
+
+            <if condition='$item.agency_id gt 0'>
+                <tr class="row">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>担保公司</td>
+                    <td>
+                        <a href='/m.php?m=DealAgency&a=index&id={$item.agency_id}' target='_blank'>{$item.agency_name}</a>
+                    </td>
+
+                    <td>--</td>
+
+                    <td>
+                        <if condition='$item.agency_sign_time gt 0'>
+                            <?php foreach($item['agency_user'] as $aitem){ ?>
+                            <a href='/m.php?m=User&a=index&user_id={$aitem.user_id}' target='_blank'>{$aitem.real_name}</a> <font color="green">已签</font><br /><br />
+                            <?php } ?>
+
+                            <else />
+                            <?php foreach($item['agency_user'] as $aitem){ ?>
+                            <a href='/m.php?m=User&a=index&user_id={$aitem.user_id}' target='_blank'>{$aitem.real_name}</a><font color="#FF4040">未签</font> <br />
+                            <?php } ?>
+                        </if>
+                    </td>
+
+                    <td>
+                        <if condition='$item.agency_sign_time neq 0'><?php echo date("Y-m-d H:i:s", $item['agency_sign_time']); ?></if>
+                    </td>
+
+                    <td><a href='/m.php?m=Deal&a=edit&id={$item.deal_id}'
+                           target='_blank'>{$item.deal_id}</a></td>
+                    <td><?php echo date("Y-m-d H:i:s", $item['create_time']); ?></td>
+
+                    <!-- 需求2481开始 edit by liuty-->
+                    <td><if condition='$item.load_money eq 0'>--<else/>{$item.load_money}</if></td>
+                    <!-- 需求2481结束 -->
+
+                    <td>
+                        <if condition='$item.status eq 1'>
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                            <a href="/m.php?m=ContractGold&a=downloadtsa&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载TSA</a>
+                            <else />
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                        </if>
+                    </td>
+                </tr>
+            </if>
+
+            <if condition='$item.entrust_agency_id gt 0'>
+                <tr class="row">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>受托机构</td>
+                    <td>
+                        <a href='/m.php?m=DealAgency&a=index&id={$item.entrust_agency_id}' target='_blank'>{$item.entrust_name}</a>
+                    </td>
+
+                    <td>--</td>
+
+                    <td>
+                        <if condition='$item.entrust_agency_sign_time gt 0'>
+                            <?php foreach($item['entrust_user'] as $aitem){ ?>
+                            <a href='/m.php?m=User&a=index&user_id={$aitem.user_id}' target='_blank'>{$aitem.real_name}</a> <font color="green">已签</font><br /><br />
+                            <?php } ?>
+
+                            <else />
+                            <?php foreach($item['entrust_user'] as $aitem){ ?>
+                            <a href='/m.php?m=User&a=index&user_id={$aitem.user_id}' target='_blank'>{$aitem.real_name}</a><font color="#FF4040">未签</font> <br />
+                            <?php } ?>
+                        </if>
+                    </td>
+
+                    <td>
+                        <if condition='$item.entrust_agency_sign_time neq 0'><?php echo date("Y-m-d H:i:s", $item['entrust_agency_sign_time']); ?></if>
+                    </td>
+
+                    <td><a href='/m.php?m=Deal&a=edit&id={$item.deal_id}'
+                           target='_blank'>{$item.deal_id}</a></td>
+                    <td><?php echo date("Y-m-d H:i:s", $item['create_time']); ?></td>
+
+                    <!-- 需求2481开始 edit by liuty-->
+                    <td><if condition='$item.load_money eq 0'>--<else/>{$item.load_money}</if></td>
+                    <!-- 需求2481结束 -->
+
+                    <td>
+                        <if condition='$item.status eq 1'>
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                            <a href="/m.php?m=ContractGold&a=downloadtsa&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载TSA</a>
+                            <else />
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                        </if>
+                    </td>
+                </tr>
+            </if>
+
+            <if condition='$item.advisory_id gt 0'>
+                <tr class="row">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>资产管理方</td>
+                    <td>
+                        <a href='/m.php?m=DealAgency&a=index&id={$item.advisory_id}' target='_blank'>{$item.advisory_name}</a>
+                    </td>
+
+                    <td>--</td>
+
+                    <td>
+                        <if condition='$item.advisory_sign_time gt 0'>
+                            <?php foreach($item['advisory_user'] as $aitem){ ?>
+                            <a href='/m.php?m=User&a=index&user_id={$aitem.user_id}' target='_blank'>{$aitem.real_name}</a> <font color="green">已签</font><br /><br />
+                            <?php } ?>
+
+                            <else />
+                            <?php foreach($item['advisory_user'] as $aitem){ ?>
+                            <a href='/m.php?m=User&a=index&user_id={$aitem.user_id}' target='_blank'>{$aitem.real_name}</a><font color="#FF4040">未签</font><br />
+                            <?php } ?>
+                        </if>
+                    </td>
+
+                    <td>
+                        <if condition='$item.advisory_sign_time neq 0'><?php echo date("Y-m-d H:i:s", $item['advisory_sign_time']); ?></if>
+                    </td>
+
+                    <td><a href='/m.php?m=Deal&a=edit&id={$item.deal_id}'
+                           target='_blank'>{$item.deal_id}</a></td>
+                    <td><?php echo date("Y-m-d H:i:s", $item['create_time']); ?></td>
+
+                    <!-- 需求2481开始 edit by liuty-->
+                    <td><if condition='$item.load_money eq 0'>--<else/>{$item.load_money}</if></td>
+                    <!-- 需求2481结束 -->
+
+                    <td>
+                        <if condition='$item.status eq 1'>
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                            <a href="/m.php?m=ContractGold&a=downloadtsa&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载TSA</a>
+                            <else />
+                            <a href="/m.php?m=ContractGold&a=download&id={$item.id}&num={$item.number}&dealId={$item.deal_id}">下载pdf</a>
+                        </if>                        <!--<a href="/m.php?m=Contract&a=downloadtsa&id={$item.id}" target="_blank">下载Tsa</a>-->
+                    </td>
+                </tr>
+            </if>
+
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+    function opencontract(number,id,dealId){
+        $.weeboxs.open(ROOT+'?m=ContractGold&a=openContract&type=100&num='+number+'&id='+id+'&dealId='+dealId, {contentType:'ajax',showButton:false,title:'合同内容',width:650,height:500});
+    }
+
+    function change_needsign(obj){
+        var tag = 0;
+        if(obj.attr('checked')){
+            tag = 1;
+        }
+
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=needsign&id="+obj.attr('conid')+"&tag="+tag,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(res){
+                if(res.status==1){
+                    location.href=location.href;
+                } else {
+                    alert(res.info);
+                    return false;
+                }
+            }
+        });
+    }
+</script>
+<include file="Public:footer" />

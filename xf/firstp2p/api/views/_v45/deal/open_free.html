@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/virtual.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.5/css/open_free.css?');?>" />
+</head>
+<body>
+    <div class="open_free">
+    <input type="hidden" id="token" value="{$token}">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.5/images/free_img.png');?>" alt="" class="free_img">
+        <div class="free_title">开通《快捷投资服务》</div>
+        <div class="free_text">
+            <p>随心约是一款根据用户投资意向，系统自动进行投资的产品，在预约投资有效期内的一系列投资行为均为系统自动完成。</p>
+            <p>该授权用于当您使用网贷P2P账户资金进行投资、余额划转至网信账户时，无需输入交易密码，否则将无法进行预约投资。</p>
+        </div>
+    </div>
+    <div class="free_btn">
+        <a class="btn JS_is_freepayment_btn MD_open_mianmi" href="">开通</a>
+    </div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/zepto.js');?>" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function(){
+        $(".JS_is_freepayment_btn").attr("href",'storemanager://api?type=webview&gobackrefresh=true&url=' + encodeURIComponent(location.origin + "/payment/transit?params=" + encodeURIComponent('{"return_url":"storemanager://api?type=closecgpages","srv":"freePaymentQuickBid"}')));
+    });
+    var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"&uf=app","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+    (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","//assets.ncfwx.com/default/js/ncfpb.1.5.min.js?v=201503101911");
+</script>
+</html>

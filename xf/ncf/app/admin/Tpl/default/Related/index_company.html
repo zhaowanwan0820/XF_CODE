@@ -1,0 +1,148 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">{$main_title} <a href="{:u("Related/index_user",array('channel'=>$channel))}" class="back_list">切换个人</a></div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add('{$channel}');" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        注册/营业执照号：<input type="text" class="textbox" name="license" value="{:trim($_REQUEST['license'])}" />
+        关联方名称：<input type="text" class="textbox" name="related_name" value="{:trim($_REQUEST['related_name'])}" />
+        英文名称：<input type="text" class="textbox" name="enname" value="{:trim($_REQUEST['enname'])}" />
+        关联人：<input type="text" class="textbox" name="related_user" value="{:trim($_REQUEST['related_user'])}" />
+        持股比例：<input type="text" class="textbox" name="rate" value="{:trim($_REQUEST['rate'])}" />
+        关联形势：
+        <select name="related_type">
+            <option value="0" <if condition="intval($_REQUEST['related_type']) eq 0">selected="selected"</if>> 全部 </option>
+            <volist name='related_types' id='sitem'>
+                <option value="{$key}" <if condition="intval($_REQUEST['related_type']) eq $key">selected="selected"</if>>{$sitem}</option>
+            </volist>
+        </select>
+        关联关系：
+        <select name="related_mode">
+            <option value="0" <if condition="intval($_REQUEST['related_mode']) eq 0">selected="selected"</if>> 全部 </option>
+            <volist name='related_modes' id='sitem'>
+                <option value="{$key}" <if condition="intval($_REQUEST['related_mode']) eq $key">selected="selected"</if>>{$sitem}</option>
+            </volist>
+        </select>
+        是否有效：
+        <select name="status">
+            <option value="0" <if condition="intval($_REQUEST['status']) eq 0">selected="selected"</if>> 全部 </option>
+            <volist name='status_list' id='sitem'>
+                <option value="{$key}" <if condition="intval($_REQUEST['status']) eq $key">selected="selected"</if>>{$sitem}</option>
+            </volist>
+        </select>
+        <input type="hidden" value="{$channel}" name="channel" />
+        <input type="hidden" value="Related" name="m" />
+        <input type="hidden" value="index_company" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="批量导入" onclick="import_csv('{$channel}');" />
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="15" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <th width="15"><input type="checkbox" id="check"
+            onclick="CheckAll('dataTable')"></th>
+        <th >关联方编号</th>
+        <th >序号</th>
+        <th >注册/营业执照号</th>
+        <th >关联方名称</th>
+        <th >英文名称</th>
+        <th >注册地</th>
+        <th >关联人</th>
+        <th >关联形式</th>
+        <th >持股比例</th>
+        <th >关联关系</th>
+        <th >关联开始时间</th>
+        <th >是否启用</th>
+        <th >备注</th>
+        <th >操作</th>
+    </tr>
+    <foreach name="list" item="item">
+    <tr class="row">
+        <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+        <td>{$item.orderno}</td>
+        <td>{$item.serialno}</td>
+        <td>{$item.license}</td>
+        <td> {$item.related_name}</td>
+        <td> {$item.enname}</td>
+        <td> {$item.address}</td>
+        <td> {$item.related_user}</td>
+        <td> {$item.related_type}</td>
+        <td> {$item.rate} %</td>
+        <td> {$item.related_mode}</td>
+        <td> {$item.start_time}</td>
+        <td> {$item.status_str}</td>
+        <td> {$item.remark}</td>
+        <td>
+            <a href="javascript:edit('{$item.id}')">编辑</a>
+            <if condition="$item.status eq 1">
+                <a href="javascript:do_switch('{$item.id}','{$channel}')">停用</a>
+            <else />
+                <a href="javascript:do_switch('{$item.id}','{$channel}')">启用</a>
+            </if>
+            <!-- <a href="javascript:do_delete('{$item.id}','{$channel}')">删除</a> -->
+        </td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="15" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<script>
+    function add(channel){
+        window.location.href = ROOT + '?m=Related&a=add&user_type=0&channel=' +channel;
+    }
+    function edit(id){
+        window.location.href = ROOT + '?m=Related&a=edit&user_type=0&id='+id;
+    }
+
+    function do_switch(id,channel){
+        $.get("/m.php?m=Related&a=do_switch","user_type=0&channel="+channel+"&id="+id,function(rs){
+            var rs = $.parseJSON(rs);
+            if(rs.status){
+                alert("操作成功！");
+                window.location.href = "/m.php?m=Related&a=index_company&channel="+channel;
+            }else{
+                alert(rs.info);
+            }
+        });
+        return false;
+    }
+
+    function do_delete(id,channel){
+        if(window.confirm('是否删除本条数据？')) {
+            $.get("/m.php?m=Related&a=do_delete","user_type=0&channel="+channel+"&id="+id,function(rs){
+                var rs = $.parseJSON(rs);
+                if(rs.status){
+                    alert("操作成功！");
+                    window.location.href = "/m.php?m=Related&a=index_company&channel="+channel;
+                }else{
+                    alert(rs.info);
+                }
+            });
+        }
+        return false;
+    }
+
+    function import_csv(channel) {
+        $.weeboxs.open(ROOT + '?m=Related&a=import_company&channel='+channel, { contentType: 'ajax', showButton: false, title: '导入', width: 550, height: 200 });
+    }
+
+</script>
+
+<include file="Public:footer" />

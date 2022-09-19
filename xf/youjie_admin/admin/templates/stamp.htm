@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>打印</title>
+    <style>
+        .button-c{margin: 0;padding: 0;border: 1px solid transparent;outline: none;background-color: #fff;cursor: pointer;border-radius: 3px;width: 120px;height: 30px;line-height: 30px;text-align: center;font-size: 16px;letter-spacing: 2px;}
+        .btn-black{background-color: #000;color: #fff;border:#000;}
+        .btn-red{background-color: #fb3a40;color: #fff;border:#fb3a40;}
+        .select { width: 160px;height: 34px;line-height: 34px;border:1px solid #eee; }
+        .select option {font-size: 14px;line-height: 34px;}
+        .count{width: 400px;margin: 160px auto 0;text-align: center;}
+        label{display: inline-table;width:160px;text-align: right;}
+        .mag{margin: 20px 0 0;}
+        .footer{margin-top: 60px;}
+        .hide{display: none;}
+    </style>
+</head>
+<body>
+    <div class="count">
+        <div class="mag">
+            <label >打印机名称：</label>
+            <select name="portName" class="select" id="portName">
+                <option value="-1">-请选择-</option>
+            </select> 
+        </label>
+        <div class="mag">
+            <label >是否预览：</label>
+            <select name="isPreview" class="select" id="isPreview">
+                <option value="0">不预览</option>
+                <option value="1">预览</option>
+            </select> 
+        </div>
+        <div class="footer">
+            <button class="button-c btn-black btn-click">打印</button>
+        </div>
+    </div>
+        <div class="hide">
+            <form id="form1" action="http://www.kdniao.com/External/PrintOrder.aspx" method="post" target="_blank">
+                <div style="">
+                    <div><input type="text" id="RequestData" name="RequestData" /></div>
+                    <div><input type="text" id="EBusinessID" name="EBusinessID" /></div>
+                    <div><input type="text" id="DataSign" name="DataSign" /></div>
+                    <div><input type="text" id="IsPreview" name="IsPreview" /></div>
+                </div>
+            </form>
+        </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        {insert_scripts files="../js/util.js"}
+    <script>
+
+        $(function () {
+            const orderid = localStorage.getItem('cancelTemp');
+            const suppId = {$suppliersId};
+            console.log(suppId);
+            /*
+                获取列表信息
+                url express.php?act=show_business_printer_list
+                suppliersId 商家id
+            */
+            function shopsSite(){
+                let obj = {
+                    type:'GET',
+                    site:'express.php?act=show_business_printer_list',
+                    data:{admin_id:suppId}
+                };
+                U.https(obj).then(data=>{
+                    let datas= data.data, str = '<option value="-1">-请选择-</option>';
+                    console.log(datas)
+                    if(datas.length>0){
+                        datas.forEach((item,i,arr) => {
+                            str+=`<option value="${item.printerName}">${item.printerName}</option>`;
+                        });
+                        $('#portName').html(str);
+                    }else{
+                        $('#portName').html('<option value="-1">-请选择-</option>');
+                        alert('未绑定打印机！')
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                    if(err.data.length == 0){
+                        alert('未绑定打印机！')
+                    }
+                })
+            }
+            shopsSite();
+            /**
+             * 打印
+             * url express.php?act=create_print
+             * orderCode  订单号
+             * portName   打印机名称
+             * isPreview  是否预览 0-不预览 1-预览.默认0
+             */
+            $('.btn-click').on('click',function () {
+                let orderCode = orderid;
+                let portName = $('#portName option:selected').val();
+                let isPreview = $('#isPreview option:selected').val();
+                let obj = {
+                    type:'GET',
+                    site:'express.php?act=create_print',
+                    data:{orderCode,portName,isPreview}
+                }
+                if(portName == '-1'){
+                    alert('未绑定打印机！')
+                    return false;
+                }
+                U.https(obj).then(data=>{
+                    console.log(data)
+                    let datas = JSON.parse(data.data);
+                    $("#EBusinessID").val(datas.EBusinessID)
+                    $("#RequestData").val(datas.RequestData)
+                    $("#IsPreview").val(datas.IsPreview)
+                    $("#DataSign").val(datas.DataSign)
+                    form1.submit()
+                }).catch(err=>{
+                    console.log(err)
+                })
+            })
+        })
+    
+    </script>
+</body>
+</html>

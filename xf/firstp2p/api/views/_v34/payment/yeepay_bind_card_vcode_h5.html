@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script>
+window['_AJAXSIGN_'] = '{$asgn}';
+</script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3.3/css/p-yibao.css');?>">
+<title>短信验证</title>
+</head>
+<body>
+    <div class="ui_title"><a class="ui_back" href="javascript:void(0)" onclick="window.history.back();"><i class="ui_icon_back"></i>返回</a>短信验证</div>
+    <div class="p_tel_test">
+        <div class="telephone">
+            <div class="tel">
+                <span>手机号</span>
+                <input class="tel_input" id="JS-phone" type="tel" placeholder="请输入银行卡预留手机号码" value="{$phone}">
+            </div>
+            <div class="tel tel_unborder">
+                <span>验证码</span>
+                <input class="tel_input" id="JS-vcode" type="tel" name="vcode" placeholder="请输入短信验证码">
+                <input type="button" id="JS-code_btn" class="test_code" value="发送验证码">
+            </div>
+            <input type="hidden" id="JS-bankName" name="bankName" value="{$bankName}" />
+            <input type="hidden" id="JS-bankCard" name="bankCard" value="{$bankCard}" />
+            <input type="hidden" id="JS-bankCardId" name="bankCardId" value="{$bankCardId}" />
+        </div>
+        <div class="but">
+            <input type="button" value="下一步" disabled="disabled" id="JS-message_btn">
+        </div>
+        <div class="ui_yibao_text_tips">
+            <p>本服务由易宝支付提供</p>    
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/iscroll.js');?>"></script>
+    <script>
+    $(function(){
+        function upateSubmitButton() {
+            var disabled = _reBindCardAjax !=null || _reMcodeAjax != null || $('#JS-phone').val() == '' || $('#JS-vcode').val() == '';
+            if (disabled) {
+                $('#JS-message_btn').attr('disabled', 'disabled');
+                } else {
+                $('#JS-message_btn').removeAttr('disabled');
+            }
+        }
+
+        $('#JS-phone,#JS-vcode').bind("input", upateSubmitButton);
+
+        var _reBindCardAjax = null;
+        $('#JS-message_btn').bind("click", function(){
+            var phone = $("#JS-phone").val().trim();
+            var vcode = $("#JS-vcode").val().trim();
+            if (!P2PWAP.util.checkMobile(phone)) {
+                P2PWAP.ui.showErrorTip('手机号格式不正确');
+                return;
+            }
+            if (!P2PWAP.util.checkMcode(vcode)) {
+                P2PWAP.ui.showErrorTip('请填写6位数字验证码');
+                return;
+            }
+            _reBindCardAjax = P2PWAP.util.request('/payment/yeepayConfirmBindCardAjaxH5', function(obj) {
+                window.location.href = obj.url;
+            }, function(msg) {
+                _reBindCardAjax = null;
+                upateSubmitButton();
+                P2PWAP.ui.showErrorTip(msg);
+            }, 'post', {
+                'userClientKey':'{$userClientKey}',
+                'vcode': vcode
+            });
+        });
+
+        var _upateSubmitButtonCount = 10;
+        var _upateSubmitButtonTimer = setInterval(function(){
+            upateSubmitButton();
+            _upateSubmitButtonCount--;
+            if (_upateSubmitButtonCount < 0) {
+                clearInterval(_upateSubmitButtonTimer);
+            }
+        }, 300);
+        
+        // 重新获取验证码逻辑
+        var _reMcodeTimer = null;
+        var _reMcodeAjax = null;
+        var $codeBtn = $('#JS-code_btn');
+        function _clearCodeBtn() {
+            if (_reMcodeTimer == null) return;
+            clearInterval(_reMcodeTimer);
+            _reMcodeTimer = null;
+            $codeBtn.removeClass('btn_disable').val('重新发送');
+        }
+
+        function _updateMcodeBtn() {
+            var timeRemained = 60;
+            $codeBtn.addClass('btn_disable').val(timeRemained + '秒后可重发');
+            _reMcodeTimer = setInterval(function() {
+                timeRemained--;
+                if (timeRemained < 1) {
+                    _clearCodeBtn();
+                } else {
+                    $codeBtn.val(timeRemained + '秒后可重发');
+                }
+            }, 1000);
+        }
+
+        $codeBtn.bind("click", function() {
+            var phone = $("#JS-phone").val().trim();
+            if (!P2PWAP.util.checkMobile(phone)) {
+                P2PWAP.ui.showErrorTip('手机号格式不正确');
+                return;
+            }
+            if (_reMcodeAjax != null || _reMcodeTimer != null) return;
+            $codeBtn.addClass('btn_disable').val('正在发送');
+            _reMcodeAjax = P2PWAP.util.request('/payment/yeepayBindCardAjaxH5', function(obj) {
+                _reMcodeAjax = null;
+                upateSubmitButton();
+                if (obj.code == 1){
+                    _updateMcodeBtn();
+                } else {
+                   P2PWAP.ui.showErrorTip(obj.message);
+                   $codeBtn.removeClass('btn_disable').val('重新发送');
+                }
+            }, function(msg) {
+                _reMcodeAjax = null;
+                upateSubmitButton();
+                P2PWAP.ui.showErrorTip(msg);
+                $codeBtn.removeClass('btn_disable').val('重新发送');
+            }, 'post', {
+                'userClientKey': '{$userClientKey}',
+                'bankName': '{$bankName}',
+                'bankCard': '{$bankCard}',
+                'bankCardId': '{$bankCardId}',
+                'appVersion': '{$appVersion}',
+                'phone': phone
+            });
+            upateSubmitButton();
+        });
+    });
+    </script>
+</body>
+</html>

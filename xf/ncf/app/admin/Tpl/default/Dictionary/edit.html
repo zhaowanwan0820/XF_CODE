@@ -1,0 +1,98 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("Dictionary/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">字典键:</td>
+		<td class="item_input"><input type="text" class="textbox require" name="key" <if condition="$act=='update'">readonly="readonly"</if> style="width:500px;" value="{$dict.key}" /></td>
+	</tr>
+	<tr>
+		<td class="item_title">描述:</td>
+		<td class="item_input"><input type="text" class="textbox" name="note" style="width:500px;" value="{$dict.note}" /></td>
+	</tr>
+		
+    <tr>
+		<td class="item_title">字典值:</td>
+		<td class="item_input"><input type="button" class="button" value="增加字典值" id="addvalue"/></td>
+	</tr>
+
+	<tr>
+       <td class=""></td>
+       <td><div id="valuetable">
+ 			<foreach name="dict.value" item="item">
+				<div class="pid var-box">
+				值：<input type="text" class="textbox" name="value[]" style="width:300px;" value="{$item.value}"/>
+				描述：<input type="text" class="textbox" name="desc[]" style="width:300px;" value="{$item.desc}"/>
+				<input type="button" class="button" value="删除" onclick="delvalue($(this));" />
+				<hr>
+				</div>
+ 			</foreach>
+       </div></td>
+    </tr>
+	
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+<div class="blank5"></div>
+	<table class="form" cellpadding=0 cellspacing=0>
+		<tr>
+			<td colspan=2 class="topTd"></td>
+		</tr>
+		<tr>
+			<td class="item_title"></td>
+			<td class="item_input">
+			<!--隐藏元素-->
+			<input type="hidden" name="publish_wait" value="1" />
+			<input type="hidden" name="{:conf("VAR_MODULE")}" value="Dictionary" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="{$act}" />
+			<input type="hidden" name="id" value="{$dict.id}" />
+			<!--隐藏元素-->
+			<input type="submit" class="button" value="{%SAVE}" />
+			<input type="reset" class="button" value="{%RESET}" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2 class="bottomTd"></td>
+		</tr>
+	</table> 	 
+
+	<div style="display:none" id="hidevalue">
+		<div class="pid var-box">
+		<tr>
+		<td class="item_input">
+		值：<input type="text" class="textbox" name="value[]" style="width:300px;" />
+		描述：<input type="text" class="textbox" name="desc[]" style="width:300px;" />
+		<input type="button" class="button" value="删除" onclick="delvalue($(this));" /></td>
+		</tr>
+		<hr>
+		</div>
+	</div>
+</form>
+<script>
+
+$('#addvalue').click(function(){
+	$("#valuetable").append($("#hidevalue").html());
+});
+
+function delvalue(obj){
+    obj.parent().remove();
+}
+
+
+
+</script>
+<include file="Public:footer" />

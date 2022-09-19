@@ -1,0 +1,270 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/user_web2.css?v=2017082901');?>" />
+<link href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.1.3.css');?>" type="text/css" rel="stylesheet">
+<style>
+.shouyi {
+    font-family: 'Microsoft YaHei';
+}
+.user_num{
+    color: #333;
+}
+.user_num:hover{
+    color: #08c;
+}
+.account_msg{
+    padding-left: 500px;
+}
+.table_msg{
+    float:left;
+}
+.height60{
+    height:60px;
+}
+.over_hidden{
+    overflow:hidden;
+}
+.user_num{float:left;}
+</style>
+<script type="text/javascript">
+    var doneBankOperate_url;
+    window["_openSvButton_"] = "{$openSvButton}";
+</script>
+<script>
+$(document).ready(function(){
+
+    //判断用户名是否包含手机号
+    var userName = "{$user_info.user_name}";
+    var userMobile = "{$user_info.mobile}";
+    var isEnterprise = "{$isEnterprise}";
+    var userReg = /^0?m[\d]{11}$/;
+    // if (isEnterprise != 1) {
+    //     if (userName.indexOf(userMobile) != -1 || userReg.test(userName)) {
+    //         $(".js_name").hide();
+    //     }
+    // }
+});
+</script>
+<!--<div id = "container">-->
+<div id = "container" class="user_right user_right_new ">
+    <!-- 用户信息 -->
+    <div class="user_right_box  mb20 pb20" style="height:180px;">
+        <div class="user_title">
+            <h1><i class="ico_yonghu"></i>用户信息</h1></div>
+        {if app_conf('UCF_PAY_STATUS') eq '0'}
+        <div style="background: #f1f2f3;
+                        line-height: 27px;
+                        text-align: center;
+                        font-size: 13px;
+                        color: #888888;"> {function name="get_adv" x="首页投资说明"}</div>
+        {/if}
+        <div class="acount_user acount_user2 clearfix">
+            <div class="user_l" style="position:relative;top:-10px;left:-10px;"><span class="icon_user {if $user_sex eq 1}tx_male {else}tx_female {/if}"></span></div>
+            <div class="user_r">
+                <div class="user_tit f18">
+                    <div class="info_box">
+                        <span class="com-name">您好，{if !$isEnterprise} {if $user_info.idcardpassed eq 1} {if $user_info.real_name}{$user_info.real_name}{/if} {elseif $user_info.idcardpassed eq 3} 实名认证审核中 {else}
+                        <a href='/account/addbank' class="blue JS_approve">请实名认证</a> {/if}{else} {$enterpriseInfo.company_name}{/if}</span><span><a href="/account/setup" title='会员编号' id='user_num' class='user_num'>（{if $isEnterprise}{function name="numTo32Enterprise" value=$user_info.id}{else}{function name="numTo32" value=$user_info.id}{/if}）</a></span>
+                        {if $isEnterprise and $isEnterpriseSite}
+                        <!-- is_apply=1 表示是开户成功页 -->
+                        {if $enterprise_verify_status eq 2 || $enterprise_verify_status eq 3}<span class="enterprise_verify_status status_shz"><a href='/user/RegisterCompany?is_apply=1'>审核中</a></span>
+                            {elseif $enterprise_verify_status eq 4}<span class="enterprise_verify_status status_ykh">已开户</span>
+                            {elseif $enterprise_verify_status eq 1}<span class="enterprise_verify_status status_wkh">未开户</span><a href="/enterprise/apply" class="f13 status_wkh_blue"> 资料未提交，点击填写</a>
+                            {elseif $enterprise_verify_status eq 5}<span class="enterprise_verify_status status_khsb">开户失败</span>
+                            {/if}
+                        {/if}
+                        {if !empty($ppId)}
+                            <a class="passpart-logo" href="/user/permit_help" target="_blank"></a>
+                        {/if}
+                        <!-- {if $vipGradeInfo.service_grade gt 0}
+                        <a href="http://event.ncfwx.com/zt/180" class="vip_notice1">{$vipGradeInfo.name}</a>
+                        {/if} -->
+                    </div>
+                    <div><span class="log_time f14">上次登录时间：{$last_time}</span></div>
+                </div>
+                <div class="user_con" style="position:relative;left:-120px;top:8px;">
+                    <div class="u_name js_name"><a class="user_a"><i class="icon_user un" title="用户名"></i></a>{$user_info.user_name}</div>
+                    <div class="u_phone">
+                    {if $isEnterprise eq 1}
+                        {if $user_info.payment_user_id eq 0}
+                            {if $enterprise_verify_status eq 1}
+                                <a href="/user/RegisterCompany" class="user_a"><i class="icon_user yz" title="请完成身份认证"></i></a><a href="/user/RegisterCompany" class="blue">请完成身份认证</a>
+                            {/if}
+                        {else}
+                            <a class="user_a"><i class="icon_user yz" title="{$enterpriseInfo.credentials_type_cn}"></i></a>证件号码 {$enterpriseInfo.credentials_no_mask}
+                        {/if}
+                    {else}
+                        <a class="user_a"><i class="icon_user up" title="手机号码"></i></a>{function name="moblieFormat" value=$user_info.mobile mobile_code=$user_info.mobile_code}
+                    {/if}
+                    </div>
+                    <div class="u_bank">
+                        {if $bankcard.status eq 1}
+                        <a href="javascript:void(0);" style="cursor:default;" class="user_a"><i class="icon_user ub_has" title="{if $isEnterprise eq 1}银行帐号{else}银行卡号{/if}"></i></a>
+                            {if $user_info.isSvUser}
+                                已开通{$p2pAccountConfig.name}
+                            {else}
+                            <div class="u_bind">
+                                <a href="javascript:void(0);" class="bind_a blue j_userAt_kt" data-lock="0">请开通{$p2pAccountConfig.name}</a>
+                            </div>
+                            {/if}
+                        {else}
+                         <a href="javascript:void(0);" style="cursor:default;" class="user_a"><i class="icon_user ub" title="{if $isEnterprise eq 1}银行帐号{else}银行卡号{/if}"></i></a>
+                        <div class="u_bind">
+                            {if $isEnterprise eq 1}
+                                <a href="/account/addbank" class="bind_a blue">请绑定银行账户</a>
+                            {else}
+                                {if $user_info.idcardpassed eq 1}{if $hasPassport || $bankcard.bankcard || $bankcard.newbankcard} <a href="/account/addbank" class="bind_a blue">请开通{$p2pAccountConfig.name}</a> {else}<a href="/account/goRegisterStandard" class="bind_a blue">请开通{$p2pAccountConfig.name}</a>{/if}{else}<span class="color-gray" title="请先实名认证再开通{$p2pAccountConfig.name}">请开通{$p2pAccountConfig.name}</span>{/if}
+                                {/if}
+	                            <div class="bank_tips">
+	                                <p>您尚未绑定银行卡</p>
+	                                <a href="javascript:void(0);" style="cursor:default;">设置</a>
+	                                <div class="arrow"></div>
+	                            </div>
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //用户信息 -->
+    <div class="user_right_box  mb20 pb20">
+        <div class="user_title">
+            <h1 class="fl"><i class="ico_zhanghu"></i>账户信息</h1>
+            {if $user_info.idcardpassed eq 1 and $bankcard.status eq 1}
+            <div class="fr pr20">
+                {if $hasUnactivatedTag}<a href="/payment/transit?srv=register JS_check_account">查看存管账户</a>{elseif $user_info.isSvUser}<a href="javascript:void(0);" class="j_userAt_kt cg_check_account JS_check_account" data-lock="0">查看存管账户</a>{else}<a href="javascript:void(0);" class="j_userAt_kt" data-lock="0">开通存管账户</a>{/if}
+            </div>
+            {/if}
+        </div>
+        <div class="mt20 over_hidden">
+            <div class="yh_tab f14  table_msg cg_new">
+                <div class="mb8">
+                    <span>现金余额({$p2pAccountConfig.name})：</span>
+                    <span><em class="color-yellow1 xj-em">{function name="format_price" value=$moneyInfo.totalCashMoney b=0}&nbsp</em>元
+                        {if $user_info.isSvUser || $bankcard.bankcard || $bankcard.newbankcard}
+                        <a href="javascript:void(0);" class="j_ph_charge button_cz" data-lock="0">充值</a><a href="javascript:void(0);" class="j_ph_carry button_tx" data-lock="0">提现</a>
+                        {else}
+                        <a href="/account/goRegisterStandard" class="button_cz">充值</a><a href="/account/goRegisterStandard" class="button_tx">提现</a>
+                        {/if}
+                    </span>
+                </div>
+                {if $user_info.canUseBonus}
+                <div class="JS_hidden_bonus">
+                    <span>红包金额：</span>
+                    <span>{function name="format_price" value=$moneyInfo.bonusMoney b=0}&nbsp元</span>
+                </div>
+                {/if}
+                <div>
+                    <span>冻结金额：</span>
+                    <span>{function name="format_price" value=$moneyInfo.freezeMoney b=0}&nbsp元</span>
+                </div>
+                <div>
+                    <span>待收本金：</span>
+                    <span>{function name="format_price" v="$moneyInfo.principalMoney" b=0}&nbsp元</span>
+                </div>
+                <div>
+                    <span>待收利息：</span>
+                    <span>{function name="format_price" v="$moneyInfo.interestMoney" b=0}&nbsp元</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {function name="get_adv" x="pc普惠个人中心提示_2017"}
+    <style type="text/css">
+    body{background:#e8e9eb;}
+    .ph_userAccount_tips p:first-child{padding-top:20px !important;}
+    .ph_userAccount_tips p:last-child{padding-bottom:20px !important;}
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        //普惠个人中心查看存管账户
+        $('.j_userAt_kt').on('click',function() {
+            Firstp2p.supervision.ph_account_newWindow('/payment/transit?srv=info',$(this));
+        });
+        //定制开户
+        $('.j_userAt_register').on('click',function() {
+            Firstp2p.supervision.ph_account('/payment/transit?srv=register',$(this));
+        });
+        //普惠个人中心充值
+        $('.j_ph_charge').on('click',function() {
+            zhuge.track('我的账户页_账户总览页点击情况',{
+                '位置': "充值"
+            })
+            Firstp2p.supervision.ph_account('/account/charge',$(this));
+        });
+        //普惠个人中心提现
+        $('.j_ph_carry').on('click',function() {
+            zhuge.track('我的账户页_账户总览页点击情况',{
+                '位置': "提现"
+            })
+            Firstp2p.supervision.ph_account('/account/carry',$(this));
+        });
+    });
+    </script>
+    <div id="supernatant" class="supernatant">
+    </div>
+</div>
+<!--通行证浮层-->
+<script type="text/javascript">
+{if $passportNotice}
+    setTimeout("guidance()", 500);
+{/if}
+    function guidance() {
+        if (!$('.passpart-logo').position()) {
+            return;
+        };
+        var aPositin = $('.passpart-logo').position(),
+            aLeft = aPositin.left,
+            aTop = aPositin.top,
+            supernatant = document.getElementById("supernatant"),
+            container = document.getElementById("container");
+        container.style.overflow = "hidden";
+        supernatant.style.display = "block";
+        document.getElementById("supernatant").style.backgroundPosition = (aLeft - 175 )+ "px " + (aTop - 20) + "px";
+        // e.preventDefault();
+        // e.stopPropagation();
+        var oHeight = $(document).height();
+        supernatant.style.height = oHeight + "px";
+        console.log(oHeight)
+        supernatant.onclick = function () {
+            container.style.overflow = "auto";
+            this.style.display = "none";
+    }
+}
+</script>
+<script type="text/javascript">
+var isSvUser = '{$user_info.isSvUser}';
+var isSvOpen = '{$isSvOpen}';
+var isFirstp2p = '{$is_firstp2p}';
+var bankcardVerifyStatus = '{$bankcard["is_valid"]}';
+(function(){
+    $(".j_zj_date").each(function(index,data){
+        var currentDate = $(this).data("time");
+        var oldDate = parseInt(new Date("2014-03-01 00:00:00").getTime()/1000);
+        var $p = $(this).closest('tr');
+        if(currentDate < oldDate){
+            $p.find(".j_zj_change").html("--");
+        }
+    });
+    //完成弹窗
+    $('.j_ktP2p').click(function(obj) {
+       Firstp2p.supervision.wancheng();
+    });
+
+})();
+//埋点
+$(function(){
+    zhuge.track('我的账户页_进入账户总览页')
+})
+function zhugeTrack(place, name, id, content){
+    $('html').on('click',place,function(){
+        // alert(name + '----' + id + '------' + content)
+        var data = {};
+        data[id] = content;
+        zhuge.track(name, data)
+    })
+}
+zhugeTrack('.JS_approve','我的账户页_账户总览页点击情况','位置','请实名认证（未实名认证)')
+zhugeTrack('.JS_check_account','我的账户页_账户总览页点击情况','位置','查看存管账户')
+zhugeTrack('.user_num','我的账户页_账户总览页点击情况','位置','点击会员编号')
+
+</script>

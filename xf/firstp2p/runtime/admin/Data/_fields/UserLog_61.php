@@ -1,0 +1,26 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'log_info',
+  2 => 'log_time',
+  3 => 'log_admin_id',
+  4 => 'log_user_id',
+  5 => 'money',
+  6 => 'score',
+  7 => 'point',
+  8 => 'quota',
+  9 => 'lock_money',
+  10 => 'remaining_money',
+  11 => 'user_id',
+  12 => 'deal_type',
+  13 => 'related_user_show_name',
+  14 => 'note',
+  15 => 'remaining_total_money',
+  16 => 'is_delete',
+  17 => 'biz_token',
+  18 => 'deal_id',
+  19 => 'out_order_id',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

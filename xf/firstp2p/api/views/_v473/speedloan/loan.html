@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/num_keyBoard.css');?>" rel="stylesheet" />
+    <title>申请借款</title>
+</head>
+<body class="sqjk_body">
+<input type="hidden" value="{$limitMin}" id="limitMinHidden"/>
+<input type="hidden" value="{$usableAmount}" id="usableAmountHidden"/>
+<input type="hidden" value="{$onceMax}" id="limitMaxHidden"/>
+<input type="hidden" value="{$token}" id="tokenHidden"/>
+<input type="hidden" value="{$phone}" id="phoneHidden"/>
+
+<!-- 金额输入框 begin -->
+<div class="inputDeal">
+    <div class="inputUnit">
+        <ul class="show_unit" id="show_unit">
+        </ul>
+        <div class="ui_input" id="ui_input">
+            <p class="inputVal"></p>
+            <p class="inputCursor"></p>
+            <p class="inputUnitText">元</p>
+            <p class="inputPlaceHolder">请输入借款金额</p>
+        </div>
+        <div class="input_tip" id="input_tip">
+            <span></span>
+        </div>
+    </div>
+    <div class="limitMax">{$limitMin}元起借</div>
+</div>
+<!-- 金额输入框 end -->
+
+<!-- 日利率 && 借款期限 && 平台服务费 begin -->
+<ul class="moduleUl">
+    <li class="moduleItem">
+        <label class="moduleLabel">日利率</label>
+        <div class="moduleCont">
+            <div class="normalText">{$dailyRate}%</div>
+        </div>
+    </li>
+    <li class="moduleItem">
+        <label class="moduleLabel">借款期限</label>
+        <div class="moduleCont">
+            <div class="normalText">{$loanDays}</div>
+        </div>
+    </li>
+    <li class="moduleItem">
+        <label class="moduleLabel">平台服务费(单笔)</label>
+        <div class="moduleCont">
+            <div class="normalText">{$serviceFeeRate}%</div>
+        </div>
+    </li>
+</ul>
+<!-- 日利率 && 借款期限 && 平台服务费 end -->
+
+<!-- 收款账户 && 借款发放人 begin -->
+<ul class="moduleUl">
+    <li class="moduleItem">
+        <label class="moduleLabel">收款账户</label>
+        <div class="moduleCont">
+            <div class="normalText">{$creditUserInfo.bankAndCardFormat}</div>
+        </div>
+    </li>
+    <li class="moduleItem">
+        <label class="moduleLabel">借款发放人</label>
+        <div class="moduleCont">
+            <a href="javascript:;" class="link">海口联合农商银行</a>
+        </div>
+    </li>
+</ul>
+<!-- 收款账户 && 借款发放人 end -->
+
+<!-- 手机验证码 begin -->
+<ul class="moduleUl">
+    <li class="moduleItem">
+        <label class="moduleLabel">手机验证码</label>
+        <div class="moduleCont">
+            <div class="mobileCodeBox">
+                <input type="tel" class="codeInput" placeholder="请输入验证码" id="codeInput" maxlength="6" />
+                <input type="button" value="获取验证码" class="codeBtn" id="codeBtn"/>
+            </div>
+        </div>
+    </li>
+</ul>
+<!-- 手机验证码 end -->
+<p class="loanTip">按日计息，随借随还</p>
+<div class="loanBtnBox">
+    <a href="javascript:;" class="loanBtn noValid" id="submitBtn" data-link-href="javascript:;">申请借款</a>
+</div>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/num_keyBoard.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.73/js/speedloan/sudai_shenqingjiekuan.js');?>"></script>
+{include file="api/views/_v32/footer.html"}
+

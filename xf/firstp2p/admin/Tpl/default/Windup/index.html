@@ -1,0 +1,139 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">混清批次列表</div>
+<div class="blank5"></div>
+<div class="search_row">
+<form name="search" action="__APP__" method="POST" enctype="multipart/form-data">
+<input type="FILE" name="batchFile" />
+<input type="hidden" value="import" name="a" />
+<input type="hidden" value="Windup" name="m" />
+<input type="submit" name="import" class="button" value="导入" />
+<input type="button" name="download" onclick="down()" class="button" value="下载模板" />
+</form>
+<input type="button" name="download" onclick="batchAuditConfirm()" class="button" value="批量确认" />
+</div>
+<div class="blank5"></div>
+
+<script>
+function multi_redo() {
+    idBox = $(".key:checked");
+
+    var param = '';
+    if(idBox.length == 0){
+        idBox = $(".key");
+    }
+
+    idArray = new Array();
+    $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+            });
+
+    if(idArray.length == 0){
+        alert('无可导出的数据！');
+        return false;
+    }
+
+    id = idArray.join(",");
+
+    /*
+       var inputs = $(".search_row").find("input");
+
+       for(i=0; i<inputs.length; i++){
+       if(inputs[i].name != 'm' && inputs[i].name != 'a')
+       param += "&"+inputs[i].name+"="+$(inputs[i]).val();
+       }
+     */
+
+    var url= ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=multi_redo&id="+id;
+    window.location.href = url;
+}
+</script>
+
+<php>
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '-';
+    }
+    return date('Y-m-d H:i:s', $stamp + 28800);
+}
+
+function f_link($batchId) {
+    return "<a href='/m.php?m=Windup&a=details&batch_id=$batchId'>$batchId</a>";
+}
+function f_cutstr($string) {
+    $subString = $string;
+    if (mb_strlen($string) > 15) {
+        $subString = '<a href="javascript:;" title="'.str_replace('"',"'", $string).'">' . mb_substr($string, 0, 15) . '...</a>';
+    }
+    return $subString;
+}
+
+function f_money($money) {
+    return number_format(bcdiv($money, 100, 2), 2, '.', ',').'元';
+}
+
+function showOp($status,$row) {
+    switch ($status) {
+        case '1':
+            return '<a href="javascript:;" onclick="doAudit('.$row['id'].');">B角色通过</a>&nbsp;<a href="javascript:;" onclick="doRefuse('.$row['id'].');">B角色拒绝</a>';
+        case '2':
+            return '<a href="javascript:;" onclick="doConfirm('.$row['id'].');">B角色确认</a>';
+        default:
+            return '';
+    }
+}
+function f_status($status) {
+    return $GLOBALS['statusListCn'][$status];
+}
+</php>
+<html:list
+id="dataTable"
+style="dataTable"
+name="item"
+checkbox="true"
+datasource="list"
+show="id:编号,out_order_id|f_link:混清批次编号,state|f_status:混清状态,total_amount|f_money:混清金额,total_users:混清用户总数,total_deals:混清标的数量,create_time:创建时间,apply_user:申请人,apply_time:申请时间,audit_user:审批人,audit_time:审批时间,state|showOp=$item:操作"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+function doAudit(id) {
+    window.location.href = "/m.php?m=Windup&a=audit&action=pass&id="+id;
+}
+function doConfirm(id) {
+    window.location.href = "/m.php?m=Windup&a=audit&action=confirm&id="+id;
+}
+function doRefuse(id) {
+    window.location.href = "/m.php?m=Windup&a=audit&action=refuse&id="+id;
+}
+function down() {
+    window.open('__TMPL__Common/template.csv');
+}
+function batchAuditConfirm() {
+    var checkIds = [];
+    $('input:checkbox.key:checked').each(function(idx, item){
+        checkIds.push($(item).attr('value'));
+    });
+    $.getJSON('/m.php?a=batchAuditConfirm&m=Windup', {checkIds:checkIds}, function(d) {
+        alert(d.message);
+        window.location.reload();
+    }, function(err) {
+        alert('网络异常，请重试');
+    });
+}
+</script>
+<include file="Public:footer" />
+

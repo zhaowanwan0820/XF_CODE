@@ -1,0 +1,353 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<div class="main reservationContent p_reserve_config">
+    <div class="main_title">
+        <p>预约排价表</p>
+    </div>
+    <div class="blank5"></div>
+    <form id="pre-form" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约金额:</td>
+                <td class="item_input">
+                    <foreach name="data.amount_conf" key="key" item="amount_conf">
+                    <div class="amount_conf clearfix">
+                        <select name="amount_deal_type[{$key}]" style="display:none">
+                            <foreach name="dealTypeList" key="dealType" item="dealTypeName">
+                            <option value="{$dealType}" <if condition="$amount_conf['deal_type'] eq $dealType">selected</if> >{$dealTypeName}</option>
+                            </foreach>
+                        </select>
+                        <input type="number" class="minimum" class="textbox require" name="min_amount_arr[]"  value="{$amount_conf['min_amount_yuan']}" placeholder="最低预约金额" required="required" /> - <input type="number" class="highest" class="textbox" name="max_amount_arr[]"  value="{$amount_conf['max_amount_yuan']}" placeholder="最高预约金额" />
+                    </div>
+                    </foreach>
+                    <p class="reserveNotice">
+                        最低预约金额必须填项，最高预约金额非必填，若不填写系统默认最高预约无限额，<span style="color:red">最大长度7位数</span>。
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>出借期限:</td>
+                <td class="item_input qixian">
+                    <if condition="empty($data['invest_conf'])">
+                    <div class="invest_qixian clearfix">
+                        <div class="qx_left">
+                            <select name="invest_deal_type[{$key}]" class="class_invest_deal_type" style="display:none">
+                                <foreach name="dealTypeList" key="dealType" item="dealTypeName">
+                                <option value="{$dealType}">{$dealTypeName}</option>
+                                </foreach>
+                            </select>&nbsp;
+                            <select name="deadline_join[{$key}]" class="class_deadline_join">
+                                <foreach name="data.deadlineConf" key="dkey" item="deadline_conf">
+                                <option value="{$deadline_conf['deadline']}-{$deadline_conf['deadline_unit']}" <if condition="$invest_conf['deadline'] eq $deadline_conf['deadline'] and $invest_conf['deadline_unit'] eq $deadline_conf['deadline_unit']">selected</if> >{$deadline_conf.deadline_format}</option>
+                                </foreach>
+                            </select>
+                            &nbsp;&nbsp;年化借款利率&nbsp;<input type="text" style="width:50px" class="textbox require class_rate" name="rate[0]"  value="" required="required"/>%
+                            &nbsp;&nbsp;年化利息折算系数&nbsp;<input type="text" style="width: 30px;" class="textbox require class_rate_factor" name="rate_factor[0]"  value="" required="required"/>
+                            &nbsp;可见组配置&nbsp;<input type="text" class="textbox class_groupids" name="visiableGroupIds[0]" value=""/>
+                            <a href="javascript:;" class="minusBtn investminusBtn">-</a>
+                            <a href="javascript:;" class="plusBtn investplusBtn">+</a>
+                        </div>
+                        <div class="qx_right clearfix">
+                            <div class="reserve_product_box clearfix">
+                                    <div class="classgradename">一级产品名称</div>
+                                    <div class="classgradelist">
+                                        <span class="JS_class_GradeName">
+                                            <select name="first_grade_name[0][]" class="class_first_grade">
+                                                <option value="">无</option>
+                                                <foreach name="firstLayerGradeList" item="firstLayerGrade">
+                                                    <option value="{$firstLayerGrade['name']}">{$firstLayerGrade['name']}</option>
+                                                </foreach>
+                                            </select>
+                                            <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                            <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                        </span>
+                                    </div>
+                            </div>
+                            <div class="reserve_product_box clearfix">
+                                <div class="classgradename">二级产品名称</div>
+                                <div class="classgradelist">
+                                    <span class="JS_class_GradeName">
+                                        <select name="second_grade_name[0][]" class="class_second_grade">
+                                            <option value="">无</option>
+                                            <foreach name="secondLayerGradeList" item="secondLayerGrade">
+                                                <option value="{$secondLayerGrade['name']}">{$secondLayerGrade['name']}</option>
+                                            </foreach>
+                                        </select>
+                                        <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                        <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="reserve_product_box clearfix">
+                                <div class="classgradename">三级产品名称</div>
+                                <div class="classgradelist">
+                                    <span class="JS_class_GradeName">
+                                        <select name="third_grade_name[0][]" class="class_third_grade">
+                                            <option value="">无</option>
+                                            <foreach name="thirdLayerGradeList" item="thirdLayerGrade">
+                                                <option value="{$thirdLayerGrade['name']}">{$thirdLayerGrade['name']}</option>
+                                            </foreach>
+                                        </select>
+                                        <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                        <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </if>
+
+                    <foreach name="data.invest_conf" key="key" item="invest_conf">
+                    <div class="invest_qixian clearfix">
+                        <div class="qx_left">
+                            <select name="invest_deal_type[{$key}]" class="class_invest_deal_type" style="display:none">
+                                <foreach name="dealTypeList" key="dealType" item="dealTypeName">
+                                <option value="{$dealType}"  <if condition="$invest_conf['deal_type'] eq $dealType">selected</if>  >{$dealTypeName}</option>
+                                </foreach>
+                            </select>&nbsp;
+                            <select name="deadline_join[{$key}]" class="class_deadline_join">
+                                <foreach name="data.deadlineConf" key="dkey" item="deadline_conf">
+                                <option value="{$deadline_conf['deadline']}-{$deadline_conf['deadline_unit']}" <if condition="$invest_conf['deadline'] eq $deadline_conf['deadline'] and $invest_conf['deadline_unit'] eq $deadline_conf['deadline_unit']">selected</if> >{$deadline_conf.deadline_format}</option>
+                                </foreach>
+                            </select>
+                            &nbsp;&nbsp;年化借款利率&nbsp;<input type="text" style="width:50px" class="textbox require class_rate" name="rate[{$key}]"  value="{$invest_conf['rate']}" required="required"/>%
+                            &nbsp;&nbsp;年化利息折算系数&nbsp;<input type="text" style="width: 30px;" class="textbox require class_rate_factor" name="rate_factor[{$key}]"  value="{$invest_conf['rate_factor']}" required="required"/>
+                            &nbsp;可见组配置&nbsp;<input type="text" class="textbox class_groupids" name="visiableGroupIds[{$key}]" value="{$invest_conf['visiableGroupIds']}"/>
+                            <a href="javascript:;" class="minusBtn investminusBtn">-</a>
+                            <a href="javascript:;" class="plusBtn investplusBtn">+</a>
+                        </div>
+                        <div class="qx_right clearfix">
+                            <div class="reserve_product_box clearfix">
+                                <div class="classgradename">一级产品名称</div>
+                                <div class="classgradelist">
+                                    <if condition="empty($invest_conf['firstGradeName'])">
+                                        <span class="JS_class_GradeName">
+                                            <select name="first_grade_name[{$key}][]" class="class_first_grade">
+                                                <option value="">无</option>
+                                                <foreach name="firstLayerGradeList" key="key4" item="firstLayerGrade">
+                                                    <option value="{$firstLayerGrade['name']}">{$firstLayerGrade['name']}</option>
+                                                </foreach>
+                                            </select>
+                                            <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                            <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                        </span>
+                                    </if>
+                                    <foreach name="invest_conf.firstGradeName" key="key3" item="firstGradeName">
+                                        <span class="JS_class_GradeName">
+                                            <select name="first_grade_name[{$key}][]" class="class_first_grade">
+                                                <option value="">无</option>
+                                                <foreach name="firstLayerGradeList" key="key4" item="firstLayerGrade">
+                                                    <option value="{$firstLayerGrade['name']}" <if condition="$firstLayerGrade['name'] eq $firstGradeName">selected=selected</if> >{$firstLayerGrade['name']}</option>
+                                                </foreach>
+                                            </select>
+                                            <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                            <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                        </span>
+                                    </foreach>
+                                </div>
+                            </div>
+                            <div class="reserve_product_box clearfix">
+                                <div class="classgradename">二级产品名称</div>
+                                <div class="classgradelist">
+                                    <if condition="empty($invest_conf['secondGradeName'])">
+                                        <span class="JS_class_GradeName">
+                                            <select name="second_grade_name[{$key}][]" class="class_second_grade">
+                                                <option value="">无</option>
+                                                <foreach name="secondLayerGradeList" key="key4" item="secondLayerGrade">
+                                                    <option value="{$secondLayerGrade['name']}">{$secondLayerGrade['name']}</option>
+                                                </foreach>
+                                            </select>
+                                            <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                            <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                        </span>
+                                    </if>
+                                    <foreach name="invest_conf.secondGradeName" key="key3" item="secondGradeName">
+                                        <span class="JS_class_GradeName">
+                                            <select name="second_grade_name[{$key}][]" class="class_second_grade">
+                                                <option value="">无</option>
+                                                <foreach name="secondLayerGradeList" key="key4" item="secondLayerGrade">
+                                                    <option value="{$secondLayerGrade['name']}" <if condition="$secondLayerGrade['name'] eq $secondGradeName">selected=selected</if> >{$secondLayerGrade['name']}</option>
+                                                </foreach>
+                                            </select>
+                                            <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                            <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                        </span>
+                                    </foreach>
+                                </div>
+                            </div>
+
+                            <div class="reserve_product_box clearfix">
+                                <div class="classgradename">三级产品名称</div>
+                                <div class="classgradelist">
+                                    <if condition="empty($invest_conf['thirdGradeName'])">
+                                        <span class="JS_class_GradeName">
+                                            <select name="third_grade_name[{$key}][]" class="class_third_grade">
+                                                <option value="">无</option>
+                                                <foreach name="thirdLayerGradeList" key="key4" item="thirdLayerGrade">
+                                                    <option value="{$thirdLayerGrade['name']}">{$thirdLayerGrade['name']}</option>
+                                                </foreach>
+                                            </select>
+                                            <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                            <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                        </span>
+                                    </if>
+                                    <foreach name="invest_conf.thirdGradeName" key="key3" item="thirdGradeName">
+                                        <span class="JS_class_GradeName">
+                                            <select name="third_grade_name[{$key}][]" class="class_third_grade">
+                                                <option value="">无</option>
+                                                <foreach name="thirdLayerGradeList" key="key4" item="thirdLayerGrade">
+                                                    <option value="{$thirdLayerGrade['name']}" <if condition="$thirdLayerGrade['name'] eq $thirdGradeName">selected=selected</if> >{$thirdLayerGrade['name']}</option>
+                                                </foreach>
+                                            </select>
+                                            <a href="javascript:;" class="minusBtn grademinusBtn">-</a>
+                                            <a href="javascript:;" class="plusBtn gradeplusBtn">+</a>
+                                        </span>
+                                    </foreach>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    </foreach>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约有效期:</td>
+                <td class="item_input">
+                    <if condition="empty($data['reserve_conf'])">
+                        <p>
+                            <input type="number" class="textbox require" name="expire[0]" required="required"  value=""/>
+                            <foreach name="expireUnitConfig" key="key" item="expireunit_conf">
+                                <input type="radio" name="expire_unit[0]" value="{$expireunit_conf['expireNum']}" <if condition="$key eq 0"> checked </if>>{$expireunit_conf['expireUnit']}
+                            </foreach>
+                            <!-- <input type="hidden" name="expire_unit[]" value="1">小时 -->
+                        </p>
+                        <p>
+                            <input type="number" class="textbox require" name="expire[1]" required="required"  value=""/>
+                            <foreach name="expireUnitConfig" key="key" item="expireunit_conf">
+                                <input type="radio" name="expire_unit[1]" value="{$expireunit_conf['expireNum']}" <if condition="$key eq 0"> checked </if>>{$expireunit_conf['expireUnit']}
+                            </foreach>
+                        </p>
+                        <p>
+                            <input type="number" class="textbox require" name="expire[2]" required="required"  value=""/>
+                            <foreach name="expireUnitConfig" key="key" item="expireunit_conf">
+                                <input type="radio" name="expire_unit[2]" value="{$expireunit_conf['expireNum']}" <if condition="$key eq 0"> checked </if>>{$expireunit_conf['expireUnit']}
+                            </foreach>
+                        </p>
+                    </if>
+
+                    <foreach name="data.reserve_conf" key="key" item="reserve_conf">
+                        <p>
+                            <input type="number" class="textbox require" name="expire[{$key}]" required="required"  value="{$reserve_conf['expire']}"/>
+                            <foreach name="expireUnitConfig" key="key2" item="expireunit_conf">
+                                <input type="radio" name="expire_unit[{$key}]" value="{$expireunit_conf['expireNum']}" <if condition="$reserve_conf['expire_unit'] == $expireunit_conf['expireNum']"> checked </if>>{$expireunit_conf['expireUnit']}
+                            </foreach>
+                        </p>
+                    </foreach>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约协议模版:</td>
+                <td class="item_input">
+                    <div class="protocol_tpl clearfix">
+                        <select name="protocol_tpl" style="">
+                            <option value="0">请选择</option>
+                            <foreach name="protocolTplList" key="key" item="value">
+                            <option value="{$value['id']}" <if condition="$value['id'] eq $originProtocolTpl">selected</if> >{$value['typeName']}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- <tr>
+                <td class="item_title"><i class="requireI">*</i>预约承诺书:</td>
+                <td class="item_input">
+
+                    <html:editor id="description" name="description" type="KINDEDITOR" content="{$data.description}" required="required"/>
+                </td>
+            </tr> -->
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserReservation" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="config" />
+                    <if condition="empty($data)">
+                    <input type="submit" id="publish" class="button" value="发布" />
+                    <else/>
+                    <input type="submit" id="publish" class="button" value="编辑" />
+                    </if>
+
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    $(function(){
+        // 投资期限总数
+        var investConfCnt = {$data.invest_conf_cnt}?{$data.invest_conf_cnt}:1;
+        //删除投资期限
+        $(".qixian").on('click', '.investminusBtn', function(event) {
+            var pLength = $(".qixian").find("div.invest_qixian").length;
+            //只有一种投资期限的时候,禁止删除
+            if(pLength>1){
+                $(this).parents('div.invest_qixian').remove();
+            }
+        });
+        //添加投资期限
+        $(".qixian").on('click', '.investplusBtn', function(event) {
+            var thisParent = $(this).parents('div.invest_qixian');
+            var parentData = thisParent.clone(true);
+            parentData.find('.class_invest_deal_type').attr('name', 'invest_deal_type['+investConfCnt+']');
+            parentData.find('.class_deadline_join').attr('name', 'deadline_join['+investConfCnt+']');
+            parentData.find('.class_rate').attr('name', 'rate['+investConfCnt+']');
+            parentData.find('.class_rate_factor').attr('name', 'rate_factor['+investConfCnt+']');
+            parentData.find('.JS_class_GradeName').find("select option").removeAttr("selected");
+            parentData.find('.JS_class_GradeName:gt(2)').remove();
+            parentData.find('.class_first_grade').attr('name', 'first_grade_name['+investConfCnt+'][]');
+            parentData.find('.class_second_grade').attr('name', 'second_grade_name['+investConfCnt+'][]');
+            parentData.find('.class_third_grade').attr('name', 'third_grade_name['+investConfCnt+'][]');
+            parentData.find('.class_groupids').attr('name', 'visiableGroupIds['+investConfCnt+']');
+            parentData.find('.class_groupids').val('');
+            parentData.find('.class_deadline').val('');
+            parentData.find('.class_rate').val('');
+            $(".qixian").append(parentData);
+            investConfCnt += 1;
+        });
+
+        $(".grademinusBtn").click(function(){
+            var length =  $(this).parents("div.reserve_product_box").find("span").length;
+            if(length>1){
+                $(this).parent().remove();
+            }
+        });
+
+        $(".gradeplusBtn").click(function(){
+            gradeName = $(this).parent("span").clone(true);
+            gradeName.find("select option").removeAttr("selected");
+            $(this).parent("span").parent("div.classgradelist").append(gradeName);
+        });
+        //校验最低 最高预约金额逻辑
+        $("#publish").on('click', function(event) {
+            var result = true;
+            $('.minimum').each(function(i) {
+                var minimum = parseInt($(this).val());
+                var highest = parseInt($(".highest").eq(i).val());
+                if(highest>0 && minimum>highest){
+                    result = false;
+                    return false;
+                }
+            });
+            if (!result) {
+                alert("最低预约金额不能高于最高预约金额");
+                return false;
+            }
+        });
+    })
+</script>

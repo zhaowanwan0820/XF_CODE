@@ -1,0 +1,324 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user_web2.css');?>" />
+<style>
+.shouyi {
+    font-family: 'Microsoft YaHei';
+}
+.user_num{
+    color: #333;
+}
+</style>
+<script>
+$(document).ready(function(){
+    $("#yanzheng").click(function(){
+        $('#bindCardForm').submit();
+    });
+    $("#bindcard").click(function(){
+        $('#bindCardForm').submit();
+    });
+});
+window.onload = function() {
+    zhuge.track('进入我的账户');
+}
+</script>
+<div class="user_right">
+    <!-- 用户信息 -->
+    <div class="user_right_box  mb20 pb20">
+        <div class="user_title"><a class="f14 fr pr30 color-black" href="/account/setup">{if $isEnterprise}会员{else}个人{/if}设置<i class="ico_more"></i></a>
+            <h1><i class="ico_yonghu"></i>用户信息</h1></div>
+        {if app_conf('UCF_PAY_STATUS') eq '0'}
+        <div style="background: #f1f2f3;
+                        line-height: 27px;
+                        text-align: center;
+                        font-size: 13px;
+                        color: #888888;"> {function name="get_adv" x="首页投资说明"}</div>
+        {/if}
+        <div class="acount_user clearfix">
+            <div class="user_l"><span class="icon_user {if $user_sex eq 1}tx_male {else}tx_female {/if}"></span></div>
+            <div class="user_r">
+                <div class="user_tit f18"><span class="com-name">您好，{if !$isEnterprise} {if $user_info.idcardpassed eq 1} {if $user_info.real_name}{$user_info.real_name}{/if} {elseif $user_info.idcardpassed eq 3} 实名认证审核中 {else}
+                    <a href='/account/addbank' class="blue">请实名认证</a> {/if}{else} {$enterpriseInfo.company_name}{/if}</span><span><a href="/account/setup" title='会员编号' id='user_num' class='user_num'>（{if $isEnterprise}{function name="numTo32Enterprise" value=$user_info.id}{else}{function name="numTo32" value=$user_info.id}{/if}）</a></span>
+                    <span class="log_time f14">上次登录时间：{$last_time}</span></div>
+                <div class="user_con">
+                    <div class="u_name"><a href="/account/setup" class="user_a"><i class="icon_user un" title="用户名"></i></a>{$user_info.user_name}</div>
+                    <div class="u_phone">
+                    {if $isEnterprise eq 1}
+                    <a href="/account/setup" class="user_a"><i class="icon_user yz" title="{$enterpriseInfo.credentials_type_cn}"></i></a>证件号码 {$enterpriseInfo.credentials_no_mask}
+                    {else}
+                    <a href="/account/setup" class="user_a"><i class="icon_user up" title="手机号码"></i></a>{function name="moblieFormat" value=$user_info.mobile mobile_code=$user_info.mobile_code}
+                    {/if}
+                    </div>
+                    <div class="u_bank">
+                        {$bindCardForm}
+                        {if $bankcard.status eq 1}
+                        <a href="/account/setup" class="user_a"><i class="icon_user ub_has" title="{if $isEnterprise eq 1}银行帐号{else}银行卡号{/if}"></i></a> {$bankcard.name}
+                        <span class="pl8">{function name="formatBankcard" value=$bankcard.bankcard}</span>
+                            {if !$isEnterprise}
+                                {if !$bankcard.is_valid}
+                                <span class="qyz"><a href="javascript:void(0)" class="txtd" id="yanzheng">请验证</a></span>
+                                {/if}
+                            {/if}
+                        {else}
+                         <a href="/account/setup" class="user_a"><i class="icon_user ub" title="{if $isEnterprise eq 1}银行帐号{else}银行卡号{/if}"></i></a>
+                        <div class="u_bind">
+                            {if $isEnterprise eq 1}
+                                <a href="/account/addbank" class="bind_a blue">请绑定银行账户</a>
+                                {else}
+                                {if $user_info.idcardpassed eq 1}
+                                    {if $hasPassport}
+                                    <a href="/account/addbank" class="bind_a blue">请绑定银行账户</a>
+                                    {else}
+                                    <a href="javascript:void(0)" class="bind_a blue" id="bindcard">请绑定银行卡</a>
+                                    {/if}
+                                {else}
+                                    <span class="color-gray" title="请先实名认证再绑定银行卡">请绑定银行卡</span>
+                                {/if}
+                            {/if}
+                            <div class="bank_tips">
+                                <p>您尚未绑定银行卡</p>
+                                <a href="/account/setup">设置</a>
+                                <div class="arrow"></div>
+                            </div>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //用户信息 -->
+    <div class="user_right_box  mb20 pb20">
+        <div class="user_title">
+            <h1><i class="ico_zhanghu"></i>账户信息</h1></div>
+        <table class="yh_tab f14 mt20" width="100%">
+            <colgroup>
+                <col width="140">
+                <col width="350">
+                <col width="430">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <th>可用余额：</th>
+                        <td><em class="color-yellow1">{function name="format_price" value=$user_info.total_money b=0}&nbsp</em>元</td>
+                        <td rowspan="3">
+                            <div class="lgl_money clearfix">
+                                <div class="clearfix"><div class="w115 fl tr">通知贷金额：</div><span class="color-yellow1">{$compound.compound_money}</span></div>
+                                <div><a href="/account/load?type=1" class="button_tx fr mr10">申请赎回</a><div class="w115 fl tr">可申请赎回金额：</div><span class="color-yellow1">{$compound.repay_money}</span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                    <th>现金金额：</th>
+                    <td><em class="color-yellow1 xj-em">{function name="format_price" value=$user_info.money b=0}&nbsp</em>元<a href="/account/charge" class="button_cz">充值</a> <a href="/account/carry" class="button_tx">提现</a></td>
+                </tr>
+                <tr>
+                    <th>红包金额：</th>
+                    <td>{function name="format_price" value=$bonus b=0}&nbsp元</td>
+                </tr>
+                <tr>
+                    <th>冻结金额：</th>
+                        <td>{function name="format_price" value=$user_info.lock_money b=0}&nbsp元</td>
+                        {if $is_duotou_inner_user eq 1}
+                            <td rowspan="3">
+                                <div class="lgl_money clearfix">
+                                    <div class="clearfix"><div class="w115 fl tr">智多鑫金额：</div><span class="color-yellow1">{$dt_remain_money}</span></div>
+                                    <div><a href="/account/finplan" class="button_tx fr mr10">申请赎回</a><div class="w115 fl tr">可申请赎回金额：</div><span class="color-yellow1">{$dt_can_redeem}</span></div>
+                                </div>
+                            </td>
+                        {/if}
+                    </tr>
+                    <tr>
+                    <th>待收本金：</th>
+                    <td>{function name="format_price" v="$user_statics.principal" b=0}&nbsp元</td>
+                </tr>
+                <tr>
+                    <th>待收收益：</th>
+
+                        <td>{function name="format_price" v="$user_statics.interest" b=0}&nbsp元</td>
+
+                    </tr>
+                    <tr>
+                    <th>资产总额：</th>
+                        <td><em class="color-yellow1">{function name="format_price" v="$user_statics.money_all" b=0}&nbsp</em>元</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="width:850px;border-bottom:4px solid #F7F7F7;clear:both;margin:30px auto;"></div>
+            <div class="clearfix" style="margin:0 50px 20px 0;font-size:14px;">
+
+            <div class="fr"><i class="ico_shou"></i><span class="w70 tr"  style="display:inline-block">累计收益：</span><strong class="color-yellow1">{function name="format_price" v="$user_statics.earning_all" b=0}</strong>&nbsp元 </div>
+            <div class="pt3 fr" style="margin-right:50px;"><i class="ico_tou"></i><span class="w70 tr" style="display:inline-block">总投资额：</span><strong class="color-yellow1">{function name="format_price" v=$user_statics.load_money b=0}</strong>&nbsp元 </div>
+
+            </div>
+        </div>
+        <div class="user_right_box mb20">
+        <div class="user_title"><a class="f14 fr pr30 color-black" href="{url x="index" r="account/load"}">更多<i class="ico_more"></i></a><h1><i class="ico_toubiao"></i>投标概况</h1></div>
+            <div class="w710 mauto pb20">
+            <table class="plan">
+                <colgroup>
+                    <col width="370">
+                        <col width="113">
+                            <col width="375">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="tl pl30">状态</div>
+                        </th>
+                        <th>笔数</th>
+                        <th>
+                            <div class="tr pr25">金额（元）</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$invest item=item key=key}
+                    <tr {if $key mod 2 eq 1}class="tr_bg" {/if}>
+                        <td>
+                            <div class="tl pl25">{$item.text}</div>
+                        </td>
+                        <td>{if $item.counts}{$item.counts}{else}0{/if}</td>
+                        <td>
+                            <div class="tr pr25 f16">{function name="format_price" value=$item.money b=0}</div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--<div class="user_right_box mb20">
+        <div class="user_title"><a class="f14 fr pr30 color-black" href="{url x="index" r="account/loan"}">更多<i class="ico_more"></i></a>
+            <h1><i class="ico_huikuan"></i>回款计划</h1></div>
+        <div class="w710 mauto pb20">
+            <table class="plan">
+                <colgroup>
+                    <col width="370">
+                        <col width="113">
+                            <col width="375">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="tl pl25">时间</div>
+                        </th>
+                        <th>笔数</th>
+                        <th>
+                            <div class="tr pr15">金额（元）</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$deal_repay item=item key=key}
+                    <tr {if $key mod 2 eq 1}class="tr_bg" {/if}>
+                        <td>
+                            <div class="tl pl25">{$item.text}</div>
+                        </td>
+                        <td>{if $item.counts}{$item.counts}{else}0{/if}</td>
+                        <td>
+                            <div class="tr pr25 f16">{function name="format_price" value=$item.money b=0}</div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>-->
+    <div class="user_right_box mb20">
+        <div class="user_title"><a class="f14 fr pr30 color-black" href="{url x="index" r="account/money" }">更多<i class="ico_more"></i></a>
+            <h1><i class="ico_jilu"></i>资金记录</h1></div>
+        <div class="w710 mauto pb20">
+            <table class="plan">
+                <colgroup>
+                    <col width="173">
+                        <col width="152">
+                            <col width="160">
+                                <col width="145">
+                                    <col width="226">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>类型</th>
+                        <th>冻结/解冻（元）</th>
+                        <th>资金变动（元）</th>
+                        <th>
+                            <div class="pr25">备注</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$log item=item key=key}
+                    <tr {if $key mod 2 eq 1}class="tr_bg" {/if}>
+                        <td>
+                            <div class="tl pl25">
+                                <?php echo to_date($this->_var['item']['log_time'],"Y-m-d H:i"); ?>
+                            </div>
+                        </td>
+                        <td>{$item.log_info}</td>
+                        <td>{if $item.lock_money neq 0}<em class="color-green1">{function name="format_price" value=$item.lock_money c=0}</em>{/if}</td>
+                        <td>{if $item.money neq 0}<em class="color-yellow1">{function name="format_price" value=$item.money c=0}</em>{/if}</td>
+                        <td>
+                            <div class="pr25">{function name="htmlspecialchars" value=$item.note}</div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1><i class="ico_jilu"></i>账户七天充值记录</h1></div>
+        <div class="w710 mauto pb20">
+            <table class="plan">
+                <colgroup>
+                    <col width="230">
+                        <col width="200">
+                            <col width="152">
+                                <col width="160">
+                                    <col width="133">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="pl15">充值单号</div>
+                        </th>
+                        <th>充值金额（元）</th>
+                        <th>状态</th>
+                        <th>充值时间</th>
+                        <th>
+                            <div class="pr25">订单生成时间</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$charge_list item=item key=key}
+                    <tr {if $key mod 2 eq 1}class="tr_bg" {/if}>
+                        <td>
+                            <div class="tl pl25">{$item.notice_sn}</div>
+                        </td>
+                        <td>{if $item.money neq 0}<em class="color-yellow1">{function name="format_price" value=$item.money c=0}</em>{/if}</td>
+                        <td>{$item.status_cn}</td>
+                        <td>
+                            <?php if (empty($this->_var['item']['pay_time'])) echo '-'; else  echo to_date($this->_var['item']['pay_time'],"Y-m-d H:i:s"); ?>
+                        </td>
+                        <td>
+                            <div class="pr25">
+                                <?php echo to_date($this->_var['item']['create_time'],"Y-m-d H:i:s"); ?>
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+//修改
+function editor_bankInfo() {
+    window.location.href = '/account/editbank';
+}
+
+
+</script>

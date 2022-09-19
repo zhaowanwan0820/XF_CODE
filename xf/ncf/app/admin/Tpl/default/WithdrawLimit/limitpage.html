@@ -1,0 +1,104 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__searchselect/jquery.searchableselect.js' />
+<load href='__TMPL__searchselect/searchableselect.css' />
+<style>
+     .alarm { padding-top:100px; text-align:center; color:#F00; font-size:14px;}
+     .right{text-align:right;}
+     .left {text-align:left;}
+     .center{text-align:center;}
+</style>
+
+<php>
+</php>
+<div class="main">
+    <div class="main_title">添加限制提现规则</div>
+    <div class="blank5"></div>
+    <if condition="$errorMsg neq ''">
+        <p class="alarm center">{$errorMsg}</p>
+        <p class="center"><a href="javascript:window.history.go(-1);">返回上一页</a></p>
+    <else />
+    <form name="userForm" action="/m.php" method="POST">
+        <input type="hidden" id="withdraw_limit_user_id" name="userId" value ="{$userId}"/>
+        <input type="hidden" id="isAllowAmount" name="isWhiteList" value ="0"/>
+        <input type="hidden" name="a" value ="doWithdrawLimitApply"/>
+        <input type="hidden" name="m" value ="WithdrawLimit"/>
+    <table class="dataTable">
+    <tr>
+        <th width="200">限制提现用户类型</th>
+        <td>
+            <select name="platform_account_type" id="platform_account_type">
+                <option value="-1">请选择</option>
+                {$optionHtml}
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th id="limitAmount">限制提现金额</th>
+        <td><input type="TEXT" size="30" name="limit_amount" id="withdraw_limit_amount" /><span style="color:#F00;padding-left:10px;" id="error_tips"></span></td>
+    </tr>
+    <tr>
+        <th>限制提现类型</th>
+        <td>
+            <select name="withdraw_limit_type" id="withdraw_limit_type">
+            <option value="-1">请选择</option>
+            <foreach name="limit_types" item="item" key="value">
+                <option value="{$value}" <if condition="intval($_REQUEST['withdraw_limit_type']) eq $value">selected="selected"</if>>{$item}</option>
+            </foreach>
+        </select>
+        </td>
+    </tr>
+    <tr>
+        <th>限制提现备注</th>
+        <td><textarea cols="100" rows="10" name="memo" id="memo"></textarea> </td>
+    </tr>
+    <tr>
+        <td colspan="2"> <input type="SUBMIT" value="提交申请"/>
+    </table>
+    </form>
+    </if>
+<div class="blank5"></div>
+<script>
+    $('#platform_account_type').change(function(){
+        var selectVal = $(this).val();
+        var opt = selectVal.split('_');
+        console.log(opt);
+        if (opt.length == 1) {
+            return ;
+        }
+        if (opt[0] == '1' && opt[1] == '2') {
+            $('#limitAmount').html('允许提现金额');
+            $('#isAllowAmount').val(1);
+            return;
+        }
+        $('#limitAmount').html('限制提现金额');
+    });
+    //监听键盘，只允许输入数字和小数点
+    $("#withdraw_limit_amount").keypress(function(event) {
+        var keyCode = event.which;
+        if (keyCode == 46 || (keyCode >= 48 && keyCode <=57))
+        {
+            return true;
+        } else {
+            return false;
+        }
+        }).focus(function() {
+                this.style.imeMode='disabled';
+        });
+    $(function(){
+        $("#withdraw_limit_amount").bind("input propertychange",function(){
+            var regx = /^[0-9]+([.]{1}[0-9]{1,2})?$/
+            var value = $(this).val()
+            if(!regx.test(value) && value.split(".")[1]){
+            value = value.split(".")[0] + "." + value.split(".")[1].slice(0,2);
+            console.log(value);
+            $(this).val(value);
+            }
+        })
+    })
+</script>

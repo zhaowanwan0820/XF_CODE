@@ -1,0 +1,522 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<style>
+    input[type="radio"]{
+        margin: 0 0 0 30px;
+    }
+    .limit_span{
+
+    }
+    .style_hidden {
+        display: none;
+    }
+    .style_red{
+        color:red;
+    }
+    .style_position{
+        margin-left:200px;
+    }
+    .score_input{
+        width: 30px;
+    }
+    .limit_money{
+        width: 110px;
+    }
+    .item_list li span{
+        display:inline-block;
+        vertical-align:middle;
+        margin: 5px;
+    }
+    .item_action li {
+        margin:15px;
+    }
+    .level_action li {
+        margin:15px;
+    }
+    .sub_info li {
+        margin: 15px;
+    }
+
+    .sub_info li label, .sub_info li textarea{
+        display:inline-block;
+        vertical-align:middle;
+        margin: 5px;
+    }
+    .ques_info td {
+        vertical-align:top;
+    }
+
+    .level_list li span {
+        display:inline-block;
+        vertical-align:middle;
+        margin: 5px;
+    }
+
+    .level_sum span {
+        margin: 5px;
+    }
+    .level_sum {
+        text-align: center;
+    }
+</style>
+
+<span class="main">
+<div class="main_title">新增问卷</div>
+<div class="blank5"></div>
+
+<form action="__APP__" method="post" enctype="multipart/form-data" id="questionForm">
+<input type="hidden" name="m" value="RiskAssessment" />
+<input type="hidden" name="a" value="insert" />
+
+<table id="question" class="dataTable question" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="3" class="topTd" >&nbsp; </td></tr>
+    <tr class="" >
+        <th width="250">使用状态</th>
+        <td width="620">
+            <input type="radio" name="status" value="1" /> 使用中
+            <input type="radio" name="status" value="0" checked /> 停用
+        </td>
+        <td class="style_red">若当前问卷使用状态为“使用中”,其他问卷使用状态将被置为“停用”</td>
+    </tr>
+    <tr class="">
+        <th>会员答题次数限制</th>
+        <td>
+            <input type="radio" name="limit_type" value="0" checked/> 无限制
+            <input type="radio" name="limit_type" value="1"/> 周期限制
+            <span class="limit_span style_hidden">
+                &nbsp;
+                <input type="input" name="limit_times" class="score_input" value="0">
+                次
+                /
+                <select name="limit_period">
+                    <option value="1">年</option>
+                    <option value="2">月</option>
+                    <option value="3">周</option>
+                    <option value="4">日</option>
+                </select>
+                /
+                人
+            </span>
+        </td>
+        <td class="style_red">会员在规定时间周期内使用同一份问卷答题次数限制</td>
+    </tr>
+    <tr class="ques_info">
+        <td>
+            <ul class="sub_info">
+                <li>
+                    <label>问题<span class="sub_sort">1</span>: </label>
+                    <textarea rows="2" cols="30" name="sub_title[]" class="sub_title"></textarea>
+                </li>
+                <li class="ques_action">
+                    <input type="button" value="继续新增问题" class="add_ques"/>
+                    <input style="display:none" type="button" value="删除本问题" class="del_ques">
+                </li>
+                <!--<li>单选/多选提 <input type="text" class="score_input" name="sub_choose_item_num[]" value="1">个可选项目</li>-->
+            </ul>
+        </td>
+        <td>
+            <input type="hidden" name="sub_item_num[]" class="sub_item_num" value="4">
+            <ul class="item_list">
+                <li>
+                    <span class="item_mark">A</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content" ></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                    <span class="style_red score_tip">高分</span>
+                </li>
+                <li>
+                    <span class="item_mark">B</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content"></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                </li>
+                <li>
+                    <span class="item_mark">C</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content"></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                </li>
+                <li>
+                    <span class="item_mark">D</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content"></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                    <span class="style_red score_tip">低分</span>
+                </li>
+            </ul>
+        </td>
+        <td>
+            <ul class="item_action">
+                <li><input type="button" value="继续新增待选项" class="add_item"></li>
+                <li><input type="button" value="删除最后一条待选项" class="del_item"></li>
+                <li></li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th rowspan="2">会员投资风险承受能力等级评估标准</th>
+        <td class="level_sum">
+            <span>问卷总分: <b class="style_red total_score">0</b></span>
+            <span>问题总数: <b class="style_red total_sum">0</b></span>
+        </td>
+        <td><input type="button" value="刷新总分和总数" class="refresh_score"></td>
+    </tr>
+    <tr>
+        <td>
+            <ul class="level_list">
+                <li class="style_red style_position"><span>高</span><span style="display:inline-block;margin-left:260px;">单笔投资限额(万元)</span></li>
+                <li class="level_item">
+                    <span>风险承受能力分类 <b class="level_index">1</b> <input type="text" name="level_name[]" class="level_name"></span>
+                    <span>L<b class="level_index">1</b>最低分数线(含) <input type="text" class="score_input" name="lowest_score[]"> 分</span>
+                    <span><input type="text" placeholder="最多输入三位小数" class="limit_money" name="limit_money[]" ></span>
+                </li>
+                <li class="level_item">
+                    <span>风险承受能力分类 <b class="level_index">2</b> <input type="text" name="level_name[]" class="level_name"></span>
+                    <span>L<b class="level_index">2</b>最低分数线(含) <input type="text" class="score_input" name="lowest_score[]"> 分</span>
+                    <span><input type="text" placeholder="最多输入三位小数" class="limit_money" name="limit_money[]"></span>
+                </li>
+                <li class="level_item">
+                    <span>风险承受能力分类 <b class="level_index">3</b> <input type="text" name="level_name[]" class="level_name"></span>
+                    <span>L<b class="level_index">3</b>最低分数线(含) <input type="text" class="score_input" name="lowest_score[]"> 分</span>
+                    <span><input type="text" placeholder="最多输入三位小数" class="limit_money" name="limit_money[]"></span>
+                </li>
+                <li class="level_item">
+                    <span>风险承受能力分类 <b class="level_index">4</b> <input type="text" name="level_name[]" class="level_name"></span>
+                    <span>L<b class="level_index">4</b>最低分数线(含) <input type="text" class="score_input" name="lowest_score[]"> 分</span>
+                    <span><input type="text"placeholder="最多输入三位小数"  class="limit_money" name="limit_money[]"></span>
+                </li>
+                <li class="level_item">
+                    <span>风险承受能力分类 <b class="level_index">5</b> <input type="text" name="level_name[]" class="level_name"></span>
+                    <span>L<b class="level_index">5</b>最低分数线(含) <input type="text" class="score_input" name="lowest_score[]"> 分</span>
+                    <span><input type="text" placeholder="最多输入三位小数" class="limit_money" name="limit_money[]"></span>
+                </li>
+                <li class="style_red style_position">低</li>
+            </ul>
+        </td>
+        <td>
+            <ul class="level_action">
+            <li><input type="button" value="继续新增分类" class="add_level"/></li>
+            <li><input type="button" value="删除最后一条分类" class="del_level"></li>
+            </ul>
+        </td>
+    </tr>
+
+    <tr>
+        <th>提示信息</th>
+        <td colspan="2">
+            <script id="editor_prompt" name="prompt" type="text/plain" style="width:800px;height:200px; float:left;"></script>
+        </td>
+    </tr>
+
+    <tr>
+        <th>备注</th>
+        <td colspan="2">
+            <script id="editor_remark" name="remark" type="text/plain" style="width:800px;height:200px; float:left;"></script>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="3">
+            <input type="button" class="button" value="{%ADD}" onclick="checkParams();" />
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr><td colspan="3" class="bottomTd">&nbsp; </td></tr>
+</table>
+</form>
+
+<!-- 模版 -->
+<table style="display: none">
+    <tr class="ques_info ques_info_template">
+        <td>
+            <ul class="sub_info">
+                <li>
+                    <label>问题<span class="sub_sort"></span>: </label>
+                    <textarea rows="2" cols="30" name="sub_title[]" class="sub_title"></textarea>
+                </li>
+                <li class="ques_action">
+                    <input type="button" value="继续新增问题" class="add_ques"/>
+                    <input style="display:none" type="button" value="删除本问题" class="del_ques">
+                </li>
+                <!--<li>单选/多选提 <input type="text" class="score_input" name="sub_choose_item_num[]" value="1">个可选项目</li>-->
+            </ul>
+        </td>
+        <td>
+            <input type="hidden" name="sub_item_num[]" class="sub_item_num" value="4">
+            <ul class="item_list">
+                <li>
+                    <span class="item_mark">A</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content"></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                    <span class="style_red score_tip">高分</span>
+                </li>
+                <li>
+                    <span class="item_mark">B</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content"></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                </li>
+                <li>
+                    <span class="item_mark">C</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content"></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                </li>
+                <li>
+                    <span class="item_mark">D</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content"></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                    <span class="style_red score_tip">低分</span>
+                </li>
+            </ul>
+        </td>
+        <td>
+            <ul class="item_action">
+                <li><input type="button" value="继续新增待选项" class="add_item"></li>
+                <li><input type="button" value="删除最后一条待选项" class="del_item"></li>
+                <li></li>
+            </ul>
+        </td>
+    </tr>
+</table>
+<!--模版-->
+<ul style="display: none">
+    <li class="level_item level_item_template">
+        <span>风险承受能力分类 <b class="level_index"></b> <input type="text" name="level_name[]" class="level_name"></span>
+        <span>L<b class="level_index"></b>最低分数线(含) <input type="text" class="score_input" name="lowest_score[]"> 分</span>
+        <span><input type="text" placeholder="最多输入三位小数"  class="limit_money" name="limit_money[]"></span>
+    </li>
+</ul>
+
+
+<script type="text/javascript">
+
+    function isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+
+    //实例化编辑器
+    UE.getEditor('editor_remark');
+    UE.getEditor('editor_prompt');
+
+    var alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    $(document).ready(function(){
+        $('input[name="limit_type"]').click(function(){
+            if ($(this).val() == 1) {
+                $('.limit_span').removeClass('style_hidden');
+            } else {
+                $('.limit_span').addClass('style_hidden');
+            }
+        });
+
+        $('.add_item').click(function(){
+            var item_list = $(this).parents('.ques_info').find('.item_list');
+            var len = item_list.find('li').length;
+            if (len >= 26) {
+                alert('最多创建26组待选项');
+                return false;
+            }
+            item_clone = $('.ques_info_template .item_list li:last').clone(true);
+            item_clone.find('.item_mark').text(alphabets[len]);
+            item_list.find('li:last span.score_tip').remove();
+            item_list.append(item_clone);
+            len ++;
+
+            //更新hidden
+            $(this).parents('.ques_info').find('.sub_item_num').val(len);
+            //显示删除按钮
+            if (len >= 2) {
+                $(this).parents('.item_action').find('.del_item').show();
+            }
+        });
+
+        $('.del_item').click(function(){
+            var item_list = $(this).parents('.ques_info').find('.item_list');
+            var len = item_list.find('li').length;
+            if (len <= 2) {
+                alert('至少存在2组待选项');
+                return false;
+            }
+            item_list.find('li:last').remove();
+            len --;
+            item_list.find('li:last').append('<span class="style_red score_tip">低分</span>');
+
+            //更新hidden
+            $(this).parents('.ques_info').find('.sub_item_num').val(len);
+            //隐藏删除按钮
+            if (len <= 2) {
+                $(this).hide();
+            }
+        });
+
+        $('.add_ques').click(function(){
+            var ques_clone = $('.ques_info_template').clone(true);
+            ques_clone.removeClass('ques_info_template');
+            var len = $('#question .ques_info').length;
+            ques_clone.find('.sub_sort').text(len + 1);
+            $('#question .ques_info:last').after(ques_clone);
+            len ++;
+
+            //显示删除按钮
+            if (len >= 1) {
+                $('#question .ques_action').find('.del_ques').show();
+            }
+        });
+
+        $('.del_ques').click(function(){
+            var len = $('#question .ques_info').length;
+            if (len <= 1) {
+                alert('至少存在1个问题');
+                return false;
+            }
+            $(this).parents('.ques_info').remove();
+            len --;
+
+            //刷新问题编号
+            $('#question .ques_info').each(function (i) {
+                $(this).find('.sub_sort').text(i+1);
+            });
+
+            //隐藏删除按钮
+            if (len <= 1) {
+                $('#question .ques_action').find('.del_ques').hide();
+            }
+        });
+
+        $('.add_level').click(function(){
+            var len = $('#question .level_item').length;
+            var level_clone = $('.level_item_template').clone(true);
+            level_clone.removeClass('level_item_template');
+            level_clone.find('.level_index').text(len + 1);
+            $('#question .level_item:last').after(level_clone);
+            len ++;
+
+            //显示删除按钮
+            if (len >= 2) {
+                $('#question .del_level').show();
+            }
+        });
+
+        $('.del_level').click(function(){
+            var len = $('#question .level_item').length;
+            if (len <= 2) {
+                alert('至少存在2个分类');
+                return false;
+            }
+            $('#question .level_item:last').remove();
+            len --;
+
+            //隐藏删除按钮
+            if (len <= 2) {
+                $('#question .del_level').hide();
+            }
+        });
+
+        $('.refresh_score').click(function(){
+            var total_score = 0;
+            var total_sum = 0;
+            $('#question .ques_info').each(function(){
+                var max_score = 0;
+                $(this).find('.score_input').each(function(){
+                    if (max_score < parseFloat($(this).val())) {
+                        max_score = parseFloat($(this).val());
+                    }
+                });
+                total_score = total_score + max_score;
+                total_sum ++;
+            });
+            $('.total_score').text(total_score);
+            $('.total_sum').text(total_sum);
+        });
+    });
+
+
+    function checkParams() {
+        var check_score = true;
+        $('#question .score_input').each(function(){
+            if ($(this).val().length == 0 || !isNumeric($(this).val())){
+                check_score = false;
+            }
+        });
+        if (!check_score) {
+            alert('所有分值选项不能为空,且必须为整数或小数');
+            return false;
+        }
+
+        var limit_money = true;
+        var limitMoneyLength = true;
+        $('#question .limit_money').each(function(){
+            var str = $(this).val().split('.');
+            if(str.length == 2 && str['1'].length > 3){
+                limitMoneyLength = false;
+            }
+            if ($(this).val() >100 || $(this).val() <= 0 ||$(this).val().length == 0 || !isNumeric($(this).val())){
+                limit_money = false;
+            }
+        });
+        if (!limitMoneyLength) {
+            alert('单笔投资限额请最多输入三位小数');
+            return false;
+        }
+        if (!limit_money) {
+            alert('单笔投资限额选项不能为空,且单笔投资限额最高是100万元');
+            return false;
+        }
+
+        var sub_title_check = true;
+        $('#question .sub_title').each(function(){
+            if ($(this).val().length == 0){
+                sub_title_check = false;
+            }
+        });
+        if (!sub_title_check) {
+            alert('问题标题不能为空');
+            return false;
+        }
+
+        var item_content_check = true;
+        $('#question .item_content').each(function(){
+            if ($(this).val().length == 0){
+                item_content_check = false;
+            }
+        });
+        if (!item_content_check) {
+            alert('选项内容不能为空');
+            return false;
+        }
+
+        var level_name_check = true;
+        $('#question .level_name').each(function(){
+            if ($(this).val().length == 0){
+                level_name_check = false;
+            }
+        });
+        if (!level_name_check) {
+            alert('分类名称不能为空');
+            return false;
+        }
+
+        if(!UE.getEditor('editor_prompt').hasContents()) {
+            alert('提示信息不能为空');
+            return false;
+        }
+
+        if(!UE.getEditor('editor_remark').hasContents()) {
+            alert('备注不能为空');
+            return false;
+        }
+
+        if (confirm("确定此操作吗？")) {
+            document.getElementById("questionForm").submit()
+            return true;
+        }
+    }
+</script>
+<div class="blank5"></div>
+</div>
+<include file="Public:footer" />

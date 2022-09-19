@@ -1,0 +1,49 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("VipSourceWeightConf/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">来源名称</td>
+                <td class="item_input">
+                    <input size="50" id="name" type="text" class="textbox require" name="name" value="{$vo.name}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">经验值有效期</td>
+                <td class="item_input">
+                    <input size="20" id="expire_month" type="text" class="textbox require" name="expire_month" value="{$vo.expire_month}"/>
+                    <span class="tip_span">个月</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">权重值</td>
+                <td class="item_input">
+                <input size="20" id="weight" type="text" class="textbox require" name="weight" value="{$vo.weight}"/>
+                </td>
+            </tr>
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="VipSourceWeightConf" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="submit" class="button" value="{%EDIT}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<include file="Public:footer" />

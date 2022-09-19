@@ -1,0 +1,282 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+<div class="main_title">客服查询详情页<a href="javascript:void(0);" onclick="back_list()" class="back_list" >{%BACK_LIST}</a></div>
+
+<div class="blank5"></div>
+
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">会员编号:</td>
+        <td class="item_input"><input type="text" class="textbox" name="id_num" value="{$vo.id}" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">{%USER_NAME}:</td>
+        <td class="item_input"><input class="textbox" name="user_name" value="{$vo.user_name}" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">会员邮箱:</td>
+        <td class="item_input"><input type="text" class="textbox" name="email" value="{$vo.email}" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">{%USER_MOBILE}:</td>
+        <td class="item_input">
+        <input type="text" class="textbox" name="mobile" value="{$vo.mobile}" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">{%USER_GROUP}:</td>
+        <td class="item_input">
+        <input type="text" class="textbox" name="group" value="{$vo.user_net}" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">本人邀请码:</td>
+        <td class="item_input"><input type="text" class="textbox" name="user_code" value="{$vo.user_code}" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资返利系数:</td>
+        <td class="item_input">
+        <input type="text" class="textbox" name="ratio" value="{$vo.user_ratio}" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">推荐人邀请码:</td>
+        <td class="item_input"><input type="text" class="textbox" name="reco_user_code" value="{$vo.reco_user_code}" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">推荐人姓名:</td>
+        <td class="item_input">
+        <input type="text" class="textbox" name="reco_user_name" value="{$vo.reco_user_name}" readonly="readonly"/>
+        </td>
+    </tr>
+    
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center;"><b>身份信息</b></td>
+    </tr>
+    <tr>
+        <td class="item_title">姓名:</td>
+        <td class="item_input">
+        <input type="text" value="{$vo.real_name}" class="textbox" name="real_name" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">身份证件类型:</td>
+        <td class="item_input">
+            <input type="text" value="{$vo.idno_type}" class="textbox" name="idno_type" readonly="readonly"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">证件号码:</td>
+        <td class="item_input">
+            <input type="text" value="{$vo.idno}" class="textbox" name="idno" readonly="readonly"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">{%USER_BIRTHDAY}:</td>
+        <td class="item_input">
+            <input type="text" value="{$vo.birthday}" class="textbox" name="birthday" readonly="readonly"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">性别:</td>
+        <td class="item_input">
+            <input type="text" value="{$vo.sex}" class="textbox" name="sex" readonly="readonly"/></td>
+    </tr>
+
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center;"><b>银行信息</b>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">开户名:</td>
+        <td class="item_input">
+        <input type="text" value="{$user_bankc_info.card_name}" class="textbox" name="card_name" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">账户类型:</td>
+        <td class="item_input">
+        <input type="text" value="借记卡" class="textbox" name="account_type" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">所属银行:</td>
+        <td class="item_input">
+        <input type="text" value="{$user_bankc_info.name}" class="textbox" name="bankzone" readonly="readonly"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">卡号:</td>
+        <td class="item_input">
+        <input type="text" value="{$user_bankc_info.bankcard}" class="textbox" name="bankcard" readonly="readonly"/>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center;"><b>收货地址</b>
+        </td>
+    </tr>
+    <if condition="count($info_user) eq 0 ">
+        <tr>
+            <td colspan="2" style="text-align:center;">没有相关的记录</td>
+        </tr>
+        <else/>
+        <foreach name="info_user" item="info" key="keys" >
+
+            <tr>
+                <td class="item_title">收货人名字{$keys+1}:</td>
+                <td class="item_input">
+                    <input type="text" value="{$info.consignee}" class="textbox" name="bankzone" readonly="readonly"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">手机号{$keys+1}:</td>
+                <td class="item_input">
+                    <input type="text" value="{$info.mobile}" class="textbox" name="bankzone" readonly="readonly"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">所在地区{$keys+1}:</td>
+                <td class="item_input">
+                    <foreach name="info.area" item="area" >
+                            <input type="text" value="{$area}" class="textbox" name="area"
+                                   readonly="readonly" /> &nbsp;&nbsp;&nbsp;&nbsp;
+                    </foreach>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">详细地址{$keys+1}:</td>
+                <td class="item_input">
+                   <textarea rows="5" cols="40" readonly="readonly" resize="none">{$info.address}</textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">邮政编码{$keys+1}:</td>
+                <td class="item_input">
+                    <input type="text" value="{$info.postcode}" class="textbox" name="bankzone" readonly="readonly"/>
+                </td>
+            </tr>
+        </foreach>
+    </if>
+
+
+    <tr>
+        <td colspan="2" class="item_title" style="text-align:center;">
+        <div style=" float: left; clear: both; width: 100px; content: ''; visibility: hidden;" >1 </div >
+        <b>资金记录</b><input type="button" class="button" value="查看更多" onclick="more_log()" style="float:right;height:28px;"/>
+        </td>
+    </tr>
+    <if condition="count($money_log_pre) eq 0 ">
+        <tr>
+        <td colspan="2" style="text-align:center;">没有相关的记录</td>
+        </tr>
+    <else/>
+        <foreach name="money_log_pre" item="money_log_vo" >
+    
+        <tr class="money_log" style="display">
+        <td  colspan="3" style="text-align:center;">
+        
+        <table style="width:100%;">
+        <tr>
+        <td style="border:none;text-align:left;" >{$money_log_vo.log_info}</td><td style="border:none;text-align:right;">{$money_log_vo.money}元</td>
+        </tr>
+        
+         <tr>
+        <td  style="border:none;text-align:left;">{$money_log_vo.note}</td><td  style="border:none;text-align:right;">{$money_log_vo.log_time}</td>
+        </tr>
+        </table>
+        
+        </td>
+        </tr>
+        </foreach>
+    </if>
+    <if condition="count($more_log) eq 0 && count($money_log_pre) neq 0 ">
+        <tr class="more_log_show" style="display:none">
+        <td colspan="2" style="text-align:center;">没有更多记录</td>
+        </tr>
+    <else/>
+        <foreach name="more_log" item="more_log_vo" >
+    
+        <tr class="more_log_show" style="display:none">
+        <td  colspan="3" style="text-align:center;">
+        
+        <table style="width:100%;">
+        <tr>
+        <td style="border:none;text-align:left;" >{$more_log_vo.log_info}</td><td style="border:none;text-align:right;">{$more_log_vo.money}元</td>
+        </tr>
+        
+         <tr>
+        <td  style="border:none;text-align:left;">{$more_log_vo.note}</td><td  style="border:none;text-align:right;">{$more_log_vo.log_time}</td>
+        </tr>
+        </table>
+        
+        </td>
+        </tr>
+        </foreach>
+    </if>
+    <!---提现记录-->
+    <tr>
+        <td colspan="3" class="item_title" style="text-align:center;">
+        <div style=" float: left; clear: both; width: 100px; content: ''; visibility: hidden;" >1 </div >
+        <b>提现失败记录</b><input type="button" class="button" value="查看更多" onclick="more_withdraw()" style="float:right;height:28px;"/>
+        </td>
+    </tr>
+    <if condition="count($withdrawFailed) eq 0 ">
+        <tr>
+        <td colspan="3" style="text-align:center;">没有相关的记录</td>
+        </tr>
+    <else/>
+        <tr><th>提现金额</th><th>失败原因</th><th >发起提现时间</th></tr>
+        <foreach name="withdrawFailed" item="withdrawInfo" >
+        <tr>
+        <td>{$withdrawInfo.money}元</td><td>{$withdrawInfo.withdraw_msg}</td><td>{$withdrawInfo.create_time}</td>
+        </tr>
+        </foreach>
+    </if>
+    <if condition="count($moreWithdraw) eq 0">
+        <tr class="more_" style="display:none;">
+        <td colspan="3" style="text-align:center;">没有更多记录</td>
+        </tr>
+    <else/>
+        <foreach name="moreWithdraw" item="withdrawInfo" >
+        <tr class="more_withdraw border:1px;" style="display:none">
+        <td >{$withdrawInfo.money}元</td><td>{$withdrawInfo.withdraw_msg}</td><td>{$withdrawInfo.create_time}</td>
+        </tr>
+        </foreach>
+    </if>
+
+</table>
+
+<script type="text/javascript">
+//添加跳转
+function more_withdraw()
+{
+    $(".more_withdraw").show();
+}
+
+//添加跳转
+function more_log()
+{
+    $(".more_log_show").show();
+}
+function back_list()
+{
+    location.href = ROOT + '?m=User&a=custServInquir&id='+"{$vo.id}";
+}
+</script>
+
+<include file="Public:footer" />

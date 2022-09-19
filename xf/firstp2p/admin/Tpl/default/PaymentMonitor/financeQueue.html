@@ -1,0 +1,61 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__Common/js/Chart.min.js' />
+<div class="main">
+<div class="main_title">转账队列</div>
+<div class="blank5"></div>
+
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="2" class="topTd" >&nbsp; </td></tr>
+    <tr>
+        <th width="100">转账延时</th>
+        <td>
+            <canvas id="cost" width="1080" height="400"></canvas>
+        </td>
+    </tr>
+    <tr>
+        <th width="100">任务数</th>
+        <td>
+            <canvas id="total" width="1080" height="400"></canvas>
+        </td>
+    </tr>
+    <tr><td colspan="2" class="bottomTd">&nbsp; </td></tr>
+</table>
+
+<div class="blank5"></div>
+</div>
+
+<script>
+var data = {
+    labels : <?php echo json_encode($date); ?>,
+    datasets : [{
+        fillColor : "rgba(151,187,205,0.5)",
+        strokeColor : "rgba(151,187,205,1)",
+        pointColor : "rgba(151,187,205,1)",
+        pointStrokeColor : "#fff",
+        data : <?php echo json_encode($cost); ?>
+    }]
+}
+var ctx = document.getElementById("cost").getContext("2d");
+new Chart(ctx).Line(data, {});
+
+var data = {
+    labels : <?php echo json_encode($date); ?>,
+    datasets : [{
+        fillColor : "rgba(151,187,205,0.5)",
+        strokeColor : "rgba(151,187,205,1)",
+        pointColor : "rgba(151,187,205,1)",
+        pointStrokeColor : "#fff",
+        data : <?php echo json_encode($total); ?>
+    }]
+}
+var ctx = document.getElementById("total").getContext("2d");
+new Chart(ctx).Line(data, {});
+</script>
+
+<include file="Public:footer" />

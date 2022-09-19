@@ -1,0 +1,100 @@
+﻿{include file="web/views/v2/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/duotou/p-finplan-lists.css');?>" />
+<script src="<?php echo $this->asset->makeUrl('v2/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+<div class="p_finplan_lists">
+    <section class="main">
+        <div class="ui_product_tab box mb30">
+            <div class="product_type">
+                <div class="fl title"><i class="icon_line mr15"></i>智多鑫</div>
+            </div>
+            <div class="tabbd">
+                <div class="con">
+                    <div class="conbd">
+                        <!-- 循环 -->
+                        {if $project_list}
+                        {foreach from=$project_list item="project" key=key}
+                        <div class="p2p_product p5">
+                            <div class="clearfix bg_whtie">
+                                <div class="con_l">
+                                    <h3 class="f16">
+                                            <a title="{$project.name}" alt="{$project.name}"  href="/finplan/{$project.id}" target="_blank" >{function name="msubstr" v=$project.name f=0 l=20}</a>
+                                        <!--{if isset($project.tagBeforeName) && $project.tagBeforeName != ''}-->
+                                            <!--<i class="deal_tips bg_blue" title="{$project.tagBeforeDesc}">{function name="msubstr" v=$project.tagBeforeName f=0 l=10}</i>-->
+                                        <!--{/if}-->
+                                        <!--{if isset($project.tagAfterName) && $project.tagAfterName != ''}-->
+                                            <!--<i class="deal_tips bg_blue" title="{$project.tagAfterDesc}">{function name="msubstr" v=$project.tagAfterName f=0 l=10}</i>-->
+                                        <!--{/if}-->
+                                    </h3>
+                                    <div class="fl w345">
+                                        <p><span>年化收益率：</span>
+                                            <span class="f20"><i> {function name="number_format" v=$project.projectInfo.rateYear f=2}</i>&nbsp;%</span>
+                                        <p>
+                                            <span>起投金额：</span> {$project.projectInfo.minLoanMoney}元
+
+                                        </p>
+                                    </div>
+                                    <div class="fl w265 progress_rate" total="1000" has="111.0000">
+                                    <p><span>计息方式：</span>
+                                        <em>按日计息</em></p>
+                                    <p><span>收益方式：</span>一次性还本，按月付息</p>
+                                    </div>
+                                    <div class="fl w280 progress_rate" total="{$project.borrow_amount}" has="{$project.load_money}">
+                                        <p>
+                                            <span>管理费：</span>
+                                            {if $project.projectInfo.feeDays gt 0 && $project.projectInfo.feeRate gt 0}年化{function name="number_format" v="$project.projectInfo.feeRate" f="2"}%（持有满{$project.projectInfo.feeDays}天免费）{else}免费{/if}
+                                            <ins class="f12 pl5"></ins>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="product_btn">
+                                    {if $project.isFull}
+                                        <span class="btn_manbiao">投资</span>
+                                    {else}
+                                        <a href="/finplan/{$project.id}" class="btn_touzi">投资</a>
+                                    {/if}
+
+                                </div>
+                            </div>
+                        </div>
+                        {/foreach}
+                        <!-- //循环 -->
+                    </div>
+                    <div id="pagination" class="pagination">
+                        {$pagination}
+                    </div>
+                    {else}
+                       <div class="main">
+                           <div class="empty-box"><i></i>暂无可投项目</div>
+                       </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/js/widget/paginate/paginate.v1.css');?>">
+    </section>
+</div>
+<script type="text/javascript">
+;
+(function() {
+    //项目进度
+    progress_rate($('.progress_rate'));
+    function progress_rate(ele) {
+        ele.each(function(i, el) {
+            var ele = $(el);
+            var total = ele.attr('total');
+            var has = ele.attr('has');
+            var REG = /^[\d\.]+$/;
+            var percent = 0;
+            if (!(REG.test(total) && REG.test(has))) {
+                return;
+            }
+            total = Math.floor(total.replace(/\..*/, ''));
+            has = Math.floor(has.replace(/\..*/, ''));
+            percent = (Math.floor((has / total) * 10000) / 100).toFixed(2) + "%";
+            ele.find('.ico_yitou').css("width", percent);
+            ele.find('.pl5').html(percent);
+        });
+    }
+})('投资理财页面');
+</script>
+{include file="web/views/v2/footer.html"}

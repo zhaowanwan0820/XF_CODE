@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>可取消项目</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <!--public js&css start-->
+  <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+  <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+  <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/p_cancel_loadlist.css');?>" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="p_cancel_loadlist">
+    {if $list.data.errCode eq -1}
+    <div class="no_coupon">
+      <p>已超过操作时间，您已无法取消。</p>
+    </div>
+    {else} 
+      {if !$list.data.data }
+      <div class="no_coupon">
+        <p>当前无可取消项目</p>
+      </div>
+      {else}
+      <div class="list_description">
+        您今天的待匹配本金存在于以下几笔中，您可以通过点击取消按钮来取消该部分本金的匹配。
+      </div>
+      <div class="load_box">
+        {foreach from=$list.data.data item="actitem" key="k"}
+        <div class="zdx_list">
+          <div class="zdx_top">
+            {$actitem.money}元 {if ($actitem.status eq 0 || $actitem.status eq 1) }
+            <span class="fr common_st djx">申请中</span>
+            {elseif ($actitem.status eq 2) }
+            <span class="fr common_st jxz">持有中</span>
+            {/if}
+          </div>
+          <div class="zdx_tips">
+            {if $actitem.activityId gt 0 }
+            <span>{$actitem.activityInfo.name} | </span>
+            {/if}
+            <span class="qxdate">{$actitem.repayStartTime}起算</span>
+          </div>
+          <div class="zdx_middle">
+            <div class="zdx_middle_left">
+              <div class="describe">加入天数(天)</div>
+              <div class="describe_val">{$actitem.ownDay}</div>
+            </div>
+            <div class="zdx_middle_right">
+              <div class="describe">{$actitem.hasRepayInterestTag}</div>
+              <div class="describe_val gray">{$actitem.hasRepayInterest}</div>
+            </div>
+          </div>
+          <a href="javascript:void(0)" data-cancelinfo='{"cancelType":"{$actitem.cancelType}","cancelLoanId":"{$actitem.id}","money":"{$actitem.money}","manageFee":"{$actitem.fee}","norepayInterest":"{$actitem.norepayInterest}"}'
+            class="cancel_invest color_blue JS_cancel_invest">取消</a>
+        </div>
+        {/foreach}
+      </div>
+      {/if} 
+    {/if}
+  </div>
+  <!-- 取消投资弹窗-->
+  <div class="ui_popup ui_pop_disclosure" id="JS_cancel_invest_popup" style="display:none;">
+    <div class="popup_bg"></div>
+    <div class="popup_box">
+      <div class="popup_head">取消</div>
+      <div class="popup_content" id="JS_tips_text">
+        <div class="color_gray f15 tc" id="cancel_cont_01">确认取消后，您该笔的本金将自动返回到您的账户余额中。</div>
+        <div class="color_gray f15 tc" id="cancel_cont_02" style="display:none;">确认取消后，您该笔的待匹配本金系统今天将不会为其匹配</div>
+        <!-- 转让 -->
+        <div  id="cancel_cont_03" style="display:none;">
+          <div class="shui_data">
+            <div class="color_gray f12 tc mb8">您申请的取消系统将自动为您发起转让/退出</div>
+            <ul class="shui_list">
+              <li>
+                <span class="color_gray">待转让/退出本金</span>
+                <span class="j_bjin tr"></span>
+              </li>
+              <li>
+                <span class="color_gray">管理服务费</span>
+                <span class="j_fwf tr"></span>
+              </li>
+            </ul>
+            <div class="info f12 color_gray lh_150 tr">
+              待结利息将按加入资产还款日发放
+              <br/>到您的账户中
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="popup_btn">
+        <a class="btn_cancel JS_cancel" href="javascript:void(0);">取消</a>
+        <a class="btn_ok JS_ok" href="javascript:void(0);">确认</a>
+      </div>
+    </div>
+  </div>
+  <!--public js-->
+  <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeAppUrl('js/common/common.js');?>"></script>
+  <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/lib/artTemplate/template-native-debug.js');?>"></script>
+  <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/cancel_loadlist.js');?>"></script>
+  <script>
+    var token = '{$token}';
+  </script>
+</body>
+
+</html>

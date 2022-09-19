@@ -1,0 +1,300 @@
+<div class='p_account_coupon'>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/vendor/ZeroClipboard.min.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v1/css/yaoqingma.css');?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v1/js/widget/paginate/paginate.v1.css');?>" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user_v2.css');?>" />
+    <!-- 分享链接样式，后期合并 -->
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user_share.css');?>" />
+    <!-- 分页 -->
+    <script src="<?php echo $this->asset->makeUrl('v1/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+    <!-- 查询 -->
+    <script src="<?php echo $this->asset->makeUrl('v1/js/common/jquery_placeholder-1.0.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v1/js/account/account_coupon.js');?>"></script>
+    <div class="user_right_box mb10">
+        {if $is_not_code}
+        <div class="user_title">
+            <h1><i class="ico_yaoqing"></i>邀请好友</h1></div>
+        <div class="user-nocont">
+            <div class="f14 color-gray tc">完成 <a href="/account/addbank" class="color-blue f18">身份认证</a>，即可获得专属邀请码，享邀请返利！</div>
+        </div>
+        {else}
+        <div class="user_title">
+            <h1><span class="f14 pr15 fr"><adv adv_id="邀请好友配置链接_2015"/></span><i class="ico_yaoqing"></i>邀请好友</h1></div>
+        <div class="user-cont">
+            <div class="myinvite clearfix">
+                <div class="inv-left"><span class="icon-user {if $user_sex eq 1}tx-male{else}tx-female{/if}"></span></div>
+                <div class="inv-right">
+                    {foreach from=$coupons name='coupons' key='key' item='coupon'}
+                    <div class="mb15">
+                        <div class="f18 mb5">邀请码：<span class="gray">{$coupon.short_alias}</span> </div>
+                        <div class="color-gray f14">好友每次投资，您都将获得 <span class="color-red2">{$coupon.referer_rebate_ratio}%（年利率）</span>邀请返利！ {if $smarty.foreach.coupons.index == 0}<a href="javascript:void(0)" class="blue tx-dec" id="js_flsm">返利说明</a>{/if}</div>
+                    </div>
+                    {/foreach}
+                    <div class="f16">
+                        <div class="mr30 fl">
+                            已邀请: <span class="color-red2">{$totalInviteNumber}</span> 人</div>
+                        <div class="mr30 fl">
+                            已获返利: <span class="color-red2">{function name="number_format" v=$rotalRefererRebateAmount.referer_rebate_amount f="2"}</span> 元
+                        </div>
+                        <div class="fl">
+                            待获返利: <span class="color-red2">{function name="number_format" v=$rotalRefererRebateAmount.referer_rebate_amount_no f="2"}</span> 元
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inv-way mt25">
+                <div class="tit f16"><!--邀请方式{if $gameadvlist neq "null"}一{/if}：分享邀请链接--><adv adv_id="PC我的邀请码标题"/></div>
+                <div class="con">
+                    <p>
+                    {if $showcashbonus eq 1}
+                    <adv adv_id="PC我的邀请码说明"/>
+                    {else}
+                    <adv adv_id="PC我的邀请码说明_非红包"/>
+                    <!--将带有邀请码的注册链接发送给好友 ，好友完成注册且投资，您将获得返利。-->
+                    {/if}
+                    </p>
+                    <div class="inv-url">
+                        <span id="clipTar01">{$share_url}</span>
+                        <a class="copy-link" href="javascript:void(0)" data-clipboard-target="clipTar01">复制链接</a>
+                    </div>
+                    <div class="jthis clearfix" id="jiaThisShareBox1" data-share-data='{"url":"{$share_url}","summary":"{$share_msg}"}'>
+                        <div class="fl">分享到：</div>
+                        <div class="jiathis_style_32x32 clearfix fl">
+                            <a class="jiathis_button_weixin"></a>
+                            <a class="jiathis_button_tsina"></a>
+                            <a class="jiathis_button_qzone"></a>
+                            <a class="jiathis_button_renren"></a>
+                            <a class="jiathis_button_tqq"></a>
+                            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inv-way" id="gameShareWrap">
+                <div class="tit f16" id="gameShareTitle"></div>
+                <div class="con" id="way2-con">
+                    <p id="gameShareDes">
+                    </p>
+                    <script type="text/javascript">
+                    var gameAdJson = {$gameadvlist};
+                    var showBonusLink = {if $showcashbonus eq 1}1{else}0{/if};//1 的时候表示符合新手礼包邀请条件， 0 不符合， 读取主域名
+                    </script>
+                    <ul class="game-list clearfix" id="game-list">
+                        <!--<li data-share-data='{
+                                "url":"http://www.firstp2p.com/hongbao/CashGet?cn=F00F3F",
+                                "title":"01金秋转盘送礼包，最高30元",
+                                "des":"01每位用户有3次抽奖机会，分享到朋友圈可再获3次抽奖机会，多次抽奖获得的红包金额可累加。",
+                                "wximgSrc":"<?php echo $this->asset->makeUrl("v1/images/user/qrcode.png");?>",
+                                "summary":"这是第一个游戏的summary"
+                            }'>
+                            <img src="<?php echo $this->asset->makeUrl('v1/images/user/youxi_01.png');?>" alt="" width="72" height="74">
+                            <span>金秋转盘送礼包，最高30元</span>
+                        </li>-->
+                    </ul>
+                    <div class="inv-moreBox"><a href="javascript:;" class="inv-more">展开更多</a></div>
+                </div>
+            </div>
+        </div>
+        {/if}
+    </div>
+    <div class="user_right_box mb10">
+        <div class="user_title">
+            <h1 class="fl"><i></i>返利记录</h1>
+            <div class="fg_line"></div>
+            <ul class="huank_nav fl" id="tabs">
+                <li class="select"><a href="javascript:void(0)" data-tab="p2p">网贷理财</a></li>
+                <li><a href="javascript:void(0)" data-tab="duotou">智多鑫</a></li>
+            </ul>
+        </div>
+        <div class="no_record"  id="no_record01" style="display:none"><i></i><span>暂无记录</span></div>
+        <div id="user_cont01">
+        <!-- 查询 -->
+        <div class="invite_search">
+            <form id="ss_form" method="post" action="javascript:void(0)" onsubmit="return false;">
+                <div class="clearfix">
+                    <input name="content" type="text" class="ipt_txt int_placeholder" id="ipt_txt" placeholder="手机号/姓名" data-placeholder="手机号/姓名" value="{$content}">
+                    <input type="submit" id="ss_btn" class="btn_red_h36" data-lock="0" value="查询">
+                    <div class="ss_error color-red" style="display:none">手机号/姓名格式不正确！</div>
+                </div>
+            </form>
+        </div>
+        <div class="ss_result f14" id="ss_result"></div>
+        <script id="ss_data" type="text/html">
+        您已邀请好友投资<% if (type == 'p2p') { %>网贷理财<% } else if (type == 'duotou') { %>智多鑫<% } %><%=count%>次，已获返利<span class="color-red2" id="yh_fl"><% if (data.referer_rebate_result_amount) { %><%=data.referer_rebate_result_amount%><% }else { %> 0<% } %></span>元 ， 待获返利 <span class="df_money" id="dh_fl"><% if (data.referer_rebate_result_amount_no) { %><%=data.referer_rebate_result_amount_no%><% }else { %> 0<% } %></span>元
+        </script>
+        <!-- //查询 -->
+        <table  cellpadding="0" cellspacing="0" border="0" class="yqjilu">
+            <colgroup>
+                <col width="140">
+                <col width="153">
+                <col width="153">
+                <col width="145">
+                <col width="268">
+            </colgroup>
+            <thead>
+                <tr>
+                   <td>状态</td>
+                   <td><div class="tc">返利时间</div></td>
+                     <td>
+                        <div class="tc">投资时间</div>
+                    </td>
+                    <td>
+                        <div class="tc">好友名</div>
+                    </td>
+                    <td>
+                        <div class="tc">备注</div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody id="tabs_content01"></tbody>
+            <script id="invest_data" type="text/html">
+            <% if (data.list.length > 0) { %>
+                <% for (var i = 0; i < data.list.length; i++) { %>
+                    <% if(i % 2 != 0) {%>
+                    <tr class="tr_bg">
+                    <% }else{ %>
+                    <tr>
+                    <% } %>
+                        <td>
+                            <div class="pt10">
+                                <% if(data.list[i].deal_type != 1){ %>
+                                <%=# data.list[i].pay_status_text %>
+                                    <% if(data.list[i].pay_status_text == "已返"){ %>
+                                    <span class="color-red2"><%=# data.list[i].pay_money %></span> 元
+                                    <% } else { %>
+                                    <%=# data.list[i].pay_money %> 元
+                                    <% } %>
+                                <% }else{ %>
+                                <%  if(data.list[i].pay_status != 5 && data.list[i].pay_status != 2 && data.list[i].pay_status != 1){ %>
+                                <%=# data.list[i].pay_status_text   %>
+                                <% }else{ %>
+                                    已返 <span class="color-red2"><%=# data.list[i].count_pay %></span> 次 <br/> 共 <span class="color-red2"><% if(!!data.list[i].pay_money){ %><%=# data.list[i].pay_money %>
+                                    <% } else { %>0<% } %></span> 元<% } %>
+                                <% } %>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pt10 pl15 pr15 tc">
+                                <% if(!!data.list[i].pay_time){ %>
+                                <%=# data.list[i].pay_time %>
+                                <% } else { %>
+                                    --
+                                <% } %>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pt10 pl15 pr15 tc">
+                                <%=# data.list[i].create_time %>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tc pt10">
+                                <%= data.list[i].consume_real_name %>
+                                    <br/>
+                                    <%= data.list[i].mobile %>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pl30 pr10 pt10">
+                                <%= data.list[i].note %>
+                            </div>
+                        </td>
+                    </tr>
+                    {if $is_special}
+                        <% if (!!data.list[i].log_info) { %>
+                            <% if(i % 2 != 0) { %>
+                            <tr class="tr_bg">
+                            <% }else{ %>
+                            <tr>
+                            <% } %>
+                                <td colspan="6" style="text-align: left; color:#be995f">
+                                    <div class="pb10">
+                                        <%= data.list[i].log_info %>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% } %>
+                    {/if}
+                <% } %>
+            <% } %>
+            </script>
+        </table>
+        <div id="pagination_00" class="pagination"></div>
+        <div class="clr"></div>
+        </div>
+    </div>
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1 class="fl"><i></i>好友列表<span class="f14 ml20">（注：仅显示使用您邀请码注册的好友）</span></h1>
+        </div>
+        <div class="no_record" id="no_record02" style="display:none"><i></i><span>暂无记录</span></div>
+    <div id="user_cont02">
+        <table  cellpadding="0" cellspacing="0" border="0" class="yqjilu">
+            <colgroup>
+                <col width="220">
+                <col width="472">
+                <col width="170">
+            </colgroup>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="tl pl5">好友名</div>
+                    </td>
+                    <td>
+                        <div class="tc">注册时间</div>
+                    </td>
+                    <td><div class="tc">状态</div></td>
+                </tr>
+            </thead>
+            <tbody id="tabs_content02"></tbody>
+            <script id="reg_data" type="text/html">
+            <% if (data.list.length > 0) { %>
+                <% for (var i = 0; i < data.list.length; i++) { %>
+                    <tr>
+                    <td><div class="tl pt10 pb10 pl5"><%= data.list[i].consume_real_name %> <% if (data.list[i].consume_real_name){ %> ( <% } %> <%= data.list[i].mobile %><% if (data.list[i].consume_real_name){ %> ) <% } %></div></td>
+                    <td><div class="pt10 pb10 tc"><%=# data.list[i].create_time %> </div></td>
+                    <td><div class="pt10 pb10 tc"><%= data.list[i].pay_status_text %> </div></td>
+                    </tr>
+                <% } %>
+            <% } %>
+            </script>
+
+        </table>
+        <div id="pagination_01" class="pagination"></div>
+    </div>
+    </div>
+    <div class="f14 jsq">北京东方联合投资管理有限公司保留对本活动的最终解释权。</div>
+</div>
+<!-- 游戏分享弹窗 -->
+<div class="gshare-list" style="display:none;">
+</div>
+<div class="con" id="gamePopCon" style="display: none;">
+    <p class="des"></p>
+    <div class="inv-url">
+        <!--<span class="link" id="clipTar02">{{popUrl}}</span>-->
+        <input class="inv-url-input" id="clipTar02" value="" style="ime-mode:disabled" />
+        <a class="game_share" href="javascript:void(0)" data-clipboard-target="clipTar02">复制链接<div class="game-err" style="display:none;">邀请链接已复制到剪切板</div></a>
+    </div>
+    <div class="mt15 clearfix">
+        <div class="gm-share fl">
+            <img src="{{popWxImg}}" alt="" width="105" height="105" class="img">
+            <span>扫一扫 分享到微信</span>
+        </div>
+        <div class="jthis fl">
+            <div style="line-height: 36px;">更多分享到：</div>
+            <div class="jiathis_style_32x32 clearfix fl">
+                <a class="jiathis_button_tsina"></a>
+                <a class="jiathis_button_qzone"></a>
+                <a class="jiathis_button_renren"></a>
+                <a class="jiathis_button_tqq"></a>
+                <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+            </div>
+            <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+        </div>
+    </div>
+</div>
+<!-- 我的邀请码示例_2015 HTMl代码  -->
+<script type="text/template" id="js_flsm_tel">
+    <adv adv_id="我的邀请码示例_new_2015" />
+</script>

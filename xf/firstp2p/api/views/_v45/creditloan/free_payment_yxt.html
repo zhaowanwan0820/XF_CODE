@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/virtual.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.5/css/open_free.css?');?>" />
+</head>
+<body>
+    <div class="open_free">
+    <input type="hidden" id="token" value="{$token}">
+        <img src="<?php echo $this->asset->makeAppUrl('v4.5/images/free_img1.png');?>" alt="" class="free_img1">
+        <div class="free_title">开通《免密银信通还款》</div>
+        <div class="free_text">
+            <p>该授权用于当您使用银信通借款业务，回款资金从您的网络借贷存管系统账户划转至收费方账户及您的银信通还款专用银行账户时，无需输入交易密码，否则将无法使用银信通借款业务。</p>
+        </div>
+    </div>
+    <div class="free_btn">
+        <a class="btn JS_is_freepayment_btn" href="">开通</a>
+    </div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/zepto.js');?>" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function(){
+        $(".JS_is_freepayment_btn").attr("href",'storemanager://api?type=webview&gobackrefresh=true&url=' + encodeURIComponent(location.origin + "/payment/transit?params=" + encodeURIComponent('{"return_url":"storemanager://api?type=closecgpages","srv":"freePaymentYxt"}')));
+    })
+</script>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>注册 - 网信理财</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="{$TMPL_NEW}/css/oauth/style.css">
+  <link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico">
+  <script src="{$TMPL_NEW}/js/common/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+  <div id="header">
+    <div id="header-logo">
+      <a href="http://www.firstp2p.com" title="网信理财">
+        <img src="/static/v1/images/oauth/logo_wx.png" alt="网信理财">
+      </a>
+    </div>
+  </div>
+  <div id="reg-panel-container" class="clearfix">
+    <div id="reg-panel">
+      <h1>注册会员</h1>
+      <form id="register-form" action="" method="post">
+        <input type="hidden" name="action" value="add" />
+        <table id="register-form-table">
+          <tbody>
+            <tr id="error-row">
+              <th>&nbsp;</th>
+              <td>{$msg}</td>
+            </tr>
+            <tr>
+              <th><label for="input-username">用户名：</label></th>
+              <td><input data-label="用户名" type="text" class="text" id="input-username" name="user_login_name" value=""></td>
+            </tr>
+            <tr>
+              <th><label for="input-email">邮箱地址：</label></th>
+              <td><input data-label="邮箱地址" type="text" class="text" id="input-email" name="user_email" value=""></td>
+            </tr>
+            <tr>
+              <th><label for="input-mobile">手机号：</label></th>
+              <td><input data-label="手机号" type="text" class="text input-short" id="input-mobile" name="user_name" value="">
+                <input type="button" id="action-send-code" class="btn" value="获取手机验证码"></td>
+            </tr>
+            <tr>
+              <th><label for="input-code">手机验证码：</label></th>
+              <td><input data-label="手机验证码" type="text" class="text" id="input-code" name="vcode" value="" ></td>
+            </tr>
+            <tr>
+              <th><label for="input-password">登录密码：</label></th>
+              <td><input data-label="登录密码" type="password" class="text" id="input-password" name="password" ></td>
+            </tr>
+            <tr>
+              <th><label for="input-retype">确认密码：</label></th>
+              <td><input data-label="确认密码" type="password" class="text" id="input-retype" name="confirm_password"></td>
+            </tr>
+            <tr id="form-agreement-row">
+              <th></th>
+              <td>
+                <label><input type="checkbox" name="agreement" value="1" checked> 同意 <a href="http://www.firstp2p.com/register_terms.html" target="_blank">注册协议</a>
+              </td>
+            </tr>
+            <tr id="form-action-row">
+              <th></th>
+              <td>
+                <table>
+                  <tr>
+                    <td class="first-column">
+                      <input type="submit" class="submit" value="">
+                    </td>
+                    <td class="second-column">
+                      <a href="/user-login">登录</a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </div>
+  <script>
+  (function($){
+    $(function() {
+      var emailRegEx = /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/
+        , mobileRegEx = /^0?(13[0-9]|15[0-9]|18[0-9]|14[57])[0-9]{8}$/,userNameRegEx=/^\w+$/,numRegEx=/^[_\d]+$/;
+      var errorSpan = $('#error-row td')
+      $('#register-form').submit(function(ev) {
+        var hasError = false;
+        $('#register-form input.text').each(function() {
+          if (!hasError && $(this).val() == '') {
+            errorSpan.html($(this).attr('data-label') + '不能为空');
+            hasError = true;
+          }
+        });
+		var userName=$('#input-username').val();
+        if (!hasError) {
+          if(userName.length < 4 || userName.length > 16){
+			errorSpan.html('用户名长度必须为4-16个字符');
+            hasError = true;
+          }else if(! userNameRegEx.test(userName)){
+			errorSpan.html('用户名不能为特殊字符');
+            hasError = true;
+          }else if( numRegEx.test(userName)){
+			errorSpan.html('不能只有数字或下划线');
+            hasError = true;
+          }else if (!emailRegEx.test($('#input-email').val())) {
+            errorSpan.html('邮箱格式不正确');
+            hasError = true;
+          } else if (!mobileRegEx.test($('#input-mobile').val())) {
+            errorSpan.html('手机号格式不正确');
+            hasError = true;
+          } else if ($('#input-password').val() != $('#input-retype').val()) {
+            errorSpan.html('两次输入的密码不一致');
+            hasError = true;
+          } else if (!$('#form-agreement-row input').is(':checked')) {
+            errorSpan.html('不同意注册协议无法完成注册');
+            hasError = true;
+          }
+        }
+        if (hasError) {
+          ev.preventDefault();
+          return false;
+        }
+        return true;
+      });
+
+      $('#action-send-code').click(function(ev) {
+        var phone = $("#input-mobile") .val();
+        var mobileRegEx = /^0?(13[0-9]|15[0-9]|18[0-9]|14[57])[0-9]{8}$/;
+        var errorSpan = $('#error-row td');
+        var button = $(this);
+        
+        errorSpan.html('');
+        if (!mobileRegEx.test(phone))
+        {
+          errorSpan.html('手机号格式不正确');
+          return false;
+        }
+
+        button.attr('disabled', 'disabled');
+        function updateTimeLabel(duration) {
+          var timeRemained = duration;
+          var timer = setInterval(function() {
+            button.val(timeRemained + '秒后重新发送').attr('disabled', 'disabled');
+            timeRemained -= 1;
+            if (timeRemained == -1) {
+              clearInterval(timer);
+              button.val('获取手机验证码').removeAttr('disabled');
+            }
+          }, 1000);
+        }
+            
+        $.ajax({
+          type: "get",
+          url: 'first_register.php?action=sendCode&ajax=1&phone=' + phone,
+          async: false,
+          success: function(data) {
+            if (data == 1) {
+              updateTimeLabel(180, 'action-send-code');
+              return;
+            } else if (data == 2) {
+              alert("验证短信发送失败请重新发送");
+            } else if (data == 3) {
+              alert("手机号格式有误");
+            } else if (data == 4) {
+              alert("手机已被使用，可直接用金融工场账号登录");
+            } else if (data == 5) {
+              alert("您获取验证码过于频繁，请稍后再进行获取");
+            } else if (data == 6) {
+              alert("一天最多可以获取10次验证码");
+            }
+            button.removeAttr('disabled');
+          }
+        });
+      });
+    })
+  })(jQuery);
+  
+  </script>
+  <!--FOOTER|START-->
+  <div class="footer">
+    <p>电话：400-890-9888 周一至周六 9:00-18:00 京ICP证130046号
+      <br> 北京东方联合投资管理有限公司
+      <br>© 2013 网信理财 All rights reserved
+  </div>
+  <!--FOOTER|END-->
+
+<!--{if (preg_match('/^(oauth\.)?9888\.(cn)$/',$_SERVER['HTTP_HOST']))}-->
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-43032470-1', 'firstp2p.com');
+	ga('send', 'pageview',
+	{ 'page':'/register', 'title':'Register' }
+	);
+</script>
+
+<!--请将js代码嵌入到html中body标签结束之前。（整个body部分最后边）-->
+<script type='text/javascript'>
+var _agt=_agt||[];
+_agt.push(['_atscu','AG_707063_AUFB']);
+_agt.push(['_atsdomain','firstp2p.com']);/*请将$网站主域$替换为您嵌入代码的真实主域，例如：agrantsem.com*/
+(function(){
+var ag=document.createElement('script'); 
+ ag.type='text/javascript'; 
+ ag.async = true;
+ag.src=(document.location.protocol=='https:'?'https':'http')+'://'+'t.agrantsem.com/js/ag.js';
+var s=document.getElementsByTagName('script')[0]; 
+ s.parentNode.insertBefore(ag,s);})();
+</script>
+
+<!--{/if}-->
+</body>
+</html>

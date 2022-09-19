@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="format-detection" content="telephone=no" />
+        <title>选择好友</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-common.css');?>">
+        <link href="<?php echo $this->asset->makeAppUrl('v3.3/css/discount/p_discount_friend.css');?>" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="p_discount_friend">
+                <input type="hidden" id="discountId" value="{$discountId}">
+                <div class="box"> 
+                </div>
+                <div class="load_more tb0-more"></div>
+                <div class="ui_mask" id="ui_mask_id" style="display:none"></div>
+                <div class="confirm_pop JS_confirm_pop" style="display:none">
+                    <div class="confirm_pop_con">
+                        <h2>确定赠送给</h2>
+                        <p>高田 1508***5123</p>
+                    </div>
+                    <div class="btn">
+                        <a href="javascript:void(0)" class="JS_cancel">取消</a>
+                        <a href="javascript:void(0)" class="JS_confirm">确定</a>
+                    </div>
+                </div>   
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.4/js/common.js');?>"></script>
+        <script>
+            var discount_id = $('#discountId').val(); 
+            $(function(){
+                $('.p_discount_friend .box').on("click" , '.JS_item' , function(){
+                    $('#ui_mask_id ,.JS_confirm_pop').show();
+                    var friend_name = $(this).find('h2').html();
+                    $('.JS_confirm_pop .confirm_pop_con p').html(friend_name);
+                    $('.JS_confirm').attr({
+                        "data-id":$(this).find('.userID').html(),
+                        "data-sign":$(this).find('.sign').html()
+                    });
+                });
+                
+                $('.JS_confirm').on('click', function() {
+                    var userId = $(this).attr('data-id');
+                    var sign = $(this).attr('data-sign');
+                    $('.JS_confirm_pop').hide();
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: "/discount/AjaxGive?token={$usertoken}&discount_id="+ discount_id + '&to_user_id=' + userId + '&discount_sign=' + sign ,
+                        success: function(json){
+                            if(json.errno==0){
+                                WXP2P.UI.showErrorTip('<span class="give_suc_icon"></span><p>赠送成功</p>');
+                                setTimeout(function(){
+                                    $('#ui_mask_id').hide();
+                                    location.href = "/discount/mine?token={$usertoken}";
+                                },2500);    
+                            }else{
+                                setTimeout(function(){
+                                    $('#ui_mask_id').hide();
+                                },2500); 
+                                WXP2P.UI.showErrorTip(json.error);
+                            }
+                        }
+                    });
+                });
+                $('.JS_cancel').on("click" , function(){
+                    $('#ui_mask_id ,.JS_confirm_pop').hide();
+                });
+            });
+            var rawFirstPageData = {function name="json_encode" v="$friendList"};
+            // (function ($) {
+            var loadmore = new WXP2P.UI.P2PLoadMore($(".p_discount_friend .box")[0], $('.p_discount_friend .tb0-more')[0], '/discount/AjaxFriendList?token={$usertoken}&discount_id='+ discount_id , 1, 'get', 10);
+
+            loadmore.createItem = function(item){
+                var dl = document.createElement("div");
+                var html = "";
+                html += '<div class="userID" style="display:none">'+ item.user_id +'</div>'
+                html += '<div class="sign" style="display:none">'+ item.sign +'</div>'
+                html += '<h2>' + item.real_name + item.mobile + '</h2>';
+                html += '<p>注册时间：' + item.create_time + '</p>';
+                dl.innerHTML = html;
+                dl.className="item JS_item";
+                return dl;
+            };
+            var rpcResult = {};
+            rpcResult.data = rawFirstPageData;
+            loadmore.processData = function(rpcResult) {
+                WXP2P.UI.P2PLoadMore.prototype.processData.call(this, rpcResult);
+            };
+            {if $friendListNum > 0 }
+            loadmore.processData(rpcResult);
+            {else}
+            $(".box").html('<div class="no_friend"><h2>您还没有邀请过好友</h2></div>');
+            {/if}              
+            // })(Zepto);
+        </script>
+    </body>
+</html>

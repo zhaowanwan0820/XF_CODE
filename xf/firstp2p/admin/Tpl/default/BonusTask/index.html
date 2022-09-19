@@ -1,0 +1,192 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+
+    <div class="main_title">红包任务查询</div>
+    <div class="blank5"></div>
+    <div class="search_row" style="background:none;color:black;">
+        <form name="search" action="__APP__" method="get">
+            规则名称: <input type="text" name="rule_name" value="{:trim($_REQUEST['rule_name'])}"/> &nbsp;
+
+            审核状态: <select name="audit_status" style="padding:2px 5px;">
+                        <foreach name="all_audit_status" item="type" key="key">
+                           <option value="{$key}" <if condition="intval($_REQUEST['audit_status']) eq $key">selected="selected"</if>>{$type}</option>
+                        </foreach>
+                      </select> &nbsp;
+
+            发送时间段: <input type="text" class="textbox" name="range_start" id="range_start" value="{:trim($_REQUEST['range_start'])}"
+                              onfocus="return showCalendar('range_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_range_start');" style="width:120px;height:10px;" />
+            <input type="button" class="button" id="btn_range_start" value="选择" onclick="return showCalendar('range_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_range_start');" />
+            -
+            <input type="text" class="textbox" name="range_end" id="range_end" value="{:trim($_REQUEST['range_end'])}"
+                              onfocus="return showCalendar('range_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_range_end');" style="width:120px;height:10px;" />
+            <input type="button" class="button" id="btn_range_end" value="选择" onclick="return showCalendar('range_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_range_end');" />
+            <if condition="$role neq 'b'">
+            &nbsp;
+            操作人: <input type="text" name="submit_name" value="{:trim($_REQUEST['submit_name'])}"/> &nbsp;
+            审核人: <input type="text" name="audit_name" value="{:trim($_REQUEST['audit_name'])}"/> &nbsp;
+            </if>
+
+            <input type="hidden" value="{$role}"  name="role" />
+            <input type="hidden" value="BonusTask" name="m" />
+            <input type="hidden" value="index" name="a" /> &nbsp;
+            <input type="hidden" name="discount" value="{$discount}" /> &nbsp;
+            <input type="submit" class="button" value="{%SEARCH}"/>
+            <input type="button" class="button" value="导出" onclick="exportCSV()" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <div class="main_title">批量发送规则</div>
+    <div class="blank5"></div>
+    <if condition="$role eq a">
+    <div class="button_row">
+    <if condition="$discount eq 1">
+        <input type="button" class="button" value="{%ADD}" onclick="javascript:window.location.href='./m.php?m=BonusTask&a=add&discount=1'"/>
+    <else/>
+        <input type="button" class="button" value="{%ADD}" onclick="add();"/>
+        <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel(false, 'physicsDelete');" />
+    </if>
+    </div>
+    </if>
+    <div class="blank5"></div>
+
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <if condition="$role eq a">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            </if>
+            <th>编号</th>
+            <th>规则名</th>
+            <if condition="$discount neq 1">
+            <th>使用限制</th>
+            <th>红包个数/人次</th>
+            <th>红包金额/个</th>
+            <th>红包来源</th>
+            <th>使用有效期</th>
+            <else/>
+            <th>投资劵组ID</th>
+            </if>
+            <th>是否发送短信</th>
+            <th>发送方式</th>
+            <th>领用人信息</th>
+            <th>发送开始时间</th>
+            <th>规则添加时间</th>
+            <th>有效状态</th>
+            <th>操作人</th>
+            <th>审核人</th>
+            <th>审核状态</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <if condition="$role eq a">
+            <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            </if>
+            <td>{$item.id}</td>
+            <td>{$item.name}</td>
+            <if condition="$discount neq 1">
+            <td>{$item.consume_type}</td>
+            <td>{$item.times}</td>
+            <td>{$item.money}</td>
+            <td>{$item.source}</td>
+            <td>{$item.use_limit_day}</td>
+            <else/>
+            <td>{$item.extra}</td>
+            </if>
+            <td>{$item.is_sms}</td>
+            <td>{$item.send_way}</td>
+            <td>{$item.send_condition}</td>
+            <td>{$item.start_time|to_date}</td>
+            <td>{$item.create_time|to_date}</td>
+            <td><if condition="$item['is_effect'] eq 1">有效<else/>无效</if></td>
+            <td>{$item.submit_name}</td>
+            <td>{$item.audit_name}</td>
+            <td>{$all_audit_status[$task_list[$item['id']]['status']]}</td>
+            <td style="padding-left:10px;">
+                <if condition="$role eq a">
+                    <if condition="ServiceAuditModel::NOT_AUDIT eq $task_list[$item['id']]['status'] || ServiceAuditModel::AUDIT_SUCC eq $task_list[$item['id']]['status']">
+                       <if condition="ServiceAuditModel::AUDIT_SUCC eq $task_list[$item['id']]['status'] && $item['is_effect'] eq 1 && $item.status neq 2 && $item.start_time - $item.get_gmtime gt 0">
+                         <a href="javascript:disable('{$item.id}')">置为无效</a>&nbsp;
+                       <else />
+                            &nbsp;&nbsp;&nbsp;
+                       </if>
+                    <else />
+                        <a href="javascript:edit_bonus_task('{$item.id}', '{$role}', '{$item.type}')">编辑</a>&nbsp;
+                    </if>
+                    <if condition="$discount neq 1">
+                    <a href='/m.php?m=BonusTask&a=mobile_csv&id={$item.id}'>导出手机号</a>&nbsp;
+                    </if>
+                <else />
+                     <if condition="ServiceAuditModel::NOT_AUDIT eq $task_list[$item['id']]['status']">
+                         <a href="javascript:edit_bonus_task('{$item.id}', '{$role}', '{$item.type}')">审核</a>&nbsp;
+                     </if>
+                </if>
+                <if condition="$item.type eq 3">
+                    <a href="/m.php?m=BonusTask&a=edit&id={$item.id}&role=b&readonly=1&discount=1">查看</a>&nbsp;
+                <else />
+                    <a href="/m.php?m=BonusTask&a=edit&id={$item.id}&role=b&readonly=1">查看</a>&nbsp;
+                </if>
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+/**
+ * CSV导出，构造下载链接
+ */
+function exportCSV()
+{
+    var idBox = $(".key:checked"),
+        id = '',
+        action = $("form [name=a]"),
+        curVal = action.val(),
+        params = '';
+
+    if(idBox.length > 0)
+    {
+        var idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+    }
+    action.val('export_csv');
+    params = $('form').serialize();
+    action.val(curVal);
+    location.href = "/m.php?" + params + '&id=' + id;
+}
+//编辑跳转
+function edit_bonus_task(id, role, type)
+{
+    var url = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=edit&id="+id;
+    if (role) {
+        url = url + '&role=' + role;
+    }
+    if (type == 3) {
+        url = url + '&discount=1';
+    }
+    location.href = url;
+}
+</script>
+<include file="Public:footer" />

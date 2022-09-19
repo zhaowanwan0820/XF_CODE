@@ -1,0 +1,99 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+
+    <div class="main_title">直推任务管理</div>
+    <div class="blank5"></div>
+    <div class="search_row" style="background:none;color:black;">
+        <form name="search" action="__APP__" method="get">
+            券组id: <input type="text" name="couponGroupId" value="{:trim($_REQUEST['couponGroupId'])}"/> &nbsp;
+                    <select name="status" id="status" >
+                        <option value="-1">全部</option>
+                        <foreach name="statusList" key="key" item="item">
+                        <option value="{$key}" <if condition="$_REQUEST['status'] eq $key">selected="selected"</if>>{$item}</option>
+                        </foreach>
+                    </select>
+
+            <input type="hidden" value="{$role}"  name="role" />
+            <input type="hidden" value="O2OCouponResend" name="m" />
+            <input type="hidden" value="manage" name="a" /> &nbsp;
+            <input type="submit" class="button" value="{%SEARCH}"/>
+            <!--<input type="button" class="button" value="导出" onclick="exportCSV()" />-->
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <div class="button_row">
+        <if condition="$role neq 'b'">
+        <input type="button" class="button" value="{%ADD}" onclick="add();"/>
+        </if>
+    </div>
+    <div class="blank5"></div>
+
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>任务ID</th>
+            <th>券组名称</th>
+            <th>券组ID</th>
+            <th width="300">发送用户信息</th>
+            <th width="300">发送失败用户</th>
+            <th>备注</th>
+            <th>创建人</th>
+            <th>创建时间</th>
+            <th>审核人</th>
+            <th>审核时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td style="text-align:center;"><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td style="text-align:center;">{$item.id}</td>
+            <td style="text-align:center;">{$item.coupon_group_name}</td>
+            <td style="text-align:center;">{$item.coupon_group_id}</td>
+            <if condition="$item.type eq '2'" >
+            <td style="text-align:center;"><a href="{$item.user_id_list}">csv文件</a></td>
+            <else/>
+            <td style="text-align:center;table-layout:fixed;word-break:break-all;word-wrap:break-word;">{$item.user_id_list}</td>
+            </if>
+            <td style="text-align:center;table-layout:fixed;word-break:break-all;word-wrap:break-word;">{$item.fail_list}</td>
+            <td style="text-align:center;">{$item.remark}</td>
+            <td style="text-align:center;">{$item.create_user}</td>
+            <td style="text-align:center;">{$item.create_time|format_date}</td>
+            <td style="text-align:center;">{$item.verify_user}</td>
+            <td style="text-align:center;">{$item.verify_time|format_date}</td>
+            <td style="text-align:center;">{$item.status_desc}</td>
+            <if condition="$item.status eq '1'">
+            <td style="padding-left:10px;text-align:center;">
+                <a href="/m.php?m=O2OCouponResend&a=verify&id={$item.id}">审核</a>
+            </td>
+            <else/>
+            <td style="padding-left:10px;text-align:center;">
+                <a href="/m.php?m=O2OCouponResend&a=view&id={$item.id}">查看</a>
+            </td>
+            </if>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

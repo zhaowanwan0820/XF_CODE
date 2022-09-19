@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>网信普惠</title>
+    <link rel="shortcut icon" href="//static.firstp2p.com/upload/img/82/19/82194aa8cf7a82520bf7becb03d2de3d.png" type="image/x-icon"
+    />
+    <!-- 诸葛统计 -->
+    {include file="web/views/v3/zhugemaidian.html"}
+    <!-- 神策统计 -->
+    <script type='text/javascript'>
+        (function(para) {
+          var p = para.sdk_url, n = para.name, w = window, d = document, s = 'script',x = null,y = null;
+          w['sensorsDataAnalytic201505'] = n;
+          w[n] = w[n] || function(a) {return function() {(w[n]._q = w[n]._q || []).push([a, arguments]);}};
+          var ifs = ['track','quick','register','registerPage','registerOnce','trackSignup', 'trackAbtest', 'setProfile','setOnceProfile','appendProfile', 'incrementProfile', 'deleteProfile', 'unsetProfile', 'identify','login','logout','trackLink','clearAllRegister','getAppStatus'];
+          for (var i = 0; i < ifs.length; i++) {
+            w[n][ifs[i]] = w[n].call(null, ifs[i]);
+          }
+          if (!w[n]._t) {
+            x = d.createElement(s), y = d.getElementsByTagName(s)[0];
+            x.async = 1;
+            x.src = p;
+            x.setAttribute('charset','UTF-8');
+            y.parentNode.insertBefore(x, y);
+            w[n].para = para;
+          }
+        })({
+          sdk_url: 'https://static.sensorsdata.cn/sdk/1.9.11/sensorsdata.min.js',
+          heatmap_url: 'https://static.sensorsdata.cn/sdk/1.9.11/heatmap.min.js',
+          name: 'wxsa',
+          web_url: 'https://wangxin.cloud.sensorsdata.cn/?project=production',
+          server_url: 'https://wangxin.cloud.sensorsdata.cn:4006/sa?token=4175318fdc7df657&project=production',
+          heatmap:{},
+          show_log:false
+        });
+        wxsa.registerPage({PlatformType:'web'});
+        wxsa.quick('autoTrack');
+    </script>
+
+    <meta name="keywords" content="网信，第一p2p, p2p，网络借贷，网络贷款，借贷 ，网络平台，民间借贷，小额贷款，无抵押贷款，信用贷款，投资理财，借钱，企业贷款，小企业贷款，个人经营贷款，融资" />
+    <meta name="description" content="网信作为金融科技开放平台，为用户提供一站式综合金融信息服务，为金融机构提供线上用户入口，输出金融科技技术，实现互联网金融服务的共享模式。" />
+    <!-- 压缩输出 -->
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v4/css/all.v1.min.css');?>" />
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/jquery-1.10.2.min.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/tab.v1.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v4/css/p2p_index.css" type="text/css');?>" rel="stylesheet">
+    <style>
+        body{background: none;}
+        .m_header{height: 101px;}
+        .menu_fixed{animation: none}
+    </style>
+    <!--[if lte IE 9]>
+      <script type="text/javascript" src="https://assets.ncfwx.com/201804111503/v1/js/common/html5shiv.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        var USER_INFO = {if !empty($user_info)}1{else}0{/if};
+    </script>
+</head>
+
+<body>
+    <header class="m_header clearfix">
+        <div class="clearfix menu_fixed" style="width:100%;" id="menu_fixed">
+            <div class="w1100" style="position:relative;z-index:4;">
+                <a class="logo new_logo" href="/"></a>
+                <div class="logo_text">网贷有风险，出借需谨慎</div>
+                {if $user_info}
+                <a href="/account" class="none">您好，{if !$isEnterprise}{if empty($user_info.real_name)}{$user_info.user_name}{else}{$user_info.real_name}{/if}{else}{$enterpriseInfo.company_name}{/if}</a>
+                {else}
+                <div class="my_unreg">
+                    <a href="/user/login" class="login_btn">登录</a>
+                    <a href="{if !$isEnterpriseSite}/user/register{$querystring}" {else} "/enterprise/register{$querystring}"{/if} class="reg_btn">免费注册</a>
+                </div>
+                {/if} {if $user_info}
+                <div class="my_account">
+                    <a href="/account">
+                        我的账户
+                    </a>
+                </div>
+                {/if}
+                <nav id="top_nav">
+                    <ul>
+                        <li class=" select">
+                            <a href="/">首页</a>
+                        </li>
+                        <li class=" ">
+                            <a href="/deals?tab=p2p" target="">我要出借</a>
+                        </li>
+                        <li class=" ">
+                            <a href="/help/id-975" target="_blank">媒体报道</a>
+                        </li>
+                        <li class=" ">
+                            <a href="/article/index/868">信息披露</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <!--面包屑导航开始-->
+    <!--面包屑导航结束-->
+    <?php
+        //灰度标签
+        if(get_cfg_var('p2p_rc') == 1){
+            echo "RC";
+        }
+    ?>

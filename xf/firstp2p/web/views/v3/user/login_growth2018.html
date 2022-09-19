@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>2018年度账单</title>
+    <script src="<?php echo $this->asset->makeUrl('/activity/growth2018/js/flexible.js')?>"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/activity/growth2018/css/growth2018.css')?>">
+    <script src="<?php echo $this->asset->makeUrl('/v3/js/common/jquery-1.10.2.min.js')?>"></script>
+    <script type="text/javascript">
+      var today = new Date();
+      var  year = today.getFullYear();
+      var month = today.getMonth() + 1;
+      var day= today.getDate();
+      var ymd = year +""+ month+"" + day;
+      var oHead = document.getElementsByTagName('HEAD').item(0);
+      var oScript= document.createElement("script");
+      oScript.type = "text/javascript";
+      oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+      oHead.appendChild( oScript);
+    </script>
+</head>
+<body>
+    {include file="web/views/user/share.html"}
+    <div class="growth_login">
+        <img class="login_bg" src="<?php echo $this->asset->makeUrl('/activity/growth2018/images/login_bg.png')?>" alt="">
+        <form class="loginForm" id="loginForm" method="post" action="/user/doLogin{$querystring}">
+            <?php echo token_input(); ?>
+            <input class="userName" type="text" name="username"  placeholder="请输入账号">
+            <input class="password" type="password"  name="password" placeholder="请输入密码">
+            <input type="button" class="view" value=""/>
+        </form>
+        <div class="reg">没有网信账户<a class="judge_app" href="https://m.ncfwx.com/user/register?ignore_cn=null">点击这里</a>注册，超值好礼等你拿</div>
+        <div class="formTip" id="formTip"><span></span></div>
+    </div>
+    <script>
+        var formTip=$('#formTip');
+        window.onload = function(){
+            formTip.hide();
+        }
+        var error = "{$error}";
+        $(function(){
+            var submitBtn=$('.view');//登录按钮
+            var accountInput=$('.userName');//账户输入框
+            var pasInput=$('.password');//密码输入框
+            if(error){
+                showTip(error);
+                window.location.reload();
+            }
+            submitBtn.click(function(){
+                var tmpReg=/^\s*$/;
+                if(tmpReg.test(accountInput.val())){
+                    showTip('账号不能为空');
+                    return;
+                }
+                if(tmpReg.test(pasInput.val())){
+                    showTip('密码不能为空');
+                    return;
+                }
+                $('#loginForm').submit();
+            });
+            var tipTimer=null;
+            //显示表单提示函数
+            function showTip(inforText){
+                clearTimeout(tipTimer);
+                formTip.find('span').text(inforText);
+                formTip.show();
+                tipTimer=setTimeout(function(){
+                    formTip.hide();
+                },800);
+            }
+
+            var p2pBrowser = (function () {
+                var u = navigator.userAgent
+                return {
+                    ios: /\(i[^;]+;( U;)? CPU.+Mac OS X/.test(u)
+                }
+            })()
+            //ios在微信端登录页面input框失去焦点不回弹bug修复
+            if(p2pBrowser.ios){
+                function kickBack() {
+                    setTimeout(function() {
+                        window.scrollTo(0, document.body.scrollTop + 1);
+                        document.body.scrollTop >= 1 && window.scrollTo(0, document.body.scrollTop - 1);
+                    }, 1)
+                }
+                $('input').blur(kickBack);
+            }
+        });
+    </script>
+</body>
+</html>

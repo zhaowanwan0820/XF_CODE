@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title>去兑换</title>
+    {include file="api/views/_v48/candy/candy_header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/exchange.css?v=159');?>" rel="stylesheet"/>
+</head>
+<body>
+<div class="m-main">
+    <input type="hidden" class="JS_candy" value="{$userSummary.amount}">
+    <input type="hidden" class="JS_token" value="{$token}">
+    <input type="hidden" class="JS_mobile" value="{$mobile}">
+    <!-- 顶部banner begin -->
+    <div class="bannerBox">
+        <div class="title">CRE</div>
+        <div class="totalLimit" id="totalLimit">CRE可兑换库存：<span id="totalLimitNum">{$creConvertTotalLimit}</span> CRE</div>
+    </div>
+    <!-- 顶部banner end -->
+    <div class="p_pick_discount p_exchange_cre">
+        <div class="ui_tab_box">
+            <div class="ex_wrapper">
+                <div class="exchange">
+                    <input class="exchange_num" type="number" placeholder="请输入兑换数量">
+                    <div class="exchange_right">
+                        <span class="unit">CRE</span>
+                        <p class="button allIn">满额兑换</p>
+                    </div>
+                </div>
+                <p class="tip"><span class="border">您有<i>{$accountInfo.amount}</i>个信宝</span>最多可兑换<i id="bucAmount" class="red">{$creAmount}</i>个
+                </p>
+                <p class="userLimit color_gray" id="userLimit">-您今日可兑额度：<span id="userLimitNum">{$creConvertUserLimit}</span> CRE</p>
+                <p class="color_gray pl20 f13">-您今日投资额累计：{$totalInvestAmount}元</p>
+                <p class="color_gray pl20 f13">-获得1信宝：{$convertRate}CRE的兑换特权。更多投资可获更高兑换特权哦~</p>
+            </div>
+        </div>
+        <adv adv_id="cre换购攻略"/>
+        <input type="button" class="confirm_exchange mb10" value="兑换并提取">
+        <div class="mobile_code_box_mask" style="display:none;">
+          <div class="mobile_code_box">
+            <div class="mobile_code_close"></div>
+            <div class="mobile_num">
+              <p>验证码短信已发送至</p>
+              <p><span class="mobile_num JS_mobile_num">{function name="moblieFormat" value=$mobile}</span></p>
+              <div class="send_code">
+                <div class="countdown">
+                    <canvas id="canvas" width="80" height="80"></canvas>
+                </div>
+                <input type="button" value="重新发送" class="again_send JS_again_send" autofocus="autofocus">
+                <p class="error_tips">验证码错误</p>
+              </div>
+              <div class="code_box">
+                <div class="input_default">
+                  <div class="input_focus"></div>
+                  <div class="input_error"></div>
+                  <input type="tel" class="code_input" maxlength="6">
+                  <div class="input_mask"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    
+</div>
+<script src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/p_exchange_cre.js');?>"></script>
+<script>
+    function gobackjsfunc() {
+        P2PWAP.app.triggerScheme("firstp2p://api?type=rightbtn&title=" + encodeURIComponent("兑换说明") + "&callback=gotoCreIntrction");
+    }
+    function gotoCreIntrction(){
+        $(".JS_to_intrction_cre").remove();
+        $("body").append('<a class="JS_to_intrction_cre"></a>');
+        $("body .JS_to_intrction_cre").attr("href", "http://event.ncfwx.com/zt/cre_Intrction");
+        $("body .JS_to_intrction_cre").click();
+    }
+    gobackjsfunc();
+</script>
+</body>
+
+</html>

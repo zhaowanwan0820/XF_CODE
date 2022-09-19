@@ -1,0 +1,43 @@
+{include file="web/views/fenzhan/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v1/css/oauth/password.css?v=1000');?>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/oauth/pas_strength.js?v=1');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/oauth/password.js?v=1');?>"></script>
+<div class="w980 mauto clearfix">
+	<section>
+		<div class="shadow">
+			<div class="mess_title tc">修改密码</div>
+			<div class="pw-info">
+				<form method="post" action="/user/savepwd" id="modify">
+					<?php echo token_input(); ?>
+					<ul class="clearfix">
+						<font class="error_tip common_error_tip" style="color: #CC1223"></font>
+						<li>
+							<label> <span>*</span> 旧密码： </label>
+							<input type="password" value="" name="old_password"
+                            id="old_password" class="txt" autocomplete="off">
+							&nbsp;&nbsp;&nbsp;<font
+                            class="error_tip old_password_tip" style="color: #CC1223">{$error.old_password}</font></li>
+						<li>
+							<label> <span>*</span> 新密码： </label>
+							<input type="password" value="" name="new_password"
+                            id="new_password" class="txt" autocomplete="off">
+							&nbsp;&nbsp;&nbsp;<font
+                            class="error_tip new_password_tip" style="color: #CC1223">{$error.new_password}</font></li>
+						<li>
+							<label> <span>*</span> 确认密码： </label>
+							<input type="password" value="" name="re_new_password"
+                            id="re_new_password" class="txt" autocomplete="off">
+							&nbsp;&nbsp;&nbsp;<font
+                            class="error_tip re_new_password_tip" style="color: #CC1223">{$error.re_new_password}</font></li>
+						<li>
+							<label> <span></span> </label>
+							<input type="submit" class="sumbtn" id="settings-submit"
+                            value="确定" />
+						</li>
+					</ul>
+				</form>
+			</div>
+		</div>
+	</section>
+</div>
+{include file="web/views/fenzhan/footer.html"} 

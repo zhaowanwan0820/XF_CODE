@@ -1,0 +1,54 @@
+{include file="web/views/fenzhan/header.html"}
+
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>"  rel="stylesheet" type="text/css">
+<!--private js&css end-->
+
+
+<div class="w980 mauto clearfix">
+
+    <section>
+        <div class="pay">
+            <h1>立即支付</h1>
+            <div class="pay_con">
+                <p class="mb15">立即支付<span class="pay_con_span">[</span>订单号：{$payment_notice.notice_sn}<span class="pay_con_span">]</span></p>
+                <p>
+                    <a href="#" class="pay_button" onclick="window.open('{$payment_action}','payment')">
+                        {if $payment_id eq 4}前往先锋在线支付{else}前往易宝在线支付{/if}
+                    </a>
+                </p>
+                <p>支付总额：<span class="color-red1">{$payment_notice.money}</span></p>
+                <p class="pay_other"><a href="{$redict_url}">选择其他银行支付</a>
+                    <!--<a href="#">充值记录</a>--></p>
+            </div>
+        </div>
+    </section>
+</div>
+<div style="width:400px; padding:10px; display: none" id="pay_tip">
+
+    <p style="font-size:14px; font-weight:bold;">
+        {$LANG.PAYMENT_INFO_TIP}
+    </p>
+    <div class="blank"></div>
+    <p class="notice">
+        {$LANG.PAYMENT_NOTICE_TIP_1}
+        <br />
+        {$LANG.PAYMENT_NOTICE_TIP_2}
+    </p>
+    <div class="blank"></div>
+    <p >
+        <input type="button" value="{$LANG.PAYMENT_HAS_DONE}" class="paybutton" onclick="location.href='{$actionUrl}';" >
+        <input type="button" value="{$LANG.PAYMENT_ERROR}" class="paybutton paybutton-gray" style="width:220px" onclick="location.href='{$reUrl}';">
+    </p>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".pay_button,.payLink").bind("click",function(){
+            $.weeboxs.open("#pay_tip", {contentType:'text',showButton:false,title:LANG['PAYMENT_TIP'],width:460,height:150,type:'wee'});
+        });
+    });
+</script>
+
+{include file="web/views/fenzhan/footer.html"}

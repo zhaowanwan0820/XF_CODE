@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{$deal.title}</title>
+    {include file="api/views/_v32/header.html"}
+    <meta name="format-detection" content="telephone=no" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p2p_affirm.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/virtual.css');?>" rel="stylesheet" />
+    <script>
+        window["_BIDTYPE_"] = "{$deal.loantype}";
+    </script>
+</head>
+<body>
+    <div class="p2p_main m-main p_affirm">
+        <div class="pa_top">
+            <i class="pat_line"></i>
+            {if $deal.loantype neq 7}
+                <p class="pt_title">年化{$deal.income_base_rate}%{if $deal.deal_type == 1}起{/if} / {$deal.timelimit} / {$deal.repayment}</p>
+            {/if}
+            <p {if $deal.loantype eq 7}class="mt27"{/if}>可投：{$deal.avaliable}元</p>
+            <i class="paf_line"></i>
+        </div>
+        <div class="disnone">
+            <em class="perpent">{$deal.period_rate}</em>
+            <!--项目ID-->
+            <i class="investmentID">{$deal.productID}</i>
+            <!--可投金额-->
+            <em class="ketou_money">{$deal.userMoneyTtl}</em>
+            <em class="deal_money">{$deal.dealMoneyLeft}</em>
+            <!--<em class="val_code">{if $deal.couponIsFixed != 1 && $codeInfo}{$codeInfo.short_alias}{else}{$deal.couponStr}{/if}</em>-->
+            <!-- <em class="val_code">{if $data.forceCodeEmpty != 1 && $deal.couponIsFixed != 1 && $codeInfo}{$codeInfo.short_alias}{elseif $data.forceCodeEmpty != 1}{$deal.couponStr}{/if}</em> -->
+            <em class="val_code">{if $deal.couponIsFixed}{$deal.couponStr}{else}{$data.code}{/if}</em>
+            <em class="val_money">{$data.money}</em>
+            <em class="val_mini">{$deal.mini}</em>
+            <em class="is_fixed">{$deal.couponIsFixed}</em>
+            <!--多少起投-->
+            <em class="pl_tip">{$deal.mini}起投</em>
+            <!---->
+            <em class="istongzhi">{$deal.deal_type}</em>
+        </div>
+        <div class="pa_center clearfix">
+        	<div class="ditm_right fr">
+                <a class="a_lock to_recharge" href="invest://api?type=recharge">充值</a>
+            </div>
+            <div class="ditm_left">
+                <div class="ditm_top">
+                    可用余额：{$deal.remain}元
+                </div>
+                
+                <div class="ditm_line clearfix">
+                    <div class="ditm_left">
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="dit_list">
+                 {if $deal.bonus > 0}
+                        <p>红包：{$deal.bonus}元 {if $deal.loantype neq 7}<i>投资满100元方可使用</i>{/if}</p> 
+                 {/if}
+                <p>现金：{$deal.cash}元</p>
+            </div>
+            <div class="p2p_input clearfix">
+                {if $deal.loantype neq 7}
+                <span class="quantou_all">全投</span>
+                <span class="dit_yq">预期收益1000.00元</span>
+                {/if}
+                <div class="ui_input clearfix"></div>
+            </div>
+        </div>
+        {if $deal.loantype neq 7}
+            <div class="dit_footer">
+                {if !$deal.couponIsFixed}
+                <div class="ditf_list">
+                    <a href="#" class='to_coupon'><span class="fr"><em>{if $data.code}{$data.code}{else}输入优惠码，可获得额外收益{/if}</em><i class="icon_arrow fr"></i></span>优惠码</a>
+                </div>
+                {/if}
+                <div class="ditf_list disn_border">
+                    <a class='to_contractList' href="#"><span class="fr"><i class="icon_arrow fr"></i></span>合同和协议</a>
+                </div>
+            </div>
+        {/if}
+        <div class="dit_btn">
+            <!--<input type="submit" class="sub_btn sub_gay" value="同意合同并投资" />-->
+            <!--<input type="submit" class="sub_btn sub_red" value="同意合同并投资" />-->
+            <a class="sub_btn sub_gay" href="javascript:void(0);"> {if $deal.loantype eq 7}捐赠{else}同意合同和协议并投资{/if}</a>
+        </div>
+        {if $deal.loantype neq 7}
+            {if $deal.rebateRatio && $deal.couponIsFixed}
+            <div class="dit_fcode_txt">您可获额外年化{$deal.rebateRatio}%的返利，返利的计算及发放时间参见具体项目详情页内的规则描述。</div>
+            {/if}
+        {/if}
+        {if $deal.loantype eq 7}
+        <div class="ui_mask" style="display:none"></div>
+        <div id="JS-confirmdonate" class="alert_donate" style="display:none">
+            <div class="gy_icon"></div>
+            <div class="alert_con tc">
+                <h2>确认捐赠吗?</h2>
+                <p>此次为公益捐赠行为，您所捐赠的金</p>
+                <p>额将全部用于支持公益活动开展。</p>
+                <h3><span class="J_no cancel_btn">取消</span><a href="javascript:void(0);" class="J_ok confirm_btn">确认</a></h3>
+            </div>
+        </div>
+        {/if}
+    </div>
+<script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/virtual.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/deal_investment.js');?>"></script>
+{include file="api/views/_v32/footer.html"}

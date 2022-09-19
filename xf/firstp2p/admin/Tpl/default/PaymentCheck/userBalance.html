@@ -1,0 +1,58 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__Common/js/tablesort.js' />
+<div class="main">
+<div class="main_title">批量用户余额对账-【先锋支付】</div>
+<div class="blank5"></div>
+
+<?php foreach ($result as $type => $data) { ?>
+<div style="margin:10px;"><?php echo $type; ?> <b><?php echo count($data) ?></b> 个 </div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="11" class="topTd" >&nbsp; </td></tr>
+    <tr class="row" >
+        <th width="50">用户ID</th>
+        <th width="120">用户名</th>
+        <th width="80">姓名</th>
+        <th width="80">P2P可用</th>
+        <th width="80">P2P冻结</th>
+        <th width="100" class="sort-num">P2P总额</th>
+        <th width="80">支付可用</th>
+        <th width="80">支付冻结</th>
+        <th width="100" class="sort-num">支付总额</th>
+        <th width="100" class="sort-num">总额差异</th>
+        <th>操作</th>
+    </tr>
+    <?php foreach($data as $id => $item) { ?>
+    <tr class="row" >
+        <td><?php echo $id; ?></td>
+        <td><a href="?m=User&a=index&user_id=<?php echo $id; ?>" target="_blank"><?php echo $item['p2p']['user_name']; ?></a></td>
+        <td><?php echo $item['p2p']['real_name']; ?></td>
+        <td><?php echo $item['p2p']['money']; ?></td>
+        <td><?php echo $item['p2p']['lock_money']; ?></td>
+        <td><b><?php echo $item['p2p']['sum']; ?></b></td>
+        <td><?php echo $item['ucfpay']['available'] / 100; ?></td>
+        <td><?php echo $item['ucfpay']['freeze'] / 100; ?></td>
+        <td><b><?php echo $item['ucfpay']['sum']; ?></b></td>
+        <td><b style="color:red;">
+            <?php echo bcsub($item['p2p']['sum'], $item['ucfpay']['sum'], 2); ?>
+        </b></td>
+        <td>
+            <a href="?m=User&a=account_detail&id=<?php echo $id; ?>&listRows=200" target="_blank">明细</a>
+            <a href="?m=User&a=balance&uid=<?php echo $id; ?>" target="_blank">支付信息</a>
+            <a href="?m=PaymentCheck&a=userOrder&id=<?php echo $id; ?>" target="_blank">订单对账</a>
+            <a href="?m=PaymentCheck&a=userLog&id=<?php echo $id; ?>" target="_blank">资金记录对账</a>
+        </td>
+    </tr>
+    <?php } //end foreach ?>
+    <tr> <td colspan="11" class="bottomTd">&nbsp; </td> </tr>
+</table>
+<?php } //end foreach ?>
+
+<div class="blank5"></div>
+</div>
+<include file="Public:footer" />

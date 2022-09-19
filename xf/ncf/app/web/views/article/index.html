@@ -1,0 +1,39 @@
+{include file="web/views/header.html"}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/data_show.css');?>" />
+<div class="blank"></div>
+<div class="clearfix">
+		{$article.content}
+</div>
+<div class="blank"></div>
+<script>
+    //埋点
+    var content_top_nav = ''
+    function zhugeTrack(place, name, id, content){
+        $('html').on('click',place,function(){
+            content_top_nav = $(this).attr('data-top-nav')
+            if(!!content_top_nav){
+              content = content_top_nav
+            }
+            // alert(name + '----' + id + '------' + content)
+            var data = {};
+            data[id] = content;
+            zhuge.track(name, data)
+        })
+    }
+    zhugeTrack('.new_logo','信息披露页_导航点击情况','位置','网站logo')
+    zhugeTrack('#top_nav a','信息披露页_导航点击情况','位置',content_top_nav)
+    zhugeTrack('.login_btn','信息披露页_导航点击情况','位置','登录')
+    zhugeTrack('.reg_btn','信息披露页_导航点击情况','位置','免费注册')
+    zhugeTrack('.my_account a','信息披露页_导航点击情况','位置','我的账户(登录状态下)')
+    zhugeTrack('.JS_phone','信息披露页_导航点击情况','位置','手机客户端')
+    zhugeTrack('.JS_ph_class','信息披露页_导航点击情况','位置','网信普惠学院')
+    zhugeTrack('.isNewUser_11626','信息披露页_浮动新手专区','', '')
+    $('html').on('click','.j_info_nav li a',function(){
+        var nav_aside_lv2 = this.innerHTML
+        zhuge.track('信息披露页_页面点击情况',{
+            '页面名称': nav_aside_lv2
+        })
+    })
+</script>
+{include file="web/views/footer.html"}

@@ -1,0 +1,64 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="location.href='{:u("Life/sectionAdd")}'" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+    版块名称：<select name="secId" id="secId" class="textbox" >
+               <foreach name="allSecList" item="item">
+                   <option value="{$item.sec_id}" <if condition="intval($_REQUEST['secId']) eq $item['sec_id']">selected="selected"</if>>{$item.sec_name}</option>
+               </foreach>
+        </select>
+        <input type="hidden" value="Life" name="m" />
+        <input type="hidden" value="<?php echo ACTION_NAME;?>" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<!-- Think 系统列表组件开始 -->
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="9" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <th>版块编号</th>
+        <th>版块名称</th>
+        <th>版块简称</th>
+        <th>结算账户名</th>
+        <th>结算卡号</th>
+        <th>版块状态</th>
+        <th style="width:">操作</th>
+    </tr>
+    <foreach name="list" item="item">
+    <tr class="row">
+        <td width="50px">&nbsp;{$item.sec_id}</td>
+        <td align="center">&nbsp;{$item.sec_name}</td>
+        <td align="center">&nbsp;{$item.shortname}</td>
+        <td align="center">&nbsp;{$item.settle_name}</td>
+        <td align="center">&nbsp;{$item.settle_account}</td>
+        <td align="center">&nbsp;<if condition="$item['status'] eq 1">启用</if><if condition="$item['status'] eq 0">禁用</if></td>
+        <td align="center"><a href="javascript:view_detail_info('{$item.sec_id}')"><?php echo L("EDIT");?></a>&nbsp;</td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="7" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function view_detail_info(id) {
+    window.location.href = '/m.php?m=Life&a=sectionDetail&id='+id;
+}
+</script>
+<include file="Public:footer" />

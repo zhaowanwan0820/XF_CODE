@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="format-detection" content="telephone=no">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+                <title>{$deal.title}</title>
+                <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-base.css');?>" rel="stylesheet" />
+                <link href="<?php echo $this->asset->makeAppUrl('v2/css/deal_investment.css');?>" rel="stylesheet" />
+                <link href="<?php echo $this->asset->makeAppUrl('v2/css/virtual.css');?>" rel="stylesheet" />
+                </head>
+                <body>
+                    <div class="m-main">
+                        <div class="p_deal_investment">
+                            <div class="dit_title">
+                                <p>年化{$deal.rate}%{if $deal.deal_type == 1}起{/if} / {$deal.timelimit} / {$deal.repayment}</p>
+                                <p>可投：{$deal.avaliable}元</p>
+                            </div>
+                            <div class="dit_money">
+                                <div class="ditm_top">
+                                    可用余额：{$deal.remain}<span>元</span>
+                                </div>
+                                <!--此处加隐藏变量-->
+                                <div class="disnone">
+                                    <em class="perpent">{$deal.period_rate}</em>
+                                    <!--项目ID-->
+                                    <i class="investmentID">{$deal.productID}</i>
+                                    <!--可投金额-->
+                                    <em class="ketou_money">{$deal.userMoneyTtl}</em>
+                                    <em class="deal_money">{$deal.dealMoneyLeft}</em>
+                                    <!--<em class="val_code">{if $deal.couponIsFixed != 1 && $codeInfo}{$codeInfo.short_alias}{else}{$deal.couponStr}{/if}</em>-->
+                                    <em class="val_code">{if $data.forceCodeEmpty != 1 && $deal.couponIsFixed != 1 && $codeInfo}{$codeInfo.short_alias}{elseif $data.forceCodeEmpty != 1}{$deal.couponStr}{/if}</em>
+                                    <em class="val_money">{$data.money}</em>
+                                    <em class="val_mini">{$deal.mini}</em>
+                                    <em class="is_fixed">{$deal.couponIsFixed}</em>
+                                    <!--多少起投-->
+                                    <em class="pl_tip">{$deal.mini}起投</em>
+                                    <!---->
+                                    <em class="istongzhi">{$deal.deal_type}</em>
+                                </div>
+                                <div class="ditm_line clearfix">
+                                    <div class="ditm_right">
+                                        <a class="a_lock to_recharge" href="invest://api?type=recharge">充值</a>
+                                    </div>
+                                    <div class="ditm_left">
+                                        <p></p>
+                                    </div>
+                                </div>
+                                <div class="dit_list">
+                                    {if $deal.bonus>0}<p>红包：{$deal.bonus}元 <i>投资满100元方可使用</i></p>{/if}
+                                    <p>现金：{$deal.cash}元</p>
+                                    <!--p>基金：4，990.00元 <i>红包与现金金额不足时自动赎回</i></p-->
+                                </div>
+                                <div class="dit_txt clearfix">
+                                    <div class="key_text">
+                                        <!--提示信息邮JS来生成-->
+                                        <span class="dit_yq"></span>
+                                    </div>
+                                    <div class="key_input">
+                                    </div>
+                                </div>
+                                <div class="dit_fenbtn clearfix">
+                                    <span class="num1" data-key="1"><em>全投</em></span>
+                                    <span class="num2" data-key="2"><em>投1/2</em></span>
+                                    <span class="num3" data-key="3"><em>投1/3</em></span>
+                                    <span class="num4" data-key="4"><em>投1/4</em></span>
+                                </div>
+                            </div>
+                            <div class="dit_footer">
+                                {if $deal.couponStr || !$deal.couponIsFixed}
+                                <div class="ditf_list">
+<!--                                    {if $deal.couponIsFixed == 1}
+                                    <a class='to_coupon' href="#"><span class="fr">{$deal.couponStr}<i>&gt;</i></span>优惠码</a>
+                                    {else}
+                                    {if $codeInfo}
+                                    <a class='to_coupon' href="#"><span class="fr">{$codeInfo.short_alias}<i>&gt;</i></span>优惠码</a>
+                                    {elseif $deal.couponStr}
+                                    <a class='to_coupon' href="#"><span class="fr">{$deal.couponStr}<i>&gt;</i></span>优惠码</a>
+                                    {else}
+                                    <a class='to_coupon' href="#"><span class="fr"><em>输入优惠码，可获得额外收益</em><i>&gt;</i></span>优惠码</a>
+                                    {/if}
+                                    {/if}-->
+
+                                    {if $data.forceCodeEmpty == 1}
+                                    <a class='to_coupon' href="#"><span class="fr"><em>输入优惠码，可获得额外收益</em><i>&gt;</i></span>优惠码</a>
+                                    {else}
+                                    {if $codeInfo}
+                                    <a class='to_coupon' href="#"><span class="fr">{$codeInfo.short_alias}<i>&gt;</i></span>优惠码</a>
+                                    {elseif $deal.couponStr}
+                                    <a class='to_coupon' href="#"><span class="fr">{$deal.couponStr}<i>&gt;</i></span>优惠码</a>
+                                    {else}
+                                    <a class='to_coupon' href="#"><span class="fr"><em>输入优惠码，可获得额外收益</em><i>&gt;</i></span>优惠码</a>
+                                    {/if}
+                                    {/if}
+                                </div>
+                                {/if}
+                                <div class="ditf_list disn_border">
+                                    <a class='to_contractList' href="#"><span class="fr"><i>&gt;</i></span>合同和协议</a>
+                                </div>
+                            </div>
+                            <div class="dit_btn">
+                                <a class="sub_btn sub_gay" href="javascript:void(0);">同意合同和协议并投资</a>
+                                <!--<input type="submit" class="sub_btn sub_blue" value="同意合同并投资" />-->
+                            </div>
+                            <!-- <div class="dit_help">
+                                <i>?</i>是否需要帮助？
+                            </div> -->
+                        </div>
+                    </div>
+<?php
+    //灰度标签
+    if(get_cfg_var('p2p_rc') == 1){
+        echo "<div style='margin-top:30px;text-align:center;color:#999'>RC</div>";
+    }
+?>
+<script src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v2/js/virtual.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v2/js/deal_investment.js');?>"></script>
+                </body>
+                </html>

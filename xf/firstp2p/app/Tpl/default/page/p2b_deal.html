@@ -1,0 +1,80 @@
+{include file="inc/header.html"}
+<div class="blank"></div>
+  <div class="wrap clearfix">
+    <div class="clearfix">
+      <div class="rightlendstep">
+        <span class="t_title f_l">借款基本信息</span>
+        <div class="clearfix b_box b_box2">
+          <div class="field field3">
+            <label class="f12">借款标题：</label>
+            <span class="lh30">{$deal.title}</span>
+          </div>
+           <div class="field field3">
+             <label class="f12">借款标题：</label>
+             <span class="lh30">{$deal.description}</span>
+           </div>
+           <div class="field field3">
+             <label class="f12">借款金额：</label>
+             <span class="lh30">{$deal.borrow_amount}元 </span>
+           </div>
+           <div class="field field3">
+             <label class="f12">借款期限：</label>
+             <span class="lh30">{$deal.repay_period}日 </span>
+           </div>
+           <div class="field field3">
+             <label class="f12">还款方式：</label>
+             <span class="lh30">
+               {foreach from=$loan_type key=type_key item=type_val}
+               {if $type_key eq $deal.repay_type}{$type_val}{/if}
+               {/foreach}
+             </span>
+           </div>
+           <div class="field field3">
+             <label class="f12">年化借款利率：</label> 
+             <span class="lh30">{$deal.rate}%</span>
+           </div>
+           <div class="field field3">
+             <label class="f12">借款人：</label> 
+             <span class="lh30">{$deal.real_name}</span>
+           </div>
+           <div class="field field3">
+             <label class="f12">状态：</label>
+             <span class="lh30">{if $deal.status eq 0}待处理{elseif $deal.status eq 1}处理中{elseif $deal.status eq 2}已完成{elseif $deal.status eq 3}拒绝受理{elseif $deal.status eq -1}已删除{/if}</span>
+           </div>
+           <div class="field field3">
+             {foreach from=$attach_list key=akey item=attach}
+                <label class="f12">{if $akey eq 0}附件：{/if}</label>
+                <span class="lh30"><a href='{$att_path}{$attach.filename}'>{$attach.title}.{$attach.type}</a> &nbsp;&nbsp;&nbsp;&nbsp;{if $attach.description}描述：{$attach.description}{/if}</span><br />
+             {/foreach}
+           </div>
+         </div>
+         {if $isSystemAdmin}
+         <div class="b_box2" style="text-align: center; margin: 10px 0; color: #4A74CA;">
+           <a class="btn" href="{url x="index" r="p2b#edit" p="id=$deal.id"}"><span>编辑</span></a>
+           <a class="btn" href="javascript:void(0)" onclick="deleteP2bDeal()"><span>删除</span></a>
+         </div>
+         {elseif $deal.status eq 0}
+         <div class="b_box2" style="text-align: center; margin: 10px 0; color: #4A74CA;">
+           <a class="btn" href="javascript:void(0)" onclick="supportP2bDeal()"><span>处理</span></a>
+         </div>
+         {/if}
+      </div>
+      <script>
+        {if $isSystemAdmin}
+        function deleteP2bDeal() {
+          if (window.confirm("确认删除该项目?")) {
+            window.location.href = "{url x="index" r="p2b#del" p="id=$deal.id"}";
+          }
+        }
+        {elseif $deal.status eq 0}
+        function supportP2bDeal() {
+          if (window.confirm("确认支持该项目?")) {
+            window.location.href = "{url x="index" r="p2b#support" p="id=$deal.id"}";
+          }
+        }
+        {/if}
+      </script>
+    </div>
+  </div>
+<div class="blank"></div>
+{include file="inc/footer.html"}

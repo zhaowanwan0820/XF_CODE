@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if isset($page_title) && $page_title}{$page_title} - {/if}{if isset($show_site_titile) && ($show_site_titile eq 1)}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+<link rel="icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<meta name="keywords" content="{if isset($page_keyword) && $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+<meta name="description" content="{if isset($page_description) && $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+<script>
+   var  status_switch = {function name="app_conf" v="SWITCH_DEAL_INFO_DISPLAY"};
+</script>
+
+{if isset($rss_title) && $rss_title}
+<link title="{$rss_title}" type="application/rss+xml" rel="alternate" href="{$rss_url}" />
+{/if}
+
+{if isset($is_index) && $is_index eq 1}
+<?php echo $this->asset->renderAll(1); ?>
+{else}
+<!--[if lte IE 9]>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/html5shiv.js');?>"></script>
+<![endif]-->
+<?php echo $this->asset->renderAll(); ?>
+{/if}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('skins/diandang/css/style.css');?>" />
+
+<script type="text/javascript">
+var APP_ROOT = '{$APP_ROOT}';
+{if app_conf("APP_MSG_SENDER_OPEN") eq 1}
+var send_span = {function name="app_conf" v="SEND_SPAN"}000;
+{/if}
+</script>
+
+<style> li#fzhov:hover .hovdiv{display:block} .hovdiv{display:none}</style>
+
+<!--public js&css end -->
+
+</head>
+
+<body>  <!--头部开始-->
+    <header class="m-head">
+        <div style="background: url(http://www.cnpawn.cn/skin/kc_new/images/bg.png);">
+        <div style="clear:both;height:180px;line-height: 29px;font-family: 'Microsoft YaHei';margin:auto;">
+            <div style="clear:both;background: #f3e9d5;border-top: 1px solid #e7dbc3;border-bottom: 1px solid #e7dbc3;line-height: 29px;width: 100%;display: block;height: 30px;">
+                <div style="width:980px;margin:auto">
+                    <div style="float:left">
+                        <div style="color: #84765f;font-size: 14px;display:inline-block;float:left;margin-right:13px;">
+                            <span style="color: #4a4a4a;">客服电话：</span>
+                            （010）89920415/89920416
+                        </div>
+                        <ul style="float:left;padding:0;margin:0">
+                            <li style="padding:0 10px;float:left;list-style:none;border-right:1px solid #e7dbc3;border-left:1px solid #e7dbc3;">
+                                <a href="http://wpa.qq.com/msgrd?v=3&uin=1473233991&site=qq&menu=yes" style="float:left;width:100%;display: inline-block;background-position: 0 -100px;padding-left: 20px;width:60px;background: url(http://www.cnpawn.cn/skin/kc_new/images/index_icon.png) no-repeat ;line-height:29px;font-size:14px;background-position: 0 -100px;text-decoration:none;color: #4a4a4a;text-align:left">客服盟盟</a>
+                            </li>
+                            <li style="padding:0 10px;float:left;list-style:none;border-right:1px solid #e7dbc3;border-left:1px solid #e7dbc3;">
+                                <a href="http://wpa.qq.com/msgrd?v=3&uin=353160098&site=qq&menu=yes" style="float:left;display:inline-block;width:100%;display: inline-block;text-decoration:none;background-position: 0 -100px;padding-left: 20px;width:60px;font-size:14px;background: url(http://www.cnpawn.cn/skin/kc_new/images/index_icon.png) no-repeat ;line-height:29px;background-position: 0 -100px;color: #4a4a4a;text-align:left">客服典典</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="g-head-right" style="float:right;">
+
+                {if $user_info}
+        <ul>
+            <li id="fzhov" style="position:relative">您好，<a href="/account">{if empty($user_info.real_name)}{$user_info.user_name}{else}{$user_info.real_name}{/if}</a>
+            <div class="hovdiv" style="position: absolute;width: 78px;height: auto;top: 25px;left:15px;background: #f3e9d5;border: 1px solid #ddd;text-align: center;line-height: 26px;"><a style="display:block" href="/account">账户总览</a><a style="display:block" href="http://www.cnpawn.cn/member/">商务中心</a></div>
+            </li>
+            <li class="li_bg"></li>
+            <li class="{if $msg_count>0}pr15 j_showMenu{/if}"><a href="/message">消息</a>
+                {if $msg_count>0}
+                <div class="g-message-number">{$msg_count}</div>
+                <ul>
+                    {foreach from=$msg_list item=msg key=key}
+                    <li {if $key eq count($msg_list) -1}class="nobor"{/if}><em><a href="/message/deal/{$msg.group_key}">{$msg.total}</a></em> 条 {if isset($msg_title.$msg.is_notice)}
+                            {$msg_title.$msg.is_notice}
+                            {else}
+                            {$LANG.SYSTEM_PM}
+                            {/if}，<a href="/message/deal/{$msg.group_key}">查看</a></li>
+                    {/foreach}
+                </ul>
+                {/if}
+            </li>
+            <li class="li_bg"></li>
+            <li><a href="{url x="index" r="helpcenter"}">帮助</a></li>
+            <li class="li_bg"></li>
+            <li><a href="http://www.cnpawn.cn/user/logout.php?from=fz">退出</a></li>
+        </ul>
+        {else}
+                        <a href="http://www.cnpawn.cn/user/reg.php?from=fz" style="text-decoration: none;background: #f3e9d5;font-size:14px;line-height: 29px;color: #666;padding: 0 12px;border-right: 1px solid #e7dbc3;border-left: 1px solid #e7dbc3;float: left;">[注册]</a>
+                        <a href="http://www.cnpawn.cn/user/login.php?from=fz" style="text-decoration: none;background: #f3e9d5;font-size:14px;line-height: 29px;color: #666;padding: 0 12px;border-right: 1px solid #e7dbc3;float: left;">[登录]</a>
+        {/if}
+                    </div>
+                </div>
+            </div>
+            <div style="margin:auto;width:980px">
+                <div style="clear:both;height:80px;">
+                    <div style="float:left">
+                        <a href="http://www.cnpawn.cn">
+                            <img src="http://www.cnpawn.cn/skin/kc_new/images/logo1.png" style="padding: 10px 0;"></a>
+                    </div>
+                    <div style="float: right;background: url(http://www.cnpawn.cn/skin/kc_new/images/searchbg.png) left bottom no-repeat;padding: 26px 0 22px 0;width: 344px;">
+
+                        <form action="http://www.cnpawn.cn/search.php" method="get" style="float:right">
+                            <input type="text" name="kw" class="sbox" maxlength="27" style="width: 194px;border: 1px solid #ecd585;float: left;line-height: 26px;padding-left: 4px;margin-right: 3px;height: 30px;overflow: hidden;font-family: '微软雅黑';">
+                            <input type="submit" name="" class="sbt" value="" style="margin-right: 20px;width: 35px;height: 30px;display: inline-block;background: #ff9c00 url(http://www.cnpawn.cn/skin/kc_new/images/searchbt.png) center center no-repeat;border: 0px;cursor: pointer;float: left;"></form>
+
+                    </div>
+                </div>
+                <style>#originli li:hover{background: url(http://www.cnpawn.cn/skin/kc_new/images/nav_hover.png) repeat-x;}</style>
+                <ul id="originli" style="overflow:hidden;width:100%;margin:0;padding:0;background: url(http://www.cnpawn.cn/skin/kc_new/images/nav_bg.png) no-repeat;">
+
+                    <li style="float: left;line-height: 41px;width: 160px;text-align: center;overflow: hidden;">
+                        <a href="http://www.cnpawn.cn/" style="text-decoration:none;display: block;font-size: 16px;color: #fff;font-family:'microsoft yahei'">首页</a>
+                    </li>
+                    <li style="float: left;line-height: 41px;width: 160px;text-align: center;overflow: hidden;background: url(http://www.cnpawn.cn/skin/kc_new/images/nav_hover.png) repeat-x;">
+                        <a href="http://cnpawn.firstp2p.com/"  style="text-decoration:none;display: block;font-size: 16px;color: #fff;font-family:'microsoft yahei'">e典通</a>
+                    </li>
+                    <li  style="float: left;line-height: 41px;width: 160px;text-align: center;overflow: hidden;">
+                        <a href="http://www.cnpawn.cn/company"  style="text-decoration:none;display: block;font-size: 16px;color: #fff;font-family:'microsoft yahei'">典当超市</a>
+                    </li>
+                    <li  style="float: left;line-height: 41px;width: 160px;text-align: center;overflow: hidden;">
+                        <a href="http://www.cnpawn.cn/pawnnews"  style="text-decoration:none;display: block;font-size: 16px;color: #fff;font-family:'microsoft yahei'">资讯新闻</a>
+                    </li>
+                    <li  style="float: left;line-height: 41px;width: 160px;text-align: center;overflow: hidden;">
+                        <a href="http://www.cnpawn.cn/know"  style="text-decoration:none;display: block;font-size: 16px;color: #fff;font-family:'microsoft yahei'">典当百科</a>
+                    </li>
+                    <li  style="float: left;line-height: 41px;width: 180px;text-align: center;overflow: hidden;">
+                        <a href="http://www.cnpawn.cn/about/index.html"  style="text-decoration:none;display: block;font-size: 16px;color: #fff;font-family:'microsoft yahei'">关于联盟</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+</div>
+    </header>
+    <!--头部结束-->
+
+    <!--面包屑导航开始-->
+    {if isset($nav) && $nav}
+    <section>
+        <div class="fix_width">
+            <div class="m-nav">
+                <a href="http://www.cnpawn.cn/">首页</a>
+                >
+                <a href="/">e典通</a>
+                    {foreach from=$nav item=n}
+                    > <label>{if isset($n.url) && $n.url}<a href="{$n.url}">{$n.text}</a>{else}{$n.text}{/if}</label>
+                    {/foreach}
+            </div>
+        </div>
+    </section>
+    {/if}
+    <!--面包屑导航结束-->
+
+    <div class="{if isset($in_preset_page) && $in_preset_page eq 1}{else}wrap{/if}">

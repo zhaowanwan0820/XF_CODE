@@ -1,0 +1,78 @@
+<tagLib name="html" />
+
+<include file="Public:header" />
+
+<style>
+#dataTable th { text-align: left; }
+</style>
+
+<div class="main">
+    <div class="main_title">
+        <label>回款计划</label>
+        <a href="{:u("index/index")}" class="back_list">{%BACK_LIST}</a>
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <p><input type="button" id="export_btn" value="导出" class="button"/></p>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable">
+        <tr>
+            <th style="text-align:left;width:130px">交易所备案产品编号：</th>
+            <td>{$projectInfo['jys_number']}</td>
+            <th style="text-align:left;width:100px;">批次编号：</th>
+            <td>{$batchInfo['id']}</td>
+            <th style="text-align:left;width:100px;">发行人名称：</th>
+            <td>{$publishInfo['real_name']}</td>
+            <th style="text-align:left;width:100px;">咨询机构：</th>
+            <td>{$consultInfo['name']}</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable">
+        <tr class="row">
+            <th>序号</th>
+            <th>还款日</th>
+            <th>用户名称</th>
+            <th>银行卡号</th>
+            <th>开户行名称</th>
+            <th>开户行所在省</th>
+            <th>开户行所在市</th>
+            <th>回款金额</th>
+            <th>回款本金</th>
+            <th>回款利息</th>
+        </tr>
+        <volist name="list" id="item" key="index">
+        <tr class="row">
+            <td>{$index}</td>
+            <td>{:date("Y-m-d", $item['repay_time'])}</td>
+            <td>{$loadList[$item['load_id']]['real_name']}</td>
+            <td>{$loadList[$item['load_id']]['bank_no']}</td>
+            <td>{$loadList[$item['load_id']]['bank_name']}</td>
+            <td>{$loadList[$item['load_id']]['bank_province']}</td>
+            <td>{$loadList[$item['load_id']]['bank_city']}</td>
+            <td>{$item['repay_money'] / 100}</td>
+            <td>{$item['principal'] / 100}</td>
+            <td>{$item['interest'] / 100}</td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+
+    <div class="page">{$page}</div>
+    <div class="blank5"></div>
+</div>
+
+<script>
+    $(function() {
+        $('#export_btn').click(function() {
+            location.href="/m.php?m=ExchangeLoadRepay&a=planExport&batch_id={$batchInfo['id']}"
+        })
+    })
+</script>
+
+<include file="Public:footer" />

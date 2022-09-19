@@ -1,0 +1,96 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<title>编辑预约卡片</title>
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+<style>
+    .item_title{text-align: center;background: #f2f2f2;width: 160px;}
+    .require{border-left: none;}
+    table.form td{padding: 12px;}
+    .project_id{width: 170px;padding: 3px;}
+    .button{padding: 7px 21px;}
+    .text_bold{width: 100px;}
+</style>
+<div class="main reservationContent">
+    <div class="main_title">编辑预约卡片 <a href="{:u("UserReservation/reservecard")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form id="formid" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td class="item_title"><input name="id" type="hidden" value="{$cardInfo.id}"><i class="requireI">*</i>出借期限</td>
+                <td>
+                    <select id="invest_line_unit" name="invest_line_unit" class="textbox text_bold">
+                        <volist name='data.deadlineConf' id='item'>
+                            <option value="{$item.deadline}_{$item.deadline_unit}" <if condition="$item['deadline'] == $cardInfo['invest_line'] && $item['deadline_unit'] == $cardInfo['invest_unit']"> selected </if> >{$item.deadline_format}</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
+            <tr style="display:none">
+                <td class="item_title"><i class="requireI">*</i>贷款类型</td>
+                <td>
+                    <select name="dealType">
+                        <option value="0" <if condition="$cardInfo['deal_type'] eq 0">selected</if>>网贷</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                 <td class="item_title">前标签</td>
+                 <td>
+                 前tag名称：<input type="text" id="label_before" name="label_before" class="textbox" value="{$cardInfo.label_before}"><br /><br />
+                 后tag名称：<input type="text" id="label_after" name="label_after" class="textbox" value="{$cardInfo.label_after}"></td>
+            </tr>
+            <tr>
+                 <td class="item_title"><i class="requireI">*</i>按钮</td>
+                 <td><input type="text" id="button_name" name="button_name" class="textbox" value="{$cardInfo.button_name}">&nbsp;建议4个汉字以内</td>
+            </tr>
+            <tr>
+                <td class="item_title">累计预约人次</td>
+                <td><input name="display_people" type="radio" value="0" class="invest" <if condition="$cardInfo.display_people == 0"> checked="checked" </if> />不启用 <input name="display_people" type="radio" value="1" <if condition="$cardInfo.display_people == 1"> checked="checked" </if> />启用&nbsp;<i class="requireI">选择启用后，前台会显示该字段，并替换预约最低金额字段</i></td>
+            </tr>
+            <tr>
+                <td class="item_title">累计出借金额</td>
+                <td><input name="display_money" type="radio" value="0" class="invest" <if condition="$cardInfo.display_money == 0"> checked="checked" </if> />不启用 <input name="display_money" type="radio" value="1"  <if condition="$cardInfo.display_money == 1"> checked="checked" </if> />启用</td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>产品详情:</td>
+                <td class="item_input">
+                    <html:editor id="description" name="description" type="KINDEDITOR"  content="{$cardInfo.description}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>状态</td>
+                <td><input name="status" type="radio" value="1" class="invest" <if condition="$cardInfo.status == 1"> checked="checked" </if> />有效 <input name="status" type="radio" value="0" <if condition="$cardInfo.status == 0"> checked="checked" </if> />无效</td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserReservation" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="reservecard_edit" />
+                    <input type="submit"  id="publish" class="button" value="编辑" />
+                </td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+<script>
+$(function(){
+    $(function(){
+        $("#publish").click(function(){
+            var button_name = $("#button_name").val();
+            if (button_name == '') {
+                alert('按钮字段不能为空，请检查');
+                return false;
+            }
+            var description = KE.util.getData('description');
+            //alert(description);
+            //if(!banner){alert("请上传短期标图片");return false;}
+            if(!description){alert("产品详情不能为空");return false;}
+            //document.getElementById("formid").submit();
+           // return true;
+        });
+    })
+});
+</script>

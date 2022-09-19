@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <load href='__TMPL__Common/js/jquery.min.js' />
+    <load href='__TMPL__Common/js/bootstrap.min.js' />
+    <load href='__TMPL__Common/style/bootstrap.min.css' />
+    <meta charset="UTF-8">
+    <title>商品列表</title>
+</head>
+<body style="margin:0 auto; width:960px;">
+<div class="page-header page-header_info" id="actionTab">
+    <h3>商品列表</h3>
+</div>
+<div class="page-header page-header_info">
+    <span><a class="btn btn-primary" href="m.php?m=CandyShop&a=addCouponGroup" role="button">新增</a></span>
+    <span><a class="btn btn-primary" href="m.php?m=CandyShop&a=payOrder" role="button">商品支付订单</a></span>
+    <span><a class="btn btn-primary" href="m.php?m=CandyShop&a=shopOrder" role="button">兑换券</a></span>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>商品ID</th>
+            <th>券组ID</th>
+            <th>销售价格</th>
+            <!--<th>市场价格</th>-->
+            <th>库存</th>
+            <th>每日兑换量</th>
+            <th>首页推荐</th>
+            <th>列表推荐</th>
+            <th>显示排序</th>
+            <th>券详情</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($productList as $item) { ?>
+        <tr>
+            <td scope="row"><?php echo $item['id'];?></td>
+            <td><?=$item['coupon_group_id'];?></td>
+            <td><?=$item['price'];?></td>
+            <!--<td><?=$item['market_price'];?></td>-->
+            <td><?php if ($item['is_limited'] == 0 ) { ?>不限量 <?php }else { ?><?=$item['stock'];?> <?php } ?></td>
+            <td><?php if ($item['daily_stock'] == 0 ) { ?>不限制 <?php }else { ?><?=$item['daily_stock'];?> <?php } ?></td>
+            <td><?php if($item['is_top'] == 1) { ?> √ <?php }?></td>
+            <td><?php if($item['is_suggest'] == 1) { ?> √ <?php }?></td>
+            <td><?=$item['sort'];?></td>
+            <td>
+                <?=$item['couponGroup']['name'];?><br>
+                投资满<?=$item['couponGroup']['bidAmount']; ?><br>
+                期限满<?=$item['couponGroup']['bidDayLimit']; ?>可用<br>
+                有效期<?=$item['couponGroup']['useDayLimit']/86400;?>天
+            </td>
+            <td>
+                <code>
+                    <?php if ($item['status'] == 1) { ?>
+                        online
+                    <?php } else { ?>
+                        offline
+                    <?php } ?>
+                </code>
+            </td>
+            <td>
+                <a href="m.php?m=CandyShop&a=editCouponGroup&productId=<?=$item['id'];?>">编辑</a><br>
+                <?php if ($item['status'] == 1) { ?>
+                <a href="javascript:void(0)" onclick="offlineProduct('{$item.id}');">下线</a><br>
+                <?php } else { ?>
+                <a href="javascript:void(0)" onclick="onlineProduct('{$item.id}');">上线</a><br>
+                <?php }?>
+                <?php if ($item['is_limited'] == 1) { ?>
+                <a href="javascript:void(0);" onclick="updateStock('{$item.id}', '{$item.couponGroup.name}')">修改库存</a><br>
+                <?php }?>
+                <a href="/m.php?m=CandyShop&a=candyShopOrder&product_id={$item.id}&from=index" >商品订单明细</a>
+            </td>
+        </tr>
+        <?php } ?>
+    </tbody>
+</table>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id='stock-form' action="#" method="post">
+                    <input type="text" class="form-control" id="num" name="num" placeholder="库存（正负值）">
+                    <input type="hidden" class="form-control" id="productId" name="productId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id='stock-submit' type="button" class="btn btn-primary">提交更改</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+function updateStock(productId, productName) {
+    $('#myModalLabel').html('更新-商品:'+productName+'-商品ID:'+productId);
+    $('#productId').val(productId);
+    $('#myModal').modal('show');
+}
+
+function onlineProduct(productId) {
+    $.post("m.php?m=CandyShop&a=modifyStatus", {"productId": productId, "status" : 1}, function( data ) {
+        alert(data.msg);
+        if(data.code == 0)
+        {
+            window.location.reload();
+        }
+    }, "json");
+}
+function offlineProduct(productId) {
+    $.post("m.php?m=CandyShop&a=modifyStatus", {"productId": productId, "status" : 0}, function( data ) {
+        alert(data.msg);
+        if(data.code == 0)
+        {
+            window.location.reload();
+        }
+    }, "json");
+}
+$('#stock-submit').click(function() {
+    $.post("m.php?m=CandyShop&a=modifyStock", $("#stock-form").serialize(), function( data ) {
+        alert(data.msg);
+        if(data.code == 0)
+        {
+            window.location.reload();
+        }
+    }, "json");
+});
+</script>
+</body>
+</html>

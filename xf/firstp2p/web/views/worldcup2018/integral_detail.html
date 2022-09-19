@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>我的积分</title>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-base.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/integral_detail.css?v=99');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/load_more.css?v=99');?>">
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/jquery-1.10.2.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/px2rem.js?v=99');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/load_more.js?v=99');?>"></script>
+</head>
+<body>
+  <!--我的积分明细页面-->
+  <div class="my_integral_detail">
+    <!--用户中心tab部分-->
+    <div class="custom_center_tab">
+      <div class="custom_center_tab_fixed">
+        <span class="index_custom_logo">
+          {if $user.pic}
+          <img src="{$user.pic}" class="user_portrait">
+          {/if}
+          {if $user.successTimes >= 5}
+          <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_custom_logo.png');?>" class="suc_five">
+          {/if}
+        </span>
+        <span class="total_integral">
+          <i class="left">总积分</i>
+          <i class="right">{$user.totalScore}</i>
+        </span>
+      </div>
+      <div class="custom_center_tab_position"></div>
+    </div>
+    <!-- end -->
+    <!--我的积分明细-->
+    <div class="integral_detail_table">
+      <div class="title">
+        <span class="common">时间</span>
+        <span class="middle">详情</span>
+        <span class="common">动态</span>
+      </div>
+      <!--积分列表-->
+      <ul class="integral_detail_table_lists"></ul>
+      <!--end-->
+    </div>
+    <!--end-->
+    <!--加载更多-->
+    <div class="load_more_container"></div>
+    <!--end-->
+  </div>
+</body>
+</html>
+<script>
+  var load_more_container = $(".load_more_container")/*loadMore*/
+  /*调用接口显示load_more状态*/
+  var page = 1,
+      dataList = [],
+      html
+  function _interface(){
+    $.ajax({
+      url:"/worldcup/AjaxScoreLog",
+      data:{token:"{$token}",pageNo:page},
+      type:"post",
+      dataType:"json",
+      success:function(res){
+        dataList = dataList.concat(res.data)
+        if(load_more_container.find(".ui_loadmore").length >= 1){
+          load_more_container.children().remove()
+        }
+        if(res.data.length >= 10){
+          _load_more(load_more_container[0],1)
+          /*点击加载更多*/
+          load_more_container.find(".ui_loadmore a").click(function(){
+            if(load_more_container.find(".ui_loadmore").length >= 1){
+              load_more_container.children().remove()
+            }
+            page += 1
+            _load_more(load_more_container[0],2)
+            _interface()
+          })
+        }else if(res.data.length < 10 && dataList.length != 0){
+          _load_more(load_more_container[0],3)
+        }
+
+        if(dataList.length == 0){
+          _load_more(load_more_container[0],3,"暂无积分记录")
+        }
+        $(".integral_detail_table_lists").html("")
+        for (index in dataList) {
+          var add_reduce =  (dataList[index].times > 0) ? "increase" : "reduce"
+          html = '<li class="list clearfix">'
+                + '<span class="left common"><i class="date">'+ dataList[index].date + '</i><i class="time"> '+ dataList[index].time+ '</i></span>'
+                + '<span class="middle">' + dataList[index].note + '</span>'
+                + '<span class='+add_reduce+'>'+ dataList[index].times+'</span>'
+                + '</li>'
+        $(".integral_detail_table_lists").html($(".integral_detail_table_lists").html() + html)
+        }
+      },
+      error:function(error){console.log(error)}
+    })
+  }
+_interface()
+
+</script>

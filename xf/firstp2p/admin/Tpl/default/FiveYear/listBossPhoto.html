@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <load href='__TMPL__Common/js/jquery.min.js' />
+    <load href='__TMPL__Common/js/bootstrap.min.js' />
+    <load href='__TMPL__Common/style/bootstrap.min.css' />
+    <meta charset="UTF-8">
+    <title>照片展示顺序编辑</title>
+</head>
+<body style="margin:0 auto; width:960px;">
+<div class="page-header page-header_info" id="actionTab">
+    <h3>照片展示顺序编辑</h3>
+</div>
+照片顺序设置,逗号分隔:<br/>
+<input type="text" id="photoIds" class="form-control" value="{$bossWallConfig}">
+<br/>
+<button id="sortSubmit" type="button" class="btn btn-primary btn-default btn-block">保存</button>
+<table class="table">
+    <colgroup>
+        <col class="col-xs-1">
+        <col class="col-xs-1">
+        <col class="col-xs-1">
+        <col class="col-xs-1">
+        <col class="col-xs-1">
+        <col class="col-xs-1">
+    </colgroup>
+    <thead>
+        <tr>
+            <th>照片ID</th>
+            <th>缩略图</th>
+            <th>照片ID</th>
+            <th>缩略图</th>
+            <th>照片ID</th>
+            <th>缩略图</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($photos as $key => $item) { ?>
+            <?php if ($key % 3 == 0) { ?>
+            <tr>
+            <?php } ?>
+            <th scope="row"><?php echo $item['id'];?></th>
+            <td><img src="<?php echo $item['url'];?>" style="width:94px;height:140px;"/></td>
+        <?php } ?>
+    </tbody>
+</table>
+<script>
+function photo(id, sort) {
+    this.id = id;
+    this.sort = sort;
+}
+$(function() {
+    // Variable to store your files
+    $("#sortSubmit").click(function() {
+        var postData = new Array();
+        var i = 0;
+        $.post( "m.php?m=FiveYear&a=bossPhotoSort", {"photoIds" : $("#photoIds").val()}, function( data ) {
+            alert(data.msg);
+            if(data.code == 0)
+            {
+                window.location.reload();
+            }
+        }, "json");
+    });
+
+});
+</script>
+</body>
+</html>

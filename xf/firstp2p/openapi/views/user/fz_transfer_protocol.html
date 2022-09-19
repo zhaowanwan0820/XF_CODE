@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>网站用户共享授权说明</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="apple-touch-icon-precomposed" href="<?php echo $this->asset->makeOpenApiUrl('v2/images/favicon.png');?>">
+        {if $appInfo.appLogo }
+            <link rel="shortcut icon" href="{$appInfo.appLogo}" type="image/x-icon" />
+        {else}
+            <link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.png" type="image/x-icon" />
+        {/if}
+        <!--public js&css start-->
+        <link href="<?php echo $this->asset->makeOpenApiUrl('v3/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeOpenApiUrl('v3/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+        <!--public js&css end-->
+    </head>
+    <body>
+        <textarea id="transferAgreement" style="display:none;">{function name="get_adv" x="用户迁移协议_2016"}</textarea>
+        <textarea id="registerAgreement" style="display:none;">{function name="get_adv" x="wap网贷平台注册协议-2016"}</textarea>
+        <form action="doLogin{$querystring}" method="POST" id="d_form">
+            <input type="hidden" name="isTransferProtocol" id="isTransferProtocol" value="{$isTransferProtocol}">
+            <input type="hidden" name="account" id="account" value="{$account}" />
+            <input type="hidden" name="password" id="password" value="{$password}" />
+            <input type="hidden" name="verify" id="verify" value="{$verify}" />
+        </form>
+        <script type="text/javascript" src="<?php echo $this->asset->makeOpenApiUrl('v3/js/zepto.min.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeOpenApiUrl('v3/js/iscroll.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeOpenApiUrl('v3/js/common.js');?>" type="text/javascript"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeOpenApiUrl('v3/js/fz-transfer-protocol.js');?>" type="text/javascript"></script>
+    </body>
+</html>

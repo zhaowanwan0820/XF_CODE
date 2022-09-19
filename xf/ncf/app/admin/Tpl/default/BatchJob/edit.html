@@ -1,0 +1,180 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="/static/admin/Common/js/conf.js"></script>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<script type="text/javascript" src="/static/admin/Common/js/batch_job.js"></script>
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script type="text/javascript">
+    $(document).ready(function(){
+        var job_interval_start = $("#job_interval_start").val();
+        var job_interval_end = $("#job_interval_end").val();
+
+        $("#job_interval_end").focus(function(){
+            return showCalendar('job_interval_end', '%Y-%m-%d %H:%M:%S', false, false, 'job_interval_end',function() {
+                if($("#job_interval_start").val() == "") {
+                    alert('请先输入有效期开始时间');
+                    $("#job_interval_end").val("");
+                    $("#job_interval_start").focus();
+                    return false;
+                }
+                var redemption_start_times = get_unix_time($("#job_interval_start").val());
+                var redemption_end_times = get_unix_time($("#job_interval_end").val());
+                if(redemption_end_times < redemption_start_times) {
+                    alert('有效期结束时间不能小于开始时间');
+                    return false;
+                }
+            });
+        });
+    });
+
+    function get_unix_time(datestr) {
+        var date_arr = datestr.split(" ");
+
+        var ymd = date_arr[0].split("-");
+        var hms = date_arr[1].split(":");
+
+        var year = ymd[0];
+        var month = ymd[1];
+        var day = ymd[2];
+        var h = hms[0];
+        var m = hms[1];
+        var s = hms[2];
+        var today = new Date(year,month,day,h,m,s);
+        return today.getTime();
+    }
+</script>
+<div class="main">
+    <div class="main_title">{%EDIT} <a href="m.php?m=BatchJob&a=index" class="back_list" >{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" id="de-form" method="post" enctype="multipart/form-data">
+        <div class="blank5"></div>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+
+            <tr>
+                <td class="item_title">名称:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="job_name" value="{$data.job_name}" style="width:500px;"/></td>
+            </tr>
+
+            <tr>
+                <td class="item_title">业务类型:</td>
+                <td class="item_input">
+                    <select name="job_type" class="require"  id='job_type' onchange="javascript:changeJobtype()">
+                        <foreach name="job_type" key="job_type_key" item="job_type_item">
+                            <option value="{$job_type_key}" <if condition="$data['job_type'] eq $job_type_key">selected="selected"</if>>{$job_type_item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">最近一期还款日:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="next_repay_time" id="next_repay_time" value="<?php echo $data['next_repay_time'] > 0 ? date('Y-m-d',$data['next_repay_time']) : ''?>" onfocus="this.blur(); return showCalendar('next_repay_time', '%Y-%m-%d', true,true, 'next_repay_time');" /> <font color="#ff2121">仅在业务类型为还款时有效</font>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">产品类别:</td>
+                <td class="item_input">
+                    <select name="type_id" id='type_id'>
+                        <option value="0" <if condition="$data['deal_type'] eq 0">selected="selected"</if>>全部</option>
+                        <foreach name="deal_loan_type" key="deal_type_key" item="type_item">
+                            <option value="{$type_item.id}" <if condition="$data['deal_type'] eq $deal_loan_type[$deal_type_key]['id']">selected="selected"</if>>{$type_item.name}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">约定还款日:</td>
+                <td class="item_input">
+                    <select name="holiday_repay_type" id='holiday_repay_type'>
+                        <option value="0" <if condition="$data['holiday_repay_type'] eq 0">selected="selected"</if>> 全部（默认）</option>
+                        <foreach name="holiday_repay_types"  key="holiday_repay_type_key"  item="holiday_repay_type_item">
+                            <option value="{$holiday_repay_type_key}" <if condition="$data['holiday_repay_type'] eq $holiday_repay_type_key">selected="selected"</if>>{$holiday_repay_type_item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">满标时间截至:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="full_status_time" id="full_status_time" value="<if condition="$data['job_type'] eq 3">{$data.full_status_time}</if>" onfocus="this.blur(); return showCalendar('full_status_time', '%H:%M:%S', true,true, 'full_status_time');" />                    <font color="#ff2121"> 仅在业务类型为放款时有效</font>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">有效期:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="job_interval_start" id="job_interval_start" value="<?php echo date('Y-m-d H:i:s',$data['job_interval_start'])?>" onfocus="this.blur(); return showCalendar('job_interval_start', '%Y-%m-%d %H:%M:%S', true,true, 'job_interval_start');" />
+                    至
+                    <input type="text" class="textbox require" name="job_interval_end" id="job_interval_end" value="<?php echo date('Y-m-d H:i:s',$data['job_interval_end'])?>" />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">执行时间:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox " name="job_run_time" id="job_run_time"  <if condition="$data['is_right_now'] eq 1"> hidden </if> value="{$data.job_run_time}" onfocus="this.blur(); return showCalendar('job_run_time', '%H:%M:%S', true,true, 'btn_job_run_time');" />
+                    <input type="button" class="button" id="btn_job_run_time" value="{%SELECT_TIME}" <if condition="$data['is_right_now'] eq 1"> hidden </if>  onclick="return showCalendar('job_run_time', '%H:%M:%S', false, false, 'btn_job_run_time');" />
+                    <br/>
+                    <label><input type="radio" name="is_right_now"  value="0" <if condition="$data['is_right_now'] neq 1">checked="checked"</if> onchange="chk_is_right();"/>不立即执行</label>
+                    <label><input type="radio" name="is_right_now"  value="1" <if condition="$data['is_right_now'] eq 1">checked="checked"</if> onchange="chk_is_right();"/>立即执行</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态:</td>
+                <td class="item_input">
+                    <input type="radio" value="1" name="job_status" <if condition="$data['job_status'] eq 1">checked="checked"</if>> 有效
+                    <input type="radio" value="0" name="job_status" <if condition="$data['job_status'] eq 0">checked="checked"</if>> 无效
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">导入文件:</td>
+                <td class="item_input"><input type="file" name="job_file" id="job_file" /><a href="/m.php?m=BatchJob&a=demoCsv">下载模板</a></td>
+
+            </tr>
+        </table>
+
+    <div class="blank5"></div>
+    <input type="hidden" name="id" value="{$data.id}" />
+        <input type="hidden" id = 'job_ids' name="job_ids" value="{$data['job_ids']}" />
+    <input type="hidden" name="{:conf("VAR_MODULE")}" value="BatchJob" />
+    <input type="hidden" name="{:conf("VAR_ACTION")}" value="doEdit" />
+    <input type="submit"  class="button j_submit"  value="{%SAVE}" />
+    <input type="reset" class="button" value="{%RESET}" />
+    </form>
+    <script>
+        function changeJobtype() {
+            var jobtype = $("#job_type").val();
+            if(jobtype == 3){
+                $("select[name='type_id']").addClass('require');
+                $("input[name='full_status_time']").addClass('require');
+            }else{
+                $("select[name='type_id']").removeClass('require');
+                $("input[name='full_status_time']").removeClass('require');
+            }
+        }
+        function chk_is_right() {
+            var type = $('input:radio[name="is_right_now"]:checked').val();
+            if (type==1) {
+                $("#job_run_time").hide();
+                $("#btn_job_run_time").hide();
+            }else{
+                $('#job_run_time').show();
+                $("#btn_job_run_time").show();
+            }
+        }
+        $("input#job_file").change(function () {
+            $("input[name='is_right_now'][value=1]").attr("checked",true);
+            $("#type_id").val(0);
+            $("#job_run_time").hide();
+            $("#btn_job_run_time").hide();
+        })
+    </script>
+    <include file="Public:footer" />

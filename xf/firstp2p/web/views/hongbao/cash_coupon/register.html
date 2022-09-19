@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>网信理财新手礼包</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no,email=no">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <!--public js&css end-->
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-base.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-common.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/register.css', 1);?>" rel="stylesheet" type="text/css">
+    {else}
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-base_pc.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-common_pc.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/register_pc.css', 1);?>" rel="stylesheet" type="text/css">
+    {/if}
+    <!--[if lte IE 9]>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/html5shiv.js', 1);?>"></script>
+    <![endif]-->    
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/zepto.js', 1);?>"></script>
+    {else}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/jquery-1.10.2.min.js', 1);?>"></script>
+    {/if}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/validateConf.js', 1);?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/validate.js', 1);?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common.js', 1);?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/reg.js', 1);?>"></script>
+</head>
+
+<body class="p-reg">
+    <header class="m-head p-reg">
+        <a href="" class="logo"></a>
+        <div class="banner"></div>
+    </header>
+    <section class="m-main p-reg">
+        <div class="ui-instrution  yellow">注册成功后请至网信理财"我的账户"查看余额</div>
+        <div class="ui-all-error"></div>
+        <div class="ui-form">
+            <form id="register_form" name="register_form" action="" method="POST" onsubmit="return false;">
+                <div class="phone-num">
+                    手机：<span class="red">{$mobile}</span>
+                    <input id='mobile' type='hidden' value='{$mobile}'>
+                </div>
+                 <div class="input-list vertical-list">
+                    <div class="txt-wrap">
+                        <input id="code" type="text" name="code" placeholder="输入验证码" />
+                    </div>
+                    <input type="button" id="action-send-code" class="phonecode" data-url="/user/MCode" value="获取验证码"><i class="icon-yes yes-code fr"></i>
+                </div>
+                <div class="msg-wrapper  no-code">
+                    <span class="msg"></span>
+                </div>
+                <div class="input-list">
+                    <div class="txt-wrap">
+                        <input id="username" type="text" name="username" placeholder="输入用户名" />
+                    </div><i class="icon-yes yes-username fr"></i>
+                </div>
+                <div class="msg-wrapper  no-username">
+                    <span class="msg"></span>
+                </div>
+                <div class="input-list">
+                    <div class="txt-wrap">
+                        <input id="password" type="password" name="password" placeholder="输入登陆密码" />
+                    </div><i class="icon-yes yes-password fr"></i>
+                </div>
+                <div class="msg-wrapper  no-password">
+                    <span class="msg"></span>
+                </div>
+                <div class="form-footer">
+                    <input type="submit" id="register-btn" value="免费注册" />
+                    <div class="accept">点击注册，即代表您同意<a href="https://www.firstp2p.com/register_terms_h5.html" class="blue">《注册协议》</a></div>
+                </div>
+                <?php echo token_input(); ?>
+                <input id='cn' type='hidden' value='{$cn}'/>
+                <input id='site_id' type='hidden' value='{$site_id}'/>
+            </form>
+        </div>
+        <div class="ui-loading">
+            <img src="<?php echo $this->asset->makeUrl('v2/images/cash_coupon/common/list_loading.gif', 1);?>" />
+        </div>
+       
+    </section>
+    <footer class="m-foot p-reg">
+        <span>网信理财 www.firstp2p.com</span>
+    </footer>
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <script type="text/javascript">
+    $(function(){
+        var winH = $(window).height();
+        var bodyH = $('.m-head').height() + $('.m-main').height() + $('.m-foot').height();
+        var marginH = winH - bodyH;
+        if(marginH <= 0){
+            marginH = 0;
+        }
+        $('.m-foot').css('margin-top',marginH+'px');    
+    });
+    </script>
+    {/if}
+{include file="web/views/hongbao/cash_coupon/jsapi_config.html"}
+</body>
+
+</html>

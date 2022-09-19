@@ -1,0 +1,447 @@
+{include file="web/views/header.html"}
+{if (app_conf('TEMPLATE_ID') eq 1) && (app_conf('HOME_THEME_TURN_ON') eq 1)}
+<style>
+body{background:url(<?php echo $this->asset->makeUrl('v1/images/index/year2015_bg.jpg');?>) no-repeat center 80px #d91a1f;}
+.m-head .fix_width span a{background:url(<?php echo $this->asset->makeUrl('v1/images/index/year2015_logo.jpg');?>) no-repeat 0 0; margin-top:0; height:59px; width:212px;}
+.m-head .fix_width menu{margin-left:20px;}
+.shadow,.product_con{-webkit-box-shadow:none; box-shadow:none;}
+.partner_title{ color:#fff;}
+.partner_title i.icon_partner{background:url(<?php echo $this->asset->makeUrl('v1/images/index/year2015_icon.png');?>) no-repeat;}
+.m-foot{background-image:url(<?php echo $this->asset->makeUrl('v1/images/index/year2015_foot.jpg');?>);}
+.g-copyright p{ color:#f1d1d0;}
+</style>
+{/if}
+
+<section class="clearfix mt-30">
+    <div class="box">
+        <div id="focus" class="shadow" onselectstart="return false;">
+            <div class="slide">
+                {function name="get_adv" x="首页广告位1"}
+
+
+                <div class="leftBt"></div>
+                <div class="rightBt"></div>
+            </div>
+            {function name="get_adv" x="首页投资提示"}
+        </div>
+        <div class="p5"></div>
+        <div class="shadow mb10">
+            <div class="earnings_box">
+                <ul>
+                    <li class="eb_rate">
+                        <h3>年化收益率</h3>
+                        <div>
+                        {function name="get_num_pic" x=$deals_income_view.income_rate_min y=1}<i class="ico_percent" alt="%"></i><i class="ico_rung" alt="-"></i>
+                        {function name="get_num_pic" x=$deals_income_view.income_rate_max y=1}<i class="ico_percent" alt="%"></i>
+                        </div>
+                    </li>
+                    <li class="eb_already">
+                        <h3>已为投资人带来收益</h3>
+                        <div>
+                        {function name="get_num_pic" x=$deals_income_view.income_sum y=1}<span>元</span>
+                        </div>
+                    </li>
+                    <li class="eb_soon">
+                        <h3>即将带来收益</h3>
+                        <div>
+                        {function name="get_num_pic" x=$deals_income_view.income_plan_sum y=1}<span>元</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            {function name="get_adv" x="首页投资说明"}
+        </div>
+
+        <div class="product_con mb20">
+
+        <div class="tab" id="index_list_tab">
+            <ul class="tabhd clearfix indexlist-tab-num{$count}">
+                    {foreach from=$deal_type item="type" key=key}
+                    <li class=" j_index_tab" data-id="{$key}"><a href="javascript:void(0)" title="{$type.name}">{$type.name}({$type.count})</a></li>
+                    {/foreach}
+                    <!--<li class="active j_index_tab"><a href="javascript:void(0)">VIP(8)</a></li>-->
+            </ul>
+        <div class="tabbd">
+        {foreach from=$deals_list item="deal_list" key=key1}
+        <div class="none tabContent">
+            <div class="product_hd">
+                <ul>
+                    <li class=" w212 tc pr20">投资项目</li>
+                    <li class=" w190 tc">年化收益率</li>
+                    <li class=" w80 tc">期限</li>
+                    <li class=" w133 tc">收益方式</li>
+                    <li class=" w220 tc" >投资进度</li>
+                    <li class=" w110 linehg_set">状态</li>
+                </ul>
+            </div>
+                <div class="product_bd2 pb20">
+                {if $key1 eq 0}<adv adv_id="全部tab广告描述语">{/if}
+          {if isset($deal_list.brief) && $deal_list.brief && (app_conf('TEMPLATE_ID') eq 1 || app_conf('TEMPLATE_ID') eq 7 || app_conf('TEMPLATE_ID') eq 6)}<div class="w980 tab_tip_index color-yellow1 f14">{$deal_list.brief}</div>{/if}
+                {function name="get_adv" x="首页列表预约广告位"}
+                <table>
+                    <colgroup>
+                        <col width="63">
+                        <col width="170">
+                        <col width="195">
+                        <col width="90">
+                        <col width="140">
+                        <col width="210">
+                        <col width="135">
+                    </colgroup>
+
+                    <tbody class="j_index_tbody">
+                    {if $key1 eq 0}
+                    {foreach from=$deal_list.list item="deal" key=key}
+                    <tr>
+                    <td>
+                        {if $deal.type_id eq 11}
+                        <div class="tc"><i class="icon_car"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 12}
+                        <div class="tc"><i class="icon_room"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 13}
+                        <div class="tc"><i class="icon_enterprise"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 14}
+                        <div class="tc"><i class="icon_personal"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 15}
+                        <div class="tc"><i class="icon_assets"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 16}
+                        <div class="tc"><i class="icon_melting"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 17}
+                        <div class="tc"><i class="icon_ysd"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 18}
+                        <div class="tc"><i class="icon_ddd"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 19}
+                        <div class="tc"><i class="icon_xs"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 21}
+                        <div class="tc"><i class="icon_ZSZ"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 22}
+                        <div class="tc"><i class="icon_YLD"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 23}
+                        <div class="tc"><i class="icon_YSD"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 24}
+                        <div class="tc"><i class="icon_KZD"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 25}
+                        <div class="tc"><i class="icon_GYB"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 26}
+                        <div class="tc"><i class="icon_CYD"></i></div>
+                        {/if}
+                        {if $deal.type_id eq 27}
+                        <div class="tc"><i class="icon_LGL"></i></div>
+                        {/if}
+                    </td>
+                    <th>
+                        <div class="pro_name" style="padding-left:0px;">
+                            <p>
+                                {if $deal.bid_flag eq 1}
+                                <a title="{$deal.old_name}" alt="{$deal.old_name}"  href="{$deal.url}" target="_blank" >{$deal.name}</a>
+                                {else}
+                                <i title="{$deal.old_name}" alt="{$deal.old_name}" class='notoutitle'>{$deal.name}</i>
+                                {/if}
+                            </p>
+                            <div class="pro_links">
+                                总额：{$deal.borrow_amount_format_detail}万
+                                {if $deal.warrant eq 1}
+                                <i class="badge_02" title="担保本金"></i>
+                                {elseif  $deal.warrant eq 2}
+                                <i class="badge" title="担保本息"></i>
+                                {elseif  $deal.warrant eq 4}
+                                <i class="badge" title="第三方资产收购"></i>
+                                {/if}
+                                {if $deal.agency_id > 0}
+                                <i class="badge_01" title="{$deal.agency_info.short_name}"></i></i>
+                                {/if}
+                                {if (app_conf('TEMPLATE_ID') eq 1 || app_conf('TEMPLATE_ID') eq 7 || app_conf('TEMPLATE_ID') eq 6 || app_conf('TEMPLATE_ID') eq 11) && ($deal.type_id eq 11 || $deal.type_id eq 12)}<i class="badge_03" title="中国信贷荣誉出品"></i>{/if}
+                            </div>
+                        </div>
+                    </th>
+
+                    <th>
+                        {if $deal.income_ext_rate eq 0}
+                        <p class="btm f14 tc">{$deal.rate_show}<em>%</em>
+                            {if $deal.deal_type eq 1}起{/if}
+                        </p>
+                        {else}
+                        <p class="btm f14 tc">{$deal.income_base_rate}<em>%</em>+{$deal.income_ext_rate}<em>%</em> {function name="get_rate_tips"}</p>
+                        {/if}
+                        <p class="tc">
+
+                            {if isset($deal.deal_tag_name) && $deal.deal_tag_name != ''}
+                            <span class="icon_new j_tips" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name}</span>
+                            {/if}
+
+                        </p></th>
+
+                    <td>
+                        {if $deal.loantype eq 5}
+                        <P class="btm f14 tc">
+                            {if $deal.deal_type eq 1}
+                            {function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{/if}{$deal.repay_time}天</P>
+                        {else}
+                        <P class="btm f14 tc">{$deal.repay_time}个月</P>
+                        {/if}
+                    </td>
+                    <td>
+                        {if $deal.deal_type eq 1}
+                        <p class="date tc">提前{$deal.redemption_period}天申请赎回</p>
+                        {else}
+                        <p class="date tc">{$deal.loantype_name}</p>
+                        {/if}
+                    </td>
+                    <td>
+                        <div  class="pl20" >
+                            {if $deal.is_update eq 1}
+                                <p>等待确认</p>
+                                {if isset($deal.start_loan_time_format) && $deal.start_loan_time_format}
+                                   <p>开始时间：{$deal.start_loan_time_format}</p>
+                                {/if}
+                            {elseif $deal.deal_status eq 4}
+                                <p>投资成功</p>
+                                <p>成功时间：{$deal.full_scale_time}</p>
+                            {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}等待确认
+                                {if isset($deal.start_loan_time_format) && $deal.start_loan_time_format}
+                                   <p>开始时间：{$deal.start_loan_time_format}</p>
+                                {/if}
+                            {elseif $deal.deal_status eq 2}
+                                <p>可投金额：<em class="color-yellow1">{$deal.need_money_detail}元</em></p>
+                                <p>成功时间：{$deal.full_scale_time}</p>
+                            {elseif $deal.deal_status eq 5}
+                                <p>投资成功</p>
+                                <p>成功时间：{$deal.full_scale_time}</p>
+                            {else}
+                                <p>可投金额：<em class="color-yellow1">{$deal.need_money_detail}元</em></p>
+                                <p>剩余时间：{$deal.remain_time_format}</p>
+                            {/if}
+                        </div>
+                    </td>
+                    <td>
+                        {if $deal.deal_type eq 0 ||  $deal.deal_type eq 3}
+                            {if $deal.is_crowdfunding eq 0}
+                                {if $deal.is_update eq 1}
+                                <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                                {elseif $deal.deal_status eq 4}
+                                    {if $deal.bid_flag eq 1}
+                                    <div class="complete">
+                                        <i class=" icon_yitou"></i>
+                                    </div>
+                                    <div class="table_cell"><a href="{$deal.url}" class="view">还款中</a></div>
+                                    {else}
+                                    <div class="table_cell"><em class="view_02">还款中</em></div>
+                                    {/if}
+                                {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                                    <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                                {elseif $deal.deal_status eq 2}
+                                    {if $deal.bid_flag eq 1}
+                                    <div class="complete">
+                                        <i class=" icon_yitou"></i>
+                                    </div>
+                                    <div class="table_cell"><a href="{$deal.url}" class="view">满标</a></div>
+                                    {else}
+                                    <div class="table_cell"><em class="view_02">满标</em></div>
+                                    {/if}
+                                {elseif $deal.deal_status eq 5}
+                                    <div class="complete">
+                                        <i class=" icon_complete"></i>
+                                    </div>
+                                    <div class="table_cell"><em class="view_02">已还清</em></div>
+                                {else}
+                                   <div class="table_cell"><a href="{$deal.url}" class="view_01">投资</a></div>
+                                {/if}
+                            {elseif $deal.is_crowdfunding eq 1}
+                                {if $deal.is_update eq 1}
+                                   <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                                {elseif $deal.deal_status eq 4}
+                                    {if $deal.bid_flag eq 1}
+                                        <div class="complete">
+                                            <i class=" icon_yitou"></i>
+                                        </div>
+                                        <div class="table_cell"><a href="{$deal.url}" class="view">已成功</a></div>
+                                    {else}
+                                      <div class="table_cell"><em class="view_02">已成功</em></div>
+                                    {/if}
+                                {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                                    <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                                {elseif $deal.deal_status eq 2}
+                                    {if $deal.bid_flag eq 1}
+                                    <div class="complete">
+                                        <i class=" icon_yitou"></i>
+                                    </div>
+                                    <div class="table_cell"><a href="{$deal.url}" class="view">已成功</a></div>
+                                    {else}
+                                    <div class="table_cell"><em class="view_02">已成功</em></div>
+                                    {/if}
+                                {elseif $deal.deal_status eq 5}
+                                    <div class="complete">
+                                        <i class=" icon_complete"></i>
+                                    </div>
+                                    <div class="table_cell"><em class="view_02">已成功</em></div>
+                                {else}
+                                   <div class="table_cell"><a href="{$deal.url}" class="view_01">筹款</a></div>
+                                {/if}
+                            {/if}
+                    </td>
+                    {else}
+                        {if $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                            <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                        {/if}
+                        {if $deal.deal_status eq 1}
+                           <div class="table_cell"><a href="{$deal.url}" class="view_01">投资</a></div>
+                        {/if}
+                        {if $deal.deal_status eq 2}
+                            {if $deal.bid_flag eq 1}
+                                <div class="complete">
+                                    <i class=" icon_yitou"></i>
+                                </div>
+                                <div class="table_cell"><a href="{$deal.url}" class="view">满标</a></div>
+                            {else}
+                                <div class="table_cell"><em class="view_02">满标</em></div>
+                            {/if}
+                        {/if}
+                        {if $deal.deal_status eq 4}
+                            {if $deal.deal_compound_status eq 2}
+                                <div class="complete">
+                                    <i class=" icon_yitou"></i>
+                                </div>
+                                <div class="table_cell"><a href="{$deal.url}" class="view">待赎回</a></div>
+                            {/if}
+                            {if $deal.deal_compound_status eq 3}
+                                <div class="complete">
+                                    <i class=" icon_yitou"></i>
+                                </div>
+                                <div class="table_cell"><a href="{$deal.url}" class="view">还款中</a></div>
+                            {/if}
+                            {if $deal.deal_compound_status eq 4}
+                                <div class="complete">
+                                    <i class=" icon_yitou"></i>
+                                </div>
+                                <div class="table_cell"><a href="{$deal.url}" class="view">已还清</a></div>
+                            {/if}
+                            {if $deal.deal_compound_status eq 0}
+                               <div class="table_cell"><em class="view_02">还款中</em></div>
+                            {/if}
+                        {/if}
+                        {if $deal.deal_status eq 5}
+                            <div class="complete">
+                                <i class=" icon_complete"></i>
+                            </div>
+                            <div class="table_cell"><em class="view_02">已还清</em></div>
+                        {/if}
+                    {/if}
+                    </tr>
+                    {/foreach}
+                    {/if}
+                    </tbody>
+                </table>
+                </div>
+                <div class="tc f14 pb20"><a href="/deals{if $key1}?cate={$key1}{/if}" class="but-gray but-blue w106 pt5 pb5">查看更多</a></div>
+        </div>
+        {/foreach}
+                </div>
+                </div>
+          </div>
+          {if app_conf('TEMPLATE_ID') == '1' and app_conf('SHOW_FUNDING') == '1'}
+          <div class="product_con mb20">
+        <div class="tab">
+            <ul class="tabhd clearfix indexlist-tab-num">
+                    <li class="j_index_tab active"><a href="javascript:void(0)" title="全部基金">全部基金({$fund_list.count})</a></li>
+            </ul>
+            <div class="tabbd">
+                <div class="tabContent">
+                    <div class="product_hd">
+                        <ul>
+                            <li class=" w250 tc pr20">基金名称</li>
+                            <li class=" w160 tc">年化收益率</li>
+                            <li class=" w120 tc">期限</li>
+                            <li class=" w150 tc">起投金额</li>
+                            <li class=" w133 tc">预约人数</li>
+                            <li class=" w145 linehg_set">状态</li>
+                        </ul>
+                    </div>
+                    <div class="product_bd2 pb20">
+                <table>
+                    <colgroup>
+                        <col width="63">
+                        <col width="170">
+                        <col width="165">
+                        <col width="90">
+                        <col width="140">
+                        <col width="100">
+                        <col width="135">
+                    </colgroup>
+
+                    <tbody class="j_index_tbody">
+                    {foreach from=$fund_list.list item="fund"}
+                        <tr>
+                            <td>
+                            <div class="tc"><i class="icon_ZSZ icon_jijin"></i></div>
+                            </td>
+                            <th>
+                                <div class="pro_name">
+                                    <p>
+                                    {if $fund.status eq 1}
+                                        <a title="{$fund.name}" alt="{$fund.name}"  href="/jijin/detail?id={$fund.id}" target="_blank" >{$fund.name}</a>
+                                    {else}
+                                        <i title="{$fund.name}" alt="{$fund.name}" class='notoutitle'>{$fund.name}</i>
+                                    {/if}
+                                    </p>
+                            </th>
+                            <th>
+                                <div class="tips_1">
+                                    <p class="btm f14 tc">{$fund.income_min}<em>%</em>~{$fund.income_max}<em>%</em></p>
+                                </div>
+                            </th>
+                             <th>
+                               <p class="btm f14 tc w80">{$fund.repay_time}</p>
+                            </th>
+                            <td><p class="color-yellow1 tc w150">{$fund.loan_money_min}元</p></td>
+                            <td><p class="color-yellow1 tc w100">{$fund.subscribe_count}人</p></td>
+                            <td>
+                                <div  class="pl20" >
+                                {if $fund.status eq 1}
+                                    <div class="table_cell"><a href="/jijin/detail?id={$fund.id}" class="view" target="_blank">预约中</a></div>
+                                {else}
+                                    <div class="table_cell"><em class="view_02">已结束</em></div>
+                                {/if}
+                                </div>
+                            </td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+                </div>
+                <div class="tc f14 pb20 none"><a href="/jijin/" class="but-gray but-blue w106 pt5 pb5">查看更多</a></div>
+                </div>
+            </div>
+        </div>
+        </div>
+        {/if}
+        <div class="partner">
+            <div class="partner_title"><i class="icon_partner mr10"></i>合作伙伴</div>
+            <div class="partner_con shadow clearfix" id="scroll">
+                <div class="left_but scroll_up"></div>
+                    <div class="scrollDiv">
+                <ul>
+                {foreach from=$links item="link" key=key}
+                    <li title="{$link.name}"><a href="{$link.url}" target="_blank" class="logo_h"><img data-src="{$link.img_gray}" width="109" height="50"></a><a href="{$link.url}" target="_blank" class="logo_c"><img data-src="{$link.img}" width="109" height="50"></a></li>
+                {/foreach}
+                </ul>
+              </div>
+                <div class="right_but scroll_down"></div>
+            </div>
+        </div>
+      </div>
+</section>
+{include file="web/views/footer.html"}

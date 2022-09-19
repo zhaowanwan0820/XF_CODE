@@ -1,0 +1,154 @@
+.num_keyBoardBox {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  z-index: 999;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  touch-callout: none;
+  -webkit-touch-callout: none;
+}
+.num_keyBoardBox a {
+  text-decoration: none;
+}
+.num_keyBoardBox .underMask {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+.num_keyBoardBox .contBox {
+  -webkit-box-flex: 0;
+      -ms-flex-positive: 0;
+          flex-grow: 0;
+}
+.num_keyBoardBox .header {
+  background-color: #F9F9F9;
+  text-align: right;
+  border-top: 1px solid rgba(184, 184, 184, 0.5);
+}
+.num_keyBoardBox .header .okBtn {
+  display: inline-block;
+  vertical-align: top;
+  height: 40px;
+  line-height: 40px;
+  color: #0B7BFF;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0px 13px;
+}
+.num_keyBoardBox .panel {
+  background-color: #fff;
+}
+.num_keyBoardBox .panel .lineItme {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.num_keyBoardBox .panel .lineItme:first-child .cellItem::before {
+  display: none;
+}
+.num_keyBoardBox .panel .lineItme .cellItem {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: 0;
+  box-sizing: border-box;
+  text-align: center;
+  position: relative;
+}
+.num_keyBoardBox .panel .lineItme .cellItem.aniRun {
+  -webkit-animation: cursorClick 0.4s linear;
+          animation: cursorClick 0.4s linear;
+}
+.num_keyBoardBox .panel .lineItme .cellItem::before,
+.num_keyBoardBox .panel .lineItme .cellItem::after {
+  position: absolute;
+  content: "";
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5);
+  background-color: #B8B8B8;
+}
+.num_keyBoardBox .panel .lineItme .cellItem::before {
+  width: 200%;
+  height: 1px;
+  left: -50%;
+  top: 0px;
+}
+.num_keyBoardBox .panel .lineItme .cellItem::after {
+  height: 200%;
+  width: 1px;
+  top: -50%;
+  left: 0px;
+}
+.num_keyBoardBox .panel .lineItme .cellItem:first-child::after {
+  display: none;
+}
+.num_keyBoardBox .panel .lineItme .cellItem.operator {
+  background-color: #D1D5DB ;
+}
+.num_keyBoardBox .panel .lineItme .cellItem.del {
+  background: url("../../images/speedloan/keyboard_del.png") #D1D5DB center center no-repeat;
+  background-size: auto 16px;
+}
+.num_keyBoardBox .panel .lineItme .cellItem span {
+  display: block;
+  color: #000;
+}
+.num_keyBoardBox .panel .lineItme .cellItem span:nth-of-type(1) {
+  height: 25px;
+  line-height: 25px;
+  font-size: 25px;
+  padding-top: 4px;
+}
+.num_keyBoardBox .panel .lineItme .cellItem span:nth-of-type(2) {
+  height: 14px;
+  line-height: 14px;
+  font-size: 10px;
+  text-transform: uppercase;
+  padding-bottom: 2px;
+}
+.num_keyBoardBox .panel .lineItme .cellItem span.zero,
+.num_keyBoardBox .panel .lineItme .cellItem span.dit {
+  height: 45px;
+  line-height: 45px;
+  padding-top: 0px;
+}
+.num_keyBoardEmpty {
+  display: none;
+}
+@-webkit-keyframes cursorClick {
+  0% {
+    background-color: #D1D5DB;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+@keyframes cursorClick {
+  0% {
+    background-color: #D1D5DB;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    .num_keyBoardBox .contBox{
+        padding-bottom:34px;
+    }
+    .num_keyBoardBox .panel{
+        box-shadow: 0px 1px 2px rgba(184, 184, 184, 0.5);
+    }
+}

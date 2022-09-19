@@ -1,0 +1,50 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">信宝生产日志</div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            批次号：<input type="text" class="textbox" name="batch_no" value="{$list.batch_no}" />
+            <input type="hidden" value="CandyAccount" name="m" />
+            <input type="hidden" value="candyProduce" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr class="row">
+            <th>编号</th>
+            <th>批次号</th>
+            <th>用户数</th>
+            <th>总信力值</th>
+            <th>信宝总值</th>
+            <th>状态</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <!--<th style="width:">操作</th>-->
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td>&nbsp;{$item.id}</td>
+                <td>&nbsp;{$item.batch_no}</td>
+                <td>&nbsp;{$item.user_count}</td>
+                <td>&nbsp;{$item.activity_total}</td>
+                <td>&nbsp;{$item.amount_total}</td>
+                <td>&nbsp;{$item.status}</td>
+                <td>&nbsp;{$item.starttime}</td>
+                <td>&nbsp;{$item.endtime}</td>
+                <!--<td>&nbsp;<div style="width:430px;word-break:break-all;">{$item.id}</div></td>-->
+                <!--<td><a href="javascript:edit('{$item.id}')"><?php echo L("EDIT");?></a>&nbsp;<a-->
+                        <!--href="javascript: foreverdel('{$item.id}')">{%FOREVERDEL}</a>&nbsp;</td>-->
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="9" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

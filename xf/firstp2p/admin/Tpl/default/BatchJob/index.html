@@ -1,0 +1,135 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+
+<script type="text/javascript">
+    function show_detail(ts) {
+        $.weeboxs.open(ROOT+'?m=BatchJob&a=showDetailTs&ts='+ts, {contentType:'ajax',showButton:false,title:'打戳详情',width:600,height:330});
+    }
+</script>
+<div class="main">
+    <div class="main_title">批作业控制台</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <div class="button_row">
+            <input type="button" class="button" value="新增" onclick="add();">
+            <input type="button" class="button" value="删除" onclick="del();">
+        </div>
+    </div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+            名称：<input type="text" class="textbox" name="job_name" value="{:trim($_REQUEST['job_name'])}" />
+
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="BatchJob" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="17" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">编号</th>
+            <th>名称</th>
+            <th>业务类型</th>
+            <th>产品类别</th>
+            <th>满标时间截至</th>
+            <th>最近一期还款日</th>
+            <th>有效期起始时间</th>
+            <th>有效期结束时间</th>
+            <th>执行时间</th>
+            <th>状态</th>
+            <th style="width:250px">操作</th>
+        </tr>
+        <volist name="list" id="batch">
+            <tr class="row">
+                <td>
+                    <input type="checkbox" name="key" class="key" value="{$batch.id}">
+                </td>
+                <td>
+                    {$batch.id}
+                </td>
+                <td>
+                    {$batch.job_name}
+                </td>
+                <td>
+                    <if condition="$batch['job_type'] eq 1">还款</if>
+                    <if condition="$batch['job_type'] eq 2">时间戳</if>
+                    <if condition="$batch['job_type'] eq 3">放款</if>
+                    <if condition="$batch['job_type'] eq 4">专享项目还款</if>
+                    <if condition="$batch['job_type'] eq 5">代扣</if>
+                </td>
+                <td align="center">
+                        <if condition="$batch['job_type'] eq 1 or  $batch['job_type'] eq 3  or  $batch['job_type'] eq 4 or $batch['job_type'] eq 5">
+                            <if condition="$batch['deal_type'] eq 0">
+                                全部
+                            <else />
+                                <foreach name="deal_loan_type" key="deal_type_key" item="type_item">
+                                    <if condition="$batch['deal_type'] eq $deal_loan_type[$deal_type_key]['id']">{$type_item.name}</if>
+                                </foreach>
+                            </if>
+
+                        <else />
+                            -
+                        </if>
+                </td>
+                <td align="center">
+                    <if condition="$batch['job_type'] neq 3">-
+                    <else />
+                        {$batch.full_status_time}
+                    </if>
+                </td>
+                <td align="center">
+                    <if condition="($batch.next_repay_time gt 0)">
+                        {$batch.next_repay_time|date='Y-m-d',###}
+                        <else />
+                         -
+                    </if>
+                </td>
+                <td>
+                    {$batch.job_interval_start|date='Y-m-d H:i:s',###}
+                </td>
+                <td>
+                    {$batch.job_interval_end|date='Y-m-d H:i:s',###}
+                </td>
+                <td>
+                    <if condition="($batch.is_right_now eq 0)">
+                        {$batch.job_run_time}
+                        <else />
+                        立即执行
+                    </if>
+
+                </td>
+                <td>
+                    <if condition="($batch.job_status eq 1)">有效</if>
+                    <if condition="($batch.job_status eq 0)">无效</if>
+                </td>
+
+
+                <td>
+                    <a href="javascript:edit('{$batch.id}')">编辑</a>
+                    <a href="javascript:del('{$batch.id}')">删除</a>
+                    <if condition="($batch.job_type eq 2)"><a href="javascript:show_detail('{$yesterday_ts}')">查看详情</a></if>
+
+                </td>
+            </tr>
+    </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

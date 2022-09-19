@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>合同列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/p_reservation.css');?>" />
+
+</head>
+<body onload="updatebackbutton();">
+<div class="p_reservation">
+    <div class="bg_whtie">
+        {foreach from=$list item=data}
+        <div class="ditf_list">
+            <a {if $type == "zx" } href="/deal/reserveContractDetail?userClientKey={$userClientKey}&advid=reserve_zx_contract_detail{$data.id}&advtitle={$data.title}"{elseif $isFirstp2p} href="/deal/reserveContractDetail?userClientKey={$userClientKey}&advid=p2p_reserve_contract_detail{$data.id}&advtitle={$data.title}"{else}href="/deal/reserveContractDetail?userClientKey={$userClientKey}&advid=reserve_contract_detail{$data.id}&advtitle={$data.title}" {/if}>
+                <i class="icon_arrow fr"></i>
+                <span class="contract_list">{$data.title}</span>
+            </a> 
+        </div>
+        {/foreach}
+    </div>
+</div>
+<script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/zepto.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+<script>
+    function updatebackbutton (){
+        WXP2P.APP.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+    }
+
+</script>
+</body>
+</html>

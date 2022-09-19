@@ -1,0 +1,130 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/calendar/calendar_lang.js' />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">邀请关系修改 </div>
+
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+                       投资人id：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['user_id']}" name="user_id">
+                       投资人手机号：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['user_mobile']}" name="user_mobile">
+                       当前邀请人id：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['invite_user_id']}" name="invite_user_id">
+                       当前邀请人手机号：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['invite_user_mobile']}" name="invite_user_mobile">
+                       当前邀请码：<input  class="textbox" type="text" style="width:100px;" value="{$_REQUEST['short_alias']}" name="invite_code">
+                       会员编号：<input  class="textbox" type="text" style="width:100px;" value="{$_REQUEST['user_num']}" name="user_num">
+            　　　　　　操作人员：<input  class="textbox" type="text" style="width:100px;" value="{$_REQUEST['operator']}" name="operator">
+            　　　　　　操作时间：<input type="textbox" id="begin"　 style="width:100px;" onclick="show_cal(this)" class="textbox" name="begin" value="{:trim($_REQUEST['begin'])}" style="width:135px;" />
+                        至<input type="textbox" id="end" 　 style="width:100px;"　class="textbox" onclick="show_cal(this)" name="end" value="{:trim($_REQUEST['end'])}" style="width:135px;" />
+            <input type="hidden" value="CouponBind" name="m" />
+            <input type="hidden" value="inviteIndex" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+
+<div class="blank5"></div>
+
+<div class="search_row">
+            新邀请码：<input class="textbox" type="text" style="width:100px;" value="" name="new_short_alias" id ="new_short_alias">
+    <input type="button" class="button" value="替换" onclick="change_short_alias();" />
+
+</div>
+    <div class="blank5"></div>
+        <form method="post" enctype="multipart/form-data" action="__APP__">
+        <div class="button_row">
+            <input type="hidden" name="a" value="importCsvInviteCode">
+            <input type="hidden" name="m" value="CouponBind">
+            <input type='hidden' name='is_check' id='is_check' value='0'>
+            <input type="file" name="upfile" style="width:150px" >
+            <!--<input type="submit" class="button" value="下载错误数据" onclick='make_check(0);' />-->
+            <a href="?m=CouponBind&a=download_tpl&t=1">模板下载</a>
+            <input type="submit" class="button" value="批量导入" onclick='make_check(1);' />
+            <strong style="color:#ff0000">每次导入最多2000条，请导入csv格式。如需下载错误数据请先点击下载错误数据，点击批量导入则将正确数据导入但并不提示错误数据.</strong>
+            <input type="checkbox" name="check_group_id" value="1">进行同一机构验证
+        </div>
+        </form>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    datasource="list"
+    checkbox="true"
+    pk="user_id"
+    show="user_id_url:投资人ID
+    ,user_mobile:投资人手机号
+    ,user_group_name:投资人所属网站
+    ,real_name:投资人姓名
+    ,user_num:投资人会员编号
+    ,invite_user_id:当前邀请人ID
+    ,invite_user_mobile:当前邀请人手机号
+    ,invite_user_group_name:当前邀请人所属网站
+    ,invite_real_name:当前邀请人姓名
+    ,invite_code:当前邀请码
+    ,invite_user_group_name_fixed:邀请业绩归属机构
+    ,admin_id|get_admin_name:操作人
+    ,is_fixed:是否绑定
+    ,update_time|to_date:更新时间
+    "
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />
+<script type="text/javascript">
+    function show_cal(obj) {
+        obj.blur();
+        return showCalendar(obj.id, '%Y-%m-%d %H:%M:%S', true, false, obj.id);
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function make_check(is_check){
+      $('#is_check').val(is_check);
+    }
+
+
+
+
+    //复制全局返利规则
+    function change_short_alias() {
+
+        new_short_alias = $("#new_short_alias").val();
+
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert("请选择要替换的用户");
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+
+        if(confirm("请确认要替换吗？"))
+            $.ajax({
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=changeInviteCode&user_ids="+id+"&new_short_alias="+new_short_alias,
+                    data: "ajax=1",
+                    dataType: "json",
+                    success: function(obj){
+                        alert(obj.info);
+                        if(obj.status==1)
+                        {
+                            location.href=location.href;
+                        }
+                    }
+            });
+
+    }
+ </script>

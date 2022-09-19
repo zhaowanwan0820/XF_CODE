@@ -1,0 +1,90 @@
+    {// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<style type="text/css">
+    #tab_nav{margin:0; padding:0; height:25px; line-height:24px;border-bottom:1px solid #999;}
+    #tab_nav li{float:left; margin:0 3px; list-style:none; border:1px solid #999; border-bottom:none; height:24px; width:110px; text-align:center; background:#FFF;border-top-left-radius:4px;border-top-right-radius:4px;}
+    a{font:bold 14px/24px "微软雅黑", Verdana, Arial, Helvetica, sans-serif; color:green; text-decoration:none;}
+    a:hover{color:red;}
+
+    .hl{
+        color:#666;
+        font-weight: bold;
+        font-size:12px;
+    }
+</style>
+
+
+<div class="main">
+    <div class="blank5"></div>
+
+    <div id="box">
+        <ul id="tab_nav">
+            <foreach name="adTypes" item="type">
+            <li><a href="#{$type}">{$type}</a></li>
+            </foreach>
+            <li style="width:50px;"><a href="/m.php?m=AdUnit&a=addAdTpl" style="color:#ff6600">添加</a></li>
+        </ul>
+    </div>
+
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+
+    <foreach name="list" item="item">
+        <div style="float:left;width:95%;height:20px;background:#eee;padding:10px;border:1px solid #EEE;clear:both" id="{$item.name}">
+            <div style="float:left">
+            <span style="margin-right:20px;">adId : <span class="hl">{$item.id}</span></span>
+            <span style="margin-right:20px;">广告类型 : <span class="hl">{$item.name}</span></span>
+            <span style="margin-right:20px;">支持尺寸 : <span class="hl">{$item.size}</span></span>
+            <span style="margin-right:20px;">颜色区块 : <span class="hl">{$item.color}</span></span>
+            <span style="margin-right:20px;">数据条数 : <span class="hl">{$item.rows}</span></span>
+            </div>
+            <div style="float:right">
+                <span style="margin-right:30px;"><a href="/m.php?m=AdUnit&a=editAdTpl&adId={$item.id}" >修改</a> <a href="javascript:deleteConfirm({$item.id})" >删除</a></span>
+            </div>
+        </div>
+        <div style="float:left;width:95%;padding:10px;border:1px solid #EEE;clear:both" class="adTpl" rows="{$item.rows}">
+            {$item.content}
+        </div>
+        <div style="clear:both;padding:10px;"></div>
+    </foreach>
+
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+
+
+</div>
+
+<script>
+
+    function cloneNode(rows, node, nodeP){
+        if(rows != '*'){
+            for(var i=1; i<rows; i++){
+                node.clone(true).appendTo(nodeP);
+            }
+        }
+
+    }
+
+    $(".adTpl").each(function(){
+        cloneNode($(this).attr('rows'), $(this).find('li'), $(this).find('ul'));
+    });
+    $("span").each(function(){
+
+        if($(this).text() == '满标' || $(this).text() == '还款中' ){
+            $(this).remove();
+        }
+    });
+
+    function deleteConfirm(adId){
+        var r=confirm("确认删除?")
+        if (r==true){
+            location.href="/m.php?m=AdUnit&a=doDelAdTpl&adId="+adId;
+        }
+    }
+
+
+</script>
+
+<include file="Public:footer" />

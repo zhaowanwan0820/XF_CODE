@@ -1,0 +1,428 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_load.css');?>" />
+
+<div class="p_account_load">
+    <div class="user_right_box mb15 user_right_box_v2">
+        <div class="user_title">{if !$is_firstp2p}{if $type eq 0}<a href="/account/load?type=1" class="see_lgl fr pr15">只查看我的通知贷</a>{elseif $type eq 1}<a href="/account/load" class="see_lgl fr pr15">查看全部项目</a>{/if}{/if}
+            <h1 class="fl"><i class="ico_huankuan"></i>{if !$is_firstp2p}已投项目{else}已出借项目{/if}</h1>
+            {if !$is_firstp2p}
+            <ul class="ui_huank_nav fl">
+                <li {if $type neq 2} class="select" {/if}><a href="/account/load">{if !$is_firstp2p}投资理财{else}我的出借{/if}</a></li>
+                {if $is_duotou_inner_user eq 1}
+                    <li><a href="/account/finplan">智多新</a></li>
+                {/if}
+                <!-- <li {if $type eq 2} class="select" {/if}><a href="/account/load?type=2">交易中心</a></li> -->
+            </ul>
+            {/if}
+        </div>
+
+
+        <form id="search" action='{url x="index" r="account/load"}' method="get">
+        <div class="screening clearfix">
+            <div class="select_box JS_select_box" data-name="status">
+                <div class="j_select"></div>
+                <ul class="select_ul none j_selectContent">
+                    <li data-value="0" {if $status eq 0}data-select="1"{/if}>全部{if !$is_firstp2p}投资{/if}状态</li>
+                    <li data-value="1" {if $status eq 1}data-select="1"{/if}>{if !$is_firstp2p}投标中{else}募集中{/if}</li>
+                    <li data-value="2" {if $status eq 2}data-select="1"{/if}>满标</li>
+                    <li data-value="4" {if $status eq 4}data-select="1"{/if}>回款中</li>
+                    <li data-value="5" {if $status eq 5}data-select="1"{/if}>已回款</li>
+                </ul>
+            </div>
+            <input type="hidden" name="type" value="{$type}" />
+            <div class="sel_time">
+                <span>时间</span>
+                <input type="text" class="time_box" id="dateInput1" name="date_start" value="{$date_start}"><span class="pl10">-</span><input type="text" class="time_box" id="dateInput2" name="date_end" value="{$date_end}">
+            </div>
+            <input type="submit" value="筛选" class="button_shaixian fr">
+        </div>
+        </form>
+
+    </div>
+
+    {if $list}
+    {foreach from=$list item="item"}
+    <section>
+        <div class="project clearfix">
+                <div class="project_l fl">
+                    {if $item.deal.deal_status eq 1}
+                    {if $is_firstp2p}
+                    <i class="pro_state_mjz"></i>
+                    {else}
+                    <i class="pro_state_tbz"></i>
+                    {/if}
+                    {elseif $item.deal.deal_status eq 2}
+                    <i class="pro_state_mb"></i>
+                    {elseif $item.deal.deal_status eq 4}
+                        {if $item.deal.deal_type eq 1 && !$item.loan_repay_list}
+                    <i class="pro_state_dsh"></i>
+                        {else}
+                    {if $item.deal_compound_real_time}
+                        <i class="pro_state_yhk"></i>
+                    {else}
+                        <i class="pro_state_hkz"></i>
+                    {/if}
+
+                        {/if}
+                    {elseif $item.deal.deal_status eq 5}
+                    <i class="pro_state_yhk"></i>
+                    {/if}
+
+                    <!--待赎回
+                         <i class="pro_state_dsh"></i>
+                    -->
+                    <!--还款中  已经申请赎回了 才有的
+                         <i class="pro_state_lglhkz"></i>
+                    -->
+                    <h1>
+                        {if $item.deal.deal_type eq 0 || $item.deal.deal_type eq 1 || $item.deal.deal_type eq 2 || $item.deal.deal_type eq 3 || $item.deal.deal_type eq 5}
+                        <a title="{$item.deal.name}" class="pro_name" href="{$item.deal.url}" target="_blank">{$item.deal.deal_name}</a>
+                        {else}
+                        <a title="{$item.deal.name}" class="pro_name" href="#">{$item.deal.deal_name}</a>
+                        {/if}
+                        <!-- <span class="pro_nub"><em class="color-gray1"></em></span> -->
+                        {if $item.contracts || $item.loan_repay_list}
+                        <span class="pro_button">
+                            <a href="#none" class="j_por_Show">查看详情<i class="ico_proShow"></i></a><a href="#none" class="j_por_Hide" style="display:none">收起详情<i class="ico_proHide"></i></a>
+                        </span>
+                        {/if}
+                    </h1>
+                    <div class="por_con">
+                        <table>
+                            <colgroup>
+                                <col width="232">
+                                <col width="170">
+                                <col width="200">
+                            </colgroup>
+
+                            <tbody>
+                                <tr>
+                                    <td><em class="color-gray1">{if $item.deal.deal_type eq 0 || $item.deal.deal_type eq 5}出借金额{else}投资金额{/if}:</em>  <em class="color-yellow1">{function name="number_format" v="$item.money" f="2"}元</em></td>
+                                    <td>
+                                        <em class="color-gray1">{if $item.deal.deal_type eq 0 || $item.deal.deal_type eq 5}年化借款利率{else}预期年利率{/if}:</em>
+                                        <em class="color-yellow1">
+                                        {if $item.deal.isBxt eq 1}
+                                            {if $item.deal.income_fee_rate neq $item.deal.max_rate }
+                                            {function name="number_format" v="$item.deal.income_base_rate" f="2"}%~{function name="number_format" v="$item.deal.max_rate" f="2"}%
+                                            {else}
+                                                {function name="number_format" v="$item.deal.income_base_rate" f="2"}%
+                                            {/if}
+                                        {else}
+                                            {function name="number_format" v="$item.deal.income_base_rate" f="2"}%</em>{if $item.deal.deal_type eq 1}起{/if}
+                                        {/if}
+                                    </td>
+                                    <td><em class="color-gray1">{$item.deal.repay_start_time_name}:</em>  {$item.deal.formated_repay_start_time}</td>
+                                </tr>
+                            {if $item.deal.deal_type neq 1}
+                                <tr>
+                                    <td><em class="color-gray1">{if $item.deal.deal_type eq 0 || $item.deal.deal_type eq 5}还款方式{else}收益方式{/if}: </em> {$item.deal.loantype_name} </td>
+                                    {if $type neq 2}
+                                    <td>
+                                        <em class="color-gray1 jk-txt">{if $item.deal_load.is_lease eq 1}融资方{else}{if $item.deal.isBxt eq 0}借款人{else}受托人{/if}{/if}:</em>
+                                        <span class="jk-name" title="{$item.deal.user_deal_name}">{$item.deal.user_deal_name}</span>
+                                    </td>
+                                    {/if}
+                                    <td><em class="color-gray1">{if $item.deal.deal_type eq 0 || $item.deal.deal_type eq 5}借款期限{else}投资期限{/if}: </em> <em class="color-yellow1">{$item.deal.repay_time}</em> {if $item.deal.loantype eq 5}天{else}个月{/if} </td>
+                                </tr>
+                            {else}
+                                <tr>
+                                    <td><em class="color-gray1">收益方式: </em> 提前{$item.deal.redemption_period}天申请赎回 </td>
+                                    <td>
+                                        {if $type neq 2}
+                                        <em class="color-gray1 jk-txt">{if $item.deal_load.is_lease eq 1}融资方{else}借款人{/if}: </em>
+                                        <span class="jk-name" title="{$item.deal.user_deal_name}">{$item.deal.user_deal_name}</span>
+                                        {/if}
+                                    </td>
+                                    <td><em class="color-gray1">投资期限: </em> {function name="plus" x=$item.deal.lock_period y=$item.deal.redemption_period}~{$item.deal.repay_time}天 </td>
+                                </tr>
+                            {/if}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {if $item.deal.deal_type neq 1}
+                <div class="project_r fr">
+                    <p>{if $item.deal.deal_type eq 0 || $item.deal.deal_type eq 5}借款利息{else}预期收益{/if}</p>
+                    <p><strong class="f24 color-yellow1">{function name="number_format" v="$item.deal_load.income" f="2"}元</strong></p>
+                    <p class="p_line"></p>
+                    <p>{if $item.deal.deal_type eq 0 || $item.deal.deal_type eq 5}已获利息{else}已获收益{/if}</p>
+                    <p><strong class="f24 color-green">{function name="number_format" v="$item.deal_load.real_income" f="2"}元</strong></p>
+                </div>
+            {else}
+                <div class="project_r fr">
+                    {if $item.deal.deal_status eq 1 || $item.deal.deal_status eq 2}
+                        <p>截止今日收益</p>
+                        <p><strong class="f24 color-yellow1">{function name="number_format" v="$item.deal_compound_day_interest" f="2"}元</strong></p>
+                        <p class="p_line"></p>
+                        <p>等待放款</p>
+                        <p>开始计息</p>
+                    {/if}
+
+                    {if $item.deal.deal_status eq 4}
+                        {if !$item.loan_repay_list}
+                            <p><!-- 截止今日收益 -->今日申请赎回可获收益</p>
+                            <p><strong class="f24 color-yellow1">{function name="number_format" v="$item.deal_compound_day_interest" f="2"}元</strong></p>
+                            <p class="p_line"></p>
+                            <!--利滚利项目 待赎回-->
+                            <a href="javascript:void(0)" data-id="{$item.id}" class="j_shuhui">申请赎回</a>
+                            <!--利滚利项目 待赎回 end-->
+                        {else}
+                            <p>预期收益</p>
+                            <p><strong class="f24 color-yellow1">{function name="number_format" v="$item.deal_load.income" f="2"}元</strong></p>
+                            <p class="p_line"></p>
+                            {if $item.deal_compound_real_time}
+                                <p>已获收益</p>
+                                <p><strong class="f24 color-green">{function name="number_format" v="$item.deal_load.real_income" f="2"}元</strong></p>
+                            {else}
+                                <p>预计到账日</p>
+                                <p>{$item.deal_compound_repay_time}</p>
+                            {/if}
+                        {/if}
+                    {/if}
+                    {if $item.deal.deal_status eq 5}
+                        <p>预期收益</p>
+                        <p><strong class="f24 color-yellow1">{function name="number_format" v="$item.deal_load.income" f="2"}元</strong></p>
+                        <p class="p_line"></p>
+                        <p>已获收益</p>
+                        <p><strong class="f24 color-green">{function name="number_format" v="$item.deal_load.real_income" f="2"}元</strong></p>
+                    {/if}
+                </div>
+            {/if}
+
+                {if $item.contracts || $item.loan_repay_list}
+                <div class="pro_detailed clearfix j_table_tab"  style="display:none;">
+                    {if $item.contracts}
+                    <h2 class="sub_title"><span>{if $type eq 2}协议{else}合同{/if}</span></h2>
+                    <div class="contract clearfix">
+                        {foreach from=$item.contracts item="contract" key="k"}
+                        <div class="jk_contract">
+                            <!-- <i class="ico_jilu fl"></i>
+                            <div class="con_title">
+                            <p title="{$contract.title}">{$contract.title}</p>
+                            <span class="con_nub">{$contract.number}</span>
+                            <a class="action action-view j_view" href="javascript:clickopen({$contract.id});" data-id="{$contract.id}" title="查看"><i class="ico_see"></i></a>
+                            <a class="action action-download" href='{url x="index" r="account/contshow"}?id={$contract.id}&tag=download&ajax=0' title="下载PDF"><i class="ico_down"></i></a>
+                            </div> -->
+                            <table>
+                                <tr>
+                                    {if $item.is_attachment eq 1}
+                                    <td valign="top"><i class="ico_jilu fl mrt4"></i></td>
+                                    <td width="680">
+                                        <p title="{$contract.name}" class="color-black">{$contract.name}</p>
+                                    </td>
+                                    <td>
+                                        <a href="{$contract.url}" target="_blank">下载</a>
+                                    </td>
+                                    {else}
+                                    <td valign="top"><i class="ico_jilu fl"></i></td>
+                                    <td width="680">
+                                        <p title="{$contract.title}" class="color-black">{$contract.title}</p>
+                                        <span class="con_nub mr20 pr20">编号：{$contract.number}</span>
+                                    </td>
+                                    <td>
+                                        {if $contract.deal_id eq ''}
+                                        <a href="javascript:clickopen({$contract.id},'','');" class="mr15">查看</a>
+                                        {else}
+                                        <a href="javascript:clickopen({$contract.id},'{$contract.number}',{$contract.deal_id});" class="mr15">查看</a>
+                                        {/if}
+
+                                        <a href="{url x="index" r="account/contshow"}?id={$contract.id}&tag=download_tsa&ajax=0&number={$contract.number}&dealId={$contract.deal_id}">下载</a>
+                                    </td>
+                                    {/if}
+                                </tr>
+                            </table>
+                        </div>
+
+                        {/foreach}
+                    </div>
+                    {/if}
+
+                    {if $item.loan_repay_list}
+                    <h2 class="sub_title"><span>回款计划</span></h2>
+                    <table class="plan">
+                        <colgroup>
+                            <col width="182">
+                            <col width="182">
+                            <col width="120">
+                            <col width="213">
+
+                            <col width="160">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th><div class="tl pl10">回款日</div></th>
+                                <th><div class="tl pl20">金额（元）</div></th>
+                                <th>类型</th>
+                                <th>实际回款日</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+
+                        {foreach from=$item.loan_repay_list item="repay_list"}
+                        <tbody class="tabContent">
+
+                            {foreach from=$repay_list item="repay" key="k"}
+                            {if $k%2==0}<tr>{else}<tr class="tr_bg">{/if}
+                                <td><div class="tl pl25">{function name="to_date" v="$repay.time" f="Y-m-d"}</div></td>
+                                <td><div class="tl pl20"><em class="color-yellow1">{function name="number_format" v="$repay.money" f="2"}</em></div></td>
+                                <td>{$repay.money_type}</td>
+                                <td>{if $repay.is_delay}{$repay.real_time}{else}{$repay.real_time}{/if}</td>
+                                <td>{if $repay.status eq 2}<em class="color-red1">{/if}{$repay.money_status}{if $repay.status eq 2}</em>{/if}</td>
+                            </tr>
+                            {/foreach}
+
+                        </tbody>
+                        {/foreach}
+
+                    </table>
+
+                    <div class="pages">
+                        {if count($item.loan_page) > 1}
+                            {foreach from=$item.loan_page item="p"}
+                            <a href="#" class="current tab">{$p}</a>
+                            {/foreach}
+                        {/if}
+                    </div>
+                    {else}
+                        {if $item.deal.deal_type eq 1}
+                    <h2 class="sub_title"><span>回款计划</span></h2>
+                    <p>申请赎回后生成回款计划</p>
+                        {/if}
+                    {/if}
+                </div>
+                {/if}
+        </div>
+    </section>
+    {/foreach}
+    <div class="pt20 pages_maidian">
+        <div class="pages p0">{$pages}</div>
+    </div>
+
+    {else}
+        <div class="empty-box">没有项目</div>
+    {/if}
+    <!--申请赎回内容-->
+    <div class="redemption">
+        <div class="redemption_time">
+            <h3 class="f16" id="_js_title">今日申请赎回，2015-02-12到账</h3>
+            <h4 class="color-blue1 f12" id="_js_is_holiday"></h4>
+        </div>
+        <div class="redemption_con">
+            <p>项目名称<strong>：<span id="_js_name">利滚利001号</span></strong></p>
+            <p>投资金额：<span id="_js_money">1000,00.00元</span></p>
+            <p>赎回本息：<span id="_js_sum" class="color-yellow1">1000,00.00元</span></p>
+            <p style="color:#999;padding-top:0">赎回不可撤销</p>
+        </div>
+    </div>
+    <!--申请赎回内容 end-->
+</div>
+
+
+
+<script>
+//还款计划分页js
+$(".j_table_tab").goodTab();
+
+function clickopen(id,number,deal_id){
+    var url = '{url x="index" r="account/contshow"}?tag=shownew&ajax=1&id='+id+'&number='+number+'&dealId='+deal_id;
+    $.weeboxs.open(url, {boxid:null,contentType:'iframe',showButton:true, showCancel:false, showOk:false,title:'合同详情',width:750,height:550,type:'wee',onclose:function(){null}});
+}
+$(".j_shuhui").click(function(){
+    var id = $(this).attr('data-id');
+    if(!id){
+        return false;
+    }
+    var url = '/account/loadshow?id='+id;
+    $.getJSON(url,function(data){
+        if(!data.status){
+            alert(data.info);
+            return false;
+        }
+        $("#_js_name").html(data.info.name);
+        $("#_js_money").html(data.info.money);
+        $("#_js_sum").html(data.info.sum);
+        $("#_js_title").html(data.info.title);
+        if(data.info.is_holiday){
+            $("#_js_is_holiday").html(data.info.is_holiday);
+        }else{
+            $("#_js_is_holiday").hide();
+        }
+        $.weeboxs.open('.redemption', {contentType:'selector',boxclass:"shuhui_box",onok:function(){redeem(id,this);},showButton:true,okBtnName: '确认赎回', showCancel:true, showOk:true,title:'赎回详情',height:220,width:450,type:'wee',onclose:function(){null}});
+    });
+
+    function redeem(id,thiz){
+        var url = '/account/redeem';
+        $(thiz).addClass('but-disabled').attr("disabled","disabled").css({"cursor":"default"});
+        $.post(url,{id:id},function(rs){
+            if(rs.status == 0){
+               alert('正在放款中，请稍后重试！');
+                $(thiz).removeClass('but-disabled').removeAttr("disabled","disabled").css({"cursor":"pointer"});
+            }else{
+               window.location.href = '/account/success/?id='+id+'&gS='+rs.jump.gS+'&action='+rs.jump.action;
+            }
+        });
+    }
+});
+
+$(".JS_select_box").select();
+$("#dateInput1").datepicker({
+    onClose: function(selectedDate) {
+        $("#dateInput2").datepicker("option", "minDate", selectedDate);
+    }
+});
+$("#dateInput2").datepicker({
+    onClose: function(selectedDate) {
+        $("#dateInput1").datepicker("option", "maxDate", selectedDate);
+    }
+});
+$(function() {
+    $('.j_por_Show').click(function() {
+        zhuge.track('我的账户页_我的出借页面点击情况',{
+            '区域': '查看详情'
+        })
+        var nIndex = $('.j_por_Show').index(this);
+        $(this).hide();
+        $('.j_por_Hide').eq(nIndex).show();
+        $('.pro_detailed').eq(nIndex).slideDown();
+    });
+    $('.j_por_Hide').click(function() {
+        var cIndex = $('.j_por_Hide').index(this);
+        $(this).hide();
+        $('.j_por_Show').eq(cIndex).show();
+        $('.pro_detailed').eq(cIndex).slideUp();
+    });
+})
+//合同时间戳
+$(".JS_contract_down").click(function() {
+    var _contractId = $(this).attr('contractId');
+    $.weeboxs.open("该合同未盖时间戳，请确认是否下载该合同？", {
+        boxid : null,
+        contentType : 'text',
+        showButton : true,
+        showCancel : true,
+        showOk : true,
+        title : '提示',
+        width : 300,
+        type : 'wee',
+        onclose : function() {
+            null
+        },
+        onok : function() {
+            location.href="{url x="index" r="account/contshow"}?id="+_contractId+"&tag=download&ajax=0";
+            $.weeboxs.close();
+        }
+    });
+});
+//埋点
+$(function(){
+    zhuge.track('我的账户页_进入我的出借页面')
+});
+function zhugeTrack(place, name, id, content){
+    $('html').on('click',place,function(){
+        var data = {};
+        data[id] = content;
+        zhuge.track(name, data)
+    })
+}
+zhugeTrack('.button_shaixian','我的账户页_我的出借页面点击情况','区域','筛选')
+zhugeTrack('.pages_maidian a','我的账户页_我的出借页面点击情况','区域', '底部翻页')
+</script>

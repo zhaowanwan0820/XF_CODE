@@ -1,0 +1,83 @@
+<div class="f_l" style="width: 230px;">
+		目前投资总额：<span class="f_red">{function name="format_price" v="$deal.load_money"}</span>
+</div>
+<div class="f_l" style="width: 230px">
+	剩余投资金额：<span class="f_red">{$deal.need_money}</span>
+ </div>
+ <div class="f_l" style="width: 230px">
+ 	剩余投资时间：
+        <span class="f_red">
+            {if $deal.deal_status neq 1}
+			0天0时0分
+			{else}
+			{$deal.remain_time_format}
+			{/if}
+        </span>
+  </div>
+  <div class="f_r" style="width: 141px;">
+ 	{if $deal.is_delete eq 2}
+		<img src="{$TMPL}/images/not_publish.png" alt="" width="111px" height="34px">
+	{elseif $deal.deal_status eq 5}
+		<img src="{$TMPL}/images/load_done.png" alt="" width="111px" height="34px">
+	{elseif $deal.deal_status eq 4}
+		<img src="{$TMPL}/images/load_in_progress.png" alt="" width="111px" height="34px">
+	{elseif $deal.deal_status eq 0}
+		<img src="{$TMPL}/images/loan_writeM.png" alt="" width="111px" height="34px">
+	{elseif $deal.deal_status eq 1 && $deal.remain_time gt 0}
+		<img src="{$TMPL}/images/load.png" alt="" style="cursor: pointer" onclick="javascript:window.location.href='{url x="index" r="deal#bid" p="id=$deal.id"}'" width="111px" height="34px">
+	{elseif $deal.deal_status eq 2}
+		<img src="{$TMPL}/images/load_full.png" alt="" width="111px" height="34px">
+	{elseif $deal.deal_status eq 3 || $deal.remain_time lte 0}
+		<img src="{$TMPL}/images/load_fail.png" alt="" width="111px" height="34px">
+	{/if}
+  </div>
+  <div class="blank5"></div>
+  <table border="0" cellspacing="1" style="background:#ccc;width: 100%;">
+    <tbody>
+        <tr style="height: 30px;">
+            <td width="20%" style="background: #F6F6F6;">
+                <div align="center">投资人</div>
+            </td>
+            <td width="20%" style="background: #F6F6F6;">
+                <div align="center">投资金额 </div>
+            </td>
+            <td width="20%" style="background: #F6F6F6;">
+                <div align="center">投资时间</div>
+            </td>
+            <!-- 
+            <td width="20%" style="background: #F6F6F6;">
+                <div align="center">投资来源</div>
+            </td>
+             -->
+        </tr>
+		{foreach from="$load_list" item="load"}
+		<tr>
+			<td class="wb tc">
+			<!-- 
+			<a href="{url x="index" r="space" p="id=$load.user_id"}" class="f_red">{$load.user_name}</a>
+			-->
+			{$load.user_deal_name}
+			</td>
+			<td class="wb tc">
+				{function name="format_price" v="$load.money"}
+			</td>
+			<td class="wb tc">
+				{function name="to_date" v="$load.create_time" f="Y-m-d"}
+				{function name="to_date" v="$load.create_time" f="H:i"}
+			</td>
+			<!-- 
+			//暂时隐藏来源 2013/07/02 Liwei
+			
+			<td class="wb tc">
+				
+				{if $load.from_deal_id == 0}
+				本投资
+				{else}
+				来源于其他标：<a href="/deal/id-{$load.from_deal_id}" target="_blank">{$load.from_deal_id}</a>
+				{/if}
+			</td>
+			 -->
+		</tr>
+		{/foreach}
+    </tbody>
+</table>

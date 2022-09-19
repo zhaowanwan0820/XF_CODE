@@ -1,0 +1,76 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+
+</php>
+<div class="main">
+<div class="main_title">转账订单详情</div>
+<div class="blank5"></div>
+
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        <input type="hidden" value="FinanceQueue" name="m" />
+        <input type="hidden" value="detail" name="a" />
+        订单ID:
+        <input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:180px;" />
+        付款人：
+        <input type="text" class="textbox" name="payerId" value="{:trim($_REQUEST['payerId'])}" style="width:80px;" />
+        收款人：
+        <input type="text" class="textbox" name="receiverId" value="{:trim($_REQUEST['receiverId'])}" style="width:80px;" />
+        <input type="submit" class="button" value="搜索" />
+        状态：
+        <select name="status">
+            <option value="0">初始状态</option>
+            <option value="1">成功</option>
+            <option value="2">失败</option>
+        </select>
+        <input type="submit" class="button" value="搜索" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="11" class="topTd" >&nbsp; </td></tr>
+    <tr class="row">
+        <th width="50">ID</th>
+        <th width="140">业务类型</th>
+        <th width="140">时间</th>
+        <th width="90">订单号</th>
+        <th width="90">付款人</th>
+        <th width="90">收款人</th>
+        <th width="90">金额(元)</th>
+        <th width="80">状态</th>
+        <th width="100">失败原因</th>
+        <th>操作</th>
+    </tr>
+    <?php foreach ($result as $item) { ?>
+    <tr class="row orders">
+        <td><?php echo $item['id']; ?></td>
+        <td><?php echo $item['cate']; ?></td>
+        <td><?php echo date('Y-m-d H:i:s', $item['create_time']); ?></td>
+        <td><?php echo $item['outOrderId']; ?></td>
+        <td><a href="?m=User&a=index&user_id=<?php echo $item['payerId']; ?>" target="_blank"><?php echo $item['payerId']; ?></a></td>
+        <td><a href="?m=User&a=index&user_id=<?php echo $item['receiverId']; ?>" target="_blank"><?php echo $item['receiverId']; ?></a></td>
+        <td><?php echo number_format($item['repaymentAmount'] / 100, 2); ?></td>
+        <td><?php echo $statusMap[$item['status']]; ?></td>
+        <td><?php echo $item['reason']; ?></td>
+        <td>
+            <?php if ($item['status'] != 1) { ?>
+                <a href="?m=FinanceQueue&a=transferFix&orderId=<?php echo $item['outOrderId']; ?>">转账补单</a>
+            <?php } ?>
+        </td>
+    </tr>
+    <?php } //end foreach ?>
+    <tr> <td colspan="11" class="bottomTd">&nbsp; </td> </tr>
+</table>
+
+<div class="blank5"></div>
+<include file="Public:footer" />

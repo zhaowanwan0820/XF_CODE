@@ -1,0 +1,123 @@
+﻿{include file="web/views/v2/header.html"}
+
+<div class="p_user_addbank">
+    <link href="<?php echo $this->asset->makeUrl('v2/css/user_addbank.css');?>" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('v2/css/user_charge.css');?>" rel="stylesheet">
+    <link href="<?php echo $this->asset->makeUrl('v2/css/weebox.css');?>" rel="stylesheet">
+    <style type="text/css">
+        .ui-form .txt-select {
+            background: #FFFFFF;
+            border: 1px solid #bababa;
+            color: #4f4e4e;
+            float: left;
+            height: 40px;
+            line-height: 24px;
+            padding: 5px 13px;
+            width: 290px;
+            font-size: 14px;
+        }
+        .ui-form .er-icon, .ui-form .error-wrap{display: none;}
+    </style>
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                <h2>
+                    <i></i>实名认证
+                </h2>
+            </div>
+            <div class="reg-mid">
+                {if $from eq 'reg'}
+                <div class="gx tc">
+                    <span class="tit f24">恭喜您注册成功!</span>
+                    <span class="f16">请继续完成实名认证</span>
+                </div>
+                {/if}
+                <div class="ui-form">
+                    <form id="bindcard" method="post" action="/account/registerWithBank" >
+                        <div class="te-wrap">
+                            <div class="total-error"><i class="form-sprite"></i>务必填写本人身份信息，设置后不可更改。</div></div>
+                        <?php echo token_input(); ?>
+                        <ul class="clearfix">
+                            <li class="tel-ver clearfix">
+                                <label>姓名</label>
+                                <span class="tel-btn"></span>
+                                <input type="text" data-con="require" placeholder="您的姓名" data-placeholder="您的姓名" name="realName" id="name" value="" class="txt int_placeholder">
+                                <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                                <div class="error-wrap">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <label> 身份号码
+                                </label>
+                                <input type="text" data-con="require" value="" placeholder="您的身份证号码" data-placeholder="您的身份证号码" id="input-cardNo" name="cardNo" class="txt int_placeholder">
+                                <div class="form-sprite pwd-hide"></div>
+                                <div class="gat" style="line-height:36px;height:36px;">港/澳/台用户点击 <a href="/account/passporttype/" class="blue">这里</a></div>
+                                <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                                <div class="error-wrap">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text"></div>
+                                </div>
+                            </li>
+                           <!--  <li>
+                                <label> 银行</label>
+                                <select data-con="require" class="txt txt-select" id="Jcarry_bank_id" name="bankName">
+                                    <option value="">请选择</option>
+                                    {foreach from="$bank_list" item="item"}
+                                    <option value="{$item.id}" day="{$item.day}" {if $item.id eq $bankcard_info.bank_id}selected="selected"{/if}>{$item.name}</option>
+                                    {/foreach}
+                                </select>
+                                <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                                <div class="error-wrap">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text"></div>
+                                </div>
+                            </li> -->
+                        <!--     <li>
+                                <label> 银行卡号</label>
+                                <input type="text" data-con="require" placeholder="银行卡号" data-placeholder="银行卡号" name="bankCardNo" id="Jcarry_bankcard" value="" class="txt int_placeholder">
+                                <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                                <div class="error-wrap">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text"></div>
+                                </div>
+
+                            </li> -->
+                        </ul>
+                        <div class="btn-w30">
+                            <input class="common-sprite btn-red-h46" type="submit" id="submit_button" value="下一步">
+                        </div>
+
+                        <div class="p2p-ui-checkbox pad_left">
+                            <div class="fl">
+                                <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal check-select"></a><span>我已阅读并同意<a href="/register_payment.html" class="blue" target="_blank">《支付协议》</a></span>
+                            </div>
+                            <div class="error-wrap" id="agreement_msg">
+                                <div class="form-sprite e-arrow"></div>
+                                <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                <div class="e-text" >不同意支付协议无法完成注册</div>
+                            </div>
+                            <input data-con="require" type="hidden" name="agreement" value="1" id="agree">
+                            <i></i>
+                        </div>
+                        <div class="gray tc">未满18周岁和70周岁（含）以上用户不支持实名认证</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/temp/jquery.bgiframe.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/temp/jquery.weebox.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/widget/p2p-ui-checkbox.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/common/p2p_validate.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/oauth/bindcard.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/common/jquery_placeholder-1.0.js');?>"></script> 
+{include file="web/views/v2/footer.html"}

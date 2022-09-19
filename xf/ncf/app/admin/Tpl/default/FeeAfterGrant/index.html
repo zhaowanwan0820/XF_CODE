@@ -1,0 +1,87 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">放款后收费列表</div>
+<div class="blank5"></div>
+
+<div class="search_row">
+<form name="search" action="__APP__" method="get">
+标的Id：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" size="10"/>
+创建时间：<input type="text" class="textbox search_export" id="create_time_start" name="create_time_start" value="{:trim($_REQUEST['create_time_start'])}" style="width:150px;" onfocus="return showCalendar('create_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_create_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_create_time_start" value="选择" onclick="return showCalendar('create_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_create_time_start');" />
+至
+        <input type="text" class="textbox search_export" name="create_time_end" id="create_time_end" value="{:trim($_REQUEST['create_time_end'])}" style="width:150px;" onfocus="return showCalendar('create_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_create_time_end');" style="width:150px;" />
+        <input type="button" class="button" id="btn_create_time_end" value="选择" onclick="return showCalendar('create_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_create_time_end');" /><br />
+ 代扣结果:<select class="selectbox" name="charge_result">
+    <foreach name="resultMap" key="status" item="desc">
+     <option value="{$status}" <if condition="$status == $_GET['charge_result']"> selected </if> >{$desc}</option>
+    </foreach>
+ </select>
+回调时间：<input type="text" class="textbox search_export" id="callback_time_start" name="callback_time_start" value="{:trim($_REQUEST['callback_time_start'])}" style="width:150px;" onfocus="return showCalendar('callback_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_callback_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_callback_time_start" value="选择" onclick="return showCalendar('callback_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_callback_time_start');" />
+至
+        <input type="text" class="textbox search_export" name="callback_time_end" id="callback_time_end" value="{:trim($_REQUEST['callback_time_end'])}" style="width:150px;" onfocus="return showCalendar('callback_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_callback_time_end');" style="width:150px;" />
+        <input type="button" class="button" id="btn_callback_time_end" value="选择" onclick="return showCalendar('callback_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_callback_time_end');" />
+<input type="hidden" value="FeeAfterGrant" name="m" />
+<input type="hidden" value="index" id="formActionCtl" name="a" />
+</if>
+<input type="submit" class="button" value="{%SEARCH}" />
+<input type="BUTTON" id="btn_export" class="button" value="{%EXPORT}" />
+</form>
+</div>
+<div class="blank5"></div>
+
+<php>
+function to_datetime($stamp) {
+    if (empty($stamp)) {
+        return '-';
+    }
+    return date('Y-m-d H:i:s', $stamp);
+}
+function to_moneyformat($amount) {
+    return number_format(bcdiv($amount, 100, 2), 2);
+}
+
+function to_status($status)
+{
+    return \\core\\service\\deal\\FeeAfterGrantService::$resultMap[$status];
+}
+</php>
+<html:list
+id="dataTable"
+style="dataTable"
+name="user"
+checkbox="true"
+action="true"
+datasource="list"
+show="id:编号,deal_id:标的Id,grant_time|to_datetime:放款时间,deal_name:借款标题,deal_user_name:借款人,callback_time|to_datetime:回调时间,fee_amount|to_moneyformat:代扣金额,charge_result|to_status:代扣结果,fail_reason:失败原因"
+actionlist="resend:手动重发" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+function resend(id) {
+    window.location.href = "/m.php?m=FeeAfterGrant&a=resend&id="+id;
+}
+$(document).ready(function(){
+    $('#btn_export').click(function(){
+        $('#formActionCtl').attr('value', 'export');
+        $('form[name=search]').submit();
+    })
+});
+</script>
+<include file="Public:footer" />

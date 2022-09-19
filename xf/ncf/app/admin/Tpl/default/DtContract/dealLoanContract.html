@@ -1,0 +1,71 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<div class="main">
+<div class="main_title">合同列表 <a href="{:u("DtDealLoan/index")}project_id={$project_id}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            <input type="hidden" value="DtContract" name="m" />
+            <input type="hidden" value="dealLoanContract" name="a" />
+            借款编号：<input type="text" class="textbox" name="p2p_deal_id" value="{:trim($_REQUEST['p2p_deal_id'])}" style="width:100px;" />
+            出借时间:
+            <input type="text" class="textbox" style="width:140px;" name="start_date" id="start_date" value="{$_REQUEST['start_date']}" onfocus="this.blur(); return showCalendar('start_date', '%Y-%m-%d 00:00:00', false, false, 'btn_start_date');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_start_date" value="{%SELECT_TIME}" onclick="return showCalendar('btn_start_date', '%Y-%m-%d %H:%M:00', false, false, 'btn_start_date');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="end_date" id="end_date" value="{$_REQUEST['end_date']}" onfocus="this.blur(); return showCalendar('end_date', '%Y-%m-%d 23:59:59', false, false, 'end_date');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_end_date" value="{%SELECT_TIME}" onclick="return showCalendar('end_date', '%Y-%m-%d %H:%M:59', false, false, 'btn_end_date');" />
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="{$loan_id}" name="loanId" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th>序号</th>
+        <th width="100px">合同标题</th>
+        <th>角色</th>
+        <th>交易方</th>
+        <th>创建时间</th>
+        <th>借款编号</th>
+        <th>金额</th>
+        <th>操作</th>
+    </tr>
+
+
+    <?php foreach($data as $k=>$v) :?>
+    <tr class="row">
+        <td><?= $v['id']; ?></td>
+        <td><?= $v['title']; ?></td>
+        <td><?= $v['role']; ?></td>
+        <td><?= $v['user_name']; ?></td>
+        <td><?= $v['create_time_date']; ?></td>
+        <td><?php echo $v['p2p_deal_id']?$v['p2p_deal_id']:'-'; ?></td>
+        <td><?= $v['money']; ?></td>
+        <td>
+            <a href='javascript:void(0)' onclick="opencontract('<?=$v['contract_type'];?>','<?=$v['money'];?>','<?=$v['user_id'];?>','<?=$v['create_time'];?>','<?=$v['p2p_deal_id'];?>','<?=$v['dt_deal_id'];?>','<?=$v['redemption_user_id'];?>','<?=$v['dt_record_id'];?>','<?=$v['dt_loan_id'];?>','<?=$v['number'];?>','<?=$v['p2p_load_id'];?>','<?=$v['contract_id'];?>','<?=$v['project_id'];?>');">预览</a>
+            <a href="/m.php?m=DtContract&a=download&ctype=<?=$v['contract_type'];?>&money=<?=$v['money'];?>&user_id=<?=$v['user_id'];?>&create_time=<?=$v['create_time'];?>&p2p_deal_id=<?=$v['p2p_deal_id'];?>&dt_deal_id=<?=$v['dt_deal_id'];?>&redemption_user_id=<?=$v['redemption_user_id'];?>&dt_record_id=<?=$v['dt_record_id'];?>&dt_loan_id=<?=$v['dt_loan_id'];?>&p2p_load_id=<?=$v['p2p_load_id'];?>&contract_id=<?=$v['contract_id'];?>&project_id=<?=$v['project_id'];?>&number=<?=$v['number'];?>">下载pdf</a>
+            <?php if($v['is_tsa'] == 1) { ?>
+            <a href="/m.php?m=DtContract&a=downloadtsa&ctype=<?=$v['contract_type'];?>&contract_id=<?=$v['contract_id'];?>&p2p_deal_id=<?=$v['p2p_deal_id'];?>&dt_loan_id=<?=$v['dt_loan_id'];?>&loan_id=<?=$v['loan_id'];?>&dt_loan_id=<?=$v['dt_loan_id'];?>">下载TSA</a>
+            <?php } ?>
+    <?php endforeach; ?>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+    function opencontract(ctype,money,user_id,create_time,p2p_deal_id,dt_deal_id,redemption_user_id,dt_record_id,dt_loan_id,number,p2p_load_id,contract_id,project_id){
+        $.weeboxs.open(ROOT+'?m=DtContract&a=openContract&ctype='+ctype+'&user_id='+user_id+'&money='+money+'&create_time='+create_time+'&p2p_deal_id='+p2p_deal_id+'&dt_deal_id='+dt_deal_id+'&redemption_user_id='+redemption_user_id+'&dt_record_id='+dt_record_id+'&dt_loan_id='+dt_loan_id+'&number='+number+'&p2p_load_id='+p2p_load_id+'&contract_id='+contract_id+'&project_id='+project_id, {contentType:'ajax',showButton:false,title:'合同内容',width:650,height:500});
+    }
+</script>
+<include file="Public:footer" />

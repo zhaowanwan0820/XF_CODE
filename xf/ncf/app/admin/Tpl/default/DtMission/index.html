@@ -1,0 +1,59 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+
+<div class="main">
+<div class="main_title">每日任务监控列表</div>
+
+<div class="blank5"></div>
+
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        类型：
+        <select name="type">
+            <option value="0" <if condition="intval($_REQUEST['type']) eq 0">selected="selected"</if>> 全部 </option>
+            <option value="1" <if condition="intval($_REQUEST['type']) eq 1">selected="selected"</if>> 赎回资金匹配 </option>
+            <option value="2" <if condition="intval($_REQUEST['type']) eq 2">selected="selected"</if>> 投标匹配 </option>
+        </select>
+
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DtMission" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th>日期</th>
+        <th>投资总额</th>
+        <th>匹配投资总额</th>
+        <th>匹配投资状态</th>
+        <th>赎回总额</th>
+        <th>匹配赎回总额</th>
+        <th>匹配赎回状态</th>
+    </tr>
+    <tr>
+        <td colspan="20" class="bottomTd"> &nbsp;</td>
+    </tr>
+    
+    <?php foreach($data as $k=>$v) :?>
+    <tr class="row">
+        <td><?= date('Y-m-d H:i:s',$v['startTime'])?></td>
+        <td><?= $v['loanTotal']?></td>
+        <td><?= $v['loanMapping']?></td>
+        <td><?= $v['loanStatus']?></td>
+        <td><?= $v['redeemTotal']?></td>
+        <td><?= $v['redeemMapping']?></td>
+        <td><?= $v['redeemStatus']?></td><!-- 状态：默认“已完成”。 -->
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

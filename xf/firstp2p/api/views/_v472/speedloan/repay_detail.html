@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>还款明细</title>
+</head>
+<body class="hkmx_body">
+<input type="hidden" value="{$token}" id="tokenHidden"/>
+<input type="hidden" value='{$repayItems}' id="repayListHidden"/>
+<input type="hidden" value='{$loanId}' id="loanIdHidden"/>
+<!-- 累积还款本金 begin -->
+<div class="totalRepay">
+    <div class="title">累积还款本金(元)</div>
+    <div class="num">{$creditInfo.principalAmountFormat}</div>
+</div>
+<!-- 累积还款本金 end -->
+
+<!-- 还款列表 begin -->
+<ul class="repayList" id="repayListUl">
+
+</ul>
+<a href="javascript:;" class="ajaxPage loadMore" id="ajaxPage" data-page="2">点击加载更多</a>
+<!-- 还款列表 end -->
+<!-- 缺省页 begin -->
+<div class="defaultPH" id="defaultPH">
+    <img src="<?php echo $this->asset->makeAppUrl('v4.72/images/speedloan/noValidLogo.png');?>"/>
+    <p class="tipText">暂无还款记录</p>
+</div>
+<!-- 缺省页 end -->
+</body>
+<script type="text/html" id="repayItemTel">
+    <li class="repayItem">
+        <div class="title"><%= title %></div>
+        <ul class="recordList">
+            <% include('recordItemTel',{list:list}) %>
+        </ul>
+    </li>
+</script>
+<script type="text/html" id="recordItemTel">
+    <% for(var i=0;i<list.length;i++){ %>
+    <% var item=list[i] %>
+    <li class="recordItem">
+        <div>
+            <p><%= item['dealInfo'] %><span class="graySpan"><%= item['extraInfo'] %></span></p>
+            <p><%= item['amountFormat'] %>元</p>
+        </div>
+        <div>
+            <p><%= item['createTimeFormat'] %></p>
+            <p>含利息<%= item['interestFormat'] %> | 平台服务费<%= item['serviceFeeFormat'] %></p>
+        </div>
+    </li>
+    <% } %>
+</script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.4/js/lib/template-native-debug.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_huankuanmingxi.js');?>"></script>
+{include file="api/views/_v32/footer.html"}

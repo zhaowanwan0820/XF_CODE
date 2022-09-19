@@ -1,0 +1,32 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<div class="main">
+<div class="main_title">充值手续费导入<a href="{:u("PlatformAccount/index")}" class="back_list">返回平台账户资金记录列表</a></div>
+<div class="blank5"></div>
+<form name="doadd" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">文件csv（最多一次处理3000行）</td>
+		<td class="item_input">
+			<input type="file" class="textbox require" name="file" />
+			<!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="PlatformAccount" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="import_csv" />
+			<!--隐藏元素-->
+			<input type="submit" class="button" value="导入" onclick='return confirm("确认提交？")' name="submit" />
+		</td>
+	</tr>
+	
+	
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>	 
+</form>
+</div>
+<include file="Public:footer" />

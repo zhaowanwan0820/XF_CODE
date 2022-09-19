@@ -1,0 +1,58 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<div class="main">
+<div class="main_title">新增账户充值申请 <a href="{:u('MoneyApply/index')}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="doadd" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">用户:</td>
+		<td class="item_input">{$user_info.user_name}</td>
+	</tr>
+    <tr>
+		<td class="item_title">当前账户余额:</td>
+		<td class="item_input">{$user_info.money|format_price}
+        </td>
+	</tr>
+	<tr>
+		<td class="item_title">金额:</td>
+		<td class="item_input"><input type="text" class="textbox require" value="{$vo.money}" name="money" />
+        <span class='tip_span'>[{%INCHARGE_USER_MONEY_TIP}]</span>
+        </td>
+	</tr>
+	<tr>
+		<td class="item_title">流水单号:</td>
+		<td class="item_input"><input type="text" class="textbox" value='{$vo.orderid}' name="orderid" />
+        <span class='tip_span'></span>
+        </td>
+	</tr>
+	<tr>
+		<td class="item_title">备注:</td>
+		<td class="item_input"><input type="text" class="textbox" value="{$vo.note}" name="note" />
+        <span class='tip_span'></span>
+        </td>
+	</tr>
+	<tr>
+		<td class="item_title"></td>
+		<td class="item_input">
+			<!--隐藏元素-->
+			<input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="MoneyApply" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+			<!--隐藏元素-->
+			<input type="submit" class="button" value="{%EDIT}" onclick='return confirm("确认提交？")'/>
+			<input type="reset" class="button" value="{%RESET}" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>	 
+</form>
+</div>
+<include file="Public:footer" />

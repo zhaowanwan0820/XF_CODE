@@ -1,0 +1,115 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script src="__TMPL__Common/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+<div class="main reservationContent">
+    <div class="main_title">
+        <p>{$product_name}预告发布</p>
+    </div>
+    <div class="blank5"></div>
+    <form name="update" action="__APP__" id="pre-form" method="post" enctype="multipart/form-data">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>{$product_name}图片:</td>
+                <td class="item_input">
+                    <html:imgUpload name='banner' id='banner' value='$data.banner_uri' />
+                    <div class="blank5"></div>
+                    <div>750PX*208PX，支持PNG、JPG格式，小于200KB</div>
+                </td>
+            </tr>
+            <tr style="display:none">
+                <td class="item_title"><i class="requireI">*</i>{$product_name}描述:</td>
+                <td class="item_input">
+                    <html:editor id="description" name="description" type="KINDEDITOR" content="{$data.description}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约规则:</td>
+                <td class="item_input">
+                    <html:editor id="reserve_rule" name="reserve_rule" type="KINDEDITOR" content="{$data.reserve_rule}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约期限:</td>
+                <td class="item_input">
+                    <if condition="empty($data['reserve_conf'])">
+                        <p>
+                            <input type="number" class="textbox require" name="expire[0]" required="required"  value=""/>
+                            <foreach name="expireUnitConfig" key="key" item="expireunit_conf">
+                                <input type="radio" name="expire_unit[0]" value="{$expireunit_conf['expireNum']}" <if condition="$key eq 0"> checked </if>>{$expireunit_conf['expireUnit']}
+                            </foreach>
+                            <!-- <input type="hidden" name="expire_unit[]" value="1">小时 -->
+                        </p>
+                        <p>
+                            <input type="number" class="textbox require" name="expire[1]" required="required"  value=""/>
+                            <foreach name="expireUnitConfig" key="key" item="expireunit_conf">
+                                <input type="radio" name="expire_unit[1]" value="{$expireunit_conf['expireNum']}" <if condition="$key eq 0"> checked </if>>{$expireunit_conf['expireUnit']}
+                            </foreach>
+                        </p>
+                        <p>
+                            <input type="number" class="textbox require" name="expire[2]" required="required"  value=""/>
+                            <foreach name="expireUnitConfig" key="key" item="expireunit_conf">
+                                <input type="radio" name="expire_unit[2]" value="{$expireunit_conf['expireNum']}" <if condition="$key eq 0"> checked </if>>{$expireunit_conf['expireUnit']}
+                            </foreach>
+                        </p>
+                    </if>
+
+                    <foreach name="data.reserve_conf" key="key" item="reserve_conf">
+                        <p>
+                            <input type="number" class="textbox require" name="expire[{$key}]" required="required"  value="{$reserve_conf['expire']}"/>
+                            <foreach name="expireUnitConfig" key="key2" item="expireunit_conf">
+                                <input type="radio" name="expire_unit[{$key}]" value="{$expireunit_conf['expireNum']}" <if condition="$reserve_conf['expire_unit'] == $expireunit_conf['expireNum']"> checked </if>>{$expireunit_conf['expireUnit']}
+                            </foreach>
+                        </p>
+                    </foreach>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"><i class="requireI">*</i>预约协议模版:</td>
+                <td class="item_input">
+                    <div class="protocol_tpl clearfix">
+                        <select name="protocol_tpl" style="">
+                            <option value="0">请选择</option>
+                            <foreach name="protocolTplList" key="key" item="value">
+                            <option value="{$value['id']}" <if condition="$value['id'] eq $originProtocolTpl">selected</if> >{$value['typeName']}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserReservation" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="notice" />
+                    <if condition="empty($data)">
+                    <input type="submit" id="publish" class="button" value="发布" />
+                    <else/>
+                    <input type="submit" class="button" value="编辑" />
+                    </if>
+                </td>
+            </tr>
+            <tr>
+               <td class=""></td>
+               <td><div id="contactertable"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    $(function(){
+        $("#publish").on('click', function(event) {
+            //var banner = $("#banner").val();
+            var description = KE.util.getData('description');
+            //if(!banner){alert("请上传短期标图片");return false;}
+            if(!description){alert("短期标描述不能为空");return false;}
+            var reserve_rule = KE.util.getData('reserve_rule');
+            if(!reserve_rule){alert("预约规则不能为空");return false;}
+        });
+    })
+</script>

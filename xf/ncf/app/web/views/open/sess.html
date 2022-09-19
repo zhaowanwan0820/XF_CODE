@@ -1,0 +1,173 @@
+{if !empty($userInfo.user_name)}
+    <li id="liIner46782_account_Li">
+        <div class="ztx_liIner46782_box act">
+            <div class="inner">
+                <a href="/account" class="ztx_liIner46782_NavA">您好，{if !isset($isEnterprise) || !$isEnterprise}{if empty($user_info.real_name)}{$user_info.user_name}{else}{$user_info.real_name}{/if}{else}{$enterpriseInfo.company_name}{/if}</a>
+                {if $is_firstp2p eq 1}
+                <a href="{url x="shop" r="user/logout" }" class="ztx_liIner46782_NavA" style="padding-left:20px;">退出</a>
+                {/if}
+            </div>
+            <div class="cont ztx_liIner46782_act">
+                <div class="dataPanel">
+                    <div class="ye46782"><label>可用余额：</label><span><!--money-->元</span></div>
+                    <div class="hb"><label>含 <!--bonus--> <span id="j_bonus_name"></span></label></div>
+                    <div class="bntBox">
+                        <a href="/account/charge" class="cz">
+                            充值
+                        </a><a href="/account/carry" class="tx">提现</a>
+                    </div>
+                    <ul class="ztx_liIner46782_ul">
+                        <li>待收本金：<!--principal-->元</li>
+                        <li>待收收益：<!--interest-->元</li>
+                        <li>待获返利：<!--coupon-->元</li>
+                    </ul>
+                    <div class="accountABox">
+                        <a href="/account" class="accountA">进入我的账户</a>
+                    </div>
+                </div>
+                <div class="errorPanel"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            (function () {
+                var accountLi = $('#liIner46782_account_Li');
+                var dataPanel = accountLi.find('.dataPanel:first');//展现数据面板
+                var errorPanel = accountLi.find('.errorPanel:first');//错误数据面板
+                /**
+                 *  面板展示控制，hide表示展现数据，隐藏loading效果；load表示loading效果修改成提示重新加载效果;login表示登陆超时，提示请重新登录
+                 */
+                function drawPanel(callType, data) {
+                    var box = dataPanel;
+                    var setters = {
+                        'data': function () {//展现数据
+                            $('#j_bonus_name').html(new_bonus_unit+new_bonus_title);
+                            var html = box.html();
+                            var regObj = null;
+                            $.each(data, function (key, val) {
+                                regObj = new RegExp('<!--' + key + '-->', 'g');
+                                html = html.replace(regObj, val);
+                            });
+                            box.html(html);
+                            box.show(); errorPanel.hide();
+                        },
+                        'reload': function () {//重新加载
+                            errorPanel.html('<p>加载失败，请<a href="javascript:;">重试</a></p>').removeClass('loading');
+                            errorPanel.find('a').on('click', function () {
+                                getDataAjax();
+                            });
+                        },
+                        'login': function () {//重新登录
+                            var tarHref = encodeURIComponent(location.href);
+                            errorPanel.html('<p>登录超时，请重新<a href="/user/login">登录</a></p>').removeClass('loading');
+                            if (!/^\s*\/\s*$/.test(location.pathname) || !/^\s*$/.test(location.search)) {
+                                errorPanel.find('a').attr('href', "/user/login?backurl=" + tarHref);
+                            }
+                        }
+                    }
+                    var args = Array.prototype.slice.apply(arguments, [1]);
+                    setters[callType].apply(this, args);
+                }
+
+                /**
+                 * 异步读取个人中心数据函数
+                 */
+                function getDataAjax() {
+                    errorPanel.html('').addClass('loading');
+                    $.ajax({
+                        type: "get",
+                        timeout: 15000,
+                        url: '/index/account',
+                        dataType: "json",
+                        success: function (returnVal) {
+                            var data = returnVal.data;
+                            if (returnVal.status != 0) {
+                                drawPanel('data', data);
+                            } else if (returnVal.status == 0) {
+                                if (returnVal.info == "登录信息过期，请重新登录") {
+                                    drawPanel('login');
+                                } else {
+                                    drawPanel('reload');
+                                }
+                            }
+                        },
+                        error: function () {
+                            drawPanel('reload');
+                        }
+                    });
+                }
+                accountLi.one("mouseenter", function () {
+                    getDataAjax();
+                });
+            })();
+        </script>
+    </li>
+    {if $is_firstp2p eq 1}
+    <style type="text/css">
+        #liIner46782_account_Li .ztx_liIner46782_box.act:hover .inner{background-position:right -35px;}
+        #liIner46782_account_Li .ztx_liIner46782_box:hover{border-left:1px solid #fafafa;border-right:1px solid #fafafa;}
+        #liIner46782_account_Li .ztx_liIner46782_box.act .inner{background:none;}
+    </style>
+    <script type="text/javascript">
+    //去掉普惠站头部下拉框
+    $(function() { 
+        $('.ztx_liIner46782_act').remove();
+    });
+    </script>
+    {/if}
+    {if !$is_firstp2p}
+    <li><a href="{url x="shop" r="user/logout" }" class="ztx_liIner46782_NavA">退出</a></li>
+    {/if}
+
+    {if $is_firstp2p}
+    <li>
+        <div class="ztx_liIner46782_box msg {if !isset($msg_count) || $msg_count<=0}disabled{/if}">
+            <div class="inner">
+                <a href="/message" class="ztx_liIner46782_NavA">消息</a>
+                {if isset($msg_count) && $msg_count>0}
+                <span class="message_num"><span class="m_lbg"></span><span class="m_rbg">{$msg_count}</span></span>
+                {/if}
+            </div>
+            {if isset($msg_count) && $msg_count>0 }
+            <div class="cont ztx_liIner46782_msg">
+                {foreach from=$msg_list item=msg key=key}
+                <a href="/message/deal/{$msg.group_key}">
+                    {$msg.total}&nbsp;条&nbsp;{if isset($msg_title.$msg.is_notice)}
+                    {$msg_title.$msg.is_notice}
+                    {else}
+                    {$LANG.SYSTEM_PM}
+                    {/if}
+                </a>
+                {/foreach}
+            </div>
+            {/if}
+        </div>
+    </li>
+    {/if}
+    
+    <!--
+    <li><a class="border_l pl20 ztx_liIner46782_NavA" target="_blank" href="{url x=" index" r="guide" }">新手指南</a></li>
+    <li><a class="ztx_liIner46782_NavA" target="_blank" href="{url x=" index" r="app" }">手机客户端</a></li>
+    {if app_conf("IS_SHOW_INFO_DISCLOSURE") eq 1}
+    	<li><a class="ztx_liIner46782_NavA" href="{url x=" index" r="article/837" }">信息披露</a></li>
+    {/if}
+    -->
+{else}
+    {if $isEnterpriseSite }
+    <li><a href="{url x="shop" u="user/login" }">企业登录</a></li>
+    <li><a class="color_green" href="{url x="shop" u="enterprise/register"}">企业注册</a></li>
+    {else}
+    <li>您好，请<a href="{url x="shop" u="user/login" }">登录</a></li>
+    <li><a class="color_green" href="{url x="shop" u="user/register"}">免费注册</a></li>
+    {/if}
+    <!--
+    {if $help_title == '新手指南'}
+    	<li><a class="border_l pl20" target="_blank" href="{url x=" index" r="guide" }">{$help_title}</a></li>
+    {else}
+    	<li><a href="{url x=" index" r="helpcenter" }">新手指南</a></li>
+    {/if}
+    <li><a href="{url x=" index" r="app" }">手机客户端</a></li>
+    {if app_conf("IS_SHOW_INFO_DISCLOSURE") eq 1}
+    	<li><a href="{url x=" index" r="article/837" }">信息披露</a></li>
+    {/if}
+		-->
+{/if}

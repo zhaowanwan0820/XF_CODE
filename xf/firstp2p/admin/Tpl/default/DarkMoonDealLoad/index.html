@@ -1,0 +1,139 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<style type="text/css">
+    input[disabled]{color:#000;opacity:1;border:none;background-color:transparent;}
+</style>
+
+<div class="main">
+    <div class="main_title">投资客户明细</div>
+    <div class="main_title">交易所备案产品编号：{$jys_record_number}</div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form method="post"  action="__APP__" enctype="multipart/form-data">
+            投资客户明细：
+            <if condition="$is_show_upload eq 1">
+                <input type="file" name="batch_update_file" id="batch_update_file" accept=".csv"/>
+                <input type="submit" class="button" value="导入" /> &nbsp;&nbsp;&nbsp;&nbsp;<a href="/m.php?m=DarkMoonDealLoad&a=get_upload_tpl">下载模板</a>
+                <input type="hidden" value="{$dealid}" name="dealid" />
+                <input type="hidden" value="DarkMoonDealLoad" name="m" />
+                <input type="hidden" value="do_upload" name="a" />
+            </if>
+        </form>
+    </div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="9" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th>
+                客户ID
+            </th>
+            <th>
+                客户姓名
+            </th>
+            <th>
+                身份证号
+            </th>
+            <th>
+                手机号
+            </th>
+            <th>
+                银行卡号
+            </th>
+            <th>
+                开户行
+            </th>
+            <th>
+                邀请码上传
+            </th>
+            <th>
+                邀请码
+            </th>
+            <th>
+                认购金额
+            </th>
+            <th>
+                状态
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="data">
+            <tr class="row">
+                <td class="item_input" style="display:none"><input type="hidden" class="textbox" name="id" value="{$data.id}"></td>
+                <td class="item_input">{$data.user_id}</td>
+                <td class="item_input"><input type="text" class="textbox" name="real_name" disabled="disabled"  value="{$data.real_name}"></td>
+                <td class="item_input"><input type="text" class="textbox" name="idno" disabled="disabled"  value="{$data.idno}"></td>
+                <td class="item_input"><input type="text" class="textbox" name="mobile" disabled="disabled"  value="{$data.mobile}"></td>
+                <td class="item_input"><input type="text" class="textbox" name="bank_id" disabled="disabled"  value="{$data.bank_id}"></td>
+                <td class="item_input"><input type="text" class="textbox" name="bank_name" disabled="disabled"  value="{$data.bank_name}"></td>
+                <td class="item_input"><input type="text" class="textbox" name="short_alias_csv" disabled="disabled"  value="{$data.short_alias_csv}"></td>
+                <td class="item_input">{$data.short_alias}</td>
+                <td class="item_input"><input type="text" class="textbox" name="money" disabled="disabled"  value="{$data.money}"></td>
+                <td>
+                    <if condition="$data.status eq 1"><br />未签署</if>
+                    <if condition="$data.status eq 2"><br />已签署</if>
+                    <if condition="$data.status eq 3"><br />置废</if>
+                </td>
+                <td>
+                    <if condition="$data.status eq 1">
+                        <a href='javascript:void(0);' onclick="edit('{$data.id}',this);">编辑</a>
+                    </if>
+                    <if condition="$data.status neq 3">
+                        <a href='javascript:void(0);' onclick="invalid('{$data.id}',this);">置废</a>
+                    </if>
+                </td>
+            </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<script type="text/javascript">
+
+    $("input").blur(function(){
+        var param= [];
+        $(this).parents().filter("tr").children("td").each(function () {
+            input = $(this).find("input");
+            if(input.length > 0) {
+                $(input).attr("disabled","disabled");
+                param.push($(input).attr("name") +"=" +$(input).val());
+            }
+        });
+
+        if(param.length >0) {
+            var paramString = param.join("&");
+            $.ajax({
+                url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=edit&" + paramString,
+                data: "ajax=1",
+                dataType: "json",
+                success: function (obj) {
+                    alert(obj.info);
+                    location=location;
+                }
+            });
+        }
+    });
+    function edit(loadId,element) {
+        $(element).parents().filter("tr").children("td").each(function () {
+            $(this).find("input").removeAttr('disabled');
+        });
+    }
+
+    function invalid(loadId,element) {
+        $.ajax({
+            url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=invalid&loadId=" + loadId,
+            data: "ajax=1",
+            dataType: "json",
+            success: function (obj) {
+                alert(obj.info);
+                location.reload();
+            }
+        });
+    }
+</script>

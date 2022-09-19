@@ -1,0 +1,94 @@
+{include file="web/views/v3/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/base.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/common.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v4/css/activity/p_preview_super.css');?>" />
+<style>
+.iframe_register{position: absolute;width:1075px;height:500px;}
+.JS_bg{height:500px;background-size: 100%;background-repeat: no-repeat;position:relative;}
+img{display:block;width:100%;}
+.fix_reg{width:1060px;height:500px;overflow: hidden;margin:0 auto;padding-top:12px;}
+
+</style>
+    <div class="JS_bg">
+      <div class="fix_reg">
+        <iframe src="/user/register?modal=1&appName={$site_info.SHOP_TITLE}" scrolling="no" frameborder=" " width="100%" height="100%" class="iframe_register" id="ifm" name="ifm" allowTransparency="true"></iframe>
+      </div>
+    </div>
+    <div class="JS_img"></div>
+
+    <!-- 新增落地页新手标的选项 -->
+    {if $article.content.9}
+    <div class="card-wrapper" id="card_wrapper">
+      {foreach from=$newUserDealsList item=dealItem}
+      <div class="normal-card">
+        <a href="{$dealItem.url}" class="head JS_no_login">{$dealItem.name}</a>
+        <div class="content">
+          <div class="info">
+            <div class="info-top">{if $dealItem.deal_type eq 0}年化借款利率{else}预期年化收益率{/if}</div>
+            <div class="info-middle">{$dealItem.rate}
+              <span class="percent">%</span></div>
+            <div class="info-bottom">
+            {if $dealItem.deal_type eq 0}借款期限{else}投资期限{/if}
+              <span class="info-bottom-high">{$dealItem.repayTime}</span>
+              {if $dealItem.loanType eq 5}天{else}个月{/if}</div>
+          </div>
+          <a href="{$dealItem.url}" class="btn JS_no_login">立即加入</a></div>
+      </div>
+      {/foreach}
+    </div>
+    {/if}
+
+    <div class="JS_img2"></div>
+  </body>
+</html>
+<script>
+$(function(){
+  zhuge.track("进入推广落地页",{
+    "渠道名称":"{$site_info.SHOP_TITLE}"
+  })
+  var pc_reg_btn_text = '{$article.content[0]}'.split("pc_reg_btn_text=")[1];
+  var pc_img_list1 = '{$article.content[5]}'.split("pc_img_list1=")[1].split(" ")
+  var pc_img_list2 = '{$article.content[6]}'.split("pc_img_list2=")[1].split(" ")
+  var pc_img_list3 = '{$article.content[7]}'.split("pc_img_list3=")[1].split(" ").reverse();
+  var pc_img_list4 = '{$article.content[8]}'.split("pc_img_list4=")[1].split(" ").reverse();
+  $(".JS_bg").css('background','url("' + pc_img_list1[0] + '") center no-repeat')
+  var html = "";
+  for(var i = 0;i < pc_img_list3.length;i++){
+    if(pc_img_list3[i]) {
+      html += '<img src="' + pc_img_list3[i] + '"/>'
+    }
+  }
+  $(".JS_img").html(html);
+
+  var dom_html = "";
+  for(var i = 0;i < pc_img_list4.length;i++){
+    if(pc_img_list4[i]) {
+      dom_html += '<img src="' + pc_img_list4[i] + '"/>'
+    }
+  }
+  $(".JS_img2").html(dom_html);
+  // 新增新手标的
+  if('{$article.content[9]}'){
+    document.querySelector("#card_wrapper").style.backgroundColor = '{$article.content[9]}'.split("pc_deal_bg1=")[1];
+    var btn_arr = document.querySelectorAll(".btn");
+    for(var i = 0; i < btn_arr.length; i++) {
+      document.querySelectorAll(".btn")[i].style.backgroundColor = '{$article.content[10]}'.split("pc_deal_anbg1=")[1];
+      document.querySelectorAll(".btn")[i].style.color = '{$article.content[11]}'.split("pc_deal_anwz1=")[1];
+    }
+  }
+
+
+  if(USER_INFO == 1){//已登录
+      $("#ifm").hide();
+      $(".JS_bg").css('background','url("' + pc_img_list2[0] + '") center no-repeat')
+  }
+  $('#ifm')[0].onload = function(){
+    this.contentWindow.window.$('.ui-form .btn-w30').css('overflow','hidden');
+    this.contentWindow.window.$('#submit_button').val(pc_reg_btn_text);
+  }
+  $(".layAppTopnew").show();
+  $(".layAppTopnew .app").hide();
+  $(".layAppTopnew .serve_box").hide();
+  $(".layAppTopnew .isNewUser_11626").hide();
+})
+</script>

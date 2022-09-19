@@ -1,0 +1,45 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<div class="main">
+<div class="main_title">账户充值补单 <a href="{:u("PaymentNotice/index")}" class="back_list">返回付款单列表</a></div>
+<div class="blank5"></div>
+<form name="doadd" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">补单接口</td>
+        <td class="item_input">
+        <select name="payment_id">
+        <foreach name="payment_list" item="paymentl">
+        <option value="{$paymentl.id}-{$paymentl.class_name}">{$paymentl.name}</option>
+        </foreach>
+        </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">付款订单号:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="r6_Order" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="PaymentNotice" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="supplement_order" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="补单" />
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

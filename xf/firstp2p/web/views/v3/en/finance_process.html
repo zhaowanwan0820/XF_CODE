@@ -1,0 +1,55 @@
+{include file="web/views/v3/en/header.html"}
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/finance_process.css');?>"/>
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/finance_process_pc.css');?>" media="screen and (min-width: 1200px)"/>
+    <div class="finance_process">
+        <div class="bg1">FINANCING PROCESS</div>
+        <ul class="finance_ul">
+            <li class="finance_list1">
+                <img alt="Completed $70M Series C Funding" title="Completed $70M Series C Funding" src="<?php echo $this->asset->makeUrl('v3/images/en/finance_process/li1.png');?>"/>
+                <div class="list1 common-an-start">
+                  <p class="title">Oct. 2014</p>
+                  <p class="small_title">Series A Funding Completed</p>
+                  <div class="line"></div>
+                  <div class="detail">Well-known investors include: China Equity Co., Ltd., Juntong Capital, Zhu Xinli, Wu Ying, Huang Xiaojie, Tang Zhigang, etc. China Renaissance, a well-known Internet investment bank, served as the financial advisor, and CCB International was introduced as a strategic shareholder. </div>
+                </div>
+            </li>
+            <li class="finance_list2">
+              <img alt="Series A funding completed" title="Series A funding completed" src="<?php echo $this->asset->makeUrl('v3/images/en/finance_process/li2.png');?>"/>
+              <div class="list2 common-an-start">
+                <p class="title">Jul. 2015</p>
+                <p class="small_title">Completed $41M Series B Funding</p>
+                <div class="line"></div>
+                <div class="detail">Well-known institutional investors include San Shan Capital, CITIC Capital, China Equity Co., Ltd., and etc. China Renaissance was the exclusive financial advisor to the financing.</div>
+              </div>
+            </li>
+            <li class="finance_list3">
+              <img alt="Completed $41M Series B Funding" title="Completed $41M Series B Funding" src="<?php echo $this->asset->makeUrl('v3/images/en/finance_process/li3.png');?>"/>
+              <div class="list3 common-an-start">
+                <p class="title">Aug. 2016</p>
+                <p class="small_title">Completed $70M Series C Funding</p>
+                <div class="line"></div>
+                <div class="detail">Well-known institutional investors include CCB International, San Shan Capital, and etc</div>
+              </div>
+            </li>
+        </ul>
+{include file="web/views/v3/en/footer.html"}
+<script>
+    var flag = IsPC(); 
+    if(flag){//pc
+        var finance_ul_top = $(".finance_ul").offset().top;
+        var finance_ul_height = $(".finance_ul").height();
+        $(".list1").addClass("an-end");
+        $(window).scroll(function(){
+            var this_scrollTop = $(this).scrollTop();
+            if(this_scrollTop > finance_ul_top - finance_ul_height-200){
+                setTimeout(function(){
+                    $(".list2").addClass("an-end");
+                },500)
+                setTimeout(function(){
+                    $(".list3").addClass("an-end");
+                },1000)
+            }
+        });
+    }
+</script>
+</html>

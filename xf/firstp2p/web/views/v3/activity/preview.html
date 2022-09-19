@@ -1,0 +1,105 @@
+{include file="web/views/v3/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/base.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/common.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v4/css/activity/p_preview_super.css');?>" />
+<input type="hidden" id="level" value="{$activity.level}">
+{if $activity.level == 1}
+  <div>{$activity.content|stripcslashes}</div>
+  <!-- <div class="main  pt23 pb30 clearfix">
+    <div class="ui-new-mainbody">
+      <div class="p_news_mediadetail">
+        <div class="ui-box">
+          <div class="h-title">
+            <h2><i></i>{$activity.title|escape}</h2>
+          </div>
+          <div class="media-article">
+            <div class="news-cont htmleditor">{$activity.content|stripcslashes}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+{else}
+    <div class="JS_bg">
+        <div class="fix_reg">
+            <iframe src="/user/register?modal=1" scrolling="no" frameborder=" " width="100%" height="100%" class="iframe_register" id="ifm" name="ifm" allowTransparency="true"></iframe>
+        </div>
+    </div>
+    <div class="JS_img"></div>
+
+    <!-- 新增落地页新手标的选项 -->
+    {if $activity.content.9}
+    <div class="card-wrapper" id="card_wrapper">
+      {foreach from=$newUserDealsList item=dealItem}
+      <div class="normal-card">
+        <a href="{$dealItem.url}" class="head JS_no_login">{$dealItem.name}</a>
+        <div class="content">
+          <div class="info">
+            <div class="info-top">{if $dealItem.deal_type eq 0}年化借款利率{else}预期年化收益率{/if}</div>
+            <div class="info-middle">{$dealItem.rate}
+              <span class="percent">%</span></div>
+            <div class="info-bottom">
+            {if $dealItem.deal_type eq 0}借款期限{else}投资期限{/if}
+              <span class="info-bottom-high">{$dealItem.repayTime}</span>
+              {if $dealItem.loanType eq 5}天{else}个月{/if}</div>
+          </div>
+          <a href="{$dealItem.url}" class="btn JS_no_login">立即加入</a></div>
+      </div>
+      {/foreach}
+    </div>
+    {/if}
+
+    <div class="JS_img2"></div>
+{/if}
+  </body>
+</html>
+<script>
+$(function(){
+  if($("#level").val() == 2){
+    var pc_reg_btn_text = '{$activity.content[0]}'.split("pc_reg_btn_text=")[1];
+    var pc_img_list1 = '{$activity.content[5]}'.split("pc_img_list1=")[1].split(" ")
+    var pc_img_list2 = '{$activity.content[6]}'.split("pc_img_list2=")[1].split(" ")
+    var pc_img_list3 = '{$activity.content[7]}'.split("pc_img_list3=")[1].split(" ").reverse();
+    var pc_img_list4 = '{$activity.content[8]}'.split("pc_img_list4=")[1].split(" ").reverse();
+    $(".JS_bg").css('background','url("' + pc_img_list1[0] + '") center top no-repeat')
+    var html = "";
+    for(var i = 0;i < pc_img_list3.length;i++){
+      if(pc_img_list3[i]) {
+        html += '<img src="' + pc_img_list3[i] + '"/>'
+      }
+    }
+    $(".JS_img").html(html);
+
+    var dom_html = "";
+    for(var i = 0;i < pc_img_list4.length;i++){
+      if(pc_img_list4[i]) {
+        dom_html += '<img src="' + pc_img_list4[i] + '"/>'
+      }
+    }
+    $(".JS_img2").html(dom_html);
+    // 新增新手标的
+    if('{$activity.content[9]}'){
+      document.querySelector("#card_wrapper").style.backgroundColor = '{$activity.content[9]}'.split("pc_deal_bg1=")[1];
+      var btn_arr = document.querySelectorAll(".btn");
+      for(var i = 0; i < btn_arr.length; i++) {
+        document.querySelectorAll(".btn")[i].style.backgroundColor = '{$activity.content[10]}'.split("pc_deal_anbg1=")[1];
+        document.querySelectorAll(".btn")[i].style.color = '{$activity.content[11]}'.split("pc_deal_anwz1=")[1];
+      }
+    }
+
+
+    if(USER_INFO == 1){//已登录
+        $("#ifm").hide();
+        $(".JS_bg").css('background','url("' + pc_img_list2[0] + '") center top no-repeat')
+    }
+    $('#ifm')[0].onload = function(){
+      this.contentWindow.window.$('.ui-form .btn-w30').css('overflow','hidden');
+      this.contentWindow.window.$('#submit_button').val(pc_reg_btn_text);
+    }
+  }
+  $(".layAppTopnew").show();
+  $(".layAppTopnew .app").hide();
+  $(".layAppTopnew .serve_box").hide();
+  $(".layAppTopnew .isNewUser_11626").hide();
+})
+</script>

@@ -1,0 +1,195 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<load href="__TMPL__Common/js/jquery.js" />
+<load href="__TMPL__Common/js/ztree/jquery.ztree.all-3.5.min.js" />
+<load href="__TMPL__Common/js/ztree/jquery.ztree.core-3.5.min.js" />
+<load href="__TMPL__Common/js/ztree/demo.css" />
+<load href="__TMPL__Common/js/ztree/zTreeStyle.css" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<SCRIPT type="text/javascript">
+	<!--
+	var setting = {
+			data: {
+				key: {
+					title:"t"
+				},
+				simpleData: {
+					enable: true
+				}
+			},
+            view:{
+                fontCss:getFont,
+                showIcon: false
+            },
+			callback: {
+				onClick: onClick
+			}
+		};
+
+	var zNodes = {$tree};
+    
+    function getFont(treeId, node) {
+        return node.font ? node.font : {};
+    }
+
+	$(document).ready(function(){
+		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+		$("#info").remove();//去掉提示
+	});
+
+
+	
+	function onClick(event, treeId, treeNode, clickFlag) {
+        $("#selected_id").val(treeNode.id);
+        $("#layer").val(treeNode.layer);
+        $("#name").val(treeNode.name);
+	}
+
+    function action(a) {
+        id=$("#selected_id").val();
+        layer=$("#layer").val();
+        if(a=='addChild'|| layer==0){
+            layer = parseInt(layer)+1;
+        }
+
+        if((a=='edit'||a=='del')&&id==0){
+            $.weeboxs.open('<center><h2>请选择节点</h1></center>',{showButton:false,title:"提示",width:250,height:100});
+            return false;
+        }
+
+        if(a=='del'){
+            del(id);
+            return false;
+        }
+
+        if(layer == 4){
+            $.weeboxs.open('<center><h2>现阶段只支持三级分类</h1></center>',{showButton:false,title:"提示",width:250,height:100});
+        }else{
+            $.weeboxs.open(ROOT+"?m=DealTypeGrade&a="+a+"&id="+id, {contentType:'ajax',onok:save,showButton:true,title:layer+"级分类",width:650,height:160});
+        }
+        return false;
+
+    }
+
+    function del(id){
+
+        name = $("#name").val();
+        layer = $("#layer").val();
+        if(!confirm("确定要删除"+layer+"级分类"+name+"？"))
+        {
+           return false;
+        }
+
+        $.post("/m.php?m=DealTypeGrade&a=del","id="+id,function(rs){
+            var rs = $.parseJSON(rs);
+            if(rs.status){
+                alert("操作成功！");
+                window.location.href = "/m.php?m=DealTypeGrade&a=index";
+            }else{
+                alert(rs.info);
+            }
+        });
+        return false;
+    }
+
+    function save(){
+        data = $("#_js_form").serialize();
+        jsonData = urlParamToJson(data);
+        if(jsonData.name == ''){
+            alert('名称不能为空');
+            return false;
+        }
+        score = jsonData.score;
+        if(score != ''){
+            if(!score.match('^(?!^(0+(\.0)?|5\.[1-9])$)[0-5](\.[0-9])?$')){
+                alert('产品风险评分数值区间为0<x≤5，支持1位小数，输入可以为空');
+                return false;
+            }
+        }
+
+        $.post("/m.php?m=DealTypeGrade&a=check",data,function(rs){
+            rs = $.parseJSON(rs);
+            if(rs.code == 9){
+                if(confirm(rs.msg)){
+                    rs.code = 0;
+                }else{
+                    return false;
+                }
+            }
+
+            if(rs.code != 0){
+                alert(rs.msg);return false;
+            }else{
+                $.post("/m.php?m=DealTypeGrade&a=save",data,function(rs){
+                    var rs = $.parseJSON(rs);
+                    if(rs.status){
+                        alert("操作成功！");
+                        $.weeboxs.close();
+                        window.location.href = "/m.php?m=DealTypeGrade&a=index";
+                    }else{
+                        alert(rs.info);
+                    }
+                });
+            }
+        });
+
+        return false;
+    }
+
+
+    function urlParamToJson(urlParam){
+        var string = urlParam.split('&');
+        var res = {};
+        for(var i = 0;i<string.length;i++){
+            var str = string[i].split('=');
+            res[str[0]]=str[1];
+        }
+        return res;
+    }
+
+	//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+
+<div class="main">
+    <div class="main_title">贷款产品管理</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <input type="hidden" id="selected_id" name="id" value="0">
+        <input type="hidden" id="layer" name="layer" value="0">
+        <input type="hidden" id="name" name="name" value="">
+        <input type="button" class="button" value="添加同级分类" onclick="action('addBrother');" />
+        <input type="button" class="button" value="添加子级分类" onclick="action('addChild');" />
+        <input type="button" class="button" value="编辑分类" onclick="action('edit');" />
+        <input type="button" class="button" value="删除分类" onclick="action('del');" />
+    </div>
+    <div class="blank5"></div>
+    <div class="content_wrap">
+        <div class="zTreeDemoBackground left" style="width:700px">
+            <ul id="treeDemo" class="ztree" style="float:left"></ul>
+            <ul style="float:left;width:300px;height:200px;margin-top:10px; margin-left: 20px">
+                <li>
+                    已启用<!--<span style = "color :red" >不可</span>删除分类和编辑名称-->：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;无底纹黑色字
+                </li>
+                <li>
+                    启用后被停用<!--<span style = "color :red" >不可</span>删除分类和编辑名称-->：&nbsp;<span style="background-color:#808080;color:#000000;" >浅灰色底纹黑色字</span>
+                </li>
+                <li>
+                    未被启用过：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color:#808080;color:#FFFFFF" >浅灰色底纹白色字</span>
+                </li>
+               <!-- <li>
+                    已启用可删除分类和编辑名称：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color:#000000;color:#FFFFFF" >黑色底纹白色字</span>
+                </li>-->
+            </ul>
+        </div>
+    </div>
+</div>
+</BODY>
+<include file="Public:footer" />
+
+

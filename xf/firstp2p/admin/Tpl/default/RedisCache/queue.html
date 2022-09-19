@@ -1,0 +1,47 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<div class="main">
+	<div class="main_title">redis队列管理    
+
+	</div>
+	<div class="blank5"></div>
+	<div class="button_row">
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+	<!-- Think 系统列表组件开始 -->
+	<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+		<tr>
+
+			<td colspan="14" class="topTd">&nbsp;</td>
+		</tr>
+		<tr class="row">
+			<th width="50px">队列名</th>
+			<th width="150px">描述</th>
+			<th width="250px">积压</th>
+			<th width="250px">运行情况</th>
+			<th width="250px">操作</th>
+		</tr>
+		<foreach name="qlist" item="item">
+		<tr class="row">
+			<td>&nbsp;{$item.id}</td>
+			<td>&nbsp;{$item.channel}</td>
+			<td>&nbsp;{$item.length}</td>
+			<td>&nbsp;{$item.note}</td>
+			<td><a href="/m.php?m=RedisCache&a=flush&id={$item.id}&ajax=0" onclick='return confirm("确认清空列队？");'>清空队列</a> (慎用!)</td>
+		</tr>
+		</foreach>
+		<tr>
+			<td colspan="5" class="bottomTd">&nbsp;</td>
+		</tr>
+	</table>
+	<!-- Think 系统列表组件结束 --> 
+	<div class="blank5"></div>
+</div>
+
+<include file="Public:footer" />

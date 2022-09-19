@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=0;">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>调查问卷</title>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/questionnaire/base.css?v=201707060206');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/questionnaire/index_mobile.css?v=20170706044');?>">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/questionnaire/jquery-1.10.2.min.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/common/common.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/questionnaire/index_mobile.js?v=3');?>" type="text/javascript"></script>
+</head>
+<body>
+    <div class="p_question_box">
+         <div class="mask">
+                <div class="maskCon_box">
+                    <div class="done_top">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/already.png');?>" alt="" class="img">
+                        <span class="tip">此问卷您已提交</span>
+                    </div>
+                    <a class="btn closeBtn" href="javascript:void(0);">关闭</a>
+                </div>
+            </div>
+        <div class="p_start partBox">
+            <div class="top">
+                <div class="title">{$question.name}</div>
+                <div class="subTitle">{$question.summary}</div>
+            </div>
+            <div class="bottom">
+                <div class="bottom_con">
+                    <span class="circle left"></span>
+                    <span class="circle right"></span>
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/mask_point.png');?>" alt="" class="pointImg rightTop">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/mask_point.png');?>" alt="" class="pointImg leftBottom">
+                    <span class="itemTitle">尊敬的用户：</span>
+                    <span class="tip">您好！</span>
+                    <span class="tip">{$question.desc}</span>
+                    <span class="line"></span>
+                    <p class="btn start">开始答题</p>
+                </div>
+            </div>
+            <span class="notice">您的意见和反馈对我们非常重要，感谢您的参与和支持！</span>
+        </div>
+        <div class="p_question partBox">
+            <div class="conBox">
+                <div class="itemBox">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/mask_point.png');?>" alt="" class="pointImg rightTop">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/mask_point.png');?>" alt="" class="pointImg leftBottom">
+                    <div class="questionBox">
+                        <!-- 所有问题 -->
+                        {foreach from=$question.question item=item key=key name=name}
+                        <div class="item" data-id="{$item.id}" data-type="{$item.type}" key="{$key}"isRequire="{$item.isRequire}">
+                            <span class="question">{$smarty.foreach.name.iteration}.{$item.title}{if $item.type eq 0}[单选题]{elseif $item.type eq 1}[多选题]{/if}{if !$item.isRequire}[非必填]{/if}</span>
+                            {if $item.type eq 0 or $item.type eq 1}
+                            <ul class="listUl">
+                                {foreach from=$item.options item=one}
+                                <li class="questionLi ellipsis" data-id="{$one.opid}" isShowInput="{$one.isShowInput}">{$one.text}</li>
+                                {/foreach}
+                                <textarea maxlength="20" class="writeArea" placeholder="可以填写其他选项"></textarea>
+                            </ul>
+                            {else}
+                            <div class="inputBox">
+                                <textarea class="inputArea" maxlength="300" placeholder="请填写文字"></textarea>
+                                <div class="countBox">
+                                    <span class="leftNum">0</span>
+                                    <span>/</span>
+                                    <span class="rightNum">300</span>
+                                </div>
+                            </div>
+                            {/if}
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                <div class="btnBox">
+                    <p class="prev" style="margin-right:0.6rem">上一题</p>
+                    <p class="next disabled">下一题</p>
+                </div>
+            </div>
+            <input type="hidden" id="code" value="{$question.code}">
+            <input type="hidden" id="token" value="{$token}">
+            <input type="hidden" id="tokenId" value="{$tokenId}">
+            <input type="hidden" id="tokenCSRF" value="{$tokenCSRF}">
+        </div>
+        <div class="p_finish partBox">
+            <div class="conBox">
+                <div class="finish_con">
+                    <div class="bonusBox divBox">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/bonus.png');?>" alt="" class="img">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/mask_point.png');?>" alt="" class="pointImg rightTop">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/mask_point.png');?>" alt="" class="pointImg leftBottom">
+                        <span class="tip" style="margin-top:0.3rem">恭喜您，获得奖励</span>
+                        <span class="tip bonusTip"></span>
+                    </div>
+                    <div class="finishBox divBox">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/done.png');?>" alt="" class="img">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/mask_point.png');?>" alt="" class="pointImg rightTop">
+                        <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/mask_point.png');?>" alt="" class="pointImg leftBottom">
+                        <span class="tip">感谢您参加此次问卷</span>
+                    </div>
+                </div>
+                <a class="btn closeBtn" href="javascript:void(0);">关闭</a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var winW = document.documentElement.clientWidth;
+    var fontSize = winW / 750 * 100;
+    document.documentElement.style.fontSize = fontSize + "px";
+    var isError = {$isError};
+    var isAnswered = {$isAnswered};
+    var isApp = {$isApp};
+    if(isAnswered){//问卷已答过
+        $(".mask").show();
+        $(".mask .tip").text('此问卷您已提交');
+        $('.p_question_box').css({"overflow":"hidden"});
+    }else if(isError){
+        $(".mask").show();
+        $(".mask .tip").text('当前活动已结束');
+        $('.p_question_box').css({"overflow":"hidden"});
+    }
+
+    /*控制原生title右侧隐藏title传空按钮4.7.3*/
+    window.location.href = "firstp2p://api?type=rightbtn&title=";
+</script>
+</html>

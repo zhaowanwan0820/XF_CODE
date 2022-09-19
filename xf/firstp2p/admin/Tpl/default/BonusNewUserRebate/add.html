@@ -1,0 +1,166 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">新增规则 <a href="{:u("BonusNewUserRebate/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">规则名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="title" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">规则键名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="const_name" />
+                </td>
+            </tr>
+
+            <!-- 投资人返利设置START -->
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">投资人返利设置</td>
+            </tr>
+            <tr>
+                <td class="item_title">红包类型</td>
+                <td class="item_input">
+                    <input type="radio" name="is_group" checked="checked" value="0" />单个投资红包
+                    <input type="radio" name="is_group" value="1" />红包组
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用限制</td>
+                <td class="item_input">
+                    <select name="consume_type" class='require'>
+                        <foreach name="consume_types" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包个数</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="count" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="money" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包发送有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="send_limit_day" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="use_limit_day" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <!-- 投资人返利设置END -->
+
+            <!-- 邀请人返利设置START -->
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">邀请人返利设置</td>
+            </tr>
+            <tr>
+                <td class="item_title">红包类型</td>
+                <td class="item_input">
+                    <input type="radio" name="inviter_is_group" checked="checked" value="0" />单个投资红包
+                    <input type="radio" name="inviter_is_group" value="1" />红包组
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用限制</td>
+                <td class="item_input">
+                    <select name="inviter_consume_type" class='require'>
+                        <foreach name="consume_types" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包个数</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="inviter_count" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="inviter_money" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包发送有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="inviter_send_limit_day" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="inviter_use_limit_day" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <!-- 邀请人返利设置 END -->
+
+            <tr>
+                <td class="item_title">规则生效时间</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="start_time" value="{$vo.start_time}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />&emsp;
+                    <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+                </td>
+            <tr>
+                <td class="item_title">规则失效时间</td>
+                <td>
+                    <input type="text" class="textbox require" name="end_time" value="{$vo.end_time}" id="end_time"  onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />&emsp;
+                    <input type="button" class="button" id="btn_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#end_time').val('');" />
+                </td>
+
+
+            <tr>
+                <td class="item_title">状态</td>
+                <td class="item_input">
+                    <label><input type="radio" class="f-radio" value="1" name="status"  checked="checked">有效</label>
+                    <label><input type="radio" class="f-radio" value="0" name="status">无效</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusNewUserRebate" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="add" />
+                <input type="submit" class="button" value="{%ADD}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

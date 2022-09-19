@@ -1,0 +1,74 @@
+<div class="p_account_medal">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_medal.css');?>">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/account/medal.js');?>"></script>
+    <div class="ui-box">
+        <div class="h-title">
+            <h2><i></i>勋章</h2>
+            <div class="h-line"></div>
+            <ul class="sub-nav clearfix j_sub_nav" data-clicked="0">
+                <li class="select" data-status="0">
+                    <a href="javascript:;">勋章墙</a>
+                </li>
+                <li data-status="1">
+                    <a href="javascript:;">我的勋章</a>
+                </li>
+            </ul>
+            <div class="r-decs"><a href="">什么是勋章？</a></div>
+        </div>
+        <div class="r_cont">
+
+        <div id="ml_container"></div>
+        <script id="medal_list" type="text/html">
+            <% if(list.length <= 0 || !list) { %>
+                <div class="no_list">
+                    没有勋章墙
+                </div>
+            <% } else { %>
+            <ul class="medal_list clearfix">
+            <% for(var i = 0 ; i < list.length ; i++){%>
+                <li <% if(list[i].light_status == 1){ %> class="ml_bg_yellow" <% } %>>
+                    <div class="ml_img tc">
+                        <img src="<%= list[i].src %>" alt="" width="157" height="141">
+                    </div>
+                    <span class="ml_tit f16"><%= list[i].title %></span>
+
+                    <% if( list[i].award_status == 0){ %>
+                    <div class="ml_icon">
+                        <span class="jiang icon_sprite">奖</span> 
+                        <span class="jiang icon_sprite">限</span>
+                    </div>
+                    <% } else if(list[i].award_status == 1){ %>
+                    <div class="ml_icon"><span class="dailing icon_sprite">待领奖</span></div>
+                    <% } %>
+                </li>
+            <% } %> 
+            </ul>
+            <% } %>
+        </script>
+        <div class="pastmedal" id="past_list_box">
+        
+            <h2 class="f18 mt30 mb30">过往的勋章</h2>
+
+            <div id="past_container"></div>
+                <script id="past_list" type="text/html">
+                    <% if(list.length <= 0 || !list) { %>
+                    <div class="no_list">
+                        没有过往的勋章
+                    </div>
+                    <% } else { %>
+                    <ul class="medal_list clearfix">
+                        <% for(var i = 0 ; i < list.length ; i++){%>
+                        <li>
+                            <div class="ml_img tc">
+                                <img src="<%= list[i].src %>" alt="" width="157" height="141">
+                            </div>
+                            <span class="ml_tit f16"><%= list[i].title %></span>
+                        </li>
+                        <% } %> 
+                    </ul>
+                    <% } %>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

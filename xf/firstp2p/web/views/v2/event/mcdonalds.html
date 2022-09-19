@@ -1,0 +1,64 @@
+﻿<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="format-detection" content="telephone=no,email=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>网信理财</title>
+        <link href="<?php echo $this->asset->makeUrl('v2/css/event/m-base.css');?>" rel="stylesheet" type="text/css">
+        <link href="<?php echo $this->asset->makeUrl('v2/css/event/m-common.css');?>" rel="stylesheet" type="text/css">
+        <link href="<?php echo $this->asset->makeUrl('v2/css/event/mdl_reg.css');?>" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/risk/frms-fingerprint-min.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/zepto.min.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/common.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/iscroll.js');?>"></script>
+        <script type="text/javascript">
+            window['_eventRegisterAddParams'] = {"event_id":"{$event_id}","cn":"{$cn}","from_platform":"{$from_platform}"};
+        </script>
+    </head>
+    <body>
+        <div class="p_maidanglao">
+            <div class="top_bg">
+                <p>央行互联网金融专业委员会首批会员单位</p>
+            </div>
+{include file="web/views/v2/event/regpanel.html"}
+            <div class="p_title">已有超过300万名投资者选择网信理财</div>
+            <div class="deal clearfix">
+                <div class="list"></div>
+                <div class="list"></div>
+                <div class="list"></div>
+                <div class="list"></div>
+            </div>
+            <div class="db_title"></div>
+            <div class="danbao clearfix">
+                <div class="list"></div>
+                <div class="list"></div>
+                <div class="list"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+        <script>
+        // 禁用微信分享
+        function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+        // 禁用微信分享 end
+
+        var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+        (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+        </script>
+    </body>
+</html>
+

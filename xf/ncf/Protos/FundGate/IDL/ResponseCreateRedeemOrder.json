@@ -1,0 +1,51 @@
+{
+    "namespace": "NCFGroup\\Protos\\FundGate",
+    "comment": "创建基金赎回订单(只在本地生效)",
+    "author": "chengQ<qicheng@ucfgroup.com>",
+    "use": {
+        "0": "NCFGroup\\Common\\Extensions\\Base\\ResponseBase",
+        "1": "Assert\\Assertion"
+    },
+    "extend": "ResponseBase",
+    "properties": {
+        "0": {
+            "required": true,
+            "name": "orderNo",
+            "type": "string",
+            "comment": "订单号"
+        },
+        "1": {
+            "required": true,
+            "name": "merchantId",
+            "type": "string",
+            "comment": "商户号Id"
+        },
+        "2": {
+            "required": true,
+            "name": "ncfpayMerchantId",
+            "type": "string",
+            "comment": "先锋支付商户号Id"
+        },
+        "3": {
+            "required": false,
+            "name": "signPwd",
+            "type": "string",
+            "comment": "app端与先锋支付服务端交互时用到的签名，应用场景：用于新版赎回业务中的支付密码验密场景",
+            "default": ""
+        },
+        "4": {
+            "required": false,
+            "name": "sign",
+            "type": "string",
+            "comment": "app端与先锋支付服务端交互时用到的签名，应用场景：用于旧版赎回业务中的支付密码验密场景",
+            "default": ""
+        },
+        "5": {
+            "required": false,
+            "name": "notifyUrl",
+            "type": "string",
+            "comment": "先锋支付验密结果通知接口",
+            "default": ""
+        }
+    }
+}

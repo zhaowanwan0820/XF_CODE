@@ -1,0 +1,448 @@
+{include file="inc/borrow/fileupload/credit_header.html"}
+<style type="text/css">
+	#ctemp_box .dialog-button{ display:none!important;}
+	.credit_upload .field{ margin:2px 0; width:600px}
+	.credit_upload .field label{
+		height: 26px;
+		font-size: 12px;
+		line-height: 26px;
+		width: 150px;
+	}
+</style>
+<div class="hd-bg">
+	<form action="{url x="index" r="borrow#file_upload_save"}" method="post" id="uploadworkCreditForm" name="uploadworkCreditForm">
+		<div id="item">
+	    	<div class="blank20"></div>
+	        <div style="width:90%;background:#FEFEFC;border:1px solid #CCC;padding:10px;margin:0 auto;">
+	            <div class="f16 b pt5 pb5" style="color:#003C85;">
+				工作认证
+	            </div>
+	            <div class="f_dgray" style="text-indent: 2em;">
+				您的工作状况是{function name="app_conf" v="SHOP_TITLE"}评估您信用状况的主要依据。请您填写真实可靠的工作信息。
+				</div>
+	        </div>
+	        <div class="blank20"></div>
+	        <div id="explain" style="width:80%;padding-left:40px;margin:0 auto;">
+	            <p class="f_dgray b">
+	            	认证说明：
+	            </p>
+	            <div id="explain_item">
+			                    上传资料说明：<br>
+			                    如果您满足以下 1种以上的身份，例如：您有稳定工作，且兼职开淘宝店。<br>
+			                    我们建议您同时上传两份资料，这将有助于提高您的借款额度和信用等级
+                    <br><br>
+                    <table class="f12" cellspacing="1" style="background:#ccc">
+                    	<tbody><tr>
+                    		<td class="pl10 pr10 wb"> <h4>工薪阶层：</h4> 请上传以下<span class="f_red">至少两项</span>资料的照片或扫描件：</td>
+                    		<td class="pl10 pr10 wb">
+                    			<div class="lh22">
+		                            a) 劳动合同。
+		                        </div>
+		                        <div class="lh22">
+		                            b) 加盖单位公章的在职证明。
+		                        </div>
+		                        <div class="lh22">
+		                            c) 带有姓名及照片的工作证。
+		                        </div>
+							</td>
+                    	</tr>
+                    	<tr>
+                    		<td class="pl10 pr10 wb"><h4> 私营企业主:</h4>请上传以下<span class="f_red">全部三项</span>资料的照片或扫描件：</td>
+                    		<td class="pl10 pr10 wb">
+                    			<div class="lh22">
+		                            a) 企业的营业执照。
+		                        </div>
+		                        <div class="lh22">
+		                            b) 企业的税务登记证。
+		                        </div>
+		                        <div class="lh22">
+		                            c) 店面照片（照片内需能看见营业执照）。
+		                        </div>
+							</td>
+                    	</tr>
+                    	<tr>
+                    		<td class="pl10 pr10 wb"> <h4>网商：</h4> 请上传以下资料的照片或扫描件：</td>
+                    		<td class="pl10 pr10 wb">
+                    			<div class="lh22">
+		                            a) 请上传网店主页和后台的截屏(需要看清网址）。
+		                        </div>
+		                        <div class="lh22">
+		                            b) 支付宝（或其他第三方支付工具）的至少3张最近3个月的商户版成功交易记录的截屏图片。
+		                        </div>
+		                        <div class="lh22">
+		                            c) 营业执照（如果有的话提供，不是必须的）。
+		                        </div>
+		                        <div class="lh22">
+		                            d) 备注：如果是淘宝专职卖家，店铺等级必须为3钻以上（含3钻）。
+		                        </div>
+							</td>
+                    	</tr>
+                    </tbody></table>
+                </div>
+				<div class="blank5"></div>
+				<p class="lh24">
+                    <span class="f_dgray b">认证条件：</span>
+                    <span class="f_red">工薪阶层需入职满6个月，私营企业主和淘宝商家需经营满一年</span>
+                </p>
+	            <p class="lh24">
+	                <span class="f_dgray b">审核时间：</span>
+	                <span class="f_red">3个工作日内</span>
+	            </p>
+	            <p class="lh24">
+	                <span class="f_dgray b">认证有效期：</span>
+	                <span class="f_red">6个月</span>
+	            </p>
+				<p class="lh24">
+                    <a href="#jobDiv" id="jobGuy">在职证明参考模板</a>
+                </p>
+				<div class="blank5"></div>
+	            <div class="dot"></div>
+	            <div class="blank20"></div>
+	        </div>
+			<div class="credit_upload">
+                <div class="field office">
+					<label for="settings-office"><span class="red">*</span>{$LANG.OFFICE}</label>
+					<input type="text" value="{$work.office}" class="f-input" id="settings-office" name="office" size="30">
+				</div>
+				<div class="field jobtype">
+					<label for="settings-jobtype"><span class="red">*</span>{$LANG.JOBTYPE}</label>
+					<select name="jobtype" id="settings-jobtype">
+						<option value="">请选择</option>
+						<option value="工薪阶层" {if $work.jobtype eq '工薪阶层'}selected="selected"{/if}>工薪阶层</option>
+						<option value="私营企业主" {if $work.jobtype eq '私营企业主'}selected="selected"{/if}>私营企业主</option>
+						<option value="网络商家" {if $work.jobtype eq '网络商家'}selected="selected"{/if}>网络商家</option>
+						<option value="其他" {if $work.jobtype eq '其他'}selected="selected"{/if}>其他</option>
+					</select>
+				</div>										
+				<script type="text/javascript" src="{$APP_WEB_STATIC}system.region.js"></script>
+				<div class="field">								
+					<label for="settings-region"><span class="red">*</span>{$LANG.WORK_REGION}</label>
+					<select name="province_id">
+						<option value="0">={$LANG.SELECT_PLEASE}=</option>
+						{foreach from=$region_lv2 item=lv2}
+						<option {if $lv2.selected eq 1}selected="selected"{/if} value="{$lv2.id}">{$lv2.name}</option>
+						{/foreach}
+					</select>
+											
+					<select name="city_id">
+						<option value="0">={$LANG.SELECT_PLEASE}=</option>		
+						{foreach from=$region_lv3 item=lv3}
+						<option {if $lv3.selected eq 1}selected="selected"{/if} value="{$lv3.id}">{$lv3.name}</option>
+						{/foreach}
+					</select>
+					
+				</div>
+				
+				<div class="field officetype">
+					<label for="settings-officetype"><span class="red">*</span>{$LANG.OFFICETYPE}</label>
+					<select name="officetype" id="settings-officetype">
+						<option value="">请选择</option>
+						<option value="国家机关" {if $work.officetype eq '国家机关'}selected="selected"{/if}>国家机关</option>
+						<option value="事业单位" {if $work.officetype eq '事业单位'}selected="selected"{/if}>事业单位</option>
+						<option value="央企（包括下级单位）" {if $work.officetype eq '央企（包括下级单位）'}selected="selected"{/if}>央企（包括下级单位）</option>
+						<option value="地方国资委直属企业" {if $work.officetype eq '地方国资委直属企业'}selected="selected"{/if}>地方国资委直属企业</option>
+						<option value="世界500强（包括合资企业及下级单位）" {if $work.officetype eq '世界500强（包括合资企业及下级单位）'}selected="selected"{/if}>世界500强（包括合资企业及下级单位）</option>
+						<option value="外资企业（包括合资企业）" {if $work.officetype eq '外资企业（包括合资企业）'}selected="selected"{/if}>外资企业（包括合资企业）</option>
+						<option value="一般上市公司（包括国外上市）" {if $work.officetype eq '一般上市公司（包括国外上市）'}selected="selected"{/if}>一般上市公司（包括国外上市）</option>
+						<option value="一般民营企业" {if $work.officetype eq '一般民营企业'}selected="selected"{/if}>一般民营企业</option>
+					</select>
+				</div>
+				
+				<div class="field officedomain">
+					<label for="settings-officedomain"><span class="red">*</span>{$LANG.OFFICEDOMAIN}</label>
+					<select name="officedomain" id="settings-officedomain">
+						<option value="">请选择</option>
+						<option value="制造业" {if $work.officedomain eq '制造业'}selected="selected"{/if}>制造业</option>
+						<option value="IT" {if $work.officedomain eq 'IT'}selected="selected"{/if}>IT</option>
+						<option value="政府机关" {if $work.officedomain eq '政府机关'}selected="selected"{/if}>政府机关</option>
+						<option value="媒体/广告" {if $work.officedomain eq '媒体/广告'}selected="selected"{/if}>媒体/广告</option>
+						<option value="零售/批发" {if $work.officedomain eq '零售/批发'}selected="selected"{/if}>零售/批发</option>
+						<option value="教育/培训" {if $work.officedomain eq '教育/培训'}selected="selected"{/if}>教育/培训</option>
+						<option value="公共事业" {if $work.officedomain eq '公共事业'}selected="selected"{/if}>公共事业</option>
+						<option value="交通运输业" {if $work.officedomain eq '交通运输业'}selected="selected"{/if}>交通运输业</option>
+						<option value="房地产业" {if $work.officedomain eq '房地产业'}selected="selected"{/if}>房地产业</option>
+						<option value="能源业" {if $work.officedomain eq '能源业'}selected="selected"{/if}>能源业</option>
+						<option value="金融/法律" {if $work.officedomain eq '金融/法律'}selected="selected"{/if}>金融/法律</option>
+						<option value="餐饮/旅馆业" {if $work.officedomain eq '餐饮/旅馆业'}selected="selected"{/if}>餐饮/旅馆业</option>
+						<option value="医疗/卫生/保健" {if $work.officedomain eq '医疗/卫生/保健'}selected="selected"{/if}>医疗/卫生/保健</option>
+						<option value="建筑工程" {if $work.officedomain eq '建筑工程'}selected="selected"{/if}>建筑工程</option>
+						<option value="农业" {if $work.officedomain eq '农业'}selected="selected"{/if}>农业</option>
+						<option value="娱乐服务业" {if $work.officedomain eq '娱乐服务业'}selected="selected"{/if}>娱乐服务业</option>
+						<option value="体育/艺术" {if $work.officedomain eq '体育/艺术'}selected="selected"{/if}>体育/艺术</option>
+						<option value="公益组织" {if $work.officedomain eq '公益组织'}selected="selected"{/if}>公益组织</option>
+						<option value="其它" {if $work.officedomain eq '其它'}selected="selected"{/if}>其它</option>
+					</select>
+				</div>
+				<div class="field officecale">
+					<label for="settings-officecale"><span class="red">*</span>{$LANG.OFFICECALE}</label>
+					<select name="officecale" id="settings-officecale">
+						<option value="">请选择</option>
+						<option value="10人以下" {if $work.officecale eq '10人以下'}selected="selected"{/if}>10人以下</option>
+						<option value="10-100人" {if $work.officecale eq '10-100人'}selected="selected"{/if}>10-100人</option>
+						<option value="100-500人" {if $work.officecale eq '100-500人'}selected="selected"{/if}>100-500人</option>
+						<option value="500人以上" {if $work.officecale eq '500人以上'}selected="selected"{/if}>500人以上</option>
+					</select>
+				</div>
+				<div class="field position">
+					<label for="settings-position"><span class="red">*</span>{$LANG.POSITION}</label>
+					<input value="{$work.position}" class="f-input" name="position" id="settings-position">
+				</div>
+				<div class="field salary">
+					<label for="settings-salary"><span class="red">*</span>{$LANG.SALEAY}</label>
+					<select name="salary" id="settings-salary">
+						<option value="">请选择</option>
+						<option value="1000元以下" {if $work.salary eq '1000元以下'}selected="selected"{/if}>1000元以下</option>
+						<option value="1001-2000元" {if $work.salary eq '1001-2000元'}selected="selected"{/if}>1001-2000元</option>
+						<option value="2000-5000元" {if $work.salary eq '2000-5000元'}selected="selected"{/if}>2000-5000元</option>
+						<option value="5000-10000元" {if $work.salary eq '5000-10000元'}selected="selected"{/if}>5000-10000元</option>
+						<option value="10000-20000元" {if $work.salary eq '10000-20000元'}selected="selected"{/if}>10000-20000元</option>
+						<option value="20000-50000元" {if $work.salary eq '20000-50000元'}selected="selected"{/if}>20000-50000元</option>
+						<option value="50000元以上" {if $work.salary eq '50000元以上'}selected="selected"{/if}>50000元以上</option>
+					</select>
+				</div>
+				
+				<div class="field workyears">
+					<label for="settings-workyears"><span class="red">*</span>{$LANG.WORKYEAR}</label>
+					<select name="workyears" id="settings-workyears">
+						<option value="">请选择</option>
+						<option value="1年（含）以下" {if $work.workyears eq '1年（含）以下'}selected="selected"{/if}>1年（含）以下</option>
+						<option value="1-3年（含）" {if $work.workyears eq '1-3年（含）'}selected="selected"{/if}>1-3年（含）</option>
+						<option value="3-5年（含）" {if $work.workyears eq '3-5年（含）'}selected="selected"{/if}>3-5年（含）</option>
+						<option value="5年以上" {if $work.workyears eq '5年以上'}selected="selected"{/if}>5年以上</option>
+					</select>
+				</div>
+				
+				<div class="field workphone">
+					<?php $phone_s = explode("-",$this->_var['work']['workphone']);?>
+					<label for="settings-workphone"><span class="red">*</span>{$LANG.WORKPHONE}</label>
+					<input type="text" value="<?php echo $phone_s[0];?>" class="f-input f_l" id="frphone" onkeyup="setPhone();" onblur="setPhone();" style="width:32px">
+					<span class="f_l">&nbsp;-&nbsp;</span>
+					<input type="text" value="<?php echo $phone_s[1];?>" class="f-input f_l" id="numphone" onkeyup="setPhone();" onblur="setPhone();" style="width:80px">
+					<input type="hidden" value="{$work.workphone}" name="workphone" id="settings-workphone">
+				</div>
+				<div class="field workemail">
+					<label for="settings-workemail"><span class="red">*</span>{$LANG.WORKEMAIL}</label>
+					<input type="text" class="f-input" value="{$work.workemail}" name="workemail" id="settings-workemail">
+				</div>
+				<div class="field officeaddress">
+					<label for="settings-officeaddress"><span class="red">*</span>{$LANG.OFFICEADDRESS}</label>
+					<input type="text" class="f-input" value="{$work.officeaddress}" name="officeaddress" id="settings-officeaddress">
+				</div>
+				<div class="blank"></div>
+            </div>
+	       	<div>
+				<div style="width:83%;padding-left:39px;margin:0 auto;" id="upload_file_box">
+					<div class="plupload_header_text pl15">每张图片最大限制为3MB，图片格式为JPG,GIF,PNG,PDF</div>
+					{function name="show_ke_image" v="file1"}
+					{function name="show_ke_image" v="file2"}
+					<div class="blank1"></div>
+					{function name="show_ke_image" v="file3"}
+					{function name="show_ke_image" v="file4"}
+				</div>
+			</div>
+	        <div class="blank20"></div>
+	        <div class="blank20"></div>
+	        <div style="text-align: center">
+	            <input type="hidden" id="path" value="{$path}" name="path"/>
+				<input type="hidden" id="auth" value="{$auth}" name="auth"/>
+	            <input type="hidden" id="uploaded" name="uploaded" value="0"/>
+	            <input type="submit" value="提交审核" class="saveSettingBnt"/>
+	        </div>
+		</div>
+	</form>
+</div>
+<div class="hide" id="CTtempBox">
+    <div class="clearfix bddf">
+        <div class="gray_title f14">
+        	在职证明参考模板
+        </div>
+        <div class="f_dgray" style="padding: 5px 12px;">
+            <div style="padding:5px 0" class="f12">
+                <div>
+                	兹证明 ___姓名____（身份证号：_________________），为_____公司名称_____在职人员,
+                </div>
+                <div>
+                	从______年____月____日在我单位入职至今。目前在___________部们，任__________一职，
+                </div>
+                <div>
+                	 薪酬为________元/月。
+                </div>
+                <div>
+                	 公司电话：_________________
+                </div>
+                <div>
+                	公司地址：_________________
+                </div>
+                <div>
+                	联系人：_________________
+                </div>
+                <div>
+                    <div class="f_dgray" style="width: 35%;padding-left:280px">
+					 单位名称：_________________
+                    </div>
+                    <div class="f_dgray" style="width: 35%;padding-left:303px">
+					日期：_________________
+                    </div>
+                </div>                  
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	$("#jobGuy").click(function(){
+		var html = $("#CTtempBox").html();
+		$.weeboxs.open(html, {boxid:'ctemp_box',contentType:'text',showButton:true, showCancel:false, showOk:false,title:"",width:588,height:216,type:'wee'});
+	});
+
+	//切换地区
+	$("select[name='province_id']").bind("change",function(){
+		load_city($("select[name='province_id']"),$("select[name='city_id']"));
+	});
+	
+	$("#uploadworkCreditForm").submit(function(){
+		
+		if($.trim($("#settings-office").val()).length == 0){
+			$("#settings-office").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.OFFICE}");
+			
+			return false;
+		}
+		if($.trim($("#settings-jobtype").val()).length == 0){
+			$("#settings-jobtype").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.JOBTYPE}");
+			
+			return false;
+		}
+		if($("select[name='province_id']").val()== 0||$("select[name='city_id']").val() == 0)
+		{
+			$("select[name='province_id']").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.WORK_REGION}");
+			
+			return false;
+		}
+		if($.trim($("#settings-officetype").val()).length == 0){
+			$("#settings-officetype").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.OFFICETYPE}");
+			
+			return false;
+		}
+		if($.trim($("#settings-officedomain").val()).length == 0){
+			$("#settings-officedomain").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.OFFICEDOMAIN}");
+			
+			return false;
+		}
+		if($.trim($("#settings-officecale").val()).length == 0){
+			$("#settings-officecale").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.OFFICECALE}");
+			
+			return false;
+		}
+		if($.trim($("#settings-position").val()).length == 0){
+			$("#settings-position").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.POSITION}");
+			
+			return false;
+		}
+		if($.trim($("#settings-salary").val()).length == 0){
+			$("#settings-salary").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.SALARY}");
+			
+			return false;
+		}
+		if($.trim($("#settings-workyears").val()).length == 0){
+			$("#settings-workyears").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.WORKYEARS}");
+			
+			return false;
+		}
+		if($.trim($("#settings-workyears").val()).length == 0){
+			$("#settings-workyears").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.WORKYEARS}");
+			
+			return false;
+		}
+		if($.trim($("#settings-workphone").val()).length == 0){
+			$("#frphone").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.WORKPHONE}");
+			
+			return false;
+		}
+		if($.trim($("#settings-workemail").val()).length == 0){
+			$("#settings-workemail").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.WORKEMAIL}");
+			
+			return false;
+		}
+		if($.trim($("#settings-officeaddress").val()).length == 0){
+			$("#settings-officeaddress").focus();
+			$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.OFFICEADDRESS}");
+			
+			return false;
+		}
+		
+		var query = $("#uploadworkCreditForm").serialize();
+		$.ajax({
+			url: '{url x="index" r="uc_account#savework" p="is_ajax=1"}',
+			data:query,
+			type:"post",
+			dataType:"json",
+			success:function(result){
+				if(result.status!=1){
+					$.showErr(result.info);
+					return false;
+				}
+			}
+		});
+		var is_upload_file = false;
+		for(var i=1;i<=4;i++){
+			$("#upload_file_box #file"+i).val(KE.util.getData('file'+i));
+			if($.trim($("#upload_file_box #file"+i).val())!=""){
+				is_upload_file = true;
+			}
+		}
+		if(!is_upload_file){
+			$.showErr("请完成文件上传后提交审核。");
+			return false;
+		}
+		return true;
+	});
+});
+
+
+function load_city(pname,cname)
+{
+	var id = pname.val();
+	var evalStr="regionConf.r"+id+".c";
+
+	if(id==0)
+	{
+		var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+	}
+	else
+	{
+		var regionConfs=eval(evalStr);
+		evalStr+=".";
+		var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+		for(var key in regionConfs)
+		{
+			html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+		}
+	}
+	cname.html(html);
+}
+
+function setPhone(){
+	var frphone = $.trim($("#frphone").val());
+	var numphone = $.trim($("#numphone").val());
+	if(frphone!=""&&numphone!=""){
+		$("#settings-workphone").val(frphone+"-"+numphone);
+	}
+	else{
+		$("#settings-workphone").val("");
+	}
+}
+</script>
+{include file="inc/borrow/fileupload/credit_footer.html"} 

@@ -1,0 +1,66 @@
+﻿{include file="web/views/v2/header.html"}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/account_o2o_gift.css');?>">
+
+<div class="p_account_o2o_coupon_datail">
+        <span class="blank23"></span>
+        <div class="w1100">
+            <div class="ui-box">
+                <div class="h-title">
+                    <h2><i></i>礼券详情</h2>
+                    <a href="/gift" class="fr mr20">返回上一页 >></a>
+                </div>
+                <div class="detail">
+                    <dl>
+                        <dt><img src="{$coupon.pcPic}"></dt>
+                        <dd>
+                            <div class="v_middle">
+                                <h2>{$coupon.productName}</h2>
+                                {if $coupon.goodPrice neq 0}
+                                <p>价       值：<span class="f24 color_red">￥{$coupon.goodPrice}</span></p>
+                                {/if}
+                                {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                                    {if $coupon.useTimeType eq 2}
+                                    <p>有效期至：{function name="date" v="Y.m.d" b=$coupon.useEndTime}</p>
+                                    {elseif $coupon.useTimeType eq 1}
+                                    <p>领取后{$dayLimit}天有效
+                                    {/if}
+                                {/if}
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+
+               
+                <div class="tc pb40">
+                 {if $coupon.useRules eq 1 || $coupon.useRules eq 2 || $coupon.useRules eq 7 || $coupon.useRules eq 8 || $coupon.useRules eq 9 || $coupon.useRules eq 10}
+                    <a href="/gift/acquireExchange?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&useRules={$coupon.useRules}&storeId={$coupon.storeId}&deal_type={$deal_type}" class="common-sprite btn-red-h46" id="lingqu">立即领取</a>
+
+                {elseif $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                    <a href="/gift/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&deal_type={$deal_type}" class="common-sprite btn-red-h46" id="lingqu">填写收货地址</a>
+                {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                    {if $formConfig.phone.require}
+                    <a class="common-sprite btn-red-h46 mr15"  href="/gift/acquireExchange?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&useRules={$coupon.useRules}&storeId={$coupon.storeId}&phone={$userInfo.mobile}&deal_type={$deal_type}">充入账户{$userInfo.mobile}</a>
+                    <a  href="/gift/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&deal_type={$deal_type}" class="o2o_pc_btn_gray_h46"><span class="right o2o_w217">充入其他账户</span></a>
+                    {else}
+                    <a  href="/gift/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&deal_type={$deal_type}" class="common-sprite btn-red-h46">填写充值信息</a>
+                    {/if}
+                {/if}
+
+                </div>
+                
+                <div class="detail_con">
+                    <div class="title">
+                        <i class="circle"></i>使用说明
+                    </div>
+                    <div class="con_text">
+                        {function name='htmlspecialchars_decode' v=$coupon.couponPcDesc}
+                    </div>
+                </div>
+            </div>
+        <span class="blank60"></span>
+    </div>
+</div>
+
+
+{include file="web/views/v2/footer.html"}

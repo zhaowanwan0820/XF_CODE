@@ -1,0 +1,165 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+<style>
+.clear{ clear:both;height:5px;}
+.divpre{border:0px ;padding:5px; width:15%;position:relative;float:left;text-align:right;margin-left:1px;font-size:18px;top:10px;background:#84C1FF;}
+.divcenter {border:0px ;padding:5px; width:22%;position:relative;float:left;font-size:18px;top:6px;}
+.divblack {border:0px ;padding:5px; width:30%;position:relative;float:left;font-size:18px;top:6px;}
+.submitbutton {border:0px ;padding:5px; width:30%;position:relative;float:left;font-size:18px;top:25px;margin-left:16%;}
+</style>
+<script type="text/javascript">
+
+
+</script>
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("ProductManagement/index")}" class="back_list">返回产品用款管理列表</a></div>
+<div class="blank5"></div>
+<form id="addform" name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<div class="divpre">产品名称:</div>
+<div class="divcenter">
+    <select name="product_name" id="product_name" style="height:30px;width:175px;" onchange= "get_product_id(this)">
+        <foreach name="product_list" item="value">
+             <option value="{$value.name}" product_id="{$value.id}" <if condition="$value.id eq $vo['product_id']"> selected="selected" </if>>{$value.name}</option>
+        </foreach>
+    </select>
+    <input class="product_id_show" name="product_id" type="hidden" value={$value.id}>
+</div>、
+<div class="divblack">
+   <font color="#FF0000">该项目产品名称</font>
+</div>
+<div class="clear" ></div>
+<div class="divpre">所属咨询机构名称:</div>
+<div class="divcenter">
+    <select name="advisory_name" id="advisory_name" style="height:30px;width:175px;" onchange= "get_advisory_id(this)">
+        <foreach name="advisory_list" item="value">
+             <option value="{$value.name}" advisory_id="{$value.id}" <if condition="$value.id eq $vo['advisory_id']"> selected="selected" </if>>{$value.name}</option>
+        </foreach>
+    </select>
+    ID:<input class="advisory_id_show" name="advisory_id" type="text" style="height:25px;border:0;width:28px;" value={$vo[advisory_id]}>
+</div>
+<div class="divblack">
+   <font color="#FF0000">该项目所属咨询机构的全称</font>
+</div>
+<div class="clear" ></div>
+
+<div class="clear" ></div>
+<div class="divpre">用款限额:</div>
+<div class="divcenter">
+    <input type="text" des="用款限额" name="money_limit" style="height:25px" class="required" placeholder="输入金额..." value="{$vo.money_limit}"> 元
+</div>
+<div class="divblack">
+   <font color="#FF0000">该产品用款上限</font>
+</div>
+<div class="clear" ></div>
+<div class="divpre">用款有效期:</div>
+<div class="divcenter">
+     <input type="text" des='用款有效期开始时间' placeholder="时间控件选择" class="textbox required" style="width:150px;" name="money_effect_term_start" id="Activity_start" value="{$vo.money_effect_term_start}" onfocus="this.blur();
+     return showCalendar('Activity_start', '%Y-%m-%d %H:%M:%S', false, false, 'Activity_start');" />
+            至
+     <input type="text" des='用款有效期结束时间' class="textbox required" placeholder="时间控件选择" style="width:150px;" name="money_effect_term_end" id="Activity_end" value="{$vo.money_effect_term_end}" onfocus="this.blur();
+     return showCalendar('Activity_end', '%Y-%m-%d %H:%M:%S', false, false, 'Activity_end');" />
+</div>
+<div class="divblack">
+   <font color="#FF0000">该产品的用款限额有效时间</font>
+</div>
+<div class="clear" ></div>
+<div class="divpre">状态:</div>
+<div class="divcenter">
+     <input type="radio" name="is_effect" <if condition="$vo.is_effect eq 1"> checked="checked" </if> value="1"/>有效
+     <input type="radio" name="is_effect" <if condition="$vo.is_effect eq 0"> checked="checked" </if> value="0"/>无效
+</div>
+<div class="clear" ></div>
+<div class="submitbutton">
+     <!--隐藏元素-->
+     <input type="hidden" name="{:conf("VAR_MODULE")}" value="ProductManagement" />
+     <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+     <input type="hidden" name="id" value="{$vo.id}" />
+     <!--隐藏元素-->
+     <input type="submit" class="button" onclick="checktosubmit()" id="button_submit" value="保存" />
+     <input type="reset" class="button" value="{%RESET}" />
+</div>
+
+
+</form>
+</div>
+<script>
+function get_advisory_id(advisory) {
+    $(".advisory_id_show").val($("#advisory_name").find("option:selected").attr("advisory_id"));
+    return true;
+}
+function get_product_id(product) {
+    $(".product_id_show").val($("#product_name").find("option:selected").attr("product_id"));
+    return true;
+}
+function checktosubmit() {
+    $("form").unbind();
+    init_word_box();
+    $("#info").ajaxStart(function(){
+         $(this).html(LANG['AJAX_RUNNING']);
+         $(this).show();
+    });
+    $("#info").ajaxStop(function(){
+
+        $("#info").oneTime(2000, function() {
+            $(this).fadeOut(2,function(){
+                $("#info").html("");
+            });
+        });
+    });
+    $("form").bind("submit",function(){
+        var btn=$('form input[type="submit"]');
+        var $input = $('#hkop');
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+        var doms = $(".required");
+        var check_ok = true;
+        $.each(doms,function(i, dom){
+            if($.trim($(dom).val())=='')
+            {
+                    var title = $(dom).attr('des');
+                    if(!title)
+                    {
+                        title = '';
+                    }
+                    if(title.substr(title.length-1,title.length)==':')
+                    {
+                        title = title.substr(0,title.length-1);
+                    }
+                    if($(dom).val()=='')
+                    TIP = LANG['PLEASE_FILL'];
+                    if($(dom).val()=='0')
+                    TIP = LANG['PLEASE_SELECT'];
+                    alert(TIP+title);
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    $(dom).focus();
+                    check_ok = false;
+                    return false;
+            }
+        });
+        if(!check_ok)
+        return false;
+        if($("form").attr("name")=="search"){
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return true;
+            }else{
+                if (confirm("确定此操作吗？")) {
+                    //$input.val(btn.val());
+                    $(this).append($input);
+                     return true;
+                } else {
+                    $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                    return false;
+                }
+            }
+    });
+}
+</script>
+
+<include file="Public:footer" />

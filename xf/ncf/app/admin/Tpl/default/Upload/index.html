@@ -1,0 +1,46 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+<div class="main_title">上传文件列表</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="button_row" >
+    <form action="__APP__" method="post" enctype="multipart/form-data">
+    <input type="file" class="textbox" name="attach_file" style="width:150px"/>
+    <input type="hidden" name="{:conf("VAR_MODULE")}" value="Upload" />
+    <input type="hidden" name="{:conf("VAR_ACTION")}" value="fileUpload" />
+    <input type="hidden" name="other" value="{$other}" />
+    <input type='submit' name='submit' value='上传文件' class="button"> &nbsp; <if condition="$post_max_size gt 0"><font color='red'>post_max_size = {$post_max_size}</font></if>
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="5" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <th>文件名</th>
+        <th>文件url</th>
+        <th>文件大小</th>
+        <th>上传时间</th>
+        <th>操作</th>
+    </tr>
+    <foreach name="filelist" item="item">
+    <tr class="row">
+        <td>&nbsp;{$item.file_name}</td>
+        <td><a href='{$item.file_url}' target='_blank'>{$item.file_url}</a></td>
+        <td title='{$item.file_size_kb}'>&nbsp;{$item.file_size}</td>
+        <td>&nbsp;{$item.file_time}</td>
+        <td><a href="/m.php?m=Upload&a=fileDel&name={$item.file_name}&id={$item.id}" onclick='return confirm("确认删除？");'>删除</a></td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="5" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

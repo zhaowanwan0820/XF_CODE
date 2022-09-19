@@ -1,0 +1,45 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<php>
+	function f_to_date($date){
+	return to_date($date,"Y-m-d H:i");
+	}
+</php>
+<div class="main">
+<div class="main_title">会员政策组</div>
+
+<div class="blank5"></div>
+    <div class="search_row">
+		<input type="button" class="button" value="{%ADD}" onclick="add();" />
+    </div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    action="true"
+    checkbox="true"
+    datasource="list"
+    pk="id"
+    show="id:Id
+    ,name:政策组名称:edit
+    ,rebate_effect_days:活动持续时间(天)
+    ,group_count:组别数量
+    ,refer_rebate_ratio:邀请返点比例
+    ,create_time|f_to_date:创建时间
+    ,remark:备注"
+	actionlist="edit:{%EDIT},user_groub_select:返利规则数据"
+    actionwidth="120px"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+	function user_groub_select(id){
+		window.location.href = "/m.php?m=CouponLevelRebate&a=index&basic_group_id="+id;
+	}
+
+</script>
+
+<include file="Public:footer" />

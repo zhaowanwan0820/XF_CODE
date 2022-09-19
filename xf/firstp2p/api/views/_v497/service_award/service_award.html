@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>服务奖励</title>
+  {include file="api/views/_v32/header.html"}
+  <link href="<?php echo $this->asset->makeAppUrl('v4.97/css/service_award/service_award.css?v=456');?>" rel="stylesheet" type="text/css" />
+  <link href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+  <div class="p_service_award">
+    <div class="top_content clearfix">
+      <div class="left"><p class="top_title">已奖励金额(元)</p><p class="bottom_amount din_alternate">{$totalRefererRebateAmount.referer_rebate_amount}</p></div>
+      <p class="border_line"></p>
+      <div class="right"><p class="top_title">待奖励金额(元)</p><p class="bottom_amount din_alternate">{$totalRefererRebateAmount.referer_rebate_amount_no}</p></div>
+    </div>
+    <div class="list_container">
+      <ul class="tab_container">
+       {foreach from=$types name='types' item='value'}
+          <li {if $value.typeid == 'p2p'}class="active"{/if} data-tabname="{$value.typeid}">{$value.typename}</li>
+       {/foreach}
+      </ul>
+      <p class="bottom_line"></p>
+      <!-- 服务奖励 -->
+      <div class="tab_panel_container"></div>
+      <!-- end -->
+      <p class="load_more_container"></p>
+    </div>
+  </div>
+</body>
+<script>
+  $(function(){
+    var tabPanel = $(".list_container .tab_panel");
+    var tabLi = $(".tab_container li");
+    var activeType= tabLi.eq(0).data("tabname");
+    var resultDatasArr = [];
+    $('.tab_container').on('click',"li",function(){
+      /* 当前tab重复点击不请求数据 */
+      if(activeType == $(this).data("tabname")){
+        return false;
+      } else {
+        $(this).siblings().removeClass("active");
+        $(this).addClass("active");
+        resultDatasArr=[];
+        $(".tab_panel_container").html('');
+        reqData($(this),$(this).data("tabname"),0);
+      }
+    })
+
+    
+  /* loadMore 公用方法封装,参数ele字符串追加父元素,status用户（借款或房产列表数据状态）*/
+  /* 使用rem布局设置初始字体大小，按照苹果6的标准进行计算 */
+  var winW = document.documentElement.clientWidth
+  document.documentElement.style.fontSize = winW / 375 * 100 + "px"
+  function _load_more(ele,status){
+    var html
+    if(status == 1){
+      html = '<div class="ui_loadmore"><a href="javascript:void(0)">点击加载更多</a></div>'
+    }else if(status == 2){
+      html = '<div class="ui_loadmore"><div class="ui_loading"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div><div class="bar9"></div><div class="bar10"></div><div class="bar11"></div><div class="bar12"></div></div>&nbsp;&nbsp;正在加载</div>'
+    }else if(status == 3){
+      html = '<div class="ui_loadmore">没有更多了</div>'
+    }
+    var Ele = document.createElement("div")
+    Ele.innerHTML = html
+    ele.appendChild(Ele)
+  }
+
+
+    //数据格式转换
+    function _dataFormat(data){
+      var tmpDay = data.length > 0 && (data[0]['create_time'].slice(0,7).replace('-','年') + '月');
+      var newData = [
+        {
+          day: tmpDay,
+          list: []
+        }
+      ];
+      var newDataIdx = 0;
+      data.map(function(item,index){
+        var currentDay = item.create_time.slice(0,7).replace('-','年') + '月';
+        if(currentDay == tmpDay) {
+          newData[newDataIdx]['list'].push(item);
+        } else {
+          tmpDay = currentDay
+          newData.push({
+            day: currentDay,
+            list: [item]
+          });
+          newDataIdx++
+        }
+      })
+      return newData;
+    }
+    // ajax请求
+    function reqData(curItem,type,page) {
+      var page_size=10;
+      $(".load_more_container").html('');
+      _load_more($(".load_more_container")[0],2);
+      var ajaxData={
+          'type':type,
+          "dataType":2,
+          "token": "{$token}",
+          "offset": page,
+          "count": page_size
+      };
+      var _lock = curItem.data('lock');
+      if(_lock == "1"){
+          return;
+      }
+      curItem.data('lock','1');
+      $.ajax({
+          url: '/account/couponLog',
+          type: 'GET',
+          data: ajaxData,
+          dataType: 'json',
+          success: function(result) {
+            resultDatasArr = resultDatasArr.concat(result.data);
+            var datas = _dataFormat(resultDatasArr);
+            $(".tab_panel_container").html('');
+            $(".load_more_container").html('');
+
+            if(resultDatasArr.length > 0){
+              if(result.data.length >= page_size){
+                _load_more($(".load_more_container")[0],1);
+                $(".ui_loadmore").on('click',function(){
+                  page = page+page_size;
+                  reqData(curItem,type,page);
+                })
+              } else {
+                _load_more($(".load_more_container")[0],3)
+              }
+            
+              for (var i=0;i<datas.length;i++) {
+                var listHtml = html = ''
+                for(var j=0;j<datas[i].list.length;j++){
+                  var serviceAwardHtml = (type != "duotou") ? '&nbsp;<i>'+datas[i].list[j].rebate_money+'元</i>' : '&nbsp;已奖励<i>'+datas[i].list[j].compound_count+'</i>次&nbsp;共计<i>'+datas[i].list[j].rebate_money+'元</i>'
+                  var rebateAtatusNoInvite = datas[i].list[j].rebate_status ? "each_list_right" : "each_list_right no_invite"
+
+                  var tabTypeThird = (type == 'third') ? datas[i].list[j].platform_info : ''
+                  listHtml += '<div class="each_list">'
+                          + '<div class="each_list_content clearfix">'
+                            + '<div class="each_list_left">'
+                            +  '<p class="top">'+ tabTypeThird +'服务奖励'+serviceAwardHtml+'</p>'
+                            +  '<p class="middle">'+datas[i].list[j].consume_real_name+'('+datas[i].list[j].mobile+')</p>'
+                            +  '<p class="bottom">'+datas[i].list[j].note+'</p>'
+                            + '</div>'
+                            + '<div class="'+rebateAtatusNoInvite+'">'+datas[i].list[j].status_text+'</div>'
+                          + '</div>'
+                          + '<p class="bottom_line"></p>'
+                        +'</div>'
+                }
+                html += '<div class="tab_panel">'
+                          + '<p class="panel_time">'+datas[i].day+'</p>'
+                          + '<p class="bottom_line"></p>'
+                          + listHtml
+                        +'</div>'
+                $(".tab_panel_container").append(html);
+              }
+            } else {
+              var no_list = '<div class="absolutely_empty_container"><div class="absolutely_empty"><p>这里空空如也</p></div></div>'
+              $(".tab_panel_container").append(no_list);
+            }
+            curItem.data('lock','0');
+            activeType = type;
+          },
+          error: function() {
+            curItem.data('lock','0');
+          }
+      });
+    }
+
+    /* 初始加载tab数据 */
+    reqData($(".tab_container .active"),tabLi.eq(0).data("tabname"),0)
+  })
+
+</script>
+</html>

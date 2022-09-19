@@ -1,0 +1,74 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("Life/sectionPaymentList?$nowParam")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">版块名称：</td>
+                <td class="item_input">
+                    <select name="secId" id="secId" class="textbox" >
+                        <foreach name="secMap" key="key" item="item">
+                            <option value="{$key}" <if condition="$data.sec_id eq $key">selected="selected"</if>>{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">支付类型：</td>
+                <td class="item_input">
+                    <select name="payFlag" id="payFlag" class="textbox" >
+                       <foreach name="payFlagList" key="key" item="item">
+                           <option value="{$key}" <if condition="$data.pay_flag eq $key">selected="selected"</if>>{$item}</option>
+                       </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行卡类型：</td>
+                <td class="item_input">
+                    <select name="cardType" id="cardType" class="textbox" >
+                       <foreach name="cardTypeList" key="key" item="item">
+                           <option value="{$key}" <if condition="$data.card_type eq $key">selected="selected"</if>>{$item}</option>
+                       </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态：</td>
+                <td class="item_input">
+                    <select name="status" id="status" class="textbox require" style="width:230px;">
+                        <option value="0" <if condition="$data['status'] eq 0">selected="selected"</if>>禁用</option>
+                        <option value="1" <if condition="$data['status'] eq 1">selected="selected"</if>>启用</option>
+                    </select>
+                    <font color='red'>*</font>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">备注：</td>
+                <td class="item_input">
+                    <textarea name="remark" id="remark" class="txt addarea int_placeholder" placeholder=""  style="width:400px;height:100px;" data-placeholder="备注" >{$data.remark}</textarea >
+                </td>
+            </tr>
+            <input type="hidden" name="id" value="{$data.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveSectionPayment" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="submit" class="button" value="{%EDIT}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

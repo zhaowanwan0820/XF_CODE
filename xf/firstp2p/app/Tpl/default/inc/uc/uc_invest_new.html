@@ -1,0 +1,76 @@
+<link rel="stylesheet" type="text/css" href="{$TMPL_NEW}/css/user.css" />
+<script type="text/javascript" src="{$TMPL_NEW}/js/investment/investment_view.js"></script>
+<div class="user_right_box">
+    <div class="user_title"><h1><i class="ico_huikuan"></i>回款计划</h1></div>
+    <form id="search" action='{url x="index" r="uc_invest#loan_repay_list"}' method="get">
+    <div class="screening clearfix">
+        <div class="select_box" data-name="money_type">
+           <div class="j_select"></div>
+             <ul class="select_ul j_selectContent none">
+                <li data-value=''>全部回款类型</li>
+                {foreach from=$money_type item=type key=key}
+                <li data-value="{$key}" {if $search.money_type eq $key}data-select="1"{/if}>{$type}</li>
+                {/foreach}
+             </ul>
+        </div>
+        <div class="select_box"  data-name="repay_status">
+           <div class="j_select"></div>
+             <ul class="select_ul j_selectContent none">
+                <li data-value=''>全部回款状态</li>
+                {foreach from=$repay_status item=status key=key}
+                <li data-value="{$key}" {if $search.repay_status !== '' and $search.repay_status == $key}data-select="1"{/if}>{$status}</li>
+                {/foreach}
+             </ul>
+        </div>
+        <div class="sel_time">
+            <span>时间</span>
+            <input type="text" name='start_time' class="time_box" id="dateInput1" value="{$search.start_time}"> - 
+            <input type="text" name='end_time' class="time_box j_date" id="dateInput2" value="{$search.end_time}">   
+        </div>
+         <input type="submit" value="筛选" class="button_shaixian fr">
+    </div>
+    </form>
+</div>
+<section>
+    <div class="project clearfix">
+        <div class="pro_detailed clearfix">
+	        {if empty($list)}
+	        <div class="empty-box">没有记录</div>
+	        {else}
+	       <table class="plan">
+	           <colgroup>
+	               <col width="90">
+	               <col width="130">
+	               <col width="110">
+	               <col width="150">
+	               <col width="130">
+	               <col width="105">
+	           </colgroup>
+	           <thead>
+	               <tr>
+	                   <th><div class="tl pl10">回款日</div></th>
+	                   <th><div class="tl pl20">金额（元）</div></th>
+	                   <th>类型</th>
+	                   <th>项目</th>
+	                   <th>实际回款日</th>
+	                   <th>状态</th>
+	               </tr>
+	           </thead>
+	           <tbody>
+	               {foreach from=$list item="repay"}
+	               <tr>
+	                   <td>{$repay.time}</td>
+	                   <td>{if $repay.money neq 0}<div class="tl pl20"><em class="color-yellow1">{function name="format_price" value=$repay.money c=0 d=0}</em></div>{/if}</td>
+	                   <td>{if $repay.money_type eq '提前还款' || $repay.money_type eq '提前还款补偿金' || $repay.money_type eq '逾期罚息'}<em class="color-red1">{$repay.money_type}</em>{else}{$repay.money_type}{/if}</td>
+	                   <td id='{$repay.deal_id}'>{$repay.deal_name}</td>
+	                   <td>{if $repay.is_timeout eq 1}<em class="color-red1">{$repay.real_time}<br>（逾期）</em>{else}{$repay.real_time}{/if}</td>
+	                   <td>{if $repay.repay_status eq '因提前还款而取消'}<em class="color-red1">{$repay.repay_status}</em>{else}{$repay.repay_status}{/if}</td>
+	               </tr>
+	               {/foreach}
+	           </tbody>
+	       </table>
+           <div class="pages">{$pages}</div> 
+       {/if} 
+        </div>
+    </div>
+</section>

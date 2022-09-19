@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="format-detection" content="telephone=no"><!--解决IOS把数字渲染为电话号码，颜色为蓝色解决方案-->
+  <title>网信世界杯积分排行榜</title>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-base.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/total_integral.css?v=99');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/load_more.css?v=99');?>">
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/jquery-1.10.2.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/px2rem.js?v=99');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/load_more.js?v=99');?>"></script>
+</head>
+<body>
+  <!--总积分榜页面-->
+  <div class="my_total_integral">
+    <div class="total_integral_table">
+      <div class="title">
+        <span class="common">实时排名</span>
+        <span class="middle">用户</span>
+        <span class="common">实时积分</span>
+      </div>
+      <!--积分列表：current_user当前用户排名样式类名-->
+      <ul class="total_integral_table_lists"></ul>
+      <!--end-->
+    </div>
+    <!--加载更多-->
+    <div class="load_more_container"></div>
+    <!--end-->
+    <!--用户中心tab部分-->
+    <div class="custom_center_tab">
+      <div class="custom_center_tab_fixed clearfix">
+        <span class="index_custom_logo">
+          {if $user.pic}
+          <img src="{$user.pic}" class="user_portrait">
+          {/if}
+          {if $user.successTimes >=5}
+          <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_custom_logo.png');?>" class="suc_five">
+          {/if}
+         </span>
+        <a href="/worldcup/scoreLog?token={$token}" class="total_integral">
+          <i class="top">{$user.totalScore}</i>
+          <i class="bottom">总积分</i>
+        </a>
+        <span class="total_integral">
+          <i class="top">{$user.totalRank}</i>
+          <i class="bottom">总排名</i>
+        </span>
+        <a href="/worldcup/guessLog?token={$token}" class="total_suc_count">
+          <i class="top">{$user.successTimes}</i>
+          <i class="bottom">竞猜胜利次数</i>
+        </a>
+      </div>
+      <div class="custom_center_tab_position"></div>
+    </div>
+    <!-- end -->
+  </div>
+</body>
+</html>
+<script>
+  var load_more_container = $(".load_more_container"),/*loadMore*/
+      page = 1,
+      dataList = [],
+      html,
+      isApp = "{$isApp}"
+  /*调用接口显示load_more状态*/
+  function _interface(){
+    $.ajax({
+      url:"/worldcup/AjaxRank",
+      data:{pageNo:page,token:"{$token}"},
+      type:"post",
+      dataType:"json",
+      success:function(res){
+        dataList = dataList.concat(res.data)
+        if(load_more_container.find(".ui_loadmore").length >= 1){
+          load_more_container.children().remove()
+        }
+        if(res.data.length >= 10){
+          _load_more(load_more_container[0],1)
+          /*点击加载更多*/
+          load_more_container.find(".ui_loadmore a").click(function(){
+            if(load_more_container.find(".ui_loadmore").length >= 1){
+              load_more_container.children().remove()
+            }
+            page += 1
+            _load_more(load_more_container[0],2)
+            _interface()
+          })
+        }else if(res.data.length < 10 && dataList.length != 0){
+          _load_more(load_more_container[0],3)
+        }
+
+        if(dataList.length == 0){
+          _load_more(load_more_container[0],3,"此处为实时积分排行榜，快去获取积分来占位置~")
+        }
+        $(".total_integral_table_lists").html("")
+        var rankClass,serial_number
+        for (index in dataList) {
+          rankClass = ("{$user.totalRank}" == dataList[index].rank) ? "'list current_user'" : "list"
+          serial_number = (index < 10) ? "'ranking number10'" :  (index < 30) ? "'ranking number30'" : "'ranking'"
+          html = '<li class='+rankClass+'>'
+              + '<span class='+serial_number+'>' + dataList[index].rank + '</span>'
+              + '<span class="user">'
+              + dataList[index].name+'|'+dataList[index].mobile
+              + '</span>'
+              + '<span class="integral_value">'+ dataList[index].score+'</span>'
+              + '</li>'
+        $(".total_integral_table_lists").html($(".total_integral_table_lists").html() + html)
+        }
+      },
+      error:function(error){console.log(error)}
+    })
+  }
+_interface()
+</script>

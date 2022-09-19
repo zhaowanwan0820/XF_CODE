@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script>
+window['_AJAXSIGN_'] = '{$asgn}';
+</script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3.3/css/m-base.css');?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3.3/css/m-common.css');?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3.3/css/p-yibao.css?v=123');?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3.3/css/virtual.css');?>">
+<title>充值</title>
+</head>
+<body>
+    <div class="ui_title">充值</div>
+    <div class="p_account_charge">
+      <div id="sfyz_form">
+        <div class="ui_bg_box">
+          <div class="charge_con">
+            <p class="charge_title">充值金额</p>
+            <div class="ui_ipt">
+              <div class="ui_input din_alternate"></div>
+            </div>
+            <p class="line"></p>
+            <p class="amount_money">现金余额：<span class="remain_money">{$userInfo.remain}</span>元</p>
+          </div>
+        </div>
+        <!-- 充值限额说明 -->
+        <div class="charge_limit_descript">
+          <p class="descript_title">充值限额说明</p>
+          <table cellSpacing="0">
+            <thead>
+              <th style="width: 25%;text-align:center">单笔限额</th>
+              <th style="width: 25%;text-align:center">日累计限额</th>
+              <th style="width: 50%;text-align:center">单笔限额说明</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="single_limit">{if $limitInfo.singlelimit}{$limitInfo.singlelimit_format}{else}无{/if}</td>
+                <td class="day_limit">{if $limitInfo.daylimit}{$limitInfo.daylimit_format}{else}无{/if}</td>
+                <td class="limit_intro">
+                    <p class="null">无</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ui-deal-btn mb10">
+          <input id="sfyz-btn" type="button" value="下一步" class="ui_btn_red" disabled="disabled" style="color:#fff; background:#d8d8d8;">
+        </div>
+      </div>
+    </div>
+    <p class="bottom_tips">本服务由易宝支付提供</p>
+    <a href="{$returnLoginUrl}" id="returnLoginUrl" style="display:none;"></a>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/common/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/iscroll.js');?>"></script>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeApiUrl('v3.3/js/common/virtual.js');?>"></script>
+    <script>
+      $(function(){
+        /* 底部定位兼容 */
+        var window_height = $(window).height();
+        var body_height = $("body").height();
+        if((window_height-body_height) < 50) {
+          $(".bottom_tips").css({"position":"static","margin-bottom": "30px"})
+        } else {
+          $(".bottom_tips").css("position","fixed")
+        }
+        //进入页面，回填快捷充值页面输入的金额
+        $(".ui_input .btn_key").html({$money})
+      })
+
+    var vir_input = new virtualKey($(".ui_input"), {
+        placeholder:"",
+        delayHiden: function() {
+            upateSubmitButton();
+        },focusFn: function() {
+            upateSubmitButton();
+        },changeFn: function() {
+            upateSubmitButton();
+        }
+    });
+    var _inChargeRequest = false;
+    function upateSubmitButton() {
+        var int_merry = $(".ui_input .btn_key").html() * 1;
+        var disabled = _inChargeRequest || int_merry == '';
+        if (disabled) {
+            $('#sfyz-btn').attr('disabled', 'disabled').css({'color':'#fff','background':'#d8d8d8'});
+        } else {
+            $('#sfyz-btn').removeAttr('disabled').css({'color':'#fff','background':'#ee4634'});
+        }
+    }
+    $('#sfyz-btn').click(function(){
+        if(_inChargeRequest) return;
+        var money = $(".ui_input .btn_key").html() * 1; 
+        if (!(money > 0)) {
+            P2PWAP.ui.showErrorTip('金额错误');
+        } else if (money > 99999999){
+            P2PWAP.ui.showErrorTip('单笔订单金额不能超过99999999元');
+        } else {
+            _inChargeRequest = true;
+            P2PWAP.util.request('/payment/CreateOrder', function(data){
+                _inChargeRequest = false;
+                upateSubmitButton();
+                $('#h5chargeFormDiv').remove();
+                $('body').append('<div id="h5chargeFormDiv" style="display:none;"></div>');
+                $('#h5chargeFormDiv').append(data.form);
+                $('#h5chargeForm').submit();
+            },function(msg,errorCode){
+                _inChargeRequest = false;
+                upateSubmitButton();
+                P2PWAP.ui.showErrorTip(msg);
+                if (errorCode == P2PWAP.Const.ErrorCode.UNLOGIN) {
+                     setTimeout(function() {
+                        document.getElementById("returnLoginUrl").click();
+                    }, 3000);
+                }
+            },'get',{
+                'money': money,
+                'userClientKey':'{$userClientKey}',
+                'bankCardId': '{$bankCardId}',
+                'appVersion': '{$appVersion}'
+            });
+        }
+    });
+    </script> 
+</body>
+</html>

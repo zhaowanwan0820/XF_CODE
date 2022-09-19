@@ -1,0 +1,104 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">新增配置 <a href="{:u("Conf/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+	<form method='post' id="form" name="form" action="__APP__">
+		<table cellpadding="4" cellspacing="0" border="0" class="form">
+			<tr>
+				<td colspan="2" class="topTd"></td>
+			</tr>
+            <tr>
+                <td class="item_title">{%CONF_SITE_ID}</td>
+                <td class="item_input">
+                    <select name="site_id_list">
+                        <option value="0">公共配置</option>
+                        <option value="{$site_ids}">所有分站</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_TITLE}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="title" />
+                    &emsp;
+                    <span class="tip_span">配置项文字说明</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_NAME}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" />
+                    &emsp;
+                    <span class="tip_span">KEY, 由大写字母,数字,下划线组成</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_INPUT_TYPE}</td>
+                <td class="item_input">
+                    <select id="input_type" name="input_type">
+                        <option value="0">文本输入</option>
+                        <option value="1">下拉框输入</option>
+                        <option value="5">日期时间</option>
+                        <!--<option value="2">图片上传</option>
+                        <option value="3">编辑器</option>-->
+                    </select>
+                </td>
+            </tr>
+            <tr id="tr_value_scope">
+                <td class="item_title">{%CONF_VALUE_SCOPE}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="value_scope" />
+                    &emsp;
+                    <span class="tip_span">下拉框选项的值的集合，如‘1,2,3’，‘0:关闭,1:打开’，注意使用英文逗号冒号</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_VALUE}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="value" />
+                    &emsp;
+                    <span class="tip_span">VALUE</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_TIP}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="tip" />
+                    &emsp;
+                    <span class="tip_span">可空</span>
+                </td>
+            </tr>
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Conf" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+			<tr>
+				<td class="item_title"></td>
+				<td class="item_input">
+				<input type="submit" class="button" value="{%ADD}" />
+				<input type="reset" class="button" value="{%RESET}" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="bottomTd"></td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#input_type").bind("change", function () {
+            if($(this).val() == '1'){
+                $("#tr_value_scope").show();
+            } else {
+                $("#tr_value_scope").hide();
+            }
+            });
+        $("#input_type").change();
+
+    });
+
+</script>
+<include file="Public:footer" />

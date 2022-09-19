@@ -1,0 +1,273 @@
+                    {foreach from=$deals_list.list item="deal" key=key}
+
+                    	<tr>
+                        	<td>
+                            {if $deal.type_id eq 11}
+                            <div class="tc"><i class="icon_car"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 12}
+                            <div class="tc"><i class="icon_room"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 13}
+                            <div class="tc"><i class="icon_enterprise"></i></div>
+                            {/if}
+                             {if $deal.type_id eq 14}
+                            <div class="tc"><i class="icon_personal"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 15}
+                            <div class="tc"><i class="icon_assets"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 16}
+                            <div class="tc"><i class="icon_melting"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 17}
+                            <div class="tc"><i class="icon_ysd"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 18}
+                            <div class="tc"><i class="icon_ddd"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 19}
+                            <div class="tc"><i class="icon_xs"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 21}
+                            <div class="tc"><i class="icon_ZSZ"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 22}
+                            <div class="tc"><i class="icon_YLD"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 23}
+                            <div class="tc"><i class="icon_YSD"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 24}
+                            <div class="tc"><i class="icon_KZD"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 25}
+                            <div class="tc"><i class="icon_GYB"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 26}
+                            <div class="tc"><i class="icon_CYD"></i></div>
+                            {/if}
+                            {if $deal.type_id eq 27}
+                            <div class="tc"><i class="icon_LGL"></i></div>
+                            {/if}
+                            </td>
+                        	<th>
+                                <div class="pro_name">
+                                    <p>
+                                    {if $deal.bid_flag eq 1}
+                                        <a title="{$deal.old_name}" alt="{$deal.old_name}"  href="{$deal.url}" target="_blank" >{$deal.name}</a>
+                                    {else}
+                                        <i title="{$deal.old_name}" alt="{$deal.old_name}" class='notoutitle'>{$deal.name}</i>
+                                    {/if}
+                                    </p>
+                                    <div class="pro_links">
+                                       总额：{$deal.borrow_amount_format_detail}万
+                                       {if $deal.warrant eq 1}
+                                       <i class="badge_02" title="担保本金"></i>
+                                       {elseif  $deal.warrant eq 2}
+                                       <i class="badge" title="担保本息"></i>
+                                       {elseif  $deal.warrant eq 4}
+                                       <i class="badge" title="第三方资产收购"></i>
+                                       {/if}
+                                       {if $deal.agency_id > 0}
+                                       <i class="badge_01" title="{$deal.agency_info.short_name}"></i></i>
+                                       {/if}
+                                       {if (app_conf('TEMPLATE_ID') eq 1 || app_conf('TEMPLATE_ID') eq 7 || app_conf('TEMPLATE_ID') eq 6 || app_conf('TEMPLATE_ID') eq 11) && ($deal.type_id eq 11 || $deal.type_id eq 12)}<i class="badge_03" title="中国信贷荣誉出品"></i>{/if}
+                                    </div>
+                                </div>
+                            </th>
+                        	<th>
+                            	<div class="tips_1">
+                        		{if $deal.income_ext_rate eq 0 }
+                        		<p class="btm f14 tc">{$deal.rate_show}<em>%</em>
+                                    {if $deal.deal_type eq 1}起{/if}
+                                </p>
+                        		{else}
+								            <p class="btm f14 tc">{$deal.income_base_rate}<em>%</em>+{$deal.income_ext_rate}<em>%</em> {function name="get_rate_tips"}</p>
+                        		{/if}
+
+                            	<p class="tc">
+
+                                {if isset($deal.deal_tag_name) && $deal.deal_tag_name != ''}
+                                  <span class="icon_new j_tips" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name}</span>
+                                {/if}
+                                    {if isset($deal.deal_tag_name1) && $deal.deal_tag_name1 != ''}
+                                    <span class="icon_new j_tips" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name1}</span>
+                                    {/if}
+                                </p>
+                                </div>
+                            </th>
+                             <td>
+                                 {if $deal.loantype eq 5}
+                                 <P class="btm f14 tc">
+                                    {if $deal.deal_type eq 1}
+                                    {function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{/if}{$deal.repay_time}天</P>
+                                 {else}
+                                 <P class="btm f14 tc">{$deal.repay_time}个月</P>
+                                 {/if}
+                            </td>
+                            <td>
+                                {if $deal.deal_type eq 1}
+                                <p class="date tc">提前{$deal.redemption_period}天申请赎回</p>
+                                {else}
+                                <p class="date tc">{$deal.loantype_name}</p>
+                                {/if}
+                            </td>
+                            <td>
+                            	<div  class="pl40">
+	                            {if $deal.is_update eq 1}
+                                <p>等待确认</p>
+	                                {if isset($deal.start_loan_time_format) && $deal.start_loan_time_format}
+	                                <p>开始时间：{$deal.start_loan_time_format}</p>
+	                                {/if}
+                                {elseif $deal.deal_status eq 4}
+                                 <p>投资成功</p>
+                                 <p>成功时间：{$deal.full_scale_time}</p>
+                                 {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                                 等待确认
+                                 	{if isset($deal.start_loan_time_format) && $deal.start_loan_time_format}
+                                    <p>开始时间：{$deal.start_loan_time_format}</p>
+                                    {/if}
+                                 {elseif $deal.deal_status eq 2}
+                                 <p>可投金额：<em class="color-yellow1">{$deal.need_money_detail}元</em></p>
+                                 <p>成功时间：{$deal.full_scale_time}</p>
+                                 {elseif $deal.deal_status eq 5}
+                                 <p>投资成功</p>
+                                 <p>成功时间：{$deal.full_scale_time}</p>
+                                 {else}
+                                 <p>可投金额：<em class="color-yellow1">{$deal.need_money_detail}元</em></p>
+                                 <p>剩余时间：{$deal.remain_time_format}</p>
+                                 {/if}
+                                </div>
+                            </td>
+                            <td>
+
+
+
+
+
+                                {if $deal.deal_type eq 0 || $deal.deal_type eq 3}
+                                {if $deal.is_crowdfunding eq 0}
+                                {if $deal.is_update eq 1}
+                                <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                                {elseif $deal.deal_status eq 4}
+                                {if $deal.bid_flag eq 1}
+                                <div class="complete">
+                                    <i class=" icon_yitou"></i>
+                                </div>
+                                <div class="table_cell"><a href="{$deal.url}" class="view">还款中</a></div>
+                                {else}
+                                <div class="table_cell"><em class="view_02">还款中</em></div>
+                                {/if}
+                                {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                                <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                                {elseif $deal.deal_status eq 2}
+                                {if $deal.bid_flag eq 1}
+                                <div class="complete">
+                                    <i class=" icon_yitou"></i>
+                                </div>
+                                <div class="table_cell"><a href="{$deal.url}" class="view">满标</a></div>
+                                {else}
+                                <div class="table_cell"><em class="view_02">满标</em></div>
+                                {/if}
+                                {elseif $deal.deal_status eq 5}
+                                <div class="complete">
+                                    <i class=" icon_complete"></i>
+                                </div>
+                                <div class="table_cell"><em class="view_02">已还清</em></div>
+                                {else}
+                                <div class="table_cell"><a href="{$deal.url}" class="view_01">投资</a></div>
+                                {/if}
+                                {elseif $deal.is_crowdfunding eq 1}
+                                {if $deal.is_update eq 1}
+                                <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                                {elseif $deal.deal_status eq 4}
+                                {if $deal.bid_flag eq 1}
+                                <div class="complete">
+                                    <i class=" icon_yitou"></i>
+                                </div>
+                                <div class="table_cell"><a href="{$deal.url}" class="view">已成功</a></div>
+                                {else}
+                                <div class="table_cell"><em class="view_02">已成功</em></div>
+                                {/if}
+                                {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                                <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                                {elseif $deal.deal_status eq 2}
+                                {if $deal.bid_flag eq 1}
+                                <div class="complete">
+                                    <i class=" icon_yitou"></i>
+                                </div>
+                                <div class="table_cell"><a href="{$deal.url}" class="view">已成功</a></div>
+                                {else}
+                                <div class="table_cell"><em class="view_02">已成功</em></div>
+                                {/if}
+                                {elseif $deal.deal_status eq 5}
+                                <div class="complete">
+                                    <i class=" icon_complete"></i>
+                                </div>
+                                <div class="table_cell"><em class="view_02">已成功</em></div>
+                                {else}
+                                <div class="table_cell"><a href="{$deal.url}" class="view_01">筹款</a></div>
+                                {/if}
+                                {/if}
+                            </td>
+                            {else}
+                            {if $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                            <div class="table_cell"><a href="{$deal.url}" class="view">查看</a></div>
+                            {/if}
+                            {if $deal.deal_status eq 1}
+	                            <div class="table_cell"><a href="{$deal.url}" class="view_01">投资</a></div>
+                            {/if}
+                            {if $deal.deal_status eq 2}
+                            {if $deal.bid_flag eq 1}
+                            <div class="complete">
+                                <i class=" icon_yitou"></i>
+                            </div>
+                            <div class="table_cell"><a href="{$deal.url}" class="view">满标</a></div>
+                            {else}
+                            <div class="table_cell"><em class="view_02">满标</em></div>
+                            {/if}
+                            {/if}
+                            {if $deal.deal_status eq 4}
+                            {if $deal.deal_compound_status eq 2}
+                            <div class="complete">
+                                <i class=" icon_yitou"></i>
+                            </div>
+                            <div class="table_cell"><a href="{$deal.url}" class="view">待赎回</a></div>
+                            {/if}
+                            {if $deal.deal_compound_status eq 3}
+                            <div class="complete">
+                                <i class=" icon_yitou"></i>
+                            </div>
+                            <div class="table_cell"><a href="{$deal.url}" class="view">还款中</a></div>
+                            {/if}
+                            {if $deal.deal_compound_status eq 4}
+                            <div class="complete">
+                                <i class=" icon_yitou"></i>
+                            </div>
+                            <div class="table_cell"><a href="{$deal.url}" class="view">已还清</a></div>
+                            {/if}
+                            {if $deal.deal_compound_status eq 0}
+                            <div class="table_cell"><em class="view_02">还款中</em></div>
+                            {/if}
+                            {/if}
+                            {if $deal.deal_status eq 5}
+                            <div class="complete">
+                                <i class=" icon_complete"></i>
+                            </div>
+                            <div class="table_cell"><em class="view_02">已还清</em></div>
+                            {/if}
+                            {/if}
+
+
+
+
+
+
+
+
+
+
+                            </td>
+                        </tr>
+                        {/foreach}

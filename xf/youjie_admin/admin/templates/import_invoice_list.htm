@@ -1,0 +1,109 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<!-- 订单搜索 -->
+<div class="form-div" style="display: none;">
+  <form action="javascript:searchOrder()" name="searchForm">
+    <!-- <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" /> -->
+    {$lang.label_delivery_sn}<input name="delivery_sn" type="text" id="delivery_sn" size="15">
+    {$lang.order_sn}<input name="order_sn" type="text" id="order_sn" size="15">
+    {$lang.consignee|escape}<input name="consignee" type="text" id="consignee" size="15">
+    <input type="submit" value="{$lang.button_search}" class="button" />
+  </form>
+</div>
+
+<!-- 订单列表 -->
+  <div class="list-div" id="listDiv">
+{/if}
+
+<table cellpadding="3" cellspacing="1">
+    <tr>
+        <th>序号</th>
+        <th>导入时间</th>
+        <th>导入文件</th>
+        <th>数据量</th>
+        <th>成功数量（个）</th>
+        <th>失败数量（个）</th>
+        <th>处理状态</th>
+    <tr>
+    {foreach from=$list item=v}
+    <tr>
+        <td align="center" valign="top" nowrap="nowrap">{$v.id}</td>
+        <td align="center" valign="top" nowrap="nowrap">{$v.formated_addtime}</td>
+        <td align="center" valign="top" nowrap="nowrap"><a href="{$v.file_path}">{$v.file_name}</a></td>
+        <td align="center" valign="top" nowrap="nowrap">{$v.total_num}</td>
+        <td align="center" valign="top" nowrap="nowrap">{$v.success_num}</td>
+        <td align="center" valign="top" nowrap="nowrap">{$v.fail_num}</td>
+        <td align="center" valign="top" nowrap="nowrap">{$v.formated_status}</td>
+    </tr>
+    {/foreach}
+</table>
+
+<!-- 分页 -->
+<table id="page-table" cellspacing="0">
+  <tr>
+    <td align="right" nowrap="true">
+    {include file="page.htm"}
+    </td>
+  </tr>
+</table>
+
+{if $full_page}
+  </div>
+<script language="JavaScript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+{literal}
+
+    onload = function()
+    {
+        // 开始检查订单
+        startCheckOrder();
+                
+        //
+        listTable.query = "import_invoice_query";
+    }
+
+    /**
+     * 搜索订单
+     */
+    function searchOrder()
+    {
+        listTable.filter['order_sn'] = Utils.trim(document.forms['searchForm'].elements['order_sn'].value);
+        listTable.filter['consignee'] = Utils.trim(document.forms['searchForm'].elements['consignee'].value);
+                listTable.filter['delivery_sn'] = document.forms['searchForm'].elements['delivery_sn'].value;
+        listTable.filter['page'] = 1;
+                listTable.query = "back_query";
+        listTable.loadList();
+    }
+
+    function check()
+    {
+      var snArray = new Array();
+      var eles = document.forms['listForm'].elements;
+      for (var i=0; i<eles.length; i++)
+      {
+        if (eles[i].tagName == 'INPUT' && eles[i].type == 'checkbox' && eles[i].checked && eles[i].value != 'on')
+        {
+          snArray.push(eles[i].value);
+        }
+      }
+      if (snArray.length == 0)
+      {
+        return false;
+      }
+      else
+      {
+        eles['order_id'].value = snArray.toString();
+        return true;
+      }
+    }
+</script>
+{/literal}
+
+{include file="pagefooter.htm"}
+{/if}

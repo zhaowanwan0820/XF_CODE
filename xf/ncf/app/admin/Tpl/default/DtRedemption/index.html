@@ -1,0 +1,107 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<div class="main">
+<div class="main_title">转让/退出列表 <a href="{:u("DtProject/index")}" class="back_list">{%BACK_LIST}</a></div>
+
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="tid" value="{$typeId}"/>
+            导入文件： <input type="file" name="upfile" id="upfile" style="width:150px; ">
+            <input type="submit" class="button" value="批量导入" onclick="return confirm('确定此操作吗？')"/><br/>
+            <strong>表头说明："用户id，出借记录id，优先级"</strong><br/>
+            <strong>内容填写说明：</strong><br/>
+            <strong>出借记录id：当出借记录id字段为空时，变更该用户id下所有转让/退出申请的优先级为设置的优先级；当出借记录id字段不为空的时候，变更该用户id下所填的出借记录id的转让/退出申请优先级为设置的优先级</strong><br/>
+            <strong>优先级：转让/退出优先级，格式为整数，数字越大优先级越高，正数为优先级高的，0为正常等级，负数为低优先级</strong><br/>
+            <a href="/m.php?m=DtRedemption&a=get_priority_update_csv_tpl">获取csv模板</a>
+            <input type="hidden" value="DtRedemption" name="m"/>
+            <input type="hidden" value="import" name="a"/>
+        </form>
+    </div>
+
+
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+
+            <input type="hidden" value="DtRedemption" name="m" />
+            <input type="hidden" value="index" name="a" />
+            用户id：<input type="text" class="textbox" name="userId" value="{:trim($_REQUEST['userId'])}" style="width:100px;" />
+            出借记录id：<input type="text" class="textbox" name="loanId" value="{:trim($_REQUEST['loanId'])}" style="width:100px;" />
+            优先级：<input type="text" class="textbox" name="priority" value="{:trim($_REQUEST['priority'])}" style="width:100px;" />
+
+            申请转让/退出时间:
+            <input type="text" class="textbox" style="width:140px;" name="create_time_begin" id="create_time_begin" value="{$_REQUEST['create_time_begin']}" onfocus="this.blur(); return showCalendar('create_time_begin', '%Y-%m-%d 00:00:00', false, false, 'btn_create_time_begin');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_create_time_begin" value="{%SELECT_TIME}" onclick="return showCalendar('create_time_begin', '%Y-%m-%d %H:%M:00', false, false, 'btn_create_time_begin');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="create_time_end" id="create_time_end" value="{$_REQUEST['create_time_end']}" onfocus="this.blur(); return showCalendar('create_time_end', '%Y-%m-%d 23:59:59', false, false, 'btn_create_time_end');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_create_time_end" value="{%SELECT_TIME}" onclick="return showCalendar('create_time_end', '%Y-%m-%d %H:%M:59', false, false, 'btn_create_time_end');" />
+
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="{$projectId}" name="project_id" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+
+    <table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+        <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+        <tr class="row">
+            <th>用户id</th>
+            <th>出借记录id</th>
+            <th>申请转让/退出金额</th>
+            <th>申请转让/退出时间</th>
+            <th>剩余金额</th>
+            <th>优先级</th>
+            <th>操作</th>
+        </tr>
+
+        <?php foreach($data as $k=>$v) :?>
+        <tr class="row">
+            <td><?= $v['userId']; ?></td>
+            <td><?= $v['loanId']; ?></td>
+            <td><?= $v['money']; ?></td>
+            <td><?= $v['createTime']; ?></td>
+            <td><?= $v['remainMoney']; ?></td>
+            <td><?= $v['priority']; ?></td>
+            <td><a href='javascript:void(0)' onclick="changePriority('<?=$v['loanId'];?>','<?=$v['userId'];?>','<?=$projectId;?>','<?=$v['priority'];?>');">修改</a> </td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+
+<script>
+    function changePriority(loanId,userId,projectId,priority){
+        $.weeboxs.open(ROOT+'?m=DtRedemption&a=change&loanId='+loanId+'&userId='+userId+'&projectId='+projectId+'&priority='+priority, {contentType:'ajax',title:'优先级修改',onok:save,showButton:true,width:420,height:135});
+
+    }
+
+    function save(){
+        priority = $("#priority").val();
+        userId = $("#userId").val();
+        loanId = $("#loanId").val();
+        projectId = $("#projectId").val();
+        $.get("/m.php?m=DtRedemption&a=doChange","loanId="+loanId+"&priority="+priority+"&userId="+userId,function(rs){
+            var rs = $.parseJSON(rs);
+            if(rs.status){
+                alert("操作成功！");
+                window.location.href = "/m.php?m=DtRedemption&a=index&project_id="+projectId;
+            }else{
+                alert(rs.info);
+            }
+        });
+        return false;
+    }
+</script>
+
+<include file="Public:footer"/>

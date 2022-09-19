@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if isset($page_title) && $page_title}{$page_title} - {/if}{if isset($show_site_titile) && ($show_site_titile eq 1)}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+<link rel="icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<meta name="keywords" content="{if isset($page_keyword) && $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+<meta name="description" content="{if isset($page_description) && $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+<script>
+   var  status_switch = {function name="app_conf" v="SWITCH_DEAL_INFO_DISPLAY"};
+</script>
+
+{if isset($rss_title) && $rss_title}
+<link title="{$rss_title}" type="application/rss+xml" rel="alternate" href="{$rss_url}" />
+{/if}
+
+{if isset($is_index) && $is_index eq 1}
+<?php echo $this->asset->renderAll(1); ?>
+{else}
+<!--[if lte IE 9]>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/html5shiv.js');?>"></script>
+<![endif]-->
+<?php echo $this->asset->renderAll(); ?>
+{/if}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('skins/shanghaidai/css/style.css');?>" />
+
+<script type="text/javascript">
+var APP_ROOT = '{$APP_ROOT}';
+{if app_conf("APP_MSG_SENDER_OPEN") eq 1}
+var send_span = {function name="app_conf" v="SEND_SPAN"}000;
+{/if}
+</script>
+<script type="text/javascript">
+        $(function(){
+            $(".login_group .unlogin a").hover(
+                function(){
+                    $(this).prev().addClass("rotate180");
+                },
+                function(){
+                    $(this).prev().removeClass("rotate180");
+                });
+        });
+</script>
+
+
+
+<!--public js&css end -->
+
+</head>
+<body>
+
+<script type="text/javascript" src="/api/fzjs"></script>
+    
+<!--页头-->
+<div id="head" class="head">
+    <div class="container">
+        <div class="headbox">
+            <div class="headleft">
+                <div class="logo1">
+                        <a href="http://www.lendingsh.com/"><img src="http://www.lendingsh.com/Public/Home/images/logo.png"></a>
+                    </div>
+                
+            </div>
+            <div class="headright">
+                <div class="login_cont">
+                    <div class="login_group">
+
+
+
+                    {if !$user_info}  
+                    <!--登录前-->
+                    <div class="unlogin">
+                            <div class="login1 icon"></div>
+                            <a href="/user/login" class="a_login">登录</a>
+                            <div class="login2 icon"></div>
+                            <a href="/user/register" class="a_reg">注册</a>
+                    </div>
+                    {else}
+                    <!--登录后-->
+                    <div class="logined">
+                        您好， 
+                        <a class="username" href="/account">{if empty($user_info.real_name)}{$user_info.user_name}{else}{$user_info.real_name}{/if}</a> / 
+                        <a href="/user/loginout">退出</a> / 
+                        <a href="/message">消息</a> / 
+                        <a href="/helpcenter">帮助中心</a>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /页头 -->
+<!-- 导航 -->
+<div id="nav" style="margin-bottom:35px">
+     <div class="container">
+        <ul class="nav-link">
+            <li><a href="http://www.lendingsh.com/">首页</a></li>
+            <li class="active"><a href="http://shanghaidai.firstp2p.com/">我要投资</a></li>
+            <li><a href="http://www.lendingsh.com/loan">我要借款</a></li>
+            <li><a href="http://www.lendingsh.com/news">新闻动态</a></li>
+            <li><a href="http://www.lendingsh.com/job">招贤纳士</a></li>
+            <li><a href="http://www.lendingsh.com/about">关于我们</a></li>
+        </ul>
+    </div>
+</div>
+ <!-- /导航 -->
+
+
+   <div class="wrap"> 

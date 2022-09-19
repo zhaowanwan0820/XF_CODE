@@ -1,0 +1,143 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/calendar/calendar_lang.js' />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/input-click.js' />
+<div class="main">
+    <div class="main_title">投诉举报</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            举报对象类型：
+            <select name="for_type" id="for_type">
+                <option value="" <if condition="intval($_REQUEST['for_type']) eq 0">selected="selected"</if>>==请选择==</option>
+                <foreach name="for_type" key="key" item="forType_item">
+                    <option value="{$key}" <if condition="intval($_REQUEST['for_type']) eq $key">selected="selected"</if>>{$forType_item}</option>
+                </foreach>
+            </select>
+            举报对象姓名：<input type="text" id="for_name" class="textbox" name="for_name" value="{:trim($_REQUEST['for_name'])}" style="width:100px;" />
+            举报人姓名：<input type="text" id="contact_name" class="textbox" name="contact_name" value="{:trim($_REQUEST['contact_name'])}" style="width:100px;" />
+            举报人手机号：<input type="text" id="contact_mobile" class="textbox" name="contact_mobile" value="{:trim($_REQUEST['contact_mobile'])}" style="width:100px;" />
+            实/匿名举报：
+            <select name="is_anony" id="is_anony">
+                <option <if condition="intval($_REQUEST['is_anony']) eq 0">selected="selected"</if> value="">全部</option>
+                <option <if condition="intval($_REQUEST['is_anony']) eq 1">selected="selected"</if> value="1">实名</option>
+                <option <if condition="intval($_REQUEST['is_anony']) eq 2">selected="selected"</if> value="2">匿名</option>
+            </select>
+            <br />
+            事件类别：
+            <select name="event_type" id="event_type">
+                <option value="" <if condition="intval($_REQUEST['event_type']) eq 0">selected="selected"</if>>==请选择==</option>
+                <foreach name="event_list" key="key" item="event_item">
+                    <option value="{$key}" <if condition="intval($_REQUEST['event_type']) eq $key">selected="selected"</if>>{$event_item}</option>
+                </foreach>
+            </select>
+            咨询人注册手机号：<input type="text" id="user_mobile" class="textbox" name="user_mobile" value="{:trim($_REQUEST['user_mobile'])}" style="width:100px;" />
+            咨询时间：<input type="text" id="begin" onclick="show_cal(this)" class="textbox" name="begin" value="{:trim($_REQUEST['begin'])}" style="width:100px;" />
+            -&nbsp; <input type="text" id="end" class="textbox" onclick="show_cal(this)" name="end" value="{:trim($_REQUEST['end'])}" style="width:100px;" />
+
+            状态：
+            <select name="status" id="status">
+            <option <if condition="intval($_REQUEST['status']) eq 0">selected="selected"</if> value="">全部</option>
+            <option <if condition="intval($_REQUEST['status']) eq 1">selected="selected"</if> value="1">未回复</option>
+            <option <if condition="intval($_REQUEST['status']) eq 2">selected="selected"</if> value="2">已回复</option>
+            </select>
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="Complain" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 style="word-wrap:break-word;word-break:break-all;">
+        <tr>
+            <td colspan="15" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+            </th>
+            <th width="50px">编号</th>
+            <th>举报人信息</th>
+            <th>举报对象信息</th>
+            <th>举报标题</th>
+            <th>事件描述</th>
+            <th>附件</th>
+            <th>事件类别</th>
+            <th>当前状态</th>
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="item">
+            <tr class="row">
+                <td>
+                    <input type="checkbox" name="key" class="key" value="{$item.id}">
+                </td>
+                <td>
+                    &nbsp;{$item.id}
+                </td>
+                <td>
+                    &nbsp;{$item.contact_name}/{$item.contact_email}/{$item.contact_mobile}
+                </td>
+                <td>
+                    &nbsp;{$item.for_name}/{$item.for_type}/{$item.for_product}
+                </td>
+                <td>
+                    &nbsp;{$item.title}
+                </td>
+                <td width="50%">
+                    &nbsp;{$item.content}
+                </td>
+                <td>
+                    &nbsp;<a href="{$item.attachment}">查看</a>
+                </td>
+                <td>
+                    &nbsp;{$item.event_type}
+                </td>
+                <td>&nbsp;{$item.statusText}</td>
+                <td>&nbsp;<if condition="$item.status eq 1" ><a href="javascript:void(0)" onclick='save({$item.id});'>回复</a><else/>查看回复内容</if></td>
+            </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+function show_cal(obj) {
+    obj.blur();
+    return showCalendar(obj.id, '%Y-%m-%d %H:%M:%S', true, false, obj.id);
+}
+
+
+function save(id){
+if(id){
+    $.ajax({
+    url:"/m.php?m=Complain&a=doReply",
+    data:"id="+id,
+    success: function(rs){
+        var rs = $.parseJSON(rs);
+        if(rs.status){
+            alert("操作成功！");
+            window.location.href = "/m.php?m=Complain&a=index";
+        }else{
+            alert(rs.info);
+        }
+      }
+    });
+    }else{
+         alert('参数id不能为空');
+    }
+}
+
+    function show_cal(obj) {
+        obj.blur();
+        return showCalendar(obj.id, '%Y-%m-%d %H:%M:%S', true, false, obj.id);
+    }
+</script>
+
+<include file="Public:footer" />
+

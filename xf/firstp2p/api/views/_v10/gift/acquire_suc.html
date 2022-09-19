@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>领券详情</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_success.css');?>">
+        <script>
+            window['_MOBILE_'] = "{$userInfo.mobile}";
+            window['_ZMQStringWithSignature'] = "{$_ZMQStringWithSignature}";
+            window['_O2O_COUPONID_'] = "{$coupon.id}";
+            window['_O2O_FRONTEND_SIGN_'] = "{$o2o_frontend_sign}";
+        </script>
+        <style>
+            ._O2O_COUPON_GROUP_DETAIL{display:none !important}
+            ._O2O_COUPON_ACQUIRE_SUC{}
+            ._O2O_MY_COUPON_DETAIL{display:none !important;}
+        </style>
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="p_coupon_change">
+            <div class="sc_top">
+                <i class="sc_success"></i>
+                <p>领取成功</p>
+            </div>
+            <!--<div class="sc_list clearfix">
+                <div class="scl_show ">
+                    <span>商品名称</span>
+                    <p class="ts_color">{$coupon.productName}</p>
+                </div>
+            </div>-->
+            <!--<div class="sc_title h15"></div>-->
+                <div class="sc_list clearfix">
+                    <div class="scl_show ">
+                        <span>商品名称</span>
+                        <p class="ts_color">{$coupon.productName}</p>
+                    </div>
+                    {if $coupon.isShowCouponNumber eq 1}
+                    <!-- <div class="scl_show  ">
+                        <span>券码</span>
+                        <p class="coupon_num">{$coupon.couponNumber}</p>
+                    </div> -->
+                    {/if}
+                    <div class="scl_show ">
+                        <span>有效期至</span>
+                        <p>{function name="date" v="Y.m.d" b=$coupon.useEndTime}</p>
+                    </div>
+                    <div class="suc_txt">
+                        {function name='htmlspecialchars_decode' v=$coupon.couponDesc}
+                    </div>
+                </div>
+
+                <div class="ts_link">
+                    <ul class="clearfix">
+                        {if $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                        <li>
+                            <a class="btn_ts_fenxiang"
+                               data-proto="coupon://api" data-type="webview" data-backid="couponConfirmInfo" data-title="兑换详情" data-identity="couponRedeemResult"
+                               data-needback="false" data-needrefresh="true">
+                                <i class="geren_zhanghu"></i>
+                            </a>
+
+                            <span>充入账户</span>
+                            <span>{function name="format_mobile" v=$userInfo.mobile}</span>
+                        </li>
+                        <li></li>
+                        <li>
+                            <a data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="couponRedeemDetail" data-title="确认{$coupon.p2pUsedDesc.title}" data-identity="couponConfirmInfo" data-needback="true" data-needrefresh="true"  href="{$APP_HOST}{$coupon.p2pExchangeUrl}&token={$token}">
+                                <i class="qita_zhanghu"></i>
+                            </a>
+                            <span>充入其他账户</span>
+                        </li>
+                        {/if}
+                        {if $coupon.useRules eq 7 || $coupon.useRules eq 8 || $coupon.useRules eq 9}
+                        <li class="js_weixinfenxiang disnone">
+                            <a class="weixin_fenxiang">
+                                <i class="weixin_zhanghu"></i>
+                            </a>
+                            <span>分享给微信好友</span>
+                        </li>
+                        {/if}
+                        {if $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                        <li>
+                            <a class="shouhuo_dizhi" data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="couponRedeemDetail" data-title="确认{$coupon.p2pUsedDesc.title}" data-identity="couponConfirmInfo" data-needback="true" data-needrefresh="true" href="{$APP_HOST}{$coupon.p2pExchangeUrl}&token={$token}">
+                                <i class="geren_dizhi"></i>
+                            </a>
+                            <span>填写收货信息</span>
+                        </li>
+                        {/if}
+                        
+                    </ul>
+                </div>
+            <div class="ui_h56"></div>
+            <div class="sc_footer clearfix">
+                <div class="left_div"><a href="coupon://api?type=native&name=coupontab&selectedtab=mine" class="a_btn a_left">查看礼券</a></div>
+                <div class="left_div"><a href="coupon://api?type=native&name=home" class="a_btn a_right">返回投资列表</a></div>
+            </div>
+        </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    <script type="text/javascript">
+    //券码分割
+    var str = '{$coupon.couponNumber}';
+    var couponNumber = '';
+    for(var i = 0; i< str.length; i++){
+       couponNumber += str[i];
+       if((i+1) % 4 == 0) couponNumber += ' ';
+    }
+    $('.coupon_num').html(couponNumber);
+    $(function() {
+        $(".btn_ts_fenxiang").bind("click", function () {
+            var shref = "{$APP_HOST}/gift/ExchangeCoupon?token={$token}&storeId={$coupon.storeId}&useRules={$coupon.useRules}&couponId={$coupon.id}&phone={$userInfo.mobile}";
+            $(".btn_ts_fenxiang").attr('href', shref);
+            WXP2P.APP.warpAnchorSchema($(".btn_ts_fenxiang")[0]);
+            return true;
+        });
+
+        //拉取微信分享
+        if ('{$coupon.useRules}' == "9") {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "GetBonusGroupInfo?token={$token}&load_id={$load_id}&site_id={$site_id}",
+                success: function (result) {
+                    var newdata = result.data;
+                    if (newdata != undefined && newdata.load_id != null && newdata.load_id != "") {
+                        var aherf = "bonus://api?title=" + encodeURIComponent(newdata.bonus_title) +
+                            "&content=" + encodeURIComponent(newdata.bonus_content) + "&face=" + encodeURIComponent(newdata.bonus_face)
+                            + "&url=" + encodeURIComponent(newdata.bonus_url);
+                        $(".js_weixinfenxiang").removeClass("disnone");
+                        $(".weixin_fenxiang").attr("href", aherf);
+                    }
+                }
+            });
+        }
+    });
+    </script>
+    </body>
+</html>

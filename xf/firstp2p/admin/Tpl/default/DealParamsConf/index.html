@@ -1,0 +1,110 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript">
+    function add(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealParamsConf&"+VAR_ACTION+"=add";
+    }
+    function edit(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealParamsConf&"+VAR_ACTION+"=edit&id=" + id;
+    }
+    function del(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealParamsConf&"+VAR_ACTION+"=delete&id=" + id;
+    }
+</script>
+
+<div class="main">
+<div class="main_title">参数配置列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        参数配置方案名称：<input type="text" class="textbox" name="name" value="{$params_conf_name}" style="width:200px;" />
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DealParamsConf" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 align="center">
+        <tr>
+            <td colspan="19" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="50px   ">
+                <a href="javascript:sortBy('id','1','DealParamsConf','index')" title="按照编号升序排列 ">
+                    编号
+                    <img src="/static/admin/Common/images/desc.gif" width="12" height="17"
+                    border="0" align="absmiddle">
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('name','1','DealParamsConf','index')" title="按照参数配置方案名称升序排列">
+                    参数配置方案名称
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('name','1','DealParamsConf','index')" title="按照建立时间升序排列 ">
+                    建立时间
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('name','1','DealParamsConf','index')" title="按照参数配置方案描述升序排列 ">
+                    参数配置方案描述
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('name','1','DealParamsConf','index')" title="按照标签升序排列 ">
+                    标签
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('name','1','DealParamsConf','index')" title="按照tag升序排列 ">
+                    tag
+                </a>
+            </th>
+            <th style="width:250px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="conf">
+        <tr class="row" align="center">
+            <td>
+                &nbsp;{$conf.id}
+            </td>
+            <td>
+                &nbsp;
+                <a href="javascript:edit('{$conf.id}')">
+                    {$conf.name}
+                </a>
+            </td>
+            <td>
+                    {$conf.create_time|format_date}
+            </td>
+            <td>
+                    {$conf.description}
+            </td>
+            <td>
+                    {$conf.deal_tag_name}
+            </td>
+            <td>
+                    {$conf.tag_names}
+            </td>
+            <td>
+                <a href="javascript:edit('{$conf.id}')">编辑</a>
+                &nbsp;
+                <a href="javascript:del('{$conf.id}')">删除</a>
+                &nbsp;
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,114 @@
+<!-- $Id: account_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+
+<div class="main-div">
+<form method="post" action="account_change_audit.php?act=update" name="theForm" onsubmit="return validate()">
+
+<table cellspacing="1" cellpadding="3" width="100%">
+  <tr>
+    <td class="label">{$lang.admin_user}</td>
+    <td>{$admin_user}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_user_id}</td>
+    <td>{$user.user_id}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_mobile_phone}</td>
+    <td>{$user.mobile_phone}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_user_name}</td>
+    <td>{$user.user_name}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.created_at_info}</td>
+    <td>{$audit.created_at}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_change_desc}</td>
+    <td><textarea  name="change_desc" cols="60" rows="4" disabled>{$audit.change_desc}</textarea></td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_user_money}</td>
+    <td><select name="add_sub_user_money" id="add_sub_user_money" disabled>
+      <option value="1" {if $audit['user_money']>0}selected{/if}>{$lang.add}</option>
+      <option value="-1" {if $audit['user_money']<0}selected{/if}>{$lang.subtract}</option>
+      <option value="0" {if $audit['user_money']==0}selected{/if}>{$lang.no_change}</option>
+    </select>
+    <input name="user_money" type="text" id="user_money" style="text-align:right" value="{$audit.user_money_abs}" disabled size="10" />
+    {$lang.current_value}{$user.formated_user_money}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_frozen_money}</td>
+    <td><select name="add_sub_frozen_money" id="add_sub_frozen_money" disabled>
+      <option value="1" {if $audit['frozen_money']>0}selected{/if}>{$lang.add}</option>
+      <option value="-1" {if $audit['frozen_money']<0}selected{/if}>{$lang.subtract}</option>
+      <option value="0" {if $audit['frozen_money']==0}selected{/if}>{$lang.no_change}</option>
+    </select>
+      <input name="frozen_money" type="text" id="frozen_money" style="text-align:right" value="{$audit.frozen_money_abs}" disabled size="10" />
+      {$lang.current_value}{$user.formated_frozen_money}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_rank_points}</td>
+    <td><select name="add_sub_rank_points" id="add_sub_rank_points" disabled>
+      <option value="1" {if $audit['rank_points']>0}selected{/if}>{$lang.add}</option>
+      <option value="-1" {if $audit['rank_points']<0}selected{/if}>{$lang.subtract}</option>
+      <option value="0" {if $audit['rank_points']==0}selected{/if}>{$lang.no_change}</option>
+    </select>
+      <input name="rank_points" type="text" id="rank_points" style="text-align:right" value="{$audit.rank_points_abs}" disabled size="10" />
+      {$lang.current_value}{$user.rank_points}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.label_pay_points}</td>
+    <td><select name="add_sub_pay_points" id="add_sub_pay_points" disabled>
+      <option value="1" {if $audit['pay_points']>0}selected{/if}>{$lang.add}</option>
+      <option value="-1" {if $audit['pay_points']<0}selected{/if}>{$lang.subtract}</option>
+      <option value="0" {if $audit['pay_points']==0}selected{/if}>{$lang.no_change}</option>
+    </select>
+      <input name="pay_points" type="text" id="pay_points" style="text-align:right" value="{$audit.pay_points_abs}" disabled size="10" />
+      {$lang.current_value}{$user.pay_points}</td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.audit_status}：</td>
+    <td>
+      <input type="radio" name="audit_status" value="2" checked />{$lang.audit_status_2}
+      <input type="radio" name="audit_status" value="3" />{$lang.audit_status_3}
+    </td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.audit_desc}</td>
+    <td><textarea  name="audit_desc" cols="60" rows="4"></textarea></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <input type="reset" class="button" value="{$lang.button_reset}" />
+      <input type="hidden" name="token" value="{$token}">
+      <input type="hidden" name="audit_id" value="{$audit.audit_id}">
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  return validator.passed();
+}
+
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

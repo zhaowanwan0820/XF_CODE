@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="format-detection" content="telephone=no">
+        <title>操作成功</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/m-common.css');?>">
+        <script type="text/javascript" src="<?php echo $this->asset->makeApiUrl('v3/js/zepto.min.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeApiUrl('v3/js/o2o/common.js');?>"></script>
+        <link href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/o2o_success.css');?>" rel="stylesheet" type="text/css" />
+        <script>
+            window['_MOBILE_'] = "{$userInfo.mobile}";
+            window['_ZMQStringWithSignature'] = "{$_ZMQStringWithSignature}";
+            window['_O2O_COUPONID_'] = "{$coupon.id}";
+            window['_O2O_FRONTEND_SIGN_'] = "{$o2o_frontend_sign}";
+        </script>
+        <style>
+            ._O2O_COUPON_GROUP_DETAIL{display:none !important}
+            ._O2O_COUPON_ACQUIRE_SUC{}
+            ._O2O_MY_COUPON_DETAIL{display:none !important;}
+        </style>
+    </head>
+    <body>
+        <div class="m-main p_sc">
+            {if $IS_APP}
+            {else}
+            <div class="ui_title">
+                {if $redirect_uri }<a class="ui_back" href="{$redirect_uri}"><i class="ui_icon_back"></i>返回主页</a>{/if}
+                操作成功
+            </div>
+            {/if}
+            <div class="sc_result"><i class="sc_success"></i>操作成功</div>
+            <div class="sc_tip">
+                {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                <div class="sc_line f18">券码：<span class="Js-coupon_num">{$coupon.couponNumber}</span></div>
+                <div class="sc_line f12">有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</div>
+                {elseif $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                <div class="sc_line f14">我们会尽快安排邮寄给您</div>
+                {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                    {foreach from=$extraParam item=item key=key}
+                        {if $key eq 'phone'}
+                        <div class="sc_line f14">已提交充值账户 <span class="format_mobile">{$item}</span></div>
+                        {elseif $key eq 'userName'}
+                        <div class="sc_line f14">已提交充值账户 {$item}</div>
+                        {else}
+                        <div class="sc_line f14">已提交充值账户<br/>{$item}</div>
+                        {/if}
+                    {/foreach}
+                {elseif $coupon.useRules eq 7 || $coupon.useRules eq 8 || $coupon.useRules eq 10}
+                <div class="sc_line f14">请尽快使用</div>
+                {if $coupon.useRules eq 7 && $coupon.isShowCouponNumber eq 1}
+                    <div class="online_coupon_num">券码：<span class="Js-coupon_num">{$coupon.couponNumber}</span></div>
+                {/if}
+                {elseif $coupon.useRules eq 9}
+                <div class="sc_line f14">您可以进入“红包”页面进行分享</div>
+                {/if}
+            </div>
+            <div class="sc_done">
+                {if $IS_APP}
+                <a href="firstp2p://api?type=native&name=home" class="btn_red">完成</a>
+                {else}
+                <a href="{if $from_source eq 'bid'}{$redirect_uri}{else}/coupon/mine?oauth_token={$oauth_token}{/if}" class="btn_red">完成</a>
+                {/if}
+            </div>
+            <div class="suc_txt none">{function name='htmlspecialchars_decode' v=$coupon.couponDesc}</div>
+        </div>
+        {if $IS_APP}
+        <script>
+        var  triggerScheme = function(scheme) {
+            var iframe = document.createElement("iframe");
+            iframe.src= scheme;
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+        };
+        triggerScheme("firstp2p://api?method=updatebacktype&param=3");
+        </script>
+        {/if}
+    <script type="text/javascript">
+    var $couponNumList = $('.Js-coupon_num');
+    $couponNumList.each(function(k,v){
+        var str = $(v).html();
+        $(v).html(str.replace(/(.{4})/g, '$1 '));
+    });
+    var $mobileList = $('.format_mobile');
+    $mobileList.each(function(k,v){
+        var str = $(v).html();
+        $(v).html(str.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3'));
+    });
+    
+    if($('_O2O_COUPON_ACQUIRE_SUC').length > 0) {
+        $('.sc_done').addClass('none');
+        $('.suc_txt').removeClass('none');
+    }
+    </script>
+    {include file="openapi/views/baidutongji.html"}
+    </body>
+</html>

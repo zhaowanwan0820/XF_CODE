@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>详情</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/p-detail-hasinvestment-new.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="p_deal_hasinvestment">
+            <div class="has-main">
+                {if $deal_load_detail.status eq 3}
+                <div class="yjb_tips"><i class="icon_tips"></i>已购黄金及收益克重已自动转入优金宝</div>
+                {/if}
+                <div class="detail_data">
+                    <div class="data_top tc">
+                        <div class="color_gray">买入价/买入克重</div>
+                        <div class="tzi_money mt5 f25">{function name="number_format" v="$deal_load_detail.money" f="2"}元<em class="f18">/{function name="number_format" v="$deal_load_detail.buyAmount" f="3"}克</em></div>
+                        <div class="color_gray f12">
+                            {$deal_load_detail.name}
+                            {if $deal_load_detail.repay_start_time!=0 }
+                                <span class="color_yellow">{$deal_load_detail.repay_start_time}起算</span>
+                            {/if}
+
+                        </div>
+
+                        {if $deal_load_detail.status eq 1 }
+                        <div class="btn_h15 bg_yellow">认购中</div>
+                        {elseif $deal_load_detail.status eq 2}
+                        <div class="btn_h15 bg_blue">进行中</div>
+                        {elseif $deal_load_detail.status eq 3}
+                        <div class="btn_h15 bg_green">已到期</div>
+                        {/if}
+
+                    </div>
+
+                    <div class="data_bot color_gray f12 clearfix">
+                        <ul class="data_list  clearfix">
+                            <li>预期收益克重(克)<span class="color_yellow f25">{function name="number_format" v="$deal_load_detail.total_interest_amount" f="3"}</span> </li>
+                            <li>已获收益克重(克)<span class="f25">{function name="number_format" v="$deal_load_detail.interest_amount" f="3"}</span> </li>
+                            <li>年化收益克重<span class=" color_black f25">{$deal_load_detail.year_interest_amount}克<em class="f18">/100克</em></span> </li>
+                            <li>期限<span class=" color_black f25">{$deal_load_detail.repay_time}<em class="f18">{if $deal_load_detail.loantype eq 5}天{else}个月{/if}</em></span></li>
+                        </ul>
+                    </div>
+                </div>
+                {if $contract_list}
+                <div class="title">
+                    说明、合同和协议
+                </div>
+                {foreach from=$contract_list item="contract" key="k"}
+                    <div class="common_btn">
+                        <a href="/gold/deal_load_contract/?id={$contract.id}&dealId={$deal_load_detail.deal_id}&token={$usertoken}"><i class="icon_arrow fr"></i>{$contract.title}</a>
+                    </div>
+                {/foreach}
+                {/if}
+                <div class="inv-footer mt10">
+                    <div class="invf_top">
+                        <ul class="menu">
+                            <li class="select" style="width:33.3%;"><span>{if $deal_load_detail.status eq 1 }预计{/if}还金计划<em></em></span></li>
+                            <li style="width:33.3%;"><span>产品详情<em></em></span></li>
+                            <li style="width:33.3%;"><span>购买记录<em></em></span></li>
+                        </ul>
+                        <div class="invf_write">
+                        </div>
+                    </div>
+                    <div class="invf_txt">
+                        <div class="tb1" style="display:block">
+                        {if $repayInfoList}
+                            {foreach from=$repayInfoList item="item"}
+                            <div class="bid_list">
+                                <div class="float_l">
+                                    <p>{$item.time}</p>
+                                    <p class="gray">{$item.info}</p>
+                                </div>
+                                <div class="float_r tr">
+                                    <p class="color_yellow">{$item.money}</p>
+                                    <p class="gray">{$item.info_res}</p>
+                                </div>
+                            </div>
+                            {/foreach}
+                            {else}
+                            <div class="tc mt20">暂无还金计划</div>
+                        {/if}
+                        </div>
+                        {if $deal.loantype neq 7}
+                        <div class="tb2">
+
+                            <div class="productDetailBox">
+                                <div class="item">
+                                   <p class="title">黄金品种</p>
+                                   <p class="content">{ $deal.gold_type }</p>
+                                </div>
+                                <div class="item">
+                                   <p class="title">起购克重</p>
+                                   <p class="content">{ $deal.min_loan_money }克</p>
+                                </div>
+                                <div class="item">
+                                   <p class="title">收益克重计算方式</p>
+                                   <p class="content">年化每100.000克收益{ $deal.delay_pick_up_way }克</p>
+                                </div>
+                                <div class="item">
+                                   <p class="title">收益克重交付方式</p>
+                                   <p class="content">{ $deal.delivery_method }</p>
+                                </div>
+                                <div class="item">
+                                   <p class="title">买入手续费</p>
+                                   <p class="content">{ $deal.buyer_fee }元 / 克（以页面公示信息为准）</p>
+                                </div>
+                                <div class="item">
+                                    <p class="title">变现手续费</p>
+                                    <p class="content">{ $deal.current_fee }元 / 克（以页面公示信息为准）</p>
+                                </div>
+                                <div class="item">
+                                    <p class="title">提金手续费</p>
+                                    <p class="content">单品克重≥30g，7元/克；单品克重＜30g，9元/克（以页面公示信息为准）</p>
+                                </div>
+                                <div class="item">
+                                    <p class="title">到期处理</p>
+                                    <p class="content">到期后自动转入优金宝</p>
+                                </div>
+                                <div class="item">
+                                    <p class="title">变现说明</p>
+                                    <p class="content">工作日14:00点前变现，当日24:00前到账；14:00点后变现，T+1日24:00前到账</p>
+                                </div>
+                                {if $withdrawLimit != 0}
+                                <div class="item">
+                                    <p class="title">变现限额说明</p>
+                                    <p class="content">单日最多可变现{$withdrawLimit}克</p>
+                                </div>
+                                {/if}
+                                {if $deal.detailHtml }
+                                <div class="detailHtml">
+                                    {$deal.detailHtml}
+                                </div>
+                                {/if}
+                            </div>
+                            <!--  -->
+                        </div>
+                        <div class="tb3">
+                            {if $load_list}
+                                {foreach from=$load_list item="loan"}
+                                <div class="bid_list">
+                                    <div class="float_l">
+                                        <p>{$loan.userDealName}</p>
+                                        <p class="gray">{$loan.createTime}</p>
+                                    </div>
+                                    <div class="float_r">{$loan.buyAmount}克</div>
+                                </div>
+                                {/foreach}
+                            {else}
+                                <div class="tc mt20">暂无购买人</div>
+                            {/if}
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{include file="api/views/_v32/footer.html"}

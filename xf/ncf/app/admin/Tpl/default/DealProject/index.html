@@ -1,0 +1,306 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<php>
+    function subtraction($num1,$num2) {
+    $num = $num1 - $num2;
+    $num = format_price($num,false);
+    return $num;
+    }
+    function get_rate($rate) {
+    return $rate.'%';
+    }
+    function get_link($link){
+    return "<a href='$link' target='_blank'>链接</a>";
+    }
+</php>
+<style>
+    a {
+        white-space:nowrap;
+    }
+</style>
+
+<div class="main">
+    <div class="main_title">项目列表</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <input type="button" class="button" value="{%ADD}" onclick="add();" />
+        <input type="button" class="button" value="{%DELETE}" onclick="del();" />
+    </div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            项目编号：<input type="text" class="textbox" name="pro_id" value="{:trim($_REQUEST['pro_id'])}" size="8"/>
+            项目名称：<input type="text" class="textbox" name="pro_name" value="{:trim($_REQUEST['pro_name'])}" size="8"/>
+            模糊名称<input type="checkbox" class="checkbox"  name="pro_name_use_like" <?php if ($_REQUEST['pro_name_use_like'] == 'on') { ?>checked="checked"<?php } ?> size="8"/>
+            借款人会员ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" size="8"/>
+            借款人会员名称：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="8"/>
+            借款人姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="8"/>
+            放款审批单编号：<input type="text" class="textbox" name="approve_number" value="{:trim($_REQUEST['approve_number'])}" size="10"/>
+
+            <input type="hidden" value="DealProject" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <input type="button" class="button" value="导出" onclick="export_csv_file('');" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="21" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">编号</th>
+            <th>项目名称</th>
+            <th>
+                期限
+            </th>
+            <th>
+                还款方式
+            </th>
+
+            <th>
+                用户类型
+            </th>
+            <th>
+                借款人会员ID
+            </th>
+            <th>
+                借款人会员名称
+            </th>
+            <th>
+                借款人姓名
+            </th>
+            <th>
+                借款总额
+            </th>
+            <th>
+                已上标金额
+            </th>
+            <th>
+                待上标金额
+            </th>
+            <th>
+                已出借金额
+            </th>
+            <th>
+                差额
+            </th>
+            <th>
+                放款审批单编号
+            </th>
+            <th>
+                项目授信额度
+            </th>
+
+            <th>
+                借款人合同委托签署
+            </th>
+            <th>
+                担保方合同委托签署
+            </th>
+            <th>
+                资产管理方合同委托签署
+            </th>
+            <th>
+                状态
+            </th>
+            <th style="width:250px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="project">
+            <tr class="row">
+                <td>
+                    <input type="checkbox" name="key" class="key" value="{$project.id}" />
+                </td>
+                <td>
+                    &nbsp;{$project.id}
+                </td>
+                <td>
+                    &nbsp;
+                    <a href="javascript:view('{$project.id}')">
+                        {$project.name}
+                    </a>
+                </td>
+                <td>
+                    &nbsp;{:getRepayTime($project['repay_time'], $project['loantype'])}
+                </td>
+                <td>
+                    &nbsp;{$project.loantype|get_loantype_cn}
+                </td>
+
+                <td>
+                    {$project.showUserTypeName}
+                </td>
+                <td>
+                    &nbsp;{$project.user_id}
+                </td>
+                <td>
+                    &nbsp;{$project.showUserName}
+                </td>
+                <td>
+                    &nbsp;{$project.showRealUserName}
+                </td>
+                <td>
+                    &nbsp;{$project.borrow_amount|format_price=false}
+                </td>
+                <td>
+                    &nbsp;{$project.money_borrowed|format_price=false}
+                </td>
+                <td>
+                    &nbsp;{$project.borrow_amount|subtraction=$project['money_borrowed']}
+                </td>
+                <td>
+                    &nbsp;{$project.money_loaned|format_price=false}
+                </td>
+                <td>
+                    &nbsp;{$project.diff|format_price=false}
+                </td>
+                <td>
+                    &nbsp;{$project.approve_number}
+                </td>
+                <td>
+                    &nbsp;{$project.credit|format_price=false}
+                </td>
+
+                <td>
+                    &nbsp;{$project.entrust_sign}
+                </td>
+                <td>
+                    &nbsp;{$project.entrust_agency_sign}
+                </td>
+                <td>
+                    &nbsp;{$project.entrust_advisory_sign}
+                </td>
+
+                <td>
+                    &nbsp;{$project.status}
+                </td>
+                <td>
+                    <a href="javascript:add_deal({$project.id})">上标</a>&nbsp;
+                    <a href="javascript:edit({$project.id})">编辑</a>&nbsp;
+                    <a href="javascript:view({$project.id})">查看</a>&nbsp;
+                    <a href="javascript:del({$project.id})">彻底删除</a>&nbsp;
+                    <a href="javascript:copy({$project.id})">复制</a>&nbsp;
+                </td>
+            </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<script type="text/javascript">
+    function del(id) {
+
+        if(!id) {
+
+            idBox = $(".key:checked");
+            if(idBox.length == 0)
+            {
+                alert(LANG['DELETE_EMPTY_WARNING']);
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            id = idArray.join(",");
+        }
+        if(confirm(LANG['CONFIRM_DELETE'])){
+            //判断该项目是否有子标  如没有才能删除
+            var is_submit = 0;
+            $.ajax({
+                url:ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=checkSave&id="+id,
+                dataType:"json",
+                async:false,
+                success:function(rs){
+                    if(rs.status ==1)
+                    {
+                        if(rs.data.sum > 0) {
+                            //alert('项目id:'+id+'下有子标，不能直接删除！');
+                            alert('该项目下有子标，不能直接删除！');
+                            return;
+                        }
+                        is_submit = 1;
+                    }else{
+                        is_submit = 0;
+                    }
+                }
+            });
+
+            if(is_submit == 1) {
+                $.ajax({
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id,
+                    data: "ajax=1",
+                    dataType: "json",
+                    success: function(obj){
+                        $("#info").html(obj.info);
+                        if(obj.status==1) {
+                            location.href=location.href;
+                        }
+                    }
+                });
+            }
+
+
+        }
+    }
+
+    function add_deal(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=add&proid="+id;
+    }
+
+    function copy(id) {
+        $.ajax({
+            url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=copy&id=" + id,
+            data: "ajax=1",
+            dataType: "json",
+            success: function (obj) {
+                $("#info").html(obj.info);
+            }
+        });
+    }
+
+    // csv导出
+    function export_csv_file()
+    {
+        var confirm_msg = "\n\r大数据量请增加筛选条件缩小结果集条数，以免导出失败";
+        confirm_msg = "确认要导出csv文件数据吗？" + confirm_msg + "\n\r导出过程中请耐心等待，不要关闭页面。";
+        if (!confirm(confirm_msg)) {
+            return;
+        }
+        return export_csv();
+    }
+
+    function show_contract(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=ProjectContract&"+VAR_ACTION+"=index&project_id="+id;
+    }
+
+    function show_deals(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=deals&project_id="+id;
+    }
+
+    function show_loan_log(name) {
+        location.href = ROOT+"?"+VAR_MODULE+"=LoanOplog&"+VAR_ACTION+"=index&project_name="+name;
+    }
+
+    function show_repay_log(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealRepayOplog&"+VAR_ACTION+"=index&project_id="+id;
+    }
+
+    function view(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=view&id="+id;
+    }
+
+</script>

@@ -1,0 +1,80 @@
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+function initWxShare(wxConfig, shareContent, sucCb, errCb) {
+  window.wx.config({
+    // debug: true,
+    appId: wxConfig.appId,
+    timestamp: wxConfig.timestamp,
+    nonceStr: wxConfig.nonceStr,
+    signature: wxConfig.signature,
+    jsApiList: [
+      'onMenuShareTimeline',
+      'onMenuShareAppMessage',
+      'showOptionMenu',
+      'hideOptionMenu'
+    ]
+  });
+  window.wx.ready(function () {
+    window.wx.onMenuShareAppMessage({
+      title: shareContent.title,
+      desc: shareContent.content,
+      link: shareContent.link,
+      imgUrl: shareContent.img,
+      success: function () {
+        // 用户确认分享后执行的回调函数
+        sucCb.call(null)
+      },
+      cancel: function () {
+        // 用户取消分享后执行的回调函数
+        errCb.call(null)
+      }
+    });
+    window.wx.onMenuShareTimeline({
+      title: shareContent.content,
+      link: shareContent.link,
+      imgUrl: shareContent.img,
+      success: function () {
+        // 用户确认分享后执行的回调函数
+        sucCb.call(null)
+      },
+      cancel: function () {
+        // 用户取消分享后执行的回调函数
+        errCb.call(null)
+      }
+    });
+  });
+}
+// 初始化数据
+var appid = "{$appid}";
+var nonceStr = "{$nonceStr}";
+var timeStamp = "{$timeStamp}";
+var signature = "{$signature}";
+var wxConfig = {
+    // debug: true,
+    appId:appid,
+    timestamp:timeStamp,
+    nonceStr:nonceStr,
+    signature:signature,
+    jsApiList:[
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow'
+    ]
+};
+
+if (wxConfig) {
+        // 分享文案
+        var siteWxShareContent = {
+          title: "{$title}",
+          content: "{$sharedText}",
+          link: location.protocol + '//' + location.hostname + "{$shareLink}"+ "?activity_id={$activityId}",
+          img: "{$sharedIcon}",
+        }
+        // console.log(siteWxShareContent);
+        initWxShare(wxConfig, siteWxShareContent, function(){
+            // alert('suc');
+        })
+      }
+</script>

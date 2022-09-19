@@ -1,0 +1,566 @@
+{include file="web/views/fenzhan/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/investment_view.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/investment/investment_view.js');?>"></script>
+    <!--面包屑导航开始-->
+
+
+    <section>
+    <div class="fix_width">
+        <div class="m-nav"><a href="/">首页</a><i></i>
+            <label>投资确认</label>
+        </div>
+    </div>
+    </section>
+
+    <!--面包屑导航结束-->
+
+    <form action="./" method="post" name="BidForm" id="BidForm">
+    <input type="hidden" id='deal_id' name="id" value="{$deal.ecid}" />
+    <?php echo token_input(); ?>
+        <div class="box">
+            <section>
+            <div class="touzi_top clearfix">
+                <div class="tztop_left w982">
+                    <div class="title_box">
+                        <h1 class="fl"><i class="danbao"></i>
+                            {$deal.name}
+                            <em class="f14">编号: {$deal.id}</em>
+
+
+                            {if $deal.deal_tag_name != ''}
+                              <span class="icon_new" style="top:0px" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name}</span>
+                            {/if}
+
+                        </h1>
+                    </div>
+                    <div class="number clearfix">
+                        <dl class="clearfix">
+                            <dt>年化收益率：</dt>
+                            <dd class="yellwo">
+                            {if $deal.income_float_rate eq 0}{$deal.rate}
+                            {else}
+                            {function name="number_format" v=$deal.income_base_rate f=2}%+{function name="number_format" v=$deal.income_float_rate f=2}%
+                            {/if}
+                            {if $deal.deal_type eq 1}起{/if}
+                            </dd>
+
+                            <dt>融资期限：</dt>
+                            <dd class="yellwo">
+                            {if $deal.deal_type eq 0 ||  $deal.deal_type eq 3}
+                                {if $deal.loantype eq 5}
+                                {$deal.repay_time}天
+                                {else}
+                                {$deal.repay_time}个月
+                                {/if}
+                            {else}
+                                {function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{$deal.repay_time}天
+                            {/if}
+                            </dd>
+                            {if $deal.deal_type eq 1}
+                            <dt>日利率：</dt><dd>{$deal.rate_day}%(复利计息)</dd>
+                            {/if}
+                        </dl>
+                        <dl class="clearfix">
+                            <dt>融资金额：</dt>
+                            <dd><span>{function name="number_format" v=$deal.borrow_amount f=2}元</span></dd>
+                            <dt>还款方式：</dt>
+                            {if $deal.deal_type eq 0 ||  $deal.deal_type eq 3}
+                                <dd>{$deal.loantype_name}</dd>
+                            {else}
+                               提前{$deal.redemption_period}天申请赎回
+                            {/if}
+                        </dl>
+
+                    </div>
+                </div>
+            </div>
+            </section>
+            <section>
+            <div  class="main clearfix" style="padding-bottom:0px;">
+                <div class="box_title"><i class="danbao"></i>投资</div>
+                <div class="con_width">
+                    <table class="tab_touzi mb20">
+                        <colgroup>
+                            <col width="110">
+                            <col width="700">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>可投金额：</th>
+                                <td><span class="yellwo">{function name="number_format" v=$deal.need_money_decimal f=2}元</span></td>
+                            </tr>
+                            <tr>
+                                <th>账户余额：</th>
+                                <td><span class="yellwo pr20">{function name="number_format" v=$total_money f=2}元</span>
+                                    <a id="incharge" href="/account/charge" target="_blank" class="validBt  j_valid">充值</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>投资金额：</th>
+                                <td>
+                                    <input type="text" id="J_BIDMONEY" name="bid_money" class="amount_box" value="{$money}">
+                                    <span class="color-gray">元（最低投资金额{function name="round" v=$deal.min_loan_money f=2}元）
+                                    <font id='bid_tips'></font>
+                                    </span>
+                                    <br />
+	                                {if $deal.max_loan_money neq 0}
+	                                <span class="color-gray pt5">总额限投<em class="color-yellow1">{$deal.max_loan_money}</em>元</span>
+	                                {/if}
+                                </td>
+                            </tr>
+                            <tr {if $deal.deal_type eq 1} class="none" {/if}>
+                                <th>净收益：</th>
+                                <td><span id="earning_money" class="yellwo">0.00元</span></td>
+                            </tr>
+                            <tr {if $deal.deal_type eq 1} class="none" {/if}>
+                                <th>净收益率：</th>
+                                <td><span id="earning_rate" class="yellwo">0.00%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                {if $turn_on_coupon}
+                <div class="coupon">
+                    <table class="tab_touzi tab_touzi1">
+                        <colgroup>
+                            <col width="270">
+                            <col width="580">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="chk" {if $coupon}checked{/if} {if $coupon.is_fixed}disabled{/if}>&nbsp;&nbsp;填写推荐人邀请码</th>
+                            <td>
+
+                            	<div id="coupon_tr_input" class="{if !$coupon}none{/if}">
+                               <input type="text" id="coupon_input" value="{$coupon.short_alias}" class="amount_box" autocomplete="off" {if $coupon.is_fixed}disabled{/if} > <em id="coupon_tr_error" class="none"><span class="text color-red mr15" id="coupon_tr_error_msg">邀请码无效，请重新输入</span></em><i class="icon_yes mr15"></i><span class="none coupon_ren"></span></div>
+                            </td>
+                        </tr>
+                        </thead>
+                        <tbody id="coupon_tbody">
+                        <input type="hidden" id="coupon_id" name="coupon_id" value="{$coupon.short_alias}"/>
+                        <input type="hidden" id="coupon_is_fixed" name="coupon_is_fixed" value="{$coupon.is_fixed}"/>
+                        <tr id="coupon_tr_desc" class="{if !$coupon}none{/if}">
+                            <th>所享优惠</th>
+                            <td id="coupon_html_desc">{$coupon.remark}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {/if}
+
+            </div>
+            </section>
+            <section>
+            <div  class="main clearfix">
+                <div class="box_title"><i class="ico_jiedai"></i>收款账号</div>
+                <div class="con_width">
+                    <table class="tab_touzi">
+                        <colgroup>
+                            <col width="110">
+                            <col width="700">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>开户名：</th>
+                                <td>{$bankcard_info.card_name}</td>
+                            </tr>
+                            <tr>
+                                <th>账户类型：</th>
+                                <td>借记卡</td>
+                            </tr>
+                            <tr>
+                                <th>银行：</th>
+                                <td>{$bank.name}<span class="yellwo"></span></td>
+                            </tr>
+                            <tr>
+                                <th>开户所在地：</th>
+                                <td>{$region_lv1} {$region_lv2} {$region_lv3} {$region_lv4}</td>
+                            </tr>
+                            <tr>
+                                <th>开户行网点：</th>
+                                <td>{$bankcard_info.bankzone}</td>
+                            </tr>
+                            <tr>
+                                <th>银行卡号：</th>
+                                <td>{$bankcard_info.bankcard}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- {if $deal.contract_tpl_type eq ''}
+                    <div class="algin_c pt20"><a id="J_bid_submit" href="javascript:void(0);" class="button_confirm1"></a></div>
+                    {/if} -->
+                </div>
+            </div>
+            </section>
+            {if $deal.contract_tpl_type neq ''}
+            <section>
+            <div class="main clearfix">
+                <div class="box_title"><i class="ico_hetong"></i>合同协议</div>
+                <div class="con_width">
+                    {if $isZX eq 0}
+                    <h2 class="line_bg">
+                        <span>{$contpre.loan_cont.contract_title}</span>
+                    </h2>
+                    <h3 class="text pb10">合同摘要</h3>
+                    <table class="f14 hl30">
+                        <colgroup>
+                            <col width="325">
+                            <col width="223">
+                            <col width="330">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td><span class="text pr15">融资方：</span>{if $company.company_name}{$company.company_name}{else}{$deal_user.real_name}{/if}</td>
+                                <td><span class="text">融资金额：</span><span id="borrow_amount" class="yellwo">{$deal.borrow_amount}元</span></td>
+                                <td><span class="text">年化利率：</span><span class="yellwo">{function name='format_rate_for_show' value=$deal.int_rate}%</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="text pr15">见证人：</span>北京东方联合投资管理有限公司</td>
+                                <td><span class="text">融资期限：</span><span class="yellwo">
+                                    {if $deal.loantype eq 5}
+                                    {$deal.repay_time}天
+                                    {else}
+                                    {$deal.repay_time}个月
+                                    {/if}
+                                </span></td>
+                                <td><span class="text">还款方式：</span>{$deal.loantype_name}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="more_hetong"><a href="javascript:void(0)" id="show_detail1" name="show_detail" data="1">展开合同详情<i class="ico_ht_more"></i></a></div>
+                    <div class="hetong" id="hetong1">
+                        <div class="con" id='loan_pre'></div>
+                        <div class="ht_but">
+                            <div class="fr"><a href="javascript:void(0)" class="but_shouqi f14" id="hide_detail1" name="hide_detail" data="1">收起合同详情<i class="ico_ht_moreon"></i></a></div>
+                            <a href="javascript:void(0);" class="button_bigtongyi1"  name="btn_agree" id="btn_agree1" data="1"></a>
+                            <div name="agree_txt1" class="yanzheng algin_c" style="display:none;"><i></i>已同意并签署</div>
+                        </div>
+                    </div>
+                    {/if}
+                    {if $contpre.warrant_cont.id}
+                    <h2 class="line_bg mt20">
+                        <span>{$contpre.warrant_cont.contract_title}</span>
+                    </h2>
+                    <h3 class="text pb10">合同摘要</h3>
+                    <table class="f14 hl30">
+                        <colgroup>
+                            <col width="325">
+                            <col width="223">
+                            <col width="330">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td><span class="text pr15">保证人：</span>{$deal.agency_info.name}</td>
+                                <td><span class="text">投资人：</span>{$user.real_name}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="more_hetong"><a href="javascript:void(0)" id="show_detail2" name="show_detail" data="2">展开合同详情<i class="ico_ht_more"></i></a></div>
+                    <div class="hetong" id="hetong2">
+                        <div class="con" id='guarantee_pre'></div>
+                        <div class="ht_but">
+                            <div class="fr"><a href="javascript:void(0)" id="hide_detail2" name="hide_detail" data="2" class="but_shouqi f14">收起合同详情<i class="ico_ht_moreon"></i></a></div>
+                            <a href="javascript:void(0);" class="button_bigtongyi1"  name="btn_agree" id="btn_agree2" data="2"></a>
+                            <div name="agree_txt2" class="yanzheng algin_c" style="display:none;"><i></i>已同意并签署</div>
+                        </div>
+                    </div>
+                    {/if}
+                    {if $contpre.lender_cont.id}
+                    <h2 class="line_bg mt20">
+                        <span>{$contpre.lender_cont.contract_title}</span>
+                    </h2>
+                    <h3 class="text pb10">协议示例（具体以协议内容为准）</h3>
+                    <table class="f14 hl30 text">
+                        <colgroup>
+                            <col width="52">
+                            <col width="830">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td valign="top">（1）</td>
+                                <td>如融资方依合同约定按时足额还款，或保证人依据保证合同替融资方按期偿还本息，甲方按每期回款金额或保证人代偿金额的{function name="format_rate_for_cont" v=$deal.manage_fee_rate}%，向乙方收取咨询服务费。</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">（2）</td>
+                                <td>如因融资方违约提前还款，甲方按提前还款金额的{function name="format_rate_for_cont" v=$deal.manage_fee_rate}%（年化），向乙方收取咨询服务费。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="more_hetong"><a href="javascript:void(0)" id="show_detail3" name="show_detail" data="3">展开合同详情<i class="ico_ht_more"></i></a></div>
+                    <div class="hetong" id="hetong3">
+                        <div class="con" id='lender_pre'></div>
+                        <div class="ht_but">
+                            <div class="fr"><a id="hide_detail3" name="hide_detail" data="3" href="javascript:void(0)" class="but_shouqi f14">收起合同详情<i class="ico_ht_moreon"></i></a></div>
+                            <a href="javascript:void(0);" class="button_bigtongyi1"  name="btn_agree" id="btn_agree3" data="3"></a>
+                            <div name="agree_txt3" class="yanzheng algin_c" style="display:none;"><i></i>已同意并签署</div>
+                        </div>
+                    </div>
+                    {/if}
+                    {if $contpre.buyback_cont}
+                    <h2 class="line_bg mt20">
+                        <span>{$contpre.buyback_cont.contract_title}</span>
+                    </h2>
+                    <h3 class="text pb10">通知摘要</h3>
+                    <table class="f14 hl30">
+                        <colgroup>
+                            <col width="325">
+                            <col width="223">
+                            <col width="330">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td><span class="text pr15">融资方：</span>{if $company.company_name}{$company.company_name}{else}{$deal_user.real_name}{/if}</td>
+                                <td><span class="text">投资人：</span>{$user.real_name}</td>
+                                <td><span class="text">回购价款：<span id='loan_money_repay' class="yellwo"></span></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="more_hetong"><a href="javascript:void(0)" id="show_detail4" name="show_detail" data="4">展开合同详情<i class="ico_ht_more"></i></a></div>
+                    <div class="hetong" id="hetong4">
+                        <div class="con" id='assets_pre'></div>
+                        <div class="ht_but">
+                            <div class="fr"><a id="hide_detail4" name="hide_detail" data="4" href="javascript:void(0)" class="but_shouqi f14">收起合同详情<i class="ico_ht_moreon"></i></a></div>
+                            <a href="javascript:void(0);" class="button_bigtongyi1"  name="btn_agree" id="btn_agree4" data="4"></a>
+                            <div name="agree_txt4" class="yanzheng algin_c" style="display:none;"><i></i>已同意并签署</div>
+                        </div>
+                    </div>
+                    {/if}
+                    {if $contpre.entrust_cont.id}
+                    <h2 class="line_bg mt20">
+                        <span>{$contpre.entrust_cont.contract_title}</span>
+                    </h2>
+                    <h3 class="text pb10">合同摘要</h3>
+                    <table class="f14 hl30">
+                        <colgroup>
+                            <col width="325">
+                            <col width="223">
+                            <col width="330">
+                        </colgroup>
+                    </table>
+                    <div class="more_hetong"><a href="javascript:void(0)" id="show_detail5" name="show_detail" data="5">展开合同详情<i class="ico_ht_more"></i></a></div>
+                    <div class="hetong" id="hetong5">
+                        <div class="con" id='entrust_pre'></div>
+                        <div class="ht_but">
+                            <div class="fr"><a id="hide_detail5" name="hide_detail" data="5" href="javascript:void(0)" class="but_shouqi f14">收起合同详情<i class="ico_ht_moreon"></i></a></div>
+                            <a href="javascript:void(0);" class="button_bigtongyi1"  name="btn_agree" id="btn_agree5" data="5"></a>
+                            <div name="agree_txt5" class="yanzheng algin_c" style="display:none;"><i></i>已同意并签署</div>
+                        </div>
+                    </div>
+                    {/if}
+                    <div class="ht_state">
+                        <table class="f14 hl30 text mauto" width="{if $contpre.buyback_cont}600{else}500{/if}" align="center">
+                            <colgroup>
+                                <col width="300">
+                                <col width="120">
+                            </colgroup>
+                            <tbody>
+                                {if $isZX eq 0}
+                                <tr>
+                                    <td>同意《{$contpre.loan_cont.contract_title}》的所有条款并签署</td>
+                                    <td id="td_agree_btn1"><div class="algin_c"><a href="javascript:void(0);" class="button_subtongyi1" name="btn_agree" data="1"></a></div></td>
+                                    <td name="agree_txt1" style="display:none;" class="postSuc"><div class="yanzheng algin_c"><i></i>已同意并签署</div></td>
+                                </tr>
+                                {/if}
+                                {if $contpre.warrant_cont.id}
+                                <tr>
+                                    <td>同意《{$contpre.warrant_cont.contract_title}》的所有条款并签署</td>
+                                    <td id="td_agree_btn2"><div class="algin_c"><a href="javascript:void(0);" class="button_subtongyi1"  name="btn_agree" data="2"></a></div></td>
+                                    <td name="agree_txt2" style="display:none;" class="postSuc"><div class="yanzheng algin_c"><i></i>已同意并签署</div></td>
+                                </tr>
+                                {/if}
+                                {if $contpre.lender_cont.id}
+                                <tr>
+                                    <td>同意《{$contpre.lender_cont.contract_title}》的所有条款并签署</td>
+                                    <td id="td_agree_btn3"><div class="algin_c"><a href="javascript:void(0);" class="button_subtongyi1"   name="btn_agree" data="3"></a></div></td>
+                                    <td name="agree_txt3" style="display:none;" class="postSuc"><div class="yanzheng algin_c"><i></i>已同意并签署</div></td>
+                                </tr>
+                                {/if}
+                                {if $contpre.buyback_cont}
+                                <tr>
+                                    <td>同意《{$contpre.buyback_cont.contract_title}》的所有条款并签署</td>
+                                    <td id="td_agree_btn4"><div class="algin_c"><a href="javascript:void(0);" class="button_subtongyi1"   name="btn_agree" data="4"></a></div></td>
+                                    <td name="agree_txt4" style="display:none;" class="postSuc"><div class="yanzheng algin_c"><i></i>已同意并签署</div></td>
+                                </tr>
+                                {/if}
+                                {if $contpre.entrust_cont.id}
+                                <tr>
+                                    <td>同意《{$contpre.entrust_cont.contract_title}》的所有条款并签署</td>
+                                    <td id="td_agree_btn5"><div class="algin_c"><a href="javascript:void(0);" class="button_subtongyi1"   name="btn_agree" data="5"></a></div></td>
+                                    <td name="agree_txt5" style="display:none;" class="postSuc"><div class="yanzheng algin_c"><i></i>已同意并签署</div></td>
+                                </tr>
+                                {/if}
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="algin_c pt20"><input type="button" {if $deal.have_bid_deal eq 1 && $deal.deal_type eq 1} disabled="disabled" class="button_confirm1 but-disabled" {else} id="J_bid_submit" class="button_confirm1 " {/if}  value="{if $deal.is_crowdfunding eq 0}{if $deal.have_bid_deal eq 1 && $deal.deal_type eq 1}已投{else}确认投资{/if}{elseif $deal.is_crowdfunding eq 1}确认筹款{/if}" /></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </section>
+            {else}
+                <div class="algin_c"><input type="button" {if $deal.have_bid_deal eq 1 && $deal.deal_type eq 1} disabled="disabled" class="button_confirm1 but-disabled" {else} id="J_bid_submit" class="button_confirm1 " {/if} value="{if $deal.is_crowdfunding eq 0}{if $deal.have_bid_deal eq 1 && $deal.deal_type eq 1}已投{else}确认投资{/if}{elseif $deal.is_crowdfunding eq 1}确认筹款{/if}" /></div>
+            {/if}
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        jQuery(function(){
+            $("#J_bid_submit").removeAttr("disabled");
+            var agreed1,agreed2,agreed3,agreed4,agree5 = false;
+           $("a[name='btn_agree']").click(function(){
+                    var value = $(this).attr('data');
+                    $("*[name='agree_txt"+value+"']").show();
+                    $("#td_agree_btn"+value).hide();
+                    $("#btn_agree"+value).hide();
+                    eval("agreed"+value+"=true");
+                });
+           var earning = function(){
+                    var borrow_money =  $("#J_BIDMONEY").val();
+                    if(!isNaN(borrow_money) && borrow_money>= 0){
+                        $("#borrow_amount").text(borrow_money+"元");
+                        $.getJSON('/deal/async',
+                            {
+                                deal_id: "{$deal.ecid}",
+                                principal: borrow_money
+                            },
+                            function(data) {
+                                $("#earning_money").text(data.money+"元");
+                                $("#earning_rate").text(data.rate+"%");
+                                $("#loan_pre").html(data.loan);
+                                $("#guarantee_pre").html(data.guarantee);
+                                $("#lender_pre").html(data.lender);
+                                $("#assets_pre").html(data.assets);
+                                $("#entrust_pre").html(data.entrust);
+                                $("#loan_money_repay").text(data.money_repay+"元");
+                                if(data.tips){
+                                    $("#bid_tips").html('<br />' + data.tips);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            $("#earning_money").text("元");
+                        }
+                }
+                 earning();
+                 $("#J_BIDMONEY").blur(earning);
+                 $("a[name='show_detail']").click(function(){
+                    var value = $(this).attr('data');
+                    $(this).hide();
+                    $("#hide_detail"+value).show();
+                    $("#hetong"+value).show();
+                });
+                 $("a[name='hide_detail']").click(function(){
+                    var value = $(this).attr('data');
+                    $(this).hide();
+                    $("#show_detail"+value).show();
+                    $("#hetong"+value).hide();
+                });
+              $("#J_bid_submit").click(function(){
+                    $("#BidForm").submit();
+                });
+              $("#BidForm").submit(function(){
+                    var bidmoney = $("#J_BIDMONEY").val();
+                    var re = /^\d+(\.\d{1,2})?$/;
+                    var min_loan_money = {function name="round" v=$deal.min_loan_money f=2};
+                    if($.trim($("#J_BIDMONEY").val())=="" || !$.checkNumber($("#J_BIDMONEY").val()) || parseFloat($("#J_BIDMONEY").val())
+            <=0){
+                        $.showErr(LANG.BID_MONEY_NOT_TRUE,function(){
+                            $("#J_BIDMONEY").focus();
+                        });
+                        return false;
+                    }
+
+                    if({$deal.need_money_decimal} >
+                {$deal.min_loan_money}){
+                        if(bidmoney
+                < min_loan_money){
+                            $.showErr('最低投资金额为{function name="round" v=$deal.min_loan_money f=2}元',function(){
+                                $("#J_BIDMONEY").focus();
+                            });
+                            return false;
+                        }
+                    }
+                    if(bidmoney >
+                    {$deal.need_money_decimal}){
+                        $.showErr(LANG.BID_MONEY_NOT_TRUE,function(){
+                            $("#J_BIDMONEY").focus();
+                        });
+                        return false;
+                    }
+
+                    {if $deal.contract_tpl_type neq ''}
+                        {if $isZX eq 0}
+                        if(!agreed1){
+                            $.showErr("请仔细阅读《{$contpre.loan_cont.contract_title}》，并点击“同意”签署合同。",'','还差一步就投资成功了');
+                            return false;
+                        }
+                        {/if}
+                        {if $contpre.warrant_cont.id}
+                        if(!agreed2){
+                            $.showErr("请仔细阅读《{$contpre.warrant_cont.contract_title}》，并点击“同意”签署合同",'','还差一步就投资成功了');
+                            return false;
+                        }
+                        {/if}
+                        {if $contpre.lender_cont.id}
+                        if(!agreed3){
+                            $.showErr("请仔细阅读《{$contpre.lender_cont.contract_title}》，点击“同意”签署合同",'','还差一步就投资成功了');
+                            return false;
+                        }
+                        {/if}
+                        {if $contpre.buyback_cont}
+                        if(!agreed4){
+                            $.showErr("请仔细阅读《{$contpre.buyback_cont.contract_title}》，点击“同意”签署合同",'','还差一步就投资成功了');
+                            return false;
+                        }
+                        {/if}
+                        {if $contpre.entrust_cont.id}
+                        if(!agreed5){
+                            $.showErr("请仔细阅读《{$contpre.entrust_cont.contract_title}》，点击“同意”签署合同",'','还差一步就投资成功了');
+                            return false;
+                        }
+                        {/if}
+                    {/if}
+
+                    var query = $(this).serialize();
+                    var postBtn=$('#J_bid_submit');
+                    $.ajax({
+                        url:APP_ROOT + "/deal/dobid",
+                        data:query,
+                        dataType:"json",
+                        beforeSend:function(){
+                            postBtn.css({background:'#e8ebf2',color:'#878787'}).attr('disabled', 'disabled').val('正在提交中...');
+                                    $('#td_agree_btn1,#td_agree_btn2,#td_agree_btn3,#td_agree_btn4,#td_agree_btn5').show();
+                                    $('.postSuc').hide();
+                                    $('#J_BIDMONEY').val("0");
+                        },
+                        success:function(result){
+                            if(result.status==1){
+                                    window.location.href=result.jump;
+                                    /* $.showErr('您可以在我的P2P里查看投资记录。',
+                                         function(){
+                                            window.location.href=result.jump;
+                                         }
+                                         ,result.info);
+                                    agreed1 = false;
+                                    agreed2 = false;
+                                    agreed3 = false;
+                                    postBtn.val('投资成功'); */
+                            } else{
+                                $.showErr(result.info);
+                                postBtn.css({background: '#ffb904',color:'#fff'}).removeAttr('disabled').val('确认投资');
+                            }
+                        },
+                        error:function(ajaxobj){
+                             postBtn.css({background: '#ffb904',color:'#fff'}).removeAttr('disabled').val('确认投资');
+                        }
+                   });
+                    return false;
+                });
+        });
+</script>
+{include file="web/views/fenzhan/footer.html"}

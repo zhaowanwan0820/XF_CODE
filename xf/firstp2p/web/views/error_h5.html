@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{$page_title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, ">
+    <style type="text/css">
+    div, p, h2{ padding: 0px; margin: 0px; font-size: 12px; font-weight: normal;}
+    body{ height: 100%; font-family: "微软雅黑","华文细黑 ";}
+    .wh_bg{background:url(/static/v1/images/resting/wh_bg_wx.png) no-repeat center 0;background-size:100%; height:188px;width: 300px; margin: 85px auto 0; text-align:center; color: #888888; line-height: 188px;padding-bottom:112px;}
+    .wh_bg p,.wh_bg h2{ margin: 0px 12%; font-size: 12px;}
+    .wh_bg h2{font-size: 18px; padding-bottom: 5px;}
+    .wh_bg p span{ color: #ff8c04;}
+    .v_center{ display: inline-block;width:100%; vertical-align: middle;text-align: center; line-height: 20px;}
+    </style>
+</head>
+<body>
+    <div class="wh_bg">
+        <div class="v_center">
+        <h2>{$error_title}</h2>
+        <span style="color:#bbb;font-size:11px;">({$logId})</span>
+        <!-- <p>
+        加入网信理财（www.firstp2p.com）投资理财还能和小伙伴一起抢福利！
+        </p> -->
+        </div>
+    </div>
+<script>
+    function onBridgeReady(){
+        WeixinJSBridge.call('hideOptionMenu');
+    }
+
+    if (typeof WeixinJSBridge == "undefined"){
+        if( document.addEventListener ){
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        }else if (document.attachEvent){
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    }else{
+        onBridgeReady();
+    }
+</script>
+</body>
+</html>

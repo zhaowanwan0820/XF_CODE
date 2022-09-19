@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>优惠码兑换</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <!--public js&css start-->
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+        <!--public js&css end-->
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="p_coupon_change">
+                <div class="top clearfix">
+                    <a data-proto="coupon://api" data-type="webview" data-backtype="finish" data-backid="couponRedeem" data-title="礼券详情" data-identity="couponRedeemDetail" data-needback="true" data-needrefresh="true" class="change_btn btn_disable fr" href="javascript:void(0);">兑换</a>
+
+                     <!-- <input type="submit" class="change_btn fr" value="兑换"> -->
+                    <input type="hidden" value="{$usertoken}" name="token">
+                    <div class="change_code"><input name="couponCode" type="tel" class="inp-box"></div>
+                    <!--<div class="color-pink code_msg none">优惠券输入有误！</div>-->
+                </div>
+                <div class="change_title">兑换记录</div>
+                <div class="list_box">
+                {foreach from=$applyList item=apply}
+                    <div class="change_list">
+                        <h3>
+                            {if $apply.couponStatus eq 2}
+                            <span class="fr color_red">兑换成功</span>
+                            {/if}
+                            {$apply.productName}
+                        </h3>
+                        <p><span class="fr">{$apply.couponNumber}</span>{function name="format_date_by_type" b=$apply.updateTime}</p>
+                    </div>
+                {/foreach}
+                </div>
+                <div class="list_more">
+                {if $applyListCount eq 10}
+                <a href="javascript:void(0);" class="tb0-more">点击加载更多</a>
+                {else}
+                没有更多了
+                {/if}
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+        <script type="text/javascript">
+        (function ($) {
+            $(function () {
+                (function () {
+                    var $inp = $('.inp-box');
+                    var $btn = $('.change_btn');
+                    var $msg = $('.code_msg');
+                    var changeTab =  new WXP2P.UI.P2PLoadMore($(".list_box")[0], $('.list_more')[0], '{$APP_HOST}/seller/ajaxAppliedList?token={$usertoken}',2);
+                    changeTab.createItem = function(item){
+                        var div = document.createElement("div");
+                        var html = "";
+                        var DateStr = new Date(parseInt(item.updateTime) * 1000);
+                        var DateYear = DateStr.getFullYear();
+                        var DateMonth = DateStr.getMonth()+1;
+                        var DateDay = DateStr.getDate();
+                        var Hours = DateStr.getHours();
+                        var Minutes = DateStr.getMinutes();
+                        var Seconds = DateStr.getSeconds();
+                        var ConfirmTime= DateYear+'.'+(DateMonth < 10 ? '0' + DateMonth : DateMonth )+'.'+(DateDay < 10 ? '0' + DateDay : DateDay)+' '+(Hours < 10 ? '0' + Hours : Hours)+':'+(Minutes < 10 ? '0' + Minutes : Minutes)+':'+(Seconds < 10 ? '0' + Seconds : Seconds);
+                        html += '<h3>';
+                        {if $apply.couponStatus eq 2}
+                            html += '<span class="fr color_red">兑换成功</span>'
+                        {/if}
+                        html += item.productName + '</h3>';
+                        html += '<p><span class="fr">'+ item.couponNumber + '</span>'+ConfirmTime+'</p>';
+                        div.innerHTML = html;
+                        div.className="change_list";
+                        return div;
+                    };
+
+                    $inp.focus(function(){
+                        $btn.attr('href','javascript:void(0);').addClass('btn_disable');
+                    });
+
+                    $inp.blur(function(){
+                        judgeCode(this);
+                    });
+
+                    $inp.bind('input',function(){
+                        judgeCode(this);
+                    });
+
+                    // 判断
+                    function judgeCode(el){
+                        var val = $(el).val().replace(/ /g,'');
+                        $(el).val(val);
+                        if(/^[0-9]+$/.test(val)){
+                            var href = '{$APP_HOST}/seller/Detail?token={$usertoken}&couponCode=' + val;
+                            $msg.addClass('none');
+                            $btn.attr('href',href).removeClass('btn_disable');
+                            WXP2P.APP.warpAnchorSchema($btn[0]);
+                        }else{
+                            $msg.removeClass('none');
+                            $btn.attr('href','javascript:void(0);').addClass('btn_disable');
+                        }
+                    }
+                })();
+            });
+        })(Zepto);
+        </script>
+    </body>
+</html>

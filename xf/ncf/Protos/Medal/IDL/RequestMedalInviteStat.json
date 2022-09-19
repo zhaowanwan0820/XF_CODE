@@ -1,0 +1,98 @@
+{
+    "author": "dengyi <dengyi@ucfgroup.com>",
+    "comment": "投资完成后，统计通知相关的信息，然后根据统计结果发放勋章",
+    "namespace": "NCFGroup\\Protos\\Medal",
+    "use": ["NCFGroup\\Common\\Extensions\\Base\\AbstractRequestBase", "Assert\\Assertion"],
+    "extend": "AbstractRequestBase",
+    "properties": [
+        {
+            "name": "userId",
+            "comment": "邀请人的ID",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "investerId",
+            "comment": "投资人的ID",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "investId",
+            "comment": "投资唯一的ID，用来做幂等",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "investTime",
+            "comment": "投资时间戳，北京时区",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "isCharity",
+            "comment": "是否是公益标",
+            "type": "bool",
+            "required": true
+        },
+        {
+            "name": "isFirstInvest",
+            "comment": "是否是第一次投资",
+            "type": "bool",
+            "required": true
+        },
+        {
+            "name": "investMoney",
+            "comment": "投资金额(分)",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "bonus",
+            "comment": "红包使用金额(分)",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "platform",
+            "comment": "投资的方式:web/mobile/mobileapp/openapi/api",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "siteId",
+            "comment": "投资的站点",
+            "type": "int",
+            "required": false,
+            "default": 1
+        },
+        {
+            "name": "dealHorizon",
+            "comment": "标期限",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "dealTag",
+            "comment": "标TAG",
+            "type": "string",
+            "required": false,
+            "default": null
+        },
+        {
+            "name": "userTag",
+            "comment": "用户的Tag",
+            "type": "array",
+            "required": false,
+            "default": null
+        },
+        {
+            "name": "inviterTag",
+            "comment": "邀请人的Tag",
+            "type": "array",
+            "required": false,
+            "default": null
+        }
+   ]
+}

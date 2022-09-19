@@ -1,0 +1,93 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+    table.dataTable table tr td {border:none;}
+</style>
+<div class="main">
+<div class="main_title">Tags助手</div>
+<div class="blank5"></div>
+<!--- <div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        状态：
+        <select name="status" id="status">
+                <option value="10000" <if condition="intval($_REQUEST['status']) eq 10000">selected="selected"</if>>==请选择==</option>
+                <foreach name="statusMap" item="status" key="key">
+                    <option value="{$key}" <if condition="$_REQUEST['status'] eq $key">selected="selected"</if>>{$status}</option>
+                </foreach>
+        </select>
+        长度范围:
+        <input type="text" class="textbox" name="len_gt" value="{:trim($_REQUEST['len_gt'])}" style="width:40px;" /> - <input type="text" class="textbox" name="len_lt" value="{:trim($_REQUEST['len_lt'])}" style="width:40px;" />
+        用户ID:
+        <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:70px;" />
+        时间段：
+        <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        -
+        <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="FinanceQueue" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+-->
+<div style="background:#edf3f7;border-radius:3px;border:#8ba9c0 1px solid; padding:10px;">
+指定会员组打Tags
+</div>
+<table class="dataTable">
+    <tr><td style="width:100%; height:200px; vertical-align:top; text-align:left;">
+    <form name="groupTagsForm" id="groupTagsForm">
+        <table style="border:none;">
+            <tbody>
+                <tr><td>请选择会员组</td>
+                <td style="width:500px;">
+                    <SELECT name="groupId" >
+                        <option value="0" > 不选择</option>
+                        <?php foreach ($groups as $group):?>
+                            <option value="<?php echo $group['id'];?>" <?php if ($group['id'] == $_REQUEST['groupId']) echo "selected"; ?>><?php echo $group['name'];?></option>
+                        <?php endforeach;?>
+                    </SELECT>
+                </td></tr>
+                <tr>
+                <td>需要打的Tags</td><td><input type="TEXT" style="width:250px" name="groupTags" value="" /> <span style="color:gray"> 请填写要打的tags键名,多个tags以,分隔</td>
+                </tr>
+                <tr><td colspan="2" style="text-align:"><input class="button" type="SUBMIT" value="开始打Tag" /> <input class=" button" type="RESET" value="撤销"/>
+            </tbody>
+        </table>
+        <input type="hidden" name="{:conf("VAR_MODULE")}" value="Tags" />
+        <input type="hidden" name="{:conf("VAR_ACTION")}" value="doGroupTags" />
+    </form>
+    </td></tr>
+</table>
+
+<div class="blank5"></div>
+</div>
+<script>
+$(document).ready(function(){
+    $(".row").each(function() {
+        $(this).attr('id', $.trim($(this).find('td').first().text()));
+    });
+});
+function set_priority(id){
+    var value = $.trim($("#"+id+" td:nth-child(8)").text());
+    value++;
+    $.post("m.php?m=FinanceQueue&a=updatePriority", { id:id, priority:value}, function (rs){
+        var rs = $.parseJSON(rs);
+        if (!rs.status) {
+            alert(rs.info);
+        }
+    });
+    $("#"+id+" td:nth-child(8)").html("&nbsp;"+value);
+}
+</script>
+<include file="Public:footer" />

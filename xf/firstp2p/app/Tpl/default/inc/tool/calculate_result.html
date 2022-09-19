@@ -1,0 +1,113 @@
+
+<!-- 2013/7/3 xuxiaonan begin -->
+<div class="uc_user_info">
+	<div class="comm_top"></div>
+	<div class="comm_con">
+		<div class="h_con">
+			<h3>借款描述</h3>
+		</div>
+		<ul class="t_lst t_lst2 t_lst3">
+		{if $borrowpay eq 1}
+		<li style="width:159px">
+			<h4 class="txt_sty5">{$period_name}需还本息</h4>
+			<p><span class="txt_sty txt_sty2">￥{function name="number_format" v=$lixi f=2}</span></p>
+		</li>
+		{/if}
+		<li class="f_l" style="width:159px">
+			<h4 class="txt_sty5">{$period_name}需还本息</h4>
+			<p><span class="txt_sty txt_sty2">{if $borrowpay eq 1}
+			￥{function name="number_format" v=$borrowamount f=2}
+			{else}
+			￥{function name="number_format" v=$repayamount f=2}
+			{/if}</span></p>
+			
+		</li>
+		<li style="width:102px">
+			<h4 class="txt_sty5">年化借款利率</h4>
+			<p><span class="txt_sty2 txt_sty3">{function name="number_format" v=$rate f=2}%</span></p>
+		</li>
+		<li style="width:135px">
+			<h4 class="txt_sty5">还清借款周期</h4>
+			<p class="txt_sty txt_sty2">{$repaytime}</p>
+		</li>
+		<li>
+			<h4 class="txt_sty5">共还本息</h4>
+			<p class="txt_sty txt_sty2">￥{function name="number_format" v=$repayallamount f=2}</p>
+		</li>
+		</ul>
+	</div>
+	<div class="comm_bot"></div>
+</div>
+<!-- 2013/7/3 xuxiaonan end -->
+
+{if $list}
+<!-- 2013/7/3 xuxiaonan begin -->
+<div class="uc_user_info">
+	<div class="comm_top"></div>
+	<div class="comm_con">
+		<div class="h_con">
+			<h3>本息偿还时间表</h3>
+		</div>
+		<table cellspacing="0" cellpadding="0" border="0" class="tb_sty2 tb_sty3">
+		<colgroup>
+		<col width="110">
+		<col width="110">
+		<col width="110">
+		<col width="110">
+		<col width="110">
+		<col>
+		</colgroup>
+		<thead>
+		<tr>
+		<th scope="col" class="tl">
+			<p class="txt_sty5">月份</p>
+		</th>
+		<th scope="col" class="tc">
+			<p class="txt_sty5">月还本息</p>
+		</th>
+		<th scope="col" class="tc">
+			<p class="txt_sty5">月还本金</p>
+		</th>
+		<th scope="col" class="tc">
+			<p class="txt_sty5">月还利息</p>
+		</th>
+		<th scope="col" class="tc">
+			<p class="txt_sty5">借款管理费</p>
+		</th>
+		<th scope="col" class="tr">
+			<p class="txt_sty5">本息余额</p>
+		</th>
+		</tr>
+		</thead>
+		<tbody>
+		{foreach from=$list item=item key=key}
+		<tr class="last">
+		<td class="tl">
+			<p class="txt_sty4 col_blue">{$key} 月</p>
+		</td>
+		<td class="tc">
+			<p class="txt_sty4 col_blue">￥ {function name="number_format" v=$item.repayamount f=2}万</p>
+		</td>
+		<td class="tc">
+			<p class="txt_sty4 col_blue">￥ {function name="number_format" v=$item.r_smoney f=2}万</p>
+		</td>
+		<td class="tc">
+			<p class="txt_sty4 col_blue">￥ {function name="number_format" v=$item.r_rmoney f=2}万</p>
+		</td>
+		<td class="tc">
+			<p class="txt_sty4 col_blue">￥ {function name="number_format" v=$r_mmoney f=2}万</p>
+		</td>
+		<td class="tr">
+			<p class="txt_sty4 col_blue">￥ {function name="number_format" v=$item.r_money f=2}万</p>
+		</td>
+		</tr>
+		{/foreach}
+		</tbody>
+		</table>
+	</div>
+	<div class="comm_bot"></div>
+</div>
+
+<!-- 2013/7/3 xuxiaonan end -->
+
+{/if}

@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if isset($page_title) && $page_title}{$page_title} - {/if}{if isset($show_site_titile) && ($show_site_titile eq 1)}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+<link rel="icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<meta name="keywords" content="{if isset($page_keyword) && $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+<meta name="description" content="{if isset($page_description) && $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+<script>
+   var  status_switch = {function name="app_conf" v="SWITCH_DEAL_INFO_DISPLAY"};
+</script>
+
+{if isset($rss_title) && $rss_title}
+<link title="{$rss_title}" type="application/rss+xml" rel="alternate" href="{$rss_url}" />
+{/if}
+
+    {if isset($is_index) && $is_index eq 1}
+<?php echo $this->asset->renderAll(1); ?>
+{else}
+<!--[if lte IE 9]>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/html5shiv.js');?>"></script>
+<![endif]-->
+<?php echo $this->asset->renderAll(); ?>
+{/if}
+
+{if app_conf("TEMPLATE_ID") neq 1}
+<link rel="stylesheet" type="text/css" href="{function name="parse_css_site" v="css/style.css"}" />
+{/if}
+<script type="text/javascript">
+var APP_ROOT = '{$APP_ROOT}';
+{if app_conf("APP_MSG_SENDER_OPEN") eq 1}
+var send_span = {function name="app_conf" v="SEND_SPAN"}000;
+{/if}
+</script>
+
+
+<!--public js&css end -->
+<script type="text/javascript" src="http://www.wxxjdp2p.com/Public/Phome/tian-jin/skin/xinjiang/fenzhan.js"></script>
+<link rel="stylesheet" href="http://www.wxxjdp2p.com/Public/Phome/tian-jin/skin/xinjiang/fenzhan.css">
+ 
+</head>
+
+<body>  
+
+<script type="text/javascript" src="/api/fzjs"></script>
+
+	<!--头部开始-->
+	<div id="hd" class="fenzhan_header tian-jin_xinjiang">
+		<div class="layout grid-m">
+			<div class="main-wrap">
+				<!-- start 页头信息-->
+				<div class="box J_TBox">
+					<div class="top">
+												<div class="top_title">
+								<div class="center">
+									<div class="title_img fl">
+										<h3><span class="icon home"></span>您好，欢迎来到新疆贷！</h3>
+									</div>
+
+									<div class="title_font fr">
+
+										<ul id="login_status" class="fr">
+										
+							{if $user_info}
+							<li>您好，<a class="dropdown-toggle" href="http://xjd.firstp2p.com/account">{if empty($user_info.real_name)}{$user_info.user_name}{else}{$user_info.real_name}{/if}</a>|</li>
+							<li><a class="dropdown-toggle" href="http://www.wxxjdp2p.com/user/logout">退出</a>|</li>
+							<li><a class="dropdown-toggle" href="http://xjd.firstp2p.com/message">消息</a>|</li>
+							{else}	
+							<li><a class="dropdown-toggle" href="http://www.wxxjdp2p.com/user/login">登录</a>|</li>
+							<li><a class="dropdown-toggle" href="http://www.wxxjdp2p.com/user/register">注册</a>|</li>
+							{/if}
+																	<li class="helpdisplay"><a class="dropdown-toggle" href="http://www.wxxjdp2p.com/help">帮助中心</a>|</li>
+											<li class="guidedisplay"><a class="dropdown-toggle" href="http://www.wxxjdp2p.com/guide">新手指南</a>|</li>
+											<li class="app_down_box"><a class="dropdown-toggle smenu1" href="javascript:void(0)">手机客户端下载</a></li>
+										</ul>
+										<!--弹出层内容1-->
+										<div class="sub_menu1 J_KCWidget" data-widget-config="{'triggerType':'mouse','autoClose':true,'trigger':'.smenu1','align':{'offset':[-162,15],'points':['bl','tl']}}" data-widget-type="Popup" style="position: absolute; z-index: 10000; top: 40px; left: 1093.5px; clear: both; display: none;">
+											<div class="sub_div1" style="position:relative;">
+												<div class="small_tip"></div>
+												<div class="pop_content">
+													<div class="app_down">
+														<h3>下载手机客户端</h3>
+														<div class="down">
+															<a target="_blank" href="http://xj.p2p.x.kcdns.net/showpage/dl/download.html"><div class="iosapp"></div></a>
+															<a target="_blank" href="http://xj.p2p.x.kcdns.net/showpage/dl/download.html"><div class="androidapp"></div></a>
+														</div>
+													</div>
+
+													<div class="wx_pic">
+														<img src="http://www.wxxjdp2p.com/appdownload.jpg?v=1a7c90a430a059f49b7ed2dd9a5a5dcc" alt="下载地址二维码">
+													</div>
+
+												</div>
+											</div>
+										</div>									
+										
+											<ul class="icon_pic">
+												<li><a href="javascript:;" class="icon weixin smenu2">微信</a></li>
+												<li><a target="_blank" href="javascript:;" class="icon tx_weibo">腾讯微博</a></li>
+												<li><a target="_blank" href="http://weibo.com/tianjinp2p" class="icon xl_weibo">新浪微博</a></li>
+											</ul>
+										<!--弹出层内容2-->
+										<div class="sub_menu2 J_KCWidget" data-widget-config="{'triggerType':'mouse','autoClose':true,'trigger':'.smenu2','align':{'offset':[-74,11],'points':['bl','tl']}}" data-widget-type="Popup" style="position: absolute; z-index: 10000; top: 41px; left: 1287.5px; clear: both; display: none;">
+											<div class="sub_div2" style="position:relative;">
+												<div class="small_tip"></div>
+												<div class="pop_content">
+													<img src="http://www.wxxjdp2p.com/weixin2weima.jpg?v=2cfaa8a2bfdab14cc69d1b1e8f027fdb" alt="微信">
+													<span class="wz_info">新疆贷<br>微信公众号</span>
+												</div>
+											</div>
+										</div>
+
+
+									</div>
+
+
+								</div>
+							</div>					
+
+									
+
+						<div class="header_top">
+							<div class="center">
+									<div class="nav_title">
+										<div class="logo fl">
+											<a href="http://www.wxxjdp2p.com/"><img src="http://www.wxxjdp2p.com/logo.png?v=2d045c3dbc3ffcc447f36f9108f17e7d" alt="新疆贷"></a>
+										</div>
+
+										<div class="nav fl"> 
+											   <ul>
+			<li><a href="http://www.wxxjdp2p.com/">首页</a></li><li><a href="http://xjd.firstp2p.com/" class="current">我要投资</a></li><li><a href="http://www.wxxjdp2p.com/borrowing">我要借款</a></li><li><a href="http://www.wxxjdp2p.com/news">公告</a></li><li><a href="http://www.wxxjdp2p.com/job">加入我们</a></li><li class="last"><a href="http://www.wxxjdp2p.com/guide">新手指南</a></li>        
+		</ul>                                    </div>
+
+										<div class="right_lxfs fr">
+											<h2 class="icon phone">400-890-9888</h2>
+	<span>客服时间：7:00-23:00</span>                                    </div>
+
+									</div>
+								
+							</div>
+						</div>
+
+					</div>
+				</div>
+			
+			</div>
+		</div>
+	</div>
+    <!--头部结束-->
+<div class="wrap">

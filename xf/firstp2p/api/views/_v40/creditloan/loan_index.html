@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>借款</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.0/css/creditloan/loan_index.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/default.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-common.css');?>" rel="stylesheet" /> 
+</head>
+<body>
+    <div class="loan_index_new">
+        <div class="biaodiList">
+
+        <div class="biaodi yxt">
+        <a href="/speedloan/index?token={$token}">
+        <div class="yxtpic">
+            <div class="yxtbk">
+                <ul class="bottom">
+                    <li><i></i><p>单笔最高可借30万，500元起借</p><span></span></li>
+                    <li><i></i><p>项目到期自动还款</p></li>
+                    <li><i></i><p>预计综合年化费率7.6%起</p></li>
+                </ul>
+            </div>
+        </div>
+        </a>
+        </div>
+        <div class="shadow"></div>
+
+
+        {if $is_credit_loan_user eq 1}
+        <div class="biaodi yxt">
+        <a href="/creditloan/index?token={$token}">
+        <div class="yxtpic">
+            <div class="yxtbk">
+                <ul class="bottom">
+                    <li><i></i><p>最高可借30万，500元起借</p><span></span></li>
+                    <li><i></i><p>项目到期自动还款</p></li>
+                    <li><i></i><p>预计综合年化费率7.6%起</p></li>
+                </ul>
+            </div>
+        </div>
+        </a>
+        </div>
+        <div class="shadow"></div>
+        {/if}
+        {if $is_bxt_user eq 1}
+        <div class="biaodi bxt">
+        <a href="/account/intention_detail?token={$token}&code={$code_bxt}">
+            <div class="bxtpic">
+                <div class="bxtbk">
+                    <ul class="bottom">
+                        <li><i></i><p>最高可借金额依投资额判定</p><span></span></li>
+                        <li><i></i><p>项目到期自动还款</p></li>
+                        <li><i></i><p>依照同期同档次平台借款总成本而定</p></li>
+                    </ul>
+                </div>
+            </div>   
+        </a>
+        </div>
+        <div class="shadow"></div>
+        {/if}
+        {if $is_job_loan_user eq 1}
+        <div class="biaodi zyd">
+        <a href="/account/intention_detail?token={$token}&code={$code_job_loan}">
+        <div class="zydpic">
+            <div class="zydbk">
+            <ul class="bottom">
+                <li><i></i><p>最高可借100万，每年可部分提前还款</p><span></span></li>
+                <li><i></i><p>贷款期限6~36个月</p></li>
+                <li><i></i><p>预计借款成本年化7.995%</p></li>
+            </ul>
+            </div>
+        </div>    
+        </a>
+        </div>
+        <div class="shadow"></div>
+        {/if}
+        <!-- 不能点击的 begin -->
+        {if $is_credit_loan_user neq 1}
+        <div class="biaodi yxt">
+            <a href="javascript:;">
+                <div class="yxtpic">
+                    <div class="yxtbk yxtpower">
+                        <ul class="bottom">
+                            <li><i></i><p>单笔最高可借30万，500元起借</p><span></span></li>
+                            <li><i></i><p>项目到期自动还款</p></li>
+                            <li><i></i><p>预计综合年化费率7.6%起</p></li>
+                        </ul>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="shadow"></div>
+        {/if}
+        {if $is_bxt_user neq 1}
+        <div class="biaodi bxt">
+            <a href="javascript:;">
+                <div class="bxtpic">
+                    <div class="bxtbk bxtpower">
+                        <ul class="bottom">
+                            <li><i></i><p>最高可借金额依投资额判定</p><span></span></li>
+                            <li><i></i><p>项目到期自动还款</p></li>
+                            <li><i></i><p>依照同期同档次平台借款总成本而定</p></li>
+                        </ul>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="shadow"></div>
+        {/if}
+        {if $is_job_loan_user neq 1}
+        <div class="biaodi zyd">
+            <a href="javascript:;">
+                <div class="zydpic">
+                    <div class="zydbk zydpower">
+                        <ul class="bottom">
+                            <li><i></i><p>最高可借100万，每年可部分提前还款</p><span></span></li>
+                            <li><i></i><p>贷款期限6~36个月</p></li>
+                            <li><i></i><p>预计借款成本年化7.995%</p></li>
+                        </ul>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="shadow"></div>
+        {/if}
+        <!-- 不能点击的 end -->
+        </div>
+    </div>
+</body>
+</html>

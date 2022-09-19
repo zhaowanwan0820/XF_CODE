@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>{if $page_title}{$page_title} - {/if}{if $show_site_titile eq 1}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+</head>
+<body>
+{include file="inc/header.html"}
+
+{if app_conf("PREORDER_FULL") eq '0'}
+<div id="cover-huiyuan" class="special-cover"></div>
+{else}
+<div id="cover-huiyuan-full" class="special-cover"></div>
+{/if}
+
+<div class="special-form-wrapper">
+
+<form id="special-form" action="/huiying" method="post" enctype="multipart/form-data" onsubmit="return check_huiyuan_form();">
+  <?php echo token_input(); ?>
+  
+  <div id="special-form-heading">
+    {if empty($preset)}
+    <a class="btn" href="{url x="shop" u="user#login" }"><span>登录</span></a>
+    {/if}
+  </div>
+  <div id="error-row" style="height:19px;color:red;margin-top:10px;margin-bottom:-10px;padding-left:51px;"></div>
+  <p class="input-row" id="username-row">
+    <b>*</b>
+    <label>姓名</label>
+    <input class="input-text" type="text" name="name" value="{$preset.name}">
+  </p>
+  <p class="input-row" id="mobile-row">
+    <b>*</b>
+    <label>电话</label>
+    <input class="input-text" type="text" name="mobile" value="{$preset.mobile}">
+  </p>
+  <p class="input-row" id="email-row">
+    <b>*</b>
+    <label>邮箱</label>
+    <input class="input-text" type="text" name="email" value="{$preset.email}">
+  </p>
+  <p class="input-row" id="money-row" style="position:relative">
+    <b>*</b>
+    <label>预约金额</label>
+    <input class="input-text" type="text" name="money" value="{$preset.money}">
+    <span id="input-money-affix">元</span>
+  </p>
+  <p class="input-row" id="uname-row">
+    <b>&nbsp;</b>
+    <label>注册用户名</label>
+    <input class="input-text" type="text" name="uname" value="{$preset.uname}">
+  </p>
+  <input type="hidden" name="code" value="{$code}" />
+  <input class="input-submit" type="submit" name="submit" value="" />
+</form>
+<?php
+$this->_var['formjs'][] = $this->_var['APP_STATIC_PATH']."/js/placeholder.js";
+?>
+<script type="text/javascript" src="{function name="parse_script" v="$formjs"}"></script>
+<script>
+     function check_huiyuan_form (){
+      var name = $('input[name="name"]').val();
+      var mobile = $('input[name="mobile"]').val();
+      var email = $('input[name="email"]').val();
+    var money = $('input[name="money"]').val();
+    if (name == "" || name == "姓名") {
+      $('#error-row').html('请输入姓名');
+      return false;
+    }
+    if (mobile == "" || mobile == "电话" ) {
+      $('#error-row').html('请输入电话');
+      return false;
+    }
+    if (email == "" || email == "邮箱") {
+      $('#error-row').html('请输入邮箱');
+      return false;
+    }
+    if (money == "" || money == "预约金额") {
+      $('#error-row').html('请输入预约金额');
+      return false;
+    }
+    return true;
+     }
+</script>
+
+<div class="special-description">
+  <h1>汇赢1号2期</h1>
+  <table class="special-meta">
+    <tr>
+      <td>产品上线：2013年9月25日－9月27日</td>
+      <td>年化收益率：9.6%</td>
+    </tr>
+    <tr>
+      <td>投资金额：10000元起投</td>
+      <td>投资期限：6个月（182天）</td>
+    </tr>
+  </table>
+  <p><b>汇赢1号：</b>汇赢1号是“网信理财”网站平台推出的个人投融资服务。通过联合创业担保集团公司审核的借款方直接向投资方借贷，双方通过平台的电子借贷协议，明确双方的债务与债权关系。汇赢1号2期借款人均为汇源集团长期合作经销商，具有在果汁行业丰富的经验及经营能力，且通过了严格的风险及财务审核。</p>
+  <p><b>产品风险等级：</b>汇赢1号产品是低风险的个人投融资服务。均由联合创业担保集团公司承担担保责任。若借款方未能履行还款责任，担保公司将对未被偿还的本金和截止到期末的全部应还未还利息全额偿付。</p>
+  <p><b>投资安全性：</b>投资者可以每日实时查询在网信理财平台账户资金详情，账户资金只能转出到平台认证过的银行账号。同时网信理财平台内部制定了严格的管理流程和开发了完善的系统，进行监督监控，降低操作风险。</p>
+</div>
+
+<table class="special-downloads">
+  <tr>
+    <td>
+      <span class="special-download-icon special-download-manual"></span>
+      <br>产品说明书
+      <br><a target="_blank" href="./special/huiying2-manual.pdf"><span class="btn-download">下载 PDF</span></a>
+    </td>
+    <td>
+      <span class="special-download-icon special-download-faq"></span>
+      <br>产品 FAQ
+      <br><a target="_blank" href="./special/huiying2-faq.pdf"><span class="btn-download">下载 PDF</span></a>
+    </td>
+    <td>
+      <span class="special-download-icon special-download-guide"></span>
+      <br>投资人指引
+      <br><a target="_blank" href="./special/huiying2-guide.pdf"><span class="btn-download">下载 PDF</span></a>
+    </td>
+</table>
+
+</div>
+{include file="inc/footer.html"}
+</body>
+</html>

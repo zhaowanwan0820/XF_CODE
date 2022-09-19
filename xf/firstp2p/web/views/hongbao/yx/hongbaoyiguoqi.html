@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/yx.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+<div class="heihua"></div>
+<div class="text_fu"></div>
+<div class="main">
+    <div class="he_text">
+        <a href="{$detailLink}" class="rule"></a>
+    </div>
+    <div class="ht_bg"></div>
+    <div class="gq_img"></div>
+    <div class="dao-btn pt15">
+        <a class="down_btn" href="{$downloadUrl}"></a>
+    </div>
+</div>
+ <script type="text/javascript">
+	window.onorientationchange = function(){
+		changeDivHeight();
+	}
+	function changeDivHeight(){
+		var bHeight= Math.max(document.documentElement.clientHeight, 430);
+		$('body').css({"background-size":"100% " + bHeight + "px", "height": bHeight});
+		$('.main').css({"top": (bHeight-430)/2+'px'});
+	}
+	$(function(){
+		changeDivHeight();
+		// fix andorid keyborad change webview size bug.
+		var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "";
+		if (/android/i.test(userAgentString)) {
+			//hack for andorid
+			var _firstInit = true;
+			setTimeout(function(){
+				_firstInit = false;
+				changeDivHeight();
+			}, 2000);
+			window.onresize = function() {
+				if (_firstInit) {
+					var bHeight= Math.max($(window).height(), 430);
+					$('body').css({"background-size":"100% " + bHeight + "px", "height": bHeight});
+					$('.main').css({"top": (bHeight-430)/2+'px'});
+				}
+			}
+		}
+	})
+</script>
+{include file="web/views/hongbao/yx/hide_menu_js.html"}
+</body>
+</html>

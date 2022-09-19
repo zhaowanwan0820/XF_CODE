@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>披露信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/p_publish.css');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_publish">
+        <div class="load_box"></div>
+        <div class="load_more"></div>
+            <div class="conf_btn JS_checkproject_btn" style="display:none;">
+                <a href="/duotou/CancelLoadlist?is_allow_access=1&token={$token}" class="cancel">查看可取消项目<i class="icon_arrow"></i></a>
+            </div>
+        <script type="text/html" id="itemTmp">
+            <div class="ui_common_list">
+                <div class="common_btn">
+                    <a href="/duotou/Publishptp?is_allow_access=1&deal_id=<%= id %>&type=1&token={$token}"><%= name %>
+                        <i class="icon_arrow fr"></i>
+                    </a>
+                </div>
+            </div>
+        </script>
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/common.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/lib/artTemplate/template-native-debug.js');?>"></script>
+    <script type="text/javascript">
+        $(function() {
+            var loadmore = new WXP2P.UI.P2PLoadMore($(".load_box")[0], $('.load_more')[0], "/duotou/Publish?is_allow_access=1&page_size=10&token={$token}&is_ajax=1", 1, 'get', 10);
+            loadmore.loadNextPage();
+            loadmore.createItem = function (item) {
+                return $(template('itemTmp', item)).get(0);
+            };
+            loadmore.processData = function(ajaxData) {
+                WXP2P.UI.P2PLoadMore.prototype.processData.call(this, ajaxData);
+                if(ajaxData.data.canCancel){
+                    $('.JS_checkproject_btn').show();
+                }
+            };
+        })
+    </script>
+</body>
+
+</html>

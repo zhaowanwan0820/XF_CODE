@@ -1,0 +1,143 @@
+
+{include file="web/views/v2/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/account_o2o_gift.css');?>">
+<div class="p_account_o2o_coupon_datail">
+        <span class="blank23"></span>
+        <div class="w1100">
+            <div class="ui-box">
+                <div class="h-title">
+                    <h2><i></i>礼券详情</h2>
+                </div>
+               
+                <div class="detail">
+                    <dl>
+                        <dt><img src="{$coupon.pcPic}"></dt>
+                        <dd>
+                            <div class="v_middle">
+                                <h2>{$coupon.productName}</h2>
+                                {if $coupon.goodPrice neq 0}
+                                <p>价       值：<span class="f24 color_red">￥{$coupon.goodPrice}</span></p>
+                                {/if}
+                                {if $coupon.status eq 1}
+                                <p>有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                                {elseif $coupon.status eq 2}
+                                    {if $coupon.useRules eq 1 || $coupon.useRules eq 2}
+                                <p>有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                                    {/if}
+                                {elseif $coupon.status eq 3}
+                                <p>有效期至：{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                                {/if}
+                            {if $coupon.useRules eq 9}    
+                              <p>您可进入“红包”页面进行分享</p>
+                            {/if}
+                             {if $coupon.status eq 2}
+                              <p>{$coupon.couponExchangedPcDesc}</p>
+                            {/if}
+                            </div>
+                             {if $coupon.status eq 1}
+                              <div class="icon_wsy"></div>
+                            {/if}
+                             {if $coupon.status eq 2}
+                              <div class="icon_ysy"></div>
+                            {/if}
+                             {if $coupon.status eq 3}
+                              <div class="icon_ygq"></div>
+                            {/if}
+                        </dd>
+                    </dl>
+                </div>
+                {if $coupon.status eq 1}
+                   {if $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                <div class="tc pb30">
+                    <a href="/gift/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.couponGroupId}&couponId={$couponId}&deal_type={$deal_type}" class="common-sprite btn-red-h46">填写收货地址</a>
+                </div>
+                    {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                        {if $formConfig.phone.require}
+                        <div class="tc">
+                            <a href="/gift/exchangeCoupon?action={$action}&load_id={$load_id}&couponId={$coupon.id}&useRules={$coupon.useRules}&storeId={$coupon.storeId}&phone={$userInfo.mobile}" class="common-sprite btn-red-h46 mr15">充入账户 {$userInfo.mobile}</a>
+                            <a href="/gift/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.couponGroupId}&couponId={$couponId}&deal_type={$deal_type}" class="o2o_pc_btn_gray_h46"><span class="right o2o_w217">充入其他账户</span></a>
+                        </div>
+                        {else}
+                        <div class="tc">
+                            <a href="/gift/acquireForm?action={$action}&load_id={$load_id}&couponGroupId={$coupon.couponGroupId}&couponId={$couponId}&deal_type={$deal_type}" class="common-sprite btn-red-h46 mr15">填写充值信息</a>
+                        </div>
+                        {/if}
+                    {/if}
+                {/if}
+                <div class="detail_con">
+                  {if $coupon.useRules eq 3 || $coupon.useRules eq 4}
+                    {if $coupon.status eq 2 && $coupon.p2pUsedDesc.detail}
+                     <div class="title">
+                        <i class="circle"></i>{$coupon.p2pUsedDesc.title}
+                    </div>
+                    <div class="con_text">
+                    {foreach from=$coupon.p2pUsedDesc.detail item=detail}
+                    <p class="txt_show">{$detail}</p>
+                    {/foreach}         
+                    </div>
+                    {/if}
+                    {/if}
+
+                   {if $coupon.status eq 2}
+                   {if $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                     <div class="title">
+                        <i class="circle"></i>充值信息
+                    </div>
+                    <div class="con_text">
+                    {foreach from=$coupon.p2pUsedDesc.orderInfo item=item key=key}
+                        {if $key eq 'phone'}
+                        <p>已提交充值账户 <span class="color_red">{$item}</span></p>     
+                        {else}
+                        <p>已提交充值账户{$item}</p>     
+                        {/if}
+                    {/foreach}         
+                    </div>
+                    {/if}
+                    {/if}
+                    <div class="title">
+                        <i class="circle"></i>使用说明
+                    </div>
+                    <div class="con_text">
+                        <p>{function name='htmlspecialchars_decode' v=$coupon.couponPcDesc}</p>
+                    </div>
+                   
+                    <div class="title">
+                        <i class="circle"></i>券码信息
+                    </div>
+                    <div class="con_text">
+                     {if $coupon.isShowCouponNumber eq 1}
+                        <p>券码：
+                         {if $coupon.status eq 1}
+                        <span  class="f24 color_red">{$coupon.couponNumber}</span> 
+                         <span class="f16 color_green">
+                        ( 未使用）
+                        </span>
+                        {/if}
+                         {if $coupon.status eq 2}
+                         <span  class="f24 gray o2o_line_through">{$coupon.couponNumber}</span> 
+                         <span class="f16 gray">
+                        ( 已使用）
+                        </span>
+                        {/if}
+                         {if $coupon.status eq 3}
+                        <span  class="f24 gray o2o_line_through">{$coupon.couponNumber}</span> 
+                         <span class="f16 gray">
+                        ( 已过期）
+                        </span>
+                        {/if}
+                        </p>
+                        {/if}
+                        <p>券码来源：{$coupon.fromSourceName}</p>
+                        <p>领取时间：{function name="format_date_by_type" b=$coupon.createTime}</p>
+                    </div>
+                    
+                   
+                   
+                    <div class="tc"><a href="/gift" class="o2o_pc_btn_red_h38"><span class="right">返回礼券</span></a></div>
+                </div>
+
+            </div>
+        <span class="blank60"></span>
+    </div>
+</div>
+{include file="web/views/v2/footer.html"}

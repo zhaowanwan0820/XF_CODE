@@ -1,0 +1,52 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/deal.js' />
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<div class="main">
+<div class="main_title">查看 <a href="javascript:backEdit()" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 align="center">
+        <tr class="row">
+            <th>用户ID</th>
+            <th>用户姓名</th>
+            <th>手机号</th>
+        </tr>
+        <volist name="user_info" id="user_info">
+        <tr class="row" align="center">
+            <td>
+                &nbsp;{$user_info.user_id}
+            </td>
+            <td>
+                &nbsp;{$user_info.user_name}
+            </td>
+            <td>
+                &nbsp;{$user_info.mobile}
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+    function backEdit(){
+        var url = window.location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+
+                theRequest[strs[i].split("=")[0]]=decodeURI(strs[i].split("=")[1]);
+
+            }
+        }
+        var id = theRequest.id;
+        location.href = ROOT+"?"+VAR_MODULE+"=DealParamsConf&"+VAR_ACTION+"=edit&id=" + id;
+    }
+</script>
+<include file="Public:footer" />

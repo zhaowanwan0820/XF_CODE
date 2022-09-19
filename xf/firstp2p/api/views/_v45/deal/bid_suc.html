@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>投资成功</title>
+    {include file="api/views/_v32/header.html"}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/virtual.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.5/css/p_bid_success.css?v=2');?>" />
+</head>
+<body>
+    <!-- 公益标投资成功 -->
+    <div class="p_donate_appreciate">
+        <div class="donate_appreciate">
+            <img src="<?php echo $this->asset->makeAppUrl('v4.5/images/gongyi_suc.png');?>" class="donate_img">
+            <p class="donate_text">本次捐赠金额</p>
+            <p class="donate_money">XXX元</p>
+        </div>
+        <div class="donate_but">
+            <span class="share_btn JS-share_btn">分享到朋友圈求表扬</span>
+        </div>
+        <img src="<?php echo $this->asset->makeAppUrl('v4.5/images/gongyi_bottom.png');?>" alt="" class="gongyi_bottom">
+    </div>
+
+    <!-- 普通标 -->
+    <section class="m-main p_deal_success">
+        <div class="sc_top">
+            <i class="sc_success"></i>
+            <p>投资成功</p>
+        </div>
+        <div class="sc_list clearfix">
+            <div class="scl_show">
+                <span>项目</span><p class="ts_color">XXX</p>
+            </div>
+            <div class="scl_show">
+                <span>投资金额</span>
+                <p>XXX元</p>
+            </div>
+        </div>
+        <div class="sc_list clearfix">
+            <div class="scl_show">
+                <span>计息日</span>
+                <p>放款次日</p>
+            </div>
+        </div>
+        <div style="height: 48px;width: 100%;"></div>
+        <div class="sc_footer clearfix">
+            <div class="left_div"><a href="" class="a_btn a_left">查看已投列表</a></div>
+            <div class="left_div"><a href="" class="a_btn a_right">返回首页</a></div>
+        </div>
+        <?php if($bidInfo['o2oCouponCount']>0){ ?>
+            <?php if($bidInfo['o2oCouponCount']>1){ ?>
+                <div class="gift_one gift_more JS-gift_one">
+            <?php } else { ?>
+                <div class="gift_one JS-gift_one">
+            <?php } ?>
+                <div class="gift_close_btn JS-gift_close_btn"></div>
+                <?php if($bidInfo['o2oCouponTitle']){ ?>
+                    <h2><?=$bidInfo['o2oCouponTitle']?></h2>
+                <?php } else { ?>
+                    <h2>一次选择礼券的机会</h2>
+                 <?php } ?>
+                 <?php if($bidInfo['o2oCouponCount']>1){ ?>
+                    <a href="/o2o?from_source=bid&access_token=<?=$bidInfo['access_token']?>" class="gift_btn"></a>
+                <?php } else { ?>
+                    <a href="/o2o?load_id=<?=$bidInfo['load_id']?>&from_source=bid&access_token=<?=$bidInfo['access_token']?>" class="gift_btn"></a>
+                 <?php } ?>
+                <h3>您可以在“礼券”中领取</h3>
+            </div>
+        <?php } ?>
+        <script>
+        $('.JS-gift_close_btn').click(function(){
+             $('.JS-gift_one').hide();
+         })
+        </script> 
+    </section>
+</body>
+</html>

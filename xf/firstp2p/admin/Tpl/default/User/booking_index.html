@@ -1,0 +1,82 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">用户预约登记列表</div>
+<div class="blank5"></div>
+<php>
+function f_show_status($status) {
+    if ($status == 1) {
+        return '成功';
+    }
+    return '取消';
+}
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '';
+    }
+    return date('Y-m-d H:i:s', $stamp);
+}
+function f_get_realname($userId, $real_name) {
+    return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>$real_name</a>";
+}
+function f_to_url($reserved_session) {
+    return "<a href='/m.php?m=User&a=booking_index&user_id=&reserved_session=$reserved_session'>$reserved_session</a>";
+}
+</php>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        用户ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" />
+        用户姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" />
+        手机号：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" />
+        预约状态：<select id="status" name="status">
+            <option value="" <if condition="isset($_REQUEST['status']) and intval($_REQUEST['status']) eq ''">selected="selected"</if>>{%ALL}</option>
+            <option value="1" <if condition="isset($_REQUEST['status']) and intval($_REQUEST['status']) eq '1'">selected="selected"</if>>成功</option>
+            <option value="0" <if condition="isset($_REQUEST['status']) and $_REQUEST['reserved_session'] != '' and intval($_REQUEST['status']) eq '0'">selected="selected"</if>>取消</option>
+        </select><br />
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="booking_index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick='javascript:export_csv()'/>
+    </form>
+</div>
+<div class="blank5"></div>
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="user"
+    datasource="list"
+    show="id:编号,user_id:用户Id,user_id|f_get_realname=$user['real_name']:用户姓名,mobile:手机号,idno:身份证号,wx_cash:网信余额,wx_freeze:网信冻结,ph_cash:普惠余额,ph_freeze:普惠冻结,corpus:待收本金,reserved_session|f_to_url:预约场次,city_name:预约城市,time_range:预约时段,reserved_at|f_to_date:预约提交时间,status|f_show_status:预约状态"
+    />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+function get_query_string() {
+    querystring = '';
+    querystring += '&user_id=' +$("input[name='user_id']").val();
+    querystring += "&real_name="+$("input[name='real_name']").val();
+    querystring += "&mobile="+$("input[name='mobile']").val();
+    querystring += "&reserved_session="+$("select[name='reserved_session']").val();
+    querystring += "&status="+$("select[name='status']").val();
+    return querystring;
+}
+function export_csv() {
+    window.location.href = ROOT+'?m=User&a=get_booking_csv'+get_query_string();
+}
+</script>
+<include file="Public:footer" />

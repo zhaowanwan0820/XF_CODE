@@ -1,0 +1,105 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<load href='__TMPL__Common/js/jquery.ui.widget.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/bootstrap.min.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/style/bootstrap.min.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+    .tooltip {
+        word-wrap:break-word;
+        word-break:break-all;
+    }
+    .tooltip-inner {
+        text-align:left;
+    }
+</style>
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<div class="main">
+    <div class="main_title">会员等级记录查询(输入条件后显示结果)</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            用户ID:
+            <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:70px;" />
+            手机号:
+            <input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:70px;" />
+            服务会员等级：
+            <select style="color:#555" name="serviceLevel">
+                <option value="" <if condition="$_REQUEST['serviceLevel'] eq ''">selected="selected"</if>>==请选择==</option>
+                <foreach name="vipLevels" item="levelName" key="key">
+                    <option value="{$key}" <if condition="$_REQUEST['serviceLevel'] eq $key">selected="selected"</if>>{$levelName}</option>
+                </foreach>
+            </select>
+            实际会员等级：
+            <select style="color:#555" name="vipLevel">
+                <option value="" <if condition="$_REQUEST['vipLevel'] eq ''">selected="selected"</if>>==请选择==</option>
+                <foreach name="vipLevels" item="levelName" key="key">
+                    <option value="{$key}" <if condition="$_REQUEST['vipLevel'] eq $key">selected="selected"</if>>{$levelName}</option>
+                </foreach>
+            </select>
+            时间：
+            <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:120px;" />
+            <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+            -
+            <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:120px;" />
+            <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+            说明：
+            <select style="color:#555" name="vipLogType">
+                <option value="" <if condition="$_REQUEST['vipLogType'] eq ''">selected="selected"</if>>==请选择==</option>
+                <foreach name="vipLogTypes" item="logName" key="key">
+                    <option value="{$key}" <if condition="$_REQUEST['vipLogType'] eq $key">selected="selected"</if>>{$logName}</option>
+                </foreach>
+            </select>
+            <input type="hidden" value="VipUser" name="m" />
+            <input type="hidden" value="levelLog" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 style="text-align: center;">
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th>时间</th>
+            <th>用户ID</th>
+            <th>姓名</th>
+            <th>用户手机号</th>
+            <th>服务会员等级</th>
+            <th>实际会员等级</th>
+            <th>经验值</th>
+            <th>说明</th>
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td>{$item.create_time}</td>
+                <td><a href="#" data-toggle="tooltip" data-html="true" data-original-title="{$item.user_tip}">{$item.user_id}</a></td>
+                <td>{$item.real_name}</td>
+                <td>{$item.mobile}</td>
+                <td>{$item.service_grade_desc}</td>
+                <td>{$item.actual_grade_desc}</td>
+                <td>{$item.point}</td>
+                <td>{$item.log_type_desc}</td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

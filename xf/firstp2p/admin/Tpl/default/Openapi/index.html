@@ -1,0 +1,116 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+<div class="main">
+    <div class="main_title">openapi 线上请求（慎用）</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+
+        <div class="blank5"></div>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">openAction:</td>
+                <td class="item_input"><input type="text" class="textbox" name="open_action" id="openAction"/>(ex:user/info)</td>
+            </tr>
+            <tr>
+                <td class="item_title">user_id:</td>
+                <td class="item_input"><input type="text" class="textbox" name="userId" id="userId"/></td>
+            </tr>
+            <tr>
+                <td class="item_title">params:</td>
+                <td class="item_input"><textarea rows="5" cols="40" id="params"></textarea>(格式：key:value,key:value)</td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input"><input type="button" class="button" value="access" onclick="access()"/></td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+
+        </table>
+
+        <!--        <div class="blank5"></div>
+                <table class="form" cellpadding=0 cellspacing=0>
+                    <tr>
+                        <td colspan=2 class="topTd"></td>
+                    </tr>
+                    <tr>
+                        <td class="item_title"></td>
+                        <td class="item_input">
+                            隐藏元素
+                            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Openapi" />
+                                   <input type="hidden" name="{:conf("VAR_ACTION")}" value="access" />
+                                   隐藏元素
+                                   
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class="bottomTd"></td>
+                    </tr>
+                </table>-->
+    </form>
+
+    <div style="display: none" id="openRetDiv">
+        <div class="blank5"></div>
+        <table class="form" cellpadding=0 cellspacing=0 >
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">openapi调用结果:</td>
+                <td class="item_input"><textarea rows="10" cols="100" id="openRet"></textarea></td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    function access() {
+        var userId = $("#userId").val();
+        var params = $("#params").val();
+        var openAction = $("#openAction").val();
+        var url = "/m.php?m=Openapi&a=access";
+        if (openAction != "") {
+            if (window.confirm("确定模拟线上请求？")) {
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    data: 'userId=' + userId + '&params=' + params + '&openAction=' + openAction,
+                    dataType: 'string',
+                    success: function(data) {
+                        $("#openRetDiv").show();
+//                        html = '';
+//                        for(var key in data){
+//                            html += key + ' : ' + data[key] + "\n";
+//                        }
+                        $("#openRet").val(data);
+                    },
+                    error: function(data) {
+                        alert("请求失败");
+                    }
+                });
+            }
+        } else {
+            alert("请选择要删除的记录");
+        }
+    }
+</script>
+<include file="Public:footer" />

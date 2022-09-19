@@ -1,0 +1,128 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+
+    <div class="main_title">直推任务管理</div>
+    <div class="blank5"></div>
+    <div class="search_row" style="background:none;color:black;">
+        <form name="search" action="__APP__" method="get">
+            任务名称: <input type="text" name="rule_name" value="{:trim($_REQUEST['rule_name'])}"/> &nbsp;
+
+            发送时间段: <input type="text" class="textbox" name="range_start" id="range_start" value="{:trim($_REQUEST['range_start'])}"
+                              onfocus="return showCalendar('range_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_range_start');" style="width:120px;height:10px;" />
+            <input type="button" class="button" id="btn_range_start" value="选择" onclick="return showCalendar('range_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_range_start');" />
+            -
+            <input type="text" class="textbox" name="range_end" id="range_end" value="{:trim($_REQUEST['range_end'])}"
+                              onfocus="return showCalendar('range_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_range_end');" style="width:120px;height:10px;" />
+            <input type="button" class="button" id="btn_range_end" value="选择" onclick="return showCalendar('range_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_range_end');" />
+            <!--<select name="status" id="send_type_user">-->
+                <!--<option value="0" <if condition="$_REQUEST['status'] eq 0">selected="selected"</if>>全部</option>-->
+                <!--<option value="1" <if condition="$_REQUEST['status'] eq 1">selected="selected"</if>>待审核</option>-->
+                <!--<option value="2" <if condition="$_REQUEST['status'] eq 2">selected="selected"</if>>审核通过</option>-->
+                <!--<option value="3" <if condition="$_REQUEST['status'] eq 3">selected="selected"</if>>未通过审核</option>-->
+            <!--</select>-->
+
+            <input type="hidden" value="{$role}"  name="role" />
+            <input type="hidden" value="DirectPushTask" name="m" />
+            <input type="hidden" value="index" name="a" /> &nbsp;
+            <input type="submit" class="button" value="{%SEARCH}"/>
+            <!--<input type="button" class="button" value="导出" onclick="exportCSV()" />-->
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <div class="blank5"></div>
+    <div class="button_row">
+        <if condition="$role neq 'b'">
+        <input type="button" class="button" value="{%ADD}" onclick="add();"/>
+        <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel(false);" />
+        </if>
+    </div>
+    <div class="blank5"></div>
+
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>编号</th>
+            <th>任务名称</th>
+            <th>发送方式</th>
+            <th width="300">领用人信息</th>
+            <th>发送内容</th>
+            <th>通知方式</th>
+            <th>发送开始时间</th>
+            <th>连续发送次数</th>
+            <th>连续发送间隔（天）</th>
+            <th>任务发送人数（人）</th>
+            <th>任务状态</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td style="text-align:center;"><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td style="text-align:center;">{$item.id}</td>
+            <td style="text-align:center;">{$item.name}</td>
+            <td style="text-align:center;">{$item.send_way}</td>
+            <td style="text-align:center;">{$item.conditions}</td>
+            <td style="text-align:center;">{$item.coupon_ids}</td>
+            <td style="text-align:center;">{$item.msg_type}</td>
+            <td style="text-align:center;">{$item.start_time|to_date}</td>
+            <td style="text-align:center;">{$item.params_count}</td>
+            <td style="text-align:center;">{$item.params_interval}</td>
+            <td style="text-align:center;">{$item.send_count}</td>
+            <td style="text-align:center;">{$item.status}</td>
+            <td style="padding-left:10px;text-align:center;">
+                <a href="/m.php?m=DirectPushTask&a=edit&id={$item.id}&role={$role}">查看</a>
+                <if condition="$role eq b">
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    <a href="/m.php?m=DirectPushTask&a=doServiceAudit&id={$item.id}&role=b&is_pass=1">通过</a>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    <a href="/m.php?m=DirectPushTask&a=doServiceAudit&id={$item.id}&role=b&is_pass=0">驳回</a>
+                <else/>
+                    <if condition="$item.status neq '已完成' and $item.status neq '发送中' && $item.status neq '已失效'">
+                        &nbsp;&nbsp;|&nbsp;&nbsp;
+                        <a href="/m.php?m=DirectPushTask&a=giveup&id={$item.id}&role=a">置为无效</a>
+                    </if>
+                    <if condition="$item.status eq '已驳回'">
+                        &nbsp;&nbsp;|&nbsp;&nbsp;
+                        <a href="/m.php?m=DirectPushTask&a=submitAudit&id={$item.id}&role=a">提交审核</a>
+                    </if>
+                </if>
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+//编辑跳转
+function edit_direct_push_task(id, role)
+{
+    var url = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=edit&id="+id;
+    if (role) {
+        url = url + '&role=' + role;
+    }
+    if (type == 3) {
+        url = url + '&discount=1';
+    }
+    location.href = url;
+}
+</script>
+<include file="Public:footer" />

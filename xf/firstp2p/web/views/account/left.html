@@ -1,0 +1,40 @@
+<style>
+.user_nav{ width:168px; border:1px solid #e3e3e3;-webkit-box-shadow: none;-moz-box-shadow:none; box-shadow:none; padding:0; padding-bottom:10px;}
+.user_nav h2{ font-size:18px; padding:10px 19px;}
+.user_nav li{line-height:38px; padding:0px 6px; position: relative;}
+.user_nav li a{ color:#010101; height:38px; display:inline-block;padding:0px 0px 0px 43px !important; width:114px !important;}
+.user_nav li a i { display: inline-block !important; background-image: none; width: 5px; height: 5px; background: #c8c8c8; position: absolute; top: 17px; left: 32px; }
+.user_nav li.user_select a i{background:#f96648; }
+.user_nav li a:hover{color: #010101 !important}
+.user_nav li.user_select a{ background:#f4f2f2; color:#f96648; text-decoration:none;}
+.user_nav li a em,.user_nav li a:hover em,.user_nav li.user_select em{ background:#f96648; margin-right:10px; color:#fff;}
+.user_nav li a em,.user_nav li a:hover em,.user_nav li.user_select em{ background:#f96648; margin-right:10px; color:#fff;}
+</style>
+<!--个人中心左侧开始-->
+<h2>我的账户</h2>
+<ul>
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'index'}class="user_select"{/if}><a href="{url x="index" r="account"}"><i class="ico_gailan"></i>账户总览</a></li>
+    <li {if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'setup' or $ACTION_NAME eq 'setsmsmessage') }class="user_select"{/if}><a href="{url x="index" r="account/setup"}"><i class="ico_redp"></i>会员设置</a></li>
+    <li {if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'load') || ($ACTION_NAME eq 'finplan') }class="user_select"{/if}><a href="{url x="index" r="account/load"}"><i class="ico_xiangmu"></i>已投项目</a></li>
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'charge' }class="user_select"{/if}><a href="{url x="index" r="account/charge"}"><i class="ico_chongzhi"></i>充值</a></li>
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'carry' }class="user_select"{/if}><a href="{url x="index" r="account/carry"}"><i class="ico_tixian"></i>提现</a></li>
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'money' }class="user_select"{/if}><a href="{url x="index" r="account/money"}"><i class="ico_jilu"></i>资金记录</a></li>
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'loan' }class="user_select"{/if}><a href="{url x="index" r="account/loan"}"><i class="ico_huikuan"></i>回款计划</a></li>
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'refund' }class="user_select"{/if}><a href="{url x="index" r="account/refund"}"><i class="ico_huankuan"></i>还款计划</a></li>
+    <li {if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'contract' or $ACTION_NAME eq 'contlist') }class="user_select"{/if}><a href="{url x="index" r="account/contract"}"><i class="ico_hetong"></i>合同列表</a></li>
+    <!--li {if $MODULE_NAME eq 'uc_account' && $ACTION_NAME eq 'invitation'}class="user_select"{/if}><a href="{url x="index" r="uc_account#invitation"}"><i class="ico_yonghu"></i>邀请好友</a></li-->
+    {if isCouponValidForBranchSite()}
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'coupon'}class="user_select"{/if}><a href="{url x="index" r="account/coupon"}"><i class="ico_yaoqing"></i>邀请返利</a></li>
+    {/if}
+    <li {if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'bonus') }class="user_select"{/if}><a href="{url x="index" r="account/bonus"}"><i class="ico_redp"></i>红包</a></li>
+    {if $isSeller }<li {if $MODULE_NAME eq 'seller' && ($ACTION_NAME eq 'appliedlist') }class="user_select"{/if}><a href="{url x="index" r="seller/appliedlist"}"><i class="ico_redp"></i>商家服务</a></li>{/if}
+    {if $isDiscountAvaliable eq true}
+    <li {if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'discount') }class="user_select"{/if}><a href="{url x="index" r="account/discount"}"><i class="ico_redp"></i>投资券</a></li>
+    {/if}
+    <li {if $MODULE_NAME eq 'user' && ($ACTION_NAME eq 'loanintentionenter' or 'loanIntention' or 'borrowAgreement') }class="user_select"{/if}><a href="/user/loanIntentionEnter"><i class="ico_redp"></i>我想借款</a></li>
+    <!--li {if $MODULE_NAME eq 'seller' && ($ACTION_NAME eq 'list') }class="user_select"{/if}><a href="{url x="index" r="seller/list"}"><i class="ico_redp"></i>商家服务</a></li-->
+    
+    <li {if $MODULE_NAME eq 'gift'  }class="user_select"{/if}><a href="/gift"><i class="ico_redp"></i>礼券</a></li>
+</ul>
+<!--个人中心左侧开始-->
+

@@ -1,0 +1,70 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v3/css/p_success.css');?>" rel="stylesheet" type="text/css">
+<div class="p_success">
+  <div class="mauto clearfix main">
+    <div class="hong-ok">
+      <h2><i class="icon-ok"></i>恭喜您，加入成功！</h2>
+      <h3>本次加入金额：<span><em>{function name="number_format" v=$loan_info.money f=2}</em>元</span>{if $bonus_use_money gt 0}（使用账户金额：<span>{$user_use_money}元</span>  {$new_bonus_title}：<span>{$bonus_use_money}{$new_bonus_unit}</span>）{/if}</h3>
+      <div class="hong-item">
+        <ul>
+          <li>项目： <span>{$deal.name}</span></li>
+          <li>管理服务费：<span>{if $deal.feeDays gt 0 && $deal.feeRate gt 0}本金的年化{function name="number_format" v="$deal.feeRate" f="2"}%，满{$deal.feeDays}天免收{else}免费{/if}</span></li>
+          <li>计息方式：<span>匹配后按日计算</span></li>
+          <li>结息日：<span>按加入资产还款日结算利息</span></li>
+        </ul>
+      </div>
+      <h3 class="back tc"><a href="{$deal.url}" class="see_deal_btn mr20 change_colo" target="_blank">查看项目</a>  <a href="/" target="_blank" class="back_index_btn change_colo">返回首页</a></h3>
+    </div>
+  </div>
+</div>
+<div class="mark"></div>
+<div class="big-hongbao">
+  <div class="fl super-hongbao"><span>{$bonus_maked.money}</span>{$new_bonus_unit}{$new_bonus_title}</div>
+  <div class="hong-code fl"><img src="/deal/bonusQrcode?code={$bonus_maked.id_encrypt}" width='160px' height='160px'></div>
+</div>
+<script>
+  {if $deal.deal_type neq 1}
+    {if $loan_info.short_alias eq 'CPSFBB'}
+      //富爸爸渠道增加统计参数（邀请码CPSFBB ）
+      $.get("http://www.fbaba.net/track/cps.php" , {
+          "action" : "create",
+          "planid" : "107" ,
+          "order" : "{$loan_info.id}" ,
+          "goodsmark" : "1" ,
+          "goodsprice" : "{$cps_fbb_fee}" ,
+          "goodsname" : "名称:{$deal.name},类型:{$deal.type_info.name},周期:{$deal.repay_time}{if $deal.loantype eq 5}天{else}月{/if}" ,
+          "sig" : "{$fubaba_cps_sig}" ,
+          "status" : "直投【{$loan_info.money}元：已付款】" ,
+          "uid" : "{$euid}"
+      });
+    {/if}
+  {/if}
+
+  if('{$bonus_maked.bonus_type_id}' == '3'){
+    $('.mark,.big-hongbao').show();
+    $('.hong-bg').css({"background":"url(<?php echo $this->asset->makeUrl('v3/images/red-paper/bg-02.png');?>)"});
+    $('.hong-share .hong-code').css({"margin-top":"135px"});
+    $('.hong-share').css({"width":"294px"});
+    $('.hong-number,.hong-share h4,.hong-share h5,.hong-share h6').hide();
+    $('.mark,.big-hongbao').click(function(){
+      $('.mark,.big-hongbao').hide();
+    })
+  };
+  {if $isShowBankAlert}
+    (function($){
+      $(function(){
+        Firstp2p.supervision.shouquan();
+        $('#cg_password_free .dialog-close').wrap("<a class='btn-base dialog-cancel'></a>");
+      });
+    })(jQuery);
+  {/if}
+</script>
+<script>
+  //诸葛埋点
+  $(function(){
+      zhuge.track('投资成功',{
+          '产品类型': '智多新'
+      })
+  })
+</script>
+{include file="web/views/footer.html"}

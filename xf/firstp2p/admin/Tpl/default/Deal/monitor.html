@@ -1,0 +1,26 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">线上标的监控</div>
+<div class="blank5"></div>
+<php>
+function viewDeal($url) {
+    return "<a href='javascript:window.open(\"$url\");'>查看详情</a>";
+}
+</php>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="deal" 
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|50px,name:{%NAME},type_id|get_loan_type_name:标的类型,id|get_deal_domain=true:上标平台,borrow_amount:借款金额,rate:借款利率,repay_time|getRepayTime=$deal['loantype']:借款期限,loantype|get_loantype:还款方式" 
+	actionlist="url|viewDeal" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+</div>
+<include file="Public:footer" />

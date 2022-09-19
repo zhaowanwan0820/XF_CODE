@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>海口农商银行</title>
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no">
+    <style type="text/css">
+        html,body,div,h1,h2,h3,h4,h5,h6,p,dl,dt,dd{padding: 0px; margin: 0px;}
+        .clearfix:after {content: ".";display: block;height: 0;clear: both;visibility: hidden}
+        .clearfix {display: inline-block}
+        * html .clearfix {height: 1%}
+        .clearfix {display: block}
+        body{background: #393b50; color: #333; font-family: "微软雅黑"; font-size: 13px;}
+        .w845{width: 845px; margin: 0 auto;}
+        .login_top{text-align: right; font-size: 18px; font-weight: bolder; height: 125px; background: url({$STATIC_PATH}/images/cunguan/login_logo.png) no-repeat left 0px; margin-top: 20px; line-height: 50px;}
+        .login{background: url({$STATIC_PATH}/images/cunguan/login_1.jpg) no-repeat #fff; height: 335px; padding-left: 475px;border-radius: 10px; padding-top: 35px;}
+        .login_form{height: 280px; border-left:1px solid #e0e0e0; padding: 30px 40px 0;}
+        .login_input{width: 250px; height: 40px; border:1px solid #e0e0e0;border-radius: 5px; margin-bottom: 30px; padding-left: 40px; outline: none;}
+        .tel{background: url({$STATIC_PATH}/images/cunguan/tel.png) no-repeat 5px center;}
+        .password{background: url({$STATIC_PATH}/images/cunguan/password.png) no-repeat 5px center;}
+        .login_form_btn{width: 290px; text-align: center; height: 42px; border-radius: 5px; background: #099cfc; color: #fff; border:none;}
+        .login_footer{border-top: 1px dotted #e3e3e3; text-align: center; color: #8f8f8f;padding: 30px 0px;}
+        .error_tips{height: 50px; color: #f00;}
+        .bank_top{height: 127px;background: #fff; margin-bottom: 30px; display: block;}
+        .bank_top .top{height: 35px;background: #fafafa; border-bottom: 1px solid #e6e6e6;}
+        .logo{background: url({$STATIC_PATH}/images/cunguan/logo.png) no-repeat left 20px;background-size:177px 52px;height: 52px;font-size: 24px;  padding-left: 205px; padding-top: 30px;}
+        .logo_text{padding-left: 30px; border-left:1px solid #333;}
+    </style>
+    <script type="text/javascript" src="{$STATIC_PATH}/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="{$STATIC_PATH}/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        var token = $.cookie('user_token');
+        if (token) {
+            location.href="/user/info_cunguan?type=pc&token=" + token
+        }
+    </script>
+</head>
+    <body>
+      <div class="bank_top">
+         <div class="top"></div>
+         <div class="w845">
+           <div class="logo"><div class="logo_text">网信资金存管查询系统</div></div>
+         </div>
+       </div>
+      <div class="w845">
+        <div class="login">
+          <div class="login_form">
+            <form action="/user/login" id="login_form">
+              <input type="tel" id="JS-tel" class="login_input tel" name="account" placeholder="请输入手机号">
+              <input type="password" id="JS-password" name="password" class="login_input password" placeholder="密码">
+              <div class="error_tips"></div>
+              <input id="Js-submit" type="button" value="登录" class="login_form_btn" disabled>
+            </form>
+          </div>
+        </div>
+        <div class="login_footer">
+          <p>海口联合农商银行</p>
+          <p>© 2017 All rights reserved</p>
+        </div>
+      </div> 
+      <script type="text/javascript">
+      $(function(){
+          function upateSubmitButton() {
+            var disabled = $('#JS-tel').val() == "" || $('#JS-password') == "";
+            if (disabled) {
+                $('.login_form_btn').attr('disabled', 'disabled');
+            } else {
+                $('.login_form_btn').removeAttr('disabled');
+            }
+          }
+          $('#JS-tel').bind("input", upateSubmitButton);
+          $('#JS-password').bind("input", upateSubmitButton);
+
+          $('#Js-submit').bind("click", function(){
+               $.ajax({
+                  type: "post",
+                  dataType: "json",
+                  data: $("#login_form").serialize(),
+                  url: "/user/login",
+                  success: function(json){
+                    if(json.errno == 0){
+                        $.cookie('user_token', json.data.token);
+                        location.href="/user/info_cunguan?type=pc&token=" + json.data.token
+                    }else{
+                        $('.error_tips').html(json.error);
+                    }
+                  },
+                  error: function(){
+                      alert("您的网络貌似不给力,请稍后重试");
+                  }
+              })
+          });
+      })
+      </script>
+    </body>
+</html>

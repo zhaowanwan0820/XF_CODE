@@ -1,0 +1,70 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<script>
+var clickNum = 0;
+$(document).ready(function(){
+    $("#doVerify").click(function(){
+        if (clickNum > 0) {
+            alert("请耐心等待验证结果，不要连续提交！");
+            return false;
+        }
+        $.post("/m.php?m=IDVerify&a=index", $("#verify_form").serialize(),function(rs){
+            var rs = $.parseJSON(rs);
+            alert(rs.info);
+            clickNum = 0;
+        });
+        clickNum++;
+        return false;
+    });
+});
+</script>
+<div class="main">
+<div class="main_title">身份证验证</div>
+<div class="blank5"></div>
+<form name="verify_form" id="verify_form" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr><td colspan=2 style="color:red">友情提示：身份证验证价格不菲，约每验证一次消耗一瓶可乐，请节约使用哈！</td></tr>
+    <tr>
+        <td class="item_title">选择验证接口</td>
+        <td class="item_input">
+        <select name="verify_type">
+        <foreach name="verifyTypes" item="type" key="key">
+        <option value="{$key}" <if condition="($key eq 1)">selected</if>>{$type}</option>
+        </foreach>
+        </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">输入姓名:</td>
+        <td class="item_input"><input type="text" class="textbox" name="name" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">输入身份证号:</td>
+        <td class="item_input"><input type="text" class="textbox" name="idno" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">查询原因:</td>
+        <td class="item_input"><input type="text" class="textbox" name="reason" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <input id="doVerify" type="button" class="button" value="验证"/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>     
+</form>
+</div>
+<include file="Public:footer" />

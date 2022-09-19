@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>基金详情 </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width">
+        <!--public js&css start-->
+        <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+        <!--public js&css end-->
+        <link href="<?php echo $this->asset->makeAppUrl('v2/css/inv-detail.css');?>" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <div class="inv-main">
+            <div class="inv-header">
+                <div class="invh-con">
+                    <div class="inh-title">
+                        <h3>
+                            {function name='msubstr' x='$info.name' y='0' z='19'}
+                        </h3>
+                    </div>
+                    <div class="invh-center clearfix">
+                        <div class="invh-left fl">
+                            {function name='get_app_num_pic' x='$info.income_min' y='$STATIC_PATH'}
+                            <span><img class="prec" src="<?php echo $this->asset->makeAppUrl('v2/images/num/perc.png');?>" height="14px" /></span>
+                            <span class="dot"><img class="prec" src="<?php echo $this->asset->makeAppUrl('v2/images/num/dot.png');?>" height="14px" /></span>
+                            {function name='get_app_num_pic' x='$info.income_max' y='$STATIC_PATH'}
+                            <span><img class="prec" src="<?php echo $this->asset->makeAppUrl('v2/images/num/perc.png');?>" height="14px" /></span>
+                        </div>
+                        <div class="invh-right"> {function name='get_app_num_pic' x='$info.repay_time' y='$STATIC_PATH'}</div>
+                    </div>
+                    <div class="invh-bottom"> {$info.loan_money_min}起<span>已预约{$info.subscribe_count}人</span> </div>
+                </div>
+            </div>
+            <div class="inv-center">
+                <h2> <i></i>收益简述</h2>
+                {$info.income_intro}
+            </div>
+            <div class="inv-footer">
+                <div class="invf_top">
+                    <ul id="menu">
+                        <li class="select"><span>产品介绍<em></em></span></li>
+                        <li><span>保障方式<em></em></span></li>
+                        <li><span>预约记录<em></em></span></li>
+                    </ul>
+                    <!--<div class="invf_write">
+                </div>-->
+                </div>
+                <div class="invf_txt">
+                    <div id="tb0">
+                        {$info.fund_intro}
+                    </div>
+                    <div id="tb1">
+                        {$info.security_intro}
+                    </div>
+                    <div id="tb2">
+                        <table>
+                            <colgroup>
+                            <col width="70%" />
+                            <col width="30%" />
+                            </colgroup>
+                            <tbody>
+                                {if $sub_list}
+                                {foreach from=$sub_list item="item"}
+                                <tr>
+                                    <th> {$item.username} </th>
+                                    <td class="tr">
+                                        {$item.create_time}
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                {if $page.more eq false}
+                                <tr><td colspan="2" style="text-align:center;"><a href="###" id="btn_more"  style="color:#f64172;text-decoration:none;">加载更多</a></td></tr>
+                                {/if}
+                                {else}
+                                    <tr><td colspan="2" style="text-align:center;color:#f64172;">暂无投资人</td></tr>
+                                {/if}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+        <script src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.min.js');?>" type="text/javascript"></script>
+        <script src="<?php echo $this->asset->makeAppUrl('v2/js/sea.js');?>" type="text/javascript"></script>
+        <script src="<?php echo $this->asset->makeAppUrl('v2/js/touch.js');?>" type="text/javascript"></script>
+        <script type="text/javascript">
+
+            // 加载入口模块
+            seajs.use("<?php echo $this->asset->makeAppUrl('v2/js/m-common');?>");
+            $(function(){
+                    var list_offset = {$page.count};
+                    var fund_id = '{$page.id}';
+                    $('#btn_more').data('more','1');
+                    $('#btn_more').click(function(){
+                        var $btn = $(this);
+                        if($btn.data('more') == '1'){
+                            $btn.data('more','0');
+                            $.ajax({
+                                type: "GET",
+                                url: "/fund/subscribeList",
+                                data: "id="+fund_id+"&offset="+list_offset,
+                                dataType:'json',
+                                success: function(data){
+                                    $btn.data('more','1');
+                                    if(data.data.page.more){
+                                        list_offset+=data.data.page.count;
+                                        var list = data.data.list;
+                                        var html = '';
+                                        $.each(list ,function(k,v){
+                                            html+='<tr><th>'+v.username+'</th><td class="tr">'+v.create_time+'</td></tr>';
+                                            });
+
+                                        var $obj = $('#tb2 table tr').last();
+                                        $obj.before(html);
+                                        $btn.hide();
+                                    }else{
+                                        list_offset+=data.data.page.count;
+                                        var list = data.data.list;
+                                        var html = '';
+                                        $.each(list ,function(k,v){
+                                            html+='<tr><th>'+v.username+'</th><td class="tr">'+v.create_time+'</td></tr>';
+                                            });
+
+                                        var $obj = $('#tb2 table tr').last();
+                                        $obj.before(html);
+                                    }
+                                }
+                            });
+                        }
+                    });
+            });
+    </script>
+    </body>
+</html>

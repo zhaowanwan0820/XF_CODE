@@ -1,0 +1,123 @@
+{include file="web/views/v3/header.html"}
+<style>
+  .m_header .top{display:none;}
+  .m_header .my_account{display:none;}
+  .m_header nav{display:none;}
+  .layAppTopnew{display:none;}
+  .m_header{height: 88px;}
+  body{background:#fff;}
+  .p_level{}
+  .p_level .banner,.title{width:100%;display:block;}
+  .p_level .contain{
+    padding-top: 20px;
+    background:#ff9933;  
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ff9933), to(#f3ba40));  
+    background-image: -webkit-linear-gradient(top, #ff9933, #f3ba40);  
+    background-image: -moz-linear-gradient(top, #ff9933, #f3ba40);  
+    background-image: -o-linear-gradient(top, #ff9933, #f3ba40);  
+    background-image: -ms-linear-gradient(top, #ff9933, #f3ba40);  
+    background-image: linear-gradient(top, #ff9933, #f3ba40);  
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType= 0 ,startColorstr='#ff9933', endColorstr='#f3ba40')
+  }
+  .p_level .enter_contain{font-size:20px;width: 900px;height: 460px;margin: 0 auto;background: url("//event.ncfwx.com/upload/image/20180614/11-56-4-182_02.png") no-repeat;background-size: 900px 460px;}
+  .p_level .enter_contain input{width:250px;height:44px;margin:0 20px 0 10px;font-size:18px;padding-left: 15px;border: 1px solid #bababa;}
+  .p_level .enter_contain input:focus{border: #32a0fe solid 1px;
+    box-shadow: 1px 0px 2px rgba(183,221,253,1), -1px 0px 2px rgba(183,221,253,1), 0px 1px 2px rgba(183,221,253,1), 0px -1px 2px rgba(183,221,253,1);}
+  .p_level .active_btn{margin: 0 auto;margin-top: 35px;width:285px;height:55px;line-height:55px;text-align:center;border-radius:32px;color:#fff;background:#ff6633;}
+  .p_level .remind{padding:60px 0}
+  .p_level .remind .left{width:255px;border-right:1px #434343 solid;float:left;font-size: 28px;height:122px;padding-top:70px;}
+  .p_level .right{margin-left:256px;font-size:18px;text-align:left;padding-left:60px;}
+  .p_level .right p{margin-bottom: 5px;}
+</style>
+<div class="p_level">
+  <img class="banner" src="//event.ncfwx.com/upload/image/20180614/10-34-4-18_02.jpg" alt=""/>
+  <div class="contain">
+    <div class="enter_contain">
+      <div style="text-align: center;padding-top: 125px;font-weight: bold;font-size: 18px;">收货人手机号<input class="mobile_input" name="mobile" type="text">订单编号<input class="order_input" name="order_id" type="text"></div>
+      <!-- <img class="active_btn" src="//event.ncfwx.com/upload/image/20180424/15-14-ss.png" alt=""/> -->
+      <div class="active_btn">立即领取</div>
+      <!-- <div class="remind">
+        <div class="left">温馨提示</div>
+        <div class="right">
+          <p>1、仅限购买用户领取，领取后切勿转给他人；</p>
+          <p>2、领取的链接30天内有效，请尽快领取使用；</p>
+          <p>3、务必通过领取的链接完成注册，否则视为放弃活动规则；</p>
+          <p>4、领取后请确保按照商家活动规则进行，详情请查看商家活动说明；</p>
+        </div>
+      </div> -->
+    </div>
+    <img class="banner" style="width: 900px;margin:0 auto;margin-top: 15px;" src="//event.ncfwx.com/upload/image/20180614/12-00-4-182_03.png" alt=""/>
+  </div>
+  <div class="copyright w1100" style="position:relative;text-align:center;margin-bottom: 30px;">
+    <p class="pt20">北京经讯时代科技有限公司</p>
+    <p>© 2019 网信 All rights reserved
+      <span class="s1">&nbsp;京ICP备16034138号-3 | 京ICP证140628号| <span class="s1"></span>
+      <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502033551" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="//static.firstp2p.com/attachment/201701/10/16/a7358ed1e0c3d9c7fd0d13eab0f1350b/index.jpg" style="float:left;"/>京公网安备 11010502033551号
+      </a></span>
+    </p>
+  </div>
+</div>
+<script>
+  $(".active_btn").click(function(){
+    var order_id = $(".order_input").val().trim()
+    var rec_mobile = $(".mobile_input").val().trim()
+    if(!rec_mobile){
+      Firstp2p.alert({
+          text: '<div style="text-align:center;font-size: 18px;">请填写收货人手机号</div>',
+          ok: function(dialog) {
+              dialog.close();
+          },
+          width: 440,
+          okBtnName: '知道了'
+      });
+    }else if(!order_id){
+      Firstp2p.alert({
+          text: '<div style="text-align:center;font-size: 18px;">请填写订单号</div>',
+          ok: function(dialog) {
+              dialog.close();
+          },
+          width: 440,
+          okBtnName: '知道了'
+      });
+    }else{
+      $.ajax({
+        type: 'post',
+        url: '/activity/active',
+        dataType: 'json',
+        data: {
+          order_id:order_id,
+          rec_mobile:rec_mobile
+        },
+        success: function (data) {
+          if(data.errno == 0){
+            Firstp2p.alert({
+              title: '恭喜您，激活成功',
+              text: '<div style="text-align:center;font-size: 18px;">请点击以下按钮，领取优惠购金额</div><div style="text-align: center;margin-top: 25px;color: #ee4634;">注：您必须通过该按钮完成注册，且不能更改注册地址，才能领取商品返还金额</div>',
+              ok: function(dialog) {
+                window.open(data.data.web_url);
+                dialog.close();
+              },
+              width: 440,
+              okBtnName: '注册领取'
+            });
+          }else{
+            Firstp2p.alert({
+              title: '激活失败',
+              text: '<div style="text-align:center;font-size: 18px;">'+data.error+'</div>',
+              ok: function(dialog) {
+                dialog.close();
+              },
+              width: 440,
+              okBtnName: '知道了'
+            });
+          }
+        },
+        error: function (err) {
+          console.error(err)
+        }
+      })
+    }
+  })
+</script>
+</body>
+</html>

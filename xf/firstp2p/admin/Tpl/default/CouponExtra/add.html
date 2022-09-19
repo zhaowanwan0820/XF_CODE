@@ -1,0 +1,115 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<div class="main">
+<div class="main_title">添加 <a href="{:u("CouponExtra/index")}deal_id=0" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">投资性质</td>
+        <td class="item_input">
+        <select name="source_type" onchange="javascript:displayTagList();" id="sourceType">
+            <option value="0">web</option>
+            <option value="3">ios</option>
+            <option value="4">android</option>
+            <option value="11">一触即发</option>
+            <option value="12">一气呵成</option>
+            <option value="13">首屈一指</option>
+            <option value="20">用户tag</option>
+            <option value="21">标tag</option>
+        </select>
+        </td>
+    </tr>
+    <tr>
+    <td class="item_title">标签列表</td>
+    <td class="item_input">
+    <div id="tagList">
+     <foreach name="tags" item="item">
+            <input type="checkbox" name="tags[]"  value="{$item.id}">{$item.name}
+            </foreach>
+     </div>
+     </td>
+    </tr>
+    <!--tr>
+        <td class="item_title">投资人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="rebate_amount" maxlength="20"/>元</td>
+    </tr-->
+    <tr>
+        <td class="item_title">投资人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="rebate_ratio" maxlength="10"/>%</td>
+    </tr>
+    <!--tr>
+        <td class="item_title">推荐人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="referer_rebate_amount" maxlength="20"/>元</td>
+    </tr-->
+    <tr>
+        <td class="item_title">推荐人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="referer_rebate_ratio" maxlength="10"/>%</td>
+    </tr>
+    
+    
+    <tr>
+        <td class="item_title">备注说明:</td>
+        <td class="item_input"><textarea id="remark" class="require" name="remark" style="width:500px;height:50px"></textarea></td>
+    </tr>
+
+    <input type="hidden" name="deal_id" value="0" />
+	<input type="hidden" name="{:conf("VAR_MODULE")}" value="CouponExtra" />
+	<input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+	<tr>
+	<td class="item_title"></td>
+	<td>
+		<input type="submit" class="button" value="{%ADD}" />
+		<input type="reset" class="button" value="{%RESET}" />
+	</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+</form>
+<script >
+function displayTagList(){
+    tagType = $("#sourceType").val();
+
+    if (tagType!=20 && tagType!=21){
+        $("#tagList").html("");
+        return false;
+    }
+    $.ajax({ 
+        url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=getTagList&sourceType="+tagType, 
+        data: "ajax=1",
+        dataType: "json",
+        success: function(obj){
+            tagListHtml = '';
+            if(obj.data=='' || obj.error_code !=0)
+            {
+                $("#tagList").html("");
+            }
+            dataList = eval(obj.data);
+            for(var i=0; i<dataList.length; i++)  
+            {  
+                if (tagType==20){
+                    tagListHtml += '<input type="checkbox" name="tags[]" value="'+dataList[i].id+'" />'+dataList[i].name;
+                }
+                if (tagType==21){
+                    tagListHtml += '<input type="checkbox" name="tags[]" value="'+dataList[i].id+'" />'+dataList[i].tag_name;
+                }
+            }
+            tagListHtml += '<br /><span style="color:#ff0000">多选时为并且关系，需都满足才符合该规则</span>';
+            $("#tagList").html(tagListHtml);
+        }
+    });
+}
+</script>
+<include file="Public:footer" />

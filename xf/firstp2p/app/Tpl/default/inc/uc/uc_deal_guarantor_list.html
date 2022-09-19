@@ -1,0 +1,57 @@
+
+<div id="dashboard" class="dashboard">
+	<ul>
+		<li class="current"><a href="{url x="index"r="uc_deal#guarantor"}">{$page_title}</a></li>
+	</ul>
+</div>
+<div class="uc_r_bl_box clearfix">
+{if $guarantor_list}
+<div class="silverBg tc pl10 " style="height:30px;line-height:30px; font-weight:bold; color:#8E8E8E">
+    <div class="f_l tl" style="width:150px;text-indent:3em;">
+            借款标题
+    </div>
+    <div class="f_l" style="width:150px">
+            借款人
+    </div>
+    <div class="f_l" style="width:130px">
+            借款金额
+    </div>
+    <div class="f_l" style="width:130px">
+            发布日期
+    </div>
+    <div class="f_l" style="width:145px">
+            担保状态
+    </div>
+</div>
+<div class="clearfix pt5 pb5 pl10 ">
+	 <div id="borrowed" class="tc">
+	{foreach from=$guarantor_list item='gua'}
+            <div class="clearfix pb10">
+                <div class="f_l tl" style="width:150px;">
+                    <center><a href="{$gua.deal.url}" title='{$gua.deal.name}'>{function name="cutstr" v=$gua.deal.name}</a></center>
+                </div>
+                <div class="f_l" style="width:150px">
+                    {$gua.deal.user_name}
+                </div>
+                <div class="f_l f_red" style="width:130px">
+                	{$gua.deal.borrow_amount_format}
+                </div>
+                <div class="f_l" style="width:130px">
+                    {function name="to_date" v="$gua.deal.create_time" f="Y-m-d"}
+                </div>
+				<div class="f_l tc" style="width:145px">
+					{$gua.status_name}
+				</div>
+            </div>
+            <div style="border-bottom:1px dotted #9D9D9D;margin:5px 0 ">
+         </div>
+	{/foreach}
+	 </div>
+	</table>
+	<div class="blank"></div>
+	<div class="pages">{$pages}</div>
+</div>
+{else}
+<div class="empty-box">没有记录</div>
+{/if}
+</div>

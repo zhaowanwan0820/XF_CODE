@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>参与记录</title>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/flexible.js');?>"></script>
+    <link href="<?php echo $this->asset->makeAppUrl('v4.83/css/proDetails.css?v=111');?>" rel="stylesheet" />
+    <script>
+        var token = '{$token}';
+        var periodId = '{$periodOrders[0].period_id}';
+    </script>
+</head>
+<body>
+    <div class="records_page">
+        <div class="records_wrap">
+            {foreach from=$periodOrders item=code name=code}
+            <div class="records_terms">
+                <div class="records_time">{$code.create_time}</div>
+                <div class="records_desc">
+                    <span class="records_name">{$code.userInfo.real_name}{if $code.userInfo.sex eq 1}先生{else}女士{/if} <span class="time_code"></span></span>
+                    <span class="records_num">投入了{$code.code_count}个信宝</span>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+        {if count($periodOrders) lt 30}
+        <div class='tip_wrap js_no'>
+            <span class='no_more'>没有更多了</span>
+        </div>
+        {else}
+        <div class='tip_wrap js_more'>
+            <span class='cli_more'>点击加载更多</span>
+        </div>
+        <div class='tip_wrap js_no' style="display:none">
+            <span class='no_more'>没有更多了</span>
+        </div>
+        {/if}
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.83/js/candy/snatch_orders.js?v=1');?>"></script>
+</body>
+</html>

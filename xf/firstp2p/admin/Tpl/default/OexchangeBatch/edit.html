@@ -1,0 +1,106 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<script type="text/javascript">
+function checkSubmit() {
+    var deal_status = $('input:radio[name="deal_status"]:checked').val();
+    if(deal_status == 2){
+        var is_ok = $('input:radio[name="is_ok"]:checked').val();
+        if(is_ok == 0){
+            alert("还款中不能作废");
+            return false;
+        }
+        var give_money_time = $("#give_money_time").val();
+        if(give_money_time.length == 0){
+            alert("放款时间不能为空");
+            return false;
+        }
+        var amount = $("#amount").val();
+        if(amount == 0){
+            alert("批次金额需大于0");
+            return false;
+        }
+    }
+    return true;
+}
+</script>
+<div class="main">
+<div class="main_title">项目信息 <a href="{:u("OexchangeBatch/index?pro_id=". $project['id'])}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form id="addform" name="edit" action="__APP__?m=OexchangeBatch&a=edit" method="post">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">项目名称:</td>
+        <td class="item_input">{$project['name']}</td>
+    </tr>
+    <tr>
+        <td class="item_title">交易所备案产品编号:</td>
+        <td class="item_input">{$project['jys_number']}</td>
+    <tr>
+    <tr>
+        <td class="item_title">期数:</td>
+        <td class="item_input">{$batch['batch_number']}期</td>
+    <tr>
+        <td class="item_title">批次编号:</td>
+        <td class="item_input">
+            {$batch['id']}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">状态:</td>
+        <td class="item_input">
+            <input type="radio" name="is_ok" value="1" <if condition="1 eq $batch['is_ok']">checked=""</if> /> 有效
+            <input type="radio" name="is_ok" value="0" <if condition="0 eq $batch['is_ok']">checked=""</if> /> 无效
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">最后一批次起息:</td>
+        <td class="item_input">
+            <input type="radio" name="is_last_start" value="1" <if condition="1 eq $batch['is_last_start']">checked=""</if> /> 是
+            <input type="radio" name="is_last_start" value="0" <if condition="0 eq $batch['is_last_start']">checked=""</if> /> 否
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资状态:</td>
+        <td class="item_input">
+            <input type="radio" name="deal_status" value="1" <if condition="1 eq $batch['deal_status']">checked=""</if> /> 进行中
+            <input type="radio" name="deal_status" value="2" <if condition="2 eq $batch['deal_status']">checked=""</if> /> 还款中
+            <input type="radio" name="deal_status" value="3" disabled="disabled" <if condition="3 eq $batch['deal_status']">checked=""</if> /> 已还清
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">放款时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" style="width:140px;" name="give_money_time" id="give_money_time" value="" onfocus="this.blur(); return showCalendar('give_money_time', '%Y-%m-%d', false, false, 'btn_fixed_value_date_start');" />
+            <input type="button" class="button" id="btn_fixed_value_date_start" value="{%SELECT_TIME}" onclick="return showCalendar('give_money_time', '%Y-%m-%d', false, false, 'btn_fixed_value_date_start');" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <input type="hidden" name="id" value="{$batch['id']}">
+            <input type="hidden" id="amount" value="{$iBatchAmount}">
+            <input type="hidden" name="pro_id" value="{$project['id']}">
+            <input type="submit" class="button" value="保存" name="submit" onclick="return checkSubmit();"/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+
+<include file="Public:footer" />

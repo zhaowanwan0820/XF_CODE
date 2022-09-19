@@ -1,0 +1,399 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/deal.js' />
+
+<!-- swfupload -->
+<script type="text/javascript" src="__TMPL__/swfupload_plugn/js/swfupload.js"></script>
+<script type="text/javascript" src="__TMPL__/swfupload_plugn/js/handlers.js"></script>
+<link href="__TMPL__/swfupload_plugn/css/default.css" rel="stylesheet" type="text/css" />
+<!--  -->
+
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("DealAgency/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">机构名称:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="name" value="{$vo.name}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">关联用户ID:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox require" name="user_id" value="{$vo.user_id}" /> &nbsp;&nbsp;<a href="{:u("$userListUrl")}" target="_blank">会员列表</a></td>
+    </tr>
+
+    <tr>
+        <td class="item_title">缩略名:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="short_name" value="{$vo.short_name}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">LOGO:</td>
+        <td class="item_input">
+            &emsp;<span class="tip_span">图片小于100K，分辨率不小于110*110</span>
+            <br />
+            <html:imgUpload name ="logo" id="logo" value="$logo" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">机构确认帐号:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox" name="user" id="user_name" value="{$vo.user}" onchange="updateAgencyUser()" />&emsp;<span class="tip_span">签署合同账户</span></td>
+    </tr>
+    <tr>
+        <td class="item_title">地址:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="address" value="{$vo.address}" /></td>
+    </tr>
+
+    <tr>
+        <td class="item_title">营业执照号:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="license" value="{$vo.license}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">营业执照图片:</td>
+        <td class="item_input">
+            &emsp;<span class="tip_span">图片小于1M，分辨率不小于640*480</span>
+            <br />
+            <html:imgUpload name ="license_img" id="license_img" value="$license_img" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">法定代表人:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="realname" value="{$vo.realname}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">手机号:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="mobile" value="{$vo.mobile}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">邮件:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="email" value="{$vo.email}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">邮编:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="postcode" value="{$vo.postcode}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">传真:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="fax" value="{$vo.fax}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">评审费:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="review" value="{$vo.review}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">保费:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="premium" value="{$vo.premium}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">履约保证金:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="caution_money" value="{$vo.caution_money}" /></td>
+    </tr>
+
+
+    <tr>
+        <td class="item_title">机构选择:</td>
+        <td class="item_input">
+        <select name="type" class="" id="type" onchange="javascript:addSignImgTag();">
+            <option value="0">=={%NO_SELECT_CATE}==</option>
+            <foreach name="type" key="dkey" item="type_item">
+                <option value="{$dkey}" <if condition="$vo['type'] eq $dkey">selected="selected"</if> >{$type_item}</option>
+            </foreach>
+        </select>
+        </td>
+    </tr>
+    <tr id="tr_sign_img">
+        <td class="item_title">合同电子签章:</td>
+        <td class="item_input">
+            <input id="sign_img" name="sign_img" type="file" accept="image/*">
+            <br />
+            <br />
+            <img id="sign_img_show" <if condition="$sign_img">src="{$sign_img}" has_img="1"<else/>src="./static/admin/Common/images/no_pic.gif" has_img="0"</if> style="display:inline-block; float:left; cursor:pointer; margin-left:10px; border:#ccc solid 1px; width:35px; height:35px;" id="sign_img_thum">
+            <!-- 是否需要电子签章 -->
+            <input name="need_sign_img" id="need_sign_img" hidden style="display:none;" value="1"/>
+            <input id="old_sign_img" name="old_sign_img" type="text" hidden style="display:none;" value="{$sign_img}">
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">是否独立ICP:</td>
+        <td class="item_input">
+            <select name="is_icp" class="" id="type_name">
+                <option value="0" <if condition="$vo['is_icp'] eq 0">selected="selected"</if> >否</option>
+                <option value="1" <if condition="$vo['is_icp'] eq 1">selected="selected"</if> >是</option>
+            </select>&nbsp; <span class="tip_span">只在平台机构中使用</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">关联分站:</td>
+        <td class="item_input">
+            <select name="site_id" class="" id="type_name">
+                <option value="0">未选择</option>
+                <foreach name="site_list" key="site_id" item="site_name">
+                    <option value="{$site_id}" <if condition="$vo['site_id'] eq $site_id">selected="selected"</if> >{$site_name}</option>
+                </foreach>
+            </select>&nbsp; <span class="tip_span">只在平台机构中使用并且（是否独立ICP选项为"是"）时才可以生效</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">机构代理人用户ID:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox" name="agency_user_id" value="{$vo.agency_user_id}" /> &nbsp;&nbsp;<a href="/m.php?m=User&a=index&" target="_blank">会员列表</a></td>
+    </tr>
+    <tr>
+        <td class="item_title">到期还款通知邮箱(咨询机构):</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="repay_inform_email" value="{$vo.repay_inform_email}" /> &nbsp; <span class="tip_span">填写多个时，请以逗号分隔</span></td>
+    </tr>
+    <tr>
+        <td class="item_title">还款提醒邮箱(线下交易所):</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="exchange_repay_notice_email" value="{$vo.exchange_repay_notice_email}" /> &nbsp; <span class="tip_span">填写多个时，请以逗号分隔</span></td>
+    </tr>
+    <tr>
+        <td class="item_title">还款计划表邮箱(线下交易所):</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="exchange_repay_plan_email" value="{$vo.exchange_repay_plan_email}" /> &nbsp; <span class="tip_span">填写多个时，请以逗号分隔</span></td>
+    </tr>
+    <tr>
+        <td class="item_title">银行开户行:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="bankzone" value="{$vo.bankzone}" /></td>
+    </tr>
+
+     <tr>
+        <td class="item_title">银行卡号:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox " name="bankcard" value="{$vo.bankcard}" /></td>
+    </tr>
+
+    <tr>
+        <td class="item_title">担保方介绍:</td>
+        <td class="item_input"><textarea class="textarea" name="brief" style="heigth:200px;width:800px" >{$vo.brief}</textarea></td>
+    </tr>
+
+    <tr>
+        <td class="item_title">头部:</td>
+        <td class="item_input">
+            <html:editor id="header" name="header" type="KINDEDITOR" content="{$vo.header}" style=" height:150px;width:800px;" />
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">公司概况:</td>
+        <td class="item_input"><textarea class="textarea" name="company_brief" style="heigth:200px;width:800px">{$vo.company_brief}</textarea></td>
+    </tr>
+
+    <tr>
+        <td class="item_title">发展史:</td>
+        <td class="item_input">
+            <html:editor id="history" name="history" type="KINDEDITOR" content="{$vo.history}" style=" height:150px;width:800px;" />
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">内容:</td>
+        <td class="item_input">
+            <html:editor id="content" name="content" type="KINDEDITOR" content="{$vo.content}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">协议:</td>
+        <td class="item_input">
+            <html:editor id="content" name="agreement" type="KINDEDITOR" content="{$vo.agreement}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">常见问题:</td>
+        <td class="item_input">
+            <html:editor id="mechanism" name="mechanism" type="KINDEDITOR" content="{$vo.mechanism}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+
+    <!-- JIRA 3627 1+N信息披露后台功能 -->
+    <tr>
+        <td class="item_title">经营场所状况:</td>
+        <td class="item_input">
+            <html:editor id="business_place_state" name="business_place_state" type="KINDEDITOR" content="{$vo.business_place_state}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">经营场所图片:</td>
+        <td>
+            <div style="width:115px;margin:0"><span id="spanButtonPlaceholder"  ></span></div>
+            <div style="width: 610px; height: auto; border: 1px solid #e1e1e1; font-size: 12px; padding: 10px;margin:0">
+            <div id="divFileProgressContainer"></div>
+            <div id="thumbnails">
+                <input id="imgs_num_limit" value="10" style="display: none;">
+                <ul id="pic_list" style="margin: 5px;">
+                    <volist name="business_place_imgs" id="business_place_img">
+                    <script type="text/javascript">
+                        uploadSuccess("", "{$business_place_img}");
+                    </script>
+                    </volist>
+                </ul>
+                <div style="clear: both;"></div>
+            </div>
+                <span class="tip_span">(注：请保证单个图片小于1M，分辨率不小于640*480，图片总数不超过10张，支持类型：JPEG/GIF/PNG)</span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">风险控制:</td>
+        <td class="item_input">
+            <html:editor id="risk_control" name="risk_control" type="KINDEDITOR" content="{$vo.risk_control}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">机构简介:</td>
+        <td class="item_input">
+            <html:editor id="agency_brief" name="agency_brief" type="KINDEDITOR" content="{$vo.agency_brief}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">主要产品:</td>
+        <td class="item_input">
+            <html:editor id="man_product" name="man_product" type="KINDEDITOR" content="{$vo.man_product}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">团队介绍:</td>
+        <td class="item_input">
+            <html:editor id="team_brief" name="team_brief" type="KINDEDITOR" content="{$vo.team_brief}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">企业愿景:</td>
+        <td class="item_input">
+            <html:editor id="future_expectation" name="future_expectation" type="KINDEDITOR" content="{$vo.future_expectation}" style=" height:350px;width:800px;" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">信贷系统是否可见:</td>
+        <td class="item_input">
+            <lable>可见<input type="radio" name="is_credit_display" value="1" <if condition="$vo['is_credit_display'] eq 1">checked="checked"</if> /></lable>
+            <lable>不可见<input type="radio" name="is_credit_display" value="0" <if condition="$vo['is_credit_display'] eq 0">checked="checked"</if> /></lable>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">{%IS_EFFECT}:</td>
+        <td class="item_input">
+            <lable>{%IS_EFFECT_1}<input type="radio" name="is_effect" value="1" <if condition="$vo['is_effect'] eq 1">checked="checked"</if> /></lable>
+            <lable>{%IS_EFFECT_0}<input type="radio" name="is_effect" value="0" <if condition="$vo['is_effect'] eq 0">checked="checked"</if> /></lable>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="item_title">{%SORT}:</td>
+        <td class="item_input"><input size="100" type="text" class="textbox" name="sort" value="{$vo.sort}" /></td>
+    </tr>
+
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="DealAgency" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+            <input type="hidden" name="showMsg" value="确认修改该机构信息吗?" id="showMsg" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" onclick="return confirm($('#showMsg').val())"  value="{%EDIT}" />
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<script>
+    function addSignImgTag()
+    {
+        if ((7 == $('#type').val())||(9 == $('#type').val())) {
+            $('#tr_sign_img').show();
+            $('#need_sign_img').val(1);
+            if (0 == $('#sign_img_show').attr('has_img')) {
+                $('#sign_img').addClass('require');
+            }
+            if (9 == $('#type').val()) {
+                $('#sign_img').removeClass('require');
+            }
+        } else {
+            $('#tr_sign_img').hide();
+            $('#need_sign_img').val(0);
+            $('#sign_img').removeClass('require');
+        }
+    }
+
+    function updateAgencyUser(){
+        var user = $('#user_name').val();
+        var type_name = $('#type_name').val();
+        $.ajax({
+            url:'m.php?m=DealAgency&a=checkUserAgency&user='+user+'&type='+type_name,
+            type:'get',
+            cache:false,
+            dataType:'text',
+            success:function(data) {
+                var msg = data+"确认新增该机构吗？\n";
+                $('#showMsg').val(msg);
+            }
+        });
+    }
+
+    // thinkphp + swfupload 图片上传插件
+    var swfu;
+    var swfuAttribute = {
+        upload_url: "m.php?m=DealAgency&a=uploadImg",
+        post_params: {"PHPSESSID": "<?php echo session_id();?>"},
+        file_size_limit : 1024,
+        file_types : "*.jpg;*.png;*.gif;",
+        file_types_description : "JPG Images",
+        file_dialog_start_handler : fileDialogStart,
+        file_queued_handler : fileQueued,
+        file_queue_error_handler : fileQueueError,
+        file_dialog_complete_handler : fileDialogComplete,
+        upload_progress_handler : uploadProgress,
+        upload_error_handler : uploadError,
+        upload_success_handler : uploadSuccess,
+        upload_complete_handler : uploadComplete,
+        button_image_url : "__TMPL__/swfupload_plugn/images/upload.png",
+        button_placeholder_id : "spanButtonPlaceholder",
+        button_width: 113,
+        button_height: 45,
+        button_text : '',
+        button_text_style : '.spanButtonPlaceholder { font-family: Helvetica, Arial, sans-serif; font-size: 14pt;} ',
+        button_text_top_padding: 0,
+        button_text_left_padding: 0,
+        button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+        button_cursor: SWFUpload.CURSOR.HAND,
+        flash_url : "__TMPL__/swfupload_plugn/swf/swfupload.swf",
+        custom_settings : {
+          upload_target : "divFileProgressContainer"
+        },
+        debug: false
+    };
+    window.onload = function () {
+      swfu = new SWFUpload(swfuAttribute);
+      addSignImgTag();
+    };
+
+    // upload_sign_img
+    $("#sign_img").change(function(){
+        $("#sign_img_thum").attr("src", getObjectURL(this.files[0]));
+    });
+
+    // file 添加之后的预览url
+    function getObjectURL(file) {
+        var url = null;
+        if (window.createObjectURL != undefined) {
+            url = window.createObjectURL(file)
+        } else if (window.URL != undefined) {
+            url = window.URL.createObjectURL(file)
+        } else if (window.webkitURL != undefined) {
+            url = window.webkitURL.createObjectURL(file)
+        }
+        return url
+    };
+</script>
+<include file="Public:footer" />

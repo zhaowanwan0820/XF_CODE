@@ -1,0 +1,306 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">网贷P2P账户复核列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <foreach name="auth_action" item="action_item">
+        <input type="button" class="button" value="{$action_item.n}通过" onclick="batch_edit('{$action_item.a}','{$action_item.p}',this);" />
+        <input type="button" class="button" value="{$action_item.n}拒绝" onclick="batch_edit('{$action_item.a}','{$action_item.r}',this);" />&nbsp;
+    </foreach>
+</div>
+<div class="blank5"></div>
+<script>
+function multi_redo() {
+    idBox = $(".key:checked");
+
+    var param = '';
+    if(idBox.length == 0){
+        idBox = $(".key");
+    }
+
+    idArray = new Array();
+    $.each( idBox, function(i, n){
+        idArray.push($(n).val());
+    });
+
+    if(idArray.length == 0){
+        alert('无可导出的数据！');
+        return false;
+    }
+
+    id = idArray.join(",");
+
+/*
+    var inputs = $(".search_row").find("input");
+
+    for(i=0; i<inputs.length; i++){
+        if(inputs[i].name != 'm' && inputs[i].name != 'a')
+        param += "&"+inputs[i].name+"="+$(inputs[i]).val();
+    }
+*/
+
+    var url= ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=multi_redo&id="+id;
+    window.location.href = url;
+}
+</script>
+
+<php>
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '';
+    }
+    return date('Y-m-d H:i:s', $stamp);
+}
+function f_cutstr($string) {
+    $subString = $string;
+    if (mb_strlen($string) > 15) {
+        $subString = '<a href="javascript:;" title="'.str_replace('"',"'", $string).'">' . mb_substr($string, 0, 15) . '...</a>';
+    }
+    return $subString;
+}
+function f_show_amount($amount) {
+    return format_price(bcdiv($amount, 100, 2));
+}
+function f_show_direction($direction) {
+    if ($direction == 1) {
+        return '网信理财账户划转至网贷P2P账户';
+    } else if ($direction == 2) {
+        return '网贷P2P账户划转至网信理财账户';
+    }
+}
+
+function f_show_audit_log_status($status) {
+    if ($status == 0) {
+        return 'A角色待审核';
+    } else if ($status == 1) {
+        return 'A角色批准';
+    } else if ($status == 2) {
+        return 'A角色拒绝';
+    } else if ($status == 3) {
+        return 'B角色批准';
+    } else if ($status == 4) {
+        return 'B角色拒绝';
+    }
+}
+
+function f_show_audit_status($status) {
+    if ($status == 0) {
+        return 'A角色待审核';
+    } else if ($status == 1) {
+        return 'B角色待审核';
+    } else if ($status == 2 || $status == 4) {
+        return '已拒绝';
+    } else if ($status == 3) {
+        return '审核通过';
+    }
+}
+function f_show_op($id) {
+    return '';
+}
+function f_get_username($userId) {
+    $user_name = DI('User')->where(" id = '$userId' ")->getField('user_name');
+    return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>$user_name</a>";
+}
+function get_action_list($status, $row){
+    if ($status == 0) {
+        return '<a href="javascript:auditPass('. $row['id'] .', 0);">A角色通过</a>  <a href="javascript:auditRefuse(' . $row['id'].', 0);">拒绝</a>';
+    }elseif($status == 1){
+        return '<a href="javascript:auditFinalPass(' . $row['id'] . ', 0);">B角色通过</a>  <a href="javascript:auditFinalRefuse(' . $row['id'] . ', 0);">拒绝</a>';
+    }elseif($status == 2 || $status == 4){
+        return '已拒绝';
+    }elseif($status == 3){
+        return "审核通过";
+    }
+}
+</php>
+<div class="search_row">
+    <form name="search" id="search_form" action="__APP__" method="get">
+       <!--  <select name="backup" id="backup">
+            <option value="0" <if condition="intval($_REQUEST['backup']) eq 0">selected="selected"</if>>近3个月</option>
+            <option value="1" <if condition="$_REQUEST['backup'] eq 1">selected="selected"</if>>3个月前</option>
+        </select>
+        -->
+        会员名称：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" style="width:100px;" />
+        外部订单号：<input type="text" class="textbox" name="out_order_id" value="{:trim($_REQUEST['out_order_id'])}" style="width:100px;" />
+        申请时间：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['apply_time_start'])}" name="apply_time_start" id="apply_time_start"  onfocus="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        至 <input type="text" value="{:trim($_REQUEST['apply_time_end'])}" name="apply_time_end" id="apply_time_end" class="textbox" onfocus="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+ 
+        申请人：<input type="text" class="textbox" name="apply_user" value="{:trim($_REQUEST['apply_user'])}" style="width:100px;" />
+        状态:
+        <select name="status">
+            <option value="-1" <if condition="intval($_REQUEST['status']) eq -1 ">selected="selected"</if>>全部</option>
+            <option value="0" <if condition="intval($_REQUEST['status']) eq 0 ">selected="selected"</if>>A角色待审核</option>
+            <option value="1" <if condition="intval($_REQUEST['status']) eq 1 ">selected="selected"</if>>B角色待审核</option>
+            <option value="3" <if condition="intval($_REQUEST['status']) eq 3 ">selected="selected"</if>>审核通过</option>
+            <option value="-2" <if condition="intval($_REQUEST['status']) eq -2 ">selected="selected"</if>>已拒绝</option>
+        </select>
+
+        <input type="hidden" value="Supervision" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+    <input type="button" class="button" value="导入" onclick="import_csv(this);" /> <input type="button" class="button" value="导出" onclick="export_csv();" /> </div>
+<div class="blank5"></div>
+
+<?php
+    foreach($list as $k => $v) {
+        if (in_array($v['audit_status'], [1,2])) {
+            $list[$k]['oplog'] = f_to_date($v['first_audit_time']) .' '.f_show_audit_log_status($v['audit_status']).' '.$v['first_audit_admin_name'];
+        }
+        else if (in_array($v['audit_status'], [3,4])) {
+            $list[$k]['oplog'] = f_to_date($v['first_audit_time']) .' A角色审核通过' . ' '.$v['first_audit_admin_name'];
+            $list[$k]['oplog'] .= f_to_date($v['final_audit_time']) .' '.f_show_audit_log_status($v['audit_status']).' '.$v['final_audit_admin_name'];
+        }
+        else {
+            $list[$k]['oplog'] = '';
+        }
+    }
+?>
+<html:list
+    id="dataTable"
+    checkbox="true"
+    style="dataTable"
+    name="link"
+    datasource="list"
+    show="id:编号,user_id|f_get_username:会员名称,out_order_id:外部订单号,amount|f_show_amount=amount:划转金额,direction|f_show_direction:划转方向,audit_status|f_show_audit_status=audit_status:审核状态,oplog:审批记录,apply_user_name:申请人,create_time|f_to_date:申请时间,memo:备注,audit_status|get_action_list=$link:操作"
+    />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    var status = '{$status}';
+    var p = '{$p}';
+    function view(id) {
+        if (parseInt(p) > 0) {
+            window.location.href = "/m.php?m=Jobs&a=view&status="+status+"&p="+p+"&id="+id;
+            return ;
+        }
+        window.location.href = "/m.php?m=Jobs&a=view&status="+status+"&id="+id;
+    }
+    function redo(id) {
+        window.location.href = "/m.php?m=Jobs&a=redo&id="+id;
+    }
+//csv导入
+    function import_csv(btn) {
+        $(btn).css({ "color": "grey", "background-color": "#CCC" }).attr("disabled", "disabled");
+        if (true || confirm("确定此操作吗？")) {
+            $.weeboxs.open(ROOT + '?m=Supervision&a=import', { contentType: 'ajax', showButton: false, title: '导入', width: 550, height: 200 });
+        } 
+        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+    }
+
+    function auditRefuse(id, is_batch) {
+        $.getJSON('/m.php?m=Supervision&a=doAudit', {id:id,is_batch:is_batch,audit_status:2,ajax:1}, function(data){
+            if(is_batch == 1) {console.log(data);}
+            if (data.status == 'OK') {
+                alert(data.msg);
+                window.location.reload();
+            } else {
+                var msg = data.msg;
+                if (typeof(msg) == 'undefined') {
+                    msg = data.info;
+                }
+                alert(msg);
+            }
+        });
+    }
+
+    function auditPass(id, is_batch) {
+        $.getJSON('/m.php?m=Supervision&a=doAudit', {id:id,is_batch:is_batch,audit_status:1,ajax:1}, function(data){
+        if(is_batch == 1) {console.log(data);}
+            if (data.status == 'OK') {
+                alert(data.msg);
+                window.location.reload();
+            } else {
+                var msg = data.msg;
+                if (typeof(msg) == 'undefined') {
+                    msg = data.info;
+                }
+                alert(msg);
+            }
+        });
+   }
+   function auditFinalRefuse(id, is_batch) {
+        $.getJSON('/m.php?m=Supervision&a=doFinalAudit', {id:id,is_batch:is_batch,audit_status:4,ajax:1}, function(data){
+            if(is_batch == 1) {console.log(data);}
+            if (data.status == 'OK') {
+                alert(data.msg);
+                window.location.reload();
+            } else {
+                var msg = data.msg;
+                if (typeof(msg) == 'undefined') {
+                    msg = data.info;
+                }
+                alert(msg);
+            }
+        });
+    }
+
+    function auditFinalPass(id, is_batch) {
+        $.getJSON('/m.php?m=Supervision&a=doFinalAudit', {id:id,is_batch:is_batch,audit_status:3,ajax:1}, function(data){
+            if(is_batch == 1) {console.log(data);}
+            if (data.status == 'OK') {
+                alert(data.msg);
+                window.location.reload();
+            } else {
+                var msg = data.msg;
+                if (typeof(msg) == 'undefined') {
+                    msg = data.info;
+                }
+                alert(msg);
+            }
+        });
+     }
+
+    //通过拒绝 批量操作
+    function batch_edit(action,status,btn) {
+        $(btn).css({ "color": "grey",  "background-color":"#CCC" }).attr("disabled", "disabled");
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert('请选择未处理的网贷P2P账户复核记录！');
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        ids = idArray.join(",");
+        str = '确认批量处理您选择的记录？';
+        if(confirm(str)){
+            if(action == 'doAudit') {
+                if(status == 1) {
+                    auditPass(ids, 1);
+                }else{
+                    auditRefuse(ids, 1);
+                }
+            }else if(action == 'doFinalAudit') {
+                if(status == 3) {
+                    auditFinalPass(ids, 1);
+                }else{
+                    auditFinalRefuse(ids, 1);
+                }
+            }
+        }
+        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+    }
+</script>
+<include file="Public:footer" />

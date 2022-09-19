@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>待还款列表</title>
+</head>
+<body class="dhklb_body">
+<input type="hidden" value="{$token}" id="tokenHidden"/>
+<!-- 受理时间 begin -->
+<div class="timeRange">在线还款受理时间：{$openTimeStart} ~ {$openTimeEnd}</div>
+<!-- 受理时间 end -->
+{if $repayList.data }
+<!-- 待还款列表 begin -->
+<ul class="awaitRepayList" id="awaitRepayList">
+    {foreach from=$repayList.data item=data}
+    <li class="awaitRepayItem">
+        <div class="title">
+            <p>{$data.createTimeFormat}</p>
+            <p>借款</p>
+        </div>
+        <div class="data">
+            <div class="left">
+                <p>借款金额</p>
+                <p>已还本金</p>
+                <p>已还利息</p>
+            </div>
+            <div class="right">
+                <p>{$data.totalAmountFormat}元</p>
+                <p>{$data.principalRepayFormat}元</p>
+                <p>{$data.interestRepayFormat}元</p>
+            </div>
+        </div>
+        <div class="btnBox">
+            {if $data.loanStatus eq 3}
+            <a href="javascript:;" data-href-text="/speedloan/repay?token={$token}&id={$data.id}" class="valid" >立即还款</a>
+            {else}
+            <a href="javascript:;" class="novalid">还款申请中</a>
+            {/if}
+        </div>
+    </li>
+    {/foreach}
+    {if $page lt $repayList.totalPage}
+    <li><a href="javascript:;" class="ajaxPage loadMore" id="ajaxPage" data-page="2" style="display: block;">点击加载更多</a></li>
+    {/if}
+</ul>
+<!-- 待还款列表 end -->
+{else}
+<!-- 缺省页 begin -->
+<div class="defaultPH">
+    <img src="<?php echo $this->asset->makeAppUrl('v4.72/images/speedloan/noValidLogo.png');?>"/>
+    <p class="tipText">暂无待还款记录</p>
+</div>
+<!-- 缺省页 end -->
+{/if}
+
+</body>
+<script type="text/html" id="itemTel">
+    <li class="awaitRepayItem">
+        <div class="title">
+            <p><%= createTimeFormat %></p>
+            <p>借款</p>
+        </div>
+        <div class="data">
+            <div class="left">
+                <p>借款金额</p>
+                <p>已还本金</p>
+                <p>已还利息</p>
+            </div>
+            <div class="right">
+                <p><%= totalAmountFormat %>元</p>
+                <p><%= principalRepayFormat %>元</p>
+                <p><%= interestRepayFormat %>元</p>
+            </div>
+        </div>
+        <div class="btnBox">
+            <% if (loanStatus==3){ %>
+            <a href="javascript:;" data-href-text="/speedloan/repay?token=<%= token %>&id=<%= id %>" class="valid" >立即还款</a>
+            <% }else{ %>
+            <a href="javascript:;" class="novalid">还款申请中</a>
+            <% } %>
+        </div>
+    </li>
+</script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.4/js/lib/template-native-debug.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_daijiekuanliebiao.js?version=1');?>"></script>
+{include file="api/views/_v32/footer.html"}

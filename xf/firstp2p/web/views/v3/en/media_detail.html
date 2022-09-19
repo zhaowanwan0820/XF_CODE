@@ -1,0 +1,47 @@
+{include file="web/views/v3/en/header.html"}
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/media_detail.css');?>"/>
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/media_detail_pc.css');?>" media="screen and (min-width: 1200px)"/>
+    <div class="media_detail">
+        <div class="bg1">NEWS</div>
+        <div class="media_content">
+          <div class="back"><a href="/mediaCoverage"><< back</a></div>
+          <div class="media_title">{$article.title}</div>
+          <div class="title_line"></div>
+          <div class="small_title">{$article.update_time}</div>
+          <div class="small_title">Source:{$article.sub_title}</div>
+          <div class="detail_content">{$article.content}</div>
+          <!-- <p class="top_detail">After the 8·12 Tianjin explosion accident, NCF employees organized family and friends spontaneously to raise money for the families of firefighters. A total of 1,423 people donated RMB240,000 in 2 hours and donated through the China Women's Development Foundation.</p>
+          <p class="top_detail">Beijing Yanjing Little Swan Charity School is a primary school set up by YAN Zhaoshi, an aviation engineer, for migrant children. NCF employees and volunteers in addition to purchasing insurance for these children, and also helping on repairing classrooms, bringing guidance books and art classes.</p>
+          <ul class="media_ul">
+              <li class="media_list1">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/en/media_detail/li1.png');?>"/>
+              </li>
+              <li class="media_list2">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/en/media_detail/li2.png');?>"/>
+              </li>
+              <li class="media_list3">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/en/media_detail/li3.png');?>"/>
+              </li>
+              <li class="media_list4">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/en/media_detail/li4.png');?>"/>
+              </li>
+          </ul> -->
+        </div>
+{include file="web/views/v3/en/footer.html"}
+<script>
+    var flag = IsPC();
+    if(flag){//pc
+        var media_ul_top = $(".media_ul").offset().top;
+        var media_ul_height = $(".media_ul").height();
+        $(window).scroll(function(){
+            var this_scrollTop = $(this).scrollTop();
+            if(this_scrollTop > media_ul_top - media_ul_height-200){
+                setTimeout(function(){
+                    $(".media_list3").animate({marginTop:"0px"},1000,'swing');
+                    $(".media_list4").animate({marginTop:"0px"},1000,'swing');
+                },500)
+            }
+        });
+    }
+</script>
+</html>

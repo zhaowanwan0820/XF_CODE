@@ -1,0 +1,386 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>身份认证</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <link href="{$STATIC_PATH}/v2/css/m-base-addbank.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_PATH}/v2/css/m-common-addbank.css?v=201507211748" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <script>
+        window['_AJAXSIGN_'] = '{$asgn}';
+    </script>
+    <!--private js&css start-->
+    <script type="text/javascript">
+        var today = new Date();
+        var  year = today.getFullYear();
+        var month = today.getMonth() + 1;
+        var day= today.getDate();
+        var ymd = year +""+ month+"" + day;
+        var oHead = document.getElementsByTagName('HEAD').item(0); 
+        var oScript= document.createElement("script"); 
+        oScript.type = "text/javascript"; 
+        oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+        oHead.appendChild( oScript); 
+    </script>
+    <script type="text/javascript" src="{$STATIC_PATH}/v2/js/zepto.js"></script>
+    <script type="text/javascript" src="{$STATIC_PATH}/v2/js/iscroll.js"></script>
+    <script type="text/javascript" src="{$STATIC_PATH}/v2/js/common-addbank.js"></script>
+    <link href="{$STATIC_PATH}/v2/css/p-account-addbank.css?v=201507211748" rel="stylesheet" type="text/css" />
+    <!--private js&css end-->
+    <style class="JS-old_style">
+        html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        body { width: 100%; font-family: "微软雅黑","Microsoft YaHei"; color: #343434; font-size: 14px; overflow-y: auto !important;  }
+        *:focus, *:active { outline: none !important; }
+        * { margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline-style: none; }
+        img { border: 0px; }
+        ul, li { list-style-type: none; }
+        a { text-decoration: none; color: #666; font-family: "微软雅黑","Microsoft YaHei"; }
+            a:hover { text-decoration: none; }
+            a:active, a:visited { color: #666; }
+
+        .fontHY { font-family: "微软雅黑","Microsoft YaHei"; }
+        .colorRed { color: #e7302c; }
+        .bgf5 { background: #f2f2f2; }
+
+        /*新加的样式*/
+        .icon_msg, .icon_edit, .icon_lock, .icon_red_ok { width: 33px; height: 33px; display: inline-block; margin-top: 15px; vertical-align: middle; }
+        .icon_msg { background: url({$STATIC_PATH}/v3/images/haha/icon.png) left -34px no-repeat; background-size: 33px auto; }
+        .icon_edit { background: url({$STATIC_PATH}/v3/images/haha/icon.png) left -68px no-repeat; background-size: 33px auto; }
+        .icon_lock { background: url({$STATIC_PATH}/v3/images/haha/icon.png) left -1px no-repeat; background-size: 33px auto; }
+        .icon_red_ok { background: url({$STATIC_PATH}/v3/images/haha/icon.png) left -102px no-repeat; margin-top: 0; background-size: 33px auto; }
+
+        .login_text { text-align: right; line-height: 30px; font-size: 14px; }
+
+        .login_promptText { position: relative; padding: 20px 0; padding-top: 10px; text-align: center; }
+            .login_promptText p { color: #343434; font-size: 14px; line-height: 30px; }
+                .login_promptText p:first-of-type { font-size: 16px; }
+
+
+        /*重写的样式*/
+        .ui_title { height: 45px; text-align: center; font-size: 16px; line-height: 45px; background: #ee4634; position: relative;color: #fff; }
+            .ui_title a { color: #fff; }
+            .ui_title .ui_back { position: absolute; left: 10px; font-size: 14px; }
+        .ui_icon_back { background: url({$STATIC_PATH}/v3/images/haha/icon_back.png?v=20160229) 0px 0px no-repeat; width: 13px; height: 20px; display: inline-block; background-size: 9px 17px; margin: 0 5px 0 0px; vertical-align: middle; }
+
+        .ui_register { padding-bottom: 15px; margin: 0 20px; }
+            .ui_register .form_box { background: #fff; margin: 0px auto 0px; border-top: 1px solid #e4e3e8; border-bottom: 1px solid #e4e3e8; }
+        .ui_reg_input { height: 44px; border: none; border-radius: 0px; font-size: 15px; display: block; -webkit-box-flex: 1; font-family: "微软雅黑","Microsoft YaHei"; text-align: right; padding: 0 10px;}
+        .ui_reg_input[disabled=disabled]{opacity: 1; background: #f5f5f2;}
+        .ui_register .border_b { padding: 0px; border-bottom: 1px solid #e4e3e8; display: -webkit-box; font-size: 15px; position: relative;}
+            .ui_register .border_b:last-child { border: none; }
+        .ui_register .no_border { border: none; }
+        .ui_register .yz_img { display: inline-block; line-height: 44px; width: 80px; padding-left: 18px; }
+            .ui_register .yz_img img { vertical-align: middle; width: 80px; }
+        .ui_register .reg_finish_btn { opacity:1; height: 48px; width: 100%; line-height: 48px; color: #fff; background: #ee4634; border: none; border-radius: 5px; font-size: 18px;display: block; text-align: center; }
+        .ui_register .reg_finish_btn[disabled=disabled] { background-color: #bfbfbf; }
+        .ui_footer { padding-top: 15px; font-size: 14px; font-size: 1.4rem; text-align: center; color: #999999; }
+
+        /*银行卡绑定*/
+        .promptText { padding: 15px 10px 8px; font-size: 14px; color: #b1b1b1; }
+        .ui_wrapper { margin: 0px; }
+            .ui_wrapper .form_box { margin: 0px auto 0px; }
+            .ui_wrapper .border_b { padding: 0px 0px; border-bottom: 1px solid #e4e3e8; display: -webkit-box; }
+                .ui_wrapper .border_b:last-child { border: none; }
+            .ui_wrapper .ui_reg_input { height: 44px; border: none; border-radius: 0px; font-size: 15px; display: block; -webkit-box-flex: 1; font-family: "微软雅黑","Microsoft YaHei"; }
+            .ui_wrapper .ui_input_list { height: 44px; line-height: 44px;border: none; border-radius: 0px; font-size: 15px; color: #000; font-size: 15px; background: url({$STATIC_PATH}/v3/images/haha/icon-arrow.png) right center no-repeat; background-size: 7px 12px; text-align: right; display: block; -webkit-box-flex: 1;  padding-right: 20px; margin-right: 10px;}
+        .holder { color: #a9a9a9!important; }
+        .ui_marginLR20 { margin: 20px 10px 0; }
+        .ui_wrapper .ui_footer { font-size: 12px; padding-top: 15px; }
+            .ui_wrapper .ui_footer a { color: #e7302c; }
+        .ui_register .border_b span{ line-height: 44px; display: inline-block; padding-right: 20px; color: #b1b1b1; padding-left: 10px;}
+        .ui_register .border_b .showTip_box{position:absolute;bottom:40px; width: 100%; left: 0px;}
+        .ui_register .border_b .showTip{
+            font-size: 0px;
+            background-color: #fbe2b0;
+            height:30px;
+            line-height: 30px;
+            padding:0px 10px;
+            border:1px solid #f7c157;
+            border-radius:3px;
+            display:none;
+            margin: 0 10px;
+            text-align: center;
+        }
+        .ui_register .border_b .showTip span{
+            display:inline-block;
+            vertical-align:top;
+            font-size: 18px;
+            color: #474747;
+            font-weight: bold;
+            margin:0 5px;
+            line-height: 30px;
+            padding-right: 0px;
+        }
+        .ui_register .border_b .showTip span:first-child{
+            margin-left: 0px;
+        }
+        .ui_register .border_b .showTip i{
+            position:absolute;
+            width: 0px;
+            height:0px;
+            left:50%;
+            top:31px;
+        }
+        .ui_register .border_b  .showTip i:nth-of-type(2){
+            border:6px solid;
+            border-color:#fbe2b0 transparent transparent transparent;
+            margin-left: -6px;
+        }
+        .ui_register .border_b .showTip i:nth-of-type(1){
+            border:8px solid;
+            border-color:#f7c157 transparent transparent transparent;
+            margin-left: -8px;
+        }
+    </style>
+    {if isset($fzjs)}
+    <script type="text/javascript" src="{$fzjs}"></script>
+    {/if}
+</head>
+    <body class="bgf5">
+        <div class="p_addbank_new">
+            <div class="ui_title JS-title"><a class="ui_back" href="https://cytfinance.wangxinlicai.com/Pwap"><i class="ui_icon_back"></i>返回</a><span class="JS-title_name">身份认证</span></div>
+            <div class="ui_register ui_wrapper">
+                <div class="promptText">请绑定持卡人本人的借记卡（需要开通网银）</div>
+                <form id="bind_card_form" name="bind_card_form" method="POST" onsubmit="return false;">
+                    <div class="form_box clearfix">
+                        {if $userInfo.idno}
+                        <div class="border_b" id="list_chinese_name">
+                            <span style="background:#f5f5f2;">持卡人</span><input id="JS-username" class="ui_reg_input" type="text" name="username" disabled="disabled" placeholder="请输入持卡人姓名" value="{$userInfo.realName}" />
+                        </div>
+                        <div class="border_b inputBox" id="list_user_id">
+                            <span style="background:#f5f5f2;">身份证</span><input id="JS-userid" class="ui_reg_input" type="text" name="userid" maxlength="18" disabled="disabled" data-split-unit="6,8" placeholder="请输入持卡人身份证" value="{$userInfo.idno}" />
+                            <div class="showTip_box">
+                                <div class="showTip">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <i></i>
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {else}
+                        <div class="border_b" id="list_chinese_name">
+                            <span>持卡人</span><input id="JS-username" class="ui_reg_input" type="text" name="username" placeholder="请输入持卡人姓名" value="" />
+                        </div>
+                        <div class="border_b inputBox" id="list_user_id">
+                            <span>身份证</span><input id="JS-userid" class="ui_reg_input" type="text" name="userid" maxlength="18" data-split-unit="6,8" placeholder="请输入持卡人身份证" value="" />
+                            <div class="showTip_box">
+                                <div class="showTip">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <i></i>
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/if}
+                    </div>
+                    <div class="promptText">身份证最后一位如果是X，请输入英文大写X</div>
+                    <div class="ui_marginLR20">
+                        <!-- <p class="ui_footer" style="padding-top:0;padding-bottom:15px">
+                            <span class="icon_red_ok"></span>
+                            <font class="colorRed">同意</font>
+                            <a href="https://m.ucfpay.com/mobilepay-p2p/zjtgProtocol.html">《先锋支付托管账户服务协议》</a>
+                        </p> -->
+                        <p class="ui_footer" style="padding-bottom:10px;padding-top:0px;">未满18周岁和70周岁（含）以上用户不支持实名认证</p>
+                        <input id="bind_car_btn" type="submit" class="reg_finish_btn fontHY" value="验证绑卡">
+                        <!-- <p class="ui_footer" style="font-size:1.2rem;text-align: left;">该卡将作为充值/提现卡，哈哈财神理财承诺保护个人信息</p> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+        <section class="p_account_addbank_panel JS-addbank_panel" id="p_bank_id">
+            <div class="panel_head JS-title"><a id="bank_id_back" href="javascript:void(0)"></a><span class="JS-sub_title_name">选择开户行</span></div>
+            <!-- 循环 -->
+            <div class="panel_bd">
+                <div class="choice-con"></div>
+            </div>
+        </section>
+
+        <script>
+
+            $(function(){
+                var bankListHash = {$bankList};
+                var _inSubmitRequest = false;
+                var _bankListClickFlag = true;
+                function upateSubmitButton() {
+                    var disabled = _inSubmitRequest || $('#JS-username').val() == '' || $('#JS-userid').val() == '' || $('#JS-bankid').val() == '' || $('#JS-bankcode').val() == '';
+                    if (disabled) {
+                        $('#bind_car_btn').attr('disabled', 'disabled');
+                        $('.border_b span').css("color","#000");
+                    } else {
+                        $('#bind_car_btn').removeAttr('disabled');
+                        $('.border_b span').css("color","#b1b1b1");
+                    }
+                }
+                $('#JS-username,#JS-userid,#JS-bankcode').bind("input", upateSubmitButton);
+
+                var _upateSubmitButtonCount = 10;
+                var _upateSubmitButtonTimer = setInterval(function(){
+                    upateSubmitButton();
+                    _upateSubmitButtonCount--;
+                    if (_upateSubmitButtonCount < 0) {
+                        clearInterval(_upateSubmitButtonTimer);
+                    }
+                }, 300);
+
+                //银行填充
+                $('#p_bank_id .choice-con').html(function() {
+                    var html = '';
+                    for (var i = 0; i < bankListHash.length; i++) {
+                        html += '<div class="cl-wrap" data-id="'+ bankListHash[i].bank_id +'" data-name="'+ bankListHash[i].bankName +'">';
+                        html += '    <div class="choice-list"><div class="bank-icon"><i class="' + bankListHash[i].bankCode + '"></i></div>';
+                        html += '       <div class="list_name">'+ bankListHash[i].bankName;
+                        if(bankListHash[i].perDayLimit && bankListHash[i].perLimit){
+                            html += '<span class="xe">限额：'+ wanFormat(bankListHash[i].perLimit / 100) +'元/笔 '+ wanFormat(bankListHash[i].perDayLimit / 100) +'元/日</span>';
+                        }
+                        html += '       </div>';
+                        html += '    </div>';
+                        html += '</div>';
+                    }
+                    return html;
+                });
+                function wanFormat(num) {
+                    if (num >= 10000) {
+                        return num / 10000 + '万';
+                    }
+                    return num;
+                }
+                //iscroll实例化
+                window['scroll_bankid'] = new IScroll('#p_bank_id .panel_bd', {
+                    click: true
+                });
+                //面板事件绑定
+                $('#list_bank_id').click(function(){
+                    if ( !_bankListClickFlag )  return;
+                    _bankListClickFlag = false;
+                    $('#p_bank_id').addClass('p_show');
+                });
+                $('#bank_id_back').click(function(){
+                    $('#p_bank_id').removeClass('p_show');
+                    setTimeout(function(){
+                        _bankListClickFlag = true;
+                    },600);
+                });
+                $('#p_bank_id .choice-con .cl-wrap').click(function(){
+                    var $this = $(this);
+                    $this.addClass('active').siblings().removeClass('active');
+                    $('#JS-bankid').val($this.attr('data-id'));
+                    $('#list_bank_id .list_text').removeClass('holder').html($this.attr('data-name'));
+                    $('#p_bank_id').removeClass('p_show');
+                    upateSubmitButton();
+                    setTimeout(function(){
+                        _bankListClickFlag = true;
+                    },600);
+                });
+
+                $('#bind_card_form').submit(function(){
+                    if (_inSubmitRequest) return;
+                    if(!/^[\u0391-\uFFE5]{2,10}$/.test($('#JS-username').val())){
+                        P2PWAP.ui.toast('姓名输入不正确');
+                        return;
+                    }
+                    if(!/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[A-Z])$/.test($('#JS-userid').val())){
+                        P2PWAP.ui.toast('身份证号码输入不正确');
+                        return;
+                    }
+                    // if(!/\d+/.test($('#JS-bankid').val())){
+                    //     P2PWAP.ui.toast('银行不能为空');
+                    //     return;
+                    // } ;
+                    // if(!/^\d{10,20}$/.test($('#JS-bankcode').val())){
+                    //     P2PWAP.ui.toast('银行卡号输入不正确');
+                    //     return;
+                    // } ;
+
+                    _inSubmitRequest = true;
+                    upateSubmitButton();
+                    P2PWAP.util.request('/user/doCombineRegist', function(data){
+                        _inSubmitRequest = false;
+                        upateSubmitButton();
+                        window.location.href = '/user/CombineSuccess?return_url={$returnUrl}&asgn={$asgn}&hide_micropayment={$hide_micropayment}';
+                    },function(msg){
+                        _inSubmitRequest = false;
+                        upateSubmitButton();
+                        P2PWAP.ui.toast(msg);
+                    },'get',{
+                        'name': $('#JS-username').val(),
+                        'idno': $('#JS-userid').val()
+                    });
+                });
+            });
+        </script>
+        <script type="text/javascript">
+        /**
+         * 对字符串按长度进行拆分，存入数组
+         * @param ｛String} str
+         * @param {String} formatPar
+         * @returns {Array}
+         */
+        function formatInputArr(str,formatPar){
+            var returnArr=[],//返回的数组，存放格式化拆分的字符串,
+                tipText="",
+                splitArr=formatPar.toString().split(','),//拆分单元数组
+                addUnit=0;//涨幅间隔
+            $.each(splitArr,function(i){
+                splitArr[i]=parseInt(splitArr[i]);
+            });
+            addUnit=splitArr[0];
+            for (var i = 0, j = 0, max = str.length,addLoop=true; i < max && addLoop; i=i+addUnit,j++) {
+                if(splitArr.length==1){
+                    addUnit=splitArr[0];
+                }else{
+                    addUnit=splitArr[j];
+                }
+                if(typeof addUnit=="undefined" || addUnit == 0){
+                    tipText = str.substr(i);
+                    addLoop=false;//间隔数组已经循环完了，跳出循环
+                }else{
+                    tipText = str.substr(i,addUnit);
+                }
+                returnArr.push(tipText);
+            }
+            return returnArr;
+        }
+
+        function showTip(tipTextArr){
+            var curTipBox=$(this).parents('.inputBox').find('.showTip');
+            var tipSpans=curTipBox.find('span');
+            tipSpans.text('');
+            $.each(tipTextArr,function(i){
+                tipSpans.eq(i).text(tipTextArr[i]);
+            });
+        }
+        function getShowTip(element){
+            return $(element).parents('.inputBox').find('.showTip');
+        }
+        $(function(){
+            $('#JS-userid,#JS-bankcode').on({
+                'input':function(){
+                    var inputVal=$(this).val(),
+                        tipTextArr=[];
+                    tipTextArr=formatInputArr(inputVal,$(this).data('splitUnit'));
+                    showTip.call(this,tipTextArr);
+                },
+                'focus':function(){
+                    getShowTip(this).show();
+                },
+                'blur':function(){
+                    getShowTip(this).hide();
+                },
+            });
+        });
+        </script>
+        <script type='text/javascript'>
+            var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+            (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+        </script>
+
+    </body>
+</html>

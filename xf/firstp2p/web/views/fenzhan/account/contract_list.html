@@ -1,0 +1,176 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/pact.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/js/widget/ui/jquery-ui-1.10.3.custom.min.css');?>">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/pact/pact.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/widget/ui/jquery-ui-1.10.3.custom.js');?>"></script>
+<div class="user_right">
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1>
+                <i class="ico_huankuan"></i>我的合同列表
+            </h1>
+        </div>
+        <ul class="huank_nav">
+            <li><a href="/account/contract">合同总览</a></li>
+            <li class="select"><a href="javascript:void(0)">合同列表</a></li>
+        </ul>
+        <div class="pact-list">
+            <div class="pact-main">
+                <div class="pact-m-left">
+                    <div class="pact-ml-top">
+                        <p>
+                            <span title='{$deal.name}'>{function name="msubstr" v=$deal.name m=0 n=24}</span><span><em>总额：</em>{$deal.borrow_amount}万</span>
+                        </p>
+                        <p>
+                            <em class="no-marleft">融资人：</em>{$deal.user_real_name}
+                        </p>
+                    </div>
+                    <div class="pact-ml-center">利率为{function name="number_format" v=$deal.income_fee_rate n=2}%，期限为{if $deal.loantype eq 5}{$deal.repay_time}天{else}{$deal.repay_time}个月{/if}，还款方式为{$deal.loantype_name}</div>
+                </div>
+                <div class="pact-m-right">
+                    <div class="pact-mr-top pactshow-mar">
+                        {if $is_have_sign eq 1}
+                        <a href="javascript:void(0)" class="btn-base but-disabled pact-btn">已签署</a>
+                        {else}
+                        <a href="javascript:void(0)" data-pos="{$deal.id}" data-role="{$role}" class="btn-base but-yellow pact-btn j-click-qianshu">一键签署</a>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+
+            <div class="w750 mauto clearfix pactshow">
+                <table class="plan pact-table">
+                    <colgroup>
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="11%">
+                        <col width="20%">
+                        <col width="13%">
+                        <col width="16%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="ml10">合同类型</th>
+                            <th>合同编号</th>
+                            <th>合同内容</th>
+                            <th>时间</th>
+                            <th>金额(元)</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach from=$contract item='cont' key="contkey"}
+                        <tr {if $contkey % 2 ==0 }{else}class="tr_bg"{/if}>
+                            <td>{$cont.title}</td>
+                            <td>{$cont.number}</td>
+
+                            <td><a href="javascript:clickopen({$cont.id},false,{$cont.number},{$cont.deal_id});" class="color-blue1">查看</a>&nbsp;
+                             {if $cont.hasTsa eq 1}
+                                <a href="/account/contshow?id={$cont.id}&tag=download_tsa&ajax=0&number={$cont.number}&dealId={$cont.deal_id}" class="color-blue1">下载</a></td>
+                            {else}
+                                <a href="/account/contshow?id={$cont.id}&tag=download&ajax=0&number={$cont.number}&dealId={$cont.deal_id}" class="color-blue1">下载</a></td>
+                            {/if}
+                            <td>{function name="format_date" v=$cont.create_time}</td>
+                            <td>{if $cont.bid_money}{$cont.bid_money}{else}--{/if}</td>
+                            <td>
+                                <!--{if $is_agency eq 1} -->
+                                    <!--{if $cont.is_needsign eq 0}-->
+                                        <!--{if $cont.cont_pass}-->
+                                            <!--<p class="color-gray">已通过</p>-->
+                                        <!--{else}-->
+                                            <!--<p><a class="color-blue1" href="/account/contsign?cid={$cont.id}&did={$deal.id}&p={$p}">通过</a></p>-->
+                                        <!--{/if}-->
+                                    <!--{else}-->
+	                                    <!--{if $cont.cont_alone_pass eq 1}-->
+	                                       <!--<p class="color-gray">已通过</p>-->
+	                                    <!--{elseif $cont.cont_alone_pass eq 2}-->
+	                                       <!--<p class="color-gray">已拒签</p>-->
+	                                    <!--{else}-->
+	                                       <!--<p><a class="color-blue1" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}">通过</a>-->
+	                                       <!--<a class="color-blue1" href="/account/contresign?tag=nopass&cid={$cont.id}&did={$deal.id}&p={$p}">拒绝</a></p>-->
+	                                    <!--{/if}-->
+                                    <!--{/if}-->
+                                <!--{elseif $is_advisory eq 1}-->
+                                    <!--{if $cont.is_needsign eq 0 }-->
+                                        <!--{if $cont.cont_pass eq 2}-->
+                                            <!--<em class="color-gray">&#45;&#45;</em>-->
+                                        <!--{elseif $cont.cont_pass eq 1}-->
+                                            <!--<em class="color-gray">已同意</em>-->
+                                        <!--{else}-->
+                                            <!--<a href="/account/contsign?cid={$cont.id}&did={$deal.id}&p={$p}">-->
+                                                <!--<em class="color-blue1">同意</em>-->
+                                            <!--</a>-->
+                                        <!--{/if}-->
+                                    <!--{/if}-->
+                                    <!--{if $cont.is_needsign eq 1}-->
+                                        <!--{if $cont.cont_alone_pass eq 1}-->
+                                            <!--<em class="color-gray">已同意</em>-->
+                                        <!--{elseif $cont.cont_alone_pass eq 2}-->
+                                            <!--<em class="color-gray">已拒签</em>-->
+                                        <!--{else}-->
+                                            <!--<a class="color-blue1" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}"><em class="color-blue1">同意</em></a>-->
+                                            <!--<a class="color-blue1" href="/account/contresign?tag=nopass&cid={$cont.id}&did={$deal.id}&p={$p}"><em class="color-blue1">拒绝</em></a>-->
+                                        <!--{/if}-->
+                                    <!--{/if}-->
+                                <!--{else}-->
+	                                <!--{if $is_borrower eq 1 and $cont.is_needsign eq 0 } -->
+	                                    <!--{if $cont.cont_pass eq 2}-->
+	                                    <!--<em class="color-gray">&#45;&#45;</em>-->
+	                                    <!--{elseif $cont.cont_pass eq 1}-->
+	                                    <!--<em class="color-gray">已同意</em>-->
+	                                    <!--{else}-->
+	                                    <!--<a href="/account/contsign?cid={$cont.id}&did={$deal.id}&p={$p}">-->
+	                                    <!--<em class="color-blue1">同意</em>-->
+	                                    <!--</a>-->
+	                                    <!--{/if} -->
+	                                <!--{/if}-->
+	                                <!--{if $cont.is_needsign eq 1}-->
+	                                    <!--{if $cont.cont_alone_pass eq 1}-->
+	                                    <!--<em class="color-gray">已同意</em>-->
+	                                    <!--{elseif $cont.cont_alone_pass eq 2}-->
+	                                    <!--<em class="color-gray">已拒签</em>-->
+	                                    <!--{else}-->
+	                                        <!--<a class="color-blue1" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}"><em class="color-blue1">同意</em></a>-->
+	                                        <!--<a class="color-blue1" href="/account/contresign?tag=nopass&cid={$cont.id}&did={$deal.id}&p={$p}"><em class="color-blue1">拒绝</em></a>-->
+	                                    <!--{/if}-->
+	                                <!--{/if}-->
+                                <!--{/if}-->
+                            </td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pages w715">
+            <i>已签署{$sign_num}份</i> {$pages}
+        </div>
+    </div>
+</div>
+<div id="pact-dialog" style="display: none"></div>
+<script>
+    function clickopen(id,shownew,number,deal_id) {
+        if(shownew){
+            showTag = 'shownew';
+        }else{
+            showTag = 'show';
+        }
+        var url = '{url x="index" r="account/contshow"}?tag='+showTag+'&ajax=1&id=' + id +'&number='+number+'&dealId='+deal_id;
+        $.weeboxs.open(url, {
+            boxid : null,
+            boxclass: "contract_box",
+            contentType : 'iframe',
+            showButton : true,
+            showCancel : false,
+            showOk : false,
+            title : '合同详情',
+            width : 750,
+            height : 550,
+            type : 'wee',
+            onclose : function() {
+                null
+            }
+        });
+    }
+</script>
+

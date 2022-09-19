@@ -1,0 +1,89 @@
+{// 引入标签库 }
+<div class="main">
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="3">
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title" style="width:20%;">借款人:</td>
+        <td class="item_input">
+            {:get_user_name($user_id)}
+            <a href="__APP__?m=User&a=passed&id={$user_id}" target="_blank">资料认证</a> 
+            <?php 
+                if($idcard_status != 1) {
+                    echo '<span style="color:red;">身份未认证</span>';
+                }else{
+                    echo '身份已认证';           
+                }
+            ?>
+            <?php 
+                if($bank_status != 1) {
+                    echo '<span style="color:red;">银行卡未审核</span>';
+                }else{
+                    echo '银行卡已验证';              
+                }
+            ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">新借款人id:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="new_user_id" id='new_user_id' style="width:200px;" value=""/> &nbsp;&nbsp;<a href="/m.php?m=User&a=index&" target="_blank">会员列表</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_input" colspan=2 style='text-align:center'>
+            <input type="submit" class="button" onclick="update_borrower()" value="提交" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd">
+        </td>
+    </tr>
+</table>
+<script>
+function update_borrower(){
+    var old_uid = {$user_id};
+    var new_uid = $('#new_user_id').val();
+    
+    if(!new_uid){
+        alert('请输入正确的用户id');
+        return false;
+    }
+    
+    if(new_uid == old_uid){
+        alert('新借款人id 不能和原借款人id一致');
+        return false;
+    }
+    
+    if(!window.confirm('确认提交？')){
+        return false;
+    }
+
+    $.ajax({
+        url:ROOT+'?m=Deal&a=update_borrower&deal_id='+{$deal_id}+'&user_id='+new_uid+'&old_uid='+old_uid,
+        dataType:"json",
+        success:function(obj){
+            $.weeboxs.close();
+            $("#info").html(obj.info);
+            if(obj.status == 1){
+                var user_data = obj.data;
+                var borrower_info = user_data.user_html+' <a href="__APP__?m=User&a=passed&id='+user_data.user_id+'" target="_blank">资料认证</a> ';
+                if(user_data.idcard_status != 1){
+                    borrower_info += '<span style="color:red;">身份未认证</span> ';
+                }else{
+                    borrower_info += '身份已认证 ';
+                }
+                
+                if(user_data.bank_status != 1){
+                    borrower_info += '<span style="color:red;">银行卡未审核</span> ';
+                }else{
+                    borrower_info += '银行卡已验证 ';
+                }
+                $('#borrower_info').html(borrower_info);
+            }
+        }
+   });
+}
+</script>
+</div>

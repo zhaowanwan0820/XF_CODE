@@ -1,0 +1,199 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+    .file {
+        position: relative;
+        display: inline-block;
+        background: #FFFFFF;
+        border: 0px solid #FFFFFF;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+        text-decoration: underline;
+    }
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+</style>
+
+<div class="main">
+<div class="main_title">新增规则 <a href="{:u("BonusSuper/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">规则名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" value="{$vo.name}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包组数/人次</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="group_count" value="{$vo.group_count}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">每组红包个数</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="bonus_count" value="{$vo.bonus_count}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">每组红包金额总额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="group_money" value="{$vo.group_money}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用限制</td>
+                <td class="item_input">
+                    <select name="consume_type" class='require'>
+                        <foreach name="consume_types" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包发送有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="send_limit_day" value="{$vo.send_limit_day}" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="use_limit_day" value="{$vo.use_limit_day}" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">规则每天产生时间段</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="start_time" value="{$vo.start_time}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />&emsp;
+                    <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+                    <input type="text" class="textbox require" name="end_time" value="{$vo.end_time}" id="end_time"  onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />&emsp;
+                    <input type="button" class="button" id="btn_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#end_time').val('');" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">规则产生分钟频次</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="frequency" value="{$vo.frequency}"/>&emsp;
+                    <span class="tip_span">分钟</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">规则每小时产生时间段</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="hour_start" value="{$hour_start}" />时
+                    <input type="text" class="textbox require" name="hour_end" value="{$hour_end}" />时
+                    <span class="tip_span">&emsp;单位为整时</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">触发规则最小投资金额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="trigger_money" value="{$vo.trigger_money}" />&emsp;
+                    <span class="tip_span">元&emsp;如：投资超过5000，才有机会获得红包</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td align="center">
+                    <span class="tip_span" style="color:blue">红包信息设置</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包转发标题</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="retweet_title" value="{$vo.retweet_title}" />
+                    &emsp;
+                    <literal>
+                    <span class="tip_span">变量名：红包个数{$BONUS_TTL}优惠码{$COUPON}</span>
+                    </literal>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">转发ICON</td>
+                <td class="item_input">
+                    <img id="retweet_icon_img" src="{$vo.retweet_icon}" />
+                    <a href="javascript:;" class="file">更改
+                        <input type="file" class="textbox" onchange="preview()" name="retweet_icon" id="retweet_icon" class="file"/>
+                    </a>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">文字描述</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="retweet_desc" value="{$vo.retweet_desc}"/>
+                    &emsp;
+                    <literal>
+                    <span class="tip_span">变量名：红包个数{$BONUS_TTL}优惠码{$COUPON}</span>
+                    </literal>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">皮肤</td>
+                <td>
+                <select name="temp_id" id="temp_id">
+                    <foreach name="temp_arr" key='temp_key' item="temp_item">
+                    <option value="{$temp_key}" <if condition="$temp_key eq $vo['temp_id']">selected="selected"</if>>{$temp_item}</option>
+                    </foreach>
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态</td>
+                <td class="item_input">
+                    <label><input type="radio" class="f-radio" value="1" name="status"  checked="checked">有效</label>
+                    <label><input type="radio" class="f-radio" value="0" name="status">无效</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="id" value="{$vo.id}" />
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusSuper" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+                <input type="submit" class="button" value="{%EDIT}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+function preview() {
+    var f = document.getElementById('retweet_icon').files[0];
+    var src = window.URL.createObjectURL(f);
+    if (src != '') {
+        document.getElementById('retweet_icon_img').src=src;
+    }
+}
+</script>
+<include file="Public:footer" />

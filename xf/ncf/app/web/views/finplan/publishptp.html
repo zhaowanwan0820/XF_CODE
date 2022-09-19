@@ -1,0 +1,84 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v3/css/duotou/p_finplan_information.css');?>" rel="stylesheet" type="text/css" />
+<link  href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.1.3.css');?>" rel="stylesheet" type="text/css">
+
+<!--面包屑导航开始-->
+<section class="crumbs">
+  <div class="w1100">
+    <a href="/">首页</a>
+    <i></i>
+    <span>智多新</span>
+  </div>
+</section>
+<!--面包屑导航结束-->
+<div class="w1100 p_info_details p_info_common">
+  <div class="main ui-box mt20 clearfix">
+    <div class="h-title"><h2><i></i>项目详情</h2></div>
+    <div class="disclosure">
+      <div class="info_box clearfix bg_whtie">
+        <div class="con_l">
+          <h3 class="f16 info_title">{$deal.name}</h3>
+          <div class="fl w375">
+            <p class="pb5">
+              <span class="gray">借款金额：</span>
+              <span class="red">{function name="number_format" v="$deal.borrow_amount" f="2"}元</span>
+            </p>
+            <p class="pb5">
+              <span class="gray">最低出借金额：</span>
+              <span class="red">{if $deal.min_loan_money<1000}{$deal.min_loan_money}元{else}{$deal.is_float_min_loan}万{/if}</span>
+            </p>
+            <!-- 按季等额本息还款 -->
+            {if $deal.loantype eq 1}<p style="position:absolute;">每期还款额=本金*年化借款利率/4*(1+年化借款利率/4)^还款期数/【(1+ 年化借款利率/4)^还款期数-1】</p>{/if}
+            <!-- 按月等额本息还款 -->
+            {if $deal.loantype eq 2}<p style="position:absolute;">每期还款额=本金*年化借款利率/12*(1+年化借款利率/12)^还款期数/【(1+年化借款利率/12)^还款期数-1】</p>{/if}
+            <!-- 按月一次性还本付息 -->
+            {if $deal.loantype eq 3}<p style="position:absolute;">到期还款额=本金+本金*年化借款利率*期限/12</p>{/if}
+            <!-- 按月支付收益到期还本 -->
+            {if $deal.loantype eq 4}<p style="position:absolute;">每期还款额=本金*年化借款利率*1/12最后一期还款额=本金+本金*年化借款利率*1/12</p>{/if}
+            <!-- 按天一次性还本付息 -->
+            {if $deal.loantype eq 5}<p style="position:absolute;">到期还款额=本金+本金*年化借款利率*期限/360</p>{/if}
+            <!-- 按季支付收益到期还本 -->
+            {if $deal.loantype eq 6}<p style="position:absolute;">每期还款额=本金*年化借款利率*3/12最后一期还款额=本金+本金*年化借款利率*3/12</p>{/if}
+          </div>
+          <div class="fl w300 progress_rate">
+            <p class="pb5">
+              <span class="gray">借款期限：</span>
+              <span>{$deal.repay_time}{if $deal.loantype eq 5}天{else}个月{/if}</span>
+            </p>
+            <p>
+              <span class="gray">还款方式：</span>
+              <span>{$deal.loantype_show}</span>
+            </p>
+          </div>
+          <div class="fl w265 progress_rate" >
+            <p class="pb5">
+              <span class="gray">年化利率：</span>
+              <span>{$deal.rate}</span>
+            </p>
+            <p class="pb5">
+              <span class="gray">项目进度：</span>
+              <span>{if $deal.point_percent_show eq 0}{function name="number_format" v="$deal.point_percent_show" f="0"}{else}{function name="number_format" v="$deal.point_percent_show" f="2"}{/if}%</span>
+            </p>
+            {if $type eq 2}
+              <p>
+                <span class="gray">计息日：</span>
+                <span>{$deal.formated_repay_start_time}</span>
+              </p>
+            {/if}
+          </div>
+        </div>
+      </div>
+      <div class="projectBox">
+        <h2><i class="ico_jiben"></i>项目介绍</h2>
+        <div class="pd_info">{$project_intro}</div>
+      </div>
+    </div>
+  </div>
+  {if $type eq 2 && $post_loan_message neq null}
+    <div class="main ui-box mt20 clearfix">
+      <div class="h-title"><h2><i></i>贷后信息</h2></div>
+      <div class="con_width"><div class="ft16">{$post_loan_message}</div></div>
+    </div>
+  {/if}
+</div>
+{include file="web/views/footer.html"}

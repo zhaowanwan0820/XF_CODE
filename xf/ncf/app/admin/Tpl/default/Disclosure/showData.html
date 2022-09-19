@@ -1,0 +1,195 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+    <div class="main_title">{%EDIT}</div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" id="de-form" method="post" enctype="multipart/form-data">
+
+        <div class="blank5"></div>
+        <h2>数据披露</h2>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td class="item_title">累计借贷金额:</td>
+                <td class="item_input"><input type="text" id="borrow_amount" class="textbox require" name="borrow_amount"
+                                              style="width:200px;" value="{$data.borrow_amount}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">累计出借人数量:</td>
+                <td class="item_input">
+                    <input type="text" id="loaner_number" class="textbox require" name="loaner_number" style="width:200px;"
+                           value="{$data.loaner_number}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">利息余额:</td>
+                <td class="item_input">
+                    <input type="text" id="remain_interest" class="textbox require" name="remain_interest" style="width:200px;"
+                           value="{$data.remain_interest}"/>
+                </td>
+            </tr>
+        </table>
+
+        <h2>数据展示</h2>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td class="item_title">累计借贷笔数:</td>
+                <td class="item_input">
+                    <input type="text" id="borrow_count" class="textbox require" name="borrow_count" style="width:200px;"
+                           value="{$data.borrow_count}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">累计借款人数量:</td>
+                <td class="item_input">
+                    <input type="text" id="borrower_number" class="textbox require" name="borrower_number" style="width:200px;"
+                           value="{$data.borrower_number}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">借贷余额:</td>
+                <td class="item_input">
+                    <input type="text" id="remain_money" class="textbox require" name="remain_money" style="width:200px;"
+                           value="{$data.remain_money}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">人均累计借款金额:</td>
+                <td class="item_input">
+                    <input type="text" id="average_borrow_amount" class="textbox require" name="average_borrow_amount" style="width:200px;"
+                           value="{$data.average_borrow_amount}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">人均累计出借金额:</td>
+                <td class="item_input">
+                    <input type="text" id="average_loan_amount" class="textbox require" name="average_loan_amount" style="width:200px;"
+                           value="{$data.average_loan_amount}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">借贷余额笔数:</td>
+                <td class="item_input">
+                    <input type="text" id="remain_money_count" class="textbox require" name="remain_money_count" style="width:200px;"
+                           value="{$data.remain_money_count}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">第三方累计代偿金额:</td>
+                <td class="item_input">
+                    <input type="text" id="third_guarantee_amount" class="textbox require" name="third_guarantee_amount" style="width:200px;"
+                           value="{$data.third_guarantee_amount}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">第三方累计代偿笔数:</td>
+                <td class="item_input">
+                    <input type="text" id="third_guarantee_count" class="textbox require" name="third_guarantee_count" style="width:200px;"
+                           value="{$data.third_guarantee_count}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">关联关系借款金额:</td>
+                <td class="item_input">
+                    <input type="text" id="relation_borrow_amount" class="textbox require" name="relation_borrow_amount" style="width:200px;"
+                           value="{$data.relation_borrow_amount}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">关联关系借款笔数:</td>
+                <td class="item_input">
+                    <input type="text" id="relation_borrow_count" class="textbox require" name="relation_borrow_count" style="width:200px;"
+                           value="{$data.relation_borrow_count}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">当前出借人数量:</td>
+                <td class="item_input">
+                    <input type="text" id="total_borrower_count" class="textbox require" name="total_borrower_count" style="width:200px;"
+                           value="{$data.total_borrower_count}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">当前借款人数量:</td>
+                <td class="item_input">
+                    <input type="text" id="total_loaner_count" class="textbox require" name="total_loaner_count" style="width:200px;"
+                           value="{$data.total_loaner_count}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">前十大借款人待还金额占比:</td>
+                <td class="item_input">
+                    <input type="text" id="top_ten_borrower_paid" class="textbox require" name="top_ten_borrower_paid" style="width:200px;"
+                           value="{$data.top_ten_borrower_paid}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">最大单借款人待还金额占比:</td>
+                <td class="item_input">
+                    <input type="text" id="largest_borrower_paid_percent" class="textbox require" name="largest_borrower_paid_percent" style="width:200px;"
+                           value="{$data.largest_borrower_paid_percent}"/>
+                </td>
+            </tr>
+        </table>
+
+        <h2>截止日期</h2>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td class="item_title">截止日期:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="dealline" value="{$data.dealline}" id="dealline"  onfocus="this.blur(); return showCalendar('dealline', '%Y-%m-%d', false, false, 'dealline');" />
+                    <input type="button" class="button" id="btn_dealline" value="{%SELECT_TIME}" onclick="return showCalendar('dealline', '%Y-%m-%d', false, false, 'btn_dealline');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#dealline').val('');" />
+                </td>
+            </tr>
+        </table>
+
+        <div class="blank5"></div>
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="hidden" name="m" value="Disclosure" />
+                    <input type="hidden" name="a" value="update" />
+                    <input type="submit" class="button" value="更新"/>
+                    <input type="button" class="button" onclick="preview()" value="预览"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    function preview() {
+        var borrow_amount = $("#borrow_amount").val();
+        var loaner_number = $("#loaner_number").val();
+        var remain_interest = $("#remain_interest").val();
+        var borrow_count = $("#borrow_count").val();
+        var borrower_number = $("#borrower_number").val();
+        var remain_money = $("#remain_money").val();
+        var average_borrow_amount = $("#average_borrow_amount").val();
+        var average_loan_amount = $("#average_loan_amount").val();
+        var remain_money_count = $("#remain_money_count").val();
+        var third_guarantee_amount = $("#third_guarantee_amount").val();
+        var third_guarantee_count = $("#third_guarantee_count").val();
+        var relation_borrow_amount = $("#relation_borrow_amount").val();
+        var relation_borrow_count = $("#relation_borrow_count").val();
+        var total_borrower_count = $("#total_borrower_count").val();
+        var total_loaner_count = $("#total_loaner_count").val();
+        var top_ten_borrower_paid = $("#top_ten_borrower_paid").val();
+        var largest_borrower_paid_percent = $("#largest_borrower_paid_percent").val();
+        var dealline = $("#dealline").val();
+        window.open("{:get_www_url('','cn')}disclosure/showData?borrow_amount="+borrow_amount+"&loaner_number="+loaner_number+"&remain_interest="+remain_interest+"&borrow_count="+borrow_count+ "&borrower_number="+borrower_number+"&remain_money="+remain_money+"&average_borrow_amount="+average_borrow_amount+"&average_loan_amount="+average_loan_amount+"&remain_money_count="+remain_money_count+"&third_guarantee_amount="+third_guarantee_amount+"&third_guarantee_count="+third_guarantee_count+"&relation_borrow_amount="+relation_borrow_amount+"&relation_borrow_count="+relation_borrow_count+"&total_borrower_count="+total_borrower_count+"&total_loaner_count="+total_loaner_count+"&top_ten_borrower_paid="+top_ten_borrower_paid+"&largest_borrower_paid_percent="+largest_borrower_paid_percent+"&dealline="+dealline);
+    }
+</script>
+<include file="Public:footer"/>

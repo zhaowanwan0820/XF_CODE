@@ -1,0 +1,777 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/deal.js' />
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        changeLoanMoneyMode();
+        changeLoanFeeType();
+        changeConsultFeeType();
+        changeGuaranteeFeeType();
+        changePayFeeType();
+        var isDtb = {$vo.isDtb};
+        if(isDtb == 1) {
+            changeManagementFeeType();
+        }
+    });
+
+    function changeLoanMoneyMode() {
+        var loan_money_type = $("#loan_money_mode").val();
+
+        if (loan_money_type == 3) {
+            $('#bank_card_name').show();
+            $('#bank').show();
+            $('#bank_zone').show();
+            $('#bank_card_number').show();
+        } else {
+            $('#bank_card_name').hide();
+            $('#bank').hide();
+            $('#bank_zone').hide();
+            $('#bank_card_number').hide();
+        }
+    }
+
+    function changeLoanFeeType() {
+        var loan_fee_rate_type = $('input:radio[name="loan_fee_rate_type"]:checked').val();
+            if(loan_fee_rate_type == 3 || loan_fee_rate_type == 4 || loan_fee_rate_type == 7) {
+            $("#loan_fee_custom").show();
+        } else {
+            $("#loan_fee_custom").hide();
+        }
+    }
+
+    function changeConsultFeeType() {
+        var consult_fee_rate_type = $('input:radio[name="consult_fee_rate_type"]:checked').val();
+        if(consult_fee_rate_type == 3) {
+            $("#consult_fee_custom").show();
+        } else {
+            $("#consult_fee_custom").hide();
+        }
+    }
+
+    function changeGuaranteeFeeType() {
+        var guarantee_fee_rate_type = $('input:radio[name="guarantee_fee_rate_type"]:checked').val();
+        if(guarantee_fee_rate_type == 3) {
+            $("#guarantee_fee_custom").show();
+        } else {
+            $("#guarantee_fee_custom").hide();
+        }
+    }
+
+    function changePayFeeType() {
+        var pay_fee_rate_type = $('input:radio[name="pay_fee_rate_type"]:checked').val();
+        if(pay_fee_rate_type == 3) {
+            $("#pay_fee_custom").show();
+        } else {
+            $("#pay_fee_custom").hide();
+        }
+    }
+
+    function changeManagementFeeType() {
+        var management_fee_rate_type = $('input:radio[name="management_fee_rate_type"]:checked').val();
+        if(management_fee_rate_type == 3) {
+            $("#management_fee_custom").show();
+        } else {
+            $("#management_fee_custom").hide();
+        }
+    }
+
+    function enqueue(optype) {
+        var type = 'GET';
+        var data = {
+                return_reason : $("#return_reason").val(),
+                return_type : $("#return_type").val(),
+                agree : $('#agree').val()
+        }
+        if (optype == 'loan') {
+            var type = "POST";
+            var caution = confirm("确定放款");
+            data.agree = 1;
+        } else if (optype == 'audit') {
+            var data = '';
+            var caution = confirm("确认提交审核");
+        } else if (optype == 'return') {
+            var type = "POST";
+            var caution = confirm("确认回退");
+        }
+        if(caution == true) {
+            $.ajax(
+                    {
+                        url:ROOT + "?" + VAR_MODULE + "=Deal&" + VAR_ACTION + "=enqueue&id=" + $("#deal_id").val()+"&role="+$('#role').val(),
+                        type: type,
+                        data: data,
+                        dataType: "json",
+                        async: false,
+                        success: function(rs) {
+                            if(rs.status == 1) {
+                                //设置放款按钮不可点
+                                $("#loan").attr("disabled", true);
+                                // alert
+                                alert("添加放款任务成功！");
+                                location.href = '<?php echo $redirectUrl; ?>';
+                            } else if (rs.status == 2) {
+                                //设置放款按钮不可点
+                                $("#loan").attr("disabled", true);
+                                // alert
+                                alert("回退成功！");
+                                location.href = '<?php echo $redirectUrl; ?>';
+                            } else if (rs.status == 3) {
+                                //设置放款按钮不可点
+                                $("#loan").attr("disabled", true);
+                                // alert
+                                alert("提交审核申请成功！");
+                                location.href = '<?php echo $redirectUrl; ?>';
+                            } else {
+                                // alert
+                                alert(rs.error_msg);
+                            }
+                        }
+                    }
+            );
+        }
+    }
+
+    function confirmSubmit() {
+        return true;
+    }
+
+    input_change($("#total_loan_fee") , $("#loan_fee_custom .loan_fee_arr") , ".loan_fee_arr", "loan");
+    input_change($("#total_consult_fee") , $("#consult_fee_custom .consult_fee_arr") , ".consult_fee_arr", "consult");
+    input_change($("#total_guarantee_fee") , $("#guarantee_fee_custom .guarantee_fee_arr") , ".guarantee_fee_arr", "guarantee");
+    input_change($("#total_pay_fee") , $("#pay_fee_custom .pay_fee_arr") , ".pay_fee_arr", "pay");
+
+    var isDtb = {$vo.isDtb};
+    if(isDtb == 1) {
+        input_change($("#total_management_fee") , $("#management_fee_custom .management_fee_arr") , ".management_fee_arr", "management");
+    }
+
+    $("#loan_fee_custom .loan_fee_arr").live("input" , function(){
+        input_change($("#total_loan_fee") , $(this) , ".loan_fee_arr", "loan");
+    });
+
+    $("#consult_fee_custom .consult_fee_arr").live("input" , function(){
+        input_change($("#total_consult_fee") , $(this) , ".consult_fee_arr", "consult");
+    });
+
+    $("#guarantee_fee_custom .guarantee_fee_arr").live("input" , function(){
+        input_change($("#total_guarantee_fee") , $(this) , ".guarantee_fee_arr", "guarantee");
+    });
+
+    $("#pay_fee_custom .pay_fee_arr").live("input" , function(){
+        input_change($("#total_pay_fee") , $(this) , ".pay_fee_arr", "pay");
+    });
+
+    $("#management_fee_custom .management_fee_arr").live("input" , function(){
+        input_change($("#total_management_fee") , $(this) , ".management_fee_arr", "management");
+    });
+
+    function input_change ($total , $t ,str, type) {
+        var num=0;
+        var whole = $("#"+type+"_fee").html();
+        $t.parents("table").find(str).each(function(){
+            num += parseFloat(this.value);
+            if (whole > 0) {
+                var p = this.value / whole * 100;
+            } else {
+                var p = 100;
+            }
+
+            $(this).parent().parent().find("."+type+"_p").html(p.toFixed(5)+"%");
+        });
+        $total.html(num.toFixed(2));
+
+        if (whole > 0) {
+            var pt = num / whole * 100;
+        } else {
+            var pt = 100;
+        }
+        $("#total_"+type+"_p").html(pt.toFixed(5)+"%");
+    }
+</script>
+
+<div class="main">
+    <div class="main_title">{$vo.name}{%EDIT} <a href="{$redirectUrl}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <if condition="$role eq a">
+    <form name="edit" action="__APP__" id='editform' method="post" enctype="multipart/form-data">
+    </if>
+        <div class="blank5"></div>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">借款标题:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" style="width:200px;" value="{$vo.name}" disabled />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">项目名称:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="project_name" id="project_name" style="width:200px;" value="{$pro.name}" disabled />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">会员:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="user_name" id="user_name" value="{$userInfo['user_name']}" disabled />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">{%BORROW_AMOUNT}:</td>
+                <td class="item_input">
+                    <span id='borrow_amount'><input type='text' id='apr' readonly='true' value="{$vo.borrow_amount}"/></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">{%REPAY_TIME}:</td>
+                <td class="item_input">
+                    <span id='repay_period2'  name="repay_time">{$repay_time}</span>
+                    <input type="hidden" id="repay_time" value="{$vo.repay_time}" />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">放款方式:</td>
+                <td class="item_input">
+                    <select name="loan_money_type" id="loan_money_mode" disabled>
+                        <foreach name="loan_money_type" key='type_key' item="type_item">
+                            <option value="{$type_key}" <if condition="$type_key eq $pro['loan_money_type']">selected="selected"</if>>{$type_item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr id="bank_card_name" style="display:none;">
+                <td class="item_title">收款账户账户名:</td>
+                <td class="item_input">
+                    <input type="text" name="card_name" class="textbox" id="card_name" value="{$pro['card_name']}" disabled/>
+                </td>
+            </tr>
+
+            <tr id="bank" style="display:none;">
+                <td class="item_title">银行:</td>
+                <td class="item_input">
+                    <select name="bank_id" class="bank" id="bank_id" disabled>
+                        <option value="0">={%PLEASE_SELECT}=</option>
+                        <foreach name="bank_list" item="item">
+                            <option <if condition="$item['id'] eq $pro['bank_id']">selected="selected"</if> value="{$item.id}">{$item.name}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr id="bank_zone" style="display:none;">
+                <td class="item_title">开户网点:</td>
+                <td class="item_input">
+                    <input type="text" name="bankzone" class="textbox" id="bankzone" value="{$pro['bankzone']}" disabled/>
+                </td>
+            </tr>
+
+            <tr id="bank_card_number" style="display:none;">
+                <td class="item_title">收款账户银行卡号:</td>
+                <td class="item_input">
+                    <input type="text" name="bankcard" class="textbox" id="bankcard" value="{$pro['bankcard']}" disabled/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">借款平台手续费:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" SIZE="8" name="loan_fee_rate" id="loan_fee_rate" value="{$vo.loan_fee_rate}" onchange="javascript:get_period_rate('loan_fee_rate');" disabled/>% 金额：<span id='period_loan_fee_rate' class="tip_span">{$loan_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <font color='red'>（借款人给p2p平台的手续费）</font>
+                    <br/>
+                    <label><input type="radio" name="loan_fee_rate_type" id="loan_fee_type_1" value="1" onchange="changeLoanFeeType();" <if condition="$deal_ext['loan_fee_rate_type'] eq '1'">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />年化前收</label>
+                    <label><input type="radio" name="loan_fee_rate_type" id="loan_fee_type_2" value="2" onchange="changeLoanFeeType();" <if condition="$deal_ext['loan_fee_rate_type'] eq 2">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />年化后收</label>
+                    <label><input type="radio" name="loan_fee_rate_type" id="loan_fee_type_3" value="3" onchange="changeLoanFeeType();" onclick="calc_fenqi_fee('loan_fee');" <if condition="$deal_ext['loan_fee_rate_type'] eq 3">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />年化分期收</label>
+                    <label><input type="radio" name="loan_fee_rate_type" id="loan_fee_type_4" value="4" onchange="changeLoanFeeType();" <if condition="$deal_ext['loan_fee_rate_type'] eq 4">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />代销分期</label>
+                    <label><input type="radio" name="loan_fee_rate_type" id="loan_fee_type_5" value="5" onchange="changeLoanFeeType();" <if condition="$deal_ext['loan_fee_rate_type'] eq '5'">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />固定比例前收</label>
+                    <label><input type="radio" name="loan_fee_rate_type" id="loan_fee_type_6" value="6" onchange="changeLoanFeeType();" <if condition="$deal_ext['loan_fee_rate_type'] eq 6">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />固定比例后收</label>
+                    <label style="display:none"><input type="radio" name="loan_fee_rate_type" id="loan_fee_type_7" value="7" onchange="changeLoanFeeType();" <if condition="$deal_ext['loan_fee_rate_type'] eq 7">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />固定比例分期收</label>
+                </td>
+            </tr>
+
+            <tr id="loan_fee_custom" >
+            <td class="item_title">平台手续费自定义:</td>
+            <td class="item_input" id="loan_fee_custom_input"></td>
+            </tr>
+
+            <tr>
+                <td class="item_title">年化借款咨询费:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" SIZE="8" name="consult_fee_rate" id="consult_fee_rate" value="{$vo.consult_fee_rate}" onchange="javascript:get_period_rate('consult_fee_rate');"  disabled >% 金额：<span id='period_consult_fee_rate' class="tip_span">{$consult_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <font color='red'>（借款人给咨询机构的咨询费）</font>
+                    <br/>
+                    <label><input type="radio" name="consult_fee_rate_type" id="consult_fee_type" value="1" onchange="changeConsultFeeType();" <if condition="$deal_ext['consult_fee_rate_type'] eq 1">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />前收</label>
+                    <label><input type="radio" name="consult_fee_rate_type" id="consult_fee_type" value="2" onchange="changeConsultFeeType();" <if condition="$deal_ext['consult_fee_rate_type'] eq 2">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />后收</label>
+                    <label><input type="radio" name="consult_fee_rate_type" id="consult_fee_type" value="3" onchange="changeConsultFeeType();" onclick="calc_fenqi_fee('consult_fee');" <if condition="$deal_ext['consult_fee_rate_type'] eq 3">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />分期收</label>
+                </td>
+            </tr>
+
+            <tr id="consult_fee_custom" style="display:none">
+                <td class="item_title">借款咨询费自定义:</td>
+                <td class="item_input">
+                &nbsp;&nbsp;&nbsp;&nbsp;应收金额：<span id="consult_fee">{$consult_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;应收比例：100% <br/><br/>
+                <table class="form" cellpadding=0 cellspacing=0>
+                    <tr>
+                        <td width="100px">期次</td><td width="150px">金额(元)</td><td>比例</td>
+                    </tr>
+                    <if condition="$deal_ext.consult_fee_ext eq ''">
+                        <tr>
+                            <td>0 (起息日)</td><td><input type='text' name='consult_fee_arr[0]' class='consult_fee_arr' id='consult_fee_arr[]' value='{$consult_fee}' /></td><td class='consult_p'>100%</td>
+                        </tr>
+                        <php>
+                            for ($i=1;$i<=$repay_times;$i++) {
+                            echo "<tr><td>".$i."</td><td><input type='text' class='consult_fee_arr' name='consult_fee_arr[".$i."]' id='consult_fee_arr[]' value='0.00' /></td><td class='consult_p'>0%</td></tr>";
+                            }
+                        </php>
+                        <else/>
+                        <php>
+                            $consult_fee_arr = json_decode($deal_ext['consult_fee_ext'], true);
+                            foreach ($consult_fee_arr as $kk => $vv) {
+                            if ($kk == 0) {
+                            echo "<tr><td>0 (起息日)</td>";
+                            } else {
+                            echo "<tr><td>".$kk."</td>";
+                            }
+                            echo "<td><input type='text' class='consult_fee_arr' name='consult_fee_arr[".$kk."]' id='consult_fee_arr[]' value='".$vv."' /></td><td class='consult_p'>0%</td></tr>";
+                            }
+                        </php>
+                    </if>
+                    <tr>
+                        <td>总计</td><td><span id="total_consult_fee">{$consult_fee}</span></td><td id="total_consult_p">100%</td>
+                    </tr>
+                </table>
+                <font color='red'>（通知贷暂不支持）</font>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">年化借款担保费:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" SIZE="8" name="guarantee_fee_rate" id="guarantee_fee_rate" value="{$vo.guarantee_fee_rate}" onchange="javascript:get_period_rate('guarantee_fee_rate');"  disabled />% 金额：<span id='period_guarantee_fee_rate' class="tip_span">{$guarantee_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <font color='red'>（借款人给担保机构的担保费）</font>
+                    <br/>
+                    <label><input type="radio" name="guarantee_fee_rate_type" id="guarantee_fee_type" value="1" onchange="changeGuaranteeFeeType();" <if condition="$deal_ext['guarantee_fee_rate_type'] eq 1">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />前收</label>
+                    <label><input type="radio" name="guarantee_fee_rate_type" id="guarantee_fee_type" value="2" onchange="changeGuaranteeFeeType();" <if condition="$deal_ext['guarantee_fee_rate_type'] eq 2">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />后收</label>
+                    <label><input type="radio" name="guarantee_fee_rate_type" id="guarantee_fee_type" value="3" onchange="changeGuaranteeFeeType();" onclick="calc_fenqi_fee('guarantee_fee');" <if condition="$deal_ext['guarantee_fee_rate_type'] eq 3">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />分期收</label>
+                </td>
+            </tr>
+
+            <tr id="guarantee_fee_custom" style="display:none">
+                <td class="item_title">借款担保费自定义:</td>
+                <td class="item_input">
+                &nbsp;&nbsp;&nbsp;&nbsp;应收金额：<span id="guarantee_fee">{$guarantee_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;应收比例：100% <br/><br/>
+                <table class="form" cellpadding=0 cellspacing=0>
+                    <tr>
+                        <td width="100px">期次</td><td width="150px">金额(元)</td><td>比例</td>
+                    </tr>
+                    <if condition="$deal_ext.guarantee_fee_ext eq ''">
+                        <tr>
+                            <td>0 (起息日)</td><td><input type='text' name='guarantee_fee_arr[0]' class='guarantee_fee_arr' id='guarantee_fee_arr[]' value='{$guarantee_fee}' /></td><td class='guarantee_p'>100%</td>
+                        </tr>
+                        <php>
+                            for ($i=1;$i<=$repay_times;$i++) {
+                            echo "<tr><td>".$i."</td><td><input type='text' class='guarantee_fee_arr' name='guarantee_fee_arr[".$i."]' id='guarantee_fee_arr[]' value='0.00' /></td><td class='guarantee_p'>0%</td></tr>";
+                            }
+                        </php>
+                        <else/>
+                        <php>
+                            $guarantee_fee_arr = json_decode($deal_ext['guarantee_fee_ext'], true);
+                            foreach ($guarantee_fee_arr as $kk => $vv) {
+                            if ($kk == 0) {
+                            echo "<tr><td>0 (起息日)</td>";
+                            } else {
+                            echo "<tr><td>".$kk."</td>";
+                            }
+                            echo "<td><input type='text' class='guarantee_fee_arr' name='guarantee_fee_arr[".$kk."]' id='guarantee_fee_arr[]' value='".$vv."' /></td><td class='guarantee_p'>0%</td></tr>";
+                            }
+                        </php>
+                    </if>
+                    <tr>
+                        <td>总计</td><td><span id="total_guarantee_fee">{$guarantee_fee}</span></td><td id="total_guarantee_p">100%</td>
+                    </tr>
+                </table>
+                <font color='red'>（通知贷暂不支持）</font>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">年化支付服务费:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" SIZE="8" name="pay_fee_rate" id="pay_fee_rate" value="{$vo.pay_fee_rate}" onchange="javascript:get_period_rate('pay_fee_rate');"  disabled />% 金额：<span id='period_pay_fee_rate' class="tip_span">{$pay_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <font color='red'>（借款人给支付机构的服务费）</font>
+                    <br/>
+                        <label><input type="radio" name="pay_fee_rate_type" id="pay_fee_type" value="1" onchange="changePayFeeType();" <if condition="$deal_ext['pay_fee_rate_type'] eq 1">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />前收</label>
+                        <label><input type="radio" name="pay_fee_rate_type" id="pay_fee_type" value="2" onchange="changePayFeeType();" <if condition="$deal_ext['pay_fee_rate_type'] eq 2">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />后收</label>
+                        <label><input type="radio" name="pay_fee_rate_type" id="pay_fee_type" value="3" onchange="changePayFeeType();" onclick="calc_fenqi_fee('pay_fee');" <if condition="$deal_ext['pay_fee_rate_type'] eq 3">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />分期收</label>
+                </td>
+            </tr>
+            <tr id="pay_fee_custom" style="display:none">
+            <td class="item_title">支付服务费自定义:</td>
+            <td class="item_input">
+                &nbsp;&nbsp;&nbsp;&nbsp;应收金额：<span id="pay_fee">{$pay_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;应收比例：100% <br/><br/>
+                <table class="form" cellpadding=0 cellspacing=0>
+                    <tr>
+                        <td width="100px">期次</td><td width="150px">金额(元)</td><td>比例</td>
+                    </tr>
+                    <if condition="$deal_ext.pay_fee_ext eq ''">
+                        <tr>
+                            <td>0 (起息日)</td><td><input type='text' name='pay_fee_arr[0]' class='pay_fee_arr' id='pay_fee_arr[]' value='{$pay_fee}' /></td><td class='pay_p'>100%</td>
+                        </tr>
+                        <php>
+                            for ($i=1;$i<=$repay_times;$i++) {
+                            echo "<tr><td>".$i."</td><td><input type='text' class='pay_fee_arr' name='pay_fee_arr[".$i."]' id='pay_fee_arr[]' value='0.00' /></td><td class='pay_p'>0%</td></tr>";
+                            }
+                        </php>
+                        <else/>
+                        <php>
+                            $pay_fee_arr = json_decode($deal_ext['pay_fee_ext'], true);
+                            foreach ($pay_fee_arr as $kk => $vv) {
+                            if ($kk == 0) {
+                            echo "<tr><td>0 (起息日)</td>";
+                            } else {
+                            echo "<tr><td>".$kk."</td>";
+                            }
+                            echo "<td><input type='text' class='pay_fee_arr' name='pay_fee_arr[".$kk."]' id='pay_fee_arr[]' value='".$vv."' /></td><td class='pay_p'>0%</td></tr>";
+                            }
+                        </php>
+                    </if>
+                    <tr>
+                        <td>总计</td><td><span id="total_pay_fee">{$pay_fee}</span></td><td id="total_pay_p">100%</td>
+                    </tr>
+                </table>
+                <font color='red'>（通知贷暂不支持）</font>
+            </td>
+            </tr>
+            <if condition="$vo.isDtb eq 1 ">
+            <tr>
+                <td class="item_title">年化管理服务费:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" SIZE="8" name="management_fee_rate" id="management_fee_rate" value="{$vo.management_fee_rate}" onchange="javascript:get_period_rate('management_fee_rate');"  disabled />% 金额：<span id='period_management_fee_rate' class="tip_span">{$management_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <font color='red'>（借款人给管理机构的服务费）</font>
+                    <br/>
+                        <label><input type="radio" name="management_fee_rate_type" id="management_fee_type" value="1" onchange="changeManagementFeeType();" <if condition="$deal_ext['management_fee_rate_type'] eq 1">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />前收</label>
+                        <label><input type="radio" name="management_fee_rate_type" id="management_fee_type" value="2" onchange="changeManagementFeeType();" <if condition="$deal_ext['management_fee_rate_type'] eq 2">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />后收</label>
+                        <label><input type="radio" name="management_fee_rate_type" id="management_fee_type" value="3" onchange="changeManagementFeeType();" onclick="calc_fenqi_fee('management_fee');" <if condition="$deal_ext['management_fee_rate_type'] eq 3">checked="checked"</if> <if condition="$vo['is_has_loans'] eq 1">disabled="disabled"</if> />分期收</label>
+                </td>
+            </tr>
+            <tr id="management_fee_custom" style="display:none">
+            <td class="item_title">管理服务费自定义:</td>
+            <td class="item_input">
+                &nbsp;&nbsp;&nbsp;&nbsp;应收金额：<span id="management_fee">{$management_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;应收比例：100% <br/><br/>
+                <table class="form" cellpadding=0 cellspacing=0>
+                    <tr>
+                        <td width="100px">期次</td><td width="150px">金额(元)</td><td>比例</td>
+                    </tr>
+                    <if condition="$deal_ext.management_fee_ext eq ''">
+                        <tr>
+                            <td>0 (起息日)</td><td><input type='text' name='management_fee_arr[0]' class='management_fee_arr' id='management_fee_arr[]' value='{$management_fee}' /></td><td class='management_p'>100%</td>
+                        </tr>
+                        <php>
+                            for ($i=1;$i<=$repay_times;$i++) {
+                            echo "<tr><td>".$i."</td><td><input type='text' class='management_fee_arr' name='management_fee_arr[".$i."]' id='management_fee_arr[]' value='0.00' /></td><td class='management_p'>0%</td></tr>";
+                            }
+                        </php>
+                        <else/>
+                        <php>
+                            $management_fee_arr = json_decode($deal_ext['management_fee_ext'], true);
+                            foreach ($management_fee_arr as $kk => $vv) {
+                            if ($kk == 0) {
+                            echo "<tr><td>0 (起息日)</td>";
+                            } else {
+                            echo "<tr><td>".$kk."</td>";
+                            }
+                            echo "<td><input type='text' class='management_fee_arr' name='management_fee_arr[".$kk."]' id='management_fee_arr[]' value='".$vv."' /></td><td class='management_p'>0%</td></tr>";
+                            }
+                        </php>
+                    </if>
+                    <tr>
+                        <td>总计</td><td><span id="total_management_fee">{$management_fee}</span></td><td id="total_management_p">100%</td>
+                    </tr>
+                </table>
+                <font color='red'>（通知贷暂不支持）</font>
+            </td>
+            </tr>
+            </if>
+            <tr>
+                <td class="item_title">放款类型:</td>
+                <td class="item_input">
+                    <label>
+                        <input type="radio" name="loan_type" id="direct_loan" value="0" <if condition="$deal_ext['loan_type'] eq 0">checked="checked"</if>/>直接放款
+                    </label>
+                   <!-- <label>
+                        <input type="radio" name="loan_type" id="later_loan" value="1" <if condition="$deal_ext['loan_type'] eq 1">checked="checked"</if>/>先计息后放款
+                    </label>
+                    <label>
+                        <input type="radio" name="loan_type" id="loan_after_charge" value="2" <if condition="$deal_ext['loan_type'] eq 2">checked="checked"</if>/>收费后放款
+                    </label>-->
+
+                </td>
+            </tr>
+            <tr id="repay_start_time_box" >
+            <td class="item_title">放款时间:</td>
+            <td class="item_input">
+                <input type="text" class="textbox" name="repay_start_time" id="repay_start_time" value="{$repay_start_time}" onfocus="this.blur(); return showCalendar('repay_start_time', '%Y-%m-%d', false, false, 'btn_repay_start_time');" />
+                <input type="button" class="button" id="btn_repay_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('repay_start_time', '%Y-%m-%d', false, false, 'btn_repay_start_time');" />
+                <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#repay_start_time').val('');" />
+                <br>
+                <span class="tip_span">还款日从确认时间开始的下个月算起，确认时间不要设置为29,30,31号(如果不填，默认今天放款)</span>
+            </td>
+            </tr>
+
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+    </table>
+        <div class="blank5"></div>
+            <if condition="$role eq a">
+            <form name="edit" action="__APP__" id='editform' method="post">
+            </if>
+            <if condition="$readonly neq 1">
+            <table class="form" cellpadding=0 cellspacing=0>
+                <tr>
+                    <td colspan=2 class="topTd"></td>
+                </tr>
+                <if condition="$role eq b">
+                    <tr>
+                        <td class="item_title">退回意见</td>
+                        <td class="item_input">
+                            <textarea id="return_reason" name="return_reason" style="height:85px;width:450px;"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="item_title">退回类型</td>
+                        <td class="item_input">
+                            <select name="return_type" id="return_type">
+                                <option value="0" <if condition="$_REQUEST['return_type'] eq 0">selected</if>>请选择</option>
+                                <foreach name="return_type_list" key="key" item="item">
+                                    <option value="{$key}">{$item}</option>
+                                </foreach>
+                            </select>
+                        </td>
+                    </tr>
+                </if>
+                <tr>
+                    <td class="item_title"></td>
+                    <td class="item_input">
+
+                        <!--隐藏元素-->
+                        <input type="hidden" name="id" id="deal_id" value="{$vo.id}" />
+                        <input type="hidden" name="deal_ext_id" id="deal_ext_id" value="{$deal_ext.deal_id}" />
+                        <input type="hidden" name="deal_type"  value="{$vo.deal_type}" />
+
+                        <input type="hidden" name="loan_fee"  value="{$loan_fee}" />
+                        <input type="hidden" name="consult_fee"  value="{$consult_fee}" />
+                        <input type="hidden" name="guarantee_fee"  value="{$guarantee_fee}" />
+                        <input type="hidden" name="pay_fee"  value="{$pay_fee}" />
+                        <input type="hidden" name="management_fee"  value="{$management_fee}" />
+                        <input type="hidden" id="repay_times"  value="{$repay_times}" />
+                        <input type="hidden" id="loantype"  value="{$vo.loantype}" />
+
+                        <input type="hidden" name="{:conf("VAR_MODULE")}" value="Deal" />
+                        <input type="hidden" name="{:conf("VAR_ACTION")}" value="update_lent" />
+
+                        <div id='button_ff'>
+                            <!--普通单-->
+                            <input type="hidden" name="role" id="role" value="{$role}" />
+                            <input type="hidden" name="agree" id="agree" value="0" />
+                            <if condition="$role eq b">
+                                <input type="button" id="loan" onclick="javascript:enqueue('loan');" class="button" value="放款"/>
+                                <input type="button" id="loan" onclick="javascript:enqueue('return');" class="button" value="退回"/>
+                            <else/>
+                                <input type="submit" onclick="return confirmSubmit();" class="button" value="{%SAVE}" />
+                                <input type="reset" class="button" value="{%RESET}"/>
+                                <input type="button" id="loan" onclick="javascript:enqueue('audit');" class="button" value="提交审核"/>
+                            </if>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan=2 class="bottomTd"></td>
+                </tr>
+            </table>
+            </if>
+            <if condition="$role neq a">
+                </form>
+            </if>
+    <if condition="$role eq a">
+    </form>
+    </if>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+$(document).ready(function(){
+    <if condition="$role eq 'b' or $readonly eq 1">
+        <if condition="$readonly eq 1">
+            var obj = $('table.form tr').not($('td.bottomTd').parent());
+        <else />
+            var obj = $('table.form tr').not($('td.bottomTd').parent()).not(':last');
+        </if>
+
+        $('input,select', obj).attr({'disabled':'disabled', 'readonly':'readonly'});
+    </if>
+    <if condition="$role eq 'b'">
+        $("#return_type").attr({'disabled':'', 'readonly':''});
+    </if>
+
+    // 年化借款平台手续费-收费方式 显示不同的标签
+    if ($('#loan_fee_type_3').attr('checked') || $('#loan_fee_type_7').attr('checked')) {
+        $('#loan_fee_custom_input').html($('#loan_fee_installment').html());
+    } else if ($('#loan_fee_type_4').attr('checked')) {
+        $('#loan_fee_custom_input').html($('#loan_fee_proxy').html());
+    }
+});
+
+    // 年化借款平台手续费 - 不同情况切换
+    $('#loan_fee_type_1').click(function () {
+        update_loan_fee(1);
+    });
+    $('#loan_fee_type_2').click(function () {
+        update_loan_fee(2);
+    });
+    $('#loan_fee_type_3').click(function () {
+        $('#loan_fee_custom_input').html($('#loan_fee_installment').html());
+        update_loan_fee(3);
+    });
+    $('#loan_fee_type_4').click(function () {
+        $('#loan_fee_custom_input').html($('#loan_fee_proxy').html());
+        update_loan_fee(4);
+    });
+    $('#loan_fee_type_5').click(function () {
+        update_loan_fee(5);
+    });
+    $('#loan_fee_type_6').click(function () {
+        update_loan_fee(6);
+    });
+    $('#loan_fee_type_7').click(function () {
+        $('#loan_fee_custom_input').html($('#loan_fee_installment').html());
+        update_loan_fee(7);
+    });
+
+    // 更新代销分期 收益率 和 金额
+    function update_proxy_loan_info()
+    {
+        $.post(
+            '/m.php?m=Ajax&a=getPeriodInfo',
+            {"loantype" : $('#loantype').val(),
+             "loan_fee_rate" : $('#loan_fee_rate').val(),
+             "repay_time" : $("#repay_time").val(),
+             "loan_money" : $("#apr").val(),
+             "loan_first_rate" : $('#proxy_loan_fee_rate_first').val()},
+            function (data) {
+                $('#proxy_loan_fee_first').val(data.loan_first_fee);
+                $('#proxy_loan_fee_rate_last').val(data.loan_last_rate);
+                $('#proxy_loan_fee_last').val(data.loan_last_fee);
+
+                $('#proxy_loan_rate_sum').val(data.loan_rate_sum);
+                $('#proxy_loan_fee_sum').val(data.loan_fee_sum);
+            },
+            'json'
+        );
+    }
+
+    // 判断是否为代销分期
+    function is_proxy_sale()
+    {
+        return $('#loan_fee_type_4').attr('checked');
+    }
+
+    // 更新平台手续费金额
+    function update_loan_fee(loan_fee_rate_type)
+    {
+        $.post(
+            '/m.php?m=Ajax&a=getLoanFee',
+            {
+                "deal_id" : $('#deal_id').val(),
+                "loan_fee_rate_type" : loan_fee_rate_type
+            },
+            function (data) {
+                $('#total_loan_fee').html(data.fee);
+                $('#loan_fee').html(data.fee);
+                $("input[name=loan_fee_arr[0]]").val(data.fee);
+            },
+            'json'
+        );
+    }
+</script>
+<include file="Public:footer" />
+
+<!-- 平台手续分 分期收-->
+<script type="text/html" id="loan_fee_installment">
+    &nbsp;&nbsp;&nbsp;&nbsp;应收金额：<span id="loan_fee">{$loan_fee}</span>&nbsp;&nbsp;&nbsp;&nbsp;应收比例：100% <br/><br/>
+    <table class="form" cellpadding=0 cellspacing=0>
+        <tr>
+            <td width="100px">期次</td><td width="150px">金额(元)</td><td>比例</td>
+        </tr>
+        <if condition="$deal_ext.loan_fee_ext eq ''">
+            <tr>
+                <td>0 (起息日)</td><td><input type='text' name='loan_fee_arr[0]' class='loan_fee_arr' id='loan_fee_arr[]' value='{$loan_fee}' /></td><td class='loan_p'>100%</td>
+            </tr>
+            <php>
+                for ($i=1;$i<=$repay_times;$i++) {
+                echo "<tr><td>".$i."</td><td><input type='text' class='loan_fee_arr' name='loan_fee_arr[".$i."]' id='loan_fee_arr[]' value='0.00' /></td><td class='loan_p'>0%</td></tr>";
+                }
+            </php>
+            <else/>
+            <php>
+                $loan_fee_arr = json_decode($deal_ext['loan_fee_ext'], true);
+                foreach ($loan_fee_arr as $kk => $vv) {
+                if ($kk == 0) {
+                echo "<tr><td>0 (起息日)</td>";
+                } else {
+                echo "<tr><td>".$kk."</td>";
+                }
+                echo "<td><input type='text' class='loan_fee_arr' name='loan_fee_arr[".$kk."]' id='loan_fee_arr[]' value='".$vv."' /></td><td class='loan_p'>0%</td></tr>";
+                }
+            </php>
+        </if>
+        <tr>
+            <td>总计</td><td><span id="total_loan_fee">{$loan_fee}</span></td><td id="total_loan_p">100%</td>
+        </tr>
+    </table>
+    <font color='red'>（通知贷暂不支持）</font>
+</script>
+
+<!-- 平台手续分 代销分期-->
+<script type="text/html" id="loan_fee_proxy">
+    <table class="form" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="100px">期次</td>
+            <td width="150px">年华收益率(%)</td>
+            <td>应收金额(元)</td>
+        </tr>
+        <tr>
+            <td>(起息日)</td>
+            <td><input type='text' name='proxy_loan_fee_rate_first' id='proxy_loan_fee_rate_first' onchange='update_proxy_loan_info()' value='{$proxy_sale.loan_first_rate}'/></td>
+            <td class='loan_p'><input type="text" name='loan_fee_arr[]' id='proxy_loan_fee_first' class='loan_fee_arr' readonly='true' value='{$loan_fee_arr[0]}'></td>
+        </tr>
+        <tr>
+            <td>(最后一期)</td>
+            <td><input type='text' name='proxy_loan_fee_rate_last' id='proxy_loan_fee_rate_last' readonly='true' value='{$proxy_sale.loan_last_rate}'/></td>
+            <td class='loan_p'><input type="text" name='loan_fee_arr[]' id='proxy_loan_fee_last' class='loan_fee_arr' readonly='true' value='{$loan_fee_arr[$repay_times]}'></td>
+        </tr>
+        <tr>
+            <td>总计</td>
+            <td><input type='text' id='proxy_loan_rate_sum' readonly='true' value='{$proxy_sale.loan_rate_sum}'/></td>
+            <td><input type='text' id='proxy_loan_fee_sum' readonly='true' value='{$proxy_sale.loan_fee_sum}'/></td>
+        </tr>
+    </table>
+    <font color='red'>（通知贷暂不支持）</font>
+</script>

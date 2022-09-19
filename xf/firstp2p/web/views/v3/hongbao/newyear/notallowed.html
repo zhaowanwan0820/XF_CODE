@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/newyear.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+{include file="web/views/hongbao/newyear/logo.html"}
+    <div class="ui_down">
+        <div class="top smile">
+            <div class="rob-tel color-white pt170">
+                <div class="deadline tc f15">
+                    <div class="tips_icon"></div>
+                    <p>为了您的资金安全</p>
+                    <p>请通过{$siteName}客户端领取</p>
+                </div>
+                <div class="dao-btn mt10">
+                    <a href="{$downloadUrl}" class="down-btn">{$downloadDesc}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{include file="web/views/hongbao/js.html"}
+<script>
+    wx.ready(function() {
+        wx.hideOptionMenu();
+    });
+</script>
+<script>
+    var bheight=document.documentElement.clientHeight;
+    $('body').css('height',bheight)
+    $('.ui_down').css({"margin-top":(bheight-404)/2+'px'});
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<div class="main">
+<div class="main_title">批量导入申请 <a href="{:u('UserFreezeMoney/index')}" class="back_list">返回申请列表</a></div>
+<div class="blank5"></div>
+<form name="upload" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">选择CSV文件</td>
+        <td class="item_input">
+            <input type='file' name='upfile' style='width:150px'>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <span class='tip_span'>
+                (文件格式为csv, 表格首行为"会员名称,
+                金额（正数为增加冻结资金，负数为减少冻结资金）, 备注"
+                <a href="http://static.firstp2p.com/attachment/201604/22/18/05a8fca6ed556ee277b56af9b38d9dcf/be77f2504d084b3e472a9406bcaaf667.csv" target="_blank">下载模板</a>)
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="user_id" value="{$user_info.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserFreezeMoney" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="doimport" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="导入" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

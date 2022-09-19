@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no" />
+    <title>优惠券</title>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-base.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-common.css');?>">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.71/css/discount/p_discount_list.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/discount/p_discount_friend.css');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <input type="hidden" id="tokenHidden" value="{$usertoken}" />
+    <div class="m-main">
+        <div class="p_discount_list JS_account_discount_list">
+            <div class="load_box"></div>
+            <div class="load_more"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.71/js/common/common.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.5/js/iscroll.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/text_clip.js');?>"></script>
+    <script>
+        var tokenVal = $('#tokenHidden').val();
+        var rawFirstPageData = { function name= "json_encode" v="$couponList" };
+        //投资券列表
+        ; (function () {
+            var load_box = $('.load_box');
+            var load_more = $('.load_more');
+            var consumeType = WXP2P.APP.getUrlParam('consume_type');;
+            var loadmore = new WXP2P.UI.P2PLoadMore(load_box.get(0), load_more.get(0), '/discount/AjaxMine?token={$usertoken}&discount_type={$discount_type}&site_id={$siteId}&consume_type=' + consumeType + '&use_status=2', 1, 'get', 10);
+            loadmore.createItem = createItemFn;
+            loadmore.callback = function () {
+                updateTextClip();
+            };
+            initDataFn(loadmore, rawFirstPageData);
+        })();
+        //更新折叠收起效果
+        function updateTextClip() {
+            $('.load_box').find('.card .text').each(function (k, v) {
+                P2PWidget.ui.instanceTextClip(v);
+            });
+        }
+        function createItemFn(item) {
+            var dl = document.createElement("div");
+            var html = "";
+            var unit = ""
+            var dis_type = ""
+            if (item.type == 1 || item.type == 2) {
+                unit = "元";
+                dis_type = "金额"
+            } else {
+                unit = "克";
+                dis_type = "购买"
+            }
+            html += '<div class="con">';
+
+            if (item.status == 3 || item.status == 2 || item.status == 4) {
+                if (item.givenStatus != 1) {//不等于一的时候表示可赠送
+                    html += '    <div class="icon_kzs_gray">';
+                    html += '    </div>';
+                }
+            } else {
+                if (item.givenStatus != 1) {//不等于一的时候表示可赠送
+                    if (item.type == 1) {
+                        html += '    <div class="icon_kzs_blue">';
+                    } else if (item.type == 2) {
+                        html += '    <div class="icon_kzs_yellow">';
+                    } else if (item.type == 3) {
+                        html += '<div class="icon_kzs_gold">'
+                    }
+                    html += '    </div>';
+                }
+            }
+            html += '<div class="dlWrap"><div class="cardLink"><dl><dt>';
+            if (item.type == 1) {
+                html += '        <h2><span class="f28">' + item.goodsPrice + '</span><span class="f12">元</span></h2>返现券';
+            } else if (item.type == 2) {
+                html += '        <h2>+<span class="f28">' + item.goodsPrice + '</span><span class="f12">%</span></h2>加息券';
+            } else if (item.type == 3) {
+                html += '        <h2 ><span class="f25">' + item.goodsPrice + '</span><span class="f12">克</span></h2>黄金券';
+            }
+            html += '</dt>';
+            html += '<dd class="dd_flexBox"><div class="left">';
+            html += '<div class="itemName_flexBox"><p class="over_hidden leftText">' + item.name + '</p>';
+            if (item.status != 3 && item.status != 2 && item.status != 4) {
+                if (item.givenStatus != 1) {//不等于一的时候表示可赠送,显示赠送按钮
+                    html += '<div class="kz_btn" data-id=' + item.id + ' id="' + item.id + '">';
+                    html += '<a href="bonus://api?title=' + item.shareTitle + '&content=' + item.shareContent + '&face={$shareIcon}&url=' + item.shareUrl + '">赠送</a>';
+                    html += '</div>';
+                }
+            }
+            html += "</div>";
+            if (item.status == 3 || item.status == 2 || item.status == 4) {
+                if (item.bidDayLimit != "" && item.bidDayLimit > 0) {
+                    if (item.type == 3) {
+                        html += '<p>购买满' + item.bidAmount + unit + '，期限满' + item.bidDayLimit + '天可用</p>';
+                    } else {
+                        html += '<p>' + dis_type + '满' + item.bidAmount + unit + '，期限满' + item.bidDayLimit + '天可用</p>';
+                    }
+                } else {
+                    html += '<p>' + dis_type + '满' + item.bidAmount + unit + '可用';
+                }
+            } else {
+                if (item.bidDayLimit != "" && item.bidDayLimit > 0) {
+                    if (item.type == 1) {
+                        html += '<p class="color_blue">';
+                    } else if (item.type == 2) {
+                        html += '<p class="color_yellow">';
+                    } else if (item.type == 3) {
+                        html += '<p class="color_gold">';
+                    }
+                    html += dis_type + '满' + item.bidAmount + unit + '，期限满' + item.bidDayLimit + '天可用</p>';
+                } else {
+                    if (item.type == 1) {
+                        html += '<p class="color_blue">';
+                    } else if (item.type == 2) {
+                        html += '<p class="color_yellow">';
+                    } else if (item.type == 3) {
+                        html += '<p class="color_gold">';
+                    }
+                    html += dis_type + '满' + item.bidAmount + unit + '可用</p>';
+                }
+            }
+            html += '<p>' + WXP2P.UTIL.dataFormat(item.useStartTime, "m-d h:i") + '至' + WXP2P.UTIL.dataFormat(item.useEndTime, "m-d h:i") + '有效</p>';
+            if (item.status == 2) {
+                if (item.type == 1) {
+                    html += '<div class="icon_ysy"></div>';
+                } else if (item.type == 2) {
+                    html += '<div class="icon_ysy_increases"></div>';
+                } else if (item.type == 3) {
+                    html += '<div class="icon_ysy_gold"></div>';
+                }
+            } else if (item.status == 3) {
+                html += '<div class="icon_ygq"></div>';
+            } else if (item.status == 4) {
+                html += '<div class="icon_ydj JS_icon_ydj"></div>';
+            }
+            html += "</div>";//left的结束标签
+            if (item.status != 3 && item.status != 2 && item.status != 4) {
+                //添加right
+                html += '<div class="right"><div class="inner">立即使用</div></div>';
+            }
+            html += '</dd>';
+            html += '</dl></div></div>';
+            if (item.useInfo != "") {
+                html += '<div class="detail">';
+                html += '<div class="text">';
+                html += '' + item.useInfo + '';
+                html += '</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            $(dl).html(html);
+
+            if (item.status == 3 || item.status == 2 || item.status == 4) {
+                dl.className = "card gray";
+                replaceCardLink($(dl).find('.cardLink'), "javascript:;");
+            } else {
+                replaceCardLink($(dl).find('.cardLink'), getCardScheme(item));
+                if (item.type == 1) {
+                    dl.className = "card";
+                } else if (item.type == 2) {
+                    dl.className = "card rate_increases";
+                } else if (item.type == 3) {
+                    dl.className = "card rate_gold";
+                }
+            }
+            WXP2P.APP.batchWarpAnchorSchema($(dl).find('a'));
+            return dl;
+        };
+
+        //初始化投资券列表数据
+        function initDataFn(loadmore, data) {
+            var rpcResult = {};
+            rpcResult.data = data;
+            loadmore.processData = function (rpcResult) {
+                WXP2P.UI.P2PLoadMore.prototype.processData.call(this, rpcResult);
+            };
+            loadmore.processData(rpcResult);
+        }
+        //获取每张券的scheme
+        function getCardScheme(item) {
+            return 'firstp2p://api?type=discountuse&id=' + item.id + '&discounttype=' + item.type;
+        }
+
+        function replaceCardLink(tarDom, hrefStr) {
+            var innerHtml = tarDom.html();
+            var newDom = $('<a class="cardLink" href="' + hrefStr + '">');
+            newDom.html(innerHtml);
+            tarDom.replaceWith(newDom)
+        }
+    </script>
+</body>
+
+</html>

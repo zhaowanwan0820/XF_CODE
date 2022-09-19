@@ -1,0 +1,133 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/user.js' />
+<php>
+    function handl_prize_conf($conf){
+    $prize_conf = '<br>'.'&nbsp';
+    foreach($conf as $key=>$value) 
+        {
+            if ($value['type'] == 0) {
+                $type_name = '礼券';
+            } elseif ($value['type'] == 1) {
+                $type_name = '投资券';
+            } elseif ($value['type'] == 2) {
+                $type_name = '信力';
+            }
+            if($value['prize_id']) {
+                $prize_conf.=$type_name.$value['prize_id'].'<br>'.'&nbsp';
+            }
+        }
+        return $prize_conf;
+    }
+    function handl_prize_score_conf($conf){
+    $prize_score_conf = '<br>'.'&nbsp';
+    foreach($conf as $key=>$value) 
+        {
+            if($value['low'] && $value['high']) {
+            $prize_score_conf.=$value['low'].'～'.$value['high'].'分'.';'.'<br>'.'&nbsp';
+            }
+        }
+        return $prize_score_conf;
+    }
+    function handl_prize_count_conf($conf){
+    $prize_conf_count = '<br>'.'&nbsp';
+    foreach($conf as $key=>$value) 
+        {
+            if($value['count']) {
+            $prize_conf_count.=$value['remainder_count'].'/'.$value['count'].'<br>'.'&nbsp';
+            }
+        }
+        return $prize_conf_count;
+    }
+    function handl_user_limit($user_limit){
+    $take_in_limit  = '<br>'.'&nbsp';
+        $count_limit_day = !empty($user_limit['count_limit_day']) ? $user_limit['count_limit_day'] : '--';
+        $count_limit = !empty($user_limit['count_limit']) ? $user_limit['count_limit'] : '--';
+            $take_in_limit .=  '单日可参与次数:'.$count_limit_day.'<br>'.'&nbsp';
+            $take_in_limit .= '参与次数上限:'.$count_limit.'<br>'.'&nbsp';
+        return $take_in_limit;
+        }
+
+    function handl_expiry_date($expiry_date){
+    $take_in_limit  = '<br>'.'&nbsp';
+        $start_time = !empty($expiry_date['start_time']) ? $expiry_date['start_time'] : '--';
+        $end_time = !empty($expiry_date['end_time']) ? $expiry_date['end_time'] : '--';
+            $take_in_limit .=  ($start_time != '--') ? $start_time.'&nbsp'.'至'.'<br>'.'&nbsp' : $start_time.'&nbsp'.'至'.'&nbsp';
+            $take_in_limit .= $end_time.'<br>'.'&nbsp';
+
+        return $take_in_limit;
+        }
+
+    function handl_type($type){
+	    if ($type == 1) $status='物品上升';
+	    else $status='物品掉落';
+        return $status;
+    }
+    function get_festiv_activity_status($status){
+        if ($status == 1) $status='有效';
+        else $status='无效';
+        return $status;
+    }
+</php>
+<div class="main">
+<div class="main_title">节庆活动管理</div>
+<div class="blank5"></div>
+
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        活动名称：<input type="text" class="textbox" name="name" value="{$search_name}" style="width:100px;" />
+       状态:
+        <select name="is_effect" id="tag_id">
+            <if condition="$is_effect eq 2">
+                <option value = "2" selected>-全部-</option>
+                <else />
+                <option value = "2">-全部-</option>
+            </if>
+            <if condition="$is_effect eq 1">
+                <option value = "1" selected>有效</option>
+                <else />
+                <option value = "1">有效</option>
+            </if>
+
+            <if condition="$is_effect eq 0">
+                <option value = "0" selected>无效</option>
+                <else />
+                <option value = "0">无效</option>
+            </if>
+
+        </select>
+        <input type="hidden" value="FestivalActivities" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value = 创建活动 onclick="add();" />
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="festivalactivities"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px,name:活动名称,type|handl_type:活动形式,prize_conf|handl_prize_conf:奖励,prize_conf|handl_prize_count_conf:库存,prize_conf|handl_prize_score_conf:得分区间,take_limit|handl_user_limit:用户参与限制,expiry_date|handl_expiry_date:活动有效期,is_effect|get_festiv_activity_status:{%IS_EFFECT}"
+    actionlist="edit:{%EDIT}" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+
+<script>
+
+
+</script>
+<include file="Public:footer" />

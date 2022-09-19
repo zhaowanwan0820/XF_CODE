@@ -1,0 +1,78 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/sms_index.js' />
+<div class="main">
+<div class="main_title">{%ADD} <a href="{:u("DealMsgList/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">类型:</td>
+		<td class="item_input">
+            <input type="radio" name="msg_type" value="0" checked />短信
+            <input type="radio" name="msg_type" value="1" />邮件
+		</td>
+	</tr>
+	<tr>
+		<td class="item_title">标题:</td>
+		<td class="item_input">
+			<input type="text" class="textbox require" size="40" name="title" id="msg_title" value="" />
+		</td>
+	</tr>
+	<tr>
+		<td class="item_title">内容:</td>
+		<td class="item_input">
+			<textarea name="content" id="content" cols="80" rows="20" class="require"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td class="item_title">收件人:</td>
+        <td class="item_input">
+            <span class="tip_span">接收人的邮箱或手机号，可以一次填写多个以逗号分隔</span><br/>
+			<textarea name="to_user" cols="80" rows="5" class="require"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td class="item_title"></td>
+		<td class="item_input">
+			<!--隐藏元素-->
+			<input type="hidden" name="type" value="0" />
+			<input type="hidden" name="{:conf("VAR_MODULE")}" value="DealMsgList" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="do_add_msg" />
+			<!--隐藏元素-->
+			<input type="submit" onclick="return check_content()" class="button" value="{%ADD}" />
+			<input type="reset" class="button" value="{%RESET}" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>	 
+</form>
+</div>
+<script>
+	//短信签名 验证
+	function check_content() {
+		 //update caolong 2014-2-27 去掉签名验证
+		/* var send_type = $("input[name='msg_type']:checked").val()
+		if(send_type == 0) {
+			var content = $('#content').val();
+			if(content) {
+				var start = content.indexOf("【");
+				var end   = content.indexOf("】");
+				if((end - start) > 2) {
+					return true;
+				}else{
+					alert('短信内容必须附带签名!格式:【签名内容】');
+					return false;
+				}
+			}
+		} */
+		return true;
+	}
+</script>
+<include file="Public:footer" />

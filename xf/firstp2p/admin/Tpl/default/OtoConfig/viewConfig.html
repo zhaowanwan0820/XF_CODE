@@ -1,0 +1,68 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title"><?php if($id):?>规则#{$id}详情<?php else:?>新建规则<?php endif;?> - <a href='?m=OtoConfig&a=index'>返回列表</a></div>
+<div class="blank5"></div>
+<form name="itemPost" method="POST" action="?">
+<table id="dataTable" class="dataTable" style="table-layout:fixed">
+<tr><th width="200">推荐人会员组ID</th><td><select name="item[groupId]">
+    <option value="0"> 不选择</option>
+    <?php foreach ($groups as $group):?>
+        <option value="<?php echo $group['id'];?>" <?php if ($group['id'] == $item['groupId']) echo "selected"; ?>><?php echo $group['name'];?></option>
+    <?php endforeach;?>
+    </td></tr>
+<tr><th>会员使用的优惠码</th><td><input type="text" name="item[couponCode]" value="{$item.couponCode}" /></td></tr>
+<tr><th>分配规则触发方式</th><td>
+<select name="item[eventName]" >
+    <?php foreach($events as $event):?>
+        <option value="<?php echo $event['eventName'];?>" <?php if ($event['eventName'] == $item['eventName']) echo "selected"; ?>><?php echo $event['Name'];?></option>
+    <?php endforeach;?>
+</select>
+</td></tr>
+<tr><th>分配标签的键名</th><td><input type="TEXT" name="item[tagConstant]" size="50" value="{$item.tagConstant}" /> <span style="color:gray;">如果键名多个，请用英文,分隔</span></td></tr>
+<tr><th>分配至会员组ID</th><td><select name="item[toGroupId]" id="toGroupId">
+    <option value="0"> 不选择</option>
+    <?php foreach ($groups as $group):?>
+        <option value="<?php echo $group['id'];?>" <?php if ($group['id'] == $item['toGroupId']) echo "selected"; ?>><?php echo $group['name'];?></option>
+    <?php endforeach;?>
+</td></tr>
+<tr><th>优惠码等级ID</th><td><select name="item[toCouponLevelId]" id="toCouponLevelId">
+    <option value="0"> 不选择</option>
+    <?php foreach ($couponLevels as $couponLevel):?>
+        <option value="<?php echo $couponLevel['id'];?>" <?php if ($couponLevel['id'] == $item['toCouponLevelId']) echo "selected"; ?>><?php echo $couponLevel['level'];?></option>
+    <?php endforeach;?>
+</td></tr>
+<tr><th>状态</th><td><input type="RADIO" value="1" name="item[isEffective]" <?php if ($item['isEffective']) echo "checked='true'"?> />有效 <input type="RADIO" name="item[isEffective]" value="0" <?php if (!$item['isEffective']) echo "checked='true'"?>/>无效 </td></tr>
+<tr class=""><td colspan="2" align="center"><input type="SUBMIT" value="保存修改" class="button" /> <input type="RESET" class="button" value="重置"/></td></tr>
+</table>
+<input type="hidden" name="{:conf("VAR_MODULE")}" value="OtoConfig" />
+<input type="hidden" name="{:conf("VAR_ACTION")}" value="updateConfig" />
+<input type="hidden" name="item[id]" value="{$item.id}"/>
+</form>
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    function redo(id) {
+        //window.location.href = "/m.php?m=Jobs&a=redo&id="+id;
+    }
+$('#toGroupId').change(function(){
+    var _group_id = $(this).val();
+    $.getJSON('/m.php?m=OtoConfig&a=getCouponLevel', {'groupId':_group_id}, function(data){
+        if (data.status == 1) {
+            $('#toCouponLevelId').html(data.options);
+        }
+        else {
+            alert(data.message);
+        }
+    });
+});
+</script>
+<include file="Public:footer" />

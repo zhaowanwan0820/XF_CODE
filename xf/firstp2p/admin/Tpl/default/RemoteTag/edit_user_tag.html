@@ -1,0 +1,153 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("User/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<div class="main_title"><span>基础属性</span></div>
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+    <foreach name="baseTags" item="item" key="key">
+        <td class="item_input">{$baseTags[$key].chn}({$key})</td>
+    </foreach>
+    </tr>
+    <tr>
+    <foreach name="baseTags" item="item" key="key">
+        <td class="item_input">{$baseTags[$key].value}</td>
+    </foreach>
+    </tr>
+</table>
+<div class="blank5"></div>
+<div class="main_title"><span>投资属性</span></div>
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+    <foreach name="investTags" item="item" key="key">
+        <td class="item_input">{$investTags[$key].chn}({$key})</td>
+    </foreach>
+    </tr>
+    <tr>
+    <foreach name="investTags" item="item" key="key">
+        <td class="item_input">{$investTags[$key].value}</td>
+    </foreach>
+    </tr>
+</table>
+<div class="blank5"></div>
+<div class="main_title"><span>活动属性Tag</span></div>
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td>Tag名</td>
+        <td>Tag Key</td>
+        <td>类型</td>
+        <td>Tag Value</td>
+        <td>操作</td>
+    </tr>
+    <foreach name="activityTags" item="item" key="key">
+    <tr>
+        <td >{$activityTags[$key].chn}</td>
+        <td >{$key}</td>
+        <td >{$activityTags[$key].type}</td>
+        <td ><input type='text' name="{$key}" value="<?= is_array($activityTags[$key]['value']) ? implode(',', $activityTags[$key]['value']) : $activityTags[$key]['value'] ;?>">
+        </td>
+        <td ><span><a href="javascript:;" onclick="saveTag('{$key}')" class="button">保存</a></span>&nbsp;&nbsp;<span><a href="javascript:;" onclick="removeTag('{$key}')" class="button">移除</a></span></td>
+    </tr>
+    </foreach>
+    <input type="hidden" name="uid" value="{$uid}">
+</table>
+<div class="blank5"></div>
+<div class="main_title"><span>可添加的Tag</span></div>
+<table class="form" cellpadding=0 cellspacing=0>
+    <div class="blank10"></div>
+    <div><span><a href="javascript:;" onclick="batchSave()" class="button">保存</a></span></div>
+    <div class="blank5"></div>
+    <tr>
+        <td>Tag名</td>
+        <td>Tag Key</td>
+        <td>类型</td>
+        <td>Tag Value</td>
+    </tr>
+    <foreach name="avilableTags" item="item" key="key">
+    <tr>
+        <td ><input type="checkbox" name="addKey[]" value="{$key}">
+{$item.chn}</td>
+        <td >{$key}</td>
+        <td >{$item.type}</td>
+        <td ><input type='text' id="{$key}" name="{$key}">
+        </td>
+    </tr>
+    </foreach>
+    <input type="hidden" name="uid" value="{$uid}">
+</table>
+</div>
+<script>
+function saveTag(key){
+    var tagVal = $("input[name="+key+"]").val();
+    $.ajax({
+        url:"m.php?m=RemoteTag&a=doSaveUserTag",
+        type:'post',
+        data:{
+            uid:"{$uid}",
+            tagKey:key,
+            tagVal:tagVal
+        },
+        dataType:'json',
+        success:function(data){
+            alert('保存成功');
+            window.location.reload();
+        },
+        fail:function(data){
+            alert('保存失败');
+            window.location.reload();
+        }
+    });
+}
+
+function removeTag(key){
+    var tagVal = $("input[name="+key+"]").val();
+    $.ajax({
+        url:"m.php?m=RemoteTag&a=doDelUserTag",
+        type:'post',
+        data:{
+            uid:"{$uid}",
+            tagKey:key,
+        },
+        dataType:'json',
+        success:function(data){
+            alert('移除成功');
+            window.location.reload();
+        },
+        fail:function(data){
+            alert('移除失败');
+            window.location.reload();
+        }
+    });
+}
+
+function batchSave(){
+    var tagItems = $("input:checked");
+    var tags = {};
+    for(var i=0; i<tagItems.length;i++){
+        key = tagItems[i].value;
+        tagVal = $("#"+key).val();
+        tags[key] = tagVal;
+    }
+    $.ajax({
+        url:"m.php?m=RemoteTag&a=doAddUserTags",
+        type:"post",
+        data:{
+            uid:"{$uid}",
+            tags:tags,
+        },
+        dataType:"json",
+        success:function(data){
+            alert('添加成功,成功tags:'+data.success+'失败tags:'+data.fail);
+            window.location.reload();
+        },
+        fail:function(data){
+            alert('添加失败');
+            window.location.reload();
+        }
+    });
+}
+</script>
+<include file="Public:footer" />

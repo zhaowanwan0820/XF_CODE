@@ -1,0 +1,175 @@
+{include file="web/views/v3/header.html"}
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/u.js');?>"></script>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_charge.css');?>" />
+<div class="w1100">
+<div class="p_account_charge p_account_carry">
+        <div class="user_right_box">
+        <div class="user_title"><h1><i class="ico_tixian"></i>提现</h1></div>
+        <div class="bank-tip" style="width:675px;">您的申请预计在<span class="change_cr"><strong> 1-3 </strong></span>个工作日内提交至存管银行，实际到账时间依据存管银行及提现到账银行服务时效有所差异</div>
+
+       <!--  <div class="u_txtip mauto">
+            申请提现成功后，钱将转入 <span class="color-yellow1 mr20">{$bankcard_info.bankName}</span>开户名： <span class="color-yellow1 mr20">{$bankcard_info.card_name}</span>卡号：<span class="color-yellow1">{$bankcard_info.hideCard}</span> 的银行卡内。
+        </div> -->
+        <!-- <div class="sub_title mauto"><span>提现至银行卡</span></div> -->
+       <form name="Jcarry_From" id="Jcarry_From" action="{url x="index" r="account/savecarry"}" method="post">
+            <?php echo token_input(); ?>
+            <div class="take">
+                <dl class="clearfix">
+                    <dt style="width:80px;">开户名：</dt>
+                    <dd><span class="color-yellow1 user_name_carry">{$bankcard_info.card_name}</span></dd>
+                </dl>
+                <dl class="clearfix">
+                  <dt style="width:80px;">开户行：</dt>
+                    <dd>
+                        <div class="bank_bg">
+                            <ul>
+                                <!-- <li><span class="color-yellow1">{$bankcard_info.bankName}    {$bankcard_info.bankzone}</span></li> -->
+                                <li class="real_bank_bg"><img src="{$bankcard_info.logo}" alt=""></li>
+                                <li><span class="color-yellow1 get_number change_font">{$bankcard_info.hideCard}</span></li>
+                            </ul>
+                        </div>
+
+                    </dd>
+                </dl>
+                <!-- <dl class="clearfix carry_bank">
+                    <dt class="super_Uname"><p>网信账户</p><span>{$bankcard_info.card_name}</span></dt>
+                    <dd class="fximg"></dd>
+                    <dd class="super_bank"><img src="<?php echo $this->asset->makeUrl('v3/images/account/bank_carry.png');?>" alt="" width="60" height="60"><p>{$bankcard_info.bankName}</p><span>{$bankcard_info.card_name}({$bankcard_info.hideCard})</span></dd>
+                </dl> -->
+                <dl class="clearfix mb10">
+                    <dt class="super_balance">{$wxAccountConfig.name}现金余额：</dt>
+                    <dd><span class="take_money">{function name="number_format" v=$user_info.money f="2"}</span> <input id="Jcarry_totalAmount" type="hidden" value="{$user_info.money}">元<span class="all_money">全部提现</span></dd>
+                </dl>
+                <dl class="clearfix need_move">
+                    <dt class="new_need_move">提现金额：</dt>
+                    <dd><input type="text" name="amount" class="user_name" id="Jcarry_amount" /><span class="need_money">元</span>&nbsp;&nbsp;<span id="Jcarry_balance" style='color:red;' class="f_red lh28"></span></dd>
+                </dl>
+                <!-- <dl class="clearfix">
+                    <dt>提现后余额：</dt>
+                    <dd><span class="color-yellow1" id="Jcarry_acount_balance">{function name="number_format" v=$user_info.money f="2"}元</span></dd>
+                </dl> -->
+            </div>
+             <div class="line_for_btn line_for_carry"></div>
+            <div class="tc p20 f14 new_repaire">
+                <input type="hidden" name="acount_balance" id="Jcarry_acount_balance_res" style="width:70px"><?php if ($showWithdrawLimitTips):?><span class=""><?php echo $withdrawLimitTips;?></span><?php endif;?>
+                <a href="javascript:void(0)" class="sv_carry_wxlc_md"><input  class="user_button mt20 mb15" type="submit" value="申请提现"></a>
+                <!-- <div class="pb37 new_style">预计<span class="change_cr"><strong> 1-3 </strong></span>个工作日内到账, 实际到账时间依据存管方及提现银行而有所差异</div> -->
+                {if $isSvOpen and $user_info.isSvUser}<div style="padding-left:98px;"><a class="charge_p2p" href="/account/carryP2P">从{$p2pAccountConfig.name}提现></a></div>{/if}
+            </div>
+        </form>
+        <div class="user_tip">
+            <adv adv_id="前台会员提现提示"/>
+        </div>
+        </div>
+
+    </div>
+    <!-- <div class="add_bigger_bg">
+         <div class="user_tip">
+                <adv adv_id="前台会员提现提示"/>
+        </div>
+    </div> -->
+</div>
+<script type="text/javascript">
+        (function($) {
+            $(function(){
+                var str = $('.get_number').text();
+                var str = str.substring(0, 4) + " **** **** " + str.substr(str.length-4);
+                $('.get_number').text(str);
+                $('.all_money').on('click',function(){
+                    var money = $('.take_money').text().replace(/,/g,'');
+                    $('.user_name').val(money);
+                })
+            });
+        })(jQuery)
+    $(document).ready(function(){
+        $("select[name='region_lv1']").bind("change",function(){
+            load_select("1");
+        });
+        $("select[name='region_lv2']").bind("change",function(){
+            load_select("2");
+        });
+        $("select[name='region_lv3']").bind("change",function(){
+            load_select("3");
+        });
+        $("select[name='region_lv4']").bind("change",function(){
+            load_select("4");
+        });
+        // init region
+                var devlv1Option = $("select[name='region_lv1'] option[value='" + $("#deflv1").val() + "']")[0];
+                if (devlv1Option) {
+                    devlv1Option.selected = true;
+                    load_select("1");
+                    var devlv2Option = $("select[name='region_lv2'] option[value='" + $("#deflv2").val() + "']")[0];
+                    if (devlv2Option) {
+                        devlv2Option.selected = true;
+                        load_select("2");
+                        var devlv3Option = $("select[name='region_lv3'] option[value='" + $("#deflv3").val() + "']")[0];
+                        if (devlv3Option) {
+                            devlv3Option.selected = true;
+                            load_select("3");
+                            var devlv4Option = $("select[name='region_lv4'] option[value='" + $("#deflv4").val() + "']")[0];
+                            if (devlv4Option) {
+                                devlv4Option.selected = true;
+                            }
+                        }
+                    }
+                }
+    });
+
+    function load_select(lv)
+    {
+        var name = "region_lv"+lv;
+        var next_name = "region_lv"+(parseInt(lv)+1);
+        var id = $("select[name='"+name+"']").val();
+
+        if(lv==1)
+        var evalStr="regionConf.r"+id+".c";
+        if(lv==2)
+        var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+id+".c";
+        if(lv==3)
+        var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+$("select[name='region_lv2']").val()+".c.r"+id+".c";
+
+        if(id==0)
+        {
+            var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+        }
+        else
+        {
+            var regionConfs=eval(evalStr);
+            evalStr+=".";
+            var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+            for(var key in regionConfs)
+            {
+                html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+            }
+        }
+        $("select[name='"+next_name+"']").html(html);
+
+        if(lv == 4)
+        {
+            load_delivery();
+        }
+        else
+        {
+            load_select(parseInt(lv)+1);
+        }
+
+
+    }
+    $(function(){
+        zhuge.track('进入提现详情页',{
+            "提现账户":"网信"
+        })
+    })
+
+    // 埋点
+    $('.user_button').click(function() {
+        zhuge.track("点击确认提现",{
+            "提现金额": carry_amount,
+            "提现账户": '网信'
+        })
+    });
+
+</script>
+{include file="web/views/footer.html"}

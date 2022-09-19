@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绑卡结果</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/base.css');?>" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/wxcx/wxcx.css');?>" rel="stylesheet" />
+<style>
+  body {background: #fff;}
+  .draw_draw_success{ text-align:center;color:#000;line-height:30px;}
+  .draw_draw_success .error_img{ width:150px; height:150px; margin:25px auto 9px;}
+  .draw_draw_success .tc{padding-top: 0px;font-size:18px;color:#EE4634;}
+  .hasknow {display:block;width:90%;height:40px;line-height:40px;color:#fff;text-align:center;font-size:17px;margin:20px auto;border-radius:2.5px;background: #EE4634;}
+</style>
+</head>
+<body>
+
+<div class="draw_draw_success">
+     <div class="error_img">
+     {if $status eq 1}
+     <img src="<?php echo $this->asset->makeAppUrl('v4.72/images/wxcx/success3.png');?>" width="100%">
+     {elseif $status eq 2}
+     <img src="<?php echo $this->asset->makeAppUrl('v4.72/images/wxcx/fail2.png');?>" width="100%">
+     {else}
+      <img src="<?php echo $this->asset->makeAppUrl('v4.72/images/wxcx/wait.png');?>" width="100%">
+     {/if}
+     </div>
+     <div class="tc">
+     {if $status eq 1}
+     绑卡成功！
+     {elseif $status eq 2}
+     绑卡失败！
+     {else}
+     <span style="color:#000;">处理中</span>
+     {/if}
+     <div style="font-size:14px;margin:15px 0 0;">
+     {$content}
+     </div>
+     </div>
+     {if $status neq 3}
+     <a href="{$jumpUrl}" class="hasknow">完成</a>
+     {/if}
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<?php
+$this->_var['pagecss'][] = $this->_var['APP_STATIC_PATH']."/css/style.css";
+$this->_var['pagecss'][] = $this->_var['APP_STATIC_PATH']."/css/weebox.css";
+    $this->_var['spagejs'][] = $this->_var['APP_STATIC_PATH']."/js/jquery.js";
+$this->_var['spagejs'][] = $this->_var['APP_STATIC_PATH']."/js/jquery.bgiframe.js";
+$this->_var['spagejs'][] = $this->_var['APP_STATIC_PATH']."/js/jquery.weebox.js";
+$this->_var['spagejs'][] = $this->_var['APP_STATIC_PATH']."/js/jquery.pngfix.js";
+$this->_var['spagejs'][] = $this->_var['APP_STATIC_PATH']."/js/lazyload.js";
+$this->_var['spagejs'][] = $this->_var['APP_STATIC_PATH']."/js/script.js";
+$this->_var['spagejs'][] = $this->_var['APP_STATIC_PATH']."/js/op.js";
+?>
+<style type="text/css">
+    td{text-align:left;padding:0 5;font-weight: normal; height: 28px; line-height: 28px;font-size:12px;}
+    .con {margin:10; text-align:center;}
+    
+</style>
+<table class="data_table">
+    <tr><td>提前还款日期</td> <td>{$prepay_time}</td></tr>
+    <tr><td>计息日期</td> <td>{$last_repay_day}</td></tr>
+    <tr><td>利息天数</td> <td>{$remain_days}天</td></tr>
+    <tr><td>剩余本金</td> <td>￥{$remain_principal}元</td></>
+    <tr><td>借款年利率</td> <td>{function name="format_rate_for_show" value=$deal.int_rate}%</td></tr>
+    <tr><td>提前还款违约金系数</td> <td>{function name="format_rate_for_show" value=$deal.prepay_rate}%</td></tr>
+    <tr><td>提前还款罚息天数</td> <td>{$deal.prepay_penalty_days}天</td></tr>
+</table>
+<div class="con" style="font-size:1.5em;">还款总额 <font color="red">￥{$prepay_money}</font>元</div>
+<div class="con">账户可用余额￥{$money}元
+        {if $money < $prepay_money}
+            <a target="_blank" href="/uc_money-incharge">充值</a>
+            {/if}
+</div>
+<div class="con"><input class="conf_refund" id="submit" type="button" value="提交申请"/> <input class="conf_refund" id="cancel" type="button" value="取消"/></div>
+
+<div class="con">
+    *提交申请后，将冻结您账户中的还款资金，平台审核通过后自动将这部分资金还至出借人账户。
+</div>
+<script type="text/javascript" src="{function name="parse_script" v="$spagejs" c="$scpagejs"}"></script>
+<link rel="stylesheet" type="text/css" href="{function name="parse_css" v="$pagecss"}" />
+<script>
+	(function(){
+        $("#submit").click(function(){
+            $.post('/index.php?ctl=uc_deal&act=do_prepay', {"id":{$deal.id}}, function(result) {
+                if(result.status == 0){
+					$.showErr(result.info);
+                } else {
+                    $.showSuccess("申请成功！",function(){
+                        parent.location.reload();
+                    });
+                }
+            });
+        });
+
+        $("#cancel").click(function(){
+            parent.location.reload();
+        });
+    }());
+</script>

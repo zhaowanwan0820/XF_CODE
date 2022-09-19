@@ -1,0 +1,134 @@
+{include file="inc/header.html"}
+<?php
+$this->_var['guaranteecss'][] = $this->_var['APP_STATIC_PATH']."/css/guarantee.css";
+?>
+<link rel="stylesheet" type="text/css" href="{function name="parse_css" v="$guaranteecss"}" />
+<div class="blank"></div>
+<div class="wrap clearfix">
+	<div id="main_adv_box" class="main_adv_box f_l">
+		<div id="main_adv_img" class="main_adv_img">
+			<span rel="1"><adv adv_id="安全保障顶部广告位1" /></span>
+			<span rel="2"><adv adv_id="安全保障顶部广告位2" /></span>
+			<span rel="3"><adv adv_id="安全保障顶部广告位3" /></span>
+			<span rel="4"><adv adv_id="安全保障顶部广告位4" /></span>					
+		</div>
+		<div id="main_adv_ctl" class="main_adv_ctl">
+			<ul>
+				<li rel="1">1</li>
+				<li rel="2">2</li>
+				<li rel="3">3</li>
+				<li rel="4">4</li>
+			</ul>
+		</div>
+		<script type="text/javascript" src="{$TMPL}/js/guarantee_adv.js"></script>
+	</div>
+	<div class="blank5"></div>
+	<div class="f_l">
+		<adv adv_id="安全保障左侧" />
+	</div>
+	<div class="f_r" style="width:542px">
+		<div id="latest">
+   			<div class="ti clearfix">
+				<div class="f_l">最新借贷</div>
+				<div id="rightTitls">
+					<ul>
+						{if count($deal_list) gt 3}
+						<li class="current"><a> 1 </a></li>
+						<li><a title="2"> 2 </a></li>
+						{/if}
+						{if count($deal_list) gt 6}<li><a title="3"> 3 </a></li>{/if}
+					</ul>
+				</div>
+			</div>
+		    <div id="labox" style="position:relative;">
+				<div id="J_conbox">
+					<ul>
+						{foreach from="$deal_list" item="deal" name="deal"}
+						<li>
+							<div class="biao clearfix" style="height:87px">
+								<div class="biao-l">
+									<a style="cursor:pointer" href="{$deal.url}">
+										<img height="80px" width="80px" class="img_b" src="{$deal.icon}">
+									</a>
+								</div>
+								<div class="biao-r">
+									<div class="t" style="font-size:12px;font-weight: bold;">
+										<a style="cursor:pointer" href="{$deal.url}">{$deal.name}</a>
+									</div>
+									<div class="clearfix">
+										<div class="info-2">
+											借款金额：<span class="f_red">{$deal.borrow_amount_format}</span>
+										</div>
+										<div class="info">
+											年化利率：<span class="f_red">{function name="number_format" v="$deal.rate" f=2}%</span>
+										</div>
+										<div class="info">
+											借款期限：<span class="f_red">{$deal.repay_time}个月</span>
+										</div>
+									</div>
+									<div class="clearfix">
+										<div class="info-2">
+											信用等级：<a><img align="absmiddle" src="{$TMPL}/images/{$deal.user.point_level}.png"></a>
+										</div>
+										<div class="info-3">
+											<div class="f_l" style="width:68px"> 借款进度： </div>
+											<div class="f_l" style="padding-top:3px;width:117px;">
+												<div class="progressBar">
+													<!--p>{function name="round" v="$deal.progress_point" f="2"}%</p-->
+													<div class="p"><div class="c" style="width:{function name="number_format" v="$deal.progress_point" f="2"}%;"> </div></div>
+												</div>
+											</div>
+											<div class="f_l">
+												&nbsp;&nbsp;&nbsp;&nbsp;还需 <span class="f_red">{$deal.need_money}</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="interval"> </div>
+						</li>
+						{if $smarty.foreach.index eq 2 || $smarty.foreach.index eq 5}
+						</ul>
+						<ul class="hide">
+						{/if}
+						{/foreach}
+					</ul>
+					
+				</div>
+		    </div>
+		</div>
+	</div>
+	<div class="blank5"></div>
+	<div class="bzbox clearfix wb">
+		<?php $idx=1;?>
+		{foreach from=$article_cate item="cate" key=key}
+		{if $key >1}
+		<div class="bzinfob">
+	    	<h3><a href="{url x="index" r="guarantee#detail" p="id=$cate.id"}">{$cate.title}</a></h3>
+	        <div class="clearfix ulimgbox">
+	            <img src="{$TMPL}/images/u<?php echo $idx;?>_original.jpg">
+	            <ul>
+	            	{foreach from=$cate.article.list item=aitem}
+	                <li><a href="{url x="index" r="guarantee#detail" p="id=$cate.id&aid=$aitem.id"}#go{$aitem.id}">{$aitem.title}</a></li>
+					{/foreach}
+	            </ul>
+	        </div>
+	    </div>
+		<?php ++$idx;?>
+		{/if}
+		{/foreach}
+	</div>
+</div>
+<div class="blank"></div>
+<script type="text/javascript">
+	jQuery(function(){
+		$("#rightTitls li").click(function(){
+			$("#rightTitls li").removeClass("current");
+			$(this).addClass("current");
+			var idx =parseInt($(this).find("a").html());
+			$("#J_conbox ul").hide();
+			$("#J_conbox ul:eq("+(idx-1)+")").show();
+		});
+	});
+</script>
+{include file="inc/footer.html"}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统升级中</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, ">
+    <style type="text/css">
+    div, p, h2{ padding: 0px; margin: 0px; font-size: 12px; font-weight: normal;}
+    body{ height: 100%; font-family: "微软雅黑","华文细黑 ";}
+    .wh_bg{background:url(http://{$host}/static/v1/images/resting/wh_bg_wx.png) no-repeat center 85px;background-size:100%; height: 100%;position: absolute; left: 0px; top: 0px; width: 96%; margin: 0 2%; text-align:center; color: #888888; line-height: 20px;}
+    .wh_bg p,.wh_bg h2{ margin: 0px 12%; font-size: 12px;}
+    .wh_bg h2{ margin-top: 120px; font-size: 18px; padding-bottom: 5px;}
+    .wh_bg p span{ color: #ff8c04;}
+    </style>
+</head>
+<body>
+    <div class="wh_bg">
+        <h2>系统升级中  !</h2>
+        <p>
+        {function name="get_adv" x="用户体系维护app页"}
+        </p>
+    </div>
+<script>
+    function onBridgeReady(){
+        WeixinJSBridge.call('hideOptionMenu');
+    }
+
+    if (typeof WeixinJSBridge == "undefined"){
+        if( document.addEventListener ){
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        }else if (document.attachEvent){
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    }else{
+        onBridgeReady();
+    }
+</script>
+</body>
+</html>

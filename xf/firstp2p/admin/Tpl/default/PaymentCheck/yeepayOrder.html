@@ -1,0 +1,122 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<style>
+.success { color:#00bb00; }
+.failed { color:#ee0000; }
+</style>
+
+<div class="main">
+<div class="main_title">用户全部订单对账-【易宝支付】</div>
+<div class="blank5"></div>
+
+<div style="background:#edf3f7;border-radius:3px;border:#8ba9c0 1px solid; padding:10px;">
+    <?php echo to_date($startTime, 'Y年n月j日'); ?>
+    ~
+    <?php echo to_date($endTime, 'Y年n月j日'); ?>
+    &nbsp;
+    <a href="?m=PaymentCheck&a=yeepayOrder&id=<?php echo $userInfo['id']; ?>&start=<?php echo date('Ymd', time() - 86400 * 7); ?>">近7天</a>
+    &nbsp;
+    <a href="?m=PaymentCheck&a=yeepayOrder&id=<?php echo $userInfo['id']; ?>&start=<?php echo date('Ymd', time() - 86400 * 30); ?>">近30天</a>
+    &nbsp;
+    <a href="?m=PaymentCheck&a=yeepayOrder&id=<?php echo $userInfo['id']; ?>&start=20130101">全部</a>
+</div>
+
+<div style="margin:10px;">
+共有 <?php echo count($orders); ?> 笔订单
+&nbsp;
+&nbsp;
+<span class="success">对账正常</span>: <span id="successCount">0</span>
+&nbsp;
+<span class="failed">严重状态异常</span>: <span id="seriousFailedCount">0</span>
+&nbsp;
+<span class="failed">状态异常</span>: <span id="normalFailedCount">0</span>
+&nbsp;
+<span class="success">线下充值</span>: <span id="offlineCount">0</span>
+&nbsp;
+<span class="success">814前老订单</span>: <span id="oldCount">0</span>
+</div>
+
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="11" class="topTd" >&nbsp; </td></tr>
+    <tr class="row" >
+        <th width="50">用户ID</th>
+        <th width="120">用户名</th>
+        <th width="70">姓名</th>
+        <th width="140">创建时间</th>
+        <th width="140">处理时间</th>
+        <th width="180">订单号</th>
+        <th width="100">金额(元)</th>
+        <th width="80">P2P状态</th>
+        <th width="80">支付状态</th>
+        <th width="100">对账结果</th>
+        <th>备注</th>
+        <!-- <th width="70">操作</th> -->
+    </tr>
+    <?php foreach($orders as $item) { ?>
+    <tr class="row orders">
+        <td><?php echo $userInfo['id']; ?></td>
+        <td><a href="?m=User&a=index&user_id=<?php echo $userInfo['id']; ?>" target="_blank"><?php echo $userInfo['user_name']; ?></a></td>
+        <td><?php echo $userInfo['real_name']; ?></td>
+        <td><?php echo to_date($item['time']); ?></td>
+        <td><?php echo empty($item['dealtime']) ? '' : to_date($item['dealtime']); ?></td>
+        <td><?php echo empty($item['url']) ? $item['orderId'] : '<a href='.$item['url'].' target="_blank">'.$item['orderId'].'</a>'; ?></td>
+        <td><?php echo number_format($item['amount'] / 100, 2); ?></td>
+        <td><?php echo $item['status']; ?></td>
+        <td><span class="paystatus" time="<?php echo $item['time'] + date('Z'); ?>" status="<?php echo $item['status']; ?>" ordertype="<?php echo $item['payType']; ?>" orderid="<?php echo $item['orderId']; ?>">正在查询...</span></td>
+        <td></td>
+        <td><?php echo isset($item['note']) ? $item['note'] : ''; ?></td>
+        <!-- <td><?php if ($item['memo'] != '已退款'):?><a href='?m=PaymentCheck&a=yeepayRevertOrder&id=<?php echo $item['orderId'];?>'>退款</a><?php endif;?>&nbsp;</td> -->
+    </tr>
+    <?php } //end foreach ?>
+    <tr> <td colspan="11" class="bottomTd">&nbsp; </td> </tr>
+</table>
+
+<div class="blank5"></div>
+</div>
+<script>
+var successCount = document.getElementById('successCount');
+var seriousFailedCount = document.getElementById('seriousFailedCount');
+var normalFailedCount = document.getElementById('normalFailedCount');
+var ouflineCount = document.getElementById('offlineCount');
+var oldCount = document.getElementById('oldCount');
+
+$('.paystatus').each(function() {
+    var statusObj = $(this);
+    var resultObj = $(this).parent().next();
+
+    if (statusObj.attr('time') < 1407945600) {
+        oldCount.innerHTML = parseInt(oldCount.innerHTML) + 1;
+        statusObj.html('');
+        resultObj.html('<span class="success">814前老订单</span>');
+        return;
+    }
+
+    var url = '?m=PaymentCheck&a=searchYeepayTrade&id=' + statusObj.attr('orderId');
+
+    $.getJSON(url, function(data) {
+        statusObj.html(data.statusMessage);
+        if (data.status === statusObj.attr('status')) {
+            successCount.innerHTML = parseInt(successCount.innerHTML) + 1;
+            resultObj.html('<span class="success">正常</span>');
+            return;
+        }
+
+        if (data.status === '支付成功' || statusObj.attr('status') === '支付成功') {
+            seriousFailedCount.innerHTML = parseInt(seriousFailedCount.innerHTML) + 1;
+            resultObj.html('<span class="failed">严重状态异常</span>');
+            return;
+        }
+
+        normalFailedCount.innerHTML = parseInt(normalFailedCount.innerHTML) + 1;
+        resultObj.html('<span class="failed">状态异常</span>');
+        return;
+    });
+});
+</script>
+<include file="Public:footer" />

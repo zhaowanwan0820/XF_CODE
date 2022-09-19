@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="chart-name" content="渐变填充面积图" />
+    <title>F2 图表组件库 - AntV</title>
+    <link rel="stylesheet" href="https://gw.alipayobjects.com/os/rmsportal/YmDAMEQVbLJpVbKiRQVX.css" />
+  </head>
+  <body>
+    <script>
+      /*Fixing iframe window.innerHeight 0 issue in Safari*/ document.body.clientHeight
+    </script>
+
+    <script src="https://gw.alipayobjects.com/os/antv/assets/f2/3.4.2/f2.min.js"></script>
+
+    <script src="https://gw.alipayobjects.com/os/antv/assets/lib/jquery-3.2.1.min.js"></script>
+    <!-- 在 PC 上模拟 touch 事件 -->
+    <script src="https://gw.alipayobjects.com/os/rmsportal/NjNldKHIVQRozfbAOJUW.js"></script>
+
+    <div class="chart-wrapper">
+      <canvas id="mountNode"></canvas>
+    </div>
+    <script>
+      var data = [
+        {
+          x: '2016-08-08 00:00:00',
+          y: 10
+        },
+        {
+          x: '2016-08-08 00:10:00',
+          y: 22
+        },
+        {
+          x: '2016-08-08 00:30:00',
+          y: 16
+        },
+        {
+          x: '2016-08-09 00:35:00',
+          y: 26
+        },
+        {
+          x: '2016-08-09 01:00:00',
+          y: 12
+        },
+        {
+          x: '2016-08-09 01:20:00',
+          y: 26
+        },
+        {
+          x: '2016-08-10 01:40:00',
+          y: 18
+        },
+        {
+          x: '2016-08-10 02:00:00',
+          y: 26
+        },
+        {
+          x: '2016-08-10 02:20:00',
+          y: 12
+        }
+      ]
+      var chart = new F2.Chart({
+        id: 'mountNode',
+        pixelRatio: window.devicePixelRatio
+      })
+      chart.source(data, {
+        x: {
+          type: 'timeCat',
+          tickCount: 3,
+          range: [0, 1]
+        },
+        y: {
+          tickCount: 5,
+          min: 0
+        }
+      })
+
+      chart.axis('x', {
+        label: function label(text, index, total) {
+          var textCfg = {}
+          if (index === 0) {
+            textCfg.textAlign = 'left'
+          } else if (index === total - 1) {
+            textCfg.textAlign = 'right'
+          }
+          return textCfg
+        },
+        grid: function grid(text, index, total) {
+          if (index === 0) {
+            return {
+              lineDash: null,
+              stroke: '#F2F2F6',
+              lineWidth: 1
+            }
+          }
+        }
+      })
+      chart.axis('y', {
+        grid: {
+          lineDash: null,
+          stroke: '#F2F2F6',
+          lineWidth: 1
+        }
+      })
+      chart.tooltip({
+        showItemMarker: false,
+        showCrosshairs: true,
+        crosshairsStyle: {
+          stroke: '#F2F2F6',
+          lineWidth: 1
+        },
+        onShow: function onShow(ev) {
+          var items = ev.items
+          items[0].name = null
+          items[0].value = '折扣(' + items[0].value + ')/' + items[0].title
+          items.splice(1) //只保留一个 item
+        }
+      })
+
+      chart
+        .area()
+        .position('x*y')
+        .shape('smooth')
+        .style({
+          fill: 'l(90) 0:#FF8150 1:#ffffff',
+          fillOpacity: 0.3
+        })
+      chart
+        .line()
+        .position('x*y')
+        .color('#FF8150')
+        .shape('smooth')
+        .style({
+          lineWidth: 2
+        })
+      chart
+        .point()
+        .position('x*y')
+        .style({
+          fill: '#ffffff',
+          stroke: '#FF8150',
+          lineWidth: 1
+        })
+      chart.render()
+    </script>
+  </body>
+</html>

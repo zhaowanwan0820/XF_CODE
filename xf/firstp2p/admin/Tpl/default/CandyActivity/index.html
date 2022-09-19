@@ -1,0 +1,97 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">信力充值记录</div>
+    <input type="button" class="button" value="信力充值申请" onclick="location.href='/m.php?m=CandyActivity&a=applyForm'">
+    <input type="button" class="button" value="批量信力充值申请" onclick="location.href='/m.php?m=CandyActivity&a=applyMulti'">
+    <input type="button" class="button" value="全部通过" onclick="batchAudit(1)">
+    <input type="button" class="button" value="全部拒绝" onclick="batchAudit(2)">
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            用户ID <input type="text" class="textbox" name="user_id" value="{$userId}" />
+            <select name="status">
+              <?php foreach ($applyStatusMap as $key => $value){ ?>
+                <option  <?php if($status == $key){echo 'selected'; } ?>  value="<?php echo $key; ?>"><?php echo $value; ?></option>
+              <?php } ?>
+            </select>
+            <input type="hidden" value="CandyActivity" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="hidden" id="message" value="" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr class="row">
+            <th>编号</th>
+            <th>用户ID</th>
+            <th>充值信力</th>
+            <th>类型</th>
+            <th>备注</th>
+            <th>状态</th>
+            <th>创建者</th>
+            <th>审核者</th>
+            <th>创建时间</th>
+            <th>审核时间</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td>&nbsp;{$item.id}</td>
+                <td>&nbsp;{$item.user_id}</td>
+                <td>&nbsp;{$item.activity}</td>
+                <td>&nbsp;{$item.source_type}</td>
+                <td>&nbsp;{$item.note}</td>
+                <td>&nbsp;{$item.status_name}</td>
+                <td>&nbsp;{$item.creator}</td>
+                <td>&nbsp;{$item.auditor}</td>
+                <td>&nbsp;{$item.create_time}</td>
+                <td>&nbsp;{$item.audit_time}</td>
+                <td>
+                    <if condition="$item.status eq 0">
+                        <button onclick="audit({$item.id})">批准</button>
+                        <button onclick="audit(0-{$item.id})">拒绝</button>
+                    <else/>
+                        <a href="/m.php?m=CandyAccount&a=candyActivity&user_id={$item.user_id}" >信力记录</a>
+                    </if>
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="9" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+
+<script>
+    function audit(id){
+        var status,_id;
+        (id<0) ? (status = 2) : (status = 1);
+        (id<0) ? (_id = Math.abs(id)) : (_id = id);
+        $.post("/m.php?m=CandyActivity&a=applyAudit",
+            {
+                'id' : _id,
+                'status' : status,
+            },
+            function(res){
+                alert(res.info);
+                setTimeout(function(){window.location.reload();},200);
+            },'json');
+    }
+
+    function batchAudit(status){
+        $.post('/m.php?m=CandyActivity&a=batchAudit',
+            {
+                'status' : status,
+            },
+            function(res){
+                alert(res.info);
+                setTimeout(function(){window.location.reload();},200);
+            },'json')
+    }
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,18 @@
+<script type="text/javascript">
+    $(function () {
+        var now_pathName = window.location.pathname,
+         nav_li = $(".js_top_nav").find("ul li"),
+         hrefName = new Array();
+        for (var i = 0; i < nav_li.length; i++) {
+            hrefName.push($(nav_li[i]).find("a").attr("href"));
+        }
+        for (var j = 0; j < hrefName.length; j++) {
+            if (hrefName[j] == now_pathName) {
+                $(nav_li).removeClass("select");
+                $(nav_li[j]).addClass("select");
+            }
+        }
+    });
+</script>
+<li class="select"><a href="/" target="">首页</a></li>
+<li class=""><a href="/deals?tab=zx" target="">专享</a></li>

@@ -1,0 +1,113 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+function getStatusName($status)
+{
+    $statusMap = array('是', '否');
+    return $statusMap[$status];
+}
+function getRemarkEdit($id, $item){
+
+    return "<a href=\"javascript:open_div(".$item['id'].",'".to_date($item['create_time'])."', '".$item['remark']."')\">修改备注</a>";
+
+}
+</php>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        时间段：
+        <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        <input type="button" class="button" id="btn_time_start" value="{%SELECT_TIME}" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        -
+        <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="button" class="button" id="btn_time_end" value="{%SELECT_TIME}" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="AccountCheck" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="account_check"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px,create_time|to_date:创建时间,balance:余额,charge_online:线上充值,charge_offline:线下充值,withdraw:提现,status|getStatusName:是否异常,diff:差额,remark:备注"
+    actionlist="id|getRemarkEdit=$account_check"
+    />
+
+<div class="blank5"></div>
+<!-- 添加备注 -->
+<div id='dialogbox_div' class="dialog-box dialogbox" style="display: none; position: absolute; overflow: hidden; z-index: 999; width: 600px; top: 249px; left: 436.5px;">
+    <div class="dialog-header">
+        <div class="dialog-title">添加备注</div>
+        <div class="dialog-close" onclick='close_div()'></div>
+    </div>
+    <div class="dialog-content" style="height: 240px;">
+        <div class="main">
+            <div class="main_title" id="datetime"></div>
+            <div class="blank5"></div>
+            <form name="edit" action="/m.php" method="post" enctype="multipart/form-data">
+                <input type='hidden' value='' name='id' id='id'>
+                <table class="form" cellpadding="0" cellspacing="0">
+                    <tbody><tr>
+                        <td colspan="2" class="topTd"></td>
+                    </tr>
+                    <tr>
+                        <td class="item_time">备注:</td>
+                        <td class="item_input">
+                            <textarea type="text" id="msgarea"  class="textbox" name="remark" style="width:400px;height:100px"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="item_title">&nbsp;</td>
+                        <td class="item_input">
+                            <!--隐藏元素-->
+                            <input type="hidden" name="m" value="AccountCheck">
+                            <input type="hidden" name="a" value="edit">
+                            <!--隐藏元素-->
+                            <input type="submit" class="button" value="确认">
+                            <input type="reset" class="button" value="重置">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="bottomTd"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="dialog-button" style="display: none;">
+        <input type="button" class="dialog-ok" value="确定">
+        <input type="button" class="dialog-cancel" value="取消">
+    </div>
+</div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function close_div() {
+    $('.dialogbox').hide();
+}
+function open_div(id, datetime, remark) {
+    $('#id').val(id);
+    $('#datetime').text(datetime);
+    $('#msgarea').val(remark);
+    $('#dialogbox_div').show();
+    $('#dialogbox_msg').hide();
+}
+</script>
+<include file="Public:footer" />

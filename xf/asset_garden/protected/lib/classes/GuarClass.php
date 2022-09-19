@@ -1,0 +1,8 @@
+<?php
+/*
+ * Guar
+ */
+
+class GuarClass  {
+    
+}

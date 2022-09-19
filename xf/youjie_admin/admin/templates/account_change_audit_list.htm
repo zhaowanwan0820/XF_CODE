@@ -1,0 +1,186 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">
+  <form action="javascript:searchUser()" name="searchForm">
+    <!-- <img src="images/icon_search.gif" width="25" height="22" border="0" alt="SEARCH" /> -->
+    {$lang.user_id} <input type="text" name="user_id" id="user_id" size="10" value="{$filter.user_id}" style="margin-top: 10px" />
+    {$lang.user_name} <input type="text" name="user_name" id="user_name" size="10" value="{$filter.user_name}" style="margin-top: 10px" />
+    {$lang.audit_status}
+      <select name="status" id="status" style="margin-top: 10px">
+        <option value="-1" {if $status==-1}selected{/if} >{$lang.audit_status_all}</option>
+        <option value="1" {if $status==1}selected{/if}>{$lang.audit_status_1}</option>
+        <option value="2" {if $status==2}selected{/if}>{$lang.audit_status_2}</option>
+        <option value="3" {if $status==3}selected{/if}>{$lang.audit_status_3}</option>
+      </select>
+      <input type="submit" onclick="select_data()" class="button" value="{$lang.submit}" />
+  </form>
+</div>
+
+<form method="POST" action="" name="listForm">
+<!-- start user_deposit list -->
+<div class="list-div" id="listDiv">
+{/if}
+<table cellpadding="3" cellspacing="1">
+  <tr>
+    <th>{$lang.audit_id}</th>
+    <th>{$lang.user_id}</th>
+    <th>{$lang.user_name}</th>
+    <th>{$lang.user_money}</th>
+    <th>{$lang.frozen_money}</th>
+    <th>{$lang.rank_points}</th>
+    <th>{$lang.pay_points}</th>
+    <th>{$lang.created_at}</th>
+    <th>{$lang.audit_status}</th>
+    <th>{$lang.admin_list}</th>
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$list item=item}
+  <tr>
+    <td align="center">{$item.audit_id}</td>
+    <td align="center">{$item.user_id}</td>
+    <td align="center">{$item.user_name}</td>
+    <td align="center">{$item.user_money}</td>
+    <td align="center">{$item.frozen_money}</td>
+    <td align="center">{$item.rank_points}</td>
+    <td align="center">{$item.pay_points}</td>
+    <td align="center">{$item.created_at}</td>
+    {if $item.audit_status==1}
+    <td align="center" style="color: #41a5e1;">{$item.status}</td>
+    {elseif $item.audit_status==2}
+    <td align="center" style="color: green;">{$item.status}</td>
+    {elseif $item.audit_status==3}
+    <td align="center" style="color: red;">{$item.status}</td>
+    {/if}
+    <td align="center">{$item.admin_user}
+    <td align="center">
+    {if $item.audit_status==1}
+    <a href="account_change_audit.php?act=edit&id={$item.audit_id}" title="{$lang.audit}">{$lang.audit}</a>
+    {else}
+    <a href="account_change_audit.php?act=info&id={$item.audit_id}" title="{$lang.audit}">
+    {$lang.info}</a>
+    {/if}
+    </td>
+  </tr>
+  {foreachelse}
+  <tr>
+    <td class="no-records" colspan="9">{$lang.no_records}</td>
+  </tr>
+  {/foreach}
+
+<table id="page-table" cellspacing="0">
+<tr>
+  <td>&nbsp;</td>
+  <td align="right" nowrap="true">
+  {insert_scripts files="../js/utils.js"}
+  <div id="turn-page">
+    <span id="pageCurrent">{$filter.page}</span> / <span id="totalPages">{$page_count}</span>
+    页，每页 <input type='text' size='3' id='pageSize' value="{$filter.page_size}" onkeypress="changePageSize(event)">
+    条记录，总共 <span id="totalRecords">{$record_count}</span>
+    条记录
+    <span id="page-link">
+      {literal}<a href="javascript:First();">{/literal}{$lang.page_first}</a>
+      {literal}<a href="javascript:Prev();">{/literal}{$lang.page_prev}</a>
+      {literal}<a href="javascript:Next();">{/literal}{$lang.page_next}</a>
+      {literal}<a href="javascript:Last();">{/literal}{$lang.page_last}</a>
+      <select id="gotoPage" onchange="Goto(this.value)">
+        {create_pages count=$page_count page=$filter.page}
+      </select>
+    </span>
+  </div>
+  </td>
+</tr>
+</table>
+<input type="hidden" name="page" id="page" value="{$filter.page}">
+<input type="hidden" name="last" id="last" value="{$page_count}">
+{if $full_page}
+</div>
+<!-- end user_deposit list -->
+</form>
+
+<script type="text/javascript" language="JavaScript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+{literal}
+<!--
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+function select_data() {
+  var status    = document.getElementById('status').value;
+  var user_id   = document.getElementById('user_id').value;
+  var user_name = document.getElementById('user_name').value;
+  var page      = document.getElementById('page').value;
+  var last      = document.getElementById('last').value;
+  if (parseInt(page) > parseInt(last)) {
+    page = last;
+  }
+  location.href = '/admin/account_change_audit.php?act=list&status='+status+'&user_id='+user_id+'&user_name='+user_name+'&page='+page;
+}
+
+function First() {
+  var status    = document.getElementById('status').value;
+  var user_id   = document.getElementById('user_id').value;
+  var user_name = document.getElementById('user_name').value;
+  location.href = '/admin/account_change_audit.php?act=list&status='+status+'&user_id='+user_id+'&user_name='+user_name+'&page=1';
+}
+
+function Prev() {
+  var status    = document.getElementById('status').value;
+  var user_id   = document.getElementById('user_id').value;
+  var user_name = document.getElementById('user_name').value;
+  var page      = document.getElementById('page').value;
+  var value     = parseInt(page)-1;
+  if (value < 1) {
+    value = 1;
+  }
+  location.href = '/admin/account_change_audit.php?act=list&status='+status+'&user_id='+user_id+'&user_name='+user_name+'&page='+value;
+}
+
+function Next() {
+  var status    = document.getElementById('status').value;
+  var user_id   = document.getElementById('user_id').value;
+  var user_name = document.getElementById('user_name').value;
+  var page      = document.getElementById('page').value;
+  var last      = document.getElementById('last').value;
+  var value     = parseInt(page)+1;
+  if (value > last) {
+    value = last;
+  }
+  location.href = '/admin/account_change_audit.php?act=list&status='+status+'&user_id='+user_id+'&user_name='+user_name+'&page='+value;
+}
+
+function Last() {
+  var status    = document.getElementById('status').value;
+  var user_id   = document.getElementById('user_id').value;
+  var user_name = document.getElementById('user_name').value;
+  var last      = document.getElementById('last').value;
+  location.href = '/admin/account_change_audit.php?act=list&status='+status+'&user_id='+user_id+'&user_name='+user_name+'&page='+last;
+}
+
+function Goto(value) {
+  var status    = document.getElementById('status').value;
+  var user_id   = document.getElementById('user_id').value;
+  var user_name = document.getElementById('user_name').value;
+  location.href = '/admin/account_change_audit.php?act=list&status='+status+'&user_id='+user_id+'&user_name='+user_name+'&page='+value;
+}
+
+function changePageSize(event) {
+  listTable.changePageSize(event);
+  if (event['key'] == 'Enter') {
+    select_data();
+  } 
+}
+
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}
+{/if}

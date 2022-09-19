@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>海口农商银行</title>
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no">
+    <style type="text/css">
+        html,body,div,h1,h2,h3,h4,h5,h6,p,dl,dt,dd{padding: 0px; margin: 0px;}
+        .clearfix:after {content: ".";display: block;height: 0;clear: both;visibility: hidden}
+        .clearfix {display: inline-block}
+        * html .clearfix {height: 1%}
+        .clearfix {display: block}
+        body{background: #393b50; color: #333; font-family: "微软雅黑"; font-size: 14px;}
+        .box{padding: 0 10px;}
+        .top_logo{background: url({$STATIC_PATH}/images/cunguan/top_logo.png) no-repeat center; background-size:auto 100%; padding-top: 7%; margin: 13px 0;}
+        .distance{padding: 0 10px 10px;}
+        .bank_box{ background: #fff; border-radius: 5px;padding: 15px 0px 10px; position: relative; margin: 0 auto 30px; width: 1100px;}
+        .bank_logo{padding-top: 12.5%; background: url({$STATIC_PATH}/images/cunguan/logo.png) no-repeat center; background-size:286px 80px;}
+        .title{padding: 15px 0px; text-align: center; color: #a2a2a2; position: relative;}
+        .title em{border-bottom: 1px solid #d5d5d5; display: block; padding-top: 18px;margin: 0 0px;}
+        .title span{ position: relative; top: -13px; background: #fff; padding: 0 10px;}
+        .user_info dl{padding: 5px 0px;}
+        .user_info dt{float: left; width: 100px;}
+        .user_info dd{margin-left: 100px;}
+        .tips{ text-align: center;color: #a2a2a2; height: 40px; line-height: 40px;border-radius: 5px;}
+        .w1100{width: 1100px; margin: 0 auto;}
+        .maxwid864{max-width: 864px; margin: 0 auto;}
+        .bank_jl{padding-right: 10px; line-height: 20px; height: 215px; overflow-y: auto;}
+        .bank_jl td{padding: 10px 0px;}
+        .bank_jl_name{overflow: hidden;white-space: nowrap;text-overflow: ellipsis;}
+        .bank_top{height: 127px;background: #fff; margin-bottom: 30px; display: block;}
+        .bank_top .top{height: 35px;background: #fafafa; border-bottom: 1px solid #e6e6e6;}
+        .logo{background: url({$STATIC_PATH}/images/cunguan/logo.png) no-repeat left 20px;background-size:177px 52px;height: 52px;font-size: 24px;  padding-left: 205px; padding-top: 30px;}
+        .logo_text{padding-left: 30px; border-left:1px solid #333;}
+    </style>
+    <script type="text/javascript" src="{$STATIC_PATH}/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="{$STATIC_PATH}/js/jquery.cookie.js"></script>
+</head>
+    <body>
+       <div class="bank_top">
+         <div class="top"></div>
+         <div class="w1100">
+           <div class="logo"><div class="logo_text">网信资金存管查询系统</div></div>
+         </div>
+       </div>
+       <div class="box">
+           <div class="bank_box">
+               <div class="maxwid864">
+               <div class="title">
+                   <em class="line"></em>
+                   <span>账户信息</span>
+                   <p>（ 截至于 {$time} ）</p>
+               </div>
+               <div class="user_info">
+                    <dl class="clearfix">
+                        <dt>账户名称：</dt>
+                        <dd>{$name} &nbsp;&nbsp;<a href="javascript:void()" name="logout" id="Js-logout" style="color:#aaa; font-size:12px; text-decoration:none;">(退出当前账号)</a></dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>证件号码：</dt>
+                        <dd>{$idno}</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>现金余额：</dt>
+                        <dd>{$money}元</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>冻结金额：</dt>
+                        <dd>{$balance}元</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>账户状态：</dt>
+                        <dd>正常</dd>
+                    </dl>
+               </div>
+               <div class="title">
+                   <em class="line"></em>
+                   <span>资金记录</span>
+               </div>
+               <div class="bank_jl">
+                 <table width="100%">
+                 <colgroup>
+                   <col width="30%"></col>
+                   <col width="30%"></col>
+                   <col width="40%"></col>
+                 </colgroup>
+            {foreach from=$moneylist item="money"}
+                 <tr>
+                     <td><div class="bank_jl_name"><span>{$money.type}</span></div></td>
+                     <td align="right">{$money.money}元</td>
+                     <td align="right"><span class="time_year">{$money.time}</span></td>
+                   </tr>
+            {/foreach}
+
+                 </table>
+               </div>
+               <div class="title">
+                   <em class="line"></em>
+                   <span>平台信息</span>
+               </div>
+               <div class="user_info">
+                   <dl class="clearfix">
+                       <dt>存管平台：</dt>
+                       <dd>网信</dd>
+                   </dl>
+                   <dl class="clearfix">
+                       <dt>公司名称：</dt>
+                       <dd>北京经讯时代科技有限公司</dd>
+                   </dl>
+               </div>
+               <div class="tips">本服务由海口联合农商银行提供</div>
+              </div> 
+           </div>
+       </div>
+     <script type="text/javascript">
+      $(function(){
+          $('#Js-logout').bind("click", function(){
+                $.cookie('user_token', null);
+                location.href="/user/login_cunguan";
+          });
+      })
+      </script>
+          
+        
+    </body>
+</html>

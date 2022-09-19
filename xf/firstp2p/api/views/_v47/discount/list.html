@@ -1,0 +1,307 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="format-detection" content="telephone=no" />
+        <title>优惠券</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-common.css');?>">
+        <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/discount/p_discount_list.css');?>" rel="stylesheet" />
+        <style>
+        .m-main {min-height: 280px;}
+        </style>
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="p_discount_list" id="border_style">
+                <div class="tab_box" style="margin-top:15px;">
+                    <div class="tab_con">
+                        <div class="load_box">
+
+                        </div>
+                        <div class="load_more tb0-more"></div>
+                    </div>
+             </div>
+
+             <!-- <div class="discount_num">
+                    <div class="discount_num_tips">
+                    未选择优惠券
+                    </div>
+                    <a class="discount_confirm_btn discount_confirm_dis_btn" href="javascript:;">确认使用</a>
+                </div>
+            </div> -->
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.6/js/common/common.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/text_clip.js');?>"></script>
+        <script>
+            //所选优惠券id
+            var discount_id = '{$discount_id}';
+            var discount_type = '{$discount_type}';
+            var goodsType = '{$goods_type}';
+            var isFirstp2p = '{$isFirstp2p}';//判断是否普惠站 1是 0不是
+
+            //选择优惠券按钮动态切换形态和内容
+            var showBtn = function(options){
+                var settings = {
+                    href : "",
+                    type : "" ,
+                    profit : "",
+                    sign : "",
+                    unit : "{$bonus_unit}" ? "{$bonus_unit}" :"元",
+                    num : 1,
+                    subType : "",
+                    dType : "返现"
+                },
+                obj = $.extend(settings, options),
+                href = obj.href,
+                type = obj.type,
+                profit = obj.profit,
+                sign = obj.sign,
+                unit = obj.unit,
+                num = obj.num,
+                subType = obj.subType,
+                dType = obj.dType;
+                // $(".discount_confirm_btn").removeClass('discount_confirm_dis_btn').attr("href" , href);
+                // $(".discount_num_tips").html('已选择<span class="color_red">'+ num +'</span>张'+ dType +'券，可获'+ type +'<span class="color_red">'+ profit + sign + unit +'</span>' + subType);
+                // if(discount_type == 3){
+                //     $(".discount_num_tips").html('已选择<span class="color_red">'+ num +'</span>张'+ dType +'券，可获'+ type +'<span class="color_red">'+ profit +'</span>' + sign + unit + subType);
+                // }
+            };
+
+            //初始化选择优惠券
+            var selectList = function(){
+                var sign = "",
+                unit = "{$bonus_unit}" ? "{$bonus_unit}" :"元",
+                type = "",
+                $a = null,
+                subType = (goodsType == '1' ? '现金' : '{$bonus_title}'),
+                dType = "返现";
+                if(discount_type == '2'){
+                    sign = "%";
+                    unit = "";
+                    type = "加息";
+                    subType = "";
+                    dType = "加息";
+                }else if (discount_type == 3){
+                    sign = "克";
+                    unit = "";
+                    type = "";
+                    subType = "黄金";
+                    dType = "黄金";
+                }
+                $(".j-selectA").each(function(i , v){
+                    var $v = $(v);
+                    if($v.data("id") == discount_id){
+                        showBtn({
+                            href : $v.data("href") ,
+                            profit : $v.data("profit") ,
+                            sign : sign ,
+                            unit : unit ,
+                            type : type,
+                            subType : subType,
+                            dType : dType
+                        });
+                    }
+                });
+            };
+
+            selectList();
+
+            $(".tab_con").on("click" , ".j-selectA" , function(){
+                var $t = $(this),
+                href = $t.data("href"),
+                profit = $t.data("profit"),
+                sign = "",
+                unit = "{$bonus_unit}" ? "{$bonus_unit}" :"元",
+                type = "",
+                $tabCon = $t.closest('.tab_con'),
+                subType = "",
+                dType = "返现";
+                goodsType = $t.data("goodstype");
+                subType = (goodsType == '1' ? '现金' : '{$bonus_title}');
+                discount_id = $t.data("id");
+                discount_type = $t.data("type");
+
+                if(discount_type == 2){
+                    sign = "%";
+                    unit = "";
+                    type = "加息";
+                    subType = "";
+                    dType = "加息";
+                }else if (discount_type == 3){
+                    sign = "克";
+                    unit = "";
+                    type = "";
+                    subType = "黄金";
+                    dType = "黄金";
+                }
+                showBtn({
+                    href : href ,
+                    profit : profit ,
+                    sign : sign ,
+                    unit : unit ,
+                    type : type,
+                    subType : subType,
+                    dType : dType
+                });
+                $(".j-icon-select").removeClass('icon_select');
+                $t.find(".j-icon-select").addClass('icon_select');
+                WXP2P.APP.setCookie('choosed_discount_info_zdx', discount_id, 1);
+            });
+
+            function getUrlParam  (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(unescape(r[2])); return null;
+            }
+
+            var rawFirstPageData = {function name="json_encode" v="$discountList"};
+            // (function ($) {
+            var loadmore = new WXP2P.UI.P2PLoadMore($(".load_box")[0], $('.tb0-more')[0], '/discount/AjaxPickList?token={$usertoken}&deal_id={$deal_id}&site_id={$siteId}&discount_type={$discount_type}&consume_type={$consumeType}', 1, 'get', 10);
+
+            var tabHash = {
+                'tab0': loadmore
+            };
+            loadmore.createItem = function(item) {
+                var href = '';
+                if (item.type == 3) {
+                    var href = 'invest://api?type=confirm&token={$usertoken}&dealId={$deal_id}&code={$data.code}&buyAmount={$data.money}';
+                    href += '&discount_id=' + item.id + '&discount_group_id=' + item.discountGroupId + '&discount_sign=' + item.sign
+                        + '&discount_bidAmount=' + item.bidAmount + '&discount_type=' + item.type;
+                } else {
+                    href = 'invest://api?type=confirm&token={$usertoken}&id={$deal_id}&code={$data.code}&money={$data.money}';
+                    href += '&discount_id=' + item.id + '&discount_group_id=' + item.discountGroupId + '&discount_sign=' + item.sign
+                            + '&discount_bidAmount=' + item.bidAmount + '&discount_type=' + item.type;
+                }
+
+                var unit = ""
+                var dis_type = ""
+                if(item.type == 1 || item.type == 2){
+                    unit = "元";
+                    dis_type = "金额"
+                }else{
+                    unit = "克";
+                    dis_type = "购买"
+                }
+                var icon_select = "";
+                var dl = document.createElement("div");
+                var html = "";
+                html +='<div class="con">';
+                html += '<a class="j-selectA" data-id="'+ item.id +'" href="'+ href +'" data-href="'+ href + '" data-profit="'+ item.goodsPrice +'" data-goodstype="'+ item.goodsType + '" data-type="' + item.type + '">';
+
+                html += '    <dl>';
+                if(item.givenStatus !=1 && isFirstp2p != 1){//不等于一的时候表示可赠送
+                    if(item.type == 1){
+                        html += '    <div class="icon_kzs_blue">';
+                    }else if(item.type == 2){
+                        html += '    <div class="icon_kzs_yellow">';
+                    }else if(item.type == 3){
+                        html += '<div class="icon_kzs_gold">'
+                    }
+                    html += '    </div>';
+                }
+                html += '        <dt>';
+                if(item.type == 1){
+                    html += '        <h2><span class="f28">'+ item.goodsPrice+'</span><span class="f12">元</span></h2>返现券';
+                }else if(item.type == 2){
+                    html += '        <h2>+<span class="f28">'+ item.goodsPrice+'</span><span class="f12">%</span></h2>加息券';
+                }else if(item.type == 3){
+                    html += '        <h2><span class="f25">'+ item.goodsPrice+'</span><span class="f12">克</span></h2>黄金券';
+                }
+                html +='</dt>';
+                html +='<dd>';
+                html +='<p>'+item.name+'</p>';
+                if(item.type == 1){
+                    html +='<p class="color_blue">';
+                }else if(item.type == 2){
+                    html +='<p class="color_yellow">';
+                }else if(item.type == 3){
+                    html +='<p class="color_gold">';
+                }
+
+                if(item.bidDayLimit != "" && item.bidDayLimit > 0) {
+                    html += dis_type + '满'+item.bidAmount + unit +'，期限满'+item.bidDayLimit+'天可用</p>';
+                }else{
+                    html += dis_type + '满'+item.bidAmount + unit +'可用<p>';
+                }
+                html +='<p>'+WXP2P.UTIL.dataFormat(item.useStartTime,"y-m-d")+'至'+WXP2P.UTIL.dataFormat(item.useEndTime,"y-m-d")+'有效</p>';
+
+                if (discount_id == item.id) {
+                    icon_select = " icon_select" ;
+                }
+                html += '<div class="j-icon-select'+ icon_select +'"></div>';
+                html +='</dd>';
+                html +='</dl>';
+                html +='</a>';
+                if(item.useInfo!=""){
+                    html +='<div class="detail">';
+                    html +='<div class="text">';
+                    html +=''+item.useInfo+'';
+                    html +='</div>';
+                    html +='</div>';
+                }
+                html +='</div>';
+                dl.innerHTML = html;
+                if(item.type == 1){
+                    dl.className="card";
+                }else if(item.type == 2){
+                    dl.className="card rate_increases";
+                }else if(item.type == 3){
+                    dl.className="card rate_gold";
+                }
+                WXP2P.APP.batchWarpAnchorSchema($(dl).find('a'));
+                return dl;
+            };
+
+            loadmore.callback = function(){
+                $('.j-selectA').each(function(i , v){
+                     var $v = $(v);
+                     if($v.data("id") == discount_id){
+                        $v.find(".j-icon-select").addClass('icon_select');
+                     }
+                });
+                selectList();
+                $('.p_discount_list .card .text').each(function(k,v){
+                    P2PWidget.ui.instanceTextClip(v);
+                });
+            };
+
+            {if $discountListNum > 0 && $o2oDiscountSwitch eq 1}
+            var rpcResult = {};
+            rpcResult.data = rawFirstPageData;
+            loadmore.processData = function(rpcResult) {
+                WXP2P.UI.P2PLoadMore.prototype.processData.call(this, rpcResult);
+                $('.p_discount_list .card .text').each(function(k,v){
+                    P2PWidget.ui.instanceTextClip(v);
+                });
+            };
+            loadmore.processData(rpcResult);
+
+            {else}
+            $(".load_box").html('<div class="no_coupon" style="margin-top:-120px;"><p>这里空空如也</p></div>');
+            {/if}
+         </script>
+         <script type="text/javascript">
+            function addClass(id, new_class) {
+                var i, n = 0;
+                new_class = new_class.split(",");
+                for (i = 0; i < new_class.length; i++) {
+                    if ((" " + document.getElementById(id).className + " ").indexOf(" " + new_class[i] + " ") == -1) {                        document.getElementById(id).className += " " + new_class[i];
+                        n++;
+                    }
+                 }
+                 return n;
+            }
+            var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "",is_ios = /iPhone|iPad|iPod/i.test(userAgentString),is_android = /android/i.test(userAgentString),iosVersion = 0;
+            var iosmatches = userAgentString.match(/IPHONE OS ([0-9_]*)/i);
+            if (iosmatches && iosmatches.length > 1) {
+                    iosVersion = parseInt(iosmatches[1].substring(0, 1), 10);
+            }
+            if (iosVersion>=8) {
+                addClass('border_style', 'border_style');
+            }
+        </script>
+    </body>
+</html>

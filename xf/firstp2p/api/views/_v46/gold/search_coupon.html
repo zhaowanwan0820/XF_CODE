@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>邀请码</title>
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/deal_codeshow.css?v=1299111');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_deal_codeshow">
+        <div class="pcs_main">
+            <div class="pcs_top">
+                <div class="tap">请输入邀请码</div>
+                <!-- <div class="pcst_center clearfix">
+                    <div class="pcst_left">
+                        <input id="inp_code" type="text" maxlength="6"{if $data.couponIsFixed == 1} readonly = 'readonly'{/if} value="{$data.code}"/>
+                               <i class="code_right"></i>
+                            <span class="code_text error_color">邀请码错误</span>
+                    </div>
+                </div> -->
+                <!-- 验证输入框 -->
+                <div class="code_box">
+                    <div class="input_default">
+                        <input class="code_input" id="inp_code" type="text" {if $data.couponIsFixed==1 } readonly='readonly' {/if} value="{$data.code}">
+                        <div class="bottom_line_grey"></div>
+                    </div>
+                    <div class="err_box">
+                        <span class="code_text error_color">邀请码错误</span>
+                    </div>
+                </div>
+                <div class="pcst_btn">
+                    <a class="btn_gray" href="javascript:void(0);" id="sub_btn">确定</a>
+                </div>
+                <p class="msg_tip"></p>
+            </div>
+            <div class="line_icon"></div>
+            <div class="pcs_tip">
+                <!-- site_id 为100的时候隐藏什么是邀请码 -->
+                {if $site_id neq 100 }
+                <p class="alert_error">
+                    <span class="color_red">温馨提示：不能绑定自己的邀请码</span>
+                </p>
+                <h1>什么是邀请码，怎么获取？</h1>
+                <p>您可以关注网信官方微信公众号“Firstp2p”，我们会不定期推出各种优惠活动，您可以使用活动中所提供的邀请码进行投资，获得额外的收益 。同时您也可以询问已在网信注册过的好友，使用他们的“邀请码”进行投资，您和您的好友都可以获得额外的奖励。
+                </p>
+                {/if}
+                <h1>如何获取我的投资邀请码？</h1>
+                <p>具体获取方式为：进入App底部导航“我的”，点击“邀请好友得返利”查看详细内容。</p>
+                <div class="pcs_help">>解决不了您的疑惑？
+                    <a href="telprompt:4008909888">致电客服</a>
+                </div>
+            </div>
+        </div>
+        <input type='hidden' id='a_token' name='a_token' value='{$data.token}' />
+    </div>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.4/js/common.js');?>"></script>
+    <script>
+    $(function() {
+        var $errorTip = $('.code_text');
+        var $btn = $('#sub_btn');
+        var $codeInput = $(".code_input");
+        var req;
+        var reqAbort = false;
+        var xinId = '{$data.id}' || '{$data.dealId}';
+        $codeInput.val('');
+
+        function errMsgShow(html) {
+            $errorTip.show().html(html);
+            disableHref();        }
+
+        function err_hide() {
+            $errorTip.fadeOut("slow")
+        }
+
+        function enableHref(flag) {
+            var newhref = "invest://api?type=confirm&dealId={$data.dealId}&buyAmount={$data.buyAmount}&code=" + $(
+                '#inp_code').val() + '&forceCodeEmpty=' + (flag ? 1 : 0);
+            newhref = newhref +
+                "&discount_id={$discount_id}&discount_group_id={$discount_group_id}&discount_sign={$discount_sign}&discount_detail={$discount_detail_encodeurl}&discount_bidAmount={$discount_bidAmount}";
+            $btn.removeClass("btn_gray").attr("href", newhref);
+        }
+
+        function disableHref() {
+            $btn.attr("href", 'javascript:void(0);');
+        }
+
+        function disableHref_new() {
+            $btn.addClass("btn_red").attr("href", 'firstp2p://api?type=local&action=closeself');
+        }
+        // var _timer = null;
+        $codeInput.on("input", function() {
+            var inp_code = $("#inp_code").val()
+            if (inp_code.length < 6) {
+                disableHref()
+                $btn.addClass('btn_gray').removeClass('btn_red');
+            } else {
+                $btn.removeClass('btn_gray').addClass('btn_red')
+            }
+        })
+        $(".pcst_btn").click(function() {
+            var inp_code = $("#inp_code").val()
+            if (inp_code.length < 6) {
+                $btn.addClass('btn_gray').removeClass('btn_red');
+                disableHref()
+            } else {
+                doajax(inp_code);
+            }
+        })
+
+        function doajax(inp_code) {
+            var val = $.trim(inp_code);
+            $(inp_code).val(val);
+            if (val.length == 0) {
+                if(xinId){
+                    enableHref(true);
+                } else {
+                    disableHref_new();
+                }
+                $errorTip.hide();
+                $('.msg_tip').html('');
+                return;
+            } else if (!/^[a-zA-Z0-9]+$/.test(val)) {
+                errMsgShow('邀请码格式错误，请重试');
+                return;
+            } else {
+                $errorTip.hide();
+                if (req) {
+                    reqAbort = true;
+                    req.abort();
+                }
+                reqAbort = false;
+            }
+            req = $.ajax({
+                url: '/deal/coupon?id=' + inp_code + "&pid={$data.id}",
+                type: 'POST',
+                dataType: 'json',
+                success: function(newdata) {
+                    if (newdata.errno != 0) {
+                        errMsgShow(newdata.error);
+                        $('.bottom_line_grey').addClass('bottom_line_red')
+                    } else {
+                        // var msg = newdata.data.remark;
+                        // $('.msg_tip').html(msg);
+                        if (xinId) {
+                            enableHref();
+                            $btn.unbind().click();
+                        } else {
+                            $.ajax({
+                                url: '/user/bindCoupon',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: {
+                                    token: $('#a_token').val(),
+                                    coupon: $('.code_input').val()
+                                },
+                                success: function(data) {
+                                    if (data.errno != 0) {
+                                        WXP2P.UI.showErrorTip(data.error);
+                                    } else {
+                                        disableHref_new()
+                                        $btn.unbind().click();
+                                    }
+                                },
+                            })
+                        }
+                    }
+                },
+                error: function(msg) {
+                    req = null;
+                    disableHref();
+                    if (!reqAbort) {
+                        WXP2P.UI.showErrorTip('网络错误');
+                    }
+                }
+            });
+        }   
+    });
+    </script>
+</body>
+
+</html>

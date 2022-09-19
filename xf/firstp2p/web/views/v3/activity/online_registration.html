@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{$title}</title>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/m-base.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/m-common.css?v=1');?>">
+</head>
+
+<body class="p_onlineorg">
+  {include file="web/views/v3/activity/weixin_share_js.html"}
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/onlinereg/p_onlineorg.css?v=1');?>">
+  <link href="<?php echo $this->asset->makeUrl('v3/js/activity/onlinereg/picker/picker.css');?>" rel="stylesheet" />
+
+  <a href="javascript:;" class="shear_btn" style="display: none" id="JS_shear_btn">
+    <img src="<?php echo $this->asset->makeUrl('v3/images/activity/onlinereg/index_share.png');?>" class="shear_btn_img">
+  </a>
+  <div class="activity_detail">
+    <div class="tc">
+      <div class="btn_blue_h22">活动详情</div>
+    </div>
+    <p class="mt10">
+        {$detail}
+    </p>
+  </div>
+
+  <from action="" method="post">
+    <input type="hidden" name="token" id="token" value="{$token}">
+    <input type="hidden" name="from_login" id="from_login" value="{$from_login}">
+    <input type="hidden" name="isApp" id="isApp" value="{$isApp}">
+    <input type="hidden" name="activity_id" id="activity_id" value="{$activityId}">
+    <input type="hidden" name="address" id="address" value="">
+    <div class="JS_reg_info">
+      <div class="user_info">
+        <div class="tit">- 个人用户 -</div>
+        <ul class="cont">
+          <li>
+            <div class="left">用户姓名</div>
+            <div class="right">
+              <span class="name">{$name}</span>
+            </div>
+          </li>
+          <li id="selectAddressBtn">
+            <div class="left">所在城市</div>
+            <div class="right">
+              <div class="svalue-add" id="svalue-add" data-value="">
+              </div>
+              <div class="qxz" id="addressLabelId">
+                <span>请选择</span>
+                <i class="arr"></i>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div id="JS_friends_info">
+        <div class="user_info JS_fri_info">
+          <div class="tit JS_friend_tit">- 亲友1 -</div>
+          <ul class="cont">
+            <li>
+              <div class="left">亲友类型</div>
+              <div class="right">
+                <!-- 亲友类型 -->
+                <select name="" class="JS_select_friend JS_select_type">
+                  <option value="" disabled selected hidden>请选择</option>
+                  <option value="1">朋友</option>
+                  <option value="2">父母</option>
+                  <option value="3">配偶</option>
+                  <option value="4">子女</option>
+                </select>
+              </div>
+            </li>
+            <li>
+              <div class="left">亲友姓名</div>
+              <div class="right">
+                <input type="text" value="" placeholder="请填写" class="ipt JS_fri_name">
+              </div>
+            </li>
+            <li>
+              <div class="left">亲友性别</div>
+              <div class="right">
+                <select name="" class="JS_select_friend JS_select_sex">
+                  <option value="" disabled selected hidden >请选择</option>
+                  <option value="0">男</option>
+                  <option value="1">女</option>
+                </select>
+              </div>
+            </li>
+            <li>
+              <div class="left">亲友年龄</div>
+              <div class="right">
+                <input type="text" value="" placeholder="请填写" class="ipt JS_fri_age">
+              </div>
+            </li>
+            <li>
+              <div class="left">亲友手机号</div>
+              <div class="right">
+                <input type="text" value="" placeholder="请填写" class="ipt JS_fri_tel">
+                <div class="error_tips JS_err_tips">请输入正确格式的手机号</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="add_btn">
+      <img src="<?php echo $this->asset->makeUrl('v3/images/activity/onlinereg/add@3x.png');?>" alt="" width="34" height="34"  id="JS_add_btn">
+      <p>填写其他好友信息</p>
+    </div>
+
+    <div class="btn_red_h40 mt25 JS_submit_btn">已确认信息无误，提交报名</div>
+  </from>
+  <!--end-->
+  <script src="<?php echo $this->asset->makeUrl('v3/js/activity/onlinereg/jquery-1.10.2.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('v3/js/activity/onlinereg/p_onlinereg.js?v=2');?>"></script>
+  <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/activity/onlinereg/picker/city.js');?>"></script>
+  <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/activity/onlinereg/picker/picker.js');?>"></script>
+  <!-- 确认报名 -->
+  <div class="ui_popup ui_pop_regi" id="JS_ui_pop_regi" style="display:none;">
+    <div class="popup_bg"></div>
+    <div class="popup_box">
+      <div class="popup_content">
+        <div class="tc">确认报名信息填写无误</div>
+      </div>
+      <div class="popup_btn">
+        <a class="btn_cancel JS_cancel" href="javascript:void(0);">取消</a>
+        <a class="btn_ok JS_ok" href="javascript:void(0);">确认</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 报名成功或失败弹窗 -->
+  <div class="ui_popup ui_pop_regi" id="JS_ui_pop_result" style="display:none;">
+    <div class="popup_bg"></div>
+    <div class="popup_box">
+      <div class="popup_content">
+        <div class="tc" id="JS_reg_result">恭喜，您已报名此活动！
+          <br/>最终入选结果，请以官方通知为准</div>
+      </div>
+      <div class="popup_btn">
+        <a class="btn_ok JS_result_ok" href="javascript:void(0)">确认</a>
+      </div>
+    </div>
+  </div>
+  <!-- 微信分享弹窗 -->
+  <div class="ui_popup ui_pop_share" id="JS_ui_pop_share" style="display:none;">
+    <div class="popup_bg"></div>
+    <div class="popup_box">
+    </div>
+  </div>
+</body>
+
+</html>

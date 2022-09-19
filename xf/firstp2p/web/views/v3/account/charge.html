@@ -1,0 +1,101 @@
+{include file="web/views/v3/header.html"}
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_charge.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/charge/index.js');?>"></script>
+
+<!--private js&css end-->
+<div class="w1100">
+<!-- 开关 -->
+<input class="offlineChargeOpen" value="{$offlineChargeOpen}" type="hidden"/>
+<!-- 银行白名单 -->
+<input class="wxOfflineChargeSwitch" value="{$wxOfflineChargeSwitch}" type="hidden"/>
+<form name="chargeForm" id="chargeForm" action='{url x="index" r="account/docharge"}' method="post">
+    <div class="p_account_charge">
+        <div class="user_right_box" id="chargeSelect">
+            <div class="user_title"><h1><i class="ico_chongzhi"></i>充值到{$wxAccountConfig.name}</h1></div>
+             <div class="bank-tip">{function name="get_adv" x="充值页提示_2015"}</div>
+            <?php echo token_input(); ?>
+            <input type="hidden" name="payment" value="4">
+
+
+            <div class="take">
+                <div>
+                    <dl class="clearfix" style="margin-bottom:15px;color:#000">
+                        <dt>
+                            <img src="{$bankcardInfo.bankLogo}" width="55" height="55">
+                        </dt>
+                        <dd>{$bankcardInfo.bankName}</dd>
+                        <dd>{$bankcardInfo.hideCard}</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>充值账户：</dt>
+                        {if $isEnterprise}
+                        <dd>{$enterpriseInfo.company_name}</dd>
+                        {else}
+                        <dd>{$user_info.real_name}</dd>
+                        {/if}
+                    </dl>
+                    <dl class="clearfix pb7">
+                        <dt>账户余额：</dt>
+                        <dd><span class="color-yellow2">{function name="number_format" v=$user_info.money f="2"}</span>&nbsp元</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt class="pt3">充值金额：</dt>
+                        <dd><input type="text" class="user_name validate[required,funcCall[X.V.checkCrash]]" id="charge" name="money" data-int="10" data-xiaoshu="2" /><span class="need_money">元</span></dd>
+                        <dd ><span class="chargeformError"></span></dd>
+                    </dl>
+                    <dl>
+                        <dt class="pt3">充值方式：</dt>
+                        <dd>
+                            <div class="JS_select_box select_box select_paytype" data-name="paymentMethod" id="" style="z-index:11">
+                                <div class="j_select"></div>
+                                <ul class="select_ul none j_selectContent">
+                                {$paymentMethodOptionsHtml}
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+
+            </div>
+            <div class="line_for_btn"></div>
+            <div class="f14 charge_btn">
+                <a href="javascript:void(0)" class="sv_charge_wxlc_md"><button class="user_button mt10" id="incharge_done" type="submit">充值</button></a>
+            </div>
+            {if $offlineChargeOpen && !$wxOfflineChargeSwitch}
+            {else}
+                {if !$wxOfflineUserBlack}
+                <div class="big_money"><a class="JS_big_money_url">大额充值></a></div>
+                {/if}
+            {/if}
+            <div class="user_tip charge_tip">
+                <p>1、所有资金均由第三方银行存管。</p>
+
+                <p>2、请注意您的银行卡的充值限制，以免造成不便。</p>
+
+                <p>3、如果充值金额没有及时到账，请拨打客服热线寻求帮助。</p>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+<script>
+    window.onload = function () {
+        zhuge.track('进入充值详情页',{
+            "账户类型": "{$wxAccountConfig.name}"
+        })
+    }
+    $('#incharge_done').click(function(){
+        zhuge.track('充值详情页_点击确认充值',{
+            "账户类型": "{$wxAccountConfig.name}"
+        })
+    })
+    $('.JS_big_money_url').click(function(){
+        zhuge.track('充值详情页_点击大额充值',{
+            "账户类型": "{$wxAccountConfig.name}"
+        })
+    })
+</script>
+{include file="web/views/footer.html"}

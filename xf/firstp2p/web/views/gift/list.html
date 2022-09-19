@@ -1,0 +1,61 @@
+﻿{include file="web/views/v2/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/account_o2o_gift.css');?>">
+<div class="p_account_o2o_gift">
+        <span class="blank23"></span>
+        <div class="w1100" style="min-height:500px;">
+            <div class="ui-box"  style="min-height:458px;">
+                <div class="ui_suc_title"><a class="fr" href="/gift" style="color:#0088cc;font-size:16px;margin:10px 60px 0 0;">返回上一页</a>礼券领取</div>
+                {if $countList eq 0}
+                     <div class="no_coupon">
+                         <span class="no_coupon_icon"></span>礼券均已被抢光
+                     </div>
+                {else}
+                <div class="gift_list">
+                    <h2 class="list_title gift_receive_color">以下礼券只能选择领取其一，礼券库存有限，请及时领取</h2>
+                    <div class="gift_tab">
+                        <ul class="gift_thead">
+                            <li class="gift_name">礼券名称</li>
+                            <li class="gift_money">价值</li>
+                            <li class="gift_operation">操作</li>
+                        </ul>
+                        {foreach from=$couponGroupList item=coupon}
+                        <ul class="gift_tbody">
+                            <li class="one">
+                               <div class="gift_product">
+                                   <dl>
+                                       <dt><img src="{$coupon.pcPic}"></dt>
+                                       <dd>
+                                            <div class="v_middle">
+                                               <h2>{$coupon.productName}</h2>
+                                               {if $coupon.useEndTime neq 0}
+                                                   {if $coupon.useTimeType eq 2}
+                                                    <p class="color_gray">有效期至：{function name="date" v="Y.m.d" b=$coupon.useEndTime}</p>
+                                                   {/if}
+                                                {/if}
+                                              
+                                            </div>
+                                       </dd>
+                                   </dl>
+                               </div> 
+                            </li>
+                             
+                            <li class="two">
+                            {if $coupon.goodPrice neq 0 || $coupon.useRules eq 1}
+                            {if $coupon.goodPrice neq 0}&yen;{$coupon.goodPrice}{/if}
+                            {/if}
+                            </li>
+                            
+                            <li class="three"><a href="/gift/acquireDetail?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&deal_type={$deal_type}" class="operation_btn">查看详情</a></li>
+                        </ul>
+                         {/foreach}
+                       
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+        <span class="blank60"></span>
+    </div>
+
+
+{include file="web/views/v2/footer.html"}

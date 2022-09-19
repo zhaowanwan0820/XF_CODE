@@ -1,0 +1,169 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<style>
+    .moveBtn{text-decoration: none;background: #8ba9c0;color:#fff;margin:0 5px;padding:5px;border-radius: 4px;}
+    .moveBtn:hover{color:#fff;text-decoration: none;}
+
+    .btn_disabled{background: #ccc;cursor: default;}
+    .fl{float: left;}
+    .upfile_word{width: 0px;}
+    .file {position: relative;display: inline-block;
+        border: 0px solid #FFFFFF;padding: 0px 12px;overflow: hidden;color: #1E88C7;padding-top:10px;padding-bottom: 20px;top:19px;
+        text-decoration: none;text-indent: 0;line-height: 20px;text-decoration: underline; }
+    .file input {position: absolute;font-size: 100px;right: 0;top: 0;opacity: 0;}
+    .changeWord{text-decoration: none;width: 100px;display: block;margin-left: 10px;cursor: pointer;}
+    .textbox{display: inline-block!important;}
+    .urlTips{color:red;}
+    .img_center{width: 100px;height:100px;min-height: 60px;}
+    .img_center:hover{text-decoration: none;}
+    .img_title{margin-right: 10px;display: block;float: left;line-height: 100px;}
+    img.sign_up_banner_img{width:80px;height: 80px;}
+    .tip_span{position: absolute;bottom:-3px;left:2px;font-size: 12px;}
+    .zanwu_tips{width: 80px;height: 80px;text-align: center;
+        line-height: 100px;float: left;text-decoration: none;cursor: default;color:#000;}
+    .advContentType{height:27px;}
+</style>
+<link rel="stylesheet" href="__TMPL__Common/style/bootstrap.min.css">
+<script src="__TMPL__Common/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+<script type="text/javascript">
+function changeSite() {
+    var site_id = $("#site").val();
+    window.location.href = '/m.php?m=ApiConf&a=notice&site_id=' + site_id;
+}
+
+</script>
+
+<div class="main">
+<div class="main_title">公告配置</div>
+<div class="blank5"></div>
+分站：
+<select name="site_id" onchange="javascript:changeSite();" id="site">
+    <foreach name="site_list" key="key" item="name">
+    <option value="{$key}" <if condition="$site_id eq $key">selected="selected"</if> >{$name}</option>
+    </foreach>
+</select>
+<input type="button" class="button" value="发布" onclick="location.href='m.php?m=ApiConf&amp;a=setLastModifyTime';">
+<div class="blank5"></div>
+<form id="valid_form" autocomplete="off">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <php>
+        for($i = 0; $i < 8; $i++){
+    </php>
+     <tr class="sortList sortList_{$i}">
+        <td class="item_title" width="8%">广告位0<span class="listNumber">{$i+1}</span>:</td>
+        <td class="item_input"  width="92%">
+            <label for="">内容 ：</label>
+            <input type="text" name="content" value="{$notice_conf[$i]['title']}" style="width: 400px">
+            <label for="">通知位置 ：</label>
+            <select class="location" name="location">
+                <option value="">请选择</option>
+                <foreach name="page_list" key="key" item="value">
+                <option value="{$key}" <if condition="$notice_conf[$i]['pageid'] eq $key">selected="selected"</if>>{$value}</option>
+                </foreach>
+            </select>
+            <input type="text" class='advId' name="advId" style="width:50;"  value="{$notice_conf[$i]['advid']}"  placeholder="广告位ID"</>
+            <input type="text" class='advId' name="advTitle" style="width:50;"  value="{$notice_conf[$i]['advtitle']}"  placeholder="广告位标题"</>
+
+            <a href="javascript:;" class="moveBtn btn_clear" data-sortList="sortList_{$i}">清空</a>
+        </td>
+
+    </tr>
+    <php>
+    }
+    </php>
+    <tr>
+        <td class="item_title">{%IS_EFFECT}:</td>
+        <td class="item_input">
+            <lable>{%IS_EFFECT_1}<input type="radio" name="status" value="1" <if condition="$notice_status eq 1">checked="checked"</if> /></lable>
+            <lable>{%IS_EFFECT_0}<input type="radio" name="status" value="0" <if condition="$notice_status eq 0 || empty($notice_conf)">checked="checked"</if> /></lable>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="name" value="{$name}" />
+            <input type="hidden" name="jumpUrl" value="{$jumpUrl}" />
+            <!--隐藏元素-->
+            <input type="button" class="adv_button" value="{%SAVE}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<script>
+    var adv_h5_url = '{$adv_h5_url}';
+    $(function(){
+        //清空
+        $(".btn_clear").on("click",function(){
+            var dataClear = $(this).attr("data-sortList");
+            $("."+dataClear).find("select[name='location'] option:first").prop("selected", 'selected');
+            $("."+dataClear).find("input[name='content']").val("");
+            $("."+dataClear).find("input[name='advId']").val("");
+            $("."+dataClear).find("input[name='advTitle']").val("");
+        });
+
+        //表单提交
+        $(".adv_button").bind('click', function() {
+            var total =[];
+            $(".sortList").each(function(index, el) {
+                var arr_obj = {};
+
+                var content = $(this).find("input[name='content']").val();
+                var location = $(this).find("select[name='location']").val();
+                var advId = $(this).find("input[name='advId']").val();
+                var advTitle = $(this).find("input[name='advTitle']").val();
+                if (content.length <= 0 || location.length <= 0 || advId.length <= 0 || advTitle.length <= 0) {
+                    return;
+                }
+
+                arr_obj["title"] = content;
+                arr_obj['pageid'] = location;
+                arr_obj['h5'] = adv_h5_url + '?id=' + encodeURIComponent(advId) + '&title=' + encodeURIComponent(advTitle);
+                arr_obj['advid'] = advId;
+                arr_obj['advtitle'] = advTitle;
+
+                total.push(arr_obj);
+            });
+
+            if (total.length <= 0) {
+                alert('请填写必选项');
+                return false;
+            }
+
+            var dataPara = JSON.stringify(total);
+            var status = $("input[name='status']:checked").val();
+            var jumpUrl = $("input[name='jumpUrl']").val();
+            var site_id = $("select[name='site_id']").val();
+            $.ajax({
+                url: "/m.php?m=ApiConf&a=notice",
+                type: "POST",
+                dataType: 'JSON',
+                data: {
+                    "site_id":site_id,
+                    "value":dataPara,
+                    "status":status,
+                },
+                success: function(data){
+                    alert(data.info);
+                    if(data.status == 1){
+                        window.location.href = jumpUrl;
+                    }
+                }
+            });
+        });
+    })
+</script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<include file="Public:footer" />

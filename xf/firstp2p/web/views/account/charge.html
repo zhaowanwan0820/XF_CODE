@@ -1,0 +1,95 @@
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v2/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+<script src="<?php echo $this->asset->makeUrl('v2/js/widget/select/select.v1.1.js');?>"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user_web2.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/charge/index.js');?>"></script>
+<!--private js&css end-->
+<!-- 诸葛统计 -->
+<script type="text/javascript">
+    window.zhuge = window.zhuge || [];window.zhuge.methods = "_init debug identify track trackLink trackForm page".split(" ");
+    window.zhuge.factory = function(b) {return function() {var a = Array.prototype.slice.call(arguments);a.unshift(b);
+    window.zhuge.push(a);return window.zhuge;}};for (var i = 0; i < window.zhuge.methods.length; i++) {
+    var key = window.zhuge.methods[i];window.zhuge[key] = window.zhuge.factory(key);}window.zhuge.load = function(b, x) {
+    if (!document.getElementById("zhuge-js")) {var a = document.createElement("script");var verDate = new Date();
+    var verStr = verDate.getFullYear().toString()+ verDate.getMonth().toString() + verDate.getDate().toString();
+    a.type = "text/javascript";a.id = "zhuge-js";a.async = !0;a.src ='https://stat.ncfwx.com/zhuge.js?v=' + verStr;
+    a.onerror = function(){window.zhuge.identify = window.zhuge.track = function(ename, props, callback){if(callback && Object.prototype.toString.call(callback) === '[object Function]')callback();};};
+    var c = document.getElementsByTagName("script")[0];c.parentNode.insertBefore(a, c);window.zhuge._init(b, x)}};
+    window.zhuge.load('da1ad45dbe1e4583a9db20c0df763d0f',{superProperty:{PlatformType:'web'},autoTrack:true,visualizer: true});//配置应用的AppKey
+    /*此处原有的AppKey：da1ad45dbe1e4583a9db20c0df763d0f
+    诸葛后台-网信普惠web上的AppKey：225796fea53a4cedaf56b2d18a3bb2f4*/
+</script>
+<script>
+    /*诸葛埋点jyy3：页面加载成功*/
+    window.onload = function() {
+        zhuge.track('进入充值页面');
+    }
+    /*诸葛埋点jyy3*/
+</script>
+
+<form name="chargeForm" id="chargeForm" action='{url x="index" r="account/docharge"}' method="post">
+    <div class="user_right">
+        <div class="user_right_box" id="chargeSelect">
+            <div class="user_title"><h1><i class="ico_chongzhi"></i>充值</h1></div>
+             <div class="bank-tip">{function name="get_adv" x="充值页提示_2015"}</div>
+            <?php echo token_input(); ?>
+            <input type="hidden" name="payment" value="4">
+
+
+            <div class="take">
+                <div>
+                    <dl class="clearfix">
+                        <dt>充值账户：</dt>
+                        {if $isEnterprise}
+                        <dd>{$enterpriseInfo.company_name}</dd>
+                        {else}
+                        <dd>{$user_info.real_name}</dd>
+                        {/if}
+                    </dl>
+                    <dl class="clearfix pb7">
+                        <dt>账户余额：</dt>
+                        <dd><span class="color-yellow2">{function name="number_format" v=$user_info.money f="2"}</span>&nbsp元</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt class="pt3">充值金额：</dt>
+                        <dd><input type="text" class="user_name validate[required,funcCall[X.V.checkCrash]]" id="charge" name="money" data-int="10" data-xiaoshu="2" /> 元</dd>
+                        <dd class="chargeformError"></dd>
+                    </dl>
+                    <dl>
+                        <dt class="pt3">充值方式：</dt>
+                        <dd>
+                            <div class="select_box select_paytype" data-name="paymentMethod" id="" style="z-index:11">
+                                <div class="j_select"></div>
+                                <ul class="select_ul none j_selectContent">
+                                {$paymentMethodOptionsHtml}
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+
+            </div>
+            <div class="f14 charge_btn">
+                <button class="user_button mt10 mb20" id="incharge_done" type="submit">充值</button>
+            </div>
+
+            <div class="user_tip charge_tip">
+                <p>1、所有投资保证金将由第三方平台托管。</p>
+                <p>2、请注意您的银行卡的充值限制，以免造成不便。</p>
+                <p>3、如果充值金额没有及时到账，请拨打客服热线寻求帮助。</p>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    /*诸葛埋点jyy4：click*/
+    var inchargeDone = document.getElementById("incharge_done")[0];
+    inchargeDone.onclick = function(){
+        zhuge.track('点击充值',{
+            '适用产品':'P2P/智多鑫'
+        });
+    }
+    /*诸葛埋点jyy4*/
+
+</script>

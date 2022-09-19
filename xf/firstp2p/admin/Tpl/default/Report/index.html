@@ -1,0 +1,247 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">交易日报表</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tbody><tr> <td colspan="4" class="bottomTd">&nbsp;</td> </tr>
+    <tr> <td colspan="4" class="al-l">编制日期：{$billDate} {$link}</td> </tr>
+    <tr> <td colspan="4">
+        <table class="dataTable" cellpadding="0" cellspacing="0">
+            <tr>
+                <th width="100">&nbsp;</th>
+                <th>期初余额</th>
+                <th>当日发生额</th>
+                <th>期末余额</th>
+            </tr>
+            <tr>
+                <th>P2P</th>
+                <td>{$report.p2p_begining_balance}</td>
+                <td>{$report.calculate.p2p_day_balance}</td>
+                <td>{$report.p2p_endding_balance}</td>
+            </tr>
+            <tr>
+                <th>先锋支付</th>
+                <td>{$report.pay_begining_balance}</td>
+                <td>{$report.pay_day_balance}</td>
+                <td>{$report.pay_endding_balance}</td>
+            </tr>
+            <tr>
+                <th>差异额</th>
+                <td>{$report.calculate.begining_balance}</td>
+                <td>{$report.calculate.day_balance}</td>
+                <td>{$report.calculate.endding_balance}</td>
+            </tr>
+        </table>
+    </td> </tr>
+    <tr> <td colspan="4" class="bottomTd">&nbsp; </td> </tr>
+    <tr> <td colspan="4">{$billDate}日发生项目明细</td> </tr>
+    <tr> <td colspan="4">
+    <table class="dataTable" cellpadding="0" cellspacing="0">
+        <tbody><tr>
+            <th rowspan="2" width="95">&nbsp;</th>
+            <th colspan="4">线上收款</th>
+            <th colspan="3">线下收款</th>
+            <th colspan="3">线下付款</th>
+            <th rowspan="2">账项手工调整</th>
+            <th rowspan="2">合计</th>
+        </tr>
+        <tr>
+            <th>支付反馈成功</th>
+            <th>平台未操作</th>
+            <th>支付未操作</th>
+            <th>支付反馈失败</th>
+            <th>会员充值</th>
+            <th>借款人线下还款</th>
+            <th>退汇</th>
+            <th>付款失败</th>
+            <th>付款成功</th>
+            <th>付款处理中</th>
+        </tr>
+        <tr>
+            <th>P2P</th>
+            <td>{$report.p2p_online_charge_success_balance}</td>
+            <td>{$report.p2p_online_charge_unrequest_balance}</td>
+            <td>{$report.p2p_online_charge_inprocess_balance}</td>
+            <td>{$report.p2p_online_charge_fail_balance}</td>
+            <td>{$report.p2p_offline_charge_balance}</td>
+            <td>{$report.p2p_offline_brower_charge_balance}</td>
+            <td>{$report.p2p_offline_withdraw_refund_balance}</td>
+            <td>{$report.p2p_withdraw_failed_balance}</td>
+            <td>{$report.p2p_withdraw_success_balance}</td>
+            <td>{$report.p2p_withdraw_inprocess_balance}</td>
+            <td>{$report.p2p_offline_system_fix_balance}</td>
+            <td>{$report.calculate.p2p_day_balance}</td>
+        </tr>
+        <tr>
+            <th>先锋支付</th>
+            <td>{$report.pay_online_charge_success_balance}</td>
+            <td>-</td>
+            <td>{$report.pay_online_charge_unrequest_balance}</td>
+            <td>{$report.pay_online_charge_fail_balance}</td>
+            <td>{$report.pay_offline_charge_balance}</td>
+            <td>{$report.pay_offline_brower_charge_balance}</td>
+            <td>{$report.pay_offline_withdraw_refund_balance}</td>
+            <td>{$report.pay_withdraw_failed_balance}</td>
+            <td>{$report.pay_withdraw_success_balance}</td>
+            <td>{$report.pay_withdraw_inprocess_balance}</td>
+            <td>{$report.pay_offline_system_fix_balance}</td>
+            <td>{$report.pay_day_balance}</td>
+        </tr>
+        <tr>
+            <th>差异额</th>
+            <td><a target="_BLANK" href="{$report.info.charge_diff_url}">{$report.calculate.online_charge_succss}</a></td>
+            <td>-</td>
+            <td>-</td>
+            <td>{$report.calculate.online_fail}</td>
+            <td>{$report.calculate.offline_charge}</td>
+            <td>{$report.calculate.offline_brower_charge}</td>
+            <td>{$report.calculate.offline_withdraw_refund}</td>
+            <td>{$report.calculate.withdraw_fail}</td>
+            <td><a target="_BLANK" href="{$report.info.withdraw_diff_url}">{$report.calculate.withdraw_success}</a></td>
+            <td>{$report.calculate.withdraw_inprocess}</td>
+            <td>{$report.calculate.system_fix}</td>
+            <td>{$report.calculate.day_balance}</td>
+        </tr>
+        <tr>
+            <th>备注</th>
+            <td id='online_charge_success_balance' changed='0' onclick="addComment('online_charge_success_balance');">{$report.memo.online_charge_success_balance}</td>
+            <td id='online_charge_unrequest_balance' onclick="addComment('online_charge_unrequest_balance');">{$report.memo.online_charge_unrequest_balance}</td>
+            <td id='online_charge_inprocess_balance' onclick="addComment('online_charge_inprocess_balance');">{$report.memo.online_charge_inprocess_balance}</td>
+            <td id='online_charge_fail_balance' onclick="addComment('online_charge_fail_balance');">{$report.memo.online_charge_fail_balance}</td>
+            <td id='offline_charge_balance' onclick="addComment('offline_charge_balance');">{$report.memo.offline_charge_balance}</td>
+            <td id='offline_brower_charge_balance' onclick="addComment('offline_brower_charge_balance');">{$report.memo.offline_brower_charge_balance}</td>
+            <td id='offline_withdraw_refund_balance' onclick="addComment('offline_withdraw_refund_balance');">{$report.memo.offline_withdraw_refund_balance}</td>
+            <td id='withdraw_failed_balance' onclick="addComment('withdraw_failed_balance');">{$report.memo.withdraw_failed_balance}</td>
+            <td id='withdraw_success_balance' onclick="addComment('withdraw_success_balance');">{$report.memo.withdraw_success_balance}</td>
+            <td id='withdraw_inprocess_balance' onclick="addComment('withdraw_inprocess_balance');">{$report.memo.withdraw_inprocess_balance}</td>
+            <td id='offline_system_fix_balance' onclick="addComment('offline_system_fix_balance');">{$report.memo.offline_system_fix_balance}</td>
+            <td id='day_balance' onclick="addComment('day_balance');">{$report.memo.day_balance}</td>
+        </tr>
+    </tbody></table>
+    </td> </tr>
+    <tr> <td colspan="4" class="bottomTd">&nbsp; </td> </tr>
+    <tr>
+        <td colspan="3">
+            <table class="dataTable" cellpadding="0" cellspacing="0">
+                <tbody>
+                <tr>
+                    <th colspan="2">系统已确定用途资金合计</th>
+                    <th colspan="2">无用途沉淀资金</th>
+                    <th colspan="2">核对</th>
+                </tr>
+                <tr>
+                    <th width="150">&nbsp;</th>
+                    <th>金额</th>
+                    <th width="150">&nbsp;</th>
+                    <th>金额</th>
+                    <th width="150">&nbsp;</th>
+                    <th>金额</th>
+                </tr>
+                <tr>
+                    <th>提现冻结</th>
+                    <td>{$report.p2p_withdraw_frozen_balance}</td>
+                    <th>用户充值未投资</th>
+                    <td>{$report.charge_without_trade_balance}</td>
+                    <th>P2P期末余额</th>
+                    <td>{$report.p2p_endding_balance}</td>
+                </tr>
+                <tr>
+                    <th>投资冻结满标未放款</th>
+                    <td>{$report.deal_frozen_balance}</td>
+                    <th>&nbsp;</th>
+                    <td>&nbsp;</td>
+                    <th>系统已确定用途资金合计</th>
+                    <td>{$report.calculate.summary_in_purpose}</td>
+                </tr>
+                <tr>
+                    <th>投资冻结未满标未放款</th>
+                    <td>{$report.deal_frozen_unaudit_balance}</td>
+                    <th>&nbsp;</th>
+                    <td>&nbsp;</td>
+                    <th>无用途沉淀资金合计</th>
+                    <td>{$report.calculate.summary_without_purpose}</td>
+                </tr>
+                <tr>
+                    <th>预约标投资金额</th>
+                    <td>{$report.pre_deal_balance}</td>
+                    <th>&nbsp;</th>
+                    <td>&nbsp;</td>
+                    <th>不确定用途金额</th>
+                    <td>{$report.calculate.summary_all}</td>
+                </tr>
+                <tr>
+                    <th>合计</th>
+                    <td>{$report.calculate.summary_in_purpose}</td>
+                    <th>合计</th>
+                    <td>{$report.calculate.summary_without_purpose}</td>
+                    <th>合计</th>
+                    <td>0.00</td>
+                </tr>
+            </tbody></table>
+        </td>
+        <td valign="top">
+            <table class="dataTable" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th colspan="3">账项调整</th>
+                </tr>
+                <tr>
+                    <th rowspan="2" width="80">付款</th>
+                    <td width="100">财务待处理</td>
+                    <td>{$report.p2p_withdraw_account_audit_balance}</td>
+                </tr>
+                <tr>
+                    <td>运营待处理</td>
+                    <td>{$report.p2p_withdraw_operation_audit_balance}</td>
+                </tr>
+                <tr>
+                    <th>线下收款</th>
+                    <td>P2P系统余额调整</td>
+                    <td>{$report.p2p_system_fix_balance}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr> <td colspan="4" class="bottomTd">&nbsp; </td> </tr>
+</tbody></table>
+<pre>    备注：
+    * 依据支付与P2P台帐的共同余额结果（74,379,797.08），与系统余额（74,198,546.01）产生的误差是+181251.07。作为814系统上线系统修正值计入东方联合的虚拟户
+    * p2p上线前确认余额74,379,797.08
+</pre>
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+
+    function addComment(commentId) {
+        if ($('#'+commentId).attr('changed') != 0) {
+            $('#'+commentId).attr('changed', 0) 
+            return false;
+        }
+        var value = $('#'+commentId).html();
+        var html = "<input id='input_"+commentId+"' type='text' value='"+value+"'/><input onclick='saveComment(\""+commentId+"\")' type='button' value='保存'/>";
+        $('#'+commentId).html(html);
+        $('#'+commentId).attr('changed', 1) 
+    }
+
+    function saveComment(commentId) {
+        var id = '{$report.id}';
+        var value = $('#input_'+commentId).val();
+        $.post("m.php?m=Report&a=updateMemo", { id:id, memoKey:commentId, value:value}, function (rs){
+            var rs = $.parseJSON(rs);
+            if (!rs.status) {
+                alert(rs.info);
+                return false;
+            }
+        });
+        $('#'+commentId).html(value);
+    }
+</script>
+<include file="Public:footer" />

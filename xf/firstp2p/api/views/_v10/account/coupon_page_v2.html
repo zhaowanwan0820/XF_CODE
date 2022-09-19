@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>邀请好友</title>
+        {include file="api/views/_v10/header_v2.html"}
+        <!--public js&css end-->
+        <link href="<?php echo $this->asset->makeAppUrl('v2/css/invitation.css');?>" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <div class="i-top"><img src="<?php echo $this->asset->makeAppUrl('v2/images/invitation/top.png');?>" width="100%"></div>
+        {if !$is_not_code}
+                {foreach from=$coupons item="coupon" key="couponId" }
+                <div class="i-list clearfix">
+                    <dl class="clearfix">
+                        <dt>
+                        <h3>{$couponId}</h3>
+                        <h4>您可获{$coupon.referer_rebate_ratio}%</h4>
+                        </dt>
+                        <dd>
+                        <a href="invite://api?coupon={$couponId}&msg={$coupon.shareMsg}{$siteid}">邀请</a>
+                        </dd>
+                    </dl>
+                </div>
+                {/foreach}
+        {/if}
+        <div class="i-text-tips">
+            {if !$isO2O}
+            <adv adv_id="我的邀请码说明"/>
+            {else}
+            <adv adv_id="O2O我的邀请码说明"/>
+            {/if}
+        </div>
+        {include file="api/views/_v10/footer_v2.html"}
+    </body>
+</html>
+

@@ -1,0 +1,137 @@
+<!--开户行选择器.start-->
+<script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+<tr class="bankzone_selector">
+    <td class="item_title">银行:</td>
+    <td class="item_input">
+        <select name="bank_id" class="_js_bankinfo">
+            <option value="0">={%PLEASE_SELECT}=</option>
+            <foreach name="bank_list" item="item">
+                <option value="{$item.id}" <if condition="$item.id eq $vo['bank_id']">selected="selected"</if>>{$item.name}</option>
+            </foreach>
+        </select>
+    </td>
+</tr>
+<tr class="bankzone_selector">
+    <td class="item_title">开户行所在地:</td>
+    <td class="item_input">
+        <input type="hidden" value="{$bankcard_info.region_lv1}" id="deflv1">
+            <input type="hidden" value="{$bankcard_info.region_lv2}" id="deflv2">
+            <input type="hidden" value="{$bankcard_info.region_lv3}" id="deflv3">
+            <input type="hidden" value="{$bankcard_info.region_lv4}" id="deflv4">
+            <select name="c_region_lv1" class="_js_bankinfo">
+                <option value="0">={%REGION_LV1}=</option>
+                <foreach name="n_region_lv1" item="lv1">
+                <option <if condition="$bankcard_info['region_lv1'] eq $lv1['id']">selected="selected"</if> value="{$lv1.id}">{$lv1.name}</option>
+                </foreach>
+            </select>
+
+            <select name="c_region_lv2" class="_js_bankinfo">
+                <option value="0">={%REGION_LV2}=</option>
+            </select>
+
+            <select name="c_region_lv3" class="_js_bankinfo">
+                <option value="0">={%REGION_LV3}=</option>
+            </select>
+            <select name="c_region_lv4" id="Jcarry_region_lv4" class="_js_bankinfo">
+                <option value="0">={%REGION_LV4}=</option>
+            </select>
+    </td>
+</tr>
+<script type="text/javascript">
+    //银行网点
+    $("select[name='bank_id']").bind("change",function(){
+        bank_site();
+    });
+
+    $(document).ready(function(){
+        //setTimeout("bank_site();",1000);
+        $("select[name='c_region_lv1']").bind("change",function(){
+            load_select("1");
+        });
+        $("select[name='c_region_lv2']").bind("change",function(){
+            load_select("2");
+        });
+        $("select[name='c_region_lv3']").bind("change",function(){
+            load_select("3");
+            bank_site();
+        });
+        $("select[name='c_region_lv4']").bind("change",function(){
+            load_select("4");
+        });
+
+        // init region
+        var devlv1Option = $("select[name='c_region_lv1'] option[value='" + $("#deflv1").val() + "']")[0];
+        if (devlv1Option) {
+            devlv1Option.selected = true;
+            load_select("1");
+            var devlv2Option = $("select[name='c_region_lv2'] option[value='" + $("#deflv2").val() + "']")[0];
+            if (devlv2Option) {
+                devlv2Option.selected = true;
+                load_select("2");
+                var devlv3Option = $("select[name='c_region_lv3'] option[value='" + $("#deflv3").val() + "']")[0];
+                if (devlv3Option) {
+                    devlv3Option.selected = true;
+                    load_select("3");
+                    var devlv4Option = $("select[name='c_region_lv4'] option[value='" + $("#deflv4").val() + "']")[0];
+                    if (devlv4Option) {
+                        devlv4Option.selected = true;
+                    }
+                }
+            }
+        }
+    });
+    function load_select(lv)
+    {
+        var name = "c_region_lv"+lv;
+        var next_name = "c_region_lv"+(parseInt(lv)+1);
+        var id = $("select[name='"+name+"']").val();
+
+        if(lv==1)
+        var evalStr="regionConf.r"+id+".c";
+        if(lv==2)
+        var evalStr="regionConf.r"+$("select[name='c_region_lv1']").val()+".c.r"+id+".c";
+        if(lv==3)
+        var evalStr="regionConf.r"+$("select[name='c_region_lv1']").val()+".c.r"+$("select[name='c_region_lv2']").val()+".c.r"+id+".c";
+
+        if(id==0)
+        {
+            var html = "<option value='0'>="+LANG['PLEASE_SELECT']+"=</option>";
+        }
+        else
+        {
+            var regionConfs=eval(evalStr);
+            evalStr+=".";
+            var html = "<option value='0'>="+LANG['PLEASE_SELECT']+"=</option>";
+            for(var key in regionConfs)
+            {
+                html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+            }
+        }
+        $("select[name='"+next_name+"']").html(html);
+    }
+
+    //银行网点
+    function bank_site(){
+        var c = $("select[name='c_region_lv3']").find("option:selected").text();
+        var p = $("select[name='c_region_lv2']").find("option:selected").text();
+        var b = $("select[name='bank_id']").find("option:selected").text();
+        var n = '{$bankcard_info.bankzone}';
+        var data = {c:c,p:p,n:n};
+
+        $.getJSON("http://www.firstp2p.com/api/banklist?c="+c+"&p="+p+"&n="+n+"&b="+b+"&jsonpCallback=?", function(rs){
+            if (rs.indexOf('select') > 0) {
+                $("#_js_bank_site").html(rs);
+                $('#_js_shoudong').hide();
+            }
+        });
+    }
+</script>
+<tr class="bankzone_selector">
+    <td class="item_title">开户网点:</td>
+    <td id="_js_bank_site" >
+        <select class="" name="bank_bankzone">
+            <option value="{$vo.bankzone}">{$vo.bankzone}</option>
+        </select>
+    </td>
+</tr>
+<!--开户行选择器.end-->

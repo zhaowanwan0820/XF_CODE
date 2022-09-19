@@ -1,0 +1,72 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">超级红包</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();"/>
+    <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+    </div>
+    <div class="blank5"></div>
+
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>编号</th>
+            <th>规则名</th>
+            <th>红包组数/人次</th>
+            <th>每组红包个数</th>
+            <th>每组红包总额</th>
+            <th>消费限制</th>
+            <th>红包发送有效期</th>
+            <th>红包使用有效期</th>
+            <th>红包产生频次（分钟）</th>
+            <th>活动时间范围</th>
+            <th>规则每小时产生的时间段</th>
+            <th>触发规则的最小投资金额</th>
+            <th>红包转发标题</th>
+            <th>文字描述</th>
+            <th>皮肤</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td>{$item.id}</td>
+            <td>{$item.name}</td>
+            <td>{$item.group_count}</td>
+            <td>{$item.bonus_count}</td>
+            <td>{$item.group_money}</td>
+            <td>{$item.consume_type}</td>
+            <td>{$item.send_limit_day}</td>
+            <td>{$item.use_limit_day}</td>
+            <td>{$item.frequency}</td>
+            <td>{$item.date_section}</td>
+            <td>{$item.hour_section}</td>
+            <td>{$item.trigger_money}</td>
+            <td>{$item.retweet_title}</td>
+            <td>{$item.retweet_desc}</td>
+            <td>{$item.temp_id}</td>
+            <td><if condition="$item['status'] eq 1">有效<else/>无效</if></td>
+            <td>
+                <a href="javascript:edit('{$item.id}')">编辑</a>&nbsp;
+                <!--<a href='/m.php?m=BonusJobs&a=mobile_csv&id={$item.id}'>导出手机号</a>&nbsp;
+                <a href=''>发送记录</a> -->
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

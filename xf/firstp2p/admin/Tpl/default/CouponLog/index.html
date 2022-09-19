@@ -1,0 +1,282 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">优惠券结算</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="运营通过" onclick="operation_passed(undefined, this);" />
+    <input type="button" class="button" value="财务通过" onclick="finance_audit(0, 1);" />
+    <!--  <input type="button" class="button" value="财务拒绝" onclick="finance_audit(0, 2);" />-->
+</div>
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            投资人检索：会员ID:<input type="text" class="textbox" style="width:50px;" name="user_id" value="{$_REQUEST['user_id']}" />
+            会员名称:<input type="text" class="textbox" name="user_name" value="{$_REQUEST['user_name']}" />
+            会员编号:<input type="text" class="textbox" name="user_num" value="{$_REQUEST['user_num']}" />
+            手机号:<input type="text" class="textbox" name="mobile" value="{$_REQUEST['mobile']}" />
+            <br/>
+            服务人检索：会员ID:<input type="text" class="textbox" style="width:50px;" name="refer_user_id" value="{$_REQUEST['refer_user_id']}" />
+            会员名称:<input type="text" class="textbox" name="refer_user_name" value="{$_REQUEST['refer_user_name']}" />
+            会员编号:<input type="text" class="textbox" name="refer_user_num" value="{$_REQUEST['refer_user_num']}" />
+            机构会员名称:<input type="text" class="textbox" name="agency_user_name" value="{$_REQUEST['agency_user_name']}" />
+            服务人邀请码:<input type="text" class="textbox" name="short_alias" value="{$_REQUEST['short_alias']}" />
+            <br/>
+            其它条件：
+            投标ID:<input type="text" class="textbox" style="width:50px;" name="deal_load_id" value="{$_REQUEST['deal_load_id']}" />
+            借款编号:<input type="text" class="textbox" style="width:50px;" name="deal_id" value="{$_REQUEST['deal_id']}" />
+            借款标题:<input type="text" class="textbox" name="deal_name" value="{$_REQUEST['deal_name']}" />
+            项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+            类型:
+            <select name='deal_type'>
+                <option value="" <if condition="$_REQUEST['deal_type'] eq ''">selected="selected"</if>>全部</option>
+                <option value="0" <if condition="$_REQUEST['deal_type'] neq '' and intval($_REQUEST['deal_type']) eq 0">selected="selected"</if>>普通标</option>
+                <option value="1" <if condition="intval($_REQUEST['deal_type']) eq 1">selected="selected"</if>>通知贷</option>
+                <option value="2" <if condition="intval($_REQUEST['deal_type']) eq 2">selected="selected"</if>>交易所</option>
+                <option value="3" <if condition="intval($_REQUEST['deal_type']) eq 3">selected="selected"</if>>专享</option>
+            </select>
+            投资时间:
+            <input type="text" class="textbox" style="width:140px;" name="deal_load_date_begin" id="deal_load_date_begin" value="{$_REQUEST['deal_load_date_begin']}" onfocus="this.blur(); return showCalendar('deal_load_date_begin', '%Y-%m-%d 00:00:00', false, false, 'btn_deal_load_date_begin');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_deal_load_date_begin" value="{%SELECT_TIME}" onclick="return showCalendar('deal_load_date_begin', '%Y-%m-%d %H:%M:00', false, false, 'btn_deal_load_date_begin');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="deal_load_date_end" id="deal_load_date_end" value="{$_REQUEST['deal_load_date_end']}" onfocus="this.blur(); return showCalendar('deal_load_date_end', '%Y-%m-%d 23:59:59', false, false, 'btn_deal_load_date_end');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_deal_load_date_end" value="{%SELECT_TIME}" onclick="return showCalendar('deal_load_date_end', '%Y-%m-%d %H:%M:59', false, false, 'btn_deal_load_date_end');" />
+
+            <input type="hidden" value="CouponLog" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <input type="button" class="button" value="导出" onclick="export_csv_file('');" />
+        </form>
+    </div>
+
+    <span> 注："注册时间"和"所属网站/等级”检索效率低，尽量使用"ID、编号、会员名称"等字段搜索</span>
+<!---->
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    action="true"
+    checkbox="true"
+    datasource="list"
+    show="l_id:投资记录ID
+        ,l_create_time|to_date:成交时间
+        ,l_user_id:投资人ID
+        ,l_user_name:投资人会员名称
+        ,l_user_num:投资人会员编号
+        ,lu_real_name:投资人姓名
+        ,lu_mobile:投资人手机号
+        ,lu_create_time|to_date:投资人注册时间
+        ,l_money:投资金额
+        ,l_money_yearly:年化投资额
+        ,l_deal_type_text:类型
+        ,l_source_type:投资来源
+        ,l_site_name:投资站点
+        ,l_deal_id:借款编号
+        ,d_name:借款标题
+        ,l_deal_id|getOldDealNameWithPrefix:旧版借款标题
+        ,du_user_name:借款会员名称
+        ,du_real_name:借款人姓名
+        ,d_repay_time:借款期限
+        ,d_loantype_name:还款方式
+        ,d_deal_status:订单状态
+        ,refer_user_name:服务人会员名称
+        ,refer_user_num:服务人会员编码
+        ,refer_real_name:服务人姓名
+        ,agency_user_name:机构会员名称
+        ,short_alias:服务人邀请码
+        ,referer_rebate_ratio_factor:结算比例系数
+        ,discount_ratio:客户系数
+        ,product_ratio:产品系数
+        ,rebate_amount:投资人返点金额
+        ,rebate_ratio_amount:投资人返点金额比例
+        ,referer_rebate_amount:服务人返点金额
+        ,referer_rebate_ratio_amount:服务人返点系数金额
+        ,agency_rebate_amount:机构返点金额
+        ,agency_rebate_ratio_amount:机构返点比例金额
+        ,pay_status:结算状态
+        ,create_time|to_date:使用时间
+        ,pay_time|to_date:结算时间
+        "
+    actionlist="opt_edit,opt_operation,opt_finance,opt_pay_list"
+    actionwidth="120px"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+//添加优惠券
+function weeboxs_add(id){
+    $.get(ROOT+'?m=CouponLog&a=add&id='+id,
+        function(data){
+            if(data.indexOf('{"status":0')>-1&&data.indexOf("info")>-1&&data.indexOf("data")>-1)
+            {
+                var jsonobj=eval('('+data+')');
+                data = jsonobj.info;
+            }
+            $.weeboxs.open(data, {contentType:'none',showButton:false,title:LANG['ADD'],width:700,height:420});
+            }
+        );
+}
+
+function weeboxs_edit(id){
+
+    $.get(ROOT+'?m=CouponLog&a=edit&id='+id,
+    function(data){
+        if(data.indexOf('{"status":0')>-1&&data.indexOf("info")>-1&&data.indexOf("data")>-1)
+        {
+            var jsonobj=eval('('+data+')');
+            data = jsonobj.info;
+        }
+        $.weeboxs.open(data, {contentType:'none',showButton:false,title:LANG['EDIT'],width:700,height:420});
+        }
+    );
+
+}
+/**
+ * 删除
+ */
+function coupon_log_del(id){
+    if(!id)
+    {
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert(LANG['DELETE_EMPTY_WARNING']);
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+    }
+    if(confirm(LANG['CONFIRM_DELETE']))
+    $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+
+                if(obj.status==1){
+                    location.href=location.href;
+                }else{
+                    alert(obj.info);
+                }
+            }
+    });
+}
+function operation_passed(id, el){
+    var ele = $(el);
+    ele.css("background-color", '#ccc').attr("disabled", "disabled");
+    if(!id)
+    {
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert("请选择需要运营通过的记录");
+            ele.css("background-color", '#4e6a81').removeAttr("disabled");
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            //处理 优惠券id有的才 操作
+            if($(n).val()) {
+                 idArray.push($(n).val());
+            }
+        });
+        id = idArray.join(",");
+    }
+    if(confirm("要运营通过所选择的记录吗？"))
+    {
+        location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=operation_passed&id="+id;
+    } else {
+        ele.css("background-color", '#4e6a81').removeAttr("disabled");
+    }
+
+}
+function finance_audit(id, is_passed){
+    //var ele = $(el);
+    //ele.css("background-color", '#ccc').attr("disabled", "disabled");
+    if(!id)
+    {
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert("请选择需要财务操作的记录");
+            ele.css("background-color", '#4e6a81').removeAttr("disabled");
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            //处理 优惠券id有的才 操作
+            if($(n).val()) {
+                 idArray.push($(n).val());
+            }
+        });
+        id = idArray.join(",");
+    }
+    str = '';
+    if (is_passed == 1){
+        str = '财务通过';
+    }else{
+        str = '财务拒绝';
+    }
+    if(confirm("要"+str+"所选择的记录吗？"))
+    {
+        location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=finance_audit&id="+id+"&is_passed="+is_passed;
+    }
+
+}
+
+
+function changeLevelSelect(){
+    var url = "/m.php?m=CouponLevel&a=get_level_select";
+    var current_coupon_level_id = '{$_REQUEST["coupon_level_id"]}';
+    $.getJSON(url,{group_id:$("#group_id").val()},function(json){
+        var coupon_level_id = $("#coupon_level_id");
+        $("option",coupon_level_id).remove(); //清空原有的选项
+        var option = "<option value=''>==请选择==</option>";
+        coupon_level_id.append(option);
+        $.each(json,function(index,array){
+            var selected_str = '';
+            if(array['id'] == current_coupon_level_id){
+                selected_str = 'selected="selected"';
+            }
+            option = "<option value='"+array['id']+"' "+selected_str+">"+array['level']+"</option>";
+            coupon_level_id.append(option);
+        });
+    });
+}
+
+changeLevelSelect();
+$("#group_id").change(function(){
+    $("#group_factor_text").html($(this).find("option:selected").attr("factor"));
+    changeLevelSelect();
+});
+
+// csv导出
+function export_csv_file()
+{
+    var confirm_msg = "\n\r大数据量请增加筛选条件缩小结果集条数，以免导出失败";
+    confirm_msg = "确认要导出csv文件数据吗？" + confirm_msg + "\n\r导出过程中请耐心等待，不要关闭页面。";
+    if (!confirm(confirm_msg)) {
+        return;
+    }
+    return export_csv();
+
+}
+
+function pay_list(deal_load_id) {
+    $.weeboxs.open(ROOT+'?m=CouponPayLog&a=index&deal_load_id='+deal_load_id, {contentType:'ajax',showButton:false,title:'返利明细',width:900,height:600});
+}
+</script>
+<include file="Public:footer" />

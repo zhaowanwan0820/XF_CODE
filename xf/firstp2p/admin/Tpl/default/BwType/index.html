@@ -1,0 +1,107 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href="__TMPL__Common/js/ztree/jquery.ztree.all-3.5.min.js" />
+<load href="__TMPL__Common/js/ztree/jquery.ztree.core-3.5.min.js" />
+<load href="__TMPL__Common/js/ztree/demo.css" />
+<load href="__TMPL__Common/js/ztree/zTreeStyle.css" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">黑白名单分类</div>
+<div class="blank5"></div>
+    <div class="button_row">
+
+        <input type="button" class="button" value="新增" onclick="addBwType();" />
+    </div>
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            分类名称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" />
+            分类标识：<input type="text" class="textbox" name="type_key" value="{:trim($_REQUEST['type_key'])}" />
+            状态：
+            <select name="is_effect">
+                <option value="-1" <if condition="$_REQUEST['is_effect'] eq -1">selected="selected"</if>>
+                全部
+                </option>
+                    <option value="1" <if condition="$_REQUEST['is_effect'] eq 1">selected="selected"</if>> 有效</option>
+                    <option value="0" <if condition="$_REQUEST['is_effect'] eq 0">selected="selected"</if>> 无效</option>
+            </select>
+
+            <input type="hidden" value="BwType" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="bw"
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|20px,name:分类名称|30px,key:分类标识|50px,is_effect:{%IS_EFFECT}|10px,createTime:创建时间|30px"
+	actionlist="mod:修改,editlist:{%EDIT},clearList:清空名单内容"
+	actionwidth="100px"/> 
+
+<div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+    function addBwType(){
+        $.weeboxs.open(ROOT+"?m=BwType&a=add", {contentType:'ajax',onok:save,showButton:true,title:"分类保存",width:650,height:270});
+    }
+
+    function save(){
+        data = $("#_js_form").serialize();
+        jsonData = urlParamToJson(data);
+
+        if(jsonData.name == ''){
+            alert('名称不能为空');
+            return false;
+        }
+        if(jsonData.type_key == ''){
+            alert('分类标识不能为空');
+            return false;
+        }
+
+        $.post("/m.php?m=BwType&a=save",data,function(rs){
+
+            var rs = $.parseJSON(rs);
+            if(rs.status){
+                alert("操作成功！");
+                $.weeboxs.close();
+                window.location.href = "/m.php?m=BwType&a=index";
+            }else{
+                alert(rs.info);
+            }
+        });
+    }
+
+    function urlParamToJson(urlParam){
+        var string = urlParam.split('&');
+        var res = {};
+        for(var i = 0;i<string.length;i++){
+            var str = string[i].split('=');
+            res[str[0]]=str[1];
+        }
+        return res;
+    }
+
+    function mod(id){
+        $.weeboxs.open(ROOT+"?m=BwType&a=mod&id="+id, {contentType:'ajax',onok:save,showButton:true,title:"分类保存",width:650,height:270});
+    }
+
+    function editlist(id){
+        location.href = ROOT+"?m=BwList&a=index&tid="+id
+    }
+
+    function clearList(id){
+        if (confirm('确定此操作吗？')) {
+            location.href = ROOT + "?m=BwList&a=typeDel&tid=" + id
+        }
+    }
+
+</script>
+<include file="Public:footer" />

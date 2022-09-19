@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>项目列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=no">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/p_invest_list.css');?>" rel="stylesheet" />
+</head>
+<body>
+<input type="hidden" id="countHidden" value="{$count}"/>
+<div class="p_invest_list">
+    <div class="top">
+        <span>待加入本金</span>
+        <span>{$noMappingMoney}元</span>
+    </div>
+    <div class="listWrap" id="listWrap">
+        <div>
+            <div class="load_more"></div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="itemTmp">
+    <div class="item">
+        <div class="item">
+            <a href="/duotou/Publishptp?is_allow_access=1&deal_id=<%= p2p_deal_id %>&type=2&token={$token}">
+                <div class="ftDiv">
+                    <span><%= money %>元</span>
+                    <span><%= loanTime %>成交</span>
+                </div>
+                <div class="shouyi">
+                    <span><i></i>未到账利息: <%= noRepayInterest %>元</span>
+                    <span><i></i>已到账利息: <%= repayInterest %>元</span>
+                </div>
+                <div class="scDiv">
+                <% if(name){ %>
+                    <span><%= name %></span> |
+                <% } %>
+                    <span>借款人:<%= borrowUsername %></span>
+                </div>
+            </a>
+            <a href="/duotou/RelatedContract?deal_loan_id={$deal_loan_id}&project_id={$project_id}&p2p_deal_id=<%= p2p_deal_id %>&token={$token}&is_allow_access=1">
+                <div class="tdDiv">
+                    相关协议 <i></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</script>
+<!--public js-->
+<script src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.4/js/duotou/common.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.4/js/lib/template-native-debug.js');?>"></script>
+<script type="text/javascript">
+    var loadmore = new WXP2P.UI.P2PLoadMore($("#listWrap")[0], $('.load_more')[0], "/duotou/InvestListData?deal_loan_id={$deal_loan_id}&project_id={$project_id}&token={$token}&is_allow_access=1", 1, 'get', 7, 0);
+    loadmore.loadNextPage();
+
+    if ($('#countHidden').val()>0){
+        loadmore.createItem = function(item){
+            return $(template('itemTmp',item)).get(0);
+        };
+    }else{
+        $("#listWrap").html('<div class="empty_list"><img class="imgS" src="<?php echo $this->asset->makeAppUrl('v3.4/images/duotou/empty.png');?>"><p class="gray">这里空空如也</p></div>');
+    }
+</script>
+</body>
+</html>

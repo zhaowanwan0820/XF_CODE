@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if isset($page_title) && $page_title}{$page_title} - {/if}{if isset($show_site_titile) && ($show_site_titile eq 1)}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+<link rel="icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.ico" type="image/x-icon" />
+<meta name="keywords" content="{if isset($page_keyword) && $page_keyword}{$page_keyword}{/if}{$site_info.SHOP_KEYWORD}" />
+<meta name="description" content="{if isset($page_description) && $page_description}{$page_description}{/if}{$site_info.SHOP_DESCRIPTION}" />
+
+<script>
+   var  status_switch = {function name="app_conf" v="SWITCH_DEAL_INFO_DISPLAY"};
+</script>
+
+{if isset($rss_title) && $rss_title}
+<link title="{$rss_title}" type="application/rss+xml" rel="alternate" href="{$rss_url}" />
+{/if}
+
+{if isset($is_index) && $is_index eq 1}
+<?php echo $this->asset->renderAll(1); ?>
+{else}
+<!--[if lte IE 9]>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/common/html5shiv.js');?>"></script>
+<![endif]-->
+<?php echo $this->asset->renderAll(); ?>
+{/if}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('skins/diyifangdai/css/style.css');?>" />
+
+<script type="text/javascript">
+var APP_ROOT = '{$APP_ROOT}';
+{if app_conf("APP_MSG_SENDER_OPEN") eq 1}
+var send_span = {function name="app_conf" v="SEND_SPAN"}000;
+{/if}
+$(function(){
+        $(".mobile-app").hover(function(){
+            $("#opcode_app").show() 
+            });
+        $(".wx").hover(function(){
+            $("#opcode_wx").show()  
+            });
+        $(".wx").mouseleave(function(){
+            $("#opcode_wx").hide();
+            });
+        $(".mobile-app").mouseleave(function(){
+            $("#opcode_app").hide()
+            });
+        });
+</script>
+<!--public js&css end -->
+
+</head>
+
+
+
+<body> 
+<script type="text/javascript" src="/api/fzjs"></script>
+ <!--头部开始-->
+    <header class="m-head">
+        <div class="top">
+            <div class="inner">
+            <div class="top_1">服务热线 400-667-7058（工作日：9:00-18:00）</div>
+            <div class="top_2">
+                <a href="javascript:;" class="wx">微信</a>
+                <div class="tapp" id="opcode_wx">
+                    <img src="/static/skins/diyifangdai/images/opcode_wx.jpg">
+                    <span>温馨提示：打开微信，点击底部的“发现”，使用“扫一扫”即可关注第一房贷官方微信。</span>
+                </div>
+                <a href="http://weibo.com/u/5149590072" class="wb" target="_blank">新良微博</a>
+                <a href="http://www.diyifangdai.com/appdownload" class="mobile-app" target="_blank">APP</a>
+                <div class="tapp" id="opcode_app">
+                    <img src="/static/skins/diyifangdai/images/opcode_app.png">
+                    <span>温馨提示：扫一扫即可下载第一房贷官方APP。</span>
+                </div>
+            </div>
+            <div class="top_3">
+                {if $user_info}
+                <a href="/account">您好，{if empty($user_info.real_name)}{$user_info.user_name}{else}{$user_info.real_name}{/if}</a>
+                |
+                <a href="http://www.diyifangdai.com/p2pLogout">退出</a>
+                |
+                {/if}
+                <a href="http://www.diyifangdai.com/special/guideline" target="_blank">新手引导</a>|<a href="http://bbs.diyifangdai.com/" target="_blank">论坛</a>
+            </div>
+            </div>
+        </div>
+        <div class="nav">
+            <div class="inner">
+            <div class="logo">
+                <div class="site_logo"><a href="http://www.diyifangdai.com/" title="房贷网首页"></a></div>
+                <div class="site_line"></div>
+                <div class="site_read"><img src="/static/skins/diyifangdai/images/logo_txt.gif"></div>
+            </div>
+            <div class="nav_list">
+                <ul>
+                    <li><a href="http://www.diyifangdai.com/">首页</a></li>
+                    <li><a href="/" class="hover">我要投资</a></li>
+                    <li><a href="http://www.diyifangdai.com/borrow">我要借款</a></li>
+                    <li><a href="http://www.diyifangdai.com/special/safety">安全保障</a></li>
+                    <li><a href="http://www.diyifangdai.com/special/about">关于我们</a></li>
+                </ul>
+            </div>
+            {if !$user_info}
+            <div class="reg">
+                <a href="http://fangdai.firstp2p.com/user/register?client_id=6440ab83d8e24400dc2daaa4&redirect_uri=http%3A%2F%2Fwww.diyifangdai.com%2F&response_type=code&state=getToken&reg=1" class="reg_left">注册</a>
+                <a href="http://fangdai.firstp2p.com/user/login?client_id=6440ab83d8e24400dc2daaa4&redirect_uri=http%3A%2F%2Fwww.diyifangdai.com%2F&response_type=code&state=getToken" class="reg_right">登录</a>
+            </div>
+            {else}
+            <div class="account_btn">
+                <a href="/account">&nbsp;</a>
+            </div>
+            {/if}
+            </div>
+        </div>
+    </header>
+    <!--头部结束-->
+
+    <!--面包屑导航开始-->
+    {if isset($nav) && $nav}
+    <section>
+        <div class="fix_width">
+            <div class="m-nav">
+                <a href="http://www.diyifangdai.com/">首页</a>
+                >
+                <a href="/">我要投资</a>
+                    {foreach from=$nav item=n}
+                    > <label>{if isset($n.url) && $n.url}<a href="{$n.url}">{$n.text}</a>{else}{$n.text}{/if}</label>
+                    {/foreach}
+            </div>
+        </div>
+    </section>
+    {/if}
+    <!--面包屑导航结束-->
+    <div class="{if isset($in_preset_page) && $in_preset_page eq 1}{else}wrap{/if}">

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="format-detection" content="telephone=no,email=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>{if $page_title}{$page_title} - {/if}{if $show_site_titile eq 1}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+        <link rel="apple-touch-icon-precomposed" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.png');?>">
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.png');?>">
+        <link href="<?php echo $this->asset->makeUrl('v2/css/event/m-base.css');?>" rel="stylesheet" type="text/css">
+        <link href="<?php echo $this->asset->makeUrl('v2/css/event/m-common.css');?>" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/zepto.min.js');?>"></script> 
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/common.js');?>"></script>
+        <script type="text/javascript" src="//assets.firstp2p.com/201602031709/v1/js/risk/frms-fingerprint-min.js"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/iscroll.js');?>"></script>
+        <script type="text/javascript">
+            window['_eventRegisterAddParams'] = {"cn":"{$cn}","from_platform":"{$from_platform}"};
+        </script>
+        <style>
+        body{ background:#f5f5f9;}
+        .reg_top{margin:0 15px; color:#909ba8;}
+        .ui_title{ height:45px; text-align:center; font-size:18px; line-height:45px; background:#fff; position:relative;}
+        .ui_title a{ color:#41474d; font-size:14px;}
+        .ui_title .ui_back{ position:absolute; left:10px;}
+        .ui_icon_back{ background:url(<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/back.png');?>) no-repeat; width:9px; height:20px; display:inline-block; background-size:9px 17px; margin:0 5px 0 0px; vertical-align:middle;}
+        </style>
+    </head>
+    <body>
+        <div class="p_login_new">
+            {if !$isMicroMessengerUserAgent}
+            <div class="ui_title"><a class="ui_back" href="http://m.firstp2p.com"><i class="ui_icon_back"></i>返回</a>填写注册信息</div>
+            {/if}
+            <div class="login_banner">
+                {if $from_platform eq "channel_JLY"}
+                <img src="<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/upload/reg_jly_banner.png');?>" width="100%">
+                {elseif $site_id eq "67"}
+                <img src="<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/upload/reg_banner.png');?>" width="100%">
+                {else}
+                <img src="<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/upload/reg_banner_discount_1.jpg');?>" width="100%">
+                {/if}
+            </div>
+{include file="web/views/v2/event/regpanel.html"}
+        </div>
+        <script type='text/javascript'>
+                    var _ncf = {"prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "", "pck": {"channel": "channel", "fpid": "fpid"}, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": []};
+            (function(p, h, s) {
+                var o = document.createElement(h);
+                o.src = s;
+                p.appendChild(o)
+            })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+        </script>
+    </body>
+</html>

@@ -1,0 +1,273 @@
+{include file="inc/header_v1.html"} 
+<link href="{$TMPL_NEW}/css/collection.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{$TMPL_NEW}/js/common/ajaxfileupload.js"></script>
+<?php
+$this->_var['ujs'][] = $this->_var['APP_WEB_STATIC']."js/u.js";
+$this->_var['cujs'][] = $this->_var['APP_WEB_STATIC']."js/u.js";
+?>
+{function name="import_js" v="$ujs"}
+<div class="w980 mauto clearfix">
+       <section>
+            <div class="shadow">
+                <div class="mess_title tc">收款银行卡信息</div>
+                <div class="collection">
+                    <table width="100%">
+                        <form name="Jcarry_From" id="Jcarry_From_2" action="{url x="index" r="uc_money#saveBankInfo"}" method="post" enctype='multipart/form-data'>
+                        <input type='hidden' name='id' value='{$id}'>
+                        <input type='hidden' name='user_bank_id' value='{$user_bank_id}'>
+                        <?php echo token_input(); ?>
+                        <tbody class="colltab">
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 开户名：</th>
+                                <td>
+                                    <input type="text" class="idbox" disabled="disabled" name="" value="<?php echo nameFormat($this->_var['bankcard_info']['card_name'],1);?>">
+                                    <input type="hidden" name="real_name" id="Jcarry_real_name" value="{$bankcard_info.card_name}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>身份证号：</th>
+                                <td><input type="text" class="idbox" disabled="disabled" value="{$idno}"></td>
+                            </tr>
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 选择银行：</th>
+                                <td>
+                                    <select class="select_box w140" id="Jcarry_bank_id" name="bank_id"  >
+                                    <option value="">请选择</option>
+                                    {foreach from="$bank_list" item="item"}
+                                        <option value="{$item.id}" day="{$item.day}" {if $item.id eq $bankcard_info.bank_id}selected="selected"{/if}>{$item.name}</option>
+                                    {/foreach}
+                                    </select>
+                                </td>
+                            </tr> 
+                            <script type="text/javascript" src="/attachment/region.js"></script>
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 开户行所在地：</th>
+                                <td >
+                                    <input type="hidden" value="{$bankcard_info.region_lv1}" id="deflv1">
+                                    <input type="hidden" value="{$bankcard_info.region_lv2}" id="deflv2">
+                                    <input type="hidden" value="{$bankcard_info.region_lv3}" id="deflv3">
+                                    <input type="hidden" value="{$bankcard_info.region_lv4}" id="deflv4">
+                                    <label>{$LANG.REGION_LV1}：</label>
+                                    <select class="select_box" style='width:100px;' name="region_lv1"  >
+                                        <option value="0">={$LANG.SELECT_PLEASE}=</option>
+                                        {foreach from=$region_lv1 item=lv1}
+                                        <option {if $lv1.selected eq 1}selected="selected"{/if} value="{$lv1.id}">{$lv1.name}</option>
+                                        {/foreach}
+                                    </select>
+                                            
+                                    <label>{$LANG.REGION_LV2}：</label>
+                                    <select class="select_box" name="region_lv2" >
+                                        <option value="0">={$LANG.SELECT_PLEASE}=</option>
+                                    </select>
+                                            
+                                    <label>{$LANG.REGION_LV3}：</label>
+                                    <select class="select_box" name="region_lv3" >
+                                        <option value="0">={$LANG.SELECT_PLEASE}=</option>  
+                                    </select>
+                                            
+                                    <label>{$LANG.REGION_LV4}：</label>
+                                    <select class="select_box" name="region_lv4" id="Jcarry_region_lv4"  >
+                                        <option value="0">={$LANG.SELECT_PLEASE}=</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 开户行网点：</th>
+                                <td>
+                                    <input type="text" class="idbox w315" name="bankzone" id="Jcarry_bankzone"   value="{$bankcard_info.bankzone}"  >
+                                    <a href="http://www.cardbaobao.com/bank/index.asp" target="_blank" class="color-blue1 underline">网点查询
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 银行卡号：</th>
+                                <td><input type="text" class="idbox w315" name="bankcard" id="Jcarry_bankcard"  value="{$bankcard_info.bankcard}"></td>
+                            </tr>
+                            <tr>     
+                                <th><i class="ico_asterisk"></i> 确认卡号：</th>
+                                <td><input type="text" class="idbox w315" name="reBankcard" id="Jcarry_rebankcard" value="{$bankcard_info.bankcard}"></td>
+                            </tr>
+                            
+                            <!-- add  -->
+                            <tr>
+                                <th><i class="ico_asterisk"></i> 申请照片：</th>
+                                <td>
+                                    <div class="file_box fl">
+                                        <input type='hidden' id='hidden_previous_id' value='' name='image' >
+                                        <input type="file" class="hidden_file"   id="fileToUpload"  name="fileToUpload"  onchange="upload()">
+                                        <input type="text" class="idbox w315 fl" value='' id='imageName'>
+                                        <input type="submit" class="but-gray but-yellow ml10 fl" value="浏览" >
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <p>要求：</p>
+                                    <p>1.本人持身份证，目标银行卡，请他人协助，拍摄一张照片。确保照片中，<em class="color-red1">面部，身份证，银行卡，3者</em>清晰可见|<a target="_blank" href='{$TMPL_NEW}/images/user/demo_bankinfo_image.jpg'>（范例查看）</a></p>
+                                    <p>2.图片格式仅限JPG,PNG，尺寸不大于1.5M。</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <input type="submit" value="提交审核" class="but-gray but-yellow" onclick='return checkData();'> 
+                                    <input type="reset" value="重置" class="but-gray" >
+                                    <span class="pl10">您提交成功后，我们将在3日内审核</span>  
+                                </td>
+                            </tr>
+                            <!--  -->
+                     <script>$("#Jcarry_rebankcard,#Jcarry_bankcard").on("paste copy" , function(){
+                                  return false;
+                            });</script>     
+                        </tbody>
+                        </form>
+                    </table>
+                </div>
+            </div>
+       </section>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){   
+        $("select[name='region_lv1']").bind("change",function(){
+            load_select("1");
+        });
+        $("select[name='region_lv2']").bind("change",function(){
+            load_select("2");
+        });
+        $("select[name='region_lv3']").bind("change",function(){
+            load_select("3");
+        }); 
+        $("select[name='region_lv4']").bind("change",function(){
+            load_select("4");
+        });
+        // init region
+                var devlv1Option = $("select[name='region_lv1'] option[value='" + $("#deflv1").val() + "']")[0];
+                if (devlv1Option) {
+                    devlv1Option.selected = true;
+                    load_select("1");
+                    var devlv2Option = $("select[name='region_lv2'] option[value='" + $("#deflv2").val() + "']")[0];
+                    if (devlv2Option) {
+                        devlv2Option.selected = true;
+                        load_select("2");
+                        var devlv3Option = $("select[name='region_lv3'] option[value='" + $("#deflv3").val() + "']")[0];
+                        if (devlv3Option) {
+                            devlv3Option.selected = true;
+                            load_select("3");
+                            var devlv4Option = $("select[name='region_lv4'] option[value='" + $("#deflv4").val() + "']")[0];
+                            if (devlv4Option) {
+                                devlv4Option.selected = true;
+                            }
+                        }
+                    }
+                }
+    });
+    
+    function load_select(lv)
+    {
+        var name = "region_lv"+lv;
+        var next_name = "region_lv"+(parseInt(lv)+1);
+        var id = $("select[name='"+name+"']").val();
+        
+        if(lv==1)
+        var evalStr="regionConf.r"+id+".c";
+        if(lv==2)
+        var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+id+".c";
+        if(lv==3)
+        var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+$("select[name='region_lv2']").val()+".c.r"+id+".c";
+        
+        if(id==0)
+        {
+            var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+        }
+        else
+        {
+            var regionConfs=eval(evalStr);
+            evalStr+=".";
+            var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+            for(var key in regionConfs)
+            {
+                html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+            }
+        }
+        $("select[name='"+next_name+"']").html(html);
+        
+        if(lv == 4)
+        {
+            load_delivery();
+        }
+        else
+        {
+            load_select(parseInt(lv)+1);
+        }
+        
+        
+    }
+    
+    //验证图片
+    function checkData() {
+        var img = $('#hidden_previous_id').val();
+        if(img ) {
+            return true;
+        }else{
+            $.showErr('请上传申请照片',function(){
+                $("#hidden_previous_id").focus();
+            },'修改银行卡信息不成功');
+            return false;
+        }
+    }
+    
+
+    //图片上传
+    function upload() {
+        var hidden_previous_id = $('#hidden_previous_id').val();
+        //判断是否上传过了。如果有需要删除先前的图片
+        if(hidden_previous_id) {
+            del_previous_image(hidden_previous_id);
+            $('#hidden_previous_id').val('');
+        }
+        $.ajaxFileUpload({       
+            url:'/uc_money-bankinfoImage?priv=1',
+            secureuri :false,
+            fileElementId :'fileToUpload',
+            dataType : 'json',
+            success : function (data, status){
+                if(typeof(data.code) != 'undefined'){              
+                    if(data.code != '0000'){
+                        $.showErr(data.message,function(){
+                            $("#hidden_previous_id").focus();
+                        });
+                       // alert(data.message);
+                        $('#imageName').val('');
+                    }else{
+                        $('#hidden_previous_id').val(data.message.image_id);
+                        //$('#imageName').val(data.message.filename);
+                        $('#imageName').val('已上传');
+                    }
+                }
+            },
+            error: function(data, status, e){
+                alert(data);
+            }
+        })
+    }
+    
+    //删除上一个上传的图片
+    function del_previous_image(id) {
+        if(id) {
+            $.ajax({
+                   type: "POST",
+                   url: '/uc_money-bankinfoImageDel',
+                   data: "id="+id,
+                   dataType:"json",
+                   success: function(data){
+                       if(data.code != '0000') {
+                           return false;
+                       }else{
+                           return true;
+                       }
+                   }
+            });
+        }
+    }
+</script>
+{include file="inc/footer.html"}

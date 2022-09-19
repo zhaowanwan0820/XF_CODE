@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>商品</title>
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.83/css/swiper-4.3.2.min.css');?>">
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/flexible.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/fastClick.js');?>"></script>
+    <link href="<?php echo $this->asset->makeAppUrl('v4.83/css/proDetails.css');?>" rel="stylesheet" />
+    <script>
+        var status = '{$productInfo.0.status}';//状态（是否1：进行中；0：已开奖）
+        var productSchedule = '{$productInfo[0].schedule}';//当前进度(整数)
+        var availableCount = '{$availableCount}';
+        var candy = '{$accountInfo.amount}';
+        var car_img = '{$productInfo[0].images}';//轮播图的图片
+        var token = '{$token}';
+        var periodId = '{$productInfo[0].id}';
+        var bnum = '{$periodCodesCount}';
+        var startTime = '{$startTime}';
+        var timeStamp = '{$currentTime}';
+        var sign = '{$sign}';
+        var periodCodesCount = '{$periodCodesCount}';
+        var maxCount = '{$maxCount}';
+        var todayAvailableCount = '{$todayAvailableCount}';
+        var remainder = '{$remainder}';
+        var short_title = '{$productInfo[0].productInfo.short_title}';
+        var invite = '{$productInfo.0.productInfo.type}';
+        var presentCount = '{$presentCount}';
+    </script>
+    {include file="api/views/_v492/candysnatch/snatch_zhuge.html"}
+</head>
+<body>
+    <script>
+        window.onload = function(){
+          setTimeout(function(){
+            zhuge.track("信宝夺宝-商品",{
+                "商品名称":short_title,
+                "商品期号":periodId
+            })
+          }, 1000);
+            FastClick.attach(document.body)
+        };
+    </script>
+    <div class="pro_details">
+         <!--商品详情页-title-->
+         <div class="pro_details_top">
+            <a class="top_return" href="javascript:;"><span class="arrow_icon"></span>返回</a>
+            <ul class ="top_switch">
+                <li class="top_product top_anchor">商品</li>
+                <li class="top_details JS_xq">详情</li>
+            </ul>
+            <a href='firstp2p://api?type=webview&gobackrefresh=true&url=' data-pram="http://event.ncfwx.com/zt/247?token={$token}" class="pro_rule top_rule JS_rule" >夺宝规则</a>
+        </div>
+        <div class="hei_fixed"></div>
+
+        <!--商品详情页-商品信息展示-->
+        <div class="proDetail_desc">
+            <!--轮播图-->
+            <div class="swiper-container JS_product_banner">
+              <ul class="swiper-wrapper">
+                {foreach from = $productInfo[0].images item=item}
+                <li class="swiper-slide img_item"><img class="img_carousel" src="{$item}"></li>
+                {/foreach}
+              </ul>
+            </div>
+
+            <!-- 双十一和邀请专享 -->
+            {if $productInfo.0.productInfo.type eq 1}
+            <div class="special_activity">
+                <img src="<?php echo $this->asset->makeAppUrl('v4.83/images/Nov1.png');?>" class="sa_double1_img1">
+                <span class="sa_double1_txt1">商品超低折扣 赶快参与夺宝吧！</span>
+                <img src="<?php echo $this->asset->makeAppUrl('v4.83/images/Nov2.png');?>" class="sa_double1_img2">
+                <div class="sa_double1_txt2">
+                    <div class="txt2_txt1">此品参加双十一活动</div>
+                    <div class="txt2_txt2">11.11</div>
+                    <div class="txt2_txt3">2018.11.10-2018.11.12</div>
+                </div>
+            </div>
+            {elseif $productInfo.0.productInfo.type eq 2}
+            <div class="special_activity">
+                <img src="<?php echo $this->asset->makeAppUrl('v4.83/images/Nov1.png');?>" class="sa_double1_img1">
+                <span class="sa_invite_text1">邀请好友完成{$investLimit}元首投即可参与专享商品夺宝</span>
+                <img src="<?php echo $this->asset->makeAppUrl('v4.83/images/invite.png');?>" class="sa_invite_img2">
+            </div>
+            {elseif $productInfo.0.productInfo.type eq 3}
+            <div class="special_activity">
+                <img src="<?php echo $this->asset->makeAppUrl('v4.83/images/Nov1.png');?>" class="sa_double1_img1">
+                <span class="sa_double1_txt1">商品超低折扣 赶快参与夺宝吧！</span>
+                <img src="<?php echo $this->asset->makeAppUrl('v4.83/images/Nov2.png');?>" class="sa_double1_img2">
+                <div class="sa_double1_txt2">
+                    <div class="txt2_txt1">此品参加女神节活动</div>
+                    <div class="txt2_txt2">女神节</div>
+                    <div class="txt2_txt3">2019.03.07-2019.03.10</div>
+                </div>
+            </div>
+            {/if}
+            <!-- 双十一和邀请专享 -->
+
+            <!--期号和文字描述-->
+            <div class="pro_describe">
+                <span class="term">第<span>{$productInfo[0].id}</span>期</span>
+                <span>{$productInfo[0].productInfo.title}</span>
+            </div>
+            <!--开奖进度/中奖码展示-->
+            {if $productInfo.0.status eq "1"}
+            <div class="pro_schedule">
+                <div>
+                    <span class="schedule">开奖进度 <span class="schedule_num">{$productInfo[0].schedule}</span><span>%</span></span>
+                    <span class="right">1信宝=1夺宝码</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="JS_progressBar"></div>
+                    <div></div>
+                </div>
+                <div>
+                    <span>总需: <span class="total-chance">{$productInfo[0].code_total}</span>信宝</span>
+                    <span class="right">剩余<span class="surplus-chance">{$remainder}</span>信宝</span>
+                </div>
+            </div>
+            {elseif $productInfo.0.status eq "2" or $productInfo.0.status eq "3"}
+            <div class="winner">
+                <img class="winner_icon" src="<?php echo $this->asset->makeAppUrl('v4.83/images/winner_show.png');?>" alt="">
+                恭喜<span>{$productInfo.0.userInfo.real_name}</span>{if $productInfo.0.userInfo.sex eq 1}先生{else}女士{/if}
+                    <span>{$productInfo.0.userInfo.mobile}</span>
+                夺宝成功
+            </div>
+            {/if}
+        </div>
+        <span class="blank20"></span>
+
+        <!--商品详情页-物流信息-->
+        {if $productInfo.0.userInfo.id eq $userId and $productInfo.0.address.address}
+        <div class="logistics">
+            <div class="pro_title"><i></i>物流信息</div>
+            <ul class="logistics_ul">
+                <li>
+                    <span class="logistics_left">收货地址：</span>
+                    <span class="logistics_right">{$productInfo.0.address.address}</span>
+                </li>
+                <li>
+                    <span class="logistics_left">联系方式：</span>
+                    <span class="logistics_right">{$productInfo.0.address.mobile}</span>
+                </li>
+                {if !$productInfo.0.express_company or !$productInfo.0.express_order_id}
+                <li>
+                    <span class="logistics_right">我们会尽快发货哦~</span>
+                </li>
+                {else}
+                <li>
+                    <span class="logistics_left">物流公司：</span>
+                    <span class="logistics_right">{$productInfo.0.express_company}</span>
+                </li>
+                <li>
+                    <span class="logistics_left">快递单号：</span>
+                    <span class="logistics_right">{$productInfo.0.express_order_id}</span>
+                </li>
+                {/if}
+            </ul>
+        </div>
+        {/if}
+
+        <!--商品详情页-我的夺宝码-->
+        <div class="myticket">
+            <div class="pro_title"><i></i>我的夺宝码</div>
+            {if $periodCodes}
+                {if $periodCodesCount eq 1}
+                    <div class="mytickets">您已投入一信宝<span>{$periodCodes[0][0]}</span></div>
+                {else}
+                    <div class="mytickets mytickets1">
+                    <?php $a=0; ?>
+                    {foreach from=$periodCodes item=code key=key name=ticket}
+                    {foreach from=$code item=item key=k name=codes}
+                        <?php $a++; ?>
+                        <span>{$item}</span>
+                        <?php if ($a >= 8) {break 2;} ?>
+                    {/foreach}
+                    {/foreach}
+                    </div>
+                    {if $periodCodesCount > 8}
+                        <div class="pro_view JS_ticket_view">查看我的所有夺宝码<span>&gt;</span></div>
+                    {/if}
+                {/if}
+            {else}
+            <div class="mytickets">您还没有参与本次夺宝哦~</div>
+            {/if}
+        </div>
+
+        <!--商品详情页-参与记录-->
+         <div class="user_records">
+            <div class="pro_title"><i></i>参与记录</div>
+            {if $periodOrders}
+            <div class="records">
+                {foreach from=$periodOrders item=records name=records}
+                    {if $smarty.foreach.records.index < 5}
+                    <div class="records_terms">
+                        <div class="records_time"><span class="timeStamp">{$records.create_time}</span></div>
+                        <div class="records_desc">
+                            <span class="records_name">{$records.userInfo.real_name}{if $records.userInfo.sex eq "1"}先生{else}女士{/if}<span class="pro_time_code"></span></span>
+                            <span class="records_num">投入了{$records.code_count}个信宝</span>
+                        </div>
+                    </div>
+                    {/if}
+                    {if $smarty.foreach.records.index == 5}
+                    <div class="pro_view"><a class="orders JS_chcyjl"  href='firstp2p://api?type=webview&gobackrefresh=true&url=' data-pram="/candysnatch/SnatchOrders?token={$token}&periodId={$productInfo[0].id}&offset=0">查看所有参与记录</a><span>&gt;</span></div>
+                    {/if}
+                {/foreach}
+            </div>
+            {else}
+            <div class="records_zero">
+                <img class="records_avatar"  src = "<?php echo $this->asset->makeAppUrl('v4.83/images/default_user.png');?>" alt="头像">
+                <div class="records_joindesc">暂时无用户参与，小手一投，幸运儿就是您！</div>
+            </div>
+            {/if}
+        </div>
+
+        <!--商品详情页-获奖计算-->
+        {if $productInfo.0.status eq "2" or $productInfo.0.status eq "3"}
+        <div class="calculation" >
+            <div class="pro_title"><i></i>获奖计算</div>
+            <div class="cal_content">
+                <div class="win_rule">
+                    <div>计算结果:</div>
+                    <div>1. 求和: {$calculate.prize_time_sum} (上面所有记录时间相加之和)</div>
+                    <div>2. 取余: {$calculate.prize_time_sum} ÷ {$calculate.code_total} (本商品收到的总信宝数) = <span class="mod">{$calculate.remainder}</span></div>
+                    <div>3. 结果: <span class="mod">{$calculate.remainder}</span> (余数) + 10000001 = {$calculate.prize_code}</div>
+                </div>
+                <div class="win_code">
+                    <span>中奖码</span><span class="winning_code">{$calculate.prize_code}</span>
+                </div>
+            </div>
+        </div>
+        {/if}
+
+        <div class="detail" >
+            <div class="pro_title" id="details"><i></i>商品详情</div>
+            <img src='{$productInfo[0].productInfo.detail}' alt="">
+        </div>
+
+        {if $productInfo.0.status eq 1}
+            <div style="height:1.4rem"></div>
+            {if $periodCodes[0]}
+            <div class="treasure JS_djdb">
+                <div class="treasure_btn JS_treasure">
+                    {if $availableCount gt 0}
+                    <div class="duobao">继续夺宝</div>
+                    <div class="duobao_txt">( 您最多可投入{$availableCount}信宝在该商品 )</div>
+                    {else}
+                    <div class="db_lheight">继续夺宝</div>
+                    {/if}
+                </div>
+            </div>
+            {else}
+            <div class="treasure JS_djdb">
+                <div class="treasure_btn JS_treasure">
+                    {if $availableCount gt 0}
+                    <div class="duobao">开始夺宝</div>
+                    <div  class="duobao_txt">( 您最多可投入{$availableCount}信宝在该商品 )</div>
+                    {else}
+                    <div class="db_lheight">开始夺宝</div>
+                    {/if}
+                </div>
+            </div>
+            {/if}
+        {elseif $sign eq 2 and $productInfo.0.status eq 2 }
+        <div style="height:1.4rem"></div>
+        <div class="treasure JS_start_btn">
+            <div class="treasure_btn JS_start_msg tomorrow_btn">{$display}{$startTime}该商品开始夺宝</div>
+        </div>
+        {elseif $sign eq 2 and $productInfo.0.status eq 3 }
+        <div style="height:1.4rem"></div>
+        <div class="treasure JS_start_btn">
+            <div class="treasure_btn JS_start_msg tomorrow_btn">{$display}{$startTime}该商品开始夺宝</div>
+        </div>
+        {/if}
+
+
+        <!-- 点击开始夺宝-没有机会弹窗 -->
+        <div class="snatch_pop_wrap pro_popup_wrap popup_chance" style="display:none">
+            <div class="snatch_pop">
+                <div class="pop_title">
+                    <span>温馨提示</span>
+                    {if $productInfo.0.productInfo.type neq 2}
+                    <img class="close_btn pro_cancel" src="<?php echo $this->asset->makeAppUrl('v4.83/images/cancel.png');?>" alt="close">
+                    {/if}
+                </div>
+                {if $productInfo.0.productInfo.type eq 2 && $presentCount eq 0}
+                <div class="pop_content">
+                    <p>活动期间，邀请好友完成首投（网贷产品仅限网贷-网信普惠），当日即可获得参与该商品的夺宝机会，夺宝机会当日有效</p>
+                </div>
+                <div class="pop_btn">
+                    <div class="pop_cancle pro_cancel">取消</div>
+                    <div class="pop_confirm"><a  class="pop_confirm pro_confirm JS_qyq" href="firstp2p://api?type=native&name=invite">去邀请</a></div>
+                </div>
+                {elseif $productInfo.0.productInfo.type eq 2 && todayAvailableCount eq 0 && $periodCodes[0]}
+                <div class="pop_content">
+                    <p>您邀请夺宝机会已用完，邀请更所好友首投可获得更多专属机会</p>
+                </div>
+                <div class="pop_btn">
+                    <div class="pop_cancle pro_cancel">取消</div>
+                    <div class="pop_confirm"><a  class="pop_confirm pro_confirm JS_qyq" href="firstp2p://api?type=native&name=invite">去邀请</a></div>
+                </div>
+                {else}
+                <div class="pop_content">
+                    <p>投资年化每满{$unitAmount}元（不含智多新和随心约；网贷产品仅限网贷-网信普惠）或者邀请好友首投均可获得夺宝机会，机会仅限当日有效。</p>
+                </div>
+                <div class="pop_btn">
+                    <div class="pop_invite"><a class="pop_invitea JS_qyq" href="firstp2p://api?type=native&name=invite">去邀请</a></div>
+                    <div class="pop_confirm JS_qtz"><a  href="firstp2p://api?type=native&name=markethome" class="pop_confirm pro_confirm">去投资</a></div>
+                </div>
+                {/if}
+            </div>
+        </div>
+
+        <!-- 点击开始夺宝-没有信宝弹窗 -->
+        <div class="snatch_pop_wrap pro_popup_wrap popup_candy" style="display:none">
+            <div class="snatch_pop">
+                <div class="pop_title">温馨提示</div>
+                <div class="pop_content pro_center">
+                    <p>您当前信宝不足<span>1信宝</span></p>
+                </div>
+                <div class="pop_btn">
+                    <div class="pop_cancle pro_cancel">取消</div>
+                    <div class="pop_confirm"><a  href="firstp2p://api?type=native&name=other&pageno=32" class="pop_confirm pro_confirm">去信宝中心</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 点击开始夺宝-夺宝弹窗 -->
+        <div class="pro_popup" style="display:none;">
+           <div class="popup_layer"></div>
+           <div class="popup_content">
+               <div class="popup_prodesc">
+                    <img src="{$productInfo[0].images[0]}" class="popup_picture" alt="商品图片">
+                    <div class="popup_describe">
+                        <img  class="JS_close" src="<?php echo $this->asset->makeAppUrl('v4.83/images/popup_close.png');?>"alt="close">
+                        <span class="term">第<span>{$productInfo[0].id}</span>期</span>
+                        <div>{$productInfo[0].productInfo.title}</div>
+                    </div>
+               </div>
+               <div class="popup_maxnum">
+                   <div class="maxnum_desc">您对此商品最大可投信宝数为<span>{$availableCount}</span></div>
+                   <div class="maxnum_msg">* 每投入一个信宝会生成一个夺宝码</div>
+               </div>
+               <div class="popup_joinnum">
+                    <span>
+                        <span>投入数量</span>
+                        <span>(信宝)</span>
+                    </span>
+                    <span class="sub"><span></span></span><input type="number" class="num JS_num" value=1 /><span class="add"><span></span><span></span></span>
+                    <span class="pro_tips">温馨提示：一次可以投入多个信宝，投入信宝越多，中奖概率越大哦~</span>
+               </div>
+               <div class="popup_sub">
+                    <input type="button" value="确定" class="sub_btn JS_sub">
+               </div>
+           </div>
+        </div>
+
+        <!-- 点击开始夺宝-成功弹窗 -->
+        <div class="snatch_pop_wrap pro_popup_wrap popup_success" style="display:none;">
+            <div class="snatch_pop">
+                <div class="pop_title">夺宝成功</div>
+                <div class="pop_content pop_suc">
+                    <p>消耗信宝：<span class="const_num"></span></p>
+                    <p>本次获得的夺宝码为</p>
+                    <p class="get_code back_color" style="line-height:0.6rem;"><span class="JS_data_code"></span>~<span class="JS_data_code"></span></p>
+                </div>
+                <div class="pop_btn">
+                    <div class="pop_confirm pro_confirm pro_cancel">确定</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 点击开始夺宝-失败弹窗 -->
+        <div class="snatch_pop_wrap pro_popup_wrap popup_fail" style="display:none;">
+            <div class="snatch_pop">
+                <div class="pop_title">温馨提示</div>
+                <div class="pop_content pro_center">
+                    <p class="fail_msg">系统繁忙！</p>
+                </div>
+                <div class="pop_btn">
+                    <div class="pop_confirm pro_confirm pro_cancel">确定</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 点击查看我的夺宝码弹窗 -->
+        <div class="snatch_pop_wrap pro_popup_wrap popup_baby_num" style="display:none;">
+            <div class="snatch_pop">
+                <div class="pop_title">我的夺宝码</div>
+                <div class="pop_content pro_center">
+                    <div class="popup_scroll">
+                        {foreach from=$periodCodes item=code name=pticket}
+                            {foreach from=$code item=item name=pcode}
+                                {if $smarty.foreach.pcode.first}
+                                   <p>{$item} ~
+                                {/if}
+                                {if $smarty.foreach.pcode.last}
+                                   {$item}</p>
+                                {/if}
+                            {/foreach}
+                        {/foreach}
+                    </div>
+                </div>
+                <div class="pop_btn">
+                    <div class="pop_confirm pro_confirm pro_cancel">确定</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if(sign === "1" || sign === "2" || sign === "3"){
+            $('.top_return').attr('href', 'firstp2p://api?type=webview&gobackrefresh=true&url='+ encodeURIComponent(location.origin + '/candysnatch/SnatchAuction?token={$token}&clearCookie=0'));
+        }else{
+            $('.top_return').attr('href', "firstp2p://api?type=local&action=closeself");
+        };
+        $(".JS_xq").click(function(){
+            zhuge.track("信宝夺宝-夺宝详情页-点击详情")
+        })
+        $(".JS_rule").click(function(){
+            zhuge.track("信宝夺宝-夺宝详情页-点击夺宝规则")
+        })
+        $(".JS_chcyjl").click(function(){
+            zhuge.track("信宝夺宝-夺宝详情页-点击查看所有参与记录")
+        })
+        $(".JS_djdb").click(function(){
+            zhuge.track("信宝夺宝-夺宝详情页-点击夺宝")
+        })
+        $(".JS_qyq").click(function(){
+            zhuge.track("信宝夺宝-弹窗-点击去邀请")
+        })
+        $(".JS_qtz").click(function(){
+            zhuge.track("信宝夺宝-弹窗-点击去投资")
+        })
+        if(sign=="2"){
+            setTimeout(function(){ 
+                zhuge.track("信宝夺宝-往期记录-进入夺宝详情页",{
+                    "商品名称":short_title
+                })
+             },1000)
+        }
+    </script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.83/js/candy/swiper-4.3.2.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.83/js/candy/proDetails.js?v=1');?>"></script>
+</body>
+</html>

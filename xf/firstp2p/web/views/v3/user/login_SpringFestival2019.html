@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/activity/spring_festival_2019/login.css');?>">
+    <title>登录网信账户</title>
+    <script>
+        window.zhuge = window.zhuge || [];
+        window.zhuge.methods = "_init debug identify track trackLink trackForm page".split(" ");
+        window.zhuge.factory = function (b) {
+            return function () {
+                var a = Array.prototype.slice.call(arguments);
+                a.unshift(b);
+                window.zhuge.push(a);
+                return window.zhuge;
+            }
+        };
+        for (var i = 0; i < window.zhuge.methods.length; i++) {
+            var key = window.zhuge.methods[i];
+            window.zhuge[key] = window.zhuge.factory(key);
+        }
+        window.zhuge.load = function (b, x) {
+            if (!document.getElementById("zhuge-js")) {
+                var a = document.createElement("script");
+                var verDate = new Date();
+                var verStr = verDate.getFullYear().toString() + verDate.getMonth().toString() + verDate.getDate().toString();
+                a.type = "text/javascript";
+                a.id = "zhuge-js";
+                a.async = !0;
+                a.src = 'https://stat.ncfwx.com/zhuge.js?v=' + verStr;
+                a.onerror = function () {
+                    window.zhuge.identify = window.zhuge.track = function (ename, props, callback) {
+                        if (callback && Object.prototype.toString.call(callback) === '[object Function]') callback();
+                    };
+                };
+                var c = document.getElementsByTagName("script")[0];
+                c.parentNode.insertBefore(a, c);
+                window.zhuge._init(b, x)
+            }
+        };
+        window.zhuge.load('6f33d6821b27439dae59698798ef81d6', { debug: true, superProperty: { PlatformType: 'H5', xinbao: 1 }, autoTrack: true, singlePage: true }); //配置应用的AppKey -->
+    </script>
+    <script type="text/javascript">
+    ;(function () {
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = today.getMonth() + 1;
+        var day= today.getDate();
+        var ymd = year +""+ month+"" + day;
+        var oHead = document.getElementsByTagName('HEAD').item(0);
+        var oScript= document.createElement("script");
+        oScript.type = "text/javascript";
+        oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+        oHead.appendChild( oScript);
+    })();
+    </script>
+</head>
+<body class="login_body">
+<img src="<?php echo $this->asset->makeUrl('v3/images/activity/spring_festival_2019/login/banner.jpg');?>" class="bannerImg"/>
+<div class="mainBox">
+    <div class="error">{$error}</div>
+    <form class="loginForm" id="loginForm" method="post" action="/user/doLogin{$querystring}">
+        <?php echo token_input(); ?>
+        <input type="hidden" name="tpl" value="SpringFestival2019" />
+        <div class="fgroup">
+            <input type="text" placeholder="请输入手机号" name="username" id="accountInput" autoComplete="off" maxlength="11" />
+        </div>
+        <div class="error"></div>
+        <div class="fgroup">
+            <input type="password" placeholder="请输入登录密码" name="password" id="pasInput" autoComplete="off" />
+        </div>
+        <div class="error"></div>
+        <div class="fgroup">
+            <input type="text" placeholder="请输入验证码" name="captcha" id="codeInput" autoComplete="off" />
+            <a href="javascript:;" class="codeBox">
+                <img class="codeImg" id="codeImg" src="/verify.php?w=91&h=36&rb=0"/>
+            </a>
+        </div>
+        <div class="error"></div>
+        <div class="registerBox">
+            <a href="https://m.ncfwx.com/user/register?springFestival2019=2019%E6%98%A5%E8%8A%82%E5%8A%A9%E5%8A%9B%E6%B4%BB%E5%8A%A8_%E5%BF%AB%E9%80%9F%E6%B3%A8%E5%86%8C" class="registerLink" id="registerLink">快速注册></a>
+            <!--<a href="http://test22.m.ncfwxlocal.com/user/register?springFestival2019=2019%E6%98%A5%E8%8A%82%E5%8A%A9%E5%8A%9B%E6%B4%BB%E5%8A%A8_%E5%BF%AB%E9%80%9F%E6%B3%A8%E5%86%8C" class="registerLink" id="registerLink">快速注册></a>-->
+        </div>
+        <input type="button" value="登录" class="submitBtn" id="submitBtn"/>
+    </form>
+</div>
+<script src="<?php echo $this->asset->makeUrl('v3/js/activity/spring_festival_2019/jquery-3.3.1.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/activity/spring_festival_2019/fastclick.min.js');?>"></script>
+<script type="text/javascript">
+$(function(){
+    $('#codeImg').on('click', refresh);
+    var emptyReg=/^\s*$/;
+    function refresh(){
+        var srcStr="/verify.php?w=91&h=36&rb=0&rand=" + new Date().getTime();
+        $(this).attr('src', srcStr);
+    }
+    function verifyForm() {
+        var flag=true;
+        var account=$('#accountInput');
+        var pas=$('#pasInput');
+        var code=$('#codeInput');
+        account.add(pas).add(code).closest('.fgroup').next().text("");
+
+        if (emptyReg.test(account.val())){
+            showError('帐号不能为空',account);
+            flag=false;
+            return flag;
+        }
+        if (emptyReg.test(pas.val())){
+            showError('密码不能为空',pas);
+            flag=false;
+            return flag;
+        }
+        if (code.length && emptyReg.test(code.val())){
+            showError('验证码不能为空',code);
+            flag=false;
+            return flag;
+        }
+        return flag;
+    }
+    $('#submitBtn').on('click',function (event) {
+        if (verifyForm()){
+            $('#loginForm').submit();
+        }
+    });
+    function showError(errorText,inputDom) {
+        inputDom.closest('.fgroup').next().text(errorText);
+    }
+    /*$('#registerLink').on('click',function () {
+        zhuge.track(`2019春节助力活动_快速注册`);
+    });*/
+});
+</script>
+</body>
+</html>

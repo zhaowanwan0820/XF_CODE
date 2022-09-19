@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>更换银行卡</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-base_v32.css');?>" rel="stylesheet">
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-common_v32.css');?>" rel="stylesheet">
+    <link type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.72/css/p_changecard_inreview.css?v=88');?>" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="p_changecard_inreview">
+    {if $isVerified}
+        <div class="inreview_img_success"></div>
+        <div class="inreview_instr color_red tc">
+            <p class="f20 color_black">换卡成功</p>
+        </div>
+        <div class="plr15 mt30">
+            <div class="ui_btn_red_h40"><a href="firstp2p://api?type=closeall">完成</a></div>
+        </div>
+	{else}
+        <div class="inreview_img"></div>
+        <div class="inreview_instr color_red tc">
+            <p class="f20 mt10 color_black">审核中</p>
+            <p class="mt10 color_gray">您的资料已于{$verifyTime}提交，预计3个工作日内完成审核，请您耐心等待</p>
+        </div>
+	{/if}
+        <div class="inreview_foot f12">如有疑问请联系客服 <a href="tel:95782"><span>95782</span></a></div>
+    </div>
+
+</body>
+<script>
+    //隐藏返回按钮
+        var  triggerScheme = function(scheme) {
+        var iframe = document.createElement("iframe");
+        iframe.src= scheme;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+    };
+    triggerScheme("firstp2p://api?method=updatebacktype&param=2");
+</script>
+</html>

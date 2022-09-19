@@ -1,0 +1,63 @@
+{include file="web/views/v3/header.html"}
+<script src="<?php echo $this->asset->makeUrl('v3/js/index/index.js');?>" type="text/javascript"></script>
+    <div class="p_deal">
+        <section class="main">
+            {if app_conf('TEMPLATE_ID') == '1' and app_conf('SHOW_FUNDING') == '1'}
+            <div class="ui_product_tab box mb30 ui_fund">
+                <div class="product_type">
+                  <div class="fl title"><i class="icon_line mr15"></i>基金理财</div>  
+                </div>
+                <div class="con">
+                    {foreach from=$fund_list.list item="fund"}
+                    <div class="p2p_product p5">
+                        <div class="clearfix bg_whtie">
+                            <div class="con_l">
+                                <h3 class="f16">
+                                    <span class="product_name tag_sty">契约</span>{if $fund.status eq 1}<a title="{$fund.name}" alt="{$fund.name}"  href="/jijin/detail?id={$fund.id}" target="_blank" >{$fund.name}</a>{else}<span title="{$fund.name}" alt="{$fund.name}"  href="/jijin/detail?id={$fund.id}" target="_blank" class="deal_tag_name" >{$fund.name}</span>
+                                    {/if}
+                                </h3>
+                                <div class="fl w340">
+                                    <p><span>预期年化收益率：</span>
+                                        {if $fund.income_min neq $fund.income_max}
+                                        <span class="f20"><i>{$fund.income_min}</i>&nbsp;%～<i>{$fund.income_max}</i>&nbsp;%</span>
+                                        {else}
+                                        <span class="f20"><i>{$fund.income_min}</i>&nbsp;%</span>
+                                        {/if}
+                                    </p>
+                                </div>
+                                <div class="fl w175">
+                                    <p><span>投资期限：</span><em><i class="f16">{$fund.repay_time}</i></em></p>
+                                </div>
+                                <div class="fl w200">
+                                    <p><span>起投金额：</span>{$fund.loan_money_min}</p>
+                                </div>
+                                <div class="fl w173">
+                                    <p><span>预约人数：</span>{$fund.subscribe_count}人</p>
+                                </div>
+                            </div>
+                            {if $fund.status eq 1}
+                                <div class="product_btn"><a href="/jijin/detail?id={$fund.id}" class="btn_yuyue" target="_blank">预约中</a></div>
+                            {else}
+                                <div class="product_btn"><span class="btn_manbiao">已结束</span></div>
+                            {/if}
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+
+                <div id="pagination" class="pagination">
+                    {$pagination}
+                </div>
+                <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.css');?>" >
+
+            </div>
+            {/if}
+        </section>
+    </div>
+<div class="lay_medal_process" id="j_lay_medal_process" style="display:none;">
+    <div class="pro_circel"><a href="/medal/wall"><span class="f20 color_yellow pt25 fs"><span id="j_userBeginnerMedalCount">1</span>/<span id="j_beginnerMedalCount">3</span></span><span class="color_gray">新手任务</span></a></div>
+    <div class="pro_close">
+        <a href="javascript:void(0)" id="j_pro_close"></a>
+    </div>
+</div>
+{include file="web/views/v3/footer.html"}

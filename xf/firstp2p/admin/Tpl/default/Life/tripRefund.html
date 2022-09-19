@@ -1,0 +1,89 @@
+<div class="main">
+<div class="blank5"></div>
+确认对订单{$outOrderId}进行退款操作？<br />
+当前仅支持<font color="red">退款1次</font>，且申请退款后将<font color="red">无法撤销</font><br /><br />
+<if condition="$isInvoice eq 1">
+此订单已向用户开票，请先确认<font color="red">收回发票</font>后再退款!
+</if>
+</div>
+<div class="blank5"></div>
+<table class="form" cellpadding="0" cellspacing="0">
+    <tbody>
+    <tr>
+        <td colspan="2" class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">退款金额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" style="width:150px" id="amount" name="amount" value="" onkeyup="check_fee($(this))" />元<br />
+            &lt;= {$actualAmountYuan} 元(支付金额）
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">&nbsp;</td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" id="outOrderId" name="outOrderId" value="{$outOrderId}">
+            <input type="hidden" id="merchantId" name="merchantId" value="{$merchantId}">
+            <input type="hidden" id="payAmount" name="payAmount" value="{$actualAmount}">
+            <input type="hidden" id="payAmountYuan" name="payAmountYuan" value="{$actualAmountYuan}">
+            <!--隐藏元素-->
+            <input type="button" class="button" value="确认" onclick="return confirm_form(this);">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="bottomTd"></td>
+    </tr>
+</tbody></table>
+</div>
+<script>
+function check_fee(obj) {
+    var new_fee = obj.val();
+    if(new_fee == '' || isNaN(new_fee)){
+        new_fee = '';
+    }
+
+    if(new_fee > 0 && new_fee.indexOf('.') > 0 && new_fee.length - new_fee.indexOf('.') - 1 > 2){
+        new_fee = parseFloat(new_fee).toFixed(2);
+    }
+    obj.val(new_fee);
+}
+function confirm_form(btn) {
+    var amount = $("input[name='amount']").val();
+    var payAmount = $("input[name='payAmount']").val();
+    var outOrderId = $("#outOrderId").val();
+    var merchantId = $("#merchantId").val();
+    if (amount == '' || isNaN(amount)) {
+        amount = '';
+    }else if(amount > 0 && amount.indexOf('.') > 0 && amount.length - amount.indexOf('.') - 1 > 2) {
+        amount = parseFloat(amount).toFixed(2);
+        $("input[name='amount']").val(amount);
+    }
+    if (amount == '' || amount <= 0) {
+        alert('请输入退款金额');
+        $("input[name='amount']").val('');
+        return false;
+    }
+    amountCent = amount * 100;
+    if (amountCent > payAmount) {
+        alert('退款金额不能大于支付金额');
+        $("input[name='amount']").val('');
+        return false;
+    }
+
+    if(window.confirm('您确定要发起退款吗？')) {
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+        $.getJSON("/m.php?m=Life&a=doTripRefund", {outOrderId:outOrderId, merchantId:merchantId, amount:amount},function(data) {
+            if(data.status == 0) {
+                alert(data.msg);
+                $.weeboxs.close();
+                window.location.reload();
+            } else {
+                alert(data.msg);
+                $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            }
+        });
+    }
+    return false;
+}
+</script>

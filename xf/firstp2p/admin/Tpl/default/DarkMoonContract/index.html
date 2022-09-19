@@ -1,0 +1,102 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<div class="main">
+    <div class="main_title">合同管理
+    </div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="20px">序号</th>
+            <th>交易所备案编号</th>
+            <th><a href="javascript:sortBy('number','1','Contract','index')">合同标题 </a></th>
+            <th>借款人</th>
+            <th>投资人</th>
+            <th>合同编号</th>
+            <th>借款人签署状态</th>
+            <th>投资人签署状态</th>
+            <th>创建时间</th>
+            <th>借款人签署时间</th>
+            <th>投资人签署时间</th>
+            <th width='148px'>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+            <foreach name="item['tpls']" key="key" item="tpl">
+            <if condition="$key eq 0">
+            <tr class="row">
+            <td>{$item.id}</td>
+            <td>{$item.dealName}</td>
+            <td><a href='javascript:void(0)' onclick='opencontract({$tpl.id},{$item.id},{$item.status},"{$tpl.isTpl}");'>{$tpl.title}</a>
+            <td>{$item.borrowUserName}/{$item.borrowMobile}</td>
+            <td>{$item.real_name}/{$item.userMobile}</td>
+            <td>{$tpl.number}</td>
+            <td>{$item.borrowUserSignStatus}</td>
+            <td>{$item.userSignStatus}</td>
+            <td>{$item.createTime}</td>
+            <td>{$item.borrowUserSignTime}</td>
+            <td>{$item.userSignTime}</td>
+            <td>
+                <if condition="$item.status eq 2 && $tpl.isTpl neq 1">
+                 <a href="/m.php?m=DarkMoonContract&a=download&id={$item.id}&cId={$tpl.id}">下载pdf</a>
+                <else/>
+                <a href="/m.php?m=DarkMoonContract&a=download&id={$item.id}&tplId={$tpl.id}">下载pdf</a>
+                </if>
+                <if condition="$item.dealStatus eq 4 && $item.status eq 2">
+                 <a href="/m.php?m=DarkMoonContract&a=downloadTsa&id={$item.id}&cId={$tpl.id}">下载TSApdf</a>
+                </if>
+            </td>
+            </tr>
+            <else/>
+             <tr class="row">
+            <td></td>
+            <td></td>
+            <td><a href='javascript:void(0)' onclick='opencontract({$tpl.id},{$item.id},{$item.status},"{$tpl.isTpl}");'>{$tpl.title}</a></td>
+            <td></td>
+            <td></td>
+            <td>{$tpl.number}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+            <if condition="$item.status eq 2 && $tpl.isTpl neq 1">
+                 <a href="/m.php?m=DarkMoonContract&a=download&id={$item.id}&cId={$tpl.id}">下载pdf</a>
+                <else/>
+                <a href="/m.php?m=DarkMoonContract&a=download&id={$item.id}&tplId={$tpl.id}">下载pdf</a>
+            </if>
+             <if condition="$item.dealStatus eq 4 && $item.status eq 2">
+                 <a href="/m.php?m=DarkMoonContract&a=downloadTsa&id={$item.id}&cId={$tpl.id}">下载TSApdf</a>
+            </if>
+            </td>
+            </tr>
+            </if>
+            </foreach>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+function opencontract(tplId,id,status,isTpl){
+    if(status == 2 && isTpl != '1'){
+        $.weeboxs.open(ROOT+'?m=DarkMoonContract&a=opencontract&id='+id+"&cId="+tplId, {contentType:'ajax',showButton:false,title:'合同内容',width:650,height:500});
+    }else{
+        $.weeboxs.open(ROOT+'?m=DarkMoonContract&a=opencontract&id='+id+"&tplId="+tplId, {contentType:'ajax',showButton:false,title:'合同内容',width:650,height:500});
+    }
+    
+}
+</script>
+<include file="Public:footer" />

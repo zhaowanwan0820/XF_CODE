@@ -1,0 +1,88 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">微信公众号活动规则</div>
+<div class="blank5"></div>
+<div class="button_row">
+	<input type="button" class="button" value="{%ADD}" onclick="add();" />
+	<input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+	<form name="search" action="__APP__" method="get">
+        {%CONF_TITLE}：<input type="text" class="textbox" name="title" value="{:trim($_REQUEST['title'])}" />
+        <input type="hidden" value="BonusConf" name="m" />
+		<input type="hidden" value="index" name="a" />
+		<input type="submit" class="button" value="{%SEARCH}" />
+	</form>
+</div>
+<div class="blank5"></div>
+
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>编号</th>
+            <th>规则名</th>
+            <th>红包金额是否固定</th>
+            <th>红包金额区间</th>
+            <th>红包个数</th>
+            <th>红包链接地址</th>
+            <th>红包组ID</th>
+            <th>新用户专属</th>
+            <th>类型</th>
+            <th>投资限制</th>
+            <th>红包链接有效期结束日期</th>
+            <th>红包使用有效天数</th>
+            <th>规则添加时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td>{$item.id}</td>
+            <td>{$item.name}</td>
+            <td>{$item.is_fixed}</td>
+            <td>{$item.range_money}</td>
+            <td>{$item.count}</td>
+            <td><a href="javascript:openqrcode('{$item.code}','{$item.cn}','{$item.source}');">{$item.link}</a></td>
+            <td>{$item.group_id}</td>
+            <td>{$item.is_diff_new_old_user}</td>
+            <td>{$item.type}</td>
+            <td>{$item.load_limit}</td>
+            <td>{$item.link_invalid_date}</td>
+            <td>{$item.valid_day}</td>
+            <td>{$item.create_time}</td>
+            <td>{$item.status}</td>
+            <td>
+                <a href="javascript:edit('{$item.id}')">编辑</a>&nbsp;
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+    function openqrcode(code, cn, source){
+        var str = code;
+        if (cn != '') {
+            str += '&cn='+cn;
+        }
+        if (source != '') {
+            str += '&from_platform='+source;
+        }
+        window.location.href = ROOT+'?m=BonusActivity&a=qrcode&code='+str;
+    }
+</script>
+<include file="Public:footer" />

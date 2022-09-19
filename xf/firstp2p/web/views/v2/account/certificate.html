@@ -1,0 +1,72 @@
+<div class="p_account_certificate">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/p-account-certificate.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/js/temp/weebox.1.2.css');?>">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/account/certificate.js');?>"></script>
+
+    <div class="ui-box">
+        <div class="h-title">
+            <h2><i></i>投资券</h2>
+            <ul class="sub-nav clearfix" id="tab_Nav">
+                <li class="select">
+                    <a href="javascript:void(0);" data-tab="toBeUsed" data-lock="0">待使用</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);"  data-tab="used" data-lock="0">已使用</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" data-tab="expired" data-lock="0">已过期</a>
+                </li>
+            </ul>
+            <div class="r-decs" style="display:none;"><a href="">什么是投资券？</a></div>
+        </div>
+        <!-- 有投资券时 -->
+        <div class="r-cont">
+            <ul class="cer_card clearfix" id="tabs_cont"></ul>
+            <script id="cer_data" type="text/html">
+            <% if (list.length <= 0 ) { %>
+                <div id="wu_jilu"><div class="wq tc"><img src="<?php echo $this->asset->makeUrl('v2/images/account/tzq_wu.png');?>" alt="暂无投资券"><span>暂无投资券</span></div></div>
+            <% } else { %> 
+                <% for (var i = 0; i < list.length; i++) { %>
+                    <li>
+                        <% if (type == "toBeUsed") { %> 
+                            <div class="img">
+                        <% } else if (type == "used") { %> 
+                            <div class="img ysy">
+                        <% } else { %> 
+                            <div class="img ygq">
+                        <% } %> 
+                        <div class="money tc">
+                        <% if (type == "toBeUsed") { %>
+                            <img src="<?php echo $this->asset->makeUrl('v2/images/account/fan.png');?>" alt="">
+                        <% } else { %>
+                            <img src="<?php echo $this->asset->makeUrl('v2/images/account/fan_gray.png');?>" alt="">
+                        <% } %>
+                            <span class="price"><%= list[i].pay_money %></span><span class="f24">元</span>
+                        </div>
+                        <div class="f14 tc"><%= list[i].resource %></div>
+                        <% if (type == "toBeUsed") { %>
+                            <div class="f12 red mt10 tc">
+                        <% } else { %>
+                            <div class="f12 black mt10 tc">
+                        <% } %>
+                            <%= list[i].effective_start_time %> 至 <%= list[i].effective_end_time %>
+                            </div>
+                        </div>
+                        <div class="desc">
+                            <div class="clearfix"><span class="gray tit"><% if(list[i].deal_money != ''){ %>投资金额：<% } %></span><span><%= list[i].deal_money %></span></div>
+                            <% if(list[i].deal_term != '满0天可用'){ %>
+                            <div class="clearfix"><span class="gray tit">投资期限：</span><span><%= list[i].deal_term %></span></div>
+                            <% } %>
+                            <div class="clearfix"><span class="gray tit"><% if(list[i].note != ''){ %>使用限制：<% } %></span><span title="<%= list[i].note %>" class="span_text"></span></div>
+                            
+                        </div>
+                    </li>
+                <% } %>
+            <% } %>
+            </script>
+            <div class="pagination" id="pagination_00"></div>
+        </div>
+        <!-- //有投资券时 -->
+       
+    </div>
+</div>

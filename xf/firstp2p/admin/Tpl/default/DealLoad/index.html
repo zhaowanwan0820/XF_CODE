@@ -1,0 +1,96 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        {%DEALLOAD_USER_NAME}：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="10"/>
+        {%DEALLOAD_REAL_NAME}：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="10"/>
+        {%DEALLOAD_MOBILE}：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" size="10"/>
+        {%DEALLOAD_DEAL_NAME}：<input type="text" class="textbox" name="deal_name" value="{:trim($_REQUEST['deal_name'])}" size="10"/>
+        &nbsp;渠道来源(用户组别)：
+        <select name="group_id">
+            <option value="0" <if condition="intval($_REQUEST['group_id']) eq 0">selected="selected"</if>>全部</option>
+            <volist name='user_group_list' id='group'>
+                <option value="{$group.id}" <if condition="intval($_REQUEST['group_id']) eq $group['id']">selected="selected"</if>>{$group.name}</option>
+            </volist>
+        </select>
+        <input type="hidden" value="DealLoad" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv();" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    action="true"
+    datasource="list"
+    show="l_id:{%DEALLOAD_ID}|50px
+    ,l_create_time|to_date:{%DEALLOAD_CREATE_TIME}
+    ,u_id:{%DEALLOAD_USER_ID}
+    ,u_user_name:{%DEALLOAD_USER_NAME}
+    ,u_real_name:{%DEALLOAD_REAL_NAME}
+    ,u_mobile:{%DEALLOAD_MOBILE}
+    ,l_money:{%DEALLOAD_MONEY}
+    ,user_group_name:渠道来源
+    ,d_id:{%DEALLOAD_DEAL_ID}
+    ,d_name:{%DEALLOAD_DEAL_NAME}
+    ,du_user_name:{%DEALLOAD_DEAL_USER_NAME}
+    ,du_real_name:{%DEALLOAD_DEAL_REAL_NAME}
+    ,du_mobile:{%DEALLOAD_DEAL_MOBILE}
+    ,d_repay_time:{%DEALLOAD_DEAL_REPAY_TIME}
+    ,channel_name:{%DEALLOAD_CHANNEL_NAME}
+    ,cu_real_name:{%DEALLOAD_CHANNEL_REAL_NAME}
+    ,add_type:{%DEALLOAD_CHANNEL_ADD_TYPE}
+    ,cl_deal_status:{%DEALLOAD_CHANNEL_DEAL_STATUS}
+    ,fee_status:{%DEALLOAD_CHANNEL_FEE_STATUS}
+    ,pay_fee:{%DEALLOAD_CHANNEL_FEE}
+    ,advisor_fee_rate:{%DEALLOAD_ADVISOR_FEE_RATE}
+    ,pay_factor:{%DEALLOAD_PAY_FACTOR}
+    "
+    actionlist="opt_add,opt_edit,opt_del,opt_pay"
+    actionwidth="120px"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+    function weebox_add_channel(id){
+        $.weeboxs.open(ROOT+'?m=DealChannelLog&a=add&deal_load_id='+id, {contentType:'ajax',showButton:false,title:LANG['DEALCHANNEL_INDEX'],width:500,height:200});
+    }
+
+    function weebox_edit(id){
+        $.weeboxs.open(ROOT+'?m=DealChannelLog&a=edit&id='+id, {contentType:'ajax',showButton:false,title:LANG['DEALCHANNEL_INDEX'],width:500,height:200});
+    }
+
+    //返利
+    function pay_channel_fee(channel_log_id, domobj)
+    {
+        if(confirm("确认结算该条渠道推广记录的返利？"))
+            $.ajax({
+                url: ROOT+"?m=DealChannelLog&a=pay_channel_fee&channel_log_id="+channel_log_id,
+                data: "ajax=1",
+                dataType: "json",
+                success: function(obj){
+                    if(obj.status==1){
+                        $("#fee_status_"+channel_log_id).html("已结清");
+                        $("#pay_channel_fee_"+channel_log_id).html("");
+                        $("#channel_edit_"+channel_log_id).html("");
+                        $("#channel_del_"+channel_log_id).html("");
+                        $("#info").html("结算成功");
+                    } else {
+                        $("#info").html(obj.info);
+                    }
+                }
+            });
+    }
+</script>
+<include file="Public:footer" />

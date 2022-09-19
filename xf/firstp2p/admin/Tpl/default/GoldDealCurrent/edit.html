@@ -1,0 +1,206 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/deal.js' />
+
+<div class="main">
+    <div class="main_title">黄金活期产品详情</div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" id='editform' method="post" enctype="multipart/form-data">
+
+        <div class="blank5"></div>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">产品结构:</td>
+                <td class="item_input">   <!-- <span class="tip_span"></span> -->
+                    <strong>1级</strong><input type="text" class="textbox"  name="product_mix_1" value="稀贵商品" disabled="disabled"/>
+                    <strong>2级</strong><input type="text" class="textbox"  name="product_mix_2" value="优金宝" disabled="disabled"/>
+                    <strong>3级</strong>
+                    <select name="product_mix_3" class="require">
+                        <foreach name="product_mix_3_list" item="type_item">
+                            <option value="{$type_item.name}" <if condition="$data['productMix2'] eq $type_item">selected="selected"</if>>{$type_item.name}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+		        <td class="item_title">运营方会员ID:</td>
+		        <td class="item_input">
+		        <input name="user_id" class="require"  value="{$data['userId']}"/>
+		        <a href="/m.php?m=User&amp;a=index&amp;" target="__blank">会员列表</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">付息会员ID:</td>
+                <td class="item_input">
+                <input name="interest_user_id" class="require" value="{$data['interestUserId']}"/>
+                <a href="/m.php?m=User&amp;a=index&amp;" target="__blank">会员列表</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">变现会员ID:</td>
+                <td class="item_input">
+                <input name="withdraw_user_id" class="require" value="{$data['withdrawUserId']}"/>
+                <a href="/m.php?m=User&amp;a=index&amp;" target="__blank">会员列表</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">变现手续费会员ID:</td>
+                <td class="item_input">
+                <input name="withdraw_fee_user_id" class="require" value="{$data['withdrawFeeUserId']}"/>
+                <a href="/m.php?m=User&amp;a=index&amp;" target="__blank">会员列表</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">服务费付费会员ID:</td>
+                <td class="item_input">
+                <input name="fee_user_id" class="require" value="{$data['feeUserId']}"/>
+                <a href="/m.php?m=User&amp;a=index&amp;" target="__blank">会员列表</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">导流服务费收费会员ID:</td>
+                <td class="item_input">
+                <input name="loan_user_id" class="require" value="{$data['loanUserId']}"/>
+                <a href="/m.php?m=User&amp;a=index&amp;" target="__blank">会员列表</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">技术服务费收费会员ID:</td>
+                <td class="item_input">
+                <input name="tech_user_id" class="require" value="{$data['techUserId']}"/>
+                <a href="/m.php?m=User&amp;a=index&amp;" target="__blank">会员列表</a>
+                </td>
+            </tr>
+            <!-- ----- 
+             <tr>
+                <td class="item_title">结算平台费会员ID:</td>
+                <td class="item_input">
+                <input name="manage_user_id" class="require" value="{$data['manageUserId']}"/>
+                <a href="/m.php?m=User&amp;a=index&amp;" target="__blank">会员列表</a>
+                </td>
+            </tr>
+            ------>
+            <tr>
+                <td class="item_title">产品类别:</td>
+                <td class="item_input">
+                    <select name="type_id" class="require" >
+                    <foreach name="deal_type_tree" item="type_item" key="key">
+                        <option value="{$type_item[id]}" <if condition="$data['typeId'] eq $type_item[id]">selected="selected"</if>>{$type_item['name']}</option>
+                    </foreach>
+                    </select>
+                </td>
+            </tr>
+                <td class="item_title">自定义标签:</td>
+                <td class="item_input">
+                    名称:<input type="text" class="textbox" size="30" name="tag_name"  id = "tag_name" value="{$data['tagName']}"   >
+                    描述:<input type="text" class="textbox" size="30" name="tag_desc" id = "tag_desc" value="{$data['tagDesc']}" ><span class="tip_span">多个tag用半角逗号隔开</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">最低购买克重:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="min_buy_amount" id="min_buy_amount"  value="{$data['minBuyAmount']}" />克
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">最高购买克重:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" id="max_buy_amount" name="max_buy_amount"  value="{$data['maxBuyAmount']}" />克
+                    <span class="tip_span">为0或为空时表示不做限制</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">黄金收益率:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" SIZE="8" name="rate" id='rate' value="{$data['rate']}" />%
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">年化导流服务费率:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" SIZE="8" name="loan_fee_rate" id='rate' value="{$data['loanFeeRate']}" />%
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">年化技术服务费率:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" SIZE="8" name="tech_fee_rate" id='rate' value="{$data['techFeeRate']}" />%
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">买金手续费:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" SIZE="8" name="buyer_fee" id='buyer_fee' value="{$data['buyerFee']}" />元/克
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">变现手续费:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" SIZE="8" name="withdraw_fee" id='withdraw_fee' value="{$data['withdrawFee']}" />元/克
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">提金手续费:</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" SIZE="8" name="receive_fee" id='receive_fee' value="{$data['receiveFee']}" />元/克
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">项目简介:</td>
+                <td class="item_input">
+                                    <script type='text/javascript'> var eid = 'note';KE.show({id : eid,skinType: 'tinymce',allowFileManager : true,resizeMode : 0,filterMode : false,items : [
+                            'source','fullscreen', 'undo', 'redo', 'print', 'cut', 'copy', 'paste',
+                            'plainpaste', 'wordpaste', 'justifyleft', 'justifycenter', 'justifyright',
+                            'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                            'superscript', 'selectall', '-',
+                            'title', 'fontname', 'fontsize', 'textcolor', 'bgcolor', 'bold',
+                            'italic', 'underline', 'strikethrough', 'removeformat', 'image',
+                            'flash', 'media', 'table', 'hr', 'emoticons', 'link', 'unlink'
+                        ]});</script>
+                    <html:editor id="note" name="note" style="width:750px; height:350px;" content="{$data['note']}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+
+        </table>
+
+        <div class="blank5"></div>
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="id" value="{$data['id']}" />
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="GoldDealCurrent" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="save" />
+
+                    <div id='button_ff'>
+                        <!--普通单-->
+                        <input type="submit" onclick="return confirmSubmit();" class="button" value="{%SAVE}" />
+                    </div>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,279 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script src="/static/admin/avgrund/js/avgrund.js"></script>
+<link rel="stylesheet" href="/static/admin/avgrund/css/avgrund.css">
+<php>
+    function getUserSite($siteid)
+    {
+        $sitename = array_search($siteid,$GLOBALS['sys_config']['TEMPLATE_LIST']);
+        if($sitename)
+        {
+            return $sitename;
+        }
+        else
+        {
+            return '未知的';
+        }
+    }
+    function get_user_group($group_id)
+    {
+        $group_name = M("UserGroup")->where("id=".$group_id)->getField("name");
+        if($group_name)
+        {
+            return $group_name;
+        }
+        else
+        {
+            return l("NO_GROUP");
+        }
+    }
+    function get_user_level($id)
+    {
+        $level_name = M("UserLevel")->where("id=".$id)->getField("name");
+        if($level_name)
+        {
+            return $level_name;
+        }
+        else
+        {
+            return "没有等级";
+        }
+    }
+    function get_referrals_name($user_id)
+    {
+        $user_name = M("User")->where("id=".$user_id)->getField("user_name");
+        if($user_name)
+        return $user_name;
+        else
+        return l("NO_REFERRALS");
+    }
+    function f_to_date($date){
+        return to_date($date,"Y-m-d H:i");
+    }
+    function lock_money_func($money,$id){
+        //return "<a href='javascript:eidt_lock_money(".$id.");'>".format_price($money)."</a>";
+        return format_price($money);
+    }
+    function money_func($money,$user_id){
+        //return "<a href='/m.php?m=MoneyApply&a=add&user_id=".$user_id."'>".format_price($money)."</a>";
+        return format_price($money);
+    }
+</php>
+<div class="main">
+<div class="main_title">{$main_title}统计截至（今日凌晨3点）</div>
+
+<div class="blank5"></div>
+<div class="search_row" >
+    <form name="search" action="__APP__" method="get" >  
+        {%USER_NAME}：<input type="text" class="textbox" id='user_name' name="user_name" value="{:trim($_REQUEST['user_name'])}" style="width:100px;" />
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="sleep" name="a" />
+        <input id = "isInSG" name="isInSG" type="checkbox" value="1" <?php $cheched = $_REQUEST['isInSG'] == 1 ? "checked" : NULL;echo $cheched ?> />不排除特殊优惠码
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="{%EXPORT}" onclick="export_sleep_csv();" />
+    </form>
+</div>
+
+<div class="blank5"></div>
+	<!-- Think 系统列表组件开始 -->
+	<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+		<tr>
+			<td colspan="15" class="topTd">&nbsp;</td>
+		</tr>
+		<tr class="row">
+			<th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+			<th>用户ID</a></th>
+			<th>用户名</th>
+			<th>姓名</th>
+			<th>手机号</th>
+			<th><a href="javascript:void(0)" onclick="sendRequest('create_time');">注册时间</th>
+			<th><a href="javascript:void(0)" onclick="sendRequest('login_time');">最后登录时间</th>
+			<th>注册邀请码</th>
+			<th>用户组别</th>
+			<th>操作</th>
+		</tr>
+		<foreach name="list" item="item">
+		<tr class="row">
+			<td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+			<td>{$item.id}</td>
+			<td>{$item.user_name}</div></td>
+			<td>{$item.real_name}</td>
+			<td>{$item.mobile}</td>
+			<td>{$item.create_time|to_date}</td>
+			<td>{$item.login_time|to_date}</td>
+			<td>{$item.invite_code}</td>
+                        <td>{$item.group_id|get_user_group}</td>
+            <td>
+                <a href="javascript:void(0)" data="{$item.invite_code}" class="showCodeBtn" id="{$item.id}">编辑</a>
+                               
+            </td>
+		</tr>
+		</foreach>
+		<tr>
+			<td colspan="15" class="bottomTd">&nbsp;</td>
+		</tr>
+	</table>
+<div class="page">{$page}</div>
+</div>
+<script>
+    
+function export_sleep_csv(){
+    var url=ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=export_sleep_csv";
+    if(document.getElementById("isInSG").checked){
+        url+="&isInSG="+1;
+    }
+    location.href=url;
+}    
+    
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+}
+
+function sendRequest(item) {
+    var sort = getQueryString("_sort");
+    var url = "/m.php?m=User&a=sleep&_order="+item;
+    var username = document.getElementById("user_name").value;
+    if(sort == 1){
+        url += "&_sort="+0;
+    }else {
+        url += "&_sort="+1;
+    }
+    if(document.getElementById("isInSG").checked){
+        url+="&isInSG="+1;
+    }
+    if(username){
+        url+="&user_name="+username;
+    }
+    location.href=url;
+}    
+    
+$(function(){
+    $(".showCodeBtn").click(function(){
+        $("#showCode").css("top", "20%");
+        Avgrund.show( "#showCode" );
+        document.getElementById("code").value=$(this).attr('id');
+        document.getElementById("invite").value=$(this).attr('data');
+        //$("#code").value($(this).attr('id'));
+    });
+
+    // $(".showPreviewBtn").click(function(){
+    // $("#adContent").load("/m.php?m=AdUnit&a=previewAd&tplId="+$(this).attr("data"), function(){
+    //     $("#showPreview").css("width", $(".j_firstp2p_ad").width());
+    //     $("#showPreview").css("height", $(".j_firstp2p_ad").height()); 
+    //     $("#showPreview").css("margin-left", 0-$(".j_firstp2p_ad").width()/2); 
+    //     Avgrund.show( "#showPreview" );   
+    // });
+    // });
+});
+
+function closeDialog() {
+    Avgrund.hide();
+}
+
+function saveDialog() {
+    var id=document.getElementById("code").value;
+    var invite=document.getElementById("invite").value;
+    var href="/m.php?m=User&a=saveUserInviteCode&id="+id+"&inviteCode="+invite;
+    jQuery.getJSON(href, function(data) {
+        if(data.ret){
+            alert("更新成功");
+        }else{
+            alert("更新失败,请检查优惠码");
+        }
+        Avgrund.hide();
+        window.location.reload();
+    });
+    
+
+}
+
+function deleteConfirm(id){
+    var r=confirm("确认删除?")
+    if (r==true){
+        location.href="/m.php?m=AdUnit&a=doDelAd&id="+id;
+    }
+}
+
+function preview(){
+
+}    
+    
+function user_carry_wait(id){
+    window.location.href = "/m.php?m=UserCarry&a=add&uid="+id;
+}
+
+function user_balance(id){
+    window.location.href = "/m.php?m=User&a=balance&uid="+id;
+}
+
+function changeLevelSelect(){
+    var url = "/m.php?m=CouponLevel&a=get_level_select";
+    var current_coupon_level_id = '{$_REQUEST["coupon_level_id"]}';
+    $.getJSON(url,{group_id:$("#group_id").val()},function(json){
+        var coupon_level_id = $("#coupon_level_id");
+        $("option",coupon_level_id).remove(); //清空原有的选项
+        var option = "<option value=''>==请选择==</option>";
+        coupon_level_id.append(option);
+        $.each(json,function(index,array){
+            var selected_str = '';
+            if(array['id'] == current_coupon_level_id){
+                selected_str = 'selected="selected"';
+            }
+            option = "<option value='"+array['id']+"' "+selected_str+">"+array['level']+"</option>";
+            coupon_level_id.append(option);
+        });
+    });
+}
+
+changeLevelSelect();
+$("#group_id").change(function(){
+    $("#group_factor_text").html($(this).find("option:selected").attr("factor"));
+    changeLevelSelect();
+});
+
+function update_user_coupon_level(id){
+    if(confirm("确定要更新全部{%USER_COUPON_LEVEL}吗？")){
+        var url = "/m.php?m=CouponLevel&a=update_user_coupon_level";
+        $.getJSON(url,'',function(json){
+            var msg = "更新"+json.update+"条,不变"+json.keep+"条.";
+            if(json.error > 0){
+                alert("更新失败\n"+msg+"\n失败:"+json.error);
+            }else{
+                alert("更新成功\n"+msg);
+            }
+            window.location.reload();
+        });
+    }
+}
+</script>
+<include file="Public:footer" />
+
+<aside id="showCode" class="avgrund-popup" style="margin-top:50px;">
+    <p></p>
+    <p></p>
+    <h2>更改注册邀请码</h2>
+    <p></p>
+    <p></p>
+    <tr class="row">
+        <td>用户ID:</td>
+        <td><input id='code' readonly="readonly" type="text" style="border:1px;border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;"></td>
+    </tr>
+    <p></p>
+    <p></p>
+    <tr class="row">
+        <td>用户邀请码:</td>
+        <td><input id='invite'></td>
+    </tr>
+    <p></p>
+    
+    <div id="result"></div>
+    <button onclick="javascript:saveDialog();">保存</button>
+    <button onclick="javascript:closeDialog();">关闭</button>
+</aside>

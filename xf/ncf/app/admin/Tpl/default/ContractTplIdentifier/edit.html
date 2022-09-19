@@ -1,0 +1,86 @@
+{// 引入标签库 }
+<script type="text/javascript">
+    function checkform(){
+        if($('#name').val().length == 0){
+            alert('模板标识不能为空！');
+            return false;
+        }
+        return true;
+    }
+</script>
+<div class="main">
+
+    <form name="search" action="__APP__" method="post">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="3">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">模板标识:</td>
+                <td class="item_input">
+                    <input type='text' name='name' id='name' value='{$info.name}'>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">模板标识名称:</td>
+                <td class="item_input">
+                    <input type='text' name='title' id='title' value='{$info.title}'>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">签署方:</td>
+                <td class="item_input">
+                <foreach name="sign_role_map" item="role_name" key="role_value">
+                    {/* 按位与 来标识是否选中 */}
+                    <input type='checkbox' name='sign_role[]' value='{$role_value}' <if condition="($role_value & $info['signRole']) or (!$role_value and !$info['signRole'])"> checked="checked" </if>>{$role_name}
+                </foreach>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">生成合同时间:</td>
+                <td class="item_input">
+                    <input type='radio' name='contract_send_node' value='0' <if condition="$info['contractSendNode'] eq 0"> checked="checked" </if>>投资时
+                    <input type='radio' name='contract_send_node' value='1' <if condition="$info['contractSendNode'] eq 1"> checked="checked" </if>>满标时
+                    <input type='radio' name='contract_send_node' value='2' <if condition="$info['contractSendNode'] eq 2"> checked="checked" </if>>上标前
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">是否投资时（用户）可见:</td>
+                <td class="item_input">
+                    <input type='radio' name='is_seen_when_bid' value='1' <if condition="$info['isSeenWhenBid'] eq 1"> checked="checked" </if>>是
+                    <input type='radio' name='is_seen_when_bid' value='0' <if condition="$info['isSeenWhenBid'] eq 0"> checked="checked" </if>>否
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">服务类型:</td>
+                <td class="item_input">
+                <foreach name="service_type_map" item="service_type_name" key="service_type_value">
+                    <input type='radio' name='service_type' value='{$service_type_value}' <if condition="$service_type_value eq $info['serviceType']"> checked="checked" </if>>{$service_type_name}
+                </foreach>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">合同类型:</td>
+                <td class="item_input">
+                    <select name="contract_type" class="require">
+                        <foreach name="contract_type_map" item="contract_type_name" key="contract_type_value">
+                            <option value="{$contract_type_value}" <if condition="$contract_type_value eq $info['contractType']">selected="selected"</if>>{$contract_type_name}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_input" colspan=2 style="text-align:center;">
+                    <input type="hidden" value="{$info.id}" name="id" />
+                    <input type="hidden" value="ContractTplIdentifier" name="m" />
+                    <input type="hidden" value="save" name="a" />
+                    <input type="submit" class="button" onclick="return checkform();" value="保存" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

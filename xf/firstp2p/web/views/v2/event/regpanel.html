@@ -1,0 +1,79 @@
+            <div id="JS-regpanel" class="ui_register">
+                <div class="form_box">
+                    <div class="border_b">
+                        <div class="ui_tel_tips">+86</div>
+                        <input type="tel" class="ui_reg_input JS-input_mobile" placeholder="手机号码（用于接收验证码）" value="{$mobile}">
+                    </div>
+                    <div class="border_b"><input value="" type="password" class="ui_reg_input JS-input_pwd" placeholder="登录密码（6-20位数字/字母/标点）"></div>
+                    {if $event_cn_hidden != 1}
+                    <div class="border_b"><input value="{$cn}" type="text" class="ui_reg_input JS-input_invite" placeholder="邀请码（选填）"/></div>
+                    {/if}
+                    <div class="border_b">
+                        <input type="tel" class="ui_reg_input JS-input_captcha" placeholder="右侧数字">
+                        <div class="yz_img"><img class="JS-verifyimg" src="" width="80"></div>
+                    </div>
+                </div>
+                <div>
+                    <a class="JS-regbtn reg_finish_btn reg_finish_btn_dis" href="javascript:void(0);">注册</a>
+                    {if empty($website) }
+                        {assign var=website value="网信理财用户协议"}
+                    {/if}
+                    <p class="tc pt10 f14 JS-regterm gray">同意<span class="blue">《{$website}》</span></p>
+                    {if $isMaster != 1 && !empty($downloadURL)}
+                    <p class="tc pt10 f14"><a href='{$downloadURL}'>直接下载App</a></p>
+                    {/if}
+                </div>
+                <div class="f14 tc gray">网贷有风险,投资需谨慎</div>
+            </div>
+            <div id="JS-regverifypanel" class="ui_mask" style="display:none;">
+                <div class="ui_dialog">
+                    <div class="ui_dialog_close JS-closebtn"></div>
+                    <div class="dialog_con">
+                        <div class="title">填写短信验证码</div>
+                        <div class="dialog_text">
+                            <p class="JS-mobilelabel">已向186××××2168发送验证短信</p>
+                            <p>请输入其中6位数字</p>
+                        </div>
+                        <div class="ipt_box">
+                            <input class="ui_yz_input fl JS-input_vcode" placeholder="短信验证码" type="tel">
+                            <span class="reset_btn JS-mcodebtn">重新发送</span>
+                        </div>
+                        <input type="submit" value="完成注册" class="reg_finish_btn reg_finish_btn_dis JS-regbtn">
+                    </div>
+                </div>
+                <?php echo token_input(); ?>
+
+            </div>
+            <script>
+            var rootDomain='{$rootDomain}';
+            {if $isMaster == 1}
+            var explain = "备案号为：京ICP证130046号，以下简称网信理财",
+                isMaster = true;
+            {else}
+            var explain = "以下简称网信理财",
+                isMaster = false;
+            // 注册成功跳转下载页，分站逻辑
+            function _eventRegisterCallback(data)
+            {
+                var downloadURL = data['downloadURL'];
+                if (downloadURL) {
+                    window.location.href = downloadURL;
+                } else {
+                    window.location.href = rootDomain;
+                }
+            }
+            {/if}
+            //商户通、产融贷、金融1号、艺金融、E收贷、典当联盟等6个分站替换banner
+            var host = location.host,
+                matchHost = function(str){
+                    if(host.indexOf(str) > -1){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                };
+                if(matchHost("shtcapital") || matchHost("chanrongdai") || matchHost("an.") || matchHost("yijinrong") || matchHost("cnpawn")  || matchHost("esp2p")){
+                    $(".login_banner img").attr("src" , "<?php echo $this->asset->makeUrl('/v3/images/event/banner.jpg');?>");
+                }
+            </script>
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/registerpanel.js');?>"></script>

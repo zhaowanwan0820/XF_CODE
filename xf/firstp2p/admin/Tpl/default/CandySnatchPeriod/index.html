@@ -1,0 +1,195 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<meta http-equiv="content-type" content="text/html; charset=gb2312">
+<meta name="author" content="oscar999">
+
+
+<div class="main">
+    <div class="main_title">期号展示与处理
+    </div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td>
+                        状态查询:
+                        <select name="status" id="status" class="textbox require search_export" style="width:180px;">
+                            <option
+                            <?php if($status == 3){echo 'selected';}?> value="3">已发货</option>
+                            <option
+                            <?php if($status == 2){echo 'selected';}?> value="2">未发货</option>
+                            <option
+                            <?php if($status == 0){echo 'selected';}?> value="0">全部</option>
+                        </select>
+                    </td>
+                    <td>
+                        商品查询：<input type="text" name="productName" class="search_export" value="{$productName}"/>
+                    </td>
+                    <td>
+                        信宝查询：<input type="text" name="candyAmount" class="search_export" value="{$candyAmount}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        用户id：<input type="text" name="userId" class="search_export" value="{$userId}"/>
+                    </td>
+                    <td>
+                        期号：<input type="text" name="periodId" class="search_export" value="{$periodId}"/>
+                    </td>
+                    <td>
+                        注册手机号：<input type="text" name="mobile" class="search_export" value="{$mobile}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        按上新时间查询：
+                        开始时间：<input type="text" name="startNewTime" class="search_export" value="{$startNewTime}"/>
+                    </td>
+                    <td>
+                        结束时间：<input type="text" name="endNewTime" class="search_export" value="{$endNewTime}"/>（格式：20181108）
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        按开奖时间查询：
+                        开始时间：<input type="text" name="startPrizeTime" class="search_export" value="{$startPrizeTime}"/>
+                    </td>
+                    <td>
+                        结束时间：<input type="text" name="endPrizeTime" class="search_export" value="{$endPrizeTime}"/>（格式：20181108）
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" value="CandySnatchPeriod" name="m"/>
+            <input type="hidden" value="index" name="a"/>
+            <input type="submit" class="button" value="搜索"/>
+            <button type="submit" name="export" value="1" class="button">导出</button>
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr class="row">
+            <th>期号</th>
+            <th>状态</th>
+            <th>商品名称</th>
+            <th>商品总价</th>
+            <th>中奖用户</th>
+            <th>中奖号码</th>
+            <th>注册手机号</th>
+            <th>中奖时间</th>
+            <th>收货人</th>
+            <th>收货地址</th>
+            <th>收货手机号</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td >&nbsp;{$item.id}</td>
+                <td >
+                    <if condition="$item.status eq 2">
+                        未发货
+                        <else/>
+                        已发货
+                    </if>&nbsp;
+                </td>
+                <td >&nbsp;{$item.product_name}</td>
+                <td >&nbsp;{$item.code_total}</td>
+                <td >&nbsp;{$item.user_id}</td>
+                <td >&nbsp;{$item.prize_code}</td>
+                <td >&nbsp;{$item.register_mobile}</td>
+                <td >&nbsp;{$item.prize_time}</td>
+                <td >&nbsp;{$item.name}</td>
+                <td >&nbsp;{$item.address}</td>
+                <td >&nbsp;{$item.mobile}</td>
+                <td >
+                    <if condition="$item.status eq 2 ">
+                        <a class="js_logistics" href="javascript:void(0)">处理</a>
+                        <input type="hidden" class = "js_period_id" value="{$item.id}">
+                        <elseif condition="$item.status eq 3 and $item.express_company "/>
+                        &nbsp;{$item.express_company}&nbsp;&nbsp;({$item.express_order_id})
+                    </if>
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="12" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+    <div class="popup" style="display:none;">
+        <div>
+        <div class="meng_layer" style="width:100%;height:100%;position:fixed;top:0;left:0;background:rgba(0,0,0,0.5);"></div>
+        <div class="pop_content" style="border-radius:5px;border: 5px solid #D5F7E2;width:300px;height:200px;position:fixed;top:50%;left:50%;background:#fff;margin-top:-100px;margin-left:-150px;">
+            <div class="pop_label" style="height:30px;font-size:24px;background:#D5F7E2;text-align:center;">填写物流信息（<span></span>期)</div>
+            <div class="pop_content">
+                <ul>
+                    <li style="margin: 20px 20px;">
+                        <span>快递公司：</span>
+                        <input type="text" value="" class="js_expressCompany" name="expressCompany"/>
+                    </li>
+                    <li style="margin: 20px 20px;">
+                        <span>快递单号：</span>
+                        <input type="text" value="" class="js_expressOrderId" name="expressOrderId"/>
+                    </li>
+                </ul>
+            </div>
+            <div class="warn_mes" style="color:red;text-align:center;margin-bottom:2px;">（* 以上两项都不能为空，快递单号只能是数字</div>
+            <div class="warn_mes" style="color:red;text-align:center;margin-bottom:2px;">点击确定前请仔细检查！！）</div>
+            <div class="pop_btn" style="margin-left: 84px;">
+                <input type="submit" class="button ok_btn" value="确定"/>
+                <input type="submit" class="button cancel_btn" value="取消"/>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<script>
+        var jsLogistics = document.getElementsByClassName("js_logistics");
+        var  popup =  document.getElementsByClassName("popup")[0];
+        var jsPeriodId = document.getElementsByClassName("js_period_id");
+        var periodId = 0;
+        for(var i = 0;i < jsLogistics.length;i++){
+            (function(j){
+                jsLogistics[j].onclick = function() {
+                    periodId = jsPeriodId[j].value;
+                    popup.style.display = 'block';
+                    $(".pop_label span").html(periodId);
+                }
+            })(i);
+
+        }
+
+        $('.cancel_btn').click(function(){
+            popup.style.display = 'none';
+        })
+
+        $('.ok_btn').click(function(){
+            if(/^\s*$/.test($('.js_expressCompany').val())){
+                $('.js_expressCompany').css("border-color","red");
+            }else if(/^\s*$/.test($('.js_expressOrderId').val()) || !/^[0-9]*$/.test($('.js_expressOrderId').val())){
+                $('.js_expressOrderId').css("border-color","red");
+            }else{
+                $('.js_expressCompany').css("border-color","initial");
+                $('.js_expressOrderId').css("border-color","initial");
+                $.ajax({
+                    url:'/m.php?m=CandySnatchPeriod&a=edit',
+                    dataType:'json',
+                    type:'post',
+                    data:{
+                        expressCompany:$('.js_expressCompany').val(),
+                        expressOrderId:$('.js_expressOrderId').val(),
+                        id:$(".pop_label span").html()
+                    },
+                    success:function(data){
+                        if(data.info == "操作成功"){
+                           location.reload();
+                        }
+                    }
+                })
+            }
+        })
+</script>
+<include file="Public:footer"/>

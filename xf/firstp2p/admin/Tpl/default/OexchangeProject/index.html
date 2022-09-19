@@ -1,0 +1,99 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+ a {
+     white-space:nowrap;
+ }
+</style>
+
+<div class="main">
+<div class="main_title">项目列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <a href="/m.php?m=OexchangeProject&a=add" class="button">{%ADD}</a>
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        项目编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" size="8"/>
+        项目名称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" size="8"/>
+        交易所备案产品编号：<input type="text" class="textbox" name="jys_number" value="{:trim($_REQUEST['jys_number'])}" size="8"/>
+        交易所：<select name="jys_id" id="jys_id">
+                <option value="0"></option>
+                <foreach name="jys" key='type_key' item="type_item">
+                <option value="{$type_item['id']}" <if condition="$type_item['id'] eq $_REQUEST['jys_id']">selected="selected"</if>>{$type_item['name']}</option>
+                </foreach>
+            </select>
+        发行人id：<input type="text" class="textbox" name="fx_uid" value="{:trim($_REQUEST['fx_uid'])}" size="8"/>
+        发行人：<input type="text" class="textbox" name="fx_name" value="{:trim($_REQUEST['fx_name'])}" size="8"/>
+        业务状态：
+        <select name="deal_status">
+            <option value="">全部</option>
+            <foreach name="project_business_status" key='status_value' item="status_name">
+                <option value="{$status_value}" <if condition="$_REQUEST['deal_status'] eq $status_value">selected="selected"</if>>{$status_name}</option>
+            </foreach>
+        </select>
+        状态：
+        <select name="is_ok">
+            <option value="-1">全部</option>
+            <option value="1" <if condition="$_REQUEST['is_ok'] eq 1">selected="selected"</if>>正常</option>
+            <option value="0" <if condition="isset($_REQUEST['is_ok']) and $_REQUEST['is_ok'] eq 0">selected="selected"</if>>作废</option>
+        </select>
+        <input type="hidden" name = "m" value="OexchangeProject" />
+        <input type="hidden" name = "a" value="index" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="8" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="50px">项目编号</th>
+            <th>项目名称</th>
+            <th>交易所备案产品编号</th>
+            <th>交易所</th>
+            <th>发行人/发行人id</th>
+            <th>期限</th>
+            <th>还款方式</th>
+            <th>预期年化收益率</th>
+            <th>业务状态</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th style="width:200px">操作</th>
+        </tr>
+        <volist name="list" id="project">
+        <tr class="row">
+            <td>&nbsp;{$project.id}</td>
+            <td>&nbsp;{$project.name}</td>
+            <td>&nbsp;{$project['jys_number']}</td>
+            <td>&nbsp;{$jys[$project['jys_id']]['name']}</td>
+            <td>&nbsp;{$project.fx_uid} / {$user_list[$project['fx_uid']]['real_name']}</td>
+            <td>&nbsp;{$project['repay_time']}<if condition="$project['repay_time'] eq 1">天<else/>个月</if></td>
+            <td>&nbsp;<if condition="1 eq $project['repay_type']">到期支付本金收益（天）</if>
+                <if condition="2 eq $project['repay_type']">到期支付本金收益（月）</if>
+                <if condition="3 eq $project['repay_type']">按月支付收益到期还本</if>
+                <if condition="4 eq $project['repay_type']">按季支付收益到期还本</if>
+            </td>
+            <td>&nbsp;{$project['expect_year_rate']}%</td>
+            <td>&nbsp;{$project_business_status[$project['deal_status']]}</td>
+            <td><if condition="$project['is_ok'] eq 1">正常<else />作废</if></td>
+            <td>&nbsp;{$project.ctime}</td>
+            <td>
+                <if condition="3 gt $project['deal_status']"><a href="m.php?m=OexchangeProject&a=edit&id={$project.id}">编辑</a>&nbsp;</if>
+                <a href="m.php?m=OexchangeProject&a=view&id={$project.id}">查看</a>&nbsp;
+                <a href="m.php?m=OexchangeProject&a=copy&id={$project.id}">复制</a>&nbsp;
+                <if condition="1 lt $project['deal_status']"><a href="m.php?m=OexchangeBatch&a=index&pro_id={$project.id}">批次列表</a>&nbsp;</if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

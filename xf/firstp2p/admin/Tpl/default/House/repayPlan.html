@@ -1,0 +1,54 @@
+<tagLib name="html"/>
+<include file="Public:header"/>
+<load href='__TMPL__Common/js/jquery.min.js'/>
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<load href='__TMPL__Common/js/jquery.ui.widget.js'/>
+<load href='__TMPL__Common/js/jquery.weebox.js'/>
+<load href='__TMPL__Common/js/bootstrap.min.js'/>
+<load href='__TMPL__Common/js/user.js'/>
+<load href='__TMPL__Common/style/weebox.css'/>
+<load href='__TMPL__Common/style/bootstrap.min.css'/>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js"></script>
+<load href='__TMPL__Common/js/calendar/calendar.css'/>
+<load href='__TMPL__Common/js/calendar/calendar.js'/>
+<style>
+  .table {
+    width: 1000px;
+    margin: 50px;
+  }
+</style>
+<div>
+  <title>还款计划表</title>
+<div data-example-id="hoverable-table" class="bs-example">
+  <table border='1' cellsapcing="0" cellpadding="0" class="table table-hover">
+    <thead>
+      <tr>
+        <th>还款期数</th>
+        <th>待还本金(元)</th>
+        <th>待还利息(元)</th>
+        <th>逾期天数(天)</th>
+        <th>罚息(元)</th>
+        <th>逾期开始日期</th>
+        <th>还款总金额(元)</th>
+        <th>还款日期</th>
+        <th>还款状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      <foreach name="repayPlan['list']" item="item" key="key">
+      <tr>
+        <td>{$key+1}</td>
+        <td>{$item.init_money}</td>
+        <td>{$item.extra_money}</td>
+        <td>{$item.over_days}</td>
+        <td>{$item.over_money}</td>
+        <td>{$item.over_date}</td>
+        <td>{$item.all_money}</td>
+        <td>{$item.payback_date_format}</td>
+        <td>{$item.status_info}</td>
+      </tr>
+      </foreach>
+    </tbody>
+  </table>
+</div>
+<include file="Public:footer" />

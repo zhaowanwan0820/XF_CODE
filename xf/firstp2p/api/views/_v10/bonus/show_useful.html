@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>红包详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <!--public js&css start-->
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/m-base.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/m-common.css" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="{$STATIC_SITE}/mobile/app/v2/css/envelopes-details.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="package-img">
+        {if $site_id eq 1}
+        <img src="{$STATIC_SITE}/mobile/app/v2/images/envelopes/red-01.png" width="44%">
+        {else}
+        <img src="{$STATIC_SITE}/mobile/app/v2/images/envelopes/red-01-sub.png" width="44%">
+        {/if}
+    </div>
+    <div class="package-title">投资红包</div>
+    <table class="package-con">
+        <tr>
+            <th>红包金额：</th>
+            <td>{function name="format_price" v="$bonus.money" b=1}</td>
+        </tr>
+        <!--tr>
+            <th>使用条件：</th>
+            <td>投资10000.00元以上可使用</td>
+        </tr-->
+        <tr>
+            <th>有效期限：</th>
+            <td>{$bonus.expiredAt}</td>
+        </tr>
+        <tr>
+            <th>红包来源：</th>
+            <td>{$bonus.fromType}</td>
+        </tr>
+    </table>
+    <div class="remarks">
+        <h3>备注</h3>
+        <li>
+            {$bonus.bidLimit}
+        </li>
+    </div>
+    <script src="{$STATIC_SITE}/mobile/app/v2/js/zepto.min.js" type="text/javascript"></script>
+    <script src="{$STATIC_SITE}/mobile/app/v2/js/sea.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        // 加载入口模块
+        seajs.use("{$STATIC_SITE}/mobile/app/v2/js/m-common");
+    </script>
+</body>
+</html>
+

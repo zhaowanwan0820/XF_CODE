@@ -1,0 +1,146 @@
+<!--private js&css start-->
+<link href="{$TMPL_NEW}/css/user.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{$TMPL_NEW}/js/charge/index.js"></script>
+<!--private js&css end-->
+
+<form name="chargeForm" id="chargeForm" action='{url x="index" r="uc_money#incharge_done"}' method="post">
+    <div class="user_right">
+        <div class="user_right_box" id="chargeSelect">
+            <div class="user_title"><h1><i class="ico_chongzhi"></i>充值</h1></div>
+            <div class="sub_title mauto"><span>选择充值银行</span></div>
+            {if $latest_bank neq false}
+            <div class="Recently_bank clearfix">
+                <dl>
+                    <dt>最近充值银行：</dt>
+                    <dd>
+                        <ul class="list-bank clearfix">
+                            <li class="select" onclick='getauxiliary({$latest_bank.id})'>
+                                <label>
+                                    <input type="radio" checked="true" class="jdradio" name="pd_FrpId"
+                                           value="{$latest_bank.value}">
+                                    <img width="125" height="28" alt="{$latest_bank.name}"
+                                         src="{$latest_bank.image_name}">
+                                </label>
+                                {if $latest_bank.kuaijie}<span class="ico_k">快捷</span>{/if}
+                            </li>
+                            <li class="nobor">
+                                <a href="#none" class="j_showBank">选择其他银行</a>
+                                <a href="#none" class="j_hideBank" style="display:none;">收起</a>
+                            </li>
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+            {/if}
+
+            <?php echo token_input(); ?>
+            <input type="hidden" name="payment" value="3">
+
+            <div class="bank clearfix">
+                {if $latest_bank neq false}
+                <ul class="list-bank bank_more_li clearfix" style="display:none;">
+                    {else}
+                    <ul class="list-bank">
+               {/if}
+                        {foreach from=$bank_list item=bank name=liname}
+                        <li id='{$bank.id}'
+                        {if $smarty.foreach.liname.iteration == 1 && $latest_bank eq false}class="select"{/if}>
+                        <label>
+                            <input type="radio" class="jdradio" name="pd_FrpId" value="{$bank.value}" {if $smarty.foreach.liname.iteration == 1 && $latest_bank eq false}checked="checked"{/if}>
+                            <img width="125" height="28" alt="{$bank.name}"
+                                 src="{$bank.image_name}">
+                        </label>
+                        {if $bank.kuaijie}<span class="ico_k">快捷</span>{/if}
+                        </li>
+                        {if $smarty.foreach.liname.iteration == 12}
+                    </ul>
+                    <ul class="list-bank bank_more_li" style="display:none;"> {/if}
+                        {/foreach}
+
+                    </ul>
+                    <div class="clearfix"></div>
+                    {if $latest_bank eq false}
+                    <div class="bank_more tr clearfix">
+                        <a href="#none" class="j_showBank">展开更多银行 <i class="ico_ht_more"></i></a>
+                        <a href="#none" class="j_hideBank" style="display:none;">收起 <i class="ico_ht_moreon"></i></a>
+                    </div>
+                    {/if}
+            </div>
+            <div class="sub_title mauto"><span>填写充值金额</span></div>
+
+            <div class="take">
+                <div >
+                    <h3>支付限额：</h3>
+                    <table>
+                        <colgroup>
+                            <col width="116">
+                            <col width="230">
+                            <col width="112">
+                            <col width="103">
+                            <col width="103">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>银行名称</th>
+                            <th>客户类型</th>
+                            <th>卡种</th>
+                            <th>单笔限额(元)</th>
+                            <th>每日限额(元)</th>
+                        </tr>
+                        </thead>
+                        <tbody id='payment_auxiliary'>
+                        {if $latest_bank neq false}
+                         	{foreach from=$latest_list.list  item=auxiliary name=key}
+                         			<tr>
+                         				{if $smarty.foreach.key.iteration ==  1}<td rowspan="{$latest_list.total}">{$latest_list.name}</td>{/if}
+                            			<td>{$auxiliary.category}</td>
+                            			<td>{$auxiliary.card_type}</td>
+                            			<td>{$auxiliary.one_money}</td>
+                           		 		<td>{$auxiliary.date_norm}</td>
+                        			</tr>
+                         	{/foreach}
+                         	{else}
+                         	{foreach from=$first_bank_info.list  item=auxiliary_first name=key1}
+                         			<tr>
+                         				{if $smarty.foreach.key1.iteration ==  1}<td rowspan="{$first_bank_info.total}">{$first_bank_info.name}</td>{/if}
+                            			<td>{$auxiliary_first.category}</td>
+                            			<td>{$auxiliary_first.card_type}</td>
+                            			<td>{$auxiliary_first.one_money}</td>
+                           		 		<td>{$auxiliary_first.date_norm}</td>
+                        			</tr>
+                         	{/foreach}
+                        {/if}
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <dl class="clearfix">
+                        <dt>充值账户：</dt>
+                        <dd>{$user_info.real_name}</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>账户余额：</dt>
+                        <dd>{function name="number_format" v=$user_info.money f="2"}元</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>充值金额：</dt>
+                        <dd><input type="text" class="user_name validate[required,funcCall[X.V.checkCrash]]" id="charge" name="money" data-int="10" data-xiaoshu="2" /> 元</dd>
+                        <dd class="chargeformError"></dd>
+                    </dl>
+                </div>
+
+            </div>
+            <div class="tc p20 f14">
+                <button class="user_button mt10 mb20" id="incharge_done" type="submit">充值</button>
+            </div>
+
+            <div class="user_tip">
+                <p>1、所有投资保证金将由第三方平台托管。</p>
+
+                <p>2、请注意您的银行卡的充值限制，以免造成不便。</p>
+
+                <p>3、如果充值金额没有及时到账，请拨打 <span class="color-yellow1">400-890-9888</span> 与客服联系。</p>
+            </div>
+        </div>
+    </div>
+</form>

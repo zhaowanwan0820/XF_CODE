@@ -1,0 +1,108 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="main_title">投资人列表 <a href="{:u("DtProject/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            <input type="hidden" value="DtDealLoan" name="m" />
+            <input type="hidden" value="index" name="a" />
+            投资人Id：<input type="text" class="textbox" name="userId" value="{:trim($_REQUEST['userId'])}" style="width:100px;" />
+            投资锁定期：
+            <select name="lock_period">
+                <option value="0" <if condition="intval($_REQUEST['lock_period']) eq 0 ">selected="selected"</if>> 全部 </option>
+                <foreach name="lockPeriodList"  item="vo">
+                    <option value="{$vo.lock_day}" <if condition="intval($_REQUEST['lock_period']) eq $vo.lock_day ">selected="selected"</if> > {$vo.lock_day} </option>
+    　　　　    </foreach>
+            </select>
+            投资时间:
+            <input type="text" class="textbox" style="width:140px;" name="deal_load_date_begin" id="deal_load_date_begin" value="{$_REQUEST['deal_load_date_begin']}" onfocus="this.blur(); return showCalendar('deal_load_date_begin', '%Y-%m-%d 00:00:00', false, false, 'btn_deal_load_date_begin');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_deal_load_date_begin" value="{%SELECT_TIME}" onclick="return showCalendar('deal_load_date_begin', '%Y-%m-%d %H:%M:00', false, false, 'btn_deal_load_date_begin');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="deal_load_date_end" id="deal_load_date_end" value="{$_REQUEST['deal_load_date_end']}" onfocus="this.blur(); return showCalendar('deal_load_date_end', '%Y-%m-%d 23:59:59', false, false, 'btn_deal_load_date_end');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_deal_load_date_end" value="{%SELECT_TIME}" onclick="return showCalendar('deal_load_date_end', '%Y-%m-%d %H:%M:59', false, false, 'btn_deal_load_date_end');" />
+            <!--
+            申请赎回时间:
+            <input type="text" class="textbox" style="width:140px;" name="redem_apply_date_begin" id="redem_apply_date_begin" value="{$_REQUEST['redem_apply_date_begin']}" onfocus="this.blur(); return showCalendar('redem_apply_date_begin', '%Y-%m-%d 00:00:00', false, false, 'btn_redem_apply_date_begin');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_redem_apply_date_begin" value="{%SELECT_TIME}" onclick="return showCalendar('redem_apply_date_begin', '%Y-%m-%d %H:%M:00', false, false, 'btn_redem_apply_date_begin');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="redem_apply_date_end" id="redem_apply_date_end" value="{$_REQUEST['redem_apply_date_end']}" onfocus="this.blur(); return showCalendar('redem_apply_date_end', '%Y-%m-%d 23:59:59', false, false, 'btn_redem_apply_date_end');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_redem_apply_date_end" value="{%SELECT_TIME}" onclick="return showCalendar('redem_apply_date_end', '%Y-%m-%d %H:%M:59', false, false, 'btn_redem_apply_date_end');" />
+            </br>
+            赎回成功时间:
+            <input type="text" class="textbox" style="width:140px;" name="redem_finish_date_begin" id="redem_finish_date_begin" value="{$_REQUEST['redem_finish_date_begin']}" onfocus="this.blur(); return showCalendar('redem_finish_date_begin', '%Y-%m-%d 00:00:00', false, false, 'btn_redem_finish_date_begin');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_redem_finish_date_begin" value="{%SELECT_TIME}" onclick="return showCalendar('redem_finish_date_begin', '%Y-%m-%d %H:%M:00', false, false, 'btn_redem_finish_date_begin');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="redem_finish_date_end" id="redem_finish_date_end" value="{$_REQUEST['redem_finish_date_end']}" onfocus="this.blur(); return showCalendar('redem_finish_date_end', '%Y-%m-%d 23:59:59', false, false, 'btn_redem_finish_date_end');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_redem_finish_date_end" value="{%SELECT_TIME}" onclick="return showCalendar('redem_finish_date_end', '%Y-%m-%d %H:%M:59', false, false, 'btn_redem_finish_date_end');" />
+        -->
+            状态：
+            <select name="status">
+                <option value="0" <if condition="intval($_REQUEST['status']) eq 0">selected="selected"</if>> 全部 </option>
+                <option value="1" <if condition="intval($_REQUEST['status']) eq 1">selected="selected"</if>> 投资成功 </option>
+                <option value="2" <if condition="intval($_REQUEST['status']) eq 2">selected="selected"</if>> 匹配成功 </option>
+                <option value="3" <if condition="intval($_REQUEST['status']) eq 3">selected="selected"</if>> 赎回申请中 </option>
+                <option value="4" <if condition="intval($_REQUEST['status']) eq 4">selected="selected"</if>> 赎回成功 </option>
+                <option value="5" <if condition="intval($_REQUEST['status']) eq 5">selected="selected"</if>> 已结清 </option>
+                <option value="6" <if condition="intval($_REQUEST['status']) eq 6">selected="selected"</if>> 已取消 </option>
+            </select>
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="{$projectId}" name="project_id" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th>投资人Id</th>
+        <th width="100px">投资人</th>
+        <th>投资金额</th>
+        <th>投资时间</th>
+        <th>投资锁定天数</th>
+        <th>待付利息</th>
+        <th>已结利息</th>
+        <th>待投本金</th>
+        <th>申请赎回时间</th>
+        <th>赎回成功时间</th>
+        <th>用户类型</th>
+        <th>投标清单</th>
+        <th>状态</th>
+    </tr>
+
+
+    <?php foreach ($data as $k => $v) :?>
+    <tr class="row">
+        <td><?= $v['userId']; ?></td>
+        <td><?= $v['realName']; ?></td>
+        <td><?= $v['money']; ?></td>
+        <td><?= $v['createTime']; ?></td>
+        <td><?= $v['lockPeriod']; ?></td>
+        <td><?= $v['noRepayInterest']; ?></td>
+        <td><?= $v['hasRepayInterest']; ?></td>
+        <td><?= $v['noRepayPrincipal']; ?></td>
+        <td><?= $v['redemCreateTime']; ?></td>
+        <td><?= $v['redemFinishTime']; ?></td>
+        <td>{$v['userId']|getUserTypeName}</td>
+        <td><a href="m.php?m=DtUserLoan&a=userLoanDetail&user_id=<?=$v['userId']; ?>&loanId=<?=$v['id']; ?>&dealId=<?=$projectId; ?>">查看</a> </td>
+        <td>
+            <?php if (1 == $v['status']):?> 投资成功<?php endif; ?>
+            <?php if (2 == $v['status']):?> 匹配成功<?php endif; ?>
+            <?php if (3 == $v['status']):?> 赎回申请中<?php endif; ?>
+            <?php if (4 == $v['status']):?> 赎回成功<?php endif; ?>
+            <?php if (5 == $v['status']):?> 已结清<?php endif; ?>
+            <?php if (6 == $v['status']):?> 已取消<?php endif;?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

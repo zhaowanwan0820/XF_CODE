@@ -1,0 +1,112 @@
+
+
+
+<!-- 2013/7/3 xuxiaonan begin -->
+<div class="uc_user_info">
+	<div class="comm_top"></div>
+	<div class="comm_con">
+		<dl class="tx_tip">
+		<dt>等额本息</dt>
+		<dd>即借款人每月以相等的金额偿还借款本息，也是银行房贷等采用的方法。因计算中存在四舍五入，最后一期还款金额与之前略有不同。</dd>
+		<dt class="mt10">每月付息，到期还本</dt>
+		<dd>即借款人每月偿还固定利息，最后一期偿还全部本金。使用收益计算器，能帮您计算每月的收益情况；同时，一份完整的本息偿还时间表，让您能更直观地了解还款本息详情。</dd>
+		</dl>
+	</div>
+	<div class="comm_bot"></div>
+</div>
+<div class="uc_user_info">
+	<div class="comm_top"></div>
+	<div class="comm_con">
+		<div class="h_con">
+			<h3>借款设置</h3>
+		</div>
+		<form action="./" method="post" name="J_calculate_form" id="J_calculate_form">
+			<div class="form_con">
+                <div class="clearfix">
+                    <div class="f_l" style="width:170px">
+                    	借款金额：<input type="text" id="borrowAmount" name="borrowamount" value="{$get_data.amount}" class="f-input w90">
+                    </div>
+                    <!-- <div class="f_l" style="width:145px">
+                    	 年化利率：<input type="text" id="apr" name="apr" class="f-input" value="{$get_data.interest}" style="width:60px"> %
+                    </div> -->
+                    <div class="f_l" style="width:170px">
+                    	  借款期限：
+                    	   <select class="f-select" style="font-size:12px" name="repayTime" id="repayTime">
+                            {foreach from=$repay_time key=key item=val}
+                            <option value="{$key}" {if $key eq $get_data.month}selected="selected"{/if}>{$val}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div class="f_l" style="width:210px">
+                    	还款方式：
+                        <select class="f-select" style="font-size:12px" name="borrowpay" id="borrowpay">
+                            {foreach from=$loan_type key=key item=val}
+                            <option value="{$key}" {if $key eq $get_data.repayType}selected="selected"{/if}>{$val}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div class="clearfix" style="margin-top:20px">
+                	<!--
+                    <div class="f_l" style="margin:15px 0 0 0">
+                        <input type="checkbox" name="isshow" value="1" id="isShow">&nbsp;&nbsp;显示还款时间表&nbsp;&nbsp;&nbsp;
+                    </div>
+                   -->
+                    <div style="padding:10px 0 0 0px">
+                        <button class="saveSettingBnt" id="J_saveSettingBnt" type="button">
+                        	开始计算
+                        </button>
+						<span style="color: red" id="T_error"></span>
+                    </div>
+                </div>
+            </div>
+		</form>
+	</div>
+	<div class="comm_bot"></div>
+</div>
+<div id="J_calculate_Result"></div>
+
+<!-- 2013/7/3 xuxiaonan end -->
+<script type="text/javascript">
+	jQuery(function(){
+		$("#J_saveSettingBnt").click(function(){
+			checkrate();
+		});
+		
+		$("#borrowAmount,#repayTime,#borrowpay").change(function() {
+			checkrate();
+		});
+	});
+	function checkrate()
+	{
+        $("#T_error").html("");
+        if($.trim($("#borrowAmount").val())=="" || $("#borrowAmount").val()%1 !=0){
+            $("#T_error").html("借款金额必须为正整数");
+            return false;
+        }
+        /*
+        if($.trim($("#apr").val())=="" || isNaN($.trim($("#apr").val()))){
+            $("#T_error").html("年化利率必须为数字类型!");
+            return false;
+        }*/
+        if($.trim($("#repayTime").val())=="" || isNaN($.trim($("#repayTime").val()))){
+            $("#T_error").html("月份格必须为数字类型!");
+            return false;
+        }
+        if($.trim($("#repayTime").val())>120){
+            $("#T_error").html("月份必须在120以内!");
+            return false;
+        }
+        var query = $("#J_calculate_form").serialize();
+        $.ajax({
+            url:APP_ROOT + "/index.php?ctl=tool&act=ajax_calculate",
+            data:query,
+            type:"post",
+            success:function(result){
+                $("#J_calculate_Result").html(result);
+                return false;
+            }
+        });
+        return false;
+	}
+</script>

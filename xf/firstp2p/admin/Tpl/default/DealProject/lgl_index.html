@@ -1,0 +1,149 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<php>
+function subtraction($num1,$num2) {
+    $num = $num1 - $num2;
+    $num = format_price($num,false);
+    return $num;
+}
+function get_rate($rate) {
+    return $rate.'%';
+}
+</php>
+
+<script type="text/javascript">
+    function del(id) {
+        if(!id) {
+            idBox = $(".key:checked");
+            if(idBox.length == 0)
+            {
+                alert(LANG['DELETE_EMPTY_WARNING']);
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            id = idArray.join(",");
+        }
+        if(confirm(LANG['CONFIRM_DELETE'])){
+            //判断该项目是否有子标  如没有才能删除
+            var is_submit = 0;
+            $.ajax({
+                url:ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=checkSave&id="+id,
+                dataType:"json",
+                async:false,
+                success:function(rs){
+                    if(rs.status ==1)
+                    {
+                        if(rs.data.sum > 0) {
+                            //alert('项目id:'+id+'下有子标，不能直接删除！');
+                            alert('该项目下有子标，不能直接删除！');
+                            return;
+                        }
+                        is_submit = 1;
+                    }else{
+                        is_submit = 0;
+                    }
+                }
+            });
+            if(is_submit == 1) {
+                $.ajax({
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id,
+                    data: "ajax=1",
+                    dataType: "json",
+                    success: function(obj){
+                        $("#info").html(obj.info);
+                        if(obj.status==1) {
+                            location.href=location.href;
+                        }
+                    }
+                });
+            }
+        }
+    }
+    function add_deal(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=add&proid="+id;
+    }
+
+    function add() {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=add&deal_type=1";
+    }
+
+    // 还款计划
+    function compound_repay_schedule(id) {
+        $.weeboxs.open(ROOT+'?m=DealProject&a=compound_repay_schedule&id='+id, {contentType:'ajax',showButton:false,title:'还款计划',width:450,height:230});
+    }
+
+    function copy(id) {
+        $.ajax({
+            url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=copy&id=" + id,
+            data: "ajax=1",
+            dataType: "json",
+            success: function (obj) {
+                $("#info").html(obj.info);
+            }
+        });
+    }
+</script>
+
+<div class="main">
+<div class="main_title">通知贷项目列表 <!-- 
+            <input type="text" class="textbox" name="test_email" />
+            <input type="button" class="button" name="test_mail_btn" value="{%TEST}" />
+             -->
+</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%DELETE}" onclick="del();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        项目名称：<input type="text" class="textbox" name="pro_name" value="{:trim($_REQUEST['pro_name'])}" size="8"/>
+        借款人会员ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" size="8"/>
+        借款人会员名称：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="8"/>
+        借款人姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="8"/>
+        <input type="hidden" value="DealProject" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="hidden" value="1" name="deal_type" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<html:list 
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px
+    ,name:项目名称
+    ,repay_time|getRepayTime=$item['loantype']:借款期限
+    ,lock_period:锁定期
+    ,redemption_period:赎回期
+    ,loantype|get_loantype:还款方式
+    ,rate|get_rate:年化利率
+    ,list_name:借款人ID/用户名/姓名
+    ,user_id|getUserTypeName|default='':用户类型
+    ,borrow_amount|format_price=false:借款总额
+    ,money_borrowed|format_price=false:已上标金额
+    ,borrow_amount|subtraction=$item['money_borrowed']:待上标金额
+    ,money_loaned|format_price=false:已投资金额
+    ,diff|format_price=false:差额
+    ,status:状态
+    ,entrust_sign:借款人合同委托签署
+    ,entrust_agency_sign:担保合同委托签署
+    ,entrust_advisory_sign:产管理方合同委托签署
+    ,approve_number:放款审批单编号
+    ,credit:项目授信额度"
+    actionlist="add_deal:上标,edit:{%EDIT}, del:{%FOREVERDEL}, compound_repay_schedule:还款计划, copy:复制" />
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

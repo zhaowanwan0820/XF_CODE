@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>网信世界杯活动</title>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-base.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/swiper-4.3.2.min.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/index.css?v=fdd');?>">
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/jquery-1.10.2.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/px2rem.js?v=fff');?>"></script>
+</head>
+<body>
+{include file="web/views/v3/happy_newyear/share_js.html"}
+  <!-- 世界杯活动首页 -->
+  <div class="world_cup_container">
+    <a href="javascript:;" class="shear_btn" style="display: none">
+      <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_share.png');?>" class="shear_btn_img">
+    </a>
+    <!-- top:背景logo+规则说明btn :巅峰之夜： peak_night-->
+    <div class="top_banner">
+      {if $isPeakNight eq 0}
+        <div class="world_cup_home_top">
+          <!-- 规则说明btn部分 -->
+          <a href="http://event.ncfwx.com/zt/189" class="rules_btn">规则说明</a>
+        </div>
+      {else}
+      <div class="swiper-container">
+        <ul class="peak_night_banner swiper-wrapper">
+          <li class="world_cup_home_top swiper-slide">
+            <!-- 规则说明btn部分 -->
+            <a href="http://event.ncfwx.com/zt/189" class="rules_btn">规则说明</a>
+          </li>
+          <li class="world_cup_home_top peak_night swiper-slide">
+            <a href="http://event.ncfwx.com/zt/188" class="rules_btn">巅峰之夜规则</a>
+          </li>
+        </ul>
+        <!-- 如果需要分页器 -->
+        <div class="swiper-pagination"></div>
+      </div>
+      {/if}
+    </div>
+    <!-- end -->
+    <!-- 比赛列表部分 -->
+    <div class="world_cup_game_lists">
+      <ul class="world_cup_game_list">
+          {foreach from=$res.teamMatchList item="match"}
+        <li class="each_game">
+          <p class="guess_status_detail clearfix">
+            <!--未竞猜:guess_no,已竞猜：guessed,成功：guess_status,失败：guessed_fail-->
+            <span class="{if $match.userStatus == -1}guess_no{elseif $match.userStatus == 0}guessed{elseif $match.userStatus == 1}guess_status{else}guessed_fail{/if}">{$match.userStatusDesc}</span>
+            <span class="guess_date">
+                <i class="team_match">{$match.name}</i>
+                {if $match.guessMode != 3}<i class="guess_time">{$match.startTime}</i>{/if}
+            </span>
+          </p>
+          {if $match.guessMode == 3}
+            <p class="eight_choice_container">
+              <span class="eight_choice">
+                {foreach from=$match.guessTeams item="team"}
+                <img src="{$team.pic}" class="{if $team.isChosen}champion{/if}">
+                {/foreach}
+              </span>
+            </p>
+          {/if}
+          <p class="group_match clearfix">
+            <span class="{if $match.guessMode != 3}left national_win{else}left national_win eight_choice_height{/if}">
+              {if $match.guessMode != 3}
+                <img src="{$match.guessTeams.teamA.pic}" class="national_flag"/>
+                {$match.guessTeams.teamA.name}
+                {if $match.matchStatus==4}
+                {if $match.result eq 'A'}
+                <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_win.png');?>" class="win">
+                {elseif $match.result eq 'B'}
+                <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_lose.png');?>" class="win">
+                {elseif $match.result eq 'DRAW'}
+                <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_draw.png');?>" class="win">
+                {/if}
+                {/if}
+              {/if}
+            </span>
+            <span class="middle clearfix">
+              <i class="status">
+                <!--已结束over,比赛中game_ing,竞猜guess_competition,即将开始begin_minute -->
+                {if $match.matchStatus ==1}
+                <span class="begin_minute">竞猜将开始</span>
+                {elseif $match.matchStatus ==2}
+                <a href="" class="guess_competition" data-id="{$match.id}">竞猜进行中</a>
+                {elseif $match.matchStatus ==3}
+                <a href="/worldcup/matchDetail?matchId={$match.id}&token={$token}" class="game_ing">比赛进行中</a>
+                {elseif $match.matchStatus ==4}
+                <a href="/worldcup/matchDetail?matchId={$match.id}&token={$token}" class="over">比赛已结束</a>
+                {elseif $match.matchStatus ==5}
+                <a href="/worldcup/matchDetail?matchId={$match.id}&token={$token}" class="game_ing">比赛未开始</a>
+                {/if}
+              </i>
+            </span>
+            <span class="right national_win">
+              {if $match.guessMode != 3}
+                {$match.guessTeams.teamB.name}
+                <img src="{$match.guessTeams.teamB.pic}" class="national_flag"/>
+                {if $match.matchStatus==4}
+                {if $match.result eq 'A'}
+                <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_lose.png');?>" class="win">
+                {elseif $match.result eq 'B'}
+                <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_win.png');?>" class="win">
+                {elseif $match.result eq 'DRAW'}
+                <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_draw.png');?>" class="win">
+                {/if}
+                {/if}
+              {/if}
+            </span>
+          </p>
+          <div class="group_match_logo">
+            {if $match.matchStatus <= 2}
+            <span class="over_guess">{if $match.matchStatus ==1}{$match.guessStartTime} 开始竞猜{else}{$match.guessEndTime} 结束竞猜{/if}</span>
+            {/if}
+            <div class="hot_events">
+              {if $match.tags}
+              <p class="hot_events_img">{$match.tags}</p>
+              {/if}
+            </div>
+          </div>
+        </li>
+        {/foreach}
+      </ul>
+    </div>
+    <!-- end -->
+    <!-- 底部固定部分 -->
+    {if $isGiven eq 0}
+    <div class="world_cup_footer_container">
+      <!-- 免费领取10积分 -->
+      <div class="world_cup_footer_fixed">
+        <p class="jifen">免费领取10积分</p>
+      </div>
+      <div class="world_cup_footer_position"></div>
+    </div>
+    {else}
+      <!--用户中心tab部分-->
+      <div class="custom_center_tab">
+        <div class="custom_center_tab_fixed clearfix">
+          <span class="index_custom_logo">
+            {if $userPic}
+            <img src="{$userPic}" class="user_portrait">
+            {/if}
+            {if $userRank.times >=5}
+            <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_custom_logo.png');?>" class="suc_five">
+            {/if}
+          </span>
+          <a href="/worldcup/scoreLog?token={$token}" class="total_integral">
+              <i class="top">{$userRank.points}</i>
+            <i class="bottom">总积分</i>
+          </a>
+          <a href="/worldcup/rank?token={$token}" class="total_integral">
+              <i class="top">{$userRank.rank}</i>
+            <i class="bottom">总排名</i>
+          </a>
+          <a href="/worldcup/guessLog?token={$token}" class="total_suc_count">
+              <i class="top">{$userRank.times}</i>
+              <i class="bottom">竞猜胜利次数</i>
+            </a>
+        </div>
+        <div class="custom_center_tab_position"></div>
+      </div>
+      <!-- end -->
+    {/if}
+    <!--遮罩层部分-->
+      <div class="invest_tips_mask" style="display: none">
+        <!--尚未投资提示-->
+        <div class="invest_tips">
+          <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_remider_tips.png');?>" class="index_remider_tips">
+          <div class="bg_tips">
+            <div class="text_tips_container">
+              <p class="tips_text"></p>
+              <p class="tips_btn"><a href="#"></a></p>
+            </div>
+            <img src="<?php echo $this->asset->makeUrl('worldcup2018/images/index_tips_close.png');?>" class="tips_close">
+          </div>
+        </div>
+        <!--end-->
+      </div>
+      <!--分享遮罩层-->
+      <div class="ui_mask" style="display: none"></div>
+      <!--end-->
+    <!--end-->
+  </div>
+</body>
+<script src="<?php echo $this->asset->makeUrl('app/v3.4/js/base.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('worldcup2018/js/swiper-4.3.2.min.js');?>"></script>
+<script>
+  var jifen = $(".world_cup_footer_fixed .jifen"),/*底部获取10积分btn*/
+      custom_center_tab = $(".custom_center_tab"),/*底部用户中心tab*/
+      invest_tips_mask = $(".invest_tips_mask"),/*遮罩层显示*/
+      tips_close = $(".tips_close"),/*尚未投资close*/
+      tips_btnA = $(".invest_tips .tips_btn a"),/*未投资前往网信按钮*/
+      tips_text = $(".invest_tips .tips_text"),/*未投资文案提示*/
+      tips_btn =  $(".invest_tips .tips_btn"),
+      guess_competition = $(".guess_competition")
+
+  /*轮播*/
+   var mySwiper = new Swiper ('.swiper-container', {
+    direction: 'horizontal',
+    loop: true,
+    // 如果需要分页器
+    pagination: {
+      el: '.swiper-pagination',
+    },
+    autoplay:{
+      delay:3000,
+      stopOnLastSlide: false,/*如果设置为true，当切换到最后一个slide时停止自动切换.（loop模式下无效）。*/
+      disableOnInteraction: false,/*用户操作swiper之后，是否禁止autoplay。默认为true：停止。*/
+    }
+  })
+  /*end*/
+  /*自定义参数*/
+  var isReceive = "{$isGiven}",/*是否领取免费积分：等于1已领取免费积分*/
+      isOldCustom = "{$isOldCustom}",/*是否老用户：等于1是老用户*/
+      isApp = "{$isApp}",/*是否在网信app内：等于1是在网信app内*/
+      isAppItem = 0,
+      isShare = "{$isShare}"
+  /*存localStorage*/
+  if(localStorage.getItem("isApp") != 1){
+      localStorage.setItem("isApp","{$isApp}")
+      isAppItem = localStorage.getItem("isApp")
+  }else{
+    isAppItem = localStorage.getItem("isApp")
+    $(".shear_btn").show()
+  }
+
+  /*end*/
+  /*控制原生title右侧隐藏title传空按钮4.7.3*/
+  if(isAppItem == 1){
+    window.location.href="firstp2p://api?type=rightbtn&title="
+  }
+  /*end*/
+  /*用户是否领券*/
+  if(isReceive == "1"){
+    jifen.hide()
+    custom_center_tab.show()
+  }else{
+    jifen.show()
+    custom_center_tab.hide()
+    jifen.click(function(){
+      /*是否老用户*/
+      if(isOldCustom == 1){
+        /*调取接口用户增加积分*/
+        $.ajax({
+          type:'post',
+          url:"/worldcup/AcquireScore",
+          data:{token:"{$token}"},
+          dataType:"json",
+          success:function(res){
+            if(res.error == 0){
+              jifen.hide()
+              custom_center_tab.show()
+              window.location.reload()
+            }else{
+              P2PWAP.ui.toast(res.msg)
+            }
+          },
+          error:function(error){console.log(error)}
+        })
+      }else{
+        invest_tips_mask.show()
+        tips_close.click(function(){invest_tips_mask.hide()})
+        if(isAppItem == 1){
+          tips_btn.html("确定")
+          tips_text.text("您尚未在网信投资过，您需先进行投资操作方可领取免费积分")
+          tips_btn.click(function(){invest_tips_mask.hide()})
+        }else{
+          tips_btnA.html("下载网信APP")
+          tips_btnA.attr("href","http://app.firstp2p.com/")
+          tips_text.text("您尚未在网信进行过投资，请先进行投资，然后在此页面领取免费积分")
+          tips_text.addClass("tips_text_isApp")
+        }
+      }
+    })
+  }
+
+  var domainVal= location.origin
+  var schemePrefix= 'firstp2p://api?type=webview&needauthen=true&gobackrefresh=true&url='
+  guess_competition.each(function(index,item){
+    var url = "/worldcup/matchDetail?matchId="+$(this).data("id")+"&token={$token}"
+    if(isAppItem == 1){
+      $(this).attr("href",schemePrefix + encodeURIComponent(domainVal+url))
+    }else{
+      $(this).attr("href",url)
+    }
+  })
+  /*用户下拉页面刷新*/
+  if (isAppItem == 0 && (isShare == 1)){
+    $(window).scroll(function(){
+      if($(window).scrollTop() < 0){
+        location.reload()
+      }
+    })
+  }
+</script>
+</html>

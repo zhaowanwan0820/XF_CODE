@@ -1,0 +1,61 @@
+<!-- $Id: account_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+<div class="main-div">
+  <form name="theForm" method="post" action="profile.php" onsubmit="return checkCode()">
+    <table width="100%">
+      <tr>
+        <td class="label">密码</td>
+        <td><input type="password" name="old_password"/>{$lang.require_field}</td>
+      </tr>
+      <tr>
+      <td class="label">新密码</td>
+      <td><input type="password" name="new_password"/>{$lang.require_field}</td>
+    </tr>
+      <tr>
+        <td class="label">确认密码</td>
+        <td><input type="password" name="new_password_confirm"/>{$lang.require_field}</td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+          <input type="submit" value="{$lang.button_submit}" class="button"/>
+          <input type="reset" value="{$lang.button_reset}" class="button" />
+          <input type="hidden" name="act" value="{$form_act}" />
+      </tr>
+    </table>
+  </form>
+</div>
+{insert_scripts files="uploader/jquery.js,validator.js"}
+{literal}
+<script language="JavaScript">
+  function checkCode() {
+    var old_password =  document.forms['theForm'].elements['old_password'].value;
+    var password =  document.forms['theForm'].elements['new_password'].value;
+    var new_password =  document.forms['theForm'].elements['new_password_confirm'].value;
+    if(old_password.length <= 0){
+      alert('请填写密码')
+      return false;
+    }
+    if(password.length <= 0){
+      alert('请填写新密码')
+      return false;
+    }
+    if(old_password == password){
+      alert('新密码与旧密码一致');
+      return false;
+    }
+    password = Utils.trim(password);
+    if (!(password.length >= 6 && /\d+/.test(password) && /[a-zA-Z]+/.test(password)))
+    {
+      alert("密码必须同时包含字母及数字且长度不能小于6!")
+      return false;
+    }
+    if(password != new_password){
+      alert('两次密码不一致');
+      return false;
+    }
+
+  }
+
+</script>
+{/literal}
+{include file="pagefooter.htm"}

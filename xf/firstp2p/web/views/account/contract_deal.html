@@ -1,0 +1,69 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/pact.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user_v2.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/js/widget/ui/jquery-ui-1.10.3.custom.min.css');?>">
+
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/pact/pact.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/widget/ui/jquery-ui-1.10.3.custom.js');?>"></script>
+    
+<div class="user_right">
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1 class="fl">
+                <i class="ico_huankuan"></i>合同列表
+            </h1>
+            <div class="fg_line"></div>
+            <ul class="huank_nav fl">
+                <li class="select"><a href="/account/contract">合同总览</a></li>
+            </ul>
+        </div>
+        
+        <div class="pact-list">
+            {if empty($list)}
+            <div class="empty-box">没有合同，快去投资项目吧!</div>
+            {else}
+	            {foreach from=$list item='deal'}
+	            <div class="pact-main">
+	                <div class="pact-m-left">
+	                    <div class="pact-ml-top">
+	                        <p><span title='{$deal.old_name}' class="f16">{$deal.name}</span>
+	                        </p>
+	                        <p>
+                                <em class="no-marleft">{if $deal.user_name_title eq 0}融资人{elseif $deal.user_name_title eq 1}受托人{else}融资方{/if}：</em><span class="w190">{$deal.user_real_name}</span><span><em>总额：</em>{$deal.borrow_amount_format_detail}万</span>
+	                        </p>
+	                    </div>
+	                    <div class="pact-ml-center">利率为{if $deal.isBxt eq 0 }{$deal.income_fee_rate_format}%{else}{if $deal.income_fee_rate_format neq $deal.max_rate }{$deal.income_fee_rate_format}%~{$deal.max_rate}%{else}{$deal.income_fee_rate_format}%{/if}{/if}，期限为{if $deal.loantype eq 5}{$deal.repay_time}天{else}{$deal.repay_time}个月{/if}，还款方式为{$deal.loantype_name}</div>
+	                </div>
+	                <div class="pact-m-right">
+	                    <div class="pact-mr-top">
+	                        {if $deal.is_have_sign eq 1}
+                            <a href="javascript:void(0)" class="btn-base pact-btn but-disabled">已签署</a>
+                            {elseif $deal.is_have_sign eq 2}
+	                        <a href="javascript:void(0)" class="btn-base pact-btn but-disabled">签署中</a>
+	                        {else}
+                                {if $deal.dt_mapping eq 0}
+                                <a href="javascript:void(0)" class="btn-base pact-btn but-disabled">一键签署</a>
+                                {else}
+                                <a href="javascript:void(0)" data-pos="{$deal.id}" class="btn-base but-yellow pact-btn j-click-qianshu">一键签署</a>
+                                {/if}
+	                        {/if}
+	                    </div>
+                        <div class="pact-mr-link">
+                            {if $deal.dt_mapping eq -1}
+	                        <a href="/account/contlist/{$deal.id}" class="blue">查看合同</a>
+                            {elseif $deal.dt_mapping eq 1}
+                            <a href="/account/contlist/{$deal.id}?is_dt=1" class="blue">查看合同</a>
+                            {/if}
+	                    </div>
+	                </div>
+	            </div>
+	            {/foreach}
+            {/if}
+        </div>
+        <div class="pages w715">
+            <!-- <i>共23231个投资项目，22页</i>  -->
+            {$pages}
+        </div>
+    </div>
+</div>
+<div id="pact-dialog" style="display: none"></div>

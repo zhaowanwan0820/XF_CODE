@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon-precomposed"
+          href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/images/favicon.png', 1);?>">
+    <link rel="shortcut icon" type="image/x-icon"
+          href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/images/favicon.png', 1);?>">
+    <title>网信 APP下载</title>
+    <script>
+        function recalc() {
+            var docEl = document.documentElement,
+                clientWidth = docEl.clientWidth;
+            if (!clientWidth) return;
+            if (clientWidth >= 750) {
+                docEl.style.fontSize = '100px'; //1rem  = 100px
+            } else {
+                docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+            }
+        }
+        recalc();
+    </script>
+    <link rel="stylesheet" href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/css/normalize.css', 1);?>"/>
+    <link rel="stylesheet"
+          href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/css/e_download.css', 1);?>"/>
+</head>
+<body>
+<div id="box" class="container">
+    <header class="header">
+        <img style="height: 7.16rem;" src="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/images/header.jpg', 1);?>">
+    </header>
+    <main class="main">
+        <h2>安卓手机安装步骤</h2>
+        <ol class="step">
+            <li>在手机浏览器里打开本页</li>
+            <li>在打开的新页面里通过以下地址/二维码安装</li>
+        </ol>
+    </main>
+    <footer id="downloadBar" class="download-bar">
+        <a href="{$down_url}" id="a-link">下载APP</a>
+    </footer>
+</div>
+<div id="supernatant" class="supernatant"></div>
+<script type="text/javascript">
+    //微信环境
+    var supernatant = document.getElementById("supernatant"),
+        box = document.getElementById("box"),
+        aLink = document.getElementById('a-link');
+    function weixinFacility() {
+        var userAgentString = window.navigator ? window.navigator.userAgent : "";
+        var weixinreg = /MicroMessenger/i;
+        return weixinreg.test(userAgentString);
+    };
+    //跳转监听
+    if (weixinFacility()) {
+        aLink.onclick = function (e) {
+            box.style.overflow = "hidden";
+            supernatant.style.display = "block";
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+    //蒙层消失
+    supernatant.onclick = function () {
+        box.style.overflow = "auto";
+        this.style.display = "none";
+    }
+    var _ncf = {
+        "prd": "firstp2p",
+        "pstr": "",
+        "pfunc": null,
+        "pcon": "",
+        "pck": {"channel": "channel", "fpid": "fpid"},
+        "trid": "",
+        "channel": ['pubid', 'mediumid', 'adid', 'adsize'],
+        "rfuniq": [],
+        "rfmuti": []
+    };
+    (function (p, h, s) {
+        var o = document.createElement(h);
+        o.src = s;
+        p.appendChild(o)
+    })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7e385de805034ba6983c196ca9c6fcba";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+</body>
+</html>

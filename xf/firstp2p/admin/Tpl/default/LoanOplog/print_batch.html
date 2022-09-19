@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title> 放款批次交接单-{$loan_batch_no}</title>
+    <style type="text/css">
+        body{ line-height:25px; font-size:12px; width:920px; margin:0px auto;}
+        h3{ font-size:16px; font-weight:normal; margin:0px; margin:15px 0px 5px 0px;}
+        td{ padding:0px 5px;}
+    </style>
+</head>
+
+<body>
+
+<h3 align="center"><strong>放&nbsp;&nbsp;款&nbsp;&nbsp;批&nbsp;&nbsp;次&nbsp;&nbsp;交&nbsp;&nbsp;接&nbsp;&nbsp;单</strong></h3>
+<table border="1" cellspacing="0" cellpadding="0" width="910">
+    <tr>
+        <td width="" colspan="5" valign="top">放款批次号：{$loan_batch_no}</td>
+        <td width="" colspan="5" valign="top">交接单生成时间：{$batch_create_time|to_date}</td>
+    </tr>
+    <tr>
+        <td width="30">序号</td>
+        <td width="60">放款方式</td>
+        <td width="35">编号</td>
+        <td width="220">借款标题</td>
+        <td width="50">借款人ID</td>
+
+        <td width="75">借款人用户名</td>
+        <td width="60">借款人姓名</td>
+        <td>收款方账户名</td>
+        <td width="50">付款编号</td>
+        <td width="75">放款金额</td>
+    </tr>
+
+    <volist name="result" id="record" key = 'id'>
+        <tr>
+            <td valign="top">{$id}</td>
+            <td valign="top">{$record.loan_money_type_name}</td>
+            <td valign="top">{$record.deal_id}</td>
+            <td valign="top">{$record.deal_name}</td>
+            <td valign="top">{$record.borrow_user_id}</td>
+            <td valign="top">{$record.user_name}</td>
+            <td valign="top">{$record.real_name}</td>
+            <td valign="top">{$record.user_carry_real_name}</td>
+            <td valign="top">{$record.user_carry_id}</td>
+            <td valign="top"><?php echo number_format($record['loan_money'], 2); ?></td>
+        </tr>
+    </volist>
+
+    <tr>
+        <td colspan="2" valign="top">合计：</td>
+        <td colspan="8" valign="top"><?php echo number_format($loan_money_total, 2); ?></td>
+    </tr>
+</table>
+
+<table border="0" cellspacing="0" cellpadding="0" width="910">
+    <tr>
+        <td colspan="4" style="border-style:none"><h3>&nbsp;&nbsp;运&nbsp;&nbsp;营&nbsp;&nbsp;人&nbsp;&nbsp;员：&nbsp;&nbsp;{$record.op_user_id|get_admin_name}</h3></td>
+        <td colspan="3" style="border-style:none"><h3>&nbsp;&nbsp;财&nbsp;&nbsp;务&nbsp;&nbsp;人&nbsp;&nbsp;员：</h3></td>
+    </tr>
+</table>
+
+</body>
+<script>
+    window.print();
+</script>
+</html>

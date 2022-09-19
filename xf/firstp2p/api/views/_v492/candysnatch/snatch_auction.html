@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>信宝夺宝</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/flexible.js?1');?>"></script>
+    <link href="<?php echo $this->asset->makeAppUrl('v4.83/css/snatch.css?13');?>" rel="stylesheet" />
+    {include file="api/views/_v492/candysnatch/snatch_zhuge.html"}
+</head>
+<body class="snatch_body">
+    <input type="text" hidden="hidden" value="{$token}" class="token">
+    <input type="text" hidden="hidden" value="{$clearCookie}" class="clearCookie">
+    <div class="snatch_wrap">
+        <a href="http://event.ncfwx.com/zt/247?token={$token}" class="snatch_header_wrap JS_rule"></a>
+        <div class="ul_wrap">
+            <ul class="prize_ul">
+                {foreach from=$recentPrizeInfo item=item}
+                <li>
+                    <div class="bg_wrapper">
+                        <div class="prizer_left">
+                            <img class="header_img" src="<?php echo $this->asset->makeAppUrl('v4.83/images/user_head.png');?>"
+                                alt="用户头像">
+                        </div>
+                        <div class="prizer_right">
+                            <p>恭喜{$item.userInfo.real_name}{if $item.userInfo.sex eq 1}先生{else}女士{/if} {$item.userInfo.mobile}</p>
+                            <p>获得{$item.productInfo.short_title}</p>
+                        </div>
+                    </div>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+
+        <div class="snatch_content">
+            <div class="snatch_tap">
+                <div class="snatch_tap_left snatch_activity JS_zzrp">
+                    正在热拍
+                    <i></i>
+                </div>
+                <div class="snatch_tap_right JS_wqjl">
+                    往期记录
+                    <i></i>
+                </div>
+            </div>
+            <div class="product_list_wrap">
+                <!-- 正在热拍 -->
+                <ul class="product_list JS_product_now JS_djzzrp">
+                    {foreach from=$processAuction item=item}
+                    {if isset($item.lastPeriod)}
+                    {if $item.lastPeriod.status eq 1}
+                    <a class="snatch_jump_productDetail JS_todetail" href="storemanager://api?type=webview&gobackrefresh=true&url=" data-pram="/candysnatch/SnatchProduct?token={$token}&periodId={$item.lastPeriod.id}&sign=1">
+                    {else}
+                    <a class="snatch_jump_productDetail JS_todetail" href="storemanager://api?type=webview&gobackrefresh=true&url=" data-pram="/candysnatch/SnatchProduct?token={$token}&periodId={$item.lastPeriod.id}&sign=2">
+                    {/if}
+                        <li>
+                            <div class="product_left">
+                                {if $item.lastPeriod.status eq 1}
+                                <span class="product_status">
+                                    进行中
+                                </span>
+                                {else}
+                                <span class="product_status product_status_over">
+                                    未开始
+                                </span>
+                                {/if}
+                                <img src={$item.lastPeriod.image_main} class="product_img">
+                                {if $item.type eq 1}
+                                <img class="double11_icon" src="<?php echo $this->asset->makeAppUrl('v4.83/images/double11-pro.png');?>" alt="double11_icon">
+                                {elseif $item.type eq 2}
+                                <img class="only_inviter_icon" src="<?php echo $this->asset->makeAppUrl('v4.83/images/only_inviter_icon.png');?>" alt="only_inviter_icon">
+                                {elseif $item.type eq 3}
+                                <img class="only_inviter_icon" src="<?php echo $this->asset->makeAppUrl('v4.83/images/goddess.png');?>" alt="goddess">
+                                {/if}
+                            </div>
+                            <div class="product_right">
+                                <p class="product_detail">
+                                    <span class="product_name">{$item.title}</span>
+                                </p>
+                                <p class="product_rate">
+                                    开奖进度
+                                    <span class="text_red"> 
+                                        {if $item.lastPeriod.schedule}
+                                        {$item.lastPeriod.schedule}%
+                                        {else}
+                                        0% 
+                                        {/if}
+                                    </span>
+                                    <span class="only_inviter">满{$item.price}信宝即开奖</span>
+                                </p>
+                                <p class="rate_show_wrap">
+                                    <span class="rate_show" style="width:{$item.lastPeriod.schedule}px"></span>
+                                </p>
+                                <p class="product_issue product_issue_now">
+                                    <span>第{$item.lastPeriod.id}期</span>
+                                </p>
+                                <button class="start_snatch">
+                                    开始夺宝
+                                </button>
+                            </div>
+                        </li>
+                    </a>
+                    {/if}
+                    {/foreach}
+                    <div class="snatch_footer">
+                        <div>
+                            <i class="footer_line"></i>
+                            <span class="footer_center">更多商品敬请期待</span>
+                            <i class="footer_line"></i>
+                        </div>
+                        <div class="third_content">
+                            <span class="footer_center third_free_duty">该服务由第三方服务商提供与苹果公司无关</span>
+                        </div>
+                    </div>
+                </ul>
+                <!-- 往期记录 -->
+                <ul class="product_list JS_product_prev" style="display: none">
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+    <script>
+        WXP2P.APP.triggerScheme("firstp2p://api?type=rightbtn&title=" + encodeURIComponent("我的夺宝") + "&callback=jumpMyPrize");
+        function jumpMyPrize(){
+            WXP2P.APP.triggerScheme('firstp2p://api?type=webview&gobackrefresh=true&url='+ encodeURIComponent(location.origin + '/candysnatch/SnatchUserProducts?token={$token}'))
+            zhuge.track("信宝夺宝-首页-点击我的夺宝");
+        }
+        WXP2P.APP.triggerScheme("firstp2p://api?type=leftbtn&jsfunc=");
+        function close_all(){
+            WXP2P.APP.setCookie("scroll_top",0,-1);
+            WXP2P.APP.setCookie("snatch_tap_right",0,-1);
+            WXP2P.APP.triggerScheme('firstp2p://api?type=closeallpage');
+        }
+        setTimeout(function(){
+            WXP2P.APP.triggerScheme("firstp2p://api?type=leftbtn&jsfunc=close_all");
+        }, 0)
+        var u = navigator.userAgent;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if(isAndroid && !isIOS){
+            if($('.clearCookie').val() == 1 && WXP2P.APP.getCookie('snatch_tap_right') == 1){
+                $('.snatch_tap_left').removeClass('snatch_activity');
+                $('.snatch_tap_right').addClass('snatch_activity');
+                $('.JS_product_now').hide();
+                $('.JS_product_prev').show();
+                var positionTop = WXP2P.APP.getCookie('scroll_top');
+                var timer_back = setTimeout(function(){
+                    $(window).scrollTop(positionTop);
+                    clearTimeout(timer_back)
+                },500)
+            }
+        }
+        $('.JS_zzrp').click(function(){
+            zhuge.track("信宝夺宝-点击正在热拍")
+        })
+        $('.JS_wqjl').click(function(){
+            zhuge.track("信宝夺宝-点击往期记录")
+        })
+        $('.JS_rule').click(function(){
+            zhuge.track("信宝夺宝-点击查看信宝规则")
+        })
+        $('.JS_djzzrp').click(function(){
+            zhuge.track("信宝夺宝-正在热拍点击区域")
+        })
+        $(function(){
+            zhuge.track('信宝夺宝-首页');
+        })
+    </script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.83/js/candy/snatch_auction.js?v=23');?>"></script>
+</body>
+
+</html>

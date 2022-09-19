@@ -1,0 +1,247 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+
+    //上标
+    function save_to_deal(id)
+    {
+        if(!id)
+        {
+            return false;
+        }
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=add&did="+id;
+    }
+</script>
+<php>
+    function a_get_deal_type($type,$id)
+    {
+        $deal = M("Deal")->getById($id);
+        if($deal['is_coupon'])
+        return l("COUNT_TYPE_".$deal['deal_type']);
+        else
+        return l("NO_DEAL_COUPON_GEN");
+
+    }
+
+    function get_buy_type_title($buy_type)
+    {
+        return l("DEAL_BUY_TYPE_".$buy_type);
+    }
+
+    function get_is_update($is_update){
+        if($is_update == 1){
+            return '已修改，等待用户确认';
+        }else{
+            return '未修改';
+        }
+    }
+
+</php>
+<div class="main">
+<div class="main_title">预发布贷款</div>
+<div class="blank5"></div>
+<div class="button_row">
+<if condition="$_REQUEST['is_delete'] neq 1">
+<input type="button" class="button" value="{%DEL}" onclick="del();" />
+<input type="button" class="button" value="{%ADD}" onclick="add();" />
+</if>
+    
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">    
+        借款标题：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" />
+        借款发起人：
+        <input type="text" class="textbox" name="auser" value="{:trim($_REQUEST['auser'])}" size="10" />
+        最近审核人员
+        <input type="text" class="textbox" name="checker" value="{:trim($_REQUEST['checker'])}" size="10" />
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="PreDeal" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="15" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px   ">
+                <a href="javascript:sortBy('id','1','PreDeal','index')" title="按照编号升序排列 ">
+                    编号
+                    <img src="/static/admin/Common/images/desc.gif" width="12" height="17"
+                    border="0" align="absmiddle">
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('create_time','1','PreDeal','index')" title="按照借款标题升序排列 ">
+                    创建时间
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('name','1','PreDeal','index')" title="按照借款标题升序排列 ">
+                    借款标题
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('borrow_amount','1','PreDeal','index')">
+                    借款金额
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('rate','1','PreDeal','index')">
+                    年化借款利率
+                </a>
+            </th>            
+            <th>
+                <a href="javascript:sortBy('repay_time','1','PreDeal','index')">
+                    借款期限
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('loantype','1','PreDeal','index')">
+                   还款方式
+                </a>
+            </th> 
+            <th>
+                用户类型
+            </th>
+            <th>
+                <a href="javascript:sortBy('user_id','1','PreDeal','index')" title="按照借款人   升序排列 ">
+                借款人姓名
+                </a>
+            </th>
+            <th>
+                <a href="javascript:void(0)">
+                    借款人手机
+                </a>
+            </th>            
+            <th>
+                <a href="javascript:sortBy('auser','1','PreDeal','index')" title="按照投资状态   升序排列 ">
+                   发起人
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('checher','1','PreDeal','index')" title="按照状态   升序排列 ">
+                    最近经手人
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('update_time','1','PreDeal','index')" title="按照状态   升序排列 ">
+                    最近修改时间
+                </a>
+            </th>
+            <th>
+                    备注
+            </th>
+            <th style="width:50px">
+                    状态
+            </th>
+            <th style="width:200px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="deal">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$deal.id}">
+            </td>
+            <td>
+                &nbsp;{$deal.id}
+            </td>
+            <td>
+                &nbsp;{$deal.create_time|to_date}
+            </td>
+            <td>
+                &nbsp;
+                <a href="javascript:edit   ('{$deal.id}')">
+                    {$deal.name|msubstr}
+                </a>
+            </td>
+            <td>
+                &nbsp;{$deal.borrow_amount}
+            </td>   
+            <td>
+                &nbsp;{$deal.rate}%
+            </td>      
+            <td>
+                &nbsp;{$deal.repay_time}<if condition="$deal.loantype eq 5">天<else/>个月</if>
+            </td>
+            <td>
+                &nbsp;{$deal.loantype|get_loantype}
+            </td>
+            <td>
+                &nbsp;{$deal.user_id|getUserTypeName}
+            </td>
+            <td>
+                &nbsp;{$deal.manager}
+            </td>
+            <td>
+                &nbsp;{$deal.manager_mobile}
+            </td>            
+            <td>
+                &nbsp;{$deal.auser}
+            </td>
+            <td>
+                &nbsp;{$deal.checker}
+            </td>
+            <td>
+                &nbsp;{$deal.update_time|to_date}
+            </td>
+            <td>
+                &nbsp;{$deal.note}
+            </td>
+           
+                <if condition="$_REQUEST['is_delete'] eq 1">
+                <td>已删除</td>
+                <td>
+                    <a href="javascript: restore('{$deal.id}')">恢复</a>
+                    &nbsp;
+                    <a href="javascript: foreverdel('{$deal.id}')">彻底删除</a>
+                    &nbsp;
+                </td>    
+                <else />
+                    <if condition="$_REQUEST['status'] eq -1">
+                    <td>已拒绝</td>
+                    <td>
+                        <a href="javascript: edit('{$deal.id}')">处理</a>
+                        &nbsp;
+                    </if>
+                    <if condition="$_REQUEST['status'] eq 0">
+                    <td>未审核</td>
+                    <td>
+                        <a href="javascript: edit('{$deal.id}')">处理</a>
+                        &nbsp;
+                    </if>
+                    <if condition="$_REQUEST['status'] eq 1">
+                        <td>未处理 </td>
+                        <td>
+                        <a href="javascript: save_to_deal('{$deal.id}')">上标</a>
+                    </if>
+                    <if condition="$_REQUEST['status'] eq 2">
+                        <td>已处理</td>
+                        <td><a href="javascript: save_to_deal('{$deal.id}')">上标</a>
+                    </if>
+                    &nbsp;
+                       <a href="javascript: del('{$deal.id}')">删除</a>
+                    &nbsp;
+                  </td>   
+                </if>
+
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

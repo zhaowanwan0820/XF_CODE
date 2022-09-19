@@ -1,0 +1,147 @@
+<link href="<?php echo $this->asset->makeUrl('v2/css/user_merchantServices.css');?>" type="text/css" rel="stylesheet">
+    <div class="p_account_Services">
+                <div class="ui-box">
+                    <div class="h-title">
+                        <h2><i></i>礼券兑换</h2>
+                    </div>
+	                <form id="search">
+                        <div class="exchange_box">
+                            <div class="inner">
+                                <label class="mr10">券码</label><input type="text" name="couponCode" maxlength="12" class="JS_coupon textInput w300 f16"/><input type="button" class="normalBtn marLt_20 w136" value="验证" id='verifyBtn'/>
+                                <p class="errorP">请输入12位券码</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- 兑换记录 begin -->
+                <div class="ui-box marTp_20">
+                    <div class="h-title">
+                        <h2><i></i>兑换记录</h2>
+                    </div>
+                    <div class="ex_recordBox">
+                    	<div class="ex_searchBox clearfix">
+                            <form id="searchlist" action='{url x="index" r="seller/appliedlist"  }' method="get">
+                            <div class="set_time">
+                                <label>兑换时间</label>
+                                <input type="text" class="textInput w120" id="dateInput1" name="date_start" value="{$date_start}"><span>-</span><input type="text" class="textInput w120" id="dateInput2" name="date_end" value="{$date_end}">
+                            </div>
+                            <div class="inner clearfix">
+                                <label class="mr10">券码</label><input name="couponCode" value="{$couponCode}" type="text" class="textInput w240"/><input type="submit" class="normalBtn marLt_20 w106" value="查询"/>
+                            </form>
+                        </div>
+                        </div>
+                        <div class="ex_recordList">
+                        	<table class="ex_recordTable">
+                                <colgroup>
+                                    <col width="210">
+                                    <col width="330">
+                                    <col width="150">
+                                    <col width="auto">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>兑换时间</th>
+                                        <th>礼券名称</th>
+                                        <th class="center">券码</th>
+                                        <th class="center">价值</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {foreach from=$applyList item=apply key=key}
+                                	<tr {if $key mod 2 eq  1}class="evenTr"{/if}>
+                                        <td>{function name="format_date_by_type" b=$apply.updateTime}</td>
+                                        <td>{$apply.productName}</td>
+                                        <td class="center">{$apply.couponNumber}</td>
+                                        <td class="center">{if $apply.price neq 0}{function name="format_price" value=$apply.price c=0 d=0}{/if}</td>
+                                    </tr>
+                                {/foreach}
+                                </tbody>
+                            </table>
+                            <div class="pages center">
+                                {$pages}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 券码兑换说明 begin -->
+                    <div class="exchange_exp">
+                        <p>券码兑换说明：</p>
+                        <p>1、正确输入券码并点击兑换后，可查看券码详情。</p>
+                    </div>
+                    <!-- 券码兑换说明 end -->
+                </div>
+                <!-- 兑换记录 end -->
+            </div>
+        </div>
+
+<script>
+$(function(){
+        //回款计划日历JS
+        $("#dateInput1").datepicker({
+            onClose: function(selectedDate) {
+                $("#dateInput2").datepicker("option", "minDate", selectedDate);
+            }
+       });
+        $("#dateInput2").datepicker({
+            onClose: function(selectedDate) {
+                $("#dateInput1").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+	//TODO 验证码
+	$('#verifyBtn').click(function(){
+		var curInput=$('.JS_coupon').val();
+		var tipP=$('.errorP');
+		var regObj=/^\d{12}$/;
+		if(curInput==''){
+			tipP.html("请输入优惠券码").show();
+		}else if(!regObj.test(curInput)){
+			tipP.html("请输入12位数字券码").show();
+		}else{
+			tipP.html("").hide();
+			code();
+		}
+	});
+});
+
+function code(){
+	var curInput=$('.JS_coupon').val();
+	var tipP=$('.errorP');
+	var _inrequest = false;
+	if (_inrequest) return;
+	_inrequest = true;
+	$.ajax({  
+		type: "post",  
+		url: "/seller/ajaxdetail",
+		data: $("#search").serialize(),
+		dataType:"json",
+		success: function(data) {
+			_inrequest = false;
+			if(data.errno==0){
+				location.href="/seller/detail?couponCode="+curInput;
+			}else{
+				tipP.html(data.error).show();
+			}
+		},  
+		error: function() { 
+			_inrequest = false; 
+			tipP.html("未知错误").show();
+		} 
+		 
+	}) 
+}
+</script>
+<script>
+	 $(function() {
+		$("#dateInput1").datepicker({
+				numberOfMonths: 2,
+				onClose: function(selectedDate) {
+					$("#dateInput2").datepicker("option", "minDate", selectedDate);
+				}
+		   });
+			$("#dateInput2").datepicker({
+				numberOfMonths: 2,
+				onClose: function(selectedDate) {
+					$("#dateInput1").datepicker("option", "maxDate", selectedDate);
+				}
+			});
+	});
+</script>

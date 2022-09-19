@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$deal.old_name}</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('/v4.6/css/gold/p_detail_new.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="inv-main">
+    	<div class="p_detail">
+            <div class="inv-head">
+                <div class="inv_top">
+					{if $deal.tag}
+                    <div class="invh_icon"><span>{$deal.tag}</span></div>
+                    {/if}
+                    
+                    <div class="invh_nhua">
+                        <div class="tit">年化收益克重</div>
+                        <div class="cont"><span class="f28">{$deal.annual_compen_amount}</span>克/100克</div>
+                    </div>
+                    <div class="invh_ktou clearfix">
+                        <div class="ik_left">
+                            <div class="tit">可购克重</div>
+                            <div class="cont"><span class="f28">{ $deal.available }</span>克</div>
+                            <div class="ik_line"></div>
+                        </div>
+                        
+                        <div class="ik_right">
+                            <div class="tit">期限</div>
+                            <div class="cont"><span class="f28">{$deal.period}</span> {if $deal.loantype eq 5}天{else}个月{/if}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="inv-center mt10">
+                <div class="invc_list  clearfix">
+                    <div class="title fl">实时金价</div>
+                    <div class="fl">
+                        <p class="color_golden">{$gold_price}元/克</p>
+                    </div>
+                </div>
+                <div class="invc_list  clearfix">
+                    <div class="title fl">起购克重</div>
+                    <div class="fl">
+                        <p>{ $deal.min_loan_money }克</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inv-footer">
+                <div class="invf_top">
+                    <ul class="menu">
+                        <li class="select" style="width:50%"><span>产品详情<em></em></span></li>
+                        <li style="width:50%"><span>购买记录<em></em></span></li>
+                    </ul>
+                    <div class="invf_write">
+                    </div>
+                </div>
+                <div class="invf_txt">
+                    <div id="tb0">
+                       <div class="productDetailBox">
+                           <div class="item">
+                               <p class="title">黄金品种</p>
+                               <p class="content">{ $deal.gold_type }</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">起购克重</p>
+                               <p class="content">{ $deal.min_loan_money }克</p>
+                           </div>
+                           { if $deal.rebateGold }
+                           <div class="item">
+                               <p class="title">满额赠金</p>
+                               <p class="content">{ $deal.rebateGold }</p>
+                           </div>
+                           {/if}
+                           <div class="item">
+                               <p class="title">收益克重计算方式</p>
+                               <p class="content">年化每100.000克收益{ $deal.delay_pick_up_way }克</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">收益克重交付方式</p>
+                               <p class="content">{ $deal.delivery_method }</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">买入手续费</p>
+                               <p class="content">{ $deal.buyer_fee }元 / 克（以页面公示信息为准）</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">变现手续费</p>
+                               <p class="content">{ $deal.current_fee }元 / 克（以页面公示信息为准）</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">提金手续费</p>
+                               <p class="content">单品克重≥30g，7元/克；单品克重＜30g，9元/克（以页面公示信息为准）</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">到期处理</p>
+                               <p class="content">到期后自动转入优金宝</p>
+                           </div>
+                           <div class="item">
+                               <p class="title">变现说明</p>
+                               <p class="content">工作日14:00点前变现，当日24:00前到账；14:00点后变现，T+1日24:00前到账</p>
+                           </div>
+                           {if $withdrawLimit != 0}
+                           <div class="item">
+                               <p class="title">变现限额说明</p>
+                               <p class="content">单日最多可变现{$withdrawLimit}克</p>
+                           </div>
+                           {/if}
+                           {if $deal.detailHtml }
+                           <div class="detailHtml">
+                               {$deal.detailHtml}
+                           </div>
+                           {/if}
+                       </div>
+                    </div>
+                    <div id="tb1">
+                    {if $load_list}
+                        {foreach from=$load_list item="loan"}
+                        <div class="bid_list">
+                            <div class="float_l">
+                                <p>{$loan.userDealName}</p>
+                                <p class="gray">{$loan.createTime}</p>
+                            </div>
+                            <div class="float_r">{$loan.buyAmount}克</div>
+                        </div>
+                        {/foreach}
+                        {else}
+                        <div class="tc mt20" style="padding-bottom: 20px;">暂无购买记录</div>
+                    {/if}
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="inv-fbtn">
+                <a href="#" class="ui_red_btn">立即投资</a>
+            </div> -->
+        </div>
+        <div class="ui_risk_tips"><em class="line"></em><span>市场有风险，购买需谨慎</span></div>
+    </div>
+    <script type="text/javascript">
+        // 加载入口模块
+        //seajs.use("{$STATIC_SITE}/mobile/app/v2/js/m-common");
+    </script>
+</body>
+</html>

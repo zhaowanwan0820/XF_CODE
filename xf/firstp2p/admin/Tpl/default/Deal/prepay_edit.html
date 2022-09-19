@@ -1,0 +1,101 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<form action="/m.php?m=Deal&a=do_prepay&id={$prepay.id}" class="prepay-form" method="post">
+    <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+        <tr>
+            <td class="item_title">提前还款日期:</td>
+            <td class="item_input">{$prepay.prepay_time|to_date="Y-m-d"}</td>
+        </tr>
+        <tr>
+            <td class="item_title">计息日期:</td>
+            <if condition="$deal.last_repay_time eq 0 ">
+                <td class="item_input">{$deal.repay_start_time|to_date="Y-m-d"}</td>
+                <else/>
+                <td class="item_input">{$deal.last_repay_time|to_date="Y-m-d"}</td>
+            </if>
+        </tr>
+        <tr>
+            <td class="item_title">利息天数:</td>
+            <td class="item_input">{$prepay.remain_days}天</td>
+        </tr>
+        <tr>
+            <td class="item_title">剩余本金:</td>
+            <td class="item_input" style="font-family:Arial;">￥{$prepay.remain_principal}元</td>
+        </tr>
+        <tr>
+            <td class="item_title">借款年利率:</td>
+            <td class="item_input">{$deal.int_rate}%</td>
+        </tr>
+        <tr>
+            <td class="item_title">出借人年化收益率:</td>
+            <td class="item_input">{$deal.rate}</td>
+        </tr>
+        <tr>
+            <td class="item_title">提前还款违约金系数:</td>
+            <td class="item_input">{$deal.prepay_rate}%</td>
+        </tr>
+        <tr>
+            <td class="item_title">提前还款罚息天数:</td>
+            <td class="item_input">{$deal.compensation_days}</td>
+        </tr>
+        <tr>
+            <td class="item_title">还款总额:</td>
+            <td class="item_input">{$prepay.prepay_money}元</td>
+        </tr>
+        <tr>
+            <td class="item_title">应还本金:</td>
+            <td class="item_input">{$prepay.remain_principal}元</td>
+        </tr>
+        <tr>
+            <td class="item_title">应还利息:</td>
+            <td class="item_input">{$prepay.prepay_interest}元</td>
+        </tr>
+        <tr>
+            <td class="item_title">提前还款违约金:</td>
+            <td class="item_input">{$prepay.prepay_compensation}元</td>
+        </tr>
+        <tr>
+            <td class="item_title">手续费:</td>
+            <td class="item_input">{$prepay.loan_fee}元</td>
+        </tr>
+        <tr>
+            <td class="item_title">咨询费:</td>
+            <td class="item_input">{$prepay.consult_fee}元</td>
+        </tr>
+        <tr>
+            <td class="item_title">担保费:</td>
+            <td class="item_input">{$prepay.guarantee_fee}元</td>
+        </tr>
+        <tr>
+            <td class="item_title">支付服务费:</td>
+            <td class="item_input">{$prepay.pay_fee}元</td>
+        </tr>
+        <if condition="$deal.isDtb eq 1 ">
+        <tr>
+            <td class="item_title">管理服务费:</td>
+            <td class="item_input">{$prepay.management_fee}元</td>
+        </tr>
+        </if>
+        <tr>
+            <td class="item_title">提前还款:</td>
+            <td class="item_input">
+                <input type="submit" name="op" onclick="subclick(this)" <if condition="$prepay.status neq 0 ">disabled="disabled"</if> class="button" value="通过审核">
+                <input type="submit" name="op" onclick="subclick(this)"  <if condition="$prepay.status neq 0 ">disabled="disabled"</if> class="button" value="拒绝申请">
+                <input type="hidden" id="hkop" name="op"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">备注:</td>
+            <td class="item_input">
+                <textarea id="description" style="width:500px;height:200px" name="description" <if condition="$prepay.status neq 0 ">disabled="disabled"</if>>{$prepay.remark}</textarea>
+            </td>
+        </tr>
+    </table>
+</form>
+   <script type="text/javascript">
+        function subclick(btn) {
+            $("#hkop").val($(btn).val());
+        }
+    </script>
+
+<include file="Public:footer" />

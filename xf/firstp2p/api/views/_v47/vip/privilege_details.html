@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>详情</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('/v4.7/css/vip/p_vip_details.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="p_vip_details">
+    <div class="freedomCont">
+        <div class="imgBg"><img class="fd_img" src="{$privilegeDetail.imgUrl}"></div>
+        <p class="fd_name">{$privilegeDetail.name}</p>
+        <p class="fd_abstract">{$privilegeDetail.describe}</p>
+    </div>
+    <div class="freedomIntr">
+        <p class="fd_intr">特权介绍</p>
+        <div class="fd_details">{$privilegeDetail.detail}
+            {if $privilegeDetail.privilegeId eq 2}
+            <table class="freedomTb">
+            <colgroup>
+                <col width="120px"></col>
+                <col width="120px"></col>
+            </colgroup>
+                <tbody class="freedomTbody">
+                    <tr>
+                        <td>会员等级</td>
+                        <td>礼包面值（元）</td>
+                    </tr>
+                {foreach from=$privilegeDetail.giftConfTable item="privilege" key="k"}
+                    <tr>
+                        <td>{$privilege.vipGrade}</td>
+                        <td>{$privilege.giftValue}</td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {/if}
+            {if  $privilegeDetail.privilegeId eq 1}
+            <table class="freedomTb">
+            <colgroup>
+                <col width="120px"></col>
+                <col width="120px"></col>
+            </colgroup>
+                <tbody class="freedomTbody">
+                    <tr>
+                        <td>会员等级</td>
+                        <td>红包奖励</td>
+                    </tr>
+                {foreach from=$privilegeDetail.giftConfTable item="interest" key="k"}
+                    <tr>
+                        <td>{$interest.vipGrade}</td>
+                        <td>{$interest.raiseInterest}</td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {/if}
+            <p class="pt10">
+                {$privilegeDetail.disclaimer}
+            </p>
+        </div>
+    </div>
+    {if $privilegeDetail.showButton}
+    <div class="goto_vip_box">
+        <div class="goto_vip">
+            <a href="{$privilegeDetail.buttonUrl}" class="goto_vip_btn">{$privilegeDetail.buttonDesc}</a>
+        </div>
+    </div>
+    {/if}
+</div>
+</body>
+</html>

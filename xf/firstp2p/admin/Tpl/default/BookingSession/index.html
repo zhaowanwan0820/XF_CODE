@@ -1,0 +1,127 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<style>
+ a {
+     white-space:nowrap;
+ }
+</style>
+
+<div class="main">
+<div class="main_title">预约场次列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%DELETE}" onclick="del();" />
+</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="19" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">
+                编号
+            </th>
+            <th>
+                城市
+            </th>
+            <th>
+                人数上限
+            </th>
+            <th>
+                开始时间
+            </th>
+            <th>
+                结束时间
+            </th>
+            <th>
+                状态
+            </th>
+            <th>
+                备注
+            </th>
+            <th style="width:250px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="session">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$session.id}" />
+            </td>
+            <td>
+                &nbsp;{$session.id}
+            </td>
+            <td>
+                {$session.city}
+            </td>
+            <td>
+                &nbsp;{$session.limit_count}
+            </td>
+            <td>
+                &nbsp;{$session.start_time}
+            </td>
+            <td>
+                &nbsp;{$session.end_time}
+            </td>
+            <td>
+                &nbsp;{$session.status}
+            </td>
+            <td>
+                &nbsp;{$session.remark}
+            </td>
+            <td>
+                <a href="javascript:edit({$session.id})">编辑</a>&nbsp;
+                <a href="javascript:del({$session.id})">删除</a>&nbsp;
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<script type="text/javascript">
+    function del(id) {
+
+        if(!id) {
+
+            idBox = $(".key:checked");
+            if(idBox.length == 0)
+            {
+                alert(LANG['DELETE_EMPTY_WARNING']);
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            id = idArray.join(",");
+        }
+
+        if(confirm(LANG['CONFIRM_DELETE'])) {
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id,
+                data: "ajax=1",
+                dataType: "json",
+                success: function(obj){
+                    $("#info").html(obj.info);
+                    if(obj.status==1) {
+                        location.href=location.href;
+                    }
+                }
+            });
+        }
+    }
+</script>

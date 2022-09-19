@@ -1,0 +1,89 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<style>
+    .red { color:red; }
+</style>
+    <div class="main">
+    <div class="main_title">签到详情</div>
+    <div class="blank5"></div>
+    <form id="formData" name="search" action="__APP__" method="post">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td class="item_title">用户ID:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="uid" value="{$uid}"/>
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserCheckin" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="UserDetail" />
+                    <!--隐藏元素-->
+                    <input type="submit" class="button" value="查询" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <br/>
+    <if condition="$uid neq 0">
+    <h4>首次签到：<span class="red">{$firstTime}</span>，最近签到：<span class="red">{$recentTime}</span>，累计签到次数：<span class="red">{$sum}</span></h4>
+
+    <br />
+        <h3>当前轮次:</h3>
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <th>次数</th>
+                <th>签到时间</th>
+                <th>奖品</th>
+            </tr>
+        <?php $i = 0;?>   
+        <foreach name="roundData" key="node" item="nodeData">
+        <?php 
+        $i++;
+        if (is_array($nodeData)) {
+            $time = date("Y-m-d H:i:s", $nodeData['time']);
+            $award = '<span class="red">'.var_export($nodeData, true).'</span>';
+        } else {
+            $time = date("Y-m-d H:i:s", $nodeData);
+            $award = '无';
+        }
+        ?>
+        <tr>
+            <td>{$i}</td>
+            <td>{$time}</td>
+            <td>{$award}</td>
+        </tr>
+        </foreach>
+        </table>
+    <br />
+
+        <h3>过往轮次:</h3>
+        <foreach name="pastRoundData" key="rnode" item="roundData">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <th>次数</th>
+                <th>签到时间</th>
+                <th>奖品</th>
+            </tr>
+        <?php $i = 0;?>   
+        <foreach name="roundData" key="node" item="nodeData">
+        <?php 
+        $i++;
+        if (is_array($nodeData)) {
+            $time = date("Y-m-d H:i:s", $nodeData['time']);
+            $award = '<span class="red">'.var_export($nodeData, true).'</span>';
+        } else {
+            $time = date("Y-m-d H:i:s", $nodeData);
+            $award = '无';
+        }
+        ?>
+        <tr>
+            <td>{$i}</td>
+            <td>{$time}</td>
+            <td>{$award}</td>
+        </tr>
+        </foreach>
+        </table>
+
+        <br />
+        </foreach>
+        </if>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,62 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+ a {
+     white-space:nowrap;
+ }
+</style>
+<div class="main">
+<div class="main_title">批次列表 <a href="{:u("OexchangeProject/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<div class="button_row">
+    <a href="javascript:if(confirm('请确认是否新建批次')) location='/m.php?m=OexchangeBatch&a=add&pro_id={$project.id}';" class="button">{%ADD}</a>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="8" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th>批次id</th>
+            <th>项目名称</th>
+            <th>交易所备案产品编号</th>
+            <th>期数</th>
+            <th>借款期限</th>
+            <th>发行人/发行人id</th>
+            <th>批次金额</th>
+            <th>投资状态</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>最后一批次起息</th>
+            <th style="width:250px">操作</th>
+        </tr>
+        <volist name="list" id="batch">
+        <tr class="row">
+            <td>&nbsp;{$batch['id']}</td>
+            <td>&nbsp;{$project['name']}</td>
+            <td>&nbsp;{$project['jys_number']}</td>
+            <td>&nbsp;{$batch['batch_number']}期</td>
+            <td>&nbsp;{$project['repay_time']} <if condition="1 eq $project['repay_type']"> 天 <else />个月</if> </td>
+            <td>&nbsp;{$project['fx_uid']} / {$fxuser['real_name']}</td>
+            <td>&nbsp;{$batch['amount']}</td>
+            <td>&nbsp;{$branch_business_status[$batch['deal_status']]}</td>
+            <td><if condition="$batch['is_ok'] eq 1">有效<else />无效</if></td>
+            <td>&nbsp;{$batch['ctime']}</td>
+            <td><if condition="$batch['is_last_start'] eq 1">是<else />否</if></td>
+            <td>
+                <if condition="1 eq $batch['deal_status']"><a href="m.php?m=OexchangeBatch&a=edit&id={$batch['id']}">编辑</a>&nbsp;</if>
+                <a href="m.php?m=ExchangeLoad&a=index&batch_id={$batch['id']}">投资列表</a>&nbsp;
+                <a href="m.php?m=OexchangeBatch&a=fee&id={$batch['id']}">费用明细</a>&nbsp;
+                <if condition="1 lt $batch['deal_status']"><a href="m.php?m=ExchangeBatchRepay&a=plan&batch_id={$batch['id']}">还款计划</a>&nbsp;</if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

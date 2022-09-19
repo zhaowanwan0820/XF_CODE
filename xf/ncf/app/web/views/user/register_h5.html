@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="format-detection" content="telephone=no,email=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>{if $page_title}{$page_title} - {/if}{if $show_site_titile eq 1}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+        <!-- <title>网信</title> -->
+        <link rel="apple-touch-icon-precomposed" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.png');?>">
+        {if $appInfo.appLogo }
+            <link rel="shortcut icon" href="{$appInfo.appLogo}" type="image/x-icon" />
+        {else}
+            <link rel="shortcut icon" href="{$APP_SKIN_PATH}images/favicon.png" type="image/x-icon" />
+        {/if}
+        <link href="<?php echo $this->asset->makeUrl('v3/css/event/m-base.css');?>" rel="stylesheet" type="text/css">
+        <link href="<?php echo $this->asset->makeUrl('v3/css/event/m-common.css');?>" rel="stylesheet" type="text/css">
+        <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/js/widget/slider/css/slider.css');?>">
+        <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/js/widget/slider/css/slider.default.css');?>">
+        
+        <script type="text/javascript">
+            var today = new Date();
+            var  year = today .getFullYear();
+            var month = today .getMonth() + 1;
+            var day= today .getDate();
+            var ymd = year +""+ month+"" + day;
+            var oHead = document.getElementsByTagName('HEAD').item(0); 
+            var oScript= document.createElement("script"); 
+            oScript.type = "text/javascript"; 
+            oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+            oHead.appendChild( oScript); 
+        </script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/event/zepto.min.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/event/common.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/event/iscroll.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/lib/lib.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/slider/js/slider.js');?>"></script>
+        <script type="text/javascript">
+            window['_eventRegisterAddParams'] = {"cn":"{$cn}","from_platform":"{$from_platform}"};
+            window['_isDiscountBanner'] = '{$isDiscountBanner}';
+            {if $regTempl and $regTempl.status eq 1}
+            window['_PLATFORM_TEMPLATE_'] = {function name="json_encode" b="$regTempl"};
+            {/if}
+            var isWapApp = '{$wapapp}';
+            var is_fenzhan = '{$is_fenzhan}';
+        </script>
+        {if $is_fenzhan}
+            <!-- 注册页分享m站加壳 -->
+            {if $wapapp eq "ios" || $wapapp eq "android" || $wapapp eq "1"}
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/cordova/js/jquery-1.10.2.min.js'); ?>"></script>
+            <script>
+               $.noConflict();
+            </script>
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/cordova/js/fakeLoader.js'); ?>"></script>
+            {if $wapapp eq "ios" ||$wapapp eq "1"}
+               <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/cordova/cordova.js'); ?>"></script>
+            {else}
+               <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/cordova_android/cordova.js'); ?>"></script>
+            {/if}
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/cordova/js/SocialSharing.js'); ?>"></script>
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/cordova/js/Toast.js'); ?>"></script>
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/cordova/js/H5lock.js'); ?>"></script>
+            {/if}
+            <!-- 注册页分享end -->
+        {/if}
+        <style class="JS-old_style">
+        body{ background:#ffffff;}
+        .p_login_new .reg_top{margin:0 15px; color:#909ba8;}
+        .p_login_new .ui_title{ height:45px; text-align:center; font-size:18px; line-height:45px; background:#fafafa; position:relative; border: 1px solid #d9d9d9; color: #41474d;}
+        .p_login_new .ui_title a{ color:#41474d; font-size:14px;}
+        .p_login_new .ui_title .ui_back{ position:absolute; left:10px;}
+        .p_login_new .ui_icon_back{ background:url(<?php echo $this->asset->makeUrl('v3/images/oauth/mobile/back.png');?>) no-repeat; width:9px; height:20px; display:inline-block; background-size:9px 17px; margin:0 5px 0 0px; vertical-align:middle;}
+        .pb20{padding-bottom:20px;}
+        .risk_tips{text-align: center;color: #cccccc;position: relative;margin: 25px 50px;margin-bottom:0px;}
+        .risk_tips .line{background: #E6E6E6;position: absolute;width: 100%;height: 1px;left: 0px;top: 8px;}
+        .risk_tips span{background: #ffffff;display: inline-block;position: relative;padding: 0 10px;}
+        .login_now{position: absolute;right: 0;top: 0px;}
+        .login_now a{color: #5ca9e4!important;}
+        /*banner*/
+        .banner{height:110px;border-bottom:1px solid #cfced3;position:relative;}
+        .banner img{width:100%;height:110px;}
+        .focus{height:110px;overflow:hidden;}
+        .focus li{float:left;}
+        .dots{position:absolute;right:10px;bottom:8px;}
+        .dots li{float:left;width:10px;}
+        .dots li a{width:5px;height:5px;display:inline-block;background:#fff;border-radius:50%;opacity:0.7;}
+        .dots li.active a{background:#535353;}
+        /*foot*/
+        .m_footer { height: 120px; background: #FFF; }
+        .m_footer p { text-align: center; color: #999; line-height: 20px; font-size: 13px; }
+        .m_footer .f_nav { width: 212px; margin: 0 auto; padding: 15px 0 10px; }
+        .m_footer .f_nav li { display: block; width: 89px; height: 23px; line-height: 23px; text-align: center; border: 1px solid #06a0dc; border-radius: 5px; float: left; }
+        .m_footer .f_nav li:first-child { margin-right: 29px; }
+        .m_footer .f_nav li a { color: #06a0dc; font-size: 15px; }
+        .share_wrap{position:fixed; left: 50%;transform: translate(-50%, 0%); -webkit-transform: translate(-50%, 0%); bottom:0; width:100%; height:100%; z-index:1;display: none;}
+        </style>
+        {if isset($fzjs) && "authorize" != $from_platform}
+        <script type="text/javascript" src="{if $fzjs eq '/static/v3/js/event/register-tpl.js'}<?php echo $this->asset->makeUrl('/v3/js/event/register-tpl.js');?>{else}{$fzjs}{/if}"></script>
+        {/if}
+        {if $is_fenzhan}
+        <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-common.css');?>">
+        {/if}
+    </head>
+    <body style="background:{$regTempl.sign_up_bg_color};">
+        <textarea style="display:none;" id="register_protocol">{function name="get_adv" x="wap网贷平台注册协议-2016"}</textarea>
+        <div class="p_login_new">
+            <div class="ui_title">
+                 <!--by ww  此处修改所有返回为 href="javascript:void(0)" onclick="window.history.back();"-->
+                <a class="JS-topbackbtn ui_back" style="display:none;" href="javascript:void(0);" onclick="window.history.back();"><i class="ui_icon_back"></i>返回</a>
+                填写注册信息
+                {if $is_fenzhan}
+                    {if $wapapp == "ios" || $wapapp == "android" ||$wapapp == 1}
+                        <div class="reg_top tr f14 login_now"><a href="javascript:void(0);" id="app_inviteBtn">分享</a></div>
+                        <!-- <div class="reg_top tr f14 login_now JS-share_btn"><a href="javascript:void(0);">分享</a></div> -->
+                        {else}
+                        <div class="reg_top tr f14 login_now JS-share_btn"><a href="javascript:void(0);">分享</a></div>
+                        {/if}
+                {else}
+                    {if "authorize" != $from_platform}
+                        <div class="JS-loginbtn reg_top tr f14 login_now" style="display:none;"><a href="http://m.wangxinlicai.com/account/login">立即登录</a></div>
+                    {/if}
+                {/if}
+            </div>
+            <!-- 公共头部 -->
+            {$wap_templ_public_head.value}
+            <!-- 分站 banner区域 -->
+            {if $is_fenzhan}
+                 {if !$imageHtml} {$wap_templ_banner.value} {else} {$imageHtml} {/if}
+            {/if}
+            { if !$is_fenzhan }
+            <div class="login_banner">
+                {if $from_platform eq "channel_JLY"}
+                <img src="<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/upload/reg_jly_banner2.jpg');?>" width="100%">
+                {elseif $from_platform eq "channel_JLYWPX"}
+                <img src="<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/upload/jlywpx_banner.jpg');?>" width="100%">
+                {elseif $from_platform eq "wapshake_HLWDH"}
+                <img src="<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/upload/re_static.jpg');?>" width="100%">
+                {elseif $from_platform eq "channelapril"}
+                <img src="<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/upload/re_channel_april.png');?>" width="100%">
+                {elseif $from_platform and $from_platform eq $regTempl.const_name and $regTempl.sign_up_banner}
+                <img src="{$regTempl.sign_up_banner}" width="100%">
+                {else}
+                    {if $isDiscountBanner}
+                        {function name="get_adv" x="wap注册页顶部banner"}
+                    {else}
+                        {function name="get_adv" x="wap注册页顶部banner"}
+                    {/if}
+                {/if}
+            </div>
+            {/if}
+
+            {include file="web/views/v3/event/regpanel.html"}
+            <input type="hidden" name="redirect_uri" id="redirect_uri" value="{$redirect_uri}" />
+            {if !$event_intro_hidden && !$is_fenzhan}
+                {function name="get_adv" x="wap注册页底部广告位"}
+            {elseif $is_fenzhan}
+                {if $introHtml} {$introHtml} {/if}
+            {/if}
+        </div>
+		{ if $allowRegister neq ''}
+		<input type="hidden" value="{$allowRegister}" id="isAllowRegister" />
+		{/if}
+        {if $is_fenzhan}
+            <!-- 注册页分享m站加壳 -->
+            {if $wapapp eq "ios" || $wapapp eq "android" || $wapapp eq 1}
+            <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/cordova/js/main.js'); ?>"></script>
+            {/if}
+            <!-- 注册页分享end -->
+            <div class="ui_mask_new" style="display:none"></div>
+            <div class="share_icon" style="display:none"></div>
+        {/if}
+        
+        <script>
+            $(function(){
+                var whost = window.location.host;
+                var matches = /([0-9a-z]*?).firstp2plocal.com/.exec(whost);
+                if (whost == "www.wangxinlicai.com" || (matches && matches[0] == whost)) {
+                    $(".JS-topbackbtn").show();
+                    $(".JS-loginbtn").show();
+                }
+
+                //商户通、产融贷、金融1号、艺金融、E收贷、典当联盟等6个分站替换banner
+                var host = location.host,
+                matchHost = function(str){
+                    if(host.indexOf(str) > -1){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                };
+                if(matchHost("shtcapital") || matchHost("chanrongdai") || matchHost("an.") || matchHost("yijinrong") || matchHost("cnpawn")  || matchHost("esp2p")){
+                    $(".login_banner img").attr("src" , "<?php echo $this->asset->makeUrl('/v3/images/event/banner.jpg');?>");
+                }
+            });
+        </script>
+        <script type='text/javascript'>
+            {if "authorize" == $from_platform}
+                window['_REDIRECT_URI_'] = '{$redirect_uri}';
+            {/if}
+            var _ncf = {"prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "", "pck": {"channel": "channel", "fpid": "fpid"}, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": []};
+            (function(p, h, s) {
+                var o = document.createElement(h);
+                o.src = s;
+                p.appendChild(o)
+            })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+
+            function _setCookie(name, value, time, opt_domain) {
+                var str1 = time.substring(1, time.length) * 1;
+                var str2 = time.substring(0, 1);
+                var str_time;
+                if (str2 == "s") {
+                    str_time= str1 * 1000;
+                }
+                else if (str2 == "h") {
+                    str_time = str1 * 60 * 60 * 1000;
+                }
+                else if (str2 == "d") {
+                    str_time = str1 * 24 * 60 * 60 * 1000;
+                }
+
+                var exp = new Date();
+                var domainStr = opt_domain ? ';domain=' + opt_domain : '';
+                exp.setTime(exp.getTime() + str_time * 1);
+                document.cookie = name + "=" + escape(value) + domainStr + ";path=/" + ";expires=" + exp.toGMTString();
+            }
+
+
+            $(function(){
+                if(is_fenzhan){
+                    if(isWapApp == "ios" || isWapApp == "android" || isWapApp == "1"){
+                        $("body a").each(function() {
+                            if(!$(this).hasClass("noOpenUrl")){
+                                $(this).addClass('noOpenUrl');
+                            }
+                        });
+                    }
+                }
+                
+            })
+        </script>
+        {include file="web/views/baidutongji.html"}
+    </body>
+</html>

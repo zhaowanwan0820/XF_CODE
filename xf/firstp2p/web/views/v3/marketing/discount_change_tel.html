@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$tplTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-base.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/discount.css');?>">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/zepto.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/base.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/discount_pick.js');?>"></script>
+</head>
+<body>
+{include file="web/views/v3/marketing/top.html"}
+    <div class="discount_box">
+		<div class="discount_box_top">
+            <div class="account f16">当前领取手机号  <span class="change_tel">{$userInfo.mobile}</span> </div>
+            <div class="import">
+                <input type="text" name="mobile" id="phone_number" value="" placeholder="请输入手机号">
+                <input type="hidden" name="m" id="m" value="{$m}" >
+                <input type="hidden" name="id" id="id" value="{$ec_id}" >
+                <?php echo token_input(); ?>
+            </div>
+            
+            <div class="pick_but">
+                <input type="button" id="JS-submit_change_btn" name="pick_but" value="确定">
+            </div>
+            <div class="tc">修改后，下次领福利，自动放入新手机账户</div>   
+        </div>
+        {if !empty($error_msg)}
+        <script>
+            P2PWAP.ui.showErrorTip("{$error_msg}");
+        </script>
+        {/if}
+        <div class="discount_box_bottom">
+        </div>
+	</div>
+    </div>
+    <script type="text/javascript">
+    $(function(){
+        function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+    });
+    </script>
+    <script type="text/javascript">
+    var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "",is_ios = /iPhone|iPad|iPod/i.test(userAgentString),is_android = /android/i.test(userAgentString),iosVersion = 0;            
+    var iosmatches = userAgentString.match(/IPHONE OS ([0-9_]*)/i);           
+    if (iosmatches && iosmatches.length > 1) {                
+            iosVersion = parseInt(iosmatches[1].substring(0, 1), 10); 
+
+    }
+    function weixinFacility() {
+        var userAgentString = window.navigator ? window.navigator.userAgent : "";
+        var weixinreg = /MicroMessenger/i;
+        return weixinreg.test(userAgentString);
+    };            
+    if (iosVersion<8 && weixinFacility()) {              
+        $('.top_img').css("position","absolute");             
+    }
+    </script>
+</body>
+</html>

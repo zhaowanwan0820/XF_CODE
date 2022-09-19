@@ -1,0 +1,208 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">银信通规则配置</div>
+<div class="blank5"></div>
+<form name="ConfSettings" id="ConfSettings" method="POST" action="__APP__" onsubmit="return checkForm()">
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="4" class="topTd" >&nbsp;</td>
+        </tr>
+        <tr>
+            <th colspan="4" style="background-color:#efefef; font-weight:bold; font-size:16px;padding-left:20px;text-align:left;">基础配置</th>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">银信通开关</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="RADIO" name="CREDIT_LOAN_SWITCH" <if condition="$settings['CREDIT_LOAN_SWITCH'] eq 1">checked="checked"</if> value="1">开启 &nbsp;&nbsp;<input type="RADIO" name="CREDIT_LOAN_SWITCH" <if condition="$settings['CREDIT_LOAN_SWITCH'] eq 0">checked="checked"</if> value="0" />关闭</td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">平台服务费收取账号</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()" name="CREDIT_LOAN_SERVICE_FEE_UID" value="{$settings.CREDIT_LOAN_SERVICE_FEE_UID}"><span id="CREDIT_LOAN_SERVICE_FEE_UID"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">平台服务费率</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="CREDIT_LOAN_SERVICE_RATE" value="{$settings.CREDIT_LOAN_SERVICE_RATE}"><span id="CREDIT_LOAN_SERVICE_RATE"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">额外计息天数</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="CREDIT_LOAN_EXTRA_DAY" value="{$settings.CREDIT_LOAN_EXTRA_DAY}"><span id="CREDIT_LOAN_EXTRA_DAY"></span></td>
+        </tr>
+        <!-- 借款金额配置 -->
+        <tr>
+            <th colspan="4" style="background-color:#efefef; font-weight:bold; font-size:16px;padding-left:20px;text-align:left;">借款金额配置</th>
+        </tr>
+
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">质押率</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="CREDIT_LOAN_PROPORTION_LOAN_RATE" value="{$settings.CREDIT_LOAN_PROPORTION_LOAN_RATE}"><span id="CREDIT_LOAN_PROPORTION_LOAN_RATE"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">单笔起借金额</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="CREDIT_LOAN_MIN_BORROW_AMOUNT" value="{$settings.CREDIT_LOAN_MIN_BORROW_AMOUNT}"> <span style="color:gray; font-size:12px;">单笔投标金额>=<span id="minBorrowAmountTips" style="color:red;">100</span>元</span><span id="CREDIT_LOAN_MIN_BORROW_AMOUNT"></span></td>
+        </tr>
+
+        <!-- 持有资产配置 -->
+        <tr>
+            <th colspan="4" style="background-color:#efefef; font-weight:bold; font-size:16px;padding-left:20px;text-align:left;">持有资产配置</th>
+        </tr>
+
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">持有资产总额</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">  超过&nbsp;<input type="TEXT" name="CREDIT_LOAN_SUMMARY" value="{$settings.CREDIT_LOAN_SUMMARY}">元&nbsp;&nbsp;<span id="CREDIT_LOAN_SUMMARY"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">标的持有时间</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">  <p>3个月(含)以内标的，持有超过<input type="TEXT" onblur="checkForm()"  name="CREDIT_LOAN_HOLD_TERM_LT_3" value="{$settings.CREDIT_LOAN_HOLD_TERM_LT_3}">天&nbsp;&nbsp;<span id="CREDIT_LOAN_HOLD_TERM_LT_3"></span><div class="blank5"></div><p>三个月以上标的，持有超过<input type="TEXT" onblur="checkForm()"  name="CREDIT_LOAN_HOLD_TERM_GE_3" value="{$settings.CREDIT_LOAN_HOLD_TERM_GE_3}">天&nbsp;&nbsp;<span id="CREDIT_LOAN_HOLD_TERM_GE_3"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">在投标的剩余时间</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">  超过&nbsp;<input type="TEXT" onblur="checkForm()"  name="CREDIT_LOAN_REMAINNING_DAYS" value="{$settings.CREDIT_LOAN_REMAINNING_DAYS}">天&nbsp;&nbsp;<span id="CREDIT_LOAN_REMAINNING_DAYS"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">标的还款方式包含</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <?php foreach ($GLOBALS['dict']['LOAN_TYPE'] as $typeId => $typeName) { ?>
+                <input type="CHECKBOX" name="CREDIT_LOAN_DEAL_REPAY_TYPE[]" <?php if (in_array($typeId, $settings['banDealRepayTypes'])) { ?> disabled="true" <?php } ?> value="<?php echo $typeId;?>" <?php if (in_array($typeId, $settings['CREDIT_LOAN_DEAL_REPAY_TYPE_ARRY'])) { ?> checked ="checked" <?php } ?> > <?php echo $typeName;?>
+                <?php } ?>
+            </td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">标的类型包含</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <?php foreach ($settings['CREDIT_LOAN_DEAL_TYPE_DICTIONARY'] as $typeId => $typeName) { ?>
+                <input type="CHECKBOX" name="CREDIT_LOAN_DEAL_TYPE[]" <?php if (in_array($typeId, $settings['banDealTypes'])) { ?> disabled="true" <?php } ?> value="<?php echo $typeId;?>" <?php if (in_array($typeId, $settings['CREDIT_LOAN_DEAL_TYPE_ARRY'])) { ?> checked ="checked" <?php } ?> > <?php echo $typeName;?>
+                <?php } ?>
+        </tr>
+        <!-- 手续费率配置 -->
+        <tr>
+            <th colspan="4" style="background-color:#efefef; font-weight:bold; font-size:16px;padding-left:20px;text-align:left;">手续费率配置</th>
+        </tr>
+        <?php foreach ($settings['CREDIT_LOAN_BORROW_RATE_DICTIONARY'] as $termId => $termRate) { ?>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;"> <?php echo $termRate;?></th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">  <input type="TEXT" name="CREDIT_LOAN_BORROW_RATE[]" value="<?php echo $settings['CREDIT_LOAN_BORROW_RATE_ARRY'][$termId];?>">%</td>
+        </tr>
+        <?php } ?>
+        <tr>
+            <td colspan="4" style="text-align:center"><input type="SUBMIT" value="设置" name="commit" class="button"/>
+            <input type="RESET" value="重置" class="button"/></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="topTd" >&nbsp;</td>
+        </tr>
+    </table>
+    <input type="hidden" name="m" value="CreditLoan"/>
+    <input type="hidden" name="a" value="updateSetttings"/>
+</form>
+    <div class="blank5"></div>
+</div>
+<script>
+    function checkForm() {
+        var flag = true;
+        $('input[name=commit]').removeAttr('disabled').css({color:'',background:''});
+        $('span#CREDIT_LOAN_SERVICE_FEE_UID').text('');
+        $('span#CREDIT_LOAN_SERVICE_RATE').text('');
+        $('span#CREDIT_LOAN_EXTRA_DAY').text('');
+        $('span#CREDIT_LOAN_PROPORTION_LOAN_RATE').text('');
+        $('span#CREDIT_LOAN_MIN_BORROW_AMOUNT').text('');
+        $('span#CREDIT_LOAN_SUMMARY').text('');
+        $('span#CREDIT_LOAN_HOLD_TERM_LT_3').text('');
+        $('span#CREDIT_LOAN_HOLD_TERM_GE_3').text('');
+        $('span#CREDIT_LOAN_REMAINNING_DAYS').text('');
+        // 检查用户开户信息
+        userId = parseInt($('input[name=CREDIT_LOAN_SERVICE_FEE_UID]').val());
+        if (isNaN(userId) || userId <=0) {
+            $('span#CREDIT_LOAN_SERVICE_FEE_UID').text('平台服务费收取账号错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查平台服务费率
+        serviceRate = parseFloat($('input[name=CREDIT_LOAN_SERVICE_RATE]').val());
+        if (isNaN(serviceRate) || serviceRate< 0)
+        {
+            $('span#CREDIT_LOAN_SERVICE_RATE').text('服务费率错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查额外计息天数
+        day = parseFloat($('input[name=CREDIT_LOAN_EXTRA_DAY]').val());
+        if (isNaN(day) || day < 0)
+        {
+            $('span#CREDIT_LOAN_EXTRA_DAY').text('额外计息天数错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查质押率
+        var rate = parseFloat($('input[name=CREDIT_LOAN_PROPORTION_LOAN_RATE]').val());
+        if (isNaN(rate) || rate > 1 || rate < 0)
+        {
+            $('span#CREDIT_LOAN_PROPORTION_LOAN_RATE').text('质押率错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查单笔起借金额
+        var amount = parseFloat($('input[name=CREDIT_LOAN_MIN_BORROW_AMOUNT]').val());
+        if (isNaN(amount) || amount < 0)
+        {
+            $('span#CREDIT_LOAN_MIN_BORROW_AMOUNT').text('单笔起借金额错误').css('color', 'red');
+            flag = false;
+        }
+        if (amount && rate)
+        {
+            $('#minBorrowAmountTips').text(parseFloat(amount/rate));
+        }
+        // 检查持有资产总额
+        var amount = parseFloat($('input[name=CREDIT_LOAN_SUMMARY]').val());
+        if (isNaN(amount) || amount < 0)
+        {
+            $('span#CREDIT_LOAN_SUMMARY').text('持有资产总额错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查持有时间
+        var day = parseFloat($('input[name=CREDIT_LOAN_HOLD_TERM_LT_3]').val());
+        if (isNaN(day) || day < 0)
+        {
+            $('span#CREDIT_LOAN_HOLD_TERM_LT_3').text('标的持有时间错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查持有时间
+        var day = parseFloat($('input[name=CREDIT_LOAN_HOLD_TERM_GE_3]').val());
+        if (isNaN(day) || day < 0)
+        {
+            $('span#CREDIT_LOAN_HOLD_TERM_GE_3').text('标的持有时间错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查持有时间
+        var day = parseFloat($('input[name=CREDIT_LOAN_REMAINNING_DAYS]').val());
+        if (isNaN(day) || day < 0)
+        {
+            $('span#CREDIT_LOAN_REMAINNING_DAYS').text('在投标的剩余时间错误').css('color', 'red');
+            flag = false;
+        }
+
+        return flag;
+    }
+    function revoke(id) {
+        if(confirm('撤销后该笔项目投资记录将解锁，确认撤销？'))
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=revoke&id="+id,
+                data: "ajax=1",
+                dataType: "json",
+                success: function(obj){
+                    $("#info").html(obj.info);
+                    if(obj.status==1)
+                        location.href=location.href;
+                }
+            });
+    }
+
+    function manual_repay(id){
+        window.location.href = ROOT + '?m=CreditLoan&a=manual_repay&loan_id='+id;
+    }
+</script>
+<include file="Public:footer" />
+

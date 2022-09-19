@@ -1,0 +1,55 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="blank5"></div>
+    <div class="main_title">
+        <p>触发规则管理列表 </p>
+    </div>
+       <div class="blank5"></div>
+       <div class="button_row">
+           <input type="button" class="button" value="{%ADD}" onclick="location.href='{:u("UserReservation/rule_add")}'" />
+       </div>
+    <table id="dataTable" class="dataTable reservationZone" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="15" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row textDecNone">
+            <th width="100px">编号</th>
+            <th>预约入口</th>
+            <th>咨询机构</th>
+            <th>触发内容</th>
+            <th>有效期</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <volist name="list" id="item">
+        <tr class="row">
+            <td>
+                &nbsp;{$item.id}
+            </td>
+            <td>
+                &nbsp;{$item.entra_name}
+            </td>
+            <td>
+                &nbsp;{$item.company_name}
+            </td>
+            <td>
+                &nbsp;{$item.trigger_name}
+            </td>
+            <td>
+                &nbsp;{$item.use_date}
+            </td>
+            <td>
+                &nbsp;<if condition="$item.status eq 1">有效<else/>无效</if>
+            </td>
+            <td>
+                &nbsp;<a href="{:u('UserReservation/rule_edit', array('id'=>$item['id']))}">编辑</a>
+            </td>
+        </tr>
+        </volist>
+    </table>
+</div>

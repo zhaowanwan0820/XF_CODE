@@ -1,0 +1,191 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script>
+
+function checkInviteCode()
+{
+    if ($("#invite_code").val() == '') {
+        alert("邀请码为空！");
+        return;
+    }
+    $.ajax(
+            {
+                url:ROOT + "?" + VAR_MODULE + "=RegisterTemplete&" + VAR_ACTION + "=checkInviteCode&invite_code=" + $("#invite_code").val(),
+                type: 'GET',
+                dataType: "json",
+                async: false,
+                success: function(rs) {
+                    if(rs.status == 1) {
+                        alert("邀请码正确！");
+                    } else {
+                        alert("邀请码错误");
+                    }
+                }
+            }
+    );
+}
+
+</script>
+<style>
+    .file {
+        position: relative;
+        display: inline-block;
+        background: #FFFFFF;
+        border: 0px solid #FFFFFF;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+        text-decoration: underline;
+    }
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+</style>
+
+
+<div class="main">
+    <div class="main_title">编辑<a href="{:u("RegisterTemplete/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td class="item_title">模板名称：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" value="{$vo.name}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">统计字段：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="const_name" value="{$vo.const_name}" maxlength="14"/>
+                    &emsp;<span class="tip_span">限14个字符</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">邀请码：</td>
+                <td class="item_input">
+                    <label><input type="radio" name="invite_code_type" value="1" <if condition="$vo.invite_code_type eq 1">checked="checked"</if>>显示</label>
+                    <label><input type="radio" name="invite_code_type" value="2" <if condition="$vo.invite_code_type eq 2">checked="checked"</if>>显示并锁定</label>
+                    <label><input type="radio" name="invite_code_type" value="3" <if condition="$vo.invite_code_type eq 3">checked="checked"</if>>隐藏</label>
+                    <input type="text" class="textbox" id="invite_code" name="invite_code" value="{$vo.invite_code}"/>
+                    <input type="button" class="button" onclick="checkInviteCode()" value="验证" />
+                    &emsp;<span class="tip_span">请确认邀请码有效</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">注册页banner：</td>
+                <td class="item_input">
+                    <img id="sign_up_banner_img" src="{$image_host}{$vo.sign_up_banner}" height="200" width="200"/>
+                    <a href="javascript:;" class="file">更改
+                        <input type="file" class="textbox" onchange="preview_image('sign_up_banner')" name="sign_up_banner" id="sign_up_banner" class="file"/>
+                    </a>&nbsp; <span class="tip_span">限制大小300KB</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">登录页banner：</td>
+                <td class="item_input">
+                    <img id="sign_in_banner_img" src="{$image_host}{$vo.sign_in_banner}" height="200" width="200"/>
+                    <a href="javascript:;" class="file">更改
+                        <input type="file" class="textbox" onchange="preview_image('sign_in_banner')" name="sign_in_banner" id="sign_in_banner" class="file"/>
+                    </a>&nbsp; <span class="tip_span">限制大小300KB</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">注册页footer：</td>
+                <td class="item_input">
+                    <img id="sign_up_footer_img" src="{$image_host}{$vo.sign_up_footer}" height="200" width="200"/>
+                    <a href="javascript:;" class="file">更改
+                        <input type="file" class="textbox" onchange="preview_image('sign_up_footer')" name="sign_up_footer" id="sign_up_footer" class="file"/>
+                    </a>&nbsp; <span class="tip_span">限制大小300KB</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">登录页footer：</td>
+                <td class="item_input">
+                    <img id="sign_in_footer_img" src="{$image_host}{$vo.sign_in_footer}" height="200" width="200"/>
+                    <a href="javascript:;" class="file">更改
+                        <input type="file" class="textbox" onchange="preview_image('sign_in_footer')" name="sign_in_footer" id="sign_in_footer" class="file"/>
+                    </a>&nbsp; <span class="tip_span">限制大小300KB</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">注册页背景色：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="sign_up_bg_color" value="{$vo.sign_up_bg_color}" />&nbsp;<span class="tip_span">不填则使用默认色</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">登陆页背景色：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="sign_in_bg_color" value="{$vo.sign_in_bg_color}" />&nbsp;<span class="tip_span">不填则使用默认色</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态：</td>
+                <td class="item_input">
+                    <label><input type="radio" name="status" value="1" <if condition="$vo.status eq 1">checked="checked"</if>>有效</label>
+                    <label><input type="radio" name="status" value="0" <if condition="$vo.status eq 0">checked="checked"</if>>无效</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开始时间：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="start_time" value="{$vo.start_time|to_date}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />&emsp;
+                    <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">失效时间：</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="end_time" value="{$vo.end_time|to_date}" id="end_time"  onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_end_time');" />&emsp;
+                    <input type="button" class="button" id="btn_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('end_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_end_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#end_time').val('');" />&emsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">备注：</td>
+                <td class="item_input">
+                    <textarea name="note" style="height:85px;width:450px;">{$vo.note}</textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="id" value="{$vo.id}" />
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="RegisterTemplete" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+                <input type="submit" class="button" value="{%EDIT}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+function preview_image(id) {
+    img_id = id+'_img';
+    var f = document.getElementById(id).files[0];
+    var src = window.URL.createObjectURL(f);
+    if (src != '') {
+        document.getElementById(img_id).src=src;
+    }
+}
+</script>
+<include file="Public:footer" />

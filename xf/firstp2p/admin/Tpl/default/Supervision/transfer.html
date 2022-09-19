@@ -1,0 +1,112 @@
+<div class="main">
+<div class="main_title">
+用户Id:{$userInfo.id}&nbsp;&nbsp;用户名:{$userInfo.user_name}<br/>
+<b>网信理财账户可用余额:{$userInfo.moneyFormat}</b>
+<p><b>网贷P2P账户可用余额:{$userInfo.supervisionMoneyFormat}</b>
+</div>
+<div class="blank5"></div>
+<table class="form" cellpadding="0" cellspacing="0">
+    <tbody><tr>
+        <td colspan="2" class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">划转金额:</td>
+        <td class="item_input"><input type="text" class="textbox" name="amount" onkeyup="check_fee($(this))"> 元
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">划转方向:</td>
+        <td class="item_input"><input type="RADIO" id="direction" class="RADIO" name="direction" value="1" checked="true"> 网信理财账户划转至网贷P2P账户<br/>
+        <input type="RADIO" id="direction" class="RADIO" name="direction" value="2"> 网贷P2P账户划转至网信理财账户
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">备注:</td>
+        <td class="item_input"><textarea id="remark" name="remark"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">&nbsp;</td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="id" value="{$userInfo.id}">
+            <!--隐藏元素-->
+            <input type="button" class="button" value="确认" onclick="return confirm_form(this);">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="bottomTd"></td>
+    </tr>
+</tbody></table>
+</div>
+<script>
+function check_fee(obj){
+    var new_fee = obj.val();
+    if(new_fee == '' || isNaN(new_fee)){
+        new_fee = '';
+    }
+
+    if(new_fee > 0 && new_fee.indexOf('.') > 0 && new_fee.length - new_fee.indexOf('.') - 1 > 2){
+        new_fee = parseFloat(new_fee).toFixed(2);
+    }
+    obj.val(new_fee);
+}
+
+function confirm_form(btn){
+
+    var id = $("input[name='id']").val();
+    var amount = $("input[name='amount']").val();
+    var remark = $("#remark").val();
+    var direction = $("input[name='direction']:checked").val();
+    var url = "/m.php?m=Supervision&a=doTransfer";
+    if(amount == '' || isNaN(amount)){
+        amount = '';
+    }else if(amount > 0 && amount.indexOf('.') > 0 && amount.length - amount.indexOf('.') - 1 > 2){
+        amount = parseFloat(amount).toFixed(2);
+        $("input[name='amount']").val(amount);
+    }
+    if(amount == '' || amount <= 0){
+        alert('请输入金额');
+        return false;
+    }
+    // 余额检查
+    var svMoney = '{$svMoney}';
+    var ptMoney = '{$ptMoney}';
+    var hasPrivilege = '{$isSvUser}';
+
+    if (direction == 1) {
+        if (parseFloat(ptMoney).toFixed(2) * 100 - amount * 100 < 0){
+            alert('账户余额不足');
+            return false;
+        }
+    }
+    else if (direction == 2) {
+        if (hasPrivilege == '0') {
+            alert('用户未开通网贷P2P账户免密支付授权，无法划转');
+            return false;
+        }
+
+        if (parseFloat(svMoney).toFixed(2) * 100 - amount * 100 < 0){
+            alert('账户余额不足');
+            return false;
+        }
+    }
+
+
+    if(window.confirm('确定为用户 {$userInfo.user_name} 划转 '+amount+'元 吗？')){
+        $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+        $.getJSON(url, { direction:direction, amount:amount, id:id ,remark:remark},function(data){
+            if(data.status == 0){
+                alert('申请成功');
+                $.weeboxs.close();
+            } else {
+                alert(data.msg);
+                $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            }
+        });
+    }
+    return false;
+}
+
+</script>

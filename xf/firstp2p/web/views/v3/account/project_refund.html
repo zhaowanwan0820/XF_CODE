@@ -1,0 +1,154 @@
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_refund.css');?>" />
+
+<div class="user_right p_account_refund">
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1 class="fl"><i class="ico_huankuan"></i>还款计划</h1>
+            <div class="ui_fg_line"></div>
+            <ul class="ui_huank_nav fl">
+                <li {if $status eq 0} class="select" {/if}><a href="{url x="index" r="account/project_refund" p="status=0"}">还 款</a></li>
+                <li {if $status eq 1} class="select" {/if}><a href="{url x="index" r="account/project_refund?status=1"}">已还清</a></li>
+            </ul>
+        </div>
+
+        {if $project_list}
+        <div class="huankuan_list clearfix">
+
+            {if $status eq 1}
+            <table class="plan">
+                <colgroup>
+                    <col width="135">
+                    <col width="180">
+                    <col width="155">
+                    <col width="100">
+                    <col width="155">
+                    <col width="132">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><div class="pl25">项目</div></th>
+                        <th><div class="tl pl30">借款金额（元）</div></th>
+                        <th>类型</th>
+                        <th>期限/利率</th>
+                        <th>还清日期</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {foreach from="$project_list" item="project" key="key"}
+                    <tr {if $key%2 eq 0} class="tr_bg" {/if}>
+                        <td><div class="tl pl25"><a href="{$project.url}" title='{$project.name}'>{$project.name}</a></div></td>
+                        <td><div class="tl color-yellow1 pl30">{$project.borrow_amount}</div></td>
+                        <td>{$project.deal.loantype_name}</td>
+                        <td>
+                            {if $project.deal.loantype == 5}
+                                {$project.deal.repay_time}天
+                            {else}
+                                {$project.deal.repay_time}个月
+                            {/if}
+                            <br>
+                            {$project.deal.income_base_rate}%
+                        </td>
+                        <td><em>{function name="to_date" v=$project.deal.last_repay_time f="Y-m-d"}</em></td>
+                        <td><em class="color-green1">已还清</em></td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {else}
+            {foreach from="$project_list" item="project" key="key"}
+            <div class="deal_content">
+                <ul class="info-hk">
+                    <h2>{$project.name}<i class="deal_detail" data-key="{$project.id}"></i></h2>
+                    <li>
+                        借款金额： <em class="color-black">{function name="format_price" v=$project.borrow_amount}</em>
+                    </li>
+                    <li>
+                        年化借款利率： <em class="color-black">{function name="number_format" v=$project.deal.income_base_rate f=2}%</em>
+                    </li>
+                    <li>
+                        期限：
+                        <em class="color-black">{if $project.deal.loantype == 5}
+                        {$project.deal.repay_time}天
+                    {else}
+                        {$project.deal.repay_time}个月
+                    {/if}</em>
+                    </li>
+                    <li>
+                        借款类型：
+                        <em class="color-black">{$project.deal.loantype_name}</em>
+                    </li>
+                    <li>
+                        提前还款/回购限制天数：
+                        <em class="color-black">{$project.deal.prepay_days_limit} 天</em>
+                    </li>
+                    <li>
+                        {if $project.deal.deal_type eq "3"}收益起算日{else}计息日{/if}：
+                        <em class="color-black">{function name="to_date" v=$project.deal.repay_start_time f='Y-m-d'}</em>
+                    </li>
+                    <li>
+                        下一还款日：
+                        <em class="color-yellow1">{function name="to_date" v=$project.deal.next_repay_time f="Y-m-d"}</em>
+                    </li>
+                    <li>
+                        每期还款金额：
+                        <em class="color-yellow1">{function name="number_format" v=$project.true_month_repay_money f=2}</em>
+                    </li>
+                    <li>
+                        待还余额：
+                        <em class="color-yellow1">{function name="format_price" v=$project.remain_repay_money f=2}</em>
+                    </li>
+
+                </ul>
+                <div class="deal_more clearfix">
+
+                </div>
+            </div>
+
+
+            {/foreach}
+            {/if}
+        </div>
+        <div class="pages w715">
+            {$pages}
+        </div>
+        {else}
+        <div class="empty-box">没有记录</div>
+        {/if}
+    </div>
+</div>
+<script>
+    $(function(){
+        $(".deal_detail").click(function(){
+            $(".huankuan_list .deal_content").each(function(index, el) {
+
+            });
+            var _this = $(this);
+            var _moreP = $(this).parents(".deal_content");
+            var id = $(this).attr("data-key");
+            //关闭其他下拉列表   影响用户体验
+            // _moreP.siblings().find('.deal_detail').toggleClass('deal_detail2');
+            // _moreP.siblings().find('.deal_more').removeClass('IsShow').slideUp('500');
+            if(_moreP.find('.deal_more').hasClass('IsShow')){
+                _moreP.find('.deal_more').removeClass('IsShow').slideUp('200');
+            }else{
+                $.ajax({
+                    url: '/account/ProjectQuickrefund/'+id,
+                    type: 'GET',
+                    dataType: 'html',
+                    success:function(result){
+                         _moreP.find('.deal_more').html(result);
+                    },
+                    error:function(data){
+                        console.log(data);
+                    }
+                });
+
+                _moreP.find('.deal_more').addClass("IsShow").slideDown('200');
+            }
+            $(this).toggleClass('deal_detail2');
+
+        })
+    })
+</script>

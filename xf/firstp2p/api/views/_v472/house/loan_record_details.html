@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <title>详情</title>
+    {include file="api/views/_v32/header.html"}
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_record_details.css');?>">
+    <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+    </head>
+<body>
+  <!-- 借款记录详情页面 -->
+  <div class="loan_record_detail">
+    <!-- 头部借款房产详情+借款申请状态 -->
+    <div class="loan_record_detail_top">
+      <div class="loan_record_detail_amount">
+        <span>借款金额(元)</span>
+        <span>{$borrow_log_detail.actual_money}</span>
+        <span>{$borrow_log_detail.address}</span>
+      </div>
+      <div class="loan_record_detail_status clearfix">
+        <span>{$borrow_log_detail.status_info}</span>
+        <span>{$borrow_log_detail.status_text}</span>
+      </div>
+    </div>
+    <!-- 用户借款期限、融资成本等内容列表 -->
+    <div class="loan_record_detail_date">
+      <span><i>借款期限</i><i>{$borrow_log_detail.borrow_deadline_type}个月</i></span>
+      <span>
+        <i>融资成本(年化)</i><i>{$borrow_log_detail.expect_annualized}</i>
+      </span>
+      <span>
+        <i>还款方式</i><i>{$borrow_log_detail.payback_mode}</i>
+      </span>
+      <span>
+        <i>申请日期</i><i>{$borrow_log_detail.create_time}</i>
+      </span>
+      <span><i>放款日期</i><i>{if $borrow_log_detail.success_date}{function name="to_date" v=$borrow_log_detail.success_date f="Y-m-d"}{else}-{/if}</i></span>
+    </div>
+    <!-- 还款计划+提前还款 -->
+    <div class="loan_record_detail_repayment_plan">
+      <a href="#">
+        <span><i class="plan_color">还款计划</i><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/arrow_right_gray.png');?>"/></span>
+      </a>
+      <span class="prepayment_popup_click"><i>提前还款</i><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/arrow_right_gray.png');?>"/></span>
+    </div>
+    <!-- 提前还款弹框 -->
+    <div class="prepayment_popup" style="display:none">
+      <div class="prepayment_popup_text_content">
+        <div class="prepayment_popup_title">
+          提前还款
+        </div>
+        <div class="prepayment_popup_content">
+          <p>客服热线</p>
+          <p>( 法定工作日每天9:00-18:00 )</p>
+          <p>010-8540 7000</p>
+          <p>本服务由贷款服务方深圳一房和信资产管理<i>有限公司提供</i></p>
+          <div class="call_btn">
+            <button class="prepayment_popup_cancel">取消</button>
+            <a class="prepayment_popup_call" href="telprompt:01085407000">呼叫</a>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  var loan_record_detail = $(".loan_record_detail"),
+  loan_record_detail_heighit = loan_record_detail.height()
+  _html(loan_record_detail[0],loan_record_detail_heighit,"0.2rem","none") 
+  /* 判断用户房产是否审核通过 $borrow_log_detail.borrow_status*/
+  /* /house/RepayList?token={$token}&order_id={$borrow_log_detail.order_id} */
+  var status = "{$borrow_log_detail.status}"
+  if(status >= 7 ){
+    $(".loan_record_detail_repayment_plan a").attr("href","/house/RepayList?token={$token}&order_id={$borrow_log_detail.order_id}")
+    $(".loan_record_detail_repayment_plan .plan_color").css("color","#000")
+    /* 当提前还款可以点击时才能弹提前还款弹窗 */
+    if(status == 11 || status == 7){
+      $(".prepayment_popup_click").css("color","#000").click(function(){
+        var window_height = $(window).height(),
+          detail_container_height = $(".loan_record_detail").height();
+        if(detail_container_height < window_height){
+          detail_container_height = window_height + 'px'
+          $(".prepayment_popup").height(detail_container_height)
+        }
+        $(".prepayment_popup").css({
+          "display":"block"
+        })
+      })
+      $(".prepayment_popup_cancel").click(function(){
+        $(".prepayment_popup").css({
+          "display":"none"
+        })
+      })
+    }
+  }
+</script>
+</html>

@@ -1,0 +1,77 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("Life/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">配置编号</td>
+                <td class="item_input">{$data.id}</td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_TITLE}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="title" value="{$data.title}"/>
+                    &emsp;
+                    <span class="tip_span">配置项文字说明</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_NAME}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" value="{$data.name}" readonly="readonly"/>
+                    &emsp;
+                    <span class="tip_span">KEY, 由大写字母,数字,下划线组成</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_VALUE}</td>
+                <td class="item_input">
+                    <textarea name="value" id="value" class="txt addarea int_placeholder" placeholder="配置值，注意别留空格"  style="width:400px;height:150px;" data-placeholder="配置值，注意别留空格" >{$data.value}</textarea >
+                    &emsp;
+                    <span class="tip_span">配置值，注意别留空格</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_TIP}</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="tip" value="{$data.tip}"/>
+                    &emsp;
+                    <span class="tip_span">可空</span>
+                </td>
+            </tr>
+            <input type="hidden" name="id" value="{$data.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="save" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="submit" class="button" value="{%EDIT}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#input_type").bind("change", function () {
+            if($(this).val() == '1'){
+                $("#tr_value_scope").show();
+            } else {
+                $("#tr_value_scope").hide();
+            }
+        });
+        $("#input_type").change();
+    });
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,82 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+<div class="main_title">安卓渠道分发配置</div>
+<div class="blank10"></div>
+
+<form id="formData" name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">更新说明:</td>
+        <td class="item_input"><textarea class="textarea" name="upgradeMsg" >{$upgradeMsg}</textarea></td>
+    </tr>
+    <tr>
+        <td class="item_title">最低版本:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="minimumVer" value="{$minimumVer}"/></td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+        <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="AndroidApk" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveCommonConfig" />
+        <!--隐藏元素-->
+            <input id="submitBut" type="submit" class="button" value="{%SAVE}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+
+<div class="blank10"></div>
+<div class="blank10"></div>
+<div class="button_row">
+    <input type="button" class="button" value="+ 新增渠道包" onclick="add();" />
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="9" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <th>渠道</th>
+        <th>版本</th>
+        <th>包名</th>
+        <th>APK信息</th>
+        <th>强升</th>
+        <th>更新</th>
+        <th>大小</th>
+        <th>上传时间</th>
+        <th>操作</th>
+    </tr>
+    <foreach name="filelist" item="item">
+    <tr class="row">
+        <td>&nbsp;{$item.channel}</td>
+        <td>&nbsp;{$item.vcode}</td>
+        <td>&nbsp;<a href='{$item.file_url}' target='_blank'>{$item.file_name}</a></td>
+        <td>{$item.apk}</td>
+        <td><a href="/m.php?m=AndroidApk&a=upgrade&id={$item.id}" onclick='return confirm("确认操作强升状态？");'>{$item.upgrade}</a></td>
+        <td><a href="/m.php?m=AndroidApk&a=setEffect&id={$item.id}" onclick='return confirm("确认操作更新状态？");'>{$item.is_effect}</a></td>
+        <td title='{$item.file_size_kb}'>&nbsp;{$item.file_size}</td>
+        <td>&nbsp;{$item.file_time}</td>
+        <td>
+            <a href="/m.php?m=AndroidApk&a=fileDel&name={$item.file_name}&id={$item.id}" onclick='return confirm("确认删除？");'>删除</a> &nbsp;
+        </td>
+        
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="9" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

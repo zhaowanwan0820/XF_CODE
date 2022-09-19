@@ -1,0 +1,71 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+<div class="main_title">出借人列表 <a href="{:u("DtProject/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            <input type="hidden" value="DtDealLoan" name="m" />
+            <input type="hidden" value="index" name="a" />
+            出借人Id：<input type="text" class="textbox" name="userId" value="{:trim($_REQUEST['userId'])}" style="width:100px;" />
+            状态：
+            <select name="status">
+                <option value="0" <if condition="intval($_REQUEST['status']) eq 0">selected="selected"</if>> 全部 </option>
+                <option value="1" <if condition="intval($_REQUEST['status']) eq 1">selected="selected"</if>> 申请中 </option>
+                <option value="2" <if condition="intval($_REQUEST['status']) eq 2">selected="selected"</if>> 持有中 </option>
+                <option value="3" <if condition="intval($_REQUEST['status']) eq 3">selected="selected"</if>> 转让/退出中 </option>
+                <option value="4" <if condition="intval($_REQUEST['status']) eq 4">selected="selected"</if>> 已转让/退出 </option>
+                <option value="5" <if condition="intval($_REQUEST['status']) eq 5">selected="selected"</if>> 已结清 </option>
+                <option value="6" <if condition="intval($_REQUEST['status']) eq 6">selected="selected"</if>> 已取消 </option>
+            </select>
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="{$projectId}" name="project_id" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th>出借人Id</th>
+        <th width="100px">出借人</th>
+        <th>出借金额</th>
+        <th>出借时间</th>
+        <th>待付利息</th>
+        <th>已结利息</th>
+        <th>待加入本金</th>
+        <th>用户类型</th>
+        <th>出借清单</th>
+        <th>状态</th>
+    </tr>
+
+
+    <?php foreach($data as $k=>$v) :?>
+    <tr class="row">
+        <td><?= $v['userId']?></td>
+        <td><?= $v['realName']?></td>
+        <td><?= $v['money']?></td>
+        <td><?= date('Y-m-d H:i:s',$v['createTime'])?></td>
+        <td><?= $v['noRepayInterest']?></td>
+        <td><?= $v['hasRepayInterest']?></td>
+        <td><?= $v['noRepayPrincipal']?></td>
+        <td>{$v['userId']|getUserTypeName}</td>
+        <td><a href="m.php?m=DtUserLoan&a=userLoanDetail&user_id=<?=$v['userId']?>&loanId=<?=$v['id']?>&dealId=<?=$projectId?>">查看</a> </td>
+        <td>
+            <?php if($v['status'] == 1):?> 申请中<?php endif;?>
+            <?php if($v['status'] == 2):?> 持有中<?php endif;?>
+            <?php if($v['status'] == 3):?> 转让/退出中<?php endif;?>
+            <?php if($v['status'] == 4):?> 已转让/退出<?php endif;?>
+            <?php if($v['status'] == 5):?> 已结清<?php endif;?>
+            <?php if($v['status'] == 6):?> 已取消<?php endif;?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,128 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<load href="__TMPL__Common/js/jquery.js" />
+<load href="__TMPL__Common/js/ztree/jquery.ztree.all-3.5.min.js" />
+<load href="__TMPL__Common/js/ztree/jquery.ztree.core-3.5.min.js" />
+<load href="__TMPL__Common/js/ztree/demo.css" />
+<load href="__TMPL__Common/js/ztree/zTreeStyle.css" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<SCRIPT type="text/javascript">
+    <!--
+    var setting = {
+            data: {
+                key: {
+                    title:"t"
+                },
+                simpleData: {
+                    enable: true
+                }
+            },
+            view:{
+                fontCss:getFont,
+                showIcon: false,
+                addDiyDom: addDiyDom
+            },
+            edit:{
+                enable:true
+            },
+            callback: {
+                onClick: onClick
+            },
+        };
+
+    var zNodes = {$tree};
+    
+    function getFont(treeId, node) {
+        return node.font ? node.font : {};
+    }
+
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        $("#info").remove();//去掉提示
+    });
+
+    function addDiyDom(treeId, treeNode){
+        var aObj = $("#" + treeNode.tId + "_a");
+        if ($("#rebateFactor_"+treeNode.id).length>0 || treeNode.layer != 3) return;
+        var text = "<span id='nodeId_"+treeNode.id+"'>"+treeNode.radioFactor+"</span>";
+        aObj.append(text);
+    }
+    
+    function onClick(event, treeId, treeNode, clickFlag) {
+        $("#selected_id").val(treeNode.id);
+        $("#layer").val(treeNode.layer);
+        $("#name").val(treeNode.name);
+        if(treeNode.layer == 3){
+        $.weeboxs.open(ROOT+"?m=DealTypeGrade&a=editRadioFactor&id="+treeNode.id, {title:'产品系数配置',contentType:'ajax',onok:save,showButton:true,width:650,height:120});
+        }
+        
+    }
+
+    function save(){
+        if(!confirm("确认修改吗？")){
+            return false;
+        }
+        data = $("#_js_form").serialize();
+        jsonData = urlParamToJson(data);
+        $.post("/m.php?m=DealTypeGrade&a=setRadioFactor",data,function(rs){
+        var rs = $.parseJSON(rs);
+        if(rs.status){
+            $("#nodeId_"+jsonData.id).html(rs.data);
+            alert("操作成功");
+            $.weeboxs.close();
+        }else{
+            alert(rs.info);
+        }
+        });
+    }
+
+    function urlParamToJson(urlParam){
+        var string = urlParam.split('&');
+        var res = {};
+        for(var i = 0;i<string.length;i++){
+            var str = string[i].split('=');
+            res[str[0]]=str[1];
+        }
+        return res;
+    }
+
+
+    //-->
+</SCRIPT>
+</HEAD>
+<BODY>
+
+<div class="main">
+    <div class="main_title">产品系数配置</div>
+    <div class="blank5"></div>
+    <div class="content_wrap">
+        <div class="zTreeDemoBackground left" style="width:700px">
+            <ul id="treeDemo" class="ztree" style="float:left"></ul>
+            <ul style="float:left;width:300px;height:200px;margin-top:10px; margin-left: 20px">
+                <li>
+                    已启用<!--<span style = "color :red" >不可</span>删除分类和编辑名称-->：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;无底纹黑色字
+                </li>
+                <li>
+                    启用后被停用<!--<span style = "color :red" >不可</span>删除分类和编辑名称-->：&nbsp;<span style="background-color:#808080;color:#000000;" >浅灰色底纹黑色字</span>
+                </li>
+                <li>
+                    未被启用过：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color:#808080;color:#FFFFFF" >浅灰色底纹白色字</span>
+                </li>
+               <!-- <li>
+                    已启用可删除分类和编辑名称：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color:#000000;color:#FFFFFF" >黑色底纹白色字</span>
+                </li>-->
+                <li>
+                    以第三级系数为准，如果三级系数改为0，那么机构/个人针对这类标的，都没有服务奖励。
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</BODY>
+<include file="Public:footer" />
+
+

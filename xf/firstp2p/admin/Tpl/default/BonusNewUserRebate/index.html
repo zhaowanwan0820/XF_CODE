@@ -1,0 +1,72 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title"></div>
+    <div class="blank5"></div>
+    <div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();"/>
+    <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+    </div>
+    <div class="blank5"></div>
+
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>编号</th>
+            <th>规则名</th>
+            <th>规则键名</th>
+            <th>邀请人返利类型</th>
+            <th>邀请人红包个数</th>
+            <th>邀请人红包总金额</th>
+            <th>邀请人红包发送有效期</th>
+            <th>邀请人红包使用有效期</th>
+            <th>投资人红包类型</th>
+            <th>投资人红包个数</th>
+            <th>投资人红包总金额</th>
+            <th>投资人发送有效期</th>
+            <th>投资人使用有效期</th>
+            <th>规则生效时间</th>
+            <th>规则失效时间</th>
+            <th>规则添加时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+            <td>{$item.id}</td>
+            <td>{$item.title}</td>
+            <td>{$item.const_name}</td>
+            <td>{$item.inviter_is_group}</td>
+            <td>{$item.inviter_count}</td>
+            <td>{$item.inviter_money}</td>
+            <td>{$item.inviter_send_limit_day}</td>
+            <td>{$item.inviter_use_limit_day}</td>
+            <td>{$item.is_group}</td>
+            <td>{$item.count}</td>
+            <td>{$item.money}</td>
+            <td>{$item.send_limit_day}</td>
+            <td>{$item.use_limit_day}</td>
+            <td>{$item.start_time}</td>
+            <td>{$item.end_time}</td>
+            <td>{$item.create_time}</td>
+            <td><if condition="$item['status'] eq 1">有效<else/>无效</if></td>
+            <td>
+                <a href="javascript:edit('{$item.id}')">编辑</a>&nbsp;
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

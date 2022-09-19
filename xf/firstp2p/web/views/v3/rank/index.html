@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>排行榜</title>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/rank/base.css?v=201707060206');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/rank/index.css?v=20170706044');?>">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/rank/zepto.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/rank/index.js?v=3');?>" type="text/javascript"></script>
+</head>
+<body>
+    {include file="web/views/v3/rank/share.html"}
+    <div class="p_rank">
+         <!-- 分享遮罩层 -->
+        <div class="ui_mask"></div>
+        <div class="shareBox">
+            <div class="line"></div>
+            <a href="javascript:void(0)" class="share">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/rank/share.png');?>" class="shareBtn">                    
+            </a>
+            <a href="http://event.ncfwx.com/zt/238">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/rank/rule.png');?>" class="ruleBtn">
+            </a>
+        </div>
+        <!-- <div class="themeBox"></div> -->
+        <div class="rankBox">
+            <div class="conBox">
+                <ul class="navUl">
+                    <li>
+                        <p>排名</p>
+                        <p>手机号码</p>
+                        <p>{if $result.rankType eq 3}累计投资人数(人){else}累计投资金额(元){/if}</p>
+                    </li>
+                </ul>
+                <ul class="listUl">
+                    {if $result}
+                        {foreach from=$result.list item=item key=key}
+                            {if $key<10}
+                                {if $item.userId==$result.mine.userId}
+                                    <li class="active">
+                                {else}
+                                    <li>
+                                {/if}
+                                        <p>
+                                {if $key<3}
+                                            <span class="num active">{$item.rank}</span>
+                                {else}
+                                            <span class="num">{$item.rank}</span>
+                                {/if}
+                                        </p>
+                                        <p>{$item.mobile}</p>
+                                        <p>{$item.value}</p>
+                                    </li>
+                            {/if}
+                        {/foreach}
+                    {else}
+                        <li class="noData">
+                            <img src="<?php echo $this->asset->makeUrl('v3/images/rank/noData.png');?>" alt="">
+                        </li>
+                    {/if}
+                </ul>
+                {if $result}
+                    {if $result.mine.inTop}
+                    <h2 class="congratulate">恭喜您获得排行榜第 {$result.mine.rank} 名！</h2>
+                    {else}
+                    <h2 class="congratulate noTop">未上榜</h2>
+                    <!-- <ul class="userRankUl">
+                        <li>
+                            <p>
+                                <span class="num">{$result.mine.rank}</span>
+                            </p>
+                            <p>{$result.mine.mobile}</p>
+                            <p>{$result.mine.value}</p>
+                        </li>
+                    </ul> -->
+                    {/if}
+                {else}
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/rank/expect.png');?>" alt="" class="expect">
+                {/if}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

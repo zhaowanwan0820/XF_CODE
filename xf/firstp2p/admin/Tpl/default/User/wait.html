@@ -1,0 +1,166 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style type="text/css">
+.flipped {
+    transform: scale(-1, 1);
+    -moz-transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    -khtml-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+}
+</style>
+<php>
+    function get_user_group($group_id)
+    {
+    $group_name = M("UserGroup")->where("id=".$group_id)->getField("name");
+    if($group_name)
+    {
+    return $group_name;
+    }
+    else
+    {
+    return l("NO_GROUP");
+    }
+    }
+    function get_user_level($id)
+    {
+    $level_name = M("UserLevel")->where("id=".$id)->getField("name");
+    if($level_name)
+    {
+    return $level_name;
+    }
+    else
+    {
+    return "没有等级";
+    }
+    }
+    function get_referrals_name($user_id)
+    {
+    $user_name = M("User")->where("id=".$user_id)->getField("user_name");
+    if($user_name)
+    return $user_name;
+    else
+    return l("NO_REFERRALS");
+    }
+    function f_to_date($date){
+    return to_date($date,"Y-m-d H:i");
+    }
+    function get_passport_ctime($id){
+    $time = M("UserPassport")->where("status = 0 AND uid=".$id)->getField("ctime");
+    return to_date($time,"Y-m-d H:i");
+    }
+    function lock_money_func($money,$id){
+    //return "<a href='javascript:eidt_lock_money(".$id.");'>".format_price($money)."</a>";
+    return format_price($money);
+    }
+    function money_func($money,$user_id){
+    //return "<a href='/m.php?m=MoneyApply&a=add&user_id=".$user_id."'>".format_price($money)."</a>";
+    return format_price($money);
+    }
+    function verify_status($status){
+    if($status == 1) return '审核成功';
+    if($status == 2) return '审核失败';
+    }
+    function get_action_list($idtype, $row){
+        if($idtype == 2 || $idtype == 3) {
+            return '<a href="javascript:edit(' . $row['id'] . ');">编辑</a> <a href="javascript:special_user_passed(' . $row['id'] . ');">审核</a>';
+        }
+        if($idtype == 4 || $idtype == 6) {
+            return '<a href="javascript:edit(' . $row['id'] . ');">编辑</a> <a href="javascript:user_passport_passed(' . $row['id'] . ');">审核</a>';
+        }
+    }
+</php>
+<div class="main">
+    <div class="main_title">{$main_title} <a href="{:u("User/passport_verify_log")}" class="back_list">历史审核记录</a></div>
+    <div class="blank5"></div>
+    <html:list
+            id="dataTable"
+            style="dataTable"
+            name="user"
+            checkbox="true"
+            datasource="list"
+            show="id:{%ID}|50px,user_name:{%USER_NAME}:edit,real_name:姓名,mobile:{%USER_MOBILE},create_time|f_to_date:注册时间,is_effect|get_is_effect=$user['id']:{%IS_EFFECT},id|get_passport_ctime:申请时间,id_type|get_action_list=$user:操作|110px"
+             />
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+    jQuery(function(){
+        //查看图片
+        $("._js_show_pic").live("click",function(){
+            if($(this).html() == "关闭"){
+                $(this).next().next().hide();
+                $(this).html("查看");
+            }else{
+                $(this).next().next().show();
+                $(this).html("关闭");
+            }
+        });
+        //反转图片
+        $("._js_trans_pic").live("click",function(){
+            $(this).next().next().next().children().toggleClass('flipped');
+        });
+
+    });
+    function opcredit(act,uid){
+
+        var forms_lock = function() {
+            var forms = $('form[name=edit]');
+            forms.each(function(i, el){
+                var btn = $(el).find('input[type=submit]');
+                console.log('btn', btn);
+                //删除行内onclick事件
+                btn.attr('onclick', '');
+                btn.click(function(){
+                    $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+                    if (confirm("确定此操作吗？")) {
+                        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                        return true;
+                    } else {
+                        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                        return false;
+                    }
+
+                });
+            })
+        }
+
+
+        $.weeboxs.open(ROOT+'?m=User&a=op_passed&user_id='+uid+"&field="+act, {contentType:'ajax',showButton:false,title:LANG['USER_PASSED'],width:600,height:300, onopen: function(){forms_lock();}});
+    }
+    function checkidcrad(card){
+        $.ajax({
+            url:ROOT+"?m=Public&a=checkIdCard&card="+card,
+            dataType:"json",
+            success:function(result){
+                if(result.status == 0){
+                    alert(result.info);
+                }
+                else{
+                    var alt = "身份证号："+result.code+"\n";
+                    alt += "籍贯："+result.location+"\n";
+                    alt +="生日："+result.birthday+"\n";
+                    if(result.gender=="m")
+                        alt += "性别：男";
+                    else
+                        alt += "性别：女";
+                    alert(alt);
+                }
+            },
+            error:function(){
+                alert("网络不通，或者当前接口查询次数已满，请等待下个小时！");
+            }
+        });
+    }
+</script>
+<include file="Public:footer" />

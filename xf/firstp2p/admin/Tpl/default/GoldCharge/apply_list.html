@@ -1,0 +1,92 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<php>
+    function get_if_effect($tag,$id) {
+       if($tag)
+       {
+            return l("IS_EFFECT_1");
+       }
+       else
+       {
+           return l("IS_EFFECT_0");
+       }
+    }
+
+    function f_get_username($userId, $row) {
+        return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>".$row['user_name']."</a>";
+    }
+    function f_get_realname($userId, $row) {
+        return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>".$row['real_name']."</a>";
+    }
+    function f_get_userno($userId, $row) {
+        $userno = numTo32($row['id']);
+        return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>".$userno."</a>";
+    }
+    function f_get_mobile($userId, $row) {
+        return "<a href='/m.php?m=User&a=index&user_id=$userId' target='_blank'>".$row['mobile']."</a>";
+    }
+</php>
+<div class="main">
+<div class="main_title">充值申请页</div>
+<div class="blank5"></div>
+<div class="button_row"></div>
+
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+        {%USER_NAME}：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" style="width:100px;" />
+       会员编号：<input type="text" class="textbox" name="user_num" value="{:trim($_REQUEST['user_num'])}" style="width:100px;" />
+        姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" style="width:100px;" />
+        {%USER_EMAIL}：<input type="text" class="textbox" name="email" value="{:trim($_REQUEST['email'])}" style="width:100px;" />
+        {%USER_MOBILE}：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:100px;" />
+
+        <input type="hidden" value="GoldCharge" name="m" />
+        <input type="hidden" value="apply_list" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <!-- <input type="button" class="button" value="{%EXPORT}" onclick="export_csv();" /> -->
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="user"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px,id|f_get_username=$user:{%USER_NAME}:edit,id|f_get_realname=$user:姓名,user_num:会员编号,email:{%USER_EMAIL},id|f_get_mobile=$user:{%USER_MOBILE},is_effect|get_if_effect=$user['id']:{%IS_EFFECT}"
+    actionlist="gold_charge:充值,lock_gold:冻结/解冻,view_gold_detail:查询" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function gold_charge(uid){
+    window.location.href = "/m.php?m=GoldCharge&a=add&uid="+uid;
+}
+function lock_gold(uid){
+    window.location.href = "/m.php?m=GoldCharge&a=lock_gold&uid="+uid;
+}
+function view_gold_detail(uid) {
+    window.open("/m.php?m=User&a=account_detail_gold&id="+uid, false);
+}
+function gold_balance(uid){
+    $.weeboxs.open(ROOT+'?m=GoldCharge&a=balance&uid='+uid, {contentType:'ajax',showButton:false,title:'黄金账户查询',width:400,height:200,onopen: function(){forms_lock();}});
+}
+function user_carry_wait(id){
+    window.location.href = "/m.php?m=UserCarry&a=add&uid="+id;
+}
+function view_supervision_userinfo(id) {
+    window.open("/m.php?m=Supervision&a=userInfo&id="+id, false);
+}
+function view_gold_detail(id) {
+    window.open("/m.php?m=User&a=account_detail_gold&id="+id, false);
+}
+</script>
+<include file="Public:footer" />

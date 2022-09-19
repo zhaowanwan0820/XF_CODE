@@ -1,0 +1,199 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script>
+function selectFixed() {
+    $("#range_money_start").val("");
+    $("#range_money_start").attr("readonly",true);
+    $("#range_money_end").val("");
+    $("#range_money_end").attr("readonly",true);
+    $("#multiple").val("");
+    $("#multiple").attr("readonly",false);
+
+}
+
+function notSelectFixed() {
+    $("#range_money_start").val("");
+    $("#range_money_start").attr("readonly",false);
+    $("#range_money_end").val("");
+    $("#range_money_end").attr("readonly",false);
+    $("#multiple").val("");
+    $("#multiple").attr("readonly", true);
+}
+</script>
+<div class="main">
+    <div class="main_title">新增 <a href="{:u("BonusConf/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__"><!-- enctype="multipart/form-data">-->
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">规则名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" value="{$vo.name}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包金额是否固定</td>
+                <td class="item_input">
+                    <label><input type="radio" class="f-radio" value="1" name="is_fixed" checked="checked" onclick="selectFixed();">是</label>
+                    <label><input type="radio" class="f-radio" value="0" name="is_fixed"  onclick="notSelectFixed();">否</label>
+                    <input type="text" class="textbox" id="multiple" name="multiple_money" value="{$vo.multiple_money}"/>
+                    &emsp;
+                    <span class="tip_span">固定金额请在此文本框中输入：多个固定金额用半角逗号隔开</span>
+            </tr>
+            <tr>
+                <td class="item_title">红包金额区间</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="range_money_start" id="range_money_start" readonly="true" value="{$vo.range_money_start}"/>
+                    &emsp;至
+                    <input type="text" class="textbox" name="range_money_end" id="range_money_end" readonly="true" value="{$vo.range_money_end}"/>
+                    <span>元</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">红包个数</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="count" id="count" value="{$vo.count}"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">新用户专属</td>
+                <td class="item_input">
+                    <label><input type="radio" class="f-radio" value="1" name="is_diff_new_old_user" checked="checked">是</label>
+                    <label><input type="radio" class="f-radio" value="0" name="is_diff_new_old_user">否</label>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">类型</td>
+                <td class="item_input">
+                    <select name="type" id="type">
+                        <foreach name="type_arr" key='type_key' item="type_item">
+                        <option value="{$type_key}" <if condition="$type_key eq $vo['type']">selected="selected"</if>>{$type_item}</option>
+                        </foreach>
+                    </select>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">投资限制</td>
+                <td class="item_input">
+                    <select name="load_limit_arr" id="load_limit_arr">
+                        <foreach name="load_limit_arr" key='limit_key' item="limit_item">
+                        <option value="{$limit_key}" <if condition="$limit_key eq $vo['load_limit']">selected="selected"</if>>{$limit_item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">红包链接有效期结束日期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="link_invalid_date" value="{$vo.link_invalid_date|to_date}" id="link_invalid_date"  onfocus="this.blur(); return showCalendar('link_invalid_date', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />
+                    <input type="button" class="button" id="btn_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('link_invalid_date', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#link_invalid_date').val('');" />
+                    &emsp;
+                    <span class="tip_span"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">红包使用有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="valid_day" value="{$vo.valid_day}"/>
+                    &emsp;
+                    <span>天</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan = 2> <b>活动信息</b></td>
+            </tr>
+
+            <!--<tr>
+                <td class="item_title">活动标题</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="subject" value="{$vo.subject}"/>
+                    &emsp;
+                    <literal>
+                    <span class="tip_span">变量名：红包个数{$BONUS_TTL}优惠码{$COUPON}</span>
+                    </literal>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">活动ICON</td>
+                <td class="item_input">
+                    <input type="file" class="textbox" name="icon" style="width:150px"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">活动文字描述</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="desc" value="{$vo.desc}"/>
+                    &emsp;
+                    <literal>
+                    <span class="tip_span">变量名：红包个数{$BONUS_TTL}优惠码{$COUPON}</span>
+                    </literal>
+                </td>
+            </tr>-->
+
+            <tr>
+                <td class="item_title">模板主题</td>
+                <td>
+                <select name="temp_id" id="temp_id">
+                    <foreach name="temp_arr" key='temp_key' item="temp_item">
+                    <option value="{$temp_key}" <if condition="$temp_key eq $vo['temp_id']">selected="selected"</if>>{$temp_item}</option>
+                    </foreach>
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态</td>
+                <td class="item_input">
+                    <label><input type="radio" class="f-radio" value="1" name="status"  checked="checked">有效</label>
+                    <label><input type="radio" class="f-radio" value="0" name="status">无效</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">统计字段</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="source" value="{$vo.source}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">邀请码</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="cn" value="{$vo.cn}"/>
+                </td>
+            </tr>
+
+
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusActivity" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="submit" class="button" value="{%ADD}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<include file="Public:footer" />

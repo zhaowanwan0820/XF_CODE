@@ -1,0 +1,102 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+<php>
+
+</php>
+<div class="main">
+<div class="main_title">{$vo.name} {%EDIT} <a href="{:u("Fund/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data" autocomplete="off">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">基金名称:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="name" value="{$vo.name}" /></td>
+    </tr>
+    <tr>
+        <td class="item_title">最小收益:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="income_min" value="{$vo.income_min}" />%</td>
+    </tr>
+    <tr>
+        <td class="item_title">最大收益:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="income_max" value="{$vo.income_max}" />%</td>
+    </tr>
+    <tr>
+        <td class="item_title">收益简述:</td>
+        <td class="item_input"><textarea class="textarea" name="income_intro" >{$vo.income_intro}</textarea></td>
+    </tr>
+    <tr>
+        <td class="item_title">还款时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="repay_time" value="{$vo.repay_time}" />
+            <select name="repay_type">
+                <OPTION value="1" <if condition="$vo['repay_type'] eq 1">selected="selected"</if>>天</OPTION>
+                <OPTION value="2" <if condition="$vo['repay_type'] eq 2">selected="selected"</if>>月</OPTION>
+             </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">起投金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="loan_money_min" value="{$vo.loan_money_min}" />元</td>
+    </tr>
+    <tr>
+        <td class="item_title">产品介绍:</td>
+        <td class="item_input">
+            <script id="editor1" name="fund_intro" type="text/plain" style="width:800px;height:200px; float:left;">{$vo.fund_intro}</script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">保障方式:</td>
+        <td class="item_input">
+            <script id="editor2" name="security_intro" type="text/plain" style="width:800px;height:200px; float:left;">{$vo.security_intro}</script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">状态:</td>
+        <td class="item_input">
+            <select name="status">
+                <OPTION value="0" <if condition="$vo['status'] eq 0">selected="selected"</if>>未开始</OPTION>
+                <OPTION value="1" <if condition="$vo['status'] eq 1">selected="selected"</if>>进行中</OPTION>
+                <OPTION value="2" <if condition="$vo['status'] eq 2">selected="selected"</if>>已结束</OPTION>
+             </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">是否有效:</td>
+        <td class="item_input">
+            无效<input type="RADIO" name="is_effect" value="0" <if condition="$vo['is_effect'] eq 0">checked="checked"</if>/> 
+            有效<input type="RADIO" name="is_effect" value="1" <if condition="$vo['is_effect'] eq 1">checked="checked"</if>/> 
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Fund" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%EDIT}" />
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<SCRIPT type="text/javascript">
+ //实例化编辑器
+UE.getEditor('editor1');
+UE.getEditor('editor2');
+
+</SCRIPT>
+<include file="Public:footer" />

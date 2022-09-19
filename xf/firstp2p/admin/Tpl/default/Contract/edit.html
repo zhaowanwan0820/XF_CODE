@@ -1,0 +1,56 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">{%ADD} <a href="{:u("Contract/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+    <tr>
+        <td class="item_title">合同编号:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="new_number" value="{$contract_info.number}" width="200px;"/></td>
+    </tr>
+	<tr>
+		<td class="item_title">合同内容:</td>
+		<td class="item_input">
+            <html:editor id="editor" name="content" type="KINDEDITOR" content="{$contract_info.content}" style="width:800px; height:600px;"/>
+        </td>
+	</tr>
+    <tr>
+        <td class="item_title">说明:</td>
+        <td class="item_input">
+            <lable style="color:#EE7600;">1、如果选择为“此合同”那么修改只会对本合同生效，如果选择“关联合同”则修改会对成对的合同生效。</lable><br />
+            <lable style="color:#EE7600;">2、如果本次选择了“此合同”并且修改了合同编号，那么继续修改本合同然后选择“关联合同”将不会对关联合同生效。</lable><br />
+            <lable style="color:#EE7600;">3、如果此合同已经下发并已经生成PDF文件，则点击保存后会删除旧的PDF文件。</lable>
+        </td>
+    </tr>	
+    <tr>
+        <td class="item_title">修改类型:</td>
+        <td class="item_input">
+            <lable><input type="radio" name="type" value="1" checked="checked" />此合同</lable>
+            <lable><input type="radio" name="type" value="2" />关联合同</lable>
+        </td>
+    </tr>
+	<tr>
+		<td class="item_title"></td>
+		<td class="item_input">
+			<!--隐藏元素-->
+			<input type="hidden" name="id" value="{$contract_info['id']}" >
+			<input type="hidden" name="number" value="{$contract_info['number']}" >
+			<input type="hidden" name="{:conf("VAR_MODULE")}" value="Contract" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+			<!--隐藏元素-->
+			<input type="submit" class="button" value="保存" />
+			<input type="reset" class="button" value="{%RESET}" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>	 
+</form>
+</div>
+<include file="Public:footer" />

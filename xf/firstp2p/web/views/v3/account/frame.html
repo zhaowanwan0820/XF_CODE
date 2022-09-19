@@ -1,0 +1,55 @@
+{include file="web/views/v3/header.html"}
+<div class="mt23 top_line"></div>
+<div class="w1100 clearfix">
+{if $history eq 1 && $ACTION_NAME eq 'loan'}
+
+{else}
+<div class="ui_user_nav new_revision_left ">
+    {include file="web/views/v3/account/left.html"}
+</div>
+{/if}
+{if $history eq 1 && $ACTION_NAME eq 'loan'}
+<div class="ui_user_right f_l new_revision_right" style="width:1100px">
+    {include file="$inc_file"}
+</div>
+{else}
+<div class="ui_user_right f_l new_revision_right" >
+    {include file="$inc_file"}
+</div>
+{/if}
+</div>
+
+<div class="mb30"></div>
+<script>
+(function(){
+  zhuge.track("进入“我的账户”页面")
+})()
+// 埋点
+$('.JS_account_li').click(function() {
+  var content = GetChinese($(this).html())
+  zhuge.track("我的账户_点击快捷入口",{
+    "入口名称": content
+  })
+});
+zhugeTrack(".JS_bind_a","点击绑定银行卡", "", "")
+zhugeTrack(".j_txp2p","我的账户_点击提现", "", "")
+// zhugeTrack(".JS_accountA","首页_顶部下拉框_点击进入我的账户", "", "")
+function zhugeTrack(place, name, position, content){
+    $(place).click(function(){
+        // alert(name + ' ---' + id + ' ---' + content )
+        var data = {};
+        data[position] = content;
+        zhuge.track(name, data);
+    })
+}
+ //只提取汉字  
+function GetChinese(strValue) {  
+    if(strValue!= null && strValue!= ""){  
+        var reg = /[\u4e00-\u9fa5]/g;   
+        return strValue.match(reg).join("");  
+    }  
+    else  
+        return "";  
+} 
+</script>
+{include file="web/views/v3/footer.html"}

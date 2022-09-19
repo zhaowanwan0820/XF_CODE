@@ -1,0 +1,35 @@
+{// 引入标签库 }
+<script type="text/javascript">
+    function checkform(){
+        if($('#typeName').val().length == 0 || $('#typeTag').val().length == 0){
+            alert('分类名称和标识不能为空！');
+            return false;
+        }
+        return true;
+    }
+</script>
+<div class="main">
+    <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="3">
+        <tr class="row">
+            <th>更改时间</th>
+            <th>合同类型</th>
+        </tr>
+        <foreach name="list" item="vo">
+        <tr class="row">
+            <td width="150px">&nbsp;{$vo.createTime|format_date='Y-m-d H:i:s'}</td>
+            <td>&nbsp;{$vo.categoryName}</td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">
+            <a href="javascript:void(0)" onclick="javascript:showChangeLog('pre')" >上一页</a> &nbsp;
+            当前<span class="current" >{$page}页&nbsp;共{$totalPage}页，{$totalNum}条记录</span>
+            &nbsp;<a href="javascript:void(0)" onclick="javascript:showChangeLog('next')" >下一页</a> &nbsp;
+    </div>
+    <input type="hidden" id="page" name="page" value="{$page}">
+</div>
+

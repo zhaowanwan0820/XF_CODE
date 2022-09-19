@@ -1,0 +1,426 @@
+// 公共样式
+#app {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.clearfix:before,
+.clearfix:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+input,
+input:focus,
+input:active {
+  user-select: text;
+}
+
+input {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+// 购物车数量(TODO 优化)
+span.cart-number {
+  position: absolute;
+  background: $primaryColor;
+  border-radius: 20px;
+  font-size: 10px;
+  text-align: center;
+  color: $whiteColor;
+  font-weight: normal;
+  top: 2px;
+  right: 5px;
+  // padding: 1px 3px;
+}
+
+// 公共header
+.header {
+  @include header;
+  @include thin-border(#f4f4f4);
+}
+
+.header-flex {
+  @include fj(space-around);
+  width: auto;
+  height: auto;
+  padding: 6px;
+  justify-content: space-around;
+  align-content: center;
+  align-items: center;
+}
+
+.header .ui-back {
+  height: 16px;
+}
+
+.header .ui-cart {
+  width: 22px;
+  height: 20px;
+}
+
+// 促销信息
+.promos-list {
+  display: flex;
+  flex-basis: auto;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  padding: 14px 10px;
+  div.item {
+    span.title {
+      font-size: 12px;
+      color: rgba(78, 84, 93, 1);
+      line-height: 17px;
+    }
+    span.name {
+      border: 1px solid $primaryColor;
+      padding: 1px 4px;
+      border-radius: 2px;
+      font-size: 10px;
+      color: $primaryColor;
+      margin: 0 10px;
+      display: inline-block;
+    }
+    span.promo {
+      font-size: 12px;
+      color: rgba(78, 84, 93, 1);
+      line-height: 17px;
+    }
+  }
+}
+
+// 底部popup 样式
+.mint-popup-bottom {
+  width: 100%;
+}
+
+// 商品详情页每个区块的共同样式
+.ui-detail-common {
+  // width: 100%;
+  height: 50px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 1);
+  padding: 0 15px;
+  .header {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+    width: auto;
+  }
+}
+
+// 公共的轮播图
+.swiper-indicators {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  .ui-indicator {
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    width: 100%;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    .indicator-item {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #efeff4;
+      margin-left: 10px;
+      &.active {
+        background-color: $primaryColor;
+      }
+    }
+  }
+}
+
+// 商品列表， 每个商品的样式
+.product-list-item {
+  border-bottom: 1px solid rgba(232, 234, 237, 1);
+  .list {
+    display: flex;
+    width: auto;
+    align-items: center;
+    justify-content: space-between;
+    margin: 11px 10px;
+    position: relative;
+    div.ui-image-wrapper {
+      width: 110px;
+      height: 110px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      flex-basis: 110px;
+      flex-shrink: 0;
+
+      background-position: center center !important;
+      background: url('../image/change-icon/default_image_02@2x.png');
+      background-size: 100px 100px;
+      background-repeat: no-repeat;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+
+      img.product-img {
+        width: 110px;
+        height: 110px;
+        flex-basis: 110px;
+        flex-shrink: 0;
+      }
+      img.product-img[lazy='loading'] {
+        width: 30px;
+        height: 30px;
+      }
+      img.product-im[lazy='error'] {
+        width: 30px;
+        height: 30px;
+      }
+      img.product-img[lazy='loaded'] {
+        width: 110px;
+        height: 110px;
+        flex-basis: 110px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 1);
+      }
+    }
+
+    span.promos {
+      position: absolute;
+      background: url('../image/change-icon/label@2x.png') no-repeat;
+      width: 36px;
+      height: 19px;
+      color: #fff;
+      font-size: 10px;
+      top: 0;
+      left: 0;
+      background-size: cover;
+      font-weight: 100;
+      line-height: 19px;
+      text-align: left;
+      padding-left: 5px;
+    }
+
+    .flex-right {
+      padding-left: 14px;
+      width: 100%;
+      .title {
+        color: #4e545d;
+        font-size: 16px;
+        font-weight: normal;
+        display: flex;
+
+        -webkit-line-clamp: 2;
+        -moz-line-clamp: 2;
+
+        -moz-box-orient: vertical;
+        -webkit-box-orient: vertical;
+        box-orient: vertical;
+
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .sub-title {
+        color: #55595f;
+        font-size: 12px;
+
+        display: flex;
+
+        -webkit-line-clamp: 1;
+        -moz-line-clamp: 1;
+
+        -moz-box-orient: vertical;
+        -webkit-box-orient: vertical;
+        box-orient: vertical;
+
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .price {
+        margin-bottom: 8px;
+        span {
+          &:last-child {
+            color: $primaryColor;
+            font-size: 16px;
+          }
+          &:last-child {
+            color: #a4aab3;
+            font-size: 12px;
+            text-decoration: line-through;
+          }
+        }
+      }
+      .sendway {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        span {
+          color: #7c7f88;
+          &.self-support {
+            font-size: 10px;
+            color: $primaryColor;
+            padding: 3px;
+            border: 1px solid $primaryColor;
+            border-radius: 2px;
+          }
+        }
+        img {
+          width: 22px;
+          height: 20px;
+        }
+      }
+    }
+  }
+}
+
+// 公共header
+.ui-commmon-header {
+  position: relative;
+  background: rgba(255, 255, 255, 1);
+  height: 50px;
+  padding: 0 15px;
+  border-bottom: 1px solid #e8eaed;
+  h3 {
+    padding: 0;
+    margin: 0;
+    font-size: 17px;
+    color: $baseColor;
+    line-height: 44px;
+    height: 44px;
+    text-align: center;
+  }
+  img.ui-go-back {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    left: 15px;
+    top: 10px;
+  }
+  img.ui-cart {
+    position: absolute;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    top: 7px;
+  }
+}
+
+//  公共的从底部弹出的弹框样式
+.mint-popup-bottom {
+  width: 100%;
+  height: 55%;
+  border: 0;
+  overflow: auto;
+}
+
+// 回到顶部
+.back-top {
+  position: fixed;
+  bottom: 20px;
+  right: 10px;
+  z-index: 10001;
+  // background-color: red;
+  img {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+  }
+}
+
+// 更新用户资料 公共的样式
+.common-update-avatar {
+  background: url('../../assets/image/change-icon/enter@2x.png') no-repeat center right;
+  background-size: 7px 11px;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+  background-color: #fff;
+  height: 50px;
+  padding-right: 11px;
+}
+
+//  更新用户资料 右侧弹出
+.mint-popup-right {
+  width: 100%;
+  height: 100%;
+}
+
+.ui-common-update {
+  height: 50px;
+  margin: 0 20px;
+  background: rgba(255, 255, 255, 1);
+  width: auto;
+  @include thin-border();
+  input {
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    font-size: 14px;
+    color: rgba(78, 84, 93, 1);
+    &:focus {
+      outline-offset: 0;
+      outline: none;
+    }
+  }
+}
+
+// 提示框样式
+.confirm-button-red {
+  background: $primaryColor;
+  color: #fff;
+  font-size: 16px;
+}
+
+// .confirm-button-red:hover {
+//  background:rgba(242,48,48,0.8);
+//  color: #fff;
+//  font-size: 16px;
+// }
+
+.cancel-button {
+  background: rgba(255, 255, 255, 1);
+  color: #787878;
+  font-size: 16px;
+}
+// .cancel-button:hover {
+//  background:rgba(255,255,255,0.8);
+//  color: #787878;
+//  font-size: 16px;
+// }
+.mint-actionsheet-list .mint-actionsheet-listitem {
+  border-bottom: 0.5px solid RGBA(0, 0, 0, 0.05);
+}
+
+.mark-color {
+  color: $markColor;
+}
+
+// 弹窗样式统一修改
+body {
+  .mint-msgbox {
+    border-radius: 2px;
+    .mint-msgbox-confirm {
+      background-color: #b75800;
+      &:active {
+        background-color: #9f4e03;
+        color: #ffffff;
+      }
+    }
+    .mint-msgbox-content {
+      padding: 20px;
+      @include thin-border($lineColor, 0);
+      border: none;
+    }
+  }
+}
+
+img[lazy='loading'] {
+  opacity: 0.5;
+}

@@ -1,0 +1,68 @@
+{include file="web/views/fenzhan/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>" />
+<link href="<?php echo $this->asset->makeUrl('v1/css/message.css');?>" rel="stylesheet" type="text/css">
+
+<div class="w980 mauto clearfix">
+	   <section>
+       		<div class="message_box" >
+            	<div class="mess_title"><h1>消息</h1></div>
+       			<ul class="message_nav w860">
+                	<li class="select"><a href="/message">消息</a></li>
+                </ul>
+                <div class="w860 mauto">
+              		
+                    <div class="mess">
+                    	{if $msg_list}
+                    	<form name="pm_list">	
+                        <table>
+                            <colgroup>
+                                <col width="68">
+                                <col width="125">
+                                <col width="590">
+                                <col width="40">
+                            </colgroup>
+                            <tbody>
+								{foreach from=$msg_list item=pm key=key}
+                                <tr >
+                                   <td>
+                                        <div class="mess_img"> 
+                                            <a href="message/deal/{$pm.0.group_key}"><img src="{$TMPL_NEW}/images/user/img_1.png"></a>
+                                        </div>
+                                    </td>
+                                    <td class="f12">
+                                    		{if $pm.type eq 0 and $pm.is_read eq 0}<span class="pm new_pm"></span>{/if}
+                                    		{if $pm.0.system_msg_id neq 0 or $pm.0.is_notice}
+						                        <h4><a href="message/deal/{$pm.0.group_key}">{$notice_title.$key}</a></h4>
+						                         {else}
+						                       	<h4><a href="message/deal/{$pm.0.group_key}">{$LANG.SYSTEM_PM}</a></h4>
+											{/if}
+                                        <p>{function name="sprintf" f=$LANG.TOTAL_PM v=$pm.0.total}</p>
+                                        <p>{function name="pass_date" v=$pm.0.create_time}</p>
+                                    </td>
+                                    <td>
+                                    	<div class="mess_con pr40 mb10">
+                                            <h3><a href="message/deal/{$pm.0.group_key}">{$pm.0.title}</a></h3>
+                                            <p class="f12">{if $pm.0.is_notice gt 1}尊敬的用户{function name="get_user_name" v=$pm.0.to_user_id s="0"}：{/if}
+                                            	<?php echo msubstr(strip_tags($this->_var['pm'][0]['content']),0,200); ?>
+                                            </p>
+    									</div>
+                                    </td>
+                                    <th class="f12"><a href="message/deal/{$pm.0.group_key}" class="color-blue1 underline">查看</a></th>
+                                </tr>
+                               {/foreach}
+                            </tbody>
+                        </table>
+                        </form>
+                        	{else}
+							<div class="empty-box">没有记录</div>
+                         {/if}
+                    </div>
+                   
+                    <div class="pages"></div>
+                    
+				
+                </div>
+            </div>
+       </section>
+</div>
+{include file="web/views/fenzhan/footer.html"}

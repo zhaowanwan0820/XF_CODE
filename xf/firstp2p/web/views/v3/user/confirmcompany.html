@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/applycompany_table.css');?>" />
+    <link href="<?php echo $this->asset->makeUrl('v3/css/weebox.css');?>" rel="stylesheet" type="text/css">
+    <style>
+    .weedialog .dialog-ok{height:40px!important;}
+    .weedialog .dialog-cancel{height:40px!important;}
+    </style>
+</head>
+<body>
+      {include file="web/views/v3/header.html"}
+    <div class="applaycompany_table">
+        <div class="head">企业会员开户申请书</div>
+        <div class="table">
+            <table>
+                <tr>
+                    <td class="td1">开立账户类型</td>
+                    <td colspan="3">
+                        <div class="account_type">
+                            <ul>
+                                {if $user_purpose == 2}
+                                <li>融资户</li>
+                                {else}
+                                <li>投资户</li>
+                                {/if}
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <!-- step1 -->
+                <tr>
+                    <td class="bgcolor" colspan="4">I 申请企业基本信息(所有信息均为必填项)</td>
+                </tr>
+                <tr>
+                    <td class="td1">企业全称</td>
+                    <td class="td2">{$enterpriseInfo.base.company_name}</td>
+                    <td class="td3">企业证件号码</td>
+                    <td class="td4">{$enterpriseInfo.base.credentials_no}</td>
+                </tr>
+                <tr>
+                    <td class="td1">企业证件有效期</td>
+                    <td class="td2">{if $enterpriseInfo.base.is_permanent}长期有效{else}{$enterpriseInfo.base.credentials_expire_at}{/if}</td>
+                    <td class="td3">企业注册资金</td>
+                    <td class="td4">{$enterpriseInfo.base.reg_amt}万</td>
+                </tr>
+                <tr>
+                    <td class="td1">企业行业类别</td>
+                    <td class="td2">{$enterpriseInfo.base.indu_cate_dec}</td>
+                    <td class="td3">企业开户许可证核准号</td>
+                    <td class="td4">{$enterpriseInfo.base.app_no}</td>
+                </tr>
+                <tr>
+                    <td class="td1">法定代表人姓名</td>
+                    <td class="td2">{$enterpriseInfo.base.legalbody_name}</td>
+                    <td class="td3">法定代表人证件类别</td>
+                    <td class="td4">{$enterpriseInfo.base.legalbody_credentials_type_dec}</td>
+                </tr>
+                <tr>
+                    <td class="td1">法定代表人证件号码</td>
+                    <td class="td2">{$enterpriseInfo.base.legalbody_credentials_no}</td>
+                    <td class="td3">企业联系方式</td>
+                    <td class="td4">{$enterpriseInfo.contact.contract_mobile}</td>
+                </tr>
+                <!-- step2 -->
+                <tr>
+                    <td class="bgcolor" colspan="4">II 银行结算账户信息(所有信息均为必填项)</td>
+                </tr>
+                <tr>
+                    <td class="td1">银行账号</td>
+                    <td class="td2">{$enterpriseInfo.bank.bankcard}</td>
+                    <td class="td3">开户行名称</td>
+                    <td class="td4">{$enterpriseInfo.bank.bank_id_dec}</td>
+                </tr>
+                <tr>
+                    <td class="td1">开户行所在地</td>
+                    <td class="td2">{$enterpriseInfo.bank.region_lv2_dec} {$enterpriseInfo.bank.region_lv3_dec} {$enterpriseInfo.bank.region_lv4_dec}</td>
+                    <td class="td3">开户网点</td>
+                    <td class="td4">{$enterpriseInfo.bank.bankzone}</td>
+                </tr>
+                <!-- step3 -->
+                <tr>
+                    <td class="bgcolor" colspan="4">III 授权相关(所有信息均为必填项，如代理人为法定代表人，仅需填写手机号码及邮箱地址)</td>
+                </tr>
+                <tr>
+                    <td class="inset_table" colspan="4">
+                        <div class="inset_table_tit"><span>为便于操作，我公司特此授权代理人(具体个人信息如下)</span></div>
+                        <table>
+                            <tr>
+                                <td class="inset_td1">代理人姓名</td>
+                                <td class="inset_td2">{if $enterpriseInfo.contact.major_type eq 2}{$enterpriseInfo.contact.major_name}{/if}</td>
+                                <td class="inset_td3">代理人证件类别</td>
+                                <td class="inset_td4">{if $enterpriseInfo.contact.major_type eq 2}{$enterpriseInfo.contact.major_condentials_type_dec}{/if}</td>
+                            </tr>
+                            <tr>
+                                <td class="inset_td1">代理人证件号码</td>
+                                <td class="inset_td2">{if $enterpriseInfo.contact.major_type eq 2}{$enterpriseInfo.contact.major_condentials_no}{/if}</td>
+                                <td class="inset_td3">代理人手机号码</td>
+                                <td class="inset_td4">{$enterpriseInfo.contact.major_mobile}</td>
+                            </tr>
+                            <tr>
+                                <td class="inset_td1">代理人邮箱地址</td>
+                                <td class="inset_td2" colspan="3">{$enterpriseInfo.contact.major_email}</td>
+                            </tr>
+                        </table>
+                        <div class="inset_table_txt ">
+                            <span class="line_height">代为办理通过网信(网址:www.ncfwx.com 进行开户及相关业务事项所需的所有手续。授权范围如下:</span>
+                            <ul class="line_height">
+                                <li>1.使用我公司在网信平台的用户名和密码登录;</li>
+                                <li>2.代我公司在网信平台签署业务相关的所有合同及文件;</li>
+                                <li>3.其他需要协助网信平台或我公司办理的事项(包括但不限于:注册网信平台用户名、开立账户、通过邮件或短信等途径接收企业账户登陆密码或验证码等)。
+授权期限为12个月。如授权期满，我公司若未书面通知另行授权他人，则本授权继续有效。</li>
+                            </ul>
+                            <div class="sign">
+                                <table>
+                                    <tr>
+                                        <td>代理人（签字）：</td>
+                                        <td class="sign_td2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>签署日期：</td>
+                                        <td class="sign_td2"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <!-- step4 -->
+                <tr>
+                    <td class="bgcolor" colspan="4">IV 开户资料(所有资料需为纸质资料)</td>
+                </tr>
+                <tr>
+                    <td class="td1">基本资料</td>
+                    <td class="td2 txt_alaign line_height padding" colspan="3">1.开户申请书及注册协议和网信隐私权保护政策; 2.营业执照副本复印件; 3.法人身份证复印件; 4.开户许可证复印件; 若绑定银行卡非基本户，则需额外提供; 5.一般户证明资料复印件(具备公司名称及账号的网银截图或银行汇款单等); 上述资料需在加盖企业公章的基础上，请客户经理验证签字，并注明“与原件核对一致”字样</td>
+                </tr>
+                <tr>
+                    <td class="td1" rowspan="2">其他开户资料</br>(仅开设投资户时适用)</td>
+                    <td class="td2 txt_alaign padding" colspan="3">1.股东会决议;2.公司章程;3.公司对外投资需获得的其他内外部审批资料等; </br>上述资料需加盖企业公章。</td>
+                </tr>
+                <tr>
+                    <td class="td2 txt_alaign padding checkbox" colspan="3">
+                        <span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp申请不提交股东会决议、公司章程以及其他相关资料（勾选视为申请不提交）</span>
+                        <p>我公司确认本次开户及后续相关业务已按照我公司相关规章制度及法律法规规定履行所有的内外部审批手续，特申请不提供上 述资料，并愿意承担因此带来的一切法律后果。</p>
+                    </td>
+                </tr>
+                <!-- step5 -->
+                <tr>
+                    <td class="bgcolor" colspan="4">V 签章确认</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="txt_alaign line_height padding">
+                        <p>我公司在此承诺:本申请书内填写的全部内容均为我公司的真实意思表示，我公司已阅读并同意接受网信《注册协议》(包括但不限于网信已发布的、将来更新 发布的、通过在线点击确认签署或签字盖章签署的注册协议)和《网信隐私权保护政策》的全部内容，所提供开户资料及签署的文件真实、完整、合法、有效，且愿意承担因提供虚假资 料、申请不提交部分资料、以及因代理人的操作而可能产生的任何形式的法律责任。</p>
+                        <div class="sign padding">
+                            <table>
+                                <tr>
+                                    <td>法定代表人(签章):</td>
+                                    <td class="sign_td2"></td>
+                                    <td>申请机构/委托人 (盖章):</td>
+                                    <td class="sign_td2"></td>
+                                </tr>
+                                    <td>签署日期:</td>
+                                    <td class="sign_td2"></td>
+                                    <td>签署日期:</td>
+                                    <td class="sign_td2"></td>
+                                </tr>
+                            </table>  
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="txt_alaign padding line_height">
+                        <span>*填表指引：</span>
+                        <ul>
+                            <li>1.申请开立账户类型可多选;</li>
+                            <li>2.企业证件有效期需录入起止日期或长期有效;</li>
+                            <li>3.企业注册资金单位为“万”，注册资金为外币的填写方式同人民币;</li>
+                            <li>4.企业行业类别请依照企业实际情况录入下列选项之一【00-政府机关，01-邮政通讯，02-IT业，03-商业贸易，04-银行证券保险投资，05-工商税务，06-咨询，07-社会服 务，08-旅游饭店，09-健康医疗，10-房地产，11-交通运输，12-文化娱乐体育，13-媒介广告，14-科研教育，15-农林牧鱼，16-制造业，20-其他】;</li>
+                            <li>5.企业开户许可证号需录入开户许可证左上角J开头的完整编码;</li>
+                            <li>6.企业联系方式需录入与代理人手机号不一致的联系电话，推荐企业固话;</li>
+                            <li>7.本表格的书写部分需使用黑色签字笔进行书写;</li>
+                            <li>8.开户申请书与《注册协议》和《网信隐私权保护政策》未包含于同一份文件的(如A4纸分别打印的情况)，需在开户申请书及《注册协议》和《网信隐私权保护政策》间加盖骑缝章。</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+            <table class="table_2">
+                <tr>
+                    <td colspan="4">以下内容仅供内部使用</td>
+                </tr>
+                <tr>
+                    <td>邀请人</td>
+                    <td>
+                        <span class="table_2_name"></span>
+                        <span class="table_2_icon">（选填）</span>
+                    </td>
+                    <td>邀请人所在机构</td>
+                    <td>
+                        <span class="table_2_name"></span>
+                        <span class="table_2_icon">（选填）</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bgcolor" colspan="4">客户经理资料检查及审核</td>
+                </tr>
+                <tr>
+                    <td colspan="4">本人对申请企业的真实性、资料的完备性、信息的一致性及签章的完整性进行了尽职审核，确保本次企业开户申请符合业务相关标准，且对填写的邀请信息正确性 负责。</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="fl padding">客户经理A(签字):</span>
+                        <span class="fr padding">年 月 日</span>
+                    </td>
+                    <td colspan="2">
+                        <span class="fl padding">客户经理B/负责人(签字):</span>
+                        <span class="fr padding">年 月 日</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="submit">
+            <a class="a1" href="javascript:void(0)" onclick="weebox()">确认开户申请书相关内容</a>
+            {if $enterpriseInfo.register.verify_status eq 1}
+            <a class="a2" href="/enterprise/Apply">修改开户申请书</a>
+            {/if}
+        </div>
+    </div>
+      {include file="web/views/v3/footer.html"}
+</body>
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.weebox.js');?>"></script>
+<script>
+function weebox() {
+    $.weeboxs.open('<div class="tips_icon"><p>请确认企业开户申请书相关内容填写正确，申请开户阶段将无法进行信息更改</p></div>', {
+        boxid : null,
+        contentType : 'text',
+        showButton : true,
+        showCancel : true,
+        showOk : true,
+        title : '提示',
+        width : 390,
+        type : 'wee',
+        okBtnName: "确认",
+        onok:function(){
+            location.href = "/user/RegisterCompany?is_apply=1"
+        }
+    });    
+}
+</script>
+</html>

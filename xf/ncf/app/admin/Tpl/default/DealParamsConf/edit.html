@@ -1,0 +1,181 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/deal.js' />
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<div class="main">
+<div class="main_title">{$title} <a href="{:u("DealParamsConf/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form id="editform" name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">参数配置方案名称:</td>
+        <td class="item_input">   <!-- <span class="tip_span"></span> -->
+        <input type="text" class="textbox require" name="name" id="name" value="{$conf_info.name}" />
+        </td>
+
+    </tr>
+    <tr>
+        <td class="item_title">参数配置方案描述:</td>
+        <td class="item_input">
+            <html:editor id="description" name="description" style="width:500px;height:45px" content="{$conf_info.description}" maxlength="100" />
+            <span id="name_tip">不超过100字</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">自定义标签:</td>
+        <td class="item_input">
+            名称:<input type="text" class="textbox" name="deal_tag_name"  id = "deal_tag_name" value="{$conf_info.deal_tag_name}" />
+            描述:<input type="text" class="textbox" size="60" name="deal_tag_desc" id = "deal_tag_desc" value="{$conf_info.deal_tag_desc}"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">tag:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="tag_names"  id = "tag_names" size="90" value="{$conf_info.tag_names}"/>
+            <span class="tip_span">tag之间以半角逗号分隔</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">限定条件1:</td>
+        <td class="item_input">
+            <select name="deal_crowd" id="deal_crowd" style="float: left;">
+                <foreach name="deal_crowd" key="crow_key" item="crow_item">
+                    <option value="{$crow_key}" <if condition="$crow_key eq $conf_info['deal_crowd']">selected="selected"</if>>
+                    {$crow_item}</option>
+                </foreach>
+            </select>&nbsp;
+                    <span id="relation">
+                        <input type="checkbox" name="relation[]" <if condition="(in_array($relation, [4,5,6,7]) || $conf_info['deal_crowd'] != 2) != false">checked="checked"</if> value="100">组内用户
+                        <input type="checkbox" name="relation[]" <if condition="in_array($relation, [2,3,6,7]) != false">checked="checked"</if> value="010">邀请关系
+                        <input type="checkbox" name="relation[]" <if condition="in_array($relation, [1,3,5,7]) != false">checked="checked"</if> value="001">服务关系
+                    </span>
+            <div style="float:left;margin-left:10px;display:none" id="specify_uid_dev">
+                <input placeholder="输入指定用户ID" value="{$specify_uid_info.id}" id="specify_uid" name="specify_uid" style="width:100px;" onblur="specify_blur()">
+                <span id="specify_user" style="color:red;font-size: 12px;">
+                    <if condition="$specify_uid_info neq ''"> 姓名:{$specify_uid_info.real_name} 手机:{$specify_uid_info.mobile}</if>
+                </span>
+            </div>
+            <div style="float:left;margin-left:10px;display:none" id="specify_vip">
+                <foreach name="vipGrades" key="grade" item="gradeName">
+                <input type="radio" value="{$grade}" name="specify_vip" <if condition="($grade eq 1) or ($conf_info['deal_crowd'] eq 33 and $conf_info['specify_uid'] eq $grade)">checked </if>><if condition="$grade lt 6" >{$gradeName}及以上<else/>{$gradeName} </if>
+                </foreach>
+            </div>
+            <div id='user_group'>
+                <foreach name="usergroupList" key="ug_key" item="ug_item">
+                    <input type="checkbox"  autocomplete='off' value="{$ug_item.id}" name="user_group[]" <if condition="in_array($ug_item['id'], $user_group) != false">checked="checked"</if>  <if condition="$pro['business_status'] neq $project_business_status['waitting'] and $vo['deal_status'] neq 0">readonly</if>>{$ug_item.name}
+                </foreach>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">限定条件2:</td>
+        <td class="item_input">
+            <select name="bid_restrict" id="bid_restrict" >
+                <foreach name="bid_restrict" key="restrict_key" item="restrict_item">
+                    <option value="{$restrict_key}" <if condition="$restrict_key eq $conf_info['bid_restrict']">selected="selected"</if>>
+                    {$restrict_item}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">最低金额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="min_loan_money" id="min_loan_money"  value="{$conf_info.min_loan_money}"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">最高金额:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" id="max_loan_money" name="max_loan_money" value="{$conf_info.max_loan_money}"/>
+            <span class="tip_span">为0或为空时表示不做限制</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">年化基本利率:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" SIZE="8" name="income_base_rate" value="{$conf_info.income_base_rate}"/>%
+            <font color='red'>注：若调增则录入正数，调减则录入负数</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">年化借款平台手续费:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" SIZE="8" name="loan_fee_rate" id="loan_fee_rate" value="{$conf_info.loan_fee_rate}"/>%
+            <font color='red'>注：若调增则录入正数，调减则录入负数</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">年化借款咨询费:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" SIZE="8" name="consult_fee_rate" id="consult_fee_rate" value="{$conf_info.consult_fee_rate}"/>%
+            <font color='red'>注：若调增则录入正数，调减则录入负数</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">年化借款担保费:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" SIZE="8" name="guarantee_fee_rate" id="guarantee_fee_rate" value="{$conf_info.guarantee_fee_rate}"/>%
+            <font color='red'>注：若调增则录入正数，调减则录入负数</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">年化支付服务费:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="pay_fee_rate" SIZE="8" id="pay_fee_rate" value="{$conf_info.pay_fee_rate}"/>%
+            <font color='red'>注：若调增则录入正数，调减则录入负数</font>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">活动简介:</td>
+        <td class="item_input">
+        <script id="editor" name="activity_introduction" type="text/plain" style="width:800px;height:200px; float:left;">{$conf_info.activity_introduction}</script>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="id" value="{$conf_info.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="DealParamsConf" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%SAVE}" id="submit" />
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+<script>
+    window.onload = function()
+    {
+        dealcrowd();
+        $('#min_loan_money').blur(checkLoanMoney);
+        $('#max_loan_money').blur(checkLoanMoney);
+        $('#deal_crowd').change(dealcrowd);
+    }
+    //实例化编辑器
+    UE.getEditor('editor');
+</script>
+<if condition="$access_permission eq 1">
+<script>
+    var input_obj = $("input");
+    input_obj.attr('readonly', 'readonly');
+    var textarea_obj = $("textarea");
+    textarea_obj.attr('readonly', 'readonly');
+     var remove_obj = $(".button");
+    remove_obj.remove();
+</script>
+</if>
+</div>
+<include file="Public:footer" />

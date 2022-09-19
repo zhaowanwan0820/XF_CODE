@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>常见问题</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <link href="{$STATIC_PATH}/css/m-base.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_PATH}/css/m-common.css" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+</head>
+<body>
+<section>
+    <!--private js&css start-->
+    <link href="{$STATIC_PATH}/css/faq.css" rel="stylesheet" type="text/css" />
+        <!--private js&css end-->
+        <div class="faq_center">
+            {if $cate && $list}
+            <h3>
+                {$cate.title}</h3>
+            <div class="faq_list">
+                {foreach from=$list item="item" name="item"}
+                <p>
+                    <a href="/help/faq/?id={$item.id}">{$smarty.foreach.item.iteration}. {$item.title}</a></p>
+                {/foreach}
+            </div>
+            {else}
+            <div class="faq_message">
+                <p>
+                    暂无
+                </p>
+            </div>
+            {/if}
+
+           
+        </div>
+    </section>
+</body>
+</html>

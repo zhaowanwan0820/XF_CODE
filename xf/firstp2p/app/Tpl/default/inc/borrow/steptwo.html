@@ -1,0 +1,235 @@
+<script type="text/javascript">
+	var VAR_MODULE = "m";
+	var VAR_ACTION = "a";
+	var ROOT = '{$APP_ROOT}/file.php';
+	var ROOT_PATH = '{$APP_ROOT}';
+</script>
+<div class="border_2434 f14 clearfix">
+	<div class="clearfix">
+		{if $ACTION_NAME eq 'applyamount'}
+		<p>温馨提示：{function name="app_conf" v="SHOP_TITLE"}对于用户上传的所有信息，都将进行加密处理。您可以在此放心上传个人材料，您的个人信用将不会被以任何形式外泄。</p>
+		{else}
+		<div class="f_l mr15"> 
+    		<a href="{$deal.url}"><img width="80" height="80" src="{$deal.icon}" alt="{$deal.name}" title="{$deal.name}"></a> 
+		</div>
+		<div style="font-size: 12px;width: 454px; color:#6F787F" class=" f_l">
+  			<div style="font-size:12px;font-weight: bold; line-height:27px"><a href="{$deal.url}">{$deal.name}</a> </div>
+	 			<div class="clearfix">
+  				<div class="info f_l" style="padding-right:2em;"> 借款金额：<span class="f_red">{$deal.borrow_amount_format}</span> </div>
+  				<div class="info f_l" style="padding-right:2em;"> 年化借款利率<span class="spanML">：</span><span class="f_red">{$deal.deal_rate}</span> </div>
+  				<div class="info f_l"><div class="mL25"> 借款期限：<span class="f_red">{$deal.repay_time}{if $deal.loantype eq 5}天{else}个月{/if}</span></div></div>
+			</div>
+			<div class="clearfix">
+       			<!--<div style="width: 134px;" class="info-2 f_l lh26"> 
+					信用等级：<a href="{url x="index" r="level" p="id=$deal.user_id"}" target="_blank"><img align="absmiddle" src="{$TMPL}/images/{$u_info.point_level}.png" title="{$u_info.point_level}" alt="{$u_info.point_level}"></a> 
+       			</div>-->
+       			<div class="info-3">
+         			<div class="f_l"> 借款进度： </div>
+					<div class="f_l pt5">
+	        			<div class="blueProgressBar progressBar f_l">
+	          		 	<div class="p">
+	             			<div style="width: 0%;" class="c"></div>
+	           			</div>
+	         			</div>
+					</div>
+         			<div class="f_l">
+           				<div style="padding-left:2em"><span>还需：<span class="f_red">{$deal.need_money}元</span></span></div>
+         			</div>
+       			</div>
+ 			</div>
+		</div>
+		{/if}
+	</div>
+</div>
+<div class="blank"></div>
+<div class="item border_2434">
+	<div id="baseR">
+	  	<div class="tit">必要信用认证</div>
+		<div class="blank1"></div>
+	    <p>以下两项为必要信用认证，上传齐全后将开始审核。两项必要认证缺失的用户，无法得到借款。</p>
+	    <div class="clearfix mt10" style="margin-left:10px">
+	    	<ul>
+	        	<li class="cleaarfix" id="base_card">
+		        	<div class="icon card_no"></div>
+					<div class="con">
+						<h3>身份认证</h3>
+						{if $user_info.idcardpassed eq 1}
+							<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+						{else}
+							{if $credit['credit_identificationscanning']['file']}
+								{if $user_info.idcardpassed eq 1}
+									<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+								{else}
+									<div class="status-pending">待审核</div>
+								{/if}
+							{/if}
+							<a href="javascript:openupload('身份证认证','credit_identificationscanning','IDCARD_AUTH');">
+							<div class="bt">{if $credit['credit_identificationscanning']['file']}补充{else}立即{/if}上传</div>
+							</a>
+						{/if}
+					</div>
+					
+	    		</li>
+	    		
+	            <li class="cleaarfix" id="base_work" style="display:none">
+	                <div class="icon work_no"></div>
+					<div class="con"><h3>工作认证</h3>
+					{if $user_info.workpassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+						{if $credit['credit_contact']['file']}
+							{if $user_info.workpassed eq 1}
+								<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+							{else}
+								<div class="status-pending">待审核</div>
+							{/if}
+						{/if}
+					<a href="javascript:openupload('工作认证','credit_contact','JOB_AUTH');"><div class="bt">{if $credit['credit_contact']['file']}补充{else}立即{/if}上传</div></a></div>
+					{/if}
+					
+					
+	           	</li>
+	            <li class="cleaarfix" id="base_credit" style="display:none">
+	           		<div class="icon credit_no"></div><div class="con"><h3>信用报告</h3>
+					{if $user_info.creditpassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+					{if $credit['credit_credit']['file']}
+					{if $user_info.creditpassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+					<div class="status-pending">待审核</div>
+					{/if}
+					{/if}
+					<a href="javascript:openupload('信用报告','credit_credit','BANK_AUTH');"><div class="bt">{if $credit['credit_credit']['file']}补充{else}立即{/if}上传</div></a></div>
+	           		{/if}
+					
+					
+				</li>
+	            <li class="cleaarfix" id="base_income" style="margin-right:0;display:none">
+	            	<div class="icon income_no"></div><div class="con"><h3>收入认证</h3>
+					{if $user_info.incomepassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+					{if $credit['credit_incomeduty']['file']}
+					{if $user_info.incomepassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+					<div class="status-pending">待审核</div>
+					{/if}
+					{/if}
+					<a href="javascript:openupload('收入认证','credit_incomeduty','INCOME_AUTH');"><div class="bt">{if $credit['credit_incomeduty']['file']}补充{else}立即{/if}上传</div></a></div>
+	      			{/if}
+				</li>
+				<li class="cleaarfix">
+                    <div class="icon video_no"></div><div class="con"><h3>视频认证</h3>
+                    {if $user_info.videopassed eq 1}
+                        <div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+                    {else}
+					       <a href="javascript:openupload('视频认证','credit_videoauth','VIDEO_AUTH');"><div class="bt">我要认证</div></a></div>
+                    {/if}
+                </li>
+	   		</ul>
+			<div class="blank1"></div>
+		</div>
+	</div>
+	<div class="line"></div>
+	<div id="otherR">
+		<div class="tit">可选信用认证</div>
+		<div class="blank1"></div>
+	    <p>您可以选择上传的认证项目，只要通过了这些可选信用认证，将会提高您的“信用等级”和“信用额度” 。</p>
+	    <div id="other" >
+	    	<ul class="clearfix" style="height:90px;padding:10px 0">
+	    		{if $user_info.hashouse eq 1}
+	        	<li id="other_house">
+	    			{if $user_info.housepassed neq 1}<a href="javascript:openupload('房产认证','credit_house','ESTATE_AUTH');" >{/if}
+	    				<div class="icon {if $credit['credit_house']['file'] || $user_info.housepassed eq 1}house_yes{else}house_no{/if}"></div>房产认证
+					{if $user_info.housepassed neq 1}</a>{/if}
+					{if $user_info.housepassed eq 1}<br><i class="icon-correct"></i> 审核通过{/if}
+	    		</li>
+				{/if}
+				{if $user_info.hascar eq 1}
+	            <li id="other_car">
+	            	{if $user_info.carpassed neq 1}<a href="javascript:openupload('购车认证','credit_car','CAR_AUTH');">{/if}
+	            		<div class="icon {if $credit['credit_car']['file'] || $user_info.carpassed eq 1}car_yes{else}car_no{/if}"></div>购车认证
+					{if $user_info.carpassed neq 1}</a>{/if}
+	        	</li>
+	            {/if}
+				{if $user_info.marriage eq '已婚'}
+	            <li id="other_marry">
+	            	{if $user_info.marrypassed neq 1}<a href="javascript:openupload('结婚证明','credit_marriage','MARRIED_AUTH');">{/if}
+	            		<div class="icon {if $credit['credit_marriage']['file'] || $user_info.marrypassed eq 1}marry_yes{else}marry_no{/if}"></div>结婚认证
+					{if $user_info.marrypassed neq 1}</a>{/if}
+	    		</li>
+	            {/if}                  
+	            <li id="other_edu">
+	            	{if $user_info.edupassed neq 1}<a href="javascript:openupload('学历认证','credit_graducation','EDUCATION_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon {if $user_info.edu_validcode neq '' || $user_info.edupassed eq 1}edu_yes{else}edu_no{/if}"></div>学历认证
+					{if $user_info.edupassed neq 1}</a>{/if}
+					{if $user_info.edupassed eq 1}<p><i class="icon-correct"></i> 审核通过</p>{/if}
+	    		</li>
+	            
+	            <li id="other_skill">
+	            	{if $user_info.skillpassed neq 1}<a href="javascript:openupload('技术职称认证','credit_titles','TITLES-_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon {if $credit['credit_titles']['file'] || $user_info.skillpassed eq 1}skill_yes{else}skill_no{/if}"></div>技术职称认证
+					{if $user_info.skillpassed neq 1}</a>{/if}
+	    		</li>
+	            
+	            <li id="other_video" style='display:none;'>
+	            	{if $user_info.videopassed neq 1}<a href="javascript:openupload('视频认证','credit_videoauth','VIDEO_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon {if $user_info.has_send_video eq 1 || $user_info.videopassed eq 1}video_yes{else}video_no{/if}"></div>视频认证
+					{if $user_info.videopassed neq 1}</a>{/if}
+	    		</li>
+	            
+	            <li id="other_tel">
+		            {if $user_info.mobiletruepassed neq 1}<a href="javascript:openupload('手机实名认证','credit_mobilereceipt','PHONE_AUTH');" style="display:inline-block;">{/if}
+		            	<div class="icon {if $credit['credit_mobilereceipt']['file'] || $user_info.mobiletruepassed eq 1}tel_yes{else}tel_no{/if}" ></div>手机实名认证
+					{if $user_info.mobiletruepassed neq 1}</a>{/if}
+	    		</li>
+	            <!--
+	            <li id="other_weibo">
+	            	<a href="javascript:openupload('微博认证','credit_weibo','WEIBO_AUTH');"><div class="icon {if $credit['credit_weibo']['file']}weibo_yes{else}weibo_no{/if}"></div>微博认证</a>
+	    		</li>
+	            -->
+	            <li id="other_home">
+	            	{if $user_info.residencepassed neq 1}<a href="javascript:openupload('居住地证明','credit_residence','RESIDENCE_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon {if $credit['credit_residence']['file'] || $user_info.residencepassed eq 1}home_yes{else}home_no{/if}"></div>居住地证明
+					{if $user_info.residencepassed neq 1}</a>{/if}
+	    		</li>
+				
+				<li id="other_work">
+	            	{if $user_info.workpassed neq 1}<a href="javascript:openupload('工作认证','credit_contact','JOB_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon work_{if $credit['credit_contact']['file'] || $user_info.workpassed eq 1}yes{else}no{/if}"></div>工作认证
+					{if $user_info.workpassed neq 1}</a>{/if}
+	    		</li>
+								
+				<li id="other_credit">
+	            	{if $user_info.creditpassed neq 1}<a href="javascript:openupload('信用报告','credit_credit','BANK_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon credit_{if $credit['credit_credit']['file'] || $user_info.creditpassed eq 1}yes{else}no{/if}"></div>信用报告
+					{if $user_info.creditpassed neq 1}</a>{/if}
+	    		</li>
+				
+				<li id="other_income">
+	            	{if $user_info.incomepassed neq 1}<a href="javascript:openupload('收入认证','credit_incomeduty','INCOME_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon income_{if $credit['credit_incomeduty']['file'] || $user_info.incomepassed eq 1}yes{else}no{/if}"></div>收入认证
+					{if $user_info.incomepassed neq 1}</a>{/if}
+	    		</li>
+	        </ul>
+		</div>
+	</div>	          
+</div>
+<div class="clearfix" style="color: #444;margin: 20px;">注意：如果上传中遇到问题，请联系客服400-890-9888。</div>
+<script type="text/javascript">
+	jQuery(function(){
+		$("#otherR #other li a .icon").hover(function(){
+			$(this).css({"margin-top":"-5px"});
+		},function(){
+			$(this).css({"margin-top":"0px"});
+		});
+		
+	});
+	function openupload(title,path,auth){
+		var url = APP_ROOT+"/index.php?ctl=borrow&act=file_upload&path="+path+"&auth="+auth;
+		$.weeboxs.open(url, {boxid:'credit_f_box',contentType:'iframe',showButton:true, showCancel:false, showOk:false,title:title,width:680,height:455,type:'wee'});
+	}
+</script>

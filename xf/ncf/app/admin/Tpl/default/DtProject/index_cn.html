@@ -1,0 +1,169 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript">
+    function del(id) {
+        if(!id) {
+            idBox = $(".key:checked");
+            if(idBox.length == 0) {
+                alert(LANG['DELETE_EMPTY_WARNING']);
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            id = idArray.join(",");
+        }
+        if(confirm(LANG['CONFIRM_DELETE'])){
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id,
+                   data: "ajax=1",
+                   dataType: "json",
+                   success: function(obj){
+                       if(obj.status != 0) {
+                           alert(obj.msg);;
+                           return ;
+                       }else{
+                           location.reload();
+                       }
+                   }
+            });
+
+        }
+    }
+</script>
+
+<div class="main">
+<div class="main_title">项目列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%DELETE}" onclick="del();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        项目编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+        项目名称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" style="width:100px;" />
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DtProject" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th width="8"><input id="check" onclick="CheckAll('dataTable')" type="checkbox"></th>
+        <th width="50px">编号</th>
+        <th>项目名称</th>
+        <th>已加入金额</th>
+        <th>每日加入限额</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>转让/退出开始时间</th>
+        <th>转让/退出结束时间</th>
+        <th>转让/退出周期</th>
+        <th>年化利率</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    <tr>
+        <td colspan="20" class="bottomTd"> &nbsp;</td>
+    </tr>
+
+    <?php foreach($data as $k=>$v) :?>
+    <tr class="row">
+        <td><input name="key" class="key" value="<?= $v['id'] ?>" type="checkbox"></td>
+        <td><?= $v['id']?></td>
+        <td><?= $v['name']?></td>
+        <td><?= $v['hasLoanMoney']?></td>
+        <td><?= $v['moneyLimitDay']?></td>
+        <td><?= $v['loanStartTime']?></td>
+        <td><?= $v['loanEndTime']?></td>
+        <td><?= $v['redemptionStartTime']?></td>
+        <td><?= $v['redemptionEndTime']?></td>
+        <td><?= $v['minRedemptionPeriod']?>天</td>
+        <td><?= $v['rateYear']?>%</td>
+        <td>
+          <?php if($v['status'] == 0):?> 等待确认<?php endif;?>
+          <?php if($v['status'] == 1):?> 进行中<?php endif;?>
+          <?php if($v['status'] == 2):?> 已清盘<?php endif;?>
+          <?php if($v['status'] == 3):?> 已作废<?php endif;?>
+          <?php if($v['status'] == 4):?> 清盘中<?php endif;?>
+        </td>
+        <td>
+            <a href="m.php?m=DtProject&a=edit&project_id=<?= $v['id']?>">编辑</a>&nbsp;
+            <a href="m.php?m=DtProject&a=assetRelate&project_id=<?= $v['id']?>">资产</a>&nbsp;
+            <a href="m.php?m=DtProject&a=assetDetail&project_id=<?= $v['id']?>">收支记录表</a>
+            <a href="m.php?m=DtDealLoan&a=index&project_id=<?php echo $v['id']?>">出借人列表</a>&nbsp;&nbsp;
+            <a href="m.php?m=DtRedemption&a=index&project_id=<?php echo $v['id']?>">转让/退出列表</a>&nbsp;
+            <!--<a href="javascript:weebox_showInvest({$v.id});">投资认购</a>-->&nbsp;&nbsp;
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<script type="text/javascript">
+    function checkCanAddDeal(status) {
+        if(status == 1) {
+            return true;
+        }
+        alert('该项目当前状态不能上标！');
+        return false;
+    }
+    function weebox_showInvest(id){
+        var dialogBox = $.weeboxs.open(ROOT+'?m=DtProject&a=showInvest&id='+id, {draggable: false,contentType:'ajax',showButton:true,title:'投资认购列表',width:500,height:170,
+            onok:function(){
+                var investMoney = parseFloat(dialogBox.find('#investMoney').val());
+                var canUseMoney = parseFloat(dialogBox.find('#canUseMoney').val());
+                var user_name   = dialogBox.find('#user_name').val();
+
+                if(investMoney <= 0 || (investMoney > canUseMoney)) {
+                    dialogBox.find('#investMoney').focus();
+                    alert('请正确填写认购金额！');
+                    return false;
+                }
+                var html = '<html>';
+                html += '<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">';
+                html += '<tr>';
+                html += '<td colspan=2 class="topTd"></td>';
+                html += '</tr>';
+                html += '<tr>';
+                html += '<td class="item_title">账户名称:</td>';
+                html += '<td class="item_input">'+user_name+'</td>';
+                html += '</tr>';
+                html += '<tr>';
+                html += '<td class="item_title">本次认购金额：</td>';
+                html += '<td class="item_input">'+investMoney+'元</td>';
+                html += '</tr>';
+                html += '<tr>';
+                html += '<td colspan=2 class="bottomTd"></td>';
+                html += '</tr>';
+                html += '</table>';
+                html += '</html>';
+                var sureBox = $.weeboxs.open(html,{type:'warning',draggable: false,contentType:'html',showButton:true,title:'确认投资认购？',
+                    onok:function(){
+                        location.href="/m.php?m=DtProject&a=invest&id="+id+"&investMoney="+investMoney+"&user_name="+user_name;
+                        sureBox.close();
+                    },
+                    oncancel:function(box){
+                        sureBox.close();
+                    }});
+                dialogBox.close();
+            },
+            oncancel:function(box){
+                dialogBox.close();
+            }});
+    }
+</script>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,64 @@
+{include file="web/views/fenzhan/header.html"}
+
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>"  rel="stylesheet" type="text/css">
+<!--private js&css end-->
+
+
+<div class="w980 mauto clearfix">
+
+    <section>
+        <div class="pay">
+            <div class="pay_con">
+                <p>手机号：<input type="text" value="{$userInfo.mobile}" name="mobile" id="mobile"/></p>
+                <p>验证码：<input type="TEXT" name="vCode" id="vCode"/> <span id="resent"><a href="###">点击获取验证码</a></span><span id="resent_error"></span></p>
+                <p class="pay_other">
+                    <button class="user_button mt10 mb20" id="confirmInfoBtn" type="button">下一步</a>
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#confirmInfoBtn').click(function(){
+            $.post('/payment/yeepayConfirmBind', {vCode:$('#vCode').val()}, function(response){
+                if (response.status == 0)
+                {
+                    $('#confirm_error').html('');
+                    window.location.href='/payment/yeepayConfirmPay';
+                }
+                else
+                {
+                    $('#confirm_error').html(response.msg);
+                }
+            },
+            'JSON'
+            )
+        });
+
+        $('#resent').click(function(){
+            $.post('/payment/yeepayValidateCode', {mobile:$('#mobile').val()},function(response){
+                    if (response.status == 0)
+                    {
+                        $('#resent_error').html('');
+                        return true;
+                    }
+                    else if (response.status == 1)
+                    {
+                        $('#confirm_error').html('');
+                        window.location.href='/payment/yeepayConfirmPay';
+                    }
+                    else
+                    {
+                        $('#resent_error').html(response.msg);
+                    }
+                },
+                'JSON'
+            );
+        });
+
+    });
+</script>
+{include file="web/views/fenzhan/footer.html"}

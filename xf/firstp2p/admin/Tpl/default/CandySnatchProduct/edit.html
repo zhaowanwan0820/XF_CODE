@@ -1,0 +1,113 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">修改商品
+        <a href="m.php?m=CandySnatchProduct&a=index" class="back_list">返回列表</a>
+    </div>
+    <div class="blank5"></div>
+    <form method='get' id="form" name="form" action="m.php?m=CandySnatchProduct&a=save">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">商品名称</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="short_title" value="{$productInfo.short_title}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">商品详细信息</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="title" value="{$productInfo.title}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">每日库存</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="stock" value="{$productInfo.stock}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">所需信宝</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="price" value="{$productInfo.price}"/>
+                </td>
+            </tr>
+            <tr>
+            <tr>
+                <td class="item_title">商品首页图片和滑动图片路径</td>
+                <td class="item_input appendChild">
+                    <span style="display: inline-block;" class="btn_add" onclick="">继续添加</span>
+                    <div class="image_name">
+                        <div class="dom_div" style="display:inline-block">
+                            <foreach name="images" item="item">
+                                <input type="text"  value="{$item}" name="images[]"/>
+                            </foreach>
+                        </div>
+                        <span style="display:inline-block" class="btn_del">删除</span>
+                    </div>
+                    <span class="tip_span" id="tip_span">&emsp;上传完整url,删除为最后一个</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">商品详情图片路径</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="detail" value="{$productInfo.detail}"/>
+                    <span class="tip_span">完整url</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">商品种类</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="type" value="{$productInfo.type}"/>
+                    <span class="tip_span">0：普通商品 1：双十一商品 2：邀请专享商品 3: 女神节商品</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">商品排序</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="sort" value="{$productInfo.sort}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">商品状态</td>
+                <td class="item_input">
+                    <select class="textbox require" name="status">
+                        <option <?php if($productInfo['status'] == 0){echo 'selected';}?> value="0">上线</option>
+                        <option <?php if($productInfo['status'] == 1){echo 'selected';}?> value="1">下线</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="submit" class="button" value="确认修改"   />
+                    <input type="reset" class="button" value="重置" />
+                </td>
+            </tr>
+            <input type="hidden" name="id" value="{$productInfo.id}" />
+            <input type="hidden" name="m" value="CandySnatchProduct" />
+            <input type="hidden" name="a" value="save" />
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    $('.btn_add').click(function(e){
+        var event = e || window.event;
+        event.preventDefault;
+        var dom = $('<input type="text" class="textbox require" name="images[]" />');
+        $('.dom_div').append(dom)
+    })
+    $('.btn_del').click(function(e){
+        var event = e || window.event;
+        event.preventDefault;
+        var dom = $('.dom_div');
+        dom.find('input').eq(-1).remove();
+    })
+</script>
+<include file="Public:footer" />

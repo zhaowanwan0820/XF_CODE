@@ -1,0 +1,604 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<style>
+    input[type="radio"]{
+        margin: 0 0 0 30px;
+    }
+    .limit_span{
+
+    }
+    .style_hidden {
+        display: none;
+    }
+    .style_red{
+        color:red;
+    }
+    .style_position{
+        margin-left:200px;
+    }
+    .score_input{
+        width: 30px;
+    }
+    .limit_money{
+        width: 110px;
+    }
+    .item_list li span{
+        display:inline-block;
+        vertical-align:middle;
+        margin: 5px;
+    }
+    .item_action li {
+        margin:15px;
+    }
+    .level_action li {
+        margin:15px;
+    }
+    .sub_info li {
+        margin: 15px;
+    }
+
+    .sub_info li label, .sub_info li textarea{
+        display:inline-block;
+        vertical-align:middle;
+        margin: 5px;
+    }
+    .ques_info td {
+        vertical-align:top;
+    }
+
+    .level_list li span {
+        display:inline-block;
+        vertical-align:middle;
+        margin: 5px;
+    }
+
+    .level_sum span {
+        margin: 5px;
+    }
+    .level_sum {
+        text-align: center;
+    }
+</style>
+
+<?php
+    function toAlpha ($number){
+        $alphabets = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+        return isset($alphabets[$number]) ? $alphabets[$number] : null;
+    }
+?>
+
+<span class="main">
+<div class="main_title">编辑问卷 <?php echo 'IR-' . $question['id']; ?></div>
+<div class="blank5"></div>
+
+<form action="__APP__" method="post" enctype="multipart/form-data" id="questionForm">
+    <input type="hidden" name="m" value="QuestionnaireSurvey" />
+    <input type="hidden" name="a" value="update" />
+
+    <table id="question" class="dataTable question" cellpadding=0 cellspacing=0 >
+        <tr><td colspan="3" class="topTd" >&nbsp; </td></tr>
+        <tr class="" >
+            <th width="250">使用状态</th>
+            <td width="600">
+                <input type="hidden" value="<?php echo $question['id']; ?>" class="ques_id" name="ques_id" />
+                <input type="radio" name="status" value="1" <?php if ($question['status'] == 1) echo 'checked'; ?> /> 使用中
+                <input type="radio" name="status" value="0" <?php if ($question['status'] == 0) echo 'checked'; ?> /> 停用
+            </td>
+            <td class="style_red">若当前问卷使用状态为“使用中”,其他问卷使用状态将被置为“停用”</td>
+        </tr>
+        <tr class="">
+            <th>会员答题次数限制</th>
+            <td>
+                <input type="radio" name="limit_type" value="0" <?php if ($question['limit_type'] == 0) echo 'checked'; ?> /> 无限制
+                <input type="radio" name="limit_type" value="1" <?php if ($question['limit_type'] == 1) echo 'checked'; ?> /> 周期限制
+            <span class="limit_span <?php if ($question['limit_type'] == 0) echo 'style_hidden'; ?>">
+                &nbsp;
+                <input type="input" name="limit_times" class="score_input" value="<?php echo $question['limit_times']; ?>">
+                次
+                /
+                <select name="limit_period">
+                    <option value="1" <?php if ($question['limit_period'] == 1) echo 'selected'; ?> >年</option>
+                    <option value="2" <?php if ($question['limit_period'] == 2) echo 'selected'; ?> >月</option>
+                    <option value="3" <?php if ($question['limit_period'] == 3) echo 'selected'; ?> >周</option>
+                    <option value="4" <?php if ($question['limit_period'] == 4) echo 'selected'; ?> >日</option>
+                </select>
+                /
+                人
+            </span>
+            </td>
+            <td class="style_red">会员在规定时间周期内使用同一份问卷答题次数限制</td>
+        </tr>
+
+        <?php $sub_length = count($question['subjects']); ?>
+        <?php foreach ($question['subjects'] as $subject_key => $subject) { ?>
+        <tr class="ques_info">
+            <td>
+                <ul class="sub_info">
+                    <li>
+                        <input type="hidden" name="sub_id[]" class="sub_id" value="<?php echo $subject['id']; ?>" />
+                        <label>问题<span class="sub_sort"><?php echo $subject_key + 1; ?></span>: </label>
+                        <textarea rows="2" cols="30" name="sub_title[]" class="sub_title"><?php echo $subject['title']; ?></textarea>
+                    </li>
+                    <li class="ques_action">
+                        <input type="button" value="继续新增问题" class="add_ques"/>
+                        <input <?php if ($sub_length <= 1) { ?>style="display:none;"<?php } ?> type="button" value="删除本问题" class="del_ques">
+                    </li>
+                    <!--<li>单选/多选提 <input type="text" class="score_input" name="sub_choose_item_num[]" value="<?php echo $subject['choose_item_num']; ?>">个可选项目</li>-->
+                </ul>
+            </td>
+            <td>
+                <input type="hidden" name="sub_item_num[]" class="sub_item_num" value="<?php echo count($subject['items']); ?>">
+                <ul class="item_list">
+                    <?php
+                    $item_length = count($subject['items']);
+                    foreach ($subject['items'] as $item_key => $item) {
+                    ?>
+                    <li>
+                        <input type="hidden" name="item_id[]" value="<?php echo $item['id']; ?>" class="item_id">
+                        <span class="item_mark"><?php echo toAlpha($item_key); ?></span>
+                        <span><textarea rows="2" cols="30" name="item_content[]" class="item_content" ><?php echo $item['content']; ?></textarea></span>
+                        <span><input type="text" class="score_input" name="item_score[]" value="<?php echo round($item['score'], 2); ?>" >分</span>
+
+                        <?php if ($item_key == 0) { ?>
+                        <?php } //end if ?>
+                        <?php if ($item_key == $item_length - 1) { ?>
+                        <?php } //end if ?>
+
+                    </li>
+                    <?php } //end foreach ?>
+                </ul>
+            </td>
+            <td>
+                <ul class="item_action">
+                    <li><input type="button" value="继续新增待选项" class="add_item"></li>
+                    <li><input <?php if ($item_length <= 2) { ?>style="display:none;"<?php } ?> type="button" value="删除最后一条待选项" class="del_item"></li>
+                    <li></li>
+                </ul>
+            </td>
+        </tr>
+        <?php } //end foreach ?>
+
+        <tr>
+        <th rowspan="2">问卷结果评估等级</th>
+            <td class="level_sum">
+                <span>问卷总分: <b class="style_red total_score"><?php echo round($question['total_score'], 2); ?></b></span>
+                <span>问题总数: <b class="style_red total_sum"><?php echo count($question['subjects']); ?></b></span>
+            </td>
+            <td><input type="button" value="刷新总分和总数" class="refresh_score"></td>
+        </tr>
+        <tr>
+            <td>
+                <ul class="level_list">
+                    <li class="style_red style_position"><span>高分数</span></li>
+                    <?php $level_length = count($question['levels']); ?>
+                    <?php foreach ($question['levels'] as $level_key => $level) { ?>
+                    <li class="level_item">
+                        <input type="hidden" name="level_id[]" class="level_id" value="<?php echo $level['id']; ?>" />
+                        <span>问卷结果评估等级<b class="level_index"><?php echo $level_key+1;?></b>的名称 <input type="text" name="level_name[]" class="level_name" value="<?php echo $level['name']; ?>" /></span>
+                        <span>L<b class="level_index"><?php echo $level_key+1;?></b>最低分数线(含) <input type="text" class="score_input" name="lowest_score[]" value="<?php echo round($level['lowest_score'], 2); ?>" /> 分</span>
+                    </li>
+                    <?php } //end foreach ?>
+                    <li class="style_red style_center">低</li>
+                </ul>
+            </td>
+            <td>
+                <ul class="level_action">
+                    <li><input type="button" value="继续新增分类" class="add_level"/></li>
+                    <li><input <?php if ($level_length <= 2) { ?>style="display:none;"<?php } ?> type="button" value="删除最后一条分类" class="del_level"></li>
+                </ul>
+            </td>
+        </tr>
+
+        <tr>
+            <th>提示信息</th>
+            <td colspan="2">
+                <script id="editor_prompt" name="prompt" type="text/plain" style="width:800px;height:200px; float:left;"><?php echo $question['prompt']; ?></script>
+            </td>
+        </tr>
+
+        <tr>
+            <th>备注</th>
+            <td colspan="2">
+                <script id="editor_remark" name="remark" type="text/plain" style="width:800px;height:200px; float:left;"><?php echo $question['remark']; ?></script>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3">
+                <input type="button" class="button" value="{%EDIT}" onclick="checkParams()" />
+                <input type="reset" class="button" value="{%RESET}" />
+            </td>
+        </tr>
+        <tr><td colspan="3" class="bottomTd">&nbsp; </td></tr>
+    </table>
+</form>
+
+    <!-- 模版 -->
+<table style="display: none">
+    <tr class="ques_info ques_info_template">
+        <td>
+            <ul class="sub_info">
+                <li>
+                    <input type="hidden" name="sub_id[]" class="sub_id" value="0" />
+                    <label>问题<span class="sub_sort"></span>: </label>
+                    <textarea rows="2" cols="30" name="sub_title[]" class="sub_title"></textarea>
+                </li>
+                <li class="ques_action">
+                    <input type="button" value="继续新增问题" class="add_ques"/>
+                    <input style="display:none" type="button" value="删除本问题" class="del_ques">
+                </li>
+                <!--<li>单选/多选提 <input type="text" class="score_input" name="sub_choose_item_num[]" value="1">个可选项目</li>-->
+            </ul>
+        </td>
+        <td>
+            <input type="hidden" name="sub_item_num[]" class="sub_item_num" value="4">
+            <ul class="item_list">
+                <li>
+                    <input type="hidden" name="item_id[]" class="item_id" value="0" />
+                    <span class="item_mark">A</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content" ></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                </li>
+                <li>
+                    <input type="hidden" name="item_id[]" class="item_id" value="0" />
+                    <span class="item_mark">B</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content" ></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                </li>
+                <li>
+                    <input type="hidden" name="item_id[]" class="item_id" value="0" />
+                    <span class="item_mark">C</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content" ></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                </li>
+                <li>
+                    <input type="hidden" name="item_id[]" class="item_id" value="0" />
+                    <span class="item_mark">D</span>
+                    <span><textarea rows="2" cols="30" name="item_content[]" class="item_content" ></textarea></span>
+                    <span><input type="text" class="score_input" name="item_score[]">分</span>
+                </li>
+            </ul>
+        </td>
+        <td>
+            <ul class="item_action">
+                <li><input type="button" value="继续新增待选项" class="add_item"></li>
+                <li><input type="button" value="删除最后一条待选项" class="del_item"></li>
+                <li></li>
+            </ul>
+        </td>
+    </tr>
+</table>
+    <!--模版-->
+<ul style="display: none">
+    <li class="level_item level_item_template">
+        <span>问卷结果评估等级<b class="level_index"></b>的名称 <input type="text" name="level_name[]" class="level_name"></span>
+        <span>L<b class="level_index"></b>最低分数线(含) <input type="text" class="score_input" name="lowest_score[]"> 分</span>
+    </li>
+</ul>
+
+
+<script type="text/javascript">
+
+    function isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+
+    //实例化编辑器
+    UE.getEditor('editor_remark');
+    UE.getEditor('editor_prompt');
+
+    var alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    $(document).ready(function(){
+        $('input[name="limit_type"]').click(function(){
+            if ($(this).val() == 1) {
+                $('.limit_span').removeClass('style_hidden');
+            } else {
+                $('.limit_span').addClass('style_hidden');
+            }
+        });
+
+        $('.add_item').click(function(){
+            var item_list = $(this).parents('.ques_info').find('.item_list');
+            var len = item_list.find('li').length;
+            if (len >= 26) {
+                alert('最多创建26组待选项');
+                return false;
+            }
+            item_clone = $('.ques_info_template .item_list li:last').clone(true);
+            item_clone.find('.item_mark').text(alphabets[len]);
+            item_list.find('li:last span.score_tip').remove();
+            item_list.append(item_clone);
+            len ++;
+
+            //更新hidden
+            $(this).parents('.ques_info').find('.sub_item_num').val(len);
+
+            //显示删除按钮
+            if (len >= 2) {
+                $(this).parents('.item_action').find('.del_item').show();
+            }
+        });
+
+        $('.del_item').click(function(){
+            var ques_info = $(this).parents('.ques_info');
+            var item_list = ques_info.find('.item_list');
+            var len = item_list.find('li').length;
+            if (len <= 2) {
+                alert('至少存在2组待选项');
+                return false;
+            }
+            var item_id = item_list.find('li:last .item_id').val();
+            if (item_id != 0 && typeof item_id != 'undefined') {
+                //ajax删除item
+                var that = $(this);
+                that.attr('disabled', 'disabled');
+                $.ajax({
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=deleteItem",
+                    type: 'POST',
+                    data: "item_id=" + item_id,
+                    dataType: "json",
+                    success: function(obj){
+                        if (obj.status == '1') {
+                            //删除节点
+                            item_list.find('li:last').remove();
+                            item_list.find('li:last').append('<span class="style_red score_tip">低分</span>');
+                            len --;
+                            //更新hidden
+                            ques_info.find('.sub_item_num').val(len);
+                            //隐藏删除按钮
+                            if (len <= 2) {
+                                that.hide();
+                            }
+                        } else {
+                            alert(obj.msg);
+                        }
+                        that.removeAttr('disabled');
+                    }
+                });
+            } else {
+                //删除节点
+                item_list.find('li:last').remove();
+                item_list.find('li:last').append('<span class="style_red score_tip">低分</span>');
+                len --
+                //更新hidden
+                ques_info.find('.sub_item_num').val(len);
+                //隐藏删除按钮
+                if (len <= 2) {
+                    $(this).hide();
+                }
+            }
+        });
+
+        $('.add_ques').click(function(){
+            var ques_clone = $('.ques_info_template').clone(true);
+            ques_clone.removeClass('ques_info_template');
+            var len = $('#question .ques_info').length;
+            ques_clone.find('.sub_sort').text(len + 1);
+            $('#question .ques_info:last').after(ques_clone);
+            len ++;
+
+            //显示删除按钮
+            if (len >= 1) {
+                $('#question .del_ques').show();
+            }
+        });
+
+
+        $('.del_ques').click(function(){
+            var ques_info = $(this).parents('.ques_info');
+            var len = $('#question .ques_info').length;
+            if (len <= 1) {
+                alert('至少存在1个问题');
+                return false;
+            }
+            var sub_id = ques_info.find('.sub_id').val();
+            if (sub_id != 0 && typeof sub_id != 'undefined') {
+                var that = $(this);
+                that.attr('disabled', 'disabled');
+                $.ajax({
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=deleteSubject",
+                    type: 'POST',
+                    data: "sub_id=" + sub_id,
+                    dataType: "json",
+                    success: function(obj){
+                        if (obj.status == '1') {
+                            ques_info.remove();
+                            len --;
+                            //刷新问题编号
+                            $('#question .ques_info').each(function (i) {
+                                $(this).find('.sub_sort').text(i+1);
+                            });
+                            //隐藏删除按钮
+                            if (len <= 1) {
+                                $('#question .del_ques').hide();
+                            }
+                        } else {
+                            alert(obj.msg);
+                        }
+                        that.removeAttr('disabled');
+                    }
+                });
+            } else {
+                ques_info.remove();
+                len --;
+                //刷新问题编号
+                $('#question .ques_info').each(function (i) {
+                    $(this).find('.sub_sort').text(i+1);
+                });
+                //隐藏删除按钮
+                if (len <= 1) {
+                    $('#question .del_ques').hide();
+                }
+            }
+
+        });
+
+        $('.add_level').click(function(){
+            var len = $('#question .level_item').length;
+            var level_clone = $('.level_item_template').clone(true);
+            level_clone.removeClass('level_item_template');
+            level_clone.find('.level_index').text(len + 1);
+            $('#question .level_item:last').after(level_clone);
+            len ++;
+
+            //显示删除按钮
+            if (len >= 2) {
+                $('#question .del_level').show();
+            }
+        });
+
+        $('.del_level').click(function(){
+            var len = $('#question .level_item').length;
+            if (len <= 2) {
+                alert('至少存在2个分类');
+                return false;
+            }
+            var level_id = $('#question .level_item:last .level_id').val();
+            console.log(level_id);
+            if (level_id != 0 && typeof level_id != 'undefined') {
+                var that = $(this);
+                that.attr('disabled', 'disabled');
+                $.ajax({
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=deleteLevel",
+                    type: 'POST',
+                    data: "level_id=" + level_id,
+                    dataType: "json",
+                    success: function(obj){
+                        if (obj.status == '1') {
+                            $('#question .level_item:last').remove();
+                            len --;
+                            //隐藏删除按钮
+                            if (len <= 2) {
+                                that.hide();
+                            }
+                        } else {
+                            alert(obj.msg);
+                        }
+                        that.removeAttr('disabled');
+                    }
+                });
+
+            } else {
+                $('#question .level_item:last').remove();
+                len --;
+                //隐藏删除按钮
+                if (len <= 2) {
+                    $(this).show();
+                }
+            }
+        });
+
+        $('.refresh_score').click(function(){
+            var total_score = 0;
+            var total_sum = 0;
+            $('#question .ques_info').each(function(){
+                var max_score = 0;
+                $(this).find('.score_input').each(function(){
+                    if (max_score < parseFloat($(this).val())) {
+                        max_score = parseFloat($(this).val());
+                    }
+                });
+                total_score = total_score + max_score;
+                total_sum ++;
+            });
+            $('.total_score').text(total_score);
+            $('.total_sum').text(total_sum);
+        });
+    });
+
+    function checkParams() {
+        var check_score = true;
+        $('#question .score_input').each(function(){
+            if ($(this).val().length == 0 || !isNumeric($(this).val())){
+                check_score = false;
+            }
+        });
+        if (!check_score) {
+            alert('所有分值选项不能为空,且必须为整数或小数');
+            return false;
+        }
+
+        var limit_money = true;
+        limitMoneyLength = true;
+        $('#question .limit_money').each(function(){
+            var str = $(this).val().split('.');
+            if(str.length == 2 && str['1'].length > 3){
+                limitMoneyLength = false;
+            }
+            if ($(this).val() >100 || $(this).val() <= 0 || $(this).val().length == 0 || !isNumeric($(this).val())){
+                limit_money = false;
+            }
+        });
+        if (!limitMoneyLength) {
+            alert('单笔投资限额请最多输入三位小数');
+            return false;
+        }
+        if (!limit_money) {
+            alert('单笔投资限额选项不能为空,且单笔投资限额最高是100万元');
+            return false;
+        }
+
+        var sub_title_check = true;
+        $('#question .sub_title').each(function(){
+            if ($(this).val().length == 0){
+                sub_title_check = false;
+            }
+        });
+        if (!sub_title_check) {
+            alert('问题标题不能为空');
+            return false;
+        }
+
+        var item_content_check = true;
+        $('#question .item_content').each(function(){
+            if ($(this).val().length == 0){
+                item_content_check = false;
+            }
+        });
+        if (!item_content_check) {
+            alert('选项内容不能为空');
+            return false;
+        }
+
+        var level_name_check = true;
+        $('#question .level_name').each(function(){
+            if ($(this).val().length == 0){
+                level_name_check = false;
+            }
+        });
+        if (!level_name_check) {
+            alert('问卷结果评估等级的名称不能为空');
+            return false;
+        }
+
+        if(!UE.getEditor('editor_prompt').hasContents()) {
+            alert('提示信息不能为空');
+            return false;
+        }
+
+        if(!UE.getEditor('editor_remark').hasContents()) {
+            alert('备注不能为空');
+            return false;
+        }
+
+        if (confirm("确定此操作吗？")) {
+            document.getElementById("questionForm").submit()
+            return true;
+        }
+    }
+
+</script>
+<div class="blank5"></div>
+</div
+<include file="Public:footer" />

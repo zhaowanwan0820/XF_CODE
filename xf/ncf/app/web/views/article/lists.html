@@ -1,0 +1,63 @@
+﻿{include file="web/views/header.html"}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/base.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/common.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/p-news-mediadetail.css');?>" />
+
+    <div class="main  pt23 pb30 clearfix">
+        <div class="ui-new-sidebar">
+            <ul class="new-tab">
+                <li {if $type == 1}class="select"{/if}><a href="/article/lists?type=1">媒体报道</a></li>
+                <li {if $type == 2}class="select"{/if}><a href="/article/lists?type=2">平台公告</a></li>
+                <li {if $type == 3}class="select"{/if}><a href="/article/lists?type=3">还款公告</a></li>
+            </ul>
+        </div>
+
+        <div class="ui-new-mainbody">
+            <div class="p_news_media">
+                <div class="ui-box">
+                    <div class="h-title">
+                        <h2><i></i>{if $type == 1}媒体报道{elseif $type == 2}平台公告{else}还款公告{/if}</h2>
+                    </div>
+
+                    <div class="new-r">
+                        {foreach from=$lists item=item}
+                        <div class="news-list">
+                            <h3 class="h-list">
+                                <img alt="{$item.title|escape}" src="/static/img/meiti/libg.jpg" />
+                                <a title="{$item.title|escape}" href="/article/show?atc_id={$item.id}">{$item.title|escape}</a>
+                            </h3>
+                            <span class="time">{function name="to_date" v=$item.createTime f="Y-m-d H:i:s"}</span>
+                            <p>{$item.content|stripcslashes}</p>
+                        </div>
+                        {/foreach}
+
+                        <div class="new-page">
+                            <div class="ui-pages">
+                                <span>{$pages.total} 条记录 {$pages.pageNo}/{$pages.totalPage} 页</span>
+                                <a class="first" href="/article/lists?type={$type}&page=1">首页</a>
+
+                                {if $pages.pageNo != 1}
+                                <a class="prev"  href="/article/lists?type={$type}&page=<?=$this->_var['pages']['pageNo']-1?>">上一页</a>
+                                {/if}
+
+                                {foreach from=$numbers item=item}
+                                {if $item != $pages.pageNo} <a class="num" href="/article/lists?type={$type}&page={$item}">{$item}</a> {else} <span class="current">{$item}</span> {/if}
+                                {/foreach}
+
+                                {if $pages.pageNo != $pages.totalPage}
+                                <a class="next"  href="/article/lists?type={$type}&page=<?=$this->_var['pages']['pageNo']+1?>">下一页</a>
+                                {/if}
+
+                                <a class="first" href="/article/lists?type={$type}&page={$pages.totalPage}">末页</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{include file="web/views/footer.html"}

@@ -1,0 +1,42 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v1/css/oauth/email.css?v=1000');?>" rel="stylesheet" type="text/css">
+<link href="<?php echo $this->asset->makeUrl('v1/css/oauth/email_skin.css?v=1000');?>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/oauth/email.js?v=1000');?>"></script>
+<div class="w980 mauto clearfix">
+       <section>
+            <div class="shadow">
+                <div class="mess_title tc">修改邮箱</div>
+					<div class="pw-info">
+                <form method="post" action="/user/saveemail" id="modify">
+                    <?php echo token_input(); ?>
+                <ul class="clearfix">
+                    <li id="old_email_li"><label> <span>*</span> 旧邮箱：
+                    </label> <input type="text" value="" name="email" id="old_mail" class="txt">
+                        &nbsp;&nbsp;&nbsp;<span class="error_tip tip"></span></li>
+                    <li><label> <span>*</span> 密码：
+                    </label> <input type="password" value="" name="password" id="password"
+                        class="txt" autocomplete="off"> &nbsp;&nbsp;&nbsp;<span class="error_tip tip"></span></li>
+                    <li><label> <span>*</span> 新邮箱：
+                    </label> <input type="text" value="" name="new_email" id="new_mail"
+                        class="txt"> &nbsp;&nbsp;&nbsp;<span
+                        class="error_tip tip new_mail"></span></li>
+                    <li><label> <span>*</span> 确认新邮箱：
+                    </label> <input type="text" value="" name="re_new_mail" id="re_new_mail"
+                        class="txt"> &nbsp;&nbsp;&nbsp;<span
+                        class="error_tip tip new_mail"></span></li>
+                    <li class="btn-w30"><label> <span></span>
+                    </label>
+                    <input class="sumbtn" type="submit" id="submit_button" value="确定">
+
+                    </li>
+                    <li><label> <span></span>
+                    </label> <span class="error_tip" style="color: red" id="error_tip"></span>
+                    </li>
+                </ul>
+                </form>
+            </div>
+            </div>
+       </section>
+</div>
+
+{include file="web/views/footer.html"}

@@ -1,0 +1,131 @@
+{include file="inc/borrow/fileupload/credit_header.html"}
+<style type="text/css">
+	.credit_upload .field{ margin:2px 0; width:600px}
+	.credit_upload .field label{
+		height: 26px;
+		font-size: 12px;
+		line-height: 26px;
+		width: 150px;
+	}
+</style>
+<div class="hd-bg">
+	<form action="{url x="index" r="borrow#file_upload_save"}" method="post" id="uploadcarbox" name="uploadcarbox">
+		<div id="item">
+	    	<div class="blank20"></div>
+	        <div style="width:90%;background:#FEFEFC;border:1px solid #CCC;padding:10px;margin:0 auto;">
+	            <div class="f16 b pt5 pb5" style="color:#003C85;">
+				购车认证
+	            </div>
+	            <div class="f_dgray" style="text-indent: 2em;">
+				购车证明是证明借款者资产及还款能力的重要凭证之一，{function name="app_conf" v="SHOP_TITLE"}会根据借款者提供的购车证明给与借款者一定的信用加分。  
+				</div>
+	        </div>
+	        <div class="blank20"></div>
+	        <div id="explain" style="width:80%;padding-left:40px;margin:0 auto;">
+	            <p class="f_dgray b">
+	            	认证说明：
+	            </p>
+	            <div id="explain_item">
+                    <div style="padding-left:20px">
+                        <div class="lh22">
+                            1、请上传您所购买<span class="f_red">车辆行驶证</span>原件的照片。
+                        </div>
+                        <div class="lh22">
+                            2、请上传您和您购买车辆的<span class="f_red">合影（照片须露出车牌号码）</span>。
+                        </div>
+                        <div class="lh22">
+                            3、请确认您上传的资料是清晰的、未经修改的数码照片或扫描图片。
+                        </div>
+                    </div>
+	            </div>
+				<div class="blank5"></div>
+	            <p class="lh24">
+	                <span class="f_dgray b">审核时间：</span>
+	                <span class="f_red">3个工作日内</span>
+	            </p>
+	            <p class="lh24">
+	                <span class="f_dgray b">认证有效期：</span>
+	                <span class="f_red">永久</span>
+	            </p>
+				<div class="blank5"></div>
+	            <div class="dot"></div>
+	            <div class="blank20"></div>
+	        </div>
+			<div class="clearfix credit_upload">
+				<div class="field">
+	                <label><span class="f_red b">*</span>汽车品牌：</label>
+	                <span><input type="text" name="carbrand" value="{$user_info.car_brand}" id="carBrand"></span>
+	            </div>
+				<div class="field">
+	                <label><span class="f_red b">*</span>购车年份：</label>
+	                <span>
+	                    <select id="carYear" name="caryear">
+	                    	<?php
+							$y= to_date(get_gmtime(),"Y");
+							for($i=$y; $i>=$y-22 ;$i--){
+							?>
+							<option value="<?php echo $i; ?>" <?php if($i==intval($this->_var['user_info']['car_year'])): ?>selected="selected"<?php endif; ?>><?php echo $i; ?></option>
+							<?php } ?>
+						</select>
+	                </span>
+	            </div>
+				<div class="field">
+	                <label><span class="f_red b">*</span>车牌号码：</label>
+	                <span><input type="text" name="carnumber" value="{$user_info.car_number}" id="carNumber"></span>
+	            </div>
+			</div>
+	       	<div>
+				<span style="padding-left:83px" class="f_red b">*</span>上传汽车证明：
+				<div class="blank5"></div>
+				<div style="width:83%;padding-left:39px;margin:0 auto;" id="upload_file_box">
+	       			<div class="plupload_header_text pl10">每张图片最大限制为3MB，图片格式为JPG,GIF,PNG,PDF</div>
+					<div class="blank5"></div>
+					{function name="show_ke_image" v="file1"}
+					{function name="show_ke_image" v="file2"}
+					<div class="blank1"></div>
+					{function name="show_ke_image" v="file3"}
+					{function name="show_ke_image" v="file4"}
+				</div>
+			</div>
+	        <div class="blank20"></div>
+	        <div class="blank20"></div>
+	        <div style="text-align: center">
+	            <input type="hidden" id="path" value="{$path}" name="path"/>
+				<input type="hidden" id="auth" value="{$auth}" name="auth"/>
+	            <input type="hidden" id="uploaded" name="uploaded" value="0"/>
+	            <input type="submit" value="提交审核" class="saveSettingBnt"/>
+	        </div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+	$("#uploadcarbox").submit(function(){
+		if($.trim($("#carBrand").val())==""){
+			$.showErr("请输入汽车品牌。",function(){
+				$("#carBrand").focus();
+			});
+			return false;
+		}
+		if($.trim($("#carNumber").val())==""){
+			$.showErr("请输入车牌号码。",function(){
+				$("#carNumber").focus();
+			});
+			return false;
+		}
+		var is_upload_file = false;
+		for(var i=1;i<=4;i++){
+			$("#upload_file_box #file"+i).val(KE.util.getData('file'+i));
+			if($.trim($("#upload_file_box #file"+i).val())!=""){
+				is_upload_file = true;
+			}
+		}
+		if(!is_upload_file){
+			$.showErr("请完成文件上传后提交审核。");
+			return false;
+		}
+		
+		return true;
+	});
+
+</script>
+{include file="inc/borrow/fileupload/credit_footer.html"} 

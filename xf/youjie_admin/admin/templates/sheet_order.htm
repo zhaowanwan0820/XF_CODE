@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../js/calendar/init.css">
+    <link rel="stylesheet" href="../js/calendar/sheet_order.css">
+    <link rel="stylesheet" href="../js/calendar/dcalendar.picker.css">
+    <style>
+        #cover{position: fixed;left: 0;top: 0;background: rgba(0, 0, 0, 0.5);overflow: auto;width: 100%;height: 100%; display: none;}
+        .cover_box{ width: 50px;margin: 50vh auto 0; }
+    </style>
+</head>
+
+<body>
+    <div class="conter">
+        <h2 class="title">生成电子面单</h2>
+        <form action="">
+            <table cellspacing="4" cellpadding="4" width="100%">
+                <!-- 快递公司 -->
+                <tr>
+                    <td class="label">快递公司：</td>
+                    <td>
+                        <select name="expressName" class="select" id="prand-select">
+                            <option value="-1">请选择</option><option data-load="1" value="13" data-key="SF">顺丰</option><option data-load="1" value="12" data-key="ZJS">宅急送</option><option data-load="1" value="6" data-key="YZPY">邮政快递包裹</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 快递类型 -->
+                <tr>
+                    <td class="label">快递类型：</td>
+                    <td>
+                        <select name="expressTypeId" class="select" id="prands-select">
+                            <option value="-1">请选择</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <!--城市联动-->
+                <!-- 地址选择 -->
+                <tr>
+                    <td class="label">发货地址：</td>
+                    <td>
+                        <select name="address" class="select" id="address">
+                            <option value="0">请选择地址</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 商家自定义区域 -->
+                <!--<tr>-->
+                    <!--<td class="label">商家自定义区域：</td>-->
+                    <!--<td><input type="text" name="label_suppliers_id" maxlength="50" value="" id="label_suppliers_id" autocomplete="off"/>-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!-- 运输方式 -->
+                <tr>
+                    <td class="label">运输方式：</td>
+                    <td>
+                        <select name="transType" class="select" id="transType">
+                            <option value="1">陆运</option>
+                            <option value="2">空运</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 邮费支付方式 -->
+                <tr>
+                    <td class="label">邮费支付方式：</td>
+                    <td>
+                        <select name="payType" class="select" id="payType">
+                            <option value="1">现付</option>
+                            <option value="2">到付</option>
+                            <option value="3">月结</option>
+                            <option value="4">第三方支付</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 是否要求签回单 -->
+                <!--<tr>-->
+                    <!--<td class="label">是否要求签回单：</td>-->
+                    <!--<td>-->
+                        <!--<select name="isReturnSignBill" class="select" id="isReturnSignBill">-->
+                            <!--<option value="1">要求</option>-->
+                            <!--<option value="0">不要求</option>-->
+                        <!--</select>-->
+                    <!--</td>-->
+                <!--</tr>-->
+
+
+                <!-- 签回单操作要求 -->
+                <!--<tr>-->
+                    <!--<td class="label">签回单操作要求：</td>-->
+                    <!--<td><input type="text" name="operateRequire" maxlength="60" value="" autocomplete="off"/></td>-->
+                <!--</tr>-->
+                <!-- 是否通知快递员上门揽件 -->
+                <tr>
+                    <td class="label">是否通知快递员上门揽件：</td>
+                    <td>
+                        <select name="isNotice" class="select" id="isnotice">
+                            <option value="1">不通知</option>
+                            <option value="0">通知</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 上门取件时间段 -->
+                <tr id="time" style="display:none;">
+                    <td class="label">上门取件时间段：</td>
+                    <td>
+                        <input class="input-time" id='startdatepicker' type="text" placeholder="开始时间" name="startDate" maxlength="50" value="" autocomplete="off"/>
+                        <input class="input-time" id='enddatepicker' type="text" placeholder="结束时间" name="endDate" maxlength="50" value="" autocomplete="off"/>
+                    </td>
+                </tr>
+                <!-- 是否订阅短信 -->
+                <tr>
+                    <td class="label">是否订阅短信：</td>
+                    <td>
+                        <select name="isSendMessage" class="select" id="isSendMessage">
+                            <option value="0">不需要</option>
+                            <option value="1">需要</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 返回电子面单模板 -->
+                <tr>
+                    <td class="label">返回电子面单模板：</td>
+                    <td>
+                        <select name="isReturnPrintTemplate" class="select" id="isReturnPrintTemplate">
+                            <option value="0">默认模板</option>
+                            <option value="1">非默认模板</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 模板规格 -->
+                <tr id="template-input" style="display: none;">
+                    <td class="label">模板规格(单位:cm)：</td>
+                    <td><input type="text" placeholder="填写对应模板尺寸" name="templateSize" maxlength="60" value="" autocomplete="off"/></td>
+                </tr>
+                <!-- 包装类型 -->
+                <tr>
+                    <td class="label">包装类型：</td>
+                    <td>
+                        <!-- <input type="text" name="packingType" maxlength="60" value="" /> 
+                            0-纸 1-纤 2-木 3-托膜 4-木托 99-其他-->
+                        <select name="packingType" class="select" id="packingType">
+                            <option value="0">纸</option>
+                            <option value="1">纤</option>
+                            <option value="2">木</option>
+                            <option value="3">托膜</option>
+                            <option value="4">木托</option>
+                            <option value="99">其他</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 送货方式 -->
+                <tr>
+                    <td class="label">送货方式：</td>
+                    <td>
+                        <!-- <input type="text" name="deliveryMethod" maxlength="60" value="" /> 
+                        0-自提 1-送货上门（不含上楼） 2-送货上楼-->
+                        <select name="deliveryMethod" class="select" id="deliveryMethod">
+                            <option value="0">自提</option>
+                            <option value="1">送货上门（不含上楼）</option>
+                            <option value="2">送货上楼</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <!-- 商家与电子面单客户号关联id -->
+                <!-- <tr>
+                    <td class="label">商家与电子面单客户号关联id：</td>
+                    <td><input type="text" name="suppliersEorderInfoId" maxlength="60" value="" /></td>
+                </tr> -->
+            </table>
+            <div class="btn">提交</div>
+        </form>
+    </div>
+    <div id="cover">
+        <div class="cover_box">
+            <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
+                        <stop stop-color="#fff" stop-opacity="0" offset="0%"></stop>
+                        <stop stop-color="#fff" stop-opacity=".631" offset="63.146%"></stop>
+                        <stop stop-color="#fff" offset="100%"></stop>
+                    </linearGradient>
+                </defs>
+                <g fill="none" fill-rule="evenodd">
+                    <g transform="translate(1 1)">
+                        <path d="M36 18c0-9.94-8.06-18-18-18" id="Oval-2" stroke="url(#a)" stroke-width="2" transform="rotate(118.415 18 18)">
+                            <animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="0.9s" repeatCount="indefinite"></animateTransform>
+                        </path>
+                        <circle fill="#fff" cx="36" cy="18" r="1" transform="rotate(118.415 18 18)">
+                            <animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="0.9s" repeatCount="indefinite"></animateTransform>
+                        </circle>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        {insert_scripts files="../js/dcalendar.picker.js"}
+        {insert_scripts files="../js/util.js"}
+    <script>
+            $(function () {
+                const orderid = localStorage.getItem('temp');
+                const admin_id = U.GetQueryString('admin_id');
+                console.log(admin_id);
+                const _width = window.innerWidth;
+                const _height = window.innerHeight;
+                $('#cover').css({width:_width,height:_height});
+                
+                //日期初始化
+                $('#startdatepicker').dcalendarpicker({format: 'yyyy-mm-dd'}); //初始化日期选择器
+                $('#enddatepicker').dcalendarpicker({format: 'yyyy-mm-dd'}); //初始化日期选择器
+                /**
+                 * 快递公司展示接口
+                 * url express.php?act=express_company
+                 */
+                U.https({type:'GET', site: 'express.php?act=show_electronic_code', data: {admin_id:admin_id} }).then(data => {
+                    // console.log(data)
+                    let str = '<option value="-1">请选择</option><option data-load="1" value="13" data-key="SF">顺丰</option><option data-load="1" value="12" data-key="ZJS">宅急送</option><option data-load="1" value="6" data-key="YZPY">邮政快递包裹</option>';
+                    for (var i of data.data) {
+                        str += `<option data-load="0" value="${i.expressCompanyId}" data-key="${i.id}">${i.expressCompany.expressCompanyName}</option>`;
+                    }
+                    $('#prand-select').html(str);
+                })
+                    .catch(err => {
+                        console.log(err)
+                    });
+                /**
+                 * 获取用户发货地址
+                 * url express.php?act=show_business_address
+                 */
+                U.https({type:'GET', site: 'express.php?act=show_business_address', data: {admin_id:admin_id} }).then(data => {
+                    console.log(data)
+                    let str = '<option value="-1">请选择</option>';
+                    for (var i of data.data) {
+                        str += `<option data-area="${i.area}" data-city="${i.city}" value="${i.id}" data-province="${i.province}" data-address="${i.address}">${i.address}</option>`;
+                    }
+                    $('#address').html(str);
+                })
+                    .catch(err => {
+                        console.log(err);
+                        alert(err.msg)
+                    });
+                /**
+                 * 获取某个快递公司的所有快递类型
+                 * url express.php?act=express_type
+                 * data expressCompanyId  int  快递公司id
+                 */
+                function company(id) {
+                    let str = '<option value="-1">请选择</option>';
+                    if (id == '-1') {
+                        $('#prands-select').html(str);
+                        return false;
+                    }
+                    U.https({type:'GET', site: 'express.php?act=express_type', data: { expressCompanyId: id } }).then(data => {
+                        for (var i of data.data) {
+                            str += `<option value="${i.id}" data-key="${i.expressTypeCode}">${i.expressTypeName}</option>`;
+                        }
+                        $('#prands-select').html(str);
+                    })
+                        .catch(err => {
+                            console.log(err)
+                        });
+                }
+                //获取快递公司下拉选项
+                $("#prand-select").change(function (e) {
+                    let id = $(this).val();
+                    company(id);
+                });
+                //获取快递类型
+                $('#expressTypeId').change(function (e) {
+                    let ids = $(this).val();
+
+                });
+                //获取运输方式
+                $('#transType').change(function (e) {
+                    let type = $(this).val();
+                });
+                //邮费支付方式
+                $('#payType').change(function (e) {
+                    let pay = $(this).val();
+                });
+                //是否要求签回单
+                $('#isReturnSignBill').change(function (e) {
+                    let bill = $(this).val();
+                });
+                //是否上门揽件下拉选项
+                $('#isnotice').change(function (e) {
+                    let temp = $(this).val();
+                    console.log(temp)
+                    $("input[name='startDate']").attr('value','');
+                    $("input[name='endDate']").attr('value','');
+                    if (temp == 0) {
+                        $("#time").fadeIn(300);
+                    } else {
+                        $("#time").fadeOut(300);
+                    }
+                });
+                //是否订阅短信
+                $('#isSendMessage').change(function (e) {
+                    let ismsg = $(this).val();
+                });
+                //返回电子面单下拉选项
+                $('#isReturnPrintTemplate').change(function (e) {
+                    let is = $(this).val();
+                    console.log(is);
+                    if (is == 1) {
+                        $("#template-input").fadeIn(300);
+                    } else {
+                        $("#template-input").fadeOut(300);
+                    }
+                });
+
+                //包装类型
+                $('#packingType').change(function (e) {
+                    let pack = $(this).val();
+                });
+                //送货方式
+                $('#deliveryMethod').change(function (e) {
+                    let del = $(this).val();
+                });
+
+                /*
+                    customArea               String        商家自定义区域
+                    transType                int           运输方式 1-陆运 2-空运 不填默认为1
+                    shipperCode            String        快递公司编码
+                    payType                  Int           邮费支付方式:1-现付，2-到付，3-月结，4-第三方支付
+                    expressTypeId            Int           快递类型
+                    isReturnSignBill         Int           是否要求签回单 1-要求 0-不要求
+                    operateRequire           String        签回单操作要求(如：签名、盖章、身份证复印件等)
+                    isNotice                 Int           是否通知快递员上门揽件：0-通知;1-不通知;默认为1
+                    startDate              Timestamp     上门取货时间段:"yyyy-MM-dd HH:mm:ss"格式化，本文中所有时间格式相同
+                    endDate                Timestamp     上门取货时间段:"yyyy-MM-dd HH:mm:ss"格式化，本文中所有时间格式相同
+                    isSendMessage            Int           是否订阅短信：0-不需要；1-需要
+                    isReturnPrintTemplate    int           返回电子面单模板：0-不需要；1-需要
+                    templateSize             String        模板规格(默认的模板无需传值，非默认模板传对应模板尺寸)
+                    packingType              Int           包装类型(快运字段)默认为0； 0-纸 1-纤 2-木 3-	托膜 4-	木托 99-其他
+                    deliveryMethod           Int           送货方式(快运字段)默认为0； 0-自提 1-送货上门（不含上楼） 2-	送货上楼
+                    suppliersEorderInfoId    Int           商家与电子面单客户号关联id
+                    suppliers_id             int           商家用户uid
+                    orderCode                              订单号
+                **/
+                $('.btn').on('click', function (e) {
+                    let obj = {},startDate='',endDate='',shipperCode='',suppliersEorderInfoId='';
+                    let isTis = $("#prand-select option:selected").attr('data-load');//输出表示
+                    if(!isTis){
+                        alert('请填写快递公司！');
+                        return false;
+                    }
+                    if(isTis == 1){
+                        shipperCode = $('#prand-select option:selected').attr('data-key');
+                    }else{
+                        suppliersEorderInfoId = $('#prand-select option:selected').attr('data-key');
+                    }
+                    let expressTypeId = $('#prands-select option:selected').val();
+                    if(expressTypeId == '-1'){
+                        alert('请填写快递类型！');
+                        return false;
+                    }
+                    let customArea = $("input[name='label_suppliers_id']").val();
+                    let transType = $('#transType option:selected').val();
+                    let payType = $('#payType option:selected').val();
+                    let isReturnSignBill = $('#isReturnSignBill option:selected').val();
+                    let operateRequire = $("input[name='operateRequire']").val();
+                    let isNotice = $('#isnotice option:selected').val();
+                    if(isNotice == 0){
+                        startDate = $("input[name='startDate']").val();
+                        endDate = $("input[name='endDate']").val();
+                    }
+                    let isSendMessage = $('#isSendMessage option:selected').val();
+                    let isReturnPrintTemplate = $('#isReturnPrintTemplate option:selected').val();
+                    let templateSize = $("input[name='templateSize']").val();
+                    let packingType = $('#packingType option:selected').val();
+                    let deliveryMethod = $('#deliveryMethod option:selected').val();
+                    let siteid = $('#address option:selected').val();
+                    if(siteid=='-1'){
+                        alert('请填写发货地址！');
+                        return false;
+                    }
+                    let address = $('#address option:selected').attr('data-address');
+                    let area= $('#address option:selected').attr('data-area');
+                    let city= $('#address option:selected').attr('data-city');
+                    let province= $('#address option:selected').attr('data-province');
+                    obj = {
+                        shipperCode,
+                        expressTypeId,
+                        customArea,
+                        transType,
+                        payType,
+                        isReturnSignBill,
+                        operateRequire,
+                        isNotice,
+                        startDate,
+                        endDate,
+                        isSendMessage,
+                        isReturnPrintTemplate,
+                        templateSize,
+                        packingType,
+                        deliveryMethod,
+                        address,
+                        area,
+                        city,
+                        province,
+                        suppliersEorderInfoId,
+                        temp:orderid,
+                        suppliers_id:admin_id,
+                        id:siteid
+                    }
+                    $('#cover').show();
+                    U.https({type:'POST', site: 'order.php?act=add_electron_bill', data: obj }).then(data => {
+                        $('#cover').hide();//结束加载
+                        if(data.code == 1){
+                            alert(data.msg);
+                            history.back();
+                        }else {
+                            alert(`${data.data},${data.msg}`);
+                        }
+                        
+                    })
+                        .catch(err => {
+                            $('#cover').hide();//结束加载
+                            console.log(err);
+                            if(err.data){
+                                alert(err.msg+err.data);
+                                history.back();
+                                return false;
+                            }
+                            alert(err.msg);
+                            history.back();
+                        })
+                })
+            });
+    </script>
+</body>
+
+</html>

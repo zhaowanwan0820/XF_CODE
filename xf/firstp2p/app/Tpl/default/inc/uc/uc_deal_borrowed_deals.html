@@ -1,0 +1,78 @@
+{if $deal_list}
+<table cellspacing="0" cellspadding="0" border="0" class="tb_money">
+<colgroup>
+<col width="100">
+<col width="96">
+<col width="65">
+<col width="75">
+<col width="50">
+<col width="120">
+<col width="120">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th scope="col">图片</th>
+<th scope="col">借款标题</th>
+<th scope="col">金额</th>
+<th scope="col">年化借款利率</th>
+<th scope="col">期限</th>
+<th scope="col">完成度</th>
+<th scope="col">发布日期</th>
+<th scope="col">状态</th>
+</tr>
+</thead>
+<tbody>
+{foreach from=$deal_list item='deal'}
+<tr>
+<td class="tc"><img src="{$deal.icon}" width="50" height="50" alt="{$deal.name}" title="{$deal.name}"></td>
+<td class="tc"><a href="{$deal.url}" title='{$deal.name}'>{function name="cutstr" v=$deal.name}</a></td>
+<td class="tc">{$deal.borrow_amount}</td>
+<td class="tc">{$deal.deal_rate}</td>
+<td class="tc">{$deal.repay_time}{if $deal.loantype eq 5}天{else}个月{/if}</td>
+<td class="tc"> <div class="blueProgressBar progressBar" style="margin:0 auto">
+		<div class="p"><div class="c" style="width: {$deal.progress_point}%;"> </div></div>
+	</div>
+	<div>
+		<p class="f_l tc" style="width:100%">{function name="intval" v="$deal.progress_point"} % 已完成</p>
+	</div>
+</td>
+<td>{if $deal.publis_wait eq 1 || $deal.publis_wait eq 0}
+	<p class="tc">
+		{function name="to_date" v="$deal.create_time" f="Y-m-d"} {function name="to_date" v="$deal.create_time" f="H:i"}
+	</p>
+	{else}
+	<p class="tc">
+		{function name="to_date" v="$deal.start_time" f="Y-m-d"} {function name="to_date" v="$deal.start_time" f="H:i"}
+	</p>
+	{/if}
+</td>
+<td class="tc">{if $deal.publis_wait eq 1}
+	等待审核
+	{else}
+		{if $deal.deal_status eq 5}
+			已还清
+		{elseif $deal.deal_status eq 0}
+			等待确认
+		{elseif $deal.deal_status eq 1 && $deal.remain_time gt 0}
+			进行中
+		{elseif $deal.deal_status eq 2}
+			已满标
+		{elseif $deal.deal_status eq 3 || $deal.remain_time lte 0}
+			流标
+		{elseif $deal.deal_status eq 4}
+			还款中
+		{/if}
+	{/if}
+</td>
+</tr>
+{/foreach}
+</tbody>
+</table>
+
+<div class="clearfix pt5 pb5 pl10 ">
+	<div class="pages">{$pages}</div>
+</div>
+{else}
+<div class="empty-box">没有记录</div>
+{/if}

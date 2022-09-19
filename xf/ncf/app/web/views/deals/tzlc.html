@@ -1,0 +1,130 @@
+{include file="web/views/header.html"}
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+  <div class="p_deal">
+    <section class="main">
+      <div class="ui_product_tab box mb30">
+        <div class="product_type">
+          <div class="fl title"><i class="icon_line mr15"></i>专享理财</div>
+        </div>
+        <div class="tabbd">
+          <div class="con">
+            <div class="conbd">
+              <!-- 循环 -->
+              {foreach from=$deal_list item="deal" key=key}
+                <div class="p2p_product p5">
+                  <div class="clearfix bg_whtie">
+                    <div class="con_l">
+                      <h3 class="f16">
+                        <i class="icon_WTDX" style="display:none;"></i>
+                        {if $deal.bid_flag eq 1}
+                          <a title="{$deal.old_name}" alt="{$deal.old_name}"  href="{$deal.url}" target="_blank" >{$deal.name}</a>
+                        {else}
+                          <span title="{$deal.old_name}" alt="{$deal.old_name}" class="deal_tag_name">{$deal.name}</span>
+                        {/if}
+                        {if isset($deal.deal_tag_name) && $deal.deal_tag_name != ''}
+                          <i class="deal_tips bg_blue" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name}</i>
+                        {/if}
+                        {if isset($deal.deal_tag_name1) && $deal.deal_tag_name1 != ''}
+                        <i class="deal_tips bg_blue" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name1}</i>
+                        {/if}
+                      </h3>
+                      <div class="fl w360">
+                        <p><span>预期年化收益率：</span>
+                          {if $deal.income_base_rate eq $deal.max_rate }
+                            <span class="f20"><i>{$deal.max_rate}</i>&nbsp;%</span>
+                          {else}
+                            <span class="f20"><i>{$deal.income_base_rate}</i>&nbsp;%</span>
+                          {/if}
+                        <p>
+                          <span>总额：</span> {$deal.borrow_amount_format_detail}万
+                        </p>
+                      </div>
+                      <div class="fl w265 progress_rate" total="1000" has="111.0000">
+                        <span>投资期限：</span>
+                        {if $deal.loantype eq 5}
+                          <em><i class="f18">{if $deal.deal_type eq 1}{function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{/if}{$deal.repay_time}</i>天</em>
+                        {else}
+                          <em><i class="f18">{$deal.repay_time}</i>个月</em>
+                        {/if}
+                        <p><span>收益方式：</span> {$deal.loantype_name} </p>
+                      </div>
+                      <div class="fl w265 progress_rate" total="{$deal.borrow_amount}" has="{$deal.load_money}">
+                        <p>
+                          <span>投资进度：</span><span class="progress">
+                            <i class="ico_bace"></i>
+                            <i class="ico_yitou">进度条</i>
+                          </span>
+                          <ins class="f12 pl5"></ins>
+                        </p>
+                        <p><span>剩余可投：</span>{$deal.need_money_detail}元</p>
+                      </div>
+                    </div>
+                    <div class="product_btn">
+                      {if $deal.deal_type eq 0 ||  $deal.deal_type eq 3}
+                        {if $deal.is_crowdfunding eq 0}
+                          {if $deal.is_update eq 1}
+                            <a href="#" class="btn_touzi">查看</a>
+                          {elseif $deal.deal_status eq 4}
+                            <span class="btn_manbiao">还款中</span>
+                          {elseif $deal.deal_status eq 0}
+                            <a href="{$deal.url}" class="btn_touzi">查看</a>
+                          {elseif $deal.deal_status eq 2}
+                            <span class="btn_manbiao">满标</span>
+                          {elseif $deal.deal_status eq 5}
+                            <span class="btn_manbiao">已还清</span>
+                          {else}
+                            <a href="{$deal.url}" class="btn_touzi">投资</a>
+                          {/if}
+                        {elseif $deal.is_crowdfunding eq 1}
+                          {if $deal.is_update eq 1}
+                            <a href="{$deal.url}" class="btn_touzi">查看</a>
+                          {elseif $deal.deal_status eq 4}
+                            <span class="btn_manbiao">已成功</span>
+                          {elseif $deal.deal_status eq 0}
+                            <a href="{$deal.url}" class="btn_touzi">查看</a>
+                          {elseif $deal.deal_status eq 2}
+                            <span class="btn_manbiao">已成功</span>
+                          {elseif $deal.deal_status eq 5}
+                            <span class="btn_manbiao">已成功</span>
+                          {else}
+                            <a href="{$deal.url}" class="btn_touzi">筹款</a>
+                          {/if}
+                        {/if}
+                      {/if}
+                    </div>
+                  </div>
+                </div>
+              {/foreach}
+              <!-- //循环 -->
+            </div>
+            <div id="pagination" class="pagination">{$pagination}</div>
+          </div>
+        </div>
+      </div>
+      <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.css');?>">
+    </section>
+  </div>
+<script type="text/javascript">
+(function() {
+    //项目进度
+    progress_rate($('.progress_rate'));
+    function progress_rate(ele) {
+        ele.each(function(i, el) {
+            var ele = $(el);
+            var total = ele.attr('total');
+            var has = ele.attr('has');
+            var REG = /^[\d\.]+$/;
+            var percent = 0;
+            if (!(REG.test(total) && REG.test(has))) {
+                return;
+            }
+            total = Math.floor(total.replace(/\..*/, ''));
+            has = Math.floor(has.replace(/\..*/, ''));
+            percent = (Math.floor((has / total) * 10000) / 100).toFixed(2) + "%";
+            ele.find('.ico_yitou').css("width", percent);
+            ele.find('.pl5').html(percent);
+        });
+    }
+})('投资理财页面');
+</script>
+{include file="web/views/footer.html"}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="icon" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.ico');?>" type="image/x-icon" />
+        <link rel="shortcut icon" href="<?php echo $this->asset->makeUrl('skins/default/images/favicon.ico');?>" type="image/x-icon" />
+        <!--public js&css start-->
+        <link href="<?php echo $this->asset->makeUrl('v1/css/oauth/mobile/m-base.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeUrl('v1/css/oauth/mobile/m-common.css');?>" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="//assets.firstp2p.com/201602031709/v1/js/risk/frms-fingerprint-min.js"></script>
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/mobile/zepto.js');?>"></script>
+        <!--public js&css end-->
+        <!--private js&css start-->
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/mobile/validateConf.js');?>"></script>
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/mobile/validate.js');?>"></script>
+        <link href="<?php echo $this->asset->makeUrl('v1/css/oauth//mobile/login.css');?>" rel="stylesheet" type="text/css" />
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/mobile/reg.js');?>"></script>
+        <!--private js&css end-->
+
+        <title>{if $page_title}{$page_title} - {/if}{if $show_site_titile eq 1}{function name='app_conf' value='SHOP_SEO_TITLE'} - {/if}{$site_info.SHOP_TITLE}</title>
+    </head>
+    <body>
+        <header class="m-head">
+            <div class="m-head-fix">
+                <div class="head_app">
+                    <span>下载APP客户端进行投资</span> <a class="down_btn" href="http://app.firstp2p.com/">下载</a> <span class="close">
+                    </span>
+                </div>
+                <div class="logo_menu clearfix">
+                    <a class="logo" href="javascript:void(0);"></a>注册<a href="http://mobile-niece.firstp2p.com/account/login" class="top-memu">登录</a>
+                </div>
+            </div>
+            <div class="m-head-placeholder">
+            </div>
+        </header>
+        <section class="m-main p_reg">
+            <a href="" class="reg-banner">
+                <adv adv_id="移动web站首页banner">
+            </a>
+            <!--
+            <div class="reg-report"><i class="report-icon common-sprite"></i>
+                <adv adv_id="移动web站首页文案">
+            </div>
+            -->
+            <span class="blank20"></span>
+            <div class="ui-form">
+                <form id="register_form" name="register_form" method="POST" action="/user/doRegister{$querystring}">
+                    <input type="hidden" name="type" value="h5" />
+                    <?php echo token_input(); ?>
+                    <div class="dl_center">
+                        <div class="input-list">
+                            <label>用户名</label>
+                            <div class="txt-wrap">
+                                <input id="username" type="text" name="username" value="{$data.username}" placeholder="请输入字母、数字、下划线、横线" />
+
+                            </div><i class="icon-yes yes-username"></i>
+                        </div>
+                        <div class="msg-wrapper  no-username">
+                            <i class="icon-no fl"></i><span class="msg">{$error.username}</span>
+                        </div>
+                        <div class="input-list">
+                            <label>图形码</label>
+                            <div class="txt-wrap">
+                                <input class="img-yanzheng" id="captcha" type="text" value="" placeholder="请填写右侧图形码" name="captcha"/>
+                            </div>
+                            <div class="dl_yanzhengma">
+                                <img height="20px;" src="/verify.php?w=40&h=20&rb=0" />
+                            </div>
+                            <i class="icon-yes yes-captcha"></i>
+                        </div>
+                        <div class="msg-wrapper  no-captcha">
+                            <i class="icon-no fl"></i><span class="msg"></span>
+                        </div>
+                        <div class="input-list">
+                            <label>手机号</label>
+                            <div class="txt-wrap">
+                                <input id="mobile" type="text" name="mobile" value="{$data.mobile}" placeholder="只支持大陆手机号" class="phone-txt" />
+                            </div>
+                            <input type="button" id="action-send-code" class="phonecode" value="获取验证码"><i class="icon-yes yes-mobile"></i>
+                        </div>
+                        <div class="msg-wrapper  no-mobile">
+                            <i class="icon-no fl"></i><span class="msg">{$error.mobile}</span>
+                        </div>
+                        <div class="input-list">
+                            <label>验证码</label>
+                            <div class="txt-wrap">
+                                <input type="text" name="code" value="" placeholder="请输入短信验证码" />
+
+                            </div><i class="icon-yes yes-code"></i>
+                        </div>
+                        <div class="msg-wrapper  no-code">
+                            <i class="icon-no fl"></i><span class="msg">{$error.code}</span>
+                        </div>
+                        <div class="input-list clearfix">
+                            <label>密码</label>
+                            <div class="txt-wrap">
+                                <input id="password" type="password" name="password" value="" placeholder="请输入5-25位密码" />
+                            </div>
+                            <div id="pwd_show_btn">
+                                <em class="common-sprite"></em>    
+                            </div>
+                            <i class="icon-yes yes-password"></i>
+                        </div>
+                        <div class="msg-wrapper  no-password">
+                            <i class="icon-no fl"></i><span class="msg">{$error.password}</span>
+                        </div>
+                        <div class="input-list disbor">
+                            <label>邀请码</label>
+                            <div class="txt-wrap">
+                                <input id="invite" type="text" placeholder="选填" name="invite" value = "{$cn}"/>
+                            </div><i class="icon-yes yes-invite"></i>
+                        </div>
+                        <div class="msg-wrapper  no-invite">
+                            <i class="icon-no fl"></i><span class="msg"></span>
+                        </div>
+                    </div>
+                    <div class="dl_footer">
+                        <input type="submit" id="register-btn" value="注册" />
+                        <h3>
+                            点击上面的"注册"按钮，即表示您同意<a class="blue" href="{$agreement}">《注册协议》</a></h3>
+                    </div>
+                </form>
+                <ul class="security">
+                    <li><i class="common-sprite"></i><span>12%-14预期<br/>年化收益</span></li>
+                    <li><i class="common-sprite"></i><span>100%本息保障<br/>计划</span></li>
+                    <li><i class="common-sprite"></i><span>第三方<br/>账户托管</span></li>
+                </ul>
+            </div>
+            <div class="ui-loading">
+                <img src="static/images/common/list_loading.gif" />
+            </div>
+        </section>
+        <footer class="m-foot">
+            <div>©2015  北京东方联合投资管理有限公司</div>
+            <div>京ICP证130046号</div>
+        </footer>
+        <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/mobile/head-app.js');?>"></script>
+        <script type="text/javascript">
+
+                    //邀请码提示
+                    //$.showErr_mobile = function(str,func,title)
+                    //{
+                    //  $.weeboxs.open(str, {boxid:'fanwe_error_box',okBtnName: '继续注册',cancelBtnName: '返回修改',contentType:'text',showButton:true, showCancel:true, showOk:true,title:title,width:250,type:'wee',onclose:func});
+                    //};
+                    //  $.showErr_mobile("您的邀请码无效，注册成功后无法获得邀请返利，是否要继续？", function() {}, "提示");
+        </script>
+
+
+        <script type='text/javascript'>
+                    var _ncf = {"prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "", "pck": {"channel": "channel", "fpid": "fpid"}, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": []};
+            (function (p, h, s) {
+                var o = document.createElement(h);
+                o.src = s;
+                p.appendChild(o)
+            })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+        </script>
+
+    </body>
+</html>

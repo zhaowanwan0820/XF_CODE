@@ -1,0 +1,121 @@
+{// 引入标签库 }
+<script type="text/javascript">
+    function checkform(){
+        if($('#name').val().length == 0){
+            alert('模板标识不能为空！');
+            return false;
+        }
+        return true;
+    }
+    // 显示平台角色方与否
+    function change_platform_table() {
+        var plartform_checked =  $('#role_platform').attr('checked');
+        if(plartform_checked){
+            $("#platform_table").show();
+        }else{
+            $("#platform_table").hide();
+        }
+    }
+    // 显示平台角色方 名称
+    function show_user_name() {
+        var platform_user_id =  $('#platform_user_id').val();
+        $.ajax({
+            type: 'GET',
+            url: 'm.php?m=Ajax&a=getUserName',
+            data: {id:platform_user_id},
+            dataType: 'json',
+            async: true,
+            success: function (res) {
+                if(res){
+                    $('#platform_user_name').html(res);
+                }else {
+                    $('#platform_user_name').html("查不到该用户");
+                }
+            }
+        });
+    }
+</script>
+<div class="main">
+
+    <form name="search" action="__APP__" method="post">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="3">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">模板标识:</td>
+                <td class="item_input">
+                    <input type='text' name='name' id='name' value=''>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">模板标识名称:</td>
+                <td class="item_input">
+                    <input type='text' name='title' id='title' value=''>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">签署方:</td>
+                <td class="item_input">
+                <foreach name="sign_role_map" item="role_name" key="role_value">
+                    <input type='checkbox' name='sign_role[]' value='{$role_value}' />{$role_name}
+                </foreach>
+                    <input type='checkbox' name='sign_role[]' value='64' id='role_platform' onchange="change_platform_table();"/> 平台角色方
+                </td>
+            </tr>
+            <tr id='platform_table' style="display:none" >
+                <td class="item_title">平台方角色ID:</td>
+                <td class="item_input">
+                    <input type='text' name='platform_user_id' id='platform_user_id' value='' onblur="show_user_name();">
+                    <span id="platform_user_name" style="color: red"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">生成合同时间:</td>
+                <td class="item_input">
+                    <input type='radio' name='contract_send_node' value='0' checked>投资时
+                    <input type='radio' name='contract_send_node' value='1'>满标时
+                    <input type='radio' name='contract_send_node' value='2'>上标前
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">是否投资时（用户）可见:</td>
+                <td class="item_input">
+                    <input type='radio' name='is_seen_when_bid' value='1' checked>是
+                    <input type='radio' name='is_seen_when_bid' value='0'>否
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">服务类型:</td>
+                <td class="item_input">
+                <foreach name="service_type_map" item="service_type_name" key="service_type_value">
+                    <input type='radio' name='service_type' value='{$service_type_value}'>{$service_type_name}
+                </foreach>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">合同类型:</td>
+                <td class="item_input">
+                    <select name="contract_type" class="require">
+                        <foreach name="contract_type_map" item="contract_type_name" key="contract_type_value">
+                            <option value="{$contract_type_value}">{$contract_type_name}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_input" colspan=2 style="text-align:center;">
+                    <input type="hidden" value="true" name="save" />
+                    <input type="hidden" value="0" name="type" />
+                    <input type="hidden" value="ContractTplIdentifier" name="m" />
+                    <input type="hidden" value="save" name="a" />
+                    <input type="submit" class="button" onclick="return checkform();" value="添加" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

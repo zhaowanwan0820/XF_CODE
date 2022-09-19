@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>领取</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>">
+    </head>
+    <body>
+        <div class="m-main">
+            <div class="p_coupon_list" style="padding-top:0px;">
+                {if $countList neq 0}
+                    <div class="draw_tip">以下所列礼券只能任选其一</div>
+                {else}
+                    <div class="un_tips">
+                        <i class="icon_un"></i>
+                        <p>无可领取礼券</p>
+                    </div>
+                {/if}
+                <div class="tab">
+                    <div class="tab_con">
+                        {foreach from=$couponGroupList item=coupon}
+                            <div class="items_bg_left">
+                                <div class="items_bg_right">
+                                    <dl class="coupon_items clearfix">
+                                        <a data-proto="coupon://api" data-type="webview" data-backtype="gonext" data-backid="couponList" data-title="礼券详情" data-identify="couponDetail" data-needback="true" data-needrefresh="true" href="{$APP_HOST}/gift/detail?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&token={$usertoken}" class="detail_link"></a>
+                                        <dt><img src="{$coupon.pic}"></dt>
+                                        <dd>
+                                            <div class="draw_text">
+                                                <h3 {if $coupon.useEndTime neq 0}class="pb10"{/if}>{$coupon.productName}</h3>
+                                                {if $coupon.goodPrice neq 0 || $coupon.useRules eq 1}
+                                                <p class="color_red">{if $coupon.goodPrice neq 0}<em class="f15">{$coupon.goodPrice}元</em>{/if}
+                                                    {if $coupon.useRules eq 1}
+                                                        <span class="coupon_tips">限本人使用</span>
+                                                    {/if}
+                                                </p>
+                                                {/if}
+                                                {if $coupon.useEndTime neq 0}
+                                                    <p>有效期至：{function name="date" v="Y.m.d" b=$coupon.useEndTime}</p>
+                                                {/if}
+                                            </div>
+                                            <div class="draw_btn"><span class="btn"></span></div>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    </body>
+</html>

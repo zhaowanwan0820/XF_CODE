@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file='web/views/hongbao/shareLogo.html'}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/qiangdaohongbao.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+<div class="light_box">
+    <div class="light_bg"></div>
+</div>
+{include file="web/views/hongbao/logo.html"}
+<!--<a href="#" class="logo"></a>
+<a href="#" class="rule">活动规则</a>-->
+<div class="top vetically sweat">
+       <div class="gq_img"></div>
+    <div class="dao-btn mt5">
+        <a href="{$downloadUrl}" class="btn">{$downloadDesc}</a>
+    </div>
+                <div class="p-tips pt5">
+                <p>{$deal_500_for_888}</p>
+                <p>{$deal_500_for_888_only}</p>
+            </div>
+    </div>
+<script>
+    function onBridgeReady() {
+        WeixinJSBridge.call('hideOptionMenu');
+    }
+
+    if (typeof WeixinJSBridge == "undefined") {
+        if (document.addEventListener) {
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        } else if (document.attachEvent) {
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    } else {
+        onBridgeReady();
+    }
+</script>
+<script type="text/javascript">
+        $(function(){
+            var bHeight=document.documentElement.clientHeight-418;
+             $('.top').css({"margin-top":(bHeight/2)+'px'});
+        })
+    </script>
+</body>
+</html>

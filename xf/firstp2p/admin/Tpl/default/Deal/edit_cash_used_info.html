@@ -1,0 +1,563 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript">
+    var checkLoanMoney=function()
+    {
+        var min=parseFloat($('#min_loan_money').val());
+        var max=parseFloat($('#max_loan_money').val());
+        if(max > 0 && min >0)
+        {
+            if(max<min)
+            {
+                alert('最大金额不能小于最小金额');
+                return false;
+            }
+        }
+    };
+    window.onload = function()
+    {
+        dealcrowd();
+        $('#min_loan_money').blur(checkLoanMoney);
+        $('#max_loan_money').blur(checkLoanMoney);
+        $('#deal_crowd').change(dealcrowd);
+    }
+</script>
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/deal.js' />
+
+<div class="main">
+    <div class="main_title">{$vo.name}{%EDIT} <a href="<if condition="$vo['deal_type'] eq 1">{:u("Deal/compound")}<else/>{:u("Deal/cash_used_info")}</if>" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" id='editform' method="post" enctype="multipart/form-data">
+
+        <div class="blank5"></div>
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+
+           <tr>
+                <td class="item_title">借款标题:</td>
+                <td class="item_input">
+                    <input type="text" name="name" value="{$vo.name}" readOnly="true" class="textbox" style="width:500px;" />&nbsp;标ID:{$vo.id}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">{%BORROW_AMOUNT}:</td>
+                <td class="item_input">
+                    <input type="text" name="name" value="{$vo.borrow_amount}" readOnly="true"  class="textbox"/>&nbsp;元
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">借款期限:</td>
+
+                <td class="item_input">
+                    <input type="text" name="name" value="{$vo.repay_time}" readOnly="true"  class="textbox"/>&nbsp;<if condition="$vo.loantype eq 5">天<else/>个月</if>
+
+
+                  </td>
+
+            </tr>
+
+            <tr>
+                <td class="item_title">年化借款利率:</td>
+                <td class="item_input">
+                    <if condition="$vo['deal_type'] eq 1">
+                        <input type="text" class="textbox" style="border: 1px solid #DDD;background-color: #F5F5F5;" readonly value="{$vo['rate']}" onchange="javascript:changeRate('income_fee_rate');" SIZE="8" name="rate" id="annualized_rate"/>% &nbsp;  <font color='red' id ="day_rate">日利率：{$vo.rate_day} </font>%
+                        <else />
+                        <input type="text" class="textbox" style="border: 1px solid #DDD;background-color: #F5F5F5;" readonly SIZE="8" onchange="javascript:changeRate('income_fee_rate');" name="rate" value="{$vo.rate}"  id="annualized_rate" <if condition="$vo['publish_wait'] eq 0 and $vo['parent_id'] neq -1">disabled title='只有审核之后的子母标不可以编辑'</if>/>%
+
+                    </if>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">借款人姓名</td>
+                <td class="item_input">
+                    {:!empty($listOfBorrower[$deal['user_id']]['company_name']) ? getUserFieldUrl($listOfBorrower[$deal['user_id']], 'company_name') : getUserFieldUrl($listOfBorrower[$deal['user_id']], 'real_name')}
+                    <input type="text" class="textbox" readOnly="true"  value=" {$userInfo['real_name']}"/> &nbsp;借款人会员ID:{$vo['user_id']}
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">项目资金用途情况:</td>
+                <td class="item_input">
+                    <select name="cash_used_select" id="cash_used_select" >
+                        <option value="1"  <if condition="intval($cashUsedMap[$vo['id']]) eq 1 or (intval($cashUsedMap[$vo['id']]) lt 1 && $vo['borrow_amount'] gt 10000)">selected="selected"</if>>
+                        借款人已按既定的资金用途使用资金
+                        </option>
+                        <option value="2" <if condition="intval($cashUsedMap[$vo['id']]) eq 2 ">selected="selected"</if>>
+                        借款人未按照既定资金用途使用资金，但未发现不利于还款的因素
+                        </option>
+                        <option value="3" <if condition="intval($cashUsedMap[$vo['id']]) eq 3 or (intval($cashUsedMap[$vo['id']]) lt 1 && $vo['borrow_amount'] elt 10000)">selected="selected"</if>>
+                        该项目金额低于1万元（含），不对资金用途进行复核
+                        </option>
+                        <option value="4" <if condition="intval($cashUsedMap[$vo['id']]) eq 4 ">selected="selected"</if>>
+                        其他
+                        </option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr><td colspan="2"><center><input type="button" value="保存" onclick="save_cash_used_info()"></center></td></tr>
+
+
+
+
+        </table>
+
+
+    </form>
+</div>
+
+
+<script type="text/javascript" language="javascript">
+    function iFrameHeight(frame_id) {
+        var ifm = document.getElementById(frame_id);
+        var subWeb = document.frames ? document.frames[frame_id].document : ifm.contentDocument;
+        if (ifm != null && subWeb != null && subWeb.body != null) {
+            //ifm.height = subWeb.body.scrollHeight;
+            //ifm.height = subWeb.body.clientHeight;
+            ifm.height = /chrome/gi.test(window.navigator.userAgent) ? subWeb.body.clientHeight : subWeb.body.scrollHeight;
+
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    //声明
+    var auto_changeRate = false;
+    var auto_change_loanrate = false;
+    var auto_update_income_base_rate = false;
+
+    <if condition="$deal_ext['income_base_rate'] eq 0 and $deal_ext['income_float_rate'] eq 0">
+    auto_update_income_base_rate = true;
+    </if>
+
+    <if condition="$vo['publish_wait'] eq 1">
+    auto_changeRate = true;
+    </if>
+
+
+    $(document).ready(function(){
+
+        chg_fee();
+        //自动执行
+        changeRepay();
+
+        /* if(auto_changeRate){
+         changeRate('income_fee_rate');
+         } */
+
+        change_year_to_period();
+
+        $("#income_base_rate,#income_float_rate").change(function(){
+            income_fee_rate = parseFloat($("#income_fee_rate").val()); // 年化出借人收益率
+            annualized_rate = parseFloat($("#annualized_rate").val()); // 借款年利率
+            income_float_rate = parseFloat($("#income_float_rate").val()); //年化收益浮动利率
+            income_base_rate = parseFloat($("#income_base_rate").val()); // 年化收益基本利率
+
+            if(isNaN(income_base_rate)) {
+                income_base_rate = 0;
+            }
+            if(isNaN(income_float_rate)) {
+                income_float_rate = 0;
+            }
+            total_rate = (income_float_rate + income_base_rate).toFixed(5);
+
+            $("#income_fee_rate").val(total_rate);
+            $("#annualized_rate").val(total_rate);
+            get_complex_rate();
+
+            if ($("#deal_type").val() == 1) {
+                var year_rate = $("#annualized_rate").val();
+                var redemption_period = $("#redemption_period").val();
+                $.ajax({
+                    url: ROOT + "?" + VAR_MODULE + "=DealProject&" + VAR_ACTION + "=convertRateYearToDay&rate=" + year_rate + "&redemption_period=" + redemption_period,
+                    dataType: "json",
+                    async: false,
+                    success: function(rs) {
+                        $("#day_rate").html(rs.day_rate)
+                    }
+                });
+            }
+        });
+    });
+
+    function changeRate(tag){
+
+        if(!tag){
+            return false;
+        }
+        var income_rate = parseFloat($('#income_fee_rate').val());
+        var rate = parseFloat($('#annualized_rate').val());
+        var manage_rate = parseFloat($('#manage_fee_rate').val());
+        var repay_time = $("select[name='repay_time']").val();
+        var loantype = $('#repay_mode').val();
+        var income_base_rate = $('#income_base_rate').val();
+        var income_float_rate = $('#income_float_rate').val();
+
+        if(loantype == 5){
+            repay_time = $("input[name='repay_time']").val();
+        }
+
+        /* $.get("/m.php?m=Ajax&a=getDailyRate&rate="+rate,function(dt){
+         $('#rate_day').val(dt);
+         }) */
+
+        var tem_lock = false;
+        $.get("/m.php?m=Ajax&a=get_fee_rate&rate="+rate+"&manage_rate="+manage_rate+"&income_rate="+income_rate+"&tag="+tag+"&repay_time="+repay_time+"&loantype="+loantype,function(dt){
+
+            $('#'+tag).val(dt);
+            tem_lock = true;
+
+            if(auto_update_income_base_rate){
+                var income_base_rate_val = dt;
+                if(tag != 'income_fee_rate'){
+                    income_base_rate_val = income_rate;
+                }
+
+                $('#income_base_rate').val(income_base_rate_val);
+                $('#income_float_rate').val('0');
+            }else{
+                auto_update_income_base_rate = true;
+            }
+
+            if(tem_lock == true){
+                get_complex_rate();
+                change_year_to_period();
+            }
+            var year_rate = $("#annualized_rate").val();
+            // 修改日利率
+            if ($("#deal_type").val() == 1) {
+                var redemption_period = $("#redemption_period").val();
+                $.ajax({
+                    url: ROOT + "?" + VAR_MODULE + "=DealProject&" + VAR_ACTION + "=convertRateYearToDay&rate=" + year_rate + "&redemption_period=" + redemption_period,
+                    dataType: "json",
+                    async: false,
+                    success: function(rs) {
+                        $("#day_rate").html(rs.day_rate)
+                    }
+                });
+            }
+        })
+
+    }
+
+    function changeLoantype() {
+        var loantype = $("#repay_mode").val();
+        var deal_status = $("input[name='deal_status']:checked").val();
+        if((((loantype == 4 || loantype == 6) && deal_status == 4) || loantype == 8)) {
+            $("#first_repay_day_box").show();
+        } else {
+            $("#first_repay_day_box").hide();
+        }
+    }
+
+    function changeRepay(tag){
+        var repay_mode = $('#repay_mode').val();
+        changeRepay.is_index_rebate_days = changeRepay.is_index_rebate_days || 0;
+    <if condition="$vo['deal_type'] neq 1">
+        // 自动填写返利天数
+            if (repay_mode !=5){
+                var repay_period_v = $("#repay_period3").val();
+                switch(repay_mode){
+                    case '1':
+                    case '6':
+                    case '7':
+                        repay_period_v = $("#repay_period").val();
+                        break;
+                    case '8': //固定日还款特殊算法
+                        repay_period_v = $("#repay_period3").val();
+                        break;
+                }
+
+                $("#rebate_days").val(repay_period_v*30);
+            }else if (repay_mode == 5){
+                repay_period_v = $("#repay_period2").val();
+                $("#rebate_days").val(repay_period_v);
+            }
+    <if condition="isset($deal_coupon['rebate_days'])">
+            if (changeRepay.is_index_rebate_days == 0){
+                $("#rebate_days").val({$deal_coupon['rebate_days']});
+            }
+
+        changeRepay.is_index_rebate_days++;
+    </if>
+    </if>
+        changeLoantype();
+
+        //切换html
+        if(repay_mode == 5){
+            $('.xhsoi').hide();
+            $('.xhsot').show();
+
+            var repay_period = $('#repay_period2').val();
+            $('#repay_period').hide();
+            $('#repay_period').removeAttr('name');
+            $('#repay_period2,#tian').show();
+            $('#repay_period2').attr('name', 'repay_time');
+            $('#repay_period3').hide();
+            $('#repay_period3').removeAttr('name');
+            //change_lgl_time();
+        }else if(repay_mode == 4 || repay_mode == 3 || repay_mode == 2 || repay_mode == 8){
+            $('.xhsoi').show();
+            $('.xhsot').hide();
+
+            var repay_period = $("#repay_period3").val();
+            $('#repay_period3').show();
+            $('#repay_period3').attr('name', 'repay_time');
+            $('#repay_period2,#tian').hide();
+            $('#repay_period2').removeAttr('name');
+            $('#repay_period').hide();
+            $('#repay_period').removeAttr('name');
+        }else{
+            $('.xhsoi').show();
+            $('.xhsot').hide();
+
+            var repay_period = $("#repay_period").val();
+            $('#repay_period').show();
+            $('#repay_period').attr('name', 'repay_time');
+            $('#repay_period2,#tian').hide();
+            $('#repay_period2').removeAttr('name');
+            $('#repay_period3').hide();
+            $('#repay_period3').removeAttr('name');
+        }
+
+        changeRate('income_fee_rate');
+    }
+
+
+
+    function getYearlyRate(){
+        var number_scale_length = 5;
+        var repay_mode = $('#repay_mode').val();
+        var rate = parseFloat($('#annualized_rate').val());
+        var loan_fee_rate = parseFloat($("input[name='loan_fee_rate']").val());
+        var guarantee_fee_rate = parseFloat($("input[name='guarantee_fee_rate']").val());
+
+        if(repay_mode == 5){
+            var repay_time = $('#repay_period2').val();
+        }else if(repay_mode == 4 || repay_mode == 3 || repay_mode == 2){
+            var repay_time = $('#repay_period3').val();
+        }else{
+            var repay_time = $("#repay_period").val();
+        }
+
+        var time = 12;
+        if(repay_mode == 5){
+            time = 360;
+        }
+
+        if(repay_time > 0){
+            var yearly_loan_fee_rate = (loan_fee_rate / repay_time * time).toFixed(number_scale_length);
+            var yearly_guarantee_fee_rate = (guarantee_fee_rate / repay_time * time).toFixed(number_scale_length);
+            var yearly_rate = rate+parseFloat(yearly_loan_fee_rate)+parseFloat(yearly_guarantee_fee_rate);
+        }else{
+            var yearly_loan_fee_rate = '';
+            var yearly_guarantee_fee_rate = '';
+            var yearly_rate = rate;
+        }
+
+        $('#yearly_loan_fee_rate').html(yearly_loan_fee_rate);
+        $('#yearly_guarantee_fee_rate').html(yearly_guarantee_fee_rate);
+        $('#yearly_rate').html(yearly_rate.toFixed(number_scale_length));
+    }
+
+    function button_edit(){
+        $("#button_ff").html('<input type="submit" class="button" value="{%EDIT}" /><input type="reset" class="button" value="{%RESET}" />');
+    }
+
+    function confirmSubmit() {
+        //JIRA#2925  合同变更需求，新增“资产转让类别”
+        //转让资产类别数据校验,若资产转让类别选择为“无”，则此五项为非必填项。若资产转让类别选择为“债权”或“资产收益权”，则“基础合同的编号”、“原始债务人”、“基础合同交易金额”、“基础合同名称”四项为必填项
+        if ( $('select[name="contract_transfer_type"]: option:selected').val() > 0) {
+            $("input[name='leasing_contract_num']").addClass('require');
+            $("input[name='lessee_real_name']").addClass('require');
+            $("input[name='leasing_money']").addClass('require');
+            $("input[name='leasing_contract_title']").addClass('require');
+        } else {
+            $("input[name='leasing_contract_num']").removeClass('require');
+            $("input[name='lessee_real_name']").removeClass('require');
+            $("input[name='leasing_money']").removeClass('require');
+            $("input[name='leasing_contract_title']").removeClass('require');
+        }
+
+        income_fee_rate = parseFloat($("#income_fee_rate").val()); // 年化出借人收益率
+        annualized_rate = parseFloat($("#annualized_rate").val());    // 借款年利率
+        income_float_rate = parseFloat($("#income_float_rate").val()); //年化收益浮动利率
+        income_base_rate = parseFloat($("#income_base_rate").val()); // 年化收益基本利率
+
+
+        if(isNaN(income_base_rate)) {
+            alert('年化收益基本利率不能为空');
+            $("#income_base_rate").focus();
+            return false;
+        }
+
+        if(income_fee_rate != annualized_rate || annualized_rate.toFixed(5) !=(income_float_rate + income_base_rate).toFixed(5)) {
+            alert("请注意 ： 借款年利率＝年化出借人收益率 = (年化收益基本利率 + 年化收益浮动利率");
+            return false;
+        }
+        return true;
+    }
+
+    function edit_borrower() {
+        $.weeboxs.open(ROOT+'?m=Deal&a=edit_borrower&deal_id='+{$vo.id}, {contentType:'ajax',showButton:false,title:'修改借款人',width:500,height:140});
+    }
+
+    input_change($("#total_loan_fee") , $("#loan_fee_custom .loan_fee_arr") , ".loan_fee_arr", "loan");
+    input_change($("#total_consult_fee") , $("#consult_fee_custom .consult_fee_arr") , ".consult_fee_arr", "consult");
+    input_change($("#total_guarantee_fee") , $("#guarantee_fee_custom .guarantee_fee_arr") , ".guarantee_fee_arr", "guarantee");
+    input_change($("#total_pay_fee") , $("#pay_fee_custom .pay_fee_arr") , ".pay_fee_arr", "pay");
+    input_change($("#total_management_fee") , $("#management_fee_custom .management_fee_arr") , ".management_fee_arr", "management");
+
+    $("#loan_fee_custom .loan_fee_arr").live("input" , function(){
+        input_change($("#total_loan_fee") , $(this) , ".loan_fee_arr", "loan");
+    });
+
+    $("#consult_fee_custom .consult_fee_arr").live("input" , function(){
+        input_change($("#total_consult_fee") , $(this) , ".consult_fee_arr", "consult");
+    });
+
+    $("#guarantee_fee_custom .guarantee_fee_arr").live("input" , function(){
+        input_change($("#total_guarantee_fee") , $(this) , ".guarantee_fee_arr", "guarantee");
+    });
+
+    $("#pay_fee_custom .pay_fee_arr").live("input" , function(){
+        input_change($("#total_pay_fee") , $(this) , ".pay_fee_arr", "pay");
+    });
+    $("#management_fee_custom .management_fee_arr").live("input" , function(){
+        input_change($("#total_management_fee") , $(this) , ".management_fee_arr", "management");
+    });
+
+    function input_change ($total , $t ,str, type) {
+        var num=0;
+        var whole = $("#"+type+"_fee").html();
+        $t.parents("table").find(str).each(function(){
+            num += parseFloat(this.value);
+            if (whole > 0) {
+                var p = this.value / whole * 100;
+            } else {
+                var p = 100;
+            }
+            $(this).parent().parent().find("."+type+"_p").html(p.toFixed(5)+"%");
+        });
+
+        $total.html(num.toFixed(2));
+
+        if (whole > 0) {
+            var pt = num / whole * 100;
+        } else {
+            var pt = 100;
+        }
+        $("#total_"+type+"_p").html(pt.toFixed(5)+"%");
+    }
+
+    function chg_fee() {
+        chg_loan_fee();
+        chg_consult_fee();
+        chg_guarantee_fee();
+        chg_pay_fee();
+        chg_management_fee();
+    }
+
+    function chg_loan_fee() {
+        var type = $('input:radio[name="loan_fee_rate_type"]:checked').val();
+        if (type!=3) {
+            $("#loan_fee_custom").hide();
+        }
+        if (type==3) {
+            $("#loan_fee_custom").show();
+        }
+    }
+    function chg_consult_fee() {
+        var type = $('input:radio[name="consult_fee_rate_type"]:checked').val();
+        if (type!=3) {
+            $("#consult_fee_custom").hide();
+        }
+        if (type==3) {
+            $("#consult_fee_custom").show();
+        }
+    }
+    function chg_guarantee_fee() {
+        var type = $('input:radio[name="guarantee_fee_rate_type"]:checked').val();
+        if (type!=3) {
+            $("#guarantee_fee_custom").hide();
+        }
+        if (type==3) {
+            $("#guarantee_fee_custom").show();
+        }
+    }
+    function chg_pay_fee() {
+        var type = $('input:radio[name="pay_fee_rate_type"]:checked').val();
+        if (type!=3) {
+            $("#pay_fee_custom").hide();
+        }
+        if (type==3) {
+            $("#pay_fee_custom").show();
+        }
+    }
+    function chg_management_fee() {
+        var type = $('input:radio[name="management_fee_rate_type"]:checked').val();
+        if (type!=3) {
+            $("#management_fee_custom").hide();
+        }
+        if (type==3) {
+            $("#management_fee_custom").show();
+        }
+    }
+
+    // onclick 事件响应函数
+    // 点击 loan_fee_rate_type
+    function cli_loan_fee(obj)
+    {
+        // loan_fee_type 与 pay_type 对应值关系
+        var fee_pay_hash = new Array();
+        fee_pay_hash[1] = 0; // 前收 -> 放款时结算
+        fee_pay_hash[2] = 1; // 后收 -> 还清时结算
+        fee_pay_hash[3] = 1; // 分期收 -> 还清时结算
+
+        var pay_type_objs = $("input.pay_type");
+        for (var i = pay_type_objs.length - 1; i >= 0; --i) {
+            if (pay_type_objs[i].value == fee_pay_hash[obj.value]) {
+                pay_type_objs[i].checked = true;
+            } else {
+                pay_type_objs[i].checked = false;
+            }
+        }
+        calc_fenqi_fee("loan_fee");
+    }
+
+    // 点击 deal_status
+    function cli_deal_status(obj)
+    {
+        if (0 == obj.value || 1 == obj.value) {
+            $("input#rebate_days")[0].readOnly = true;
+        } else {
+            $("input#rebate_days")[0].readOnly = false;
+        }
+    }
+    function save_cash_used_info(){
+       $cashUsedValue =  $('#cash_used_select option:selected').val();
+        $.ajax({
+            url: ROOT + "?" + VAR_MODULE + "=Deal&" + VAR_ACTION + "=save_cash_used_info&id=" + {$vo['id']} + "&cashUsedValue=" + $cashUsedValue,
+            dataType: "json",
+            async: false,
+            success: function(rs) {
+               alert(rs['data']);
+            }
+        });
+    }
+</script>
+<include file="Public:footer" />

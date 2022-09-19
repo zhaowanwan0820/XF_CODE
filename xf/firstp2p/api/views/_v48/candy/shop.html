@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>信宝商城</title>
+    {include file="api/views/_v48/candy/candy_header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/mine.css?v=1');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/shop.css?v=4');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="m-main">
+        <input type="hidden" class="JS_candy" value="{$userSummary.amount}">
+        <input type="hidden" class="JS_token" value="{$token}">
+        <input type="hidden" id="shopUrl_hidden" value="{$shopUrl}">
+
+        <div class="p_pick_discount">
+            <div class="ui_tab_box">
+                {if $productList['coupon'] || !$showConfig.BLACK_BUC}
+                <div class="tab2 tab clearfix">
+                    <div class="tit"><i></i><span class="name">虚拟商品</span> <span class="f13 color_gray">爆款产品超值购</span></div>
+                    {foreach from=$productList.coupon.yogaCoupon item=productList}
+                    <a href="/candy/product_detail?token={$token}&productId={$productList.id}">
+                        <div class="house_card JS_xnsp" style="margin-top:18px;">
+                            <div class="quan_bg _quan_bg" style="background:url({$productList.couponGroup.pic}) no-repeat; background-size: 100%">
+                            </div>
+                            <div class="f13">{$productList.couponGroup.productName}</div>
+                            <div><span class="color_red f14">{$productList.price}信宝 {if $productList.market_price neq 0}<span class="color_gray line_through">{$productList.market_price}信宝{/if}</span></div>
+                        </div>
+                    </a>
+                    {/foreach}
+                    {foreach from=$productList.coupon.investCoupon item=productList}
+                    <a href="/candy/product_detail?token={$token}&productId={$productList.id}">
+                        <div class="card JS_xnsp">
+                            <div class="quan_bg">
+                                {if $productList.couponGroup.givenType neq 1}
+                                <div class="given_icon">可赠送</div>
+                                {/if}
+                                <span class="f20">{$productList.couponGroup.goodsPrice}</span>元
+                                <p>满{$productList.couponGroup.bidAmount}元<br>满{$productList.couponGroup.bidDayLimit}天可用</p>
+                            </div>
+                            <div class="f13">{$productList.couponGroup.goodsPrice}元返现券</div>
+                            <div><span class="color_red f14">{$productList.price}信宝</div>
+                        </div>
+                    </a>
+                    {/foreach}
+                    {foreach from=$productList.coupon.unitedMoneyCoupon item=productList}
+                    <a href="/candy/product_detail?token={$token}&productId={$productList.id}">
+                        <div class="house_card  JS_xnsp">
+                            <div class="quan_bg" style="background:url({$productList.couponGroup.pic}) no-repeat; background-size: 100%">
+                            </div>
+                            <div class="f13">{$productList.couponGroup.productName}</div>
+                            <div><span class="color_red f14">{$productList.price}信宝 {if $productList.market_price neq 0}<span class="color_gray line_through">{$productList.market_price}信宝{/if}</span></div>
+                        </div>
+                    </a>
+                    {/foreach}
+                    {foreach from=$productList.coupon.yifangCoupon item=productList}
+                    <a href="/candy/product_detail?token={$token}&productId={$productList.id}">
+                        <div class="house_card  JS_xnsp">
+                            <div class="quan_bg">
+                                <p class="house_txt">
+                                    房租抵扣券<br><span class=fs18>{$productList.couponGroup.goodPrice}</span>元
+                                </p>
+                                <p class="fs9">有效期<span class="JS_useDayLimit">{$productList.couponGroup.useDayLimit}</span>天</p>
+                            </div>
+                            <div class="f13">{$productList.couponGroup.goodPrice}元房租抵扣券</div>
+                            <div><span class="color_red f14">{$productList.price}信宝 {if $productList.market_price neq 0}<span class="color_gray line_through">{$productList.market_price}信宝{/if}</span></div>
+                        </div>
+                    </a>
+                    {/foreach}
+                </div>
+                {/if}
+                {if $productList['goods']}
+                <div class="tab0 tab clearfix">
+                    <div class="tit"><a href="storemanager://api?type=webview&gobackrefresh=true&url=" class="clearfix" id="goToLive"><i></i><span class="name">精选商品</span> <span class="f13 color_gray">高颜值品质甄选</span><span class="fr more JS_more"></span></a></div>
+                    <div class="loadbox loadbox01 JS_jxsp">
+                        {foreach from=$productList['goods'] item=productList}
+                        <a class="list clearfix entityList" data-url="{$productList.url}" href="storemanager://api?type=webview&gobackrefresh=true&url=">
+                            <div class="left_img"><img src="{$productList.product_info.img_url}"></div>
+                            <div class="middle">
+                                <p class="cont f13">{$productList.product_info.name}</p>
+                                <p class="f14">
+                                    <span class="num color_red">{$productList.price}信宝</span>
+                                </p>
+                            </div>
+                        </a>
+                        {/foreach}
+                    </div>
+                </div>
+                {/if}
+            </div>
+            <!-- 弹窗 有地址-->
+            <div class="mask">
+                <div class="bg"></div>
+                <div class="cont">
+                    <div class="tit">确定要兑换该商品吗？</div>
+                    <div class="btn_box">
+                        <div class="btn btn1">
+                            暂不兑换
+                        </div>
+                        <div class="btn btn2">
+                            确定兑换
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 弹窗2 无收货地址 -->
+            <div class="mask_02">
+                <div class="bg"></div>
+                <div class="cont">
+                    <div class="mingxi">
+                        <span>暂无收货地址</span></br>请点击下方按钮添加</span>
+                    </div>
+                    <div class="btn_box">
+                        <div class="btn btn1">
+                            取消
+                        </div>
+                        <a href="/address/add?token={$token}">
+                            <div class="btn btn2">
+                                添加地址
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- 弹窗3 -->
+            <div class="mask_01">
+                <div class="bg"></div>
+                <div class="cont">
+                    <div class="mingxi">
+                        <div class="title">兑换实物商品需要您的收货地址</div>
+                        <div class="name"><span>张亮</span><span>13811298345</span></div>
+                        <div class="deatail">
+                            <p>北京市 北京市 朝阳区 麦子店街道霄云路28号网信大厦A座</p>
+                        </div>
+                    </div>
+                    <div class="btn_box">
+                        <a href="/address/index?token={$token}">
+                            <div class="btn btn1">
+                                编辑地址
+                            </div>
+                        </a>
+                        <div class="btn btn2">
+                            兑换并使用该地址
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/shop.js?v=7');?>" type="text/javascript" charset="utf-8"></script>
+</body>
+
+</html>

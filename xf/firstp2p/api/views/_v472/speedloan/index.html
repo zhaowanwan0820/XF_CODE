@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>网信速贷</title>
+</head>
+<body class="wxsd_body">
+<input type="hidden" value="{$token}" id="tokenHidden"/>
+<div class="mainBox posFixed" id="mainBox">
+    <!-- 速贷额度 begin -->
+    <div class="loanBanner">
+        <div class="left">
+            <div class="top">
+                <div class="title">可用额度(元)</div>
+                <div class="num">{$creditUserInfo.usableAmountFormat}</div>
+                <!--<div class="ph">
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                </div>-->
+            </div>
+            <div class="bottom">
+                <div class="inner">
+                    <div class="title">总额度(元)</div>
+                    <div class="num">{$creditUserInfo.totalAmountFormat}</div>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <span class="loanRecord"><a
+                    href="javascript:;"
+                    data-webview-preview="firstp2p://api?type=webview&url="
+                    data-url-path="/speedloan/loanList?token={$token}"
+                    class="setWebviewUrl"
+            >借款记录</a></span>
+        </div>
+    </div>
+    <!-- 速贷额度 end -->
+    <!-- 去借款&&在线还款 begin -->
+    <div class="operationBox">
+        <div class="innerCont">
+            <div class="loanRate">日利率<span>{$dailyRate}%</span>（1千元用1天利息只需<?php echo bcadd($this->_var['dailyRate'] / 100 * 1000, 0, 2); ?>元）</div>
+            <!--<div class="loanRate">根据实际使用天数计算利息，日利率<span>{$dailyRate}%</span>（1千元用1天利息只需0.2元）单日借款额度最高申请上限<span>{$amountLimit}元</span></div>-->
+            <div class="btnBox">
+                <!--{ if $serviceNotOpen neq 1}
+                <a href="javascript:;"
+                   data-req-source="loan"
+                   data-webview-preview="firstp2p://api?type=webview&gobackrefresh=true&url="
+                   data-url-path="/speedloan/loan?token={$token}"
+                   data-set-href="false"
+                   class="setWebviewUrl"
+                   id="toLoan"
+                >去借款</a>
+                {else}
+                <a href="javascript:;" class="noValid" id="errorToast">去借款</a>
+                {/if}-->
+                <a href="javascript:;" class="noValid" id="toLoan">去借款</a>
+                <?php
+                //如果没有借款，不显示在线还款
+                ?>
+                <a href="javascript:;"
+                   data-req-source="normal"
+                   data-webview-preview="firstp2p://api?type=webview&url="
+                   data-url-path="/speedloan/repayList?token={$token}"
+                   data-set-href="false"
+                   class="setWebviewUrl"
+                   id="onlineRepay"
+                >在线还款</a>
+            </div>
+            <div class="help">
+                <div class="linkBox">
+                    <a href="/help/faq/?id=919">借款须知</a><span></span><a href="/help/faq_list/?cid=224">常见问题</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 去借款&&在线还款 end -->
+</div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_wangxinsudai.js');?>"></script>
+{include file="api/views/_v32/footer.html"}

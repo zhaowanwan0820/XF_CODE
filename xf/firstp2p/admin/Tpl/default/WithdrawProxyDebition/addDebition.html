@@ -1,0 +1,127 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<PHP>
+    function showMoney($amount)
+    {
+        return number_format(bcdiv($amount, 100, 2),2);
+    }
+
+    function showDatetime($timestamp)
+    {
+        return date('Y-m-d H:i:s', $timestamp);
+    }
+
+    function showUserType($type)
+    {
+        switch ($type)
+        {
+            case 0: return '对私'; case 1: return '对公';
+        }
+    }
+
+    function showStatus($status)
+    {
+        return '有效';
+    }
+
+</PHP>
+<div class="main">
+<div class="main_title">添加债权信息</div>
+<div class="blank5"></div>
+    <form name="search" id="formData" action="__APP__" method="POST">
+<table class="dataTable">
+<tr> <th width="180">出让方用户ID</th> <td><INPUT type="TEXT" name="transferor_user_id" value="" onblur="readName(this.value, this)"/></td> </tr>
+<tr> <th width="180">出让方用户名称</th> <td><INPUT type="hidden" name="transferor_name" id="transferor_name" value="" /><span id="transferor_name_label"></span></td> </tr>
+<tr> <th width="180">受让方账户名称</th> <td><INPUT type="TEXT" name="transferee_name" value="" /></td> </tr>
+<tr> <th width="180">受让方账户银行卡号</th> <td><INPUT type="TEXT" name="transferee_account" value="" onkeypress="if(this.value.match(/\D/)) this.value=this.value.replace(/\D/g,'')" onkeyup="if(this.value.match(/\D/)) this.value=this.value.replace(/\D/g,'')"/></td> </tr>
+<tr> <th width="180">受让方账户银行编码</th> <td><INPUT type="TEXT" name="transferee_bank_code" value="" onblur="this.value=this.value.toUpperCase()"/></td> </tr>
+<tr> <th width="180">受让方银行卡属性</th> <td><select name="transferee_user_type"><option value="1" selected="true">对私</option><option value="2">对公</option></select></td> </tr>
+<tr> <th width="180">受让方银行联行号</th> <td><INPUT type="TEXT" name="transferee_issuer" value="" onkeypress="if(this.value.match(/\D/)) this.value=this.value.replace(/\D/g,'')" onkeyup="if(this.value.match(/\D/)) this.value=this.value.replace(/\D/g,'')"/></td> </tr>
+<tr> <th width="180">债权金额</th> <td><INPUT type="TEXT" name="amount" value="" onkeypress="if(this.value.match(/[^\d\.]/)) this.value=this.value.replace(/[^\d\.]/g,'')" onkeyup="if(this.value.match(/[^\d\.]/)) this.value=this.value.replace(/[^\d\.]/g,'')"/></td> </tr>
+<tr> <th width="180">状态</th> <td>有效</td> </tr>
+<tr> <th colspan="2"><input type="BUTTON" class="button" onclick="submitForm()" value="提交"> <input type="RESET" class="button" value="重置"></th></tr>
+</table>
+</form>
+</div>
+<SCRIPT type="text/javascript">
+
+    function readName(id, textInput)
+    {
+        $.getJSON("/m.php?m=WithdrawProxyDebition&a=getUserName", {id:id},function(data){
+            if (data.errCode != 0) {
+                $('#transferor_name').val('');
+                $('#transferor_name_label').css("color","red").text('无此用户');
+                textInput.focus();
+                return false;
+            }
+            if (data.name == "")
+            {
+                $('#transferor_name').val('');
+                $('#transferor_name_label').css("color","red").text('无此用户');
+                textInput.focus();
+                return false;
+            }
+            $('#transferor_name_label').css("color","black").text(data.name);
+            $('#transferor_name').val(data.name);
+            return true;
+        });
+    }
+
+    var submiting = false;
+    function submitForm()
+    {
+        if (submiting)
+        {
+            return false;
+        }
+
+        submiting = true;
+        addDebition();
+
+    }
+    function addDebition()
+    {
+        if (confirm("确定此操作吗?"))
+        {
+            $.getJSON("/m.php?m=WithdrawProxyDebition&a=doAddDebition", $('#formData').serialize(),function(data){
+                if (data.errCode != 0) {
+                    alert(data.errMsg);
+                    submiting = false;
+                    return false;
+                }
+                alert("创建债权信息成功");
+                window.location.href='/m.php?m=WithdrawProxyDebition';
+            });
+        }
+    }
+
+    function showDisable(id)
+    {
+        $.weeboxs.open('.redemption', {contentType:'selector',boxclass:null, onok:function(){disableDebition(id,this);$.weeboxs.close();},showButton:true,okBtnName: '确认', showCancel:true, showOk:true,title:'置为无效',width:500,type:'wee',onclose:function(){null}});
+    }
+
+    function disableDebition(id, weebox)
+    {
+        if (confirm("确定此操作吗?"))
+        {
+            var memo = $('#memo:checked').val();
+            $.getJSON("/m.php?m=WithdrawProxyDebition&a=disableDebition", {id:id,memo:memo},function(data){
+                if (data.errCode != 0) {
+                    alert(data.errMsg);
+                    window.location.href='/m.php?m=WithdrawProxyDebition';
+                }
+                alert("操作成功");
+                window.location.href='/m.php?m=WithdrawProxyDebition';
+            });
+        }
+    }
+
+
+</SCRIPT>

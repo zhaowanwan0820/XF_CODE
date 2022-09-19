@@ -1,0 +1,115 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__chosen/js/chosen.jquery.min.js' />
+<load href='__TMPL__chosen/css/chosen.min.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<php>
+    function get_user_group($group_id)
+    {
+        $group_name = M("UserGroup")->where("id=".$group_id)->getField("name");
+        if($group_name)
+        {
+            return $group_name;
+        }
+        else
+        {
+            return l("NO_GROUP");
+        }
+    }
+    function f_to_date($date){
+        return to_date($date,"Y-m-d H:i");
+    }
+    function pay_status_color($payStatus) {
+        // 支付状态为待支付、处理中，则标红显示
+        if ($payStatus == 0) {
+            return "<font color='red'>待支付</font>";
+        } else if ($payStatus == 1) { // 成功则标绿显示
+            return "<font color='green'>支付成功</font>";
+        } else if (in_array($payStatus, [3,5])) {
+            return "<font color='red'>处理中</font>";
+        } else if ($payStatus == 2) {
+            return "支付失败";
+        } else {
+            return "交易关闭";
+        }
+    }
+</php>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row"></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form id="search" name="search" action="__APP__" method="get">
+        消费订单号：<input type="text" class="textbox" id="outOrderId" name="outOrderId" value="{:trim($_REQUEST['outOrderId'])}" style="width:200px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+    AA订单号：<input type="text" class="textbox" id="thirdOrderId" name="thirdOrderId" value="{:trim($_REQUEST['thirdOrderId'])}" style="width:200px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+        订单状态：<select name="orderStatus" id="orderStatus">
+                  <option value="-1" <if condition="intval($_REQUEST['status']) eq '-1'">selected="selected"</if>>全部</option>
+                  <foreach name="order_list" item="status_item">
+                      <option value="{$status_item.id}" <if condition="intval($_REQUEST['orderStatus']) eq $status_item['id']">selected="selected"</if>>{$status_item.name}</option>
+                  </foreach>
+              </select>&nbsp;&nbsp;&nbsp;&nbsp;
+         支付状态：<select name="payStatus" id="payStatus">
+                    <option value="-1" <if condition="intval($_REQUEST['payStatus']) eq '-1'">selected="selected"</if>>全部</option>
+                <foreach name="pay_status_list" item="pay_item">
+                    <option value="{$pay_item.id}" <if condition="intval($_REQUEST['payStatus']) eq $pay_item['id']">selected="selected"</if>>{$pay_item.name}</option>
+                </foreach>
+        </select>&nbsp;&nbsp;&nbsp;&nbsp;<br />
+        用户UID：<input type="text" class="textbox" id="userId" name="userId" value="{:trim($_REQUEST['userId'])}" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" style="width:100px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+        用户姓名：<input type="text" class="textbox" id="realName" name="realName" value="{:trim($_REQUEST['realName'])}" style="width:100px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+        用户手机号：<input type="text" class="textbox" id="mobile" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:100px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+    订单金额范围：<input type="text" class="textbox" id="orderAmountMin" name="orderAmountMin" value="{:trim($_REQUEST['orderAmountMin'])}" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" style="width:100px;" />&nbsp;—&nbsp;<input type="text" class="textbox" id="orderAmountMax" name="orderAmountMax" value="{:trim($_REQUEST['orderAmountMax'])}" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" style="width:100px;" />元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+        商户名称：<select name="merchantId" id="merchantId" class="textbox" >
+                <foreach name="merchant_list" item="item">
+                    <option value="{$item.id}" <if condition="intval($_REQUEST['merchantId']) eq $item['id']">selected="selected"</if>>{$item.name}</option>
+                </foreach>
+        </select>&nbsp;&nbsp;&nbsp;&nbsp;
+    下单时间：<input type="text" class="textbox search_export" id="startTime" name="startTime" value="{:trim($_REQUEST['startTime'])}" style="width:150px;" onfocus="return showCalendar('startTime', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('startTime', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+至
+        <input type="text" class="textbox search_export" name="endTime" id="endTime" value="{:trim($_REQUEST['endTime'])}" style="width:150px;" onfocus="return showCalendar('endTime', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('endTime', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="hidden" value="Life" name="m" />
+        <input type="hidden" value="<?php echo ACTION_NAME;?>" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="清空" onclick="clear_form_data();" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="user"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="outOrderId:消费订单号|50px,thirdOrderId:AA订单号|20px,userId:用户ID,userId|get_user_name=real_name:用户姓名|20px,userId|get_user_name='mobile':手机号,merchantId:商户编号|30px,merchantName:商户名称|50px,serviceTypeName:商品名称,totalAmount:订单金额,actualAmount:实际支付金额,statusName:订单状态|50px,payStatus|pay_status_color:支付状态,isEffectName:是否有效,createTime:创建时间,payTime:完成时间 "
+    actionlist="view_detail_info:查看" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function view_detail_info(id) {
+    window.location.href = '/m.php?m=Life&a=consumeDetail&id='+id;
+}
+function clear_form_data() {
+    $("#outOrderId").val("");
+    $("#thirdOrderId").val("");
+    $("#userId").val("");
+    $("#realName").val("");
+    $("#mobile").val("");
+    $("#orderAmountMin").val("");
+    $("#orderAmountMax").val("");
+}
+</script>
+<include file="Public:footer" />

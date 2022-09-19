@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$templateInfo.tplTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-base.css');?>"  rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-common.css');?>"  rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/discount.css');?>"  rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/discount_pick2.css');?>"  rel="stylesheet" type="text/css">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/zepto.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/base.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/discount_pick.js');?>" type="text/javascript" charset="utf-8"></script>
+    <style>
+
+      /*iphone5 横屏兼容问题*/
+      @media all and (orientation : landscape) {
+        .user_info .left{background: transparent;}
+         .user_info .left img{border-radius: 50%;}
+      }
+      /*竖屏*/
+      @media all and (orientation : portrait){
+        .user_info .left{background: transparent;}
+        .user_info .left img{border-radius: 50%;}
+      }
+    	.top_img{position: absolute;
+          width: 100%;
+          top: 0;
+          left: 50%;
+          z-index: -1;
+          transform: translate(-50%, 0%);
+          -webkit-transform: translate(-50%, 0%);
+          background-image:url("{$templateInfo.tplBanner}");
+          background-repeat:no-repeat;background-size:100% 100%;
+
+    	}
+      .scroll{position:absolute; overflow:scroll; -webkit-overflow-scrolling: touch;-moz-overflow-scrolling: touch; top:0; left:0; bottom:0; right:0;z-index: 9;}
+      @media screen and (min-width: 750px){
+        body{overflow-y: hidden;}
+        .scroll{overflow:auto;}
+        .b_bg{display: none;}
+      }
+  </style>
+  <script>
+  $(function() {
+
+    var overscroll = function(el) {
+    el.addEventListener('touchstart', function() {
+      var top = el.scrollTop
+        , totalScroll = el.scrollHeight
+        , currentScroll = top + el.offsetHeight
+      if(top === 0) {
+        el.scrollTop = 1
+      } else if(currentScroll === totalScroll) {
+        el.scrollTop = top - 1
+      }
+    })
+    el.addEventListener('touchmove', function(evt) {
+      if(el.offsetHeight < el.scrollHeight)
+        evt._isScroller = true
+    })
+  }
+  overscroll(document.querySelector('.scroll'));
+  document.body.addEventListener('touchmove', function(evt) {
+    if(!evt._isScroller) {
+      evt.preventDefault()
+    }
+  });
+    //禁用掉微信的分享功能
+    function onBridgeReady() {
+         WeixinJSBridge.call('hideOptionMenu');
+     }
+
+   if (typeof WeixinJSBridge == "undefined") {
+       if (document.addEventListener) {
+           document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+       } else if (document.attachEvent) {
+           document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+           document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+       }
+   } else {
+       onBridgeReady();
+   }
+
+  });
+  </script>
+</head>
+<body style="background:{$templateInfo.tplBgColor};">
+<div class="b_bg"></div>
+<div class="top_img"><img src="{$templateInfo.tplBanner}" style="visibility:hidden" width="100%"></div>
+<div class="scroll">
+

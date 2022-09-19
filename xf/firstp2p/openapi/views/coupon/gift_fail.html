@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+	    <title>操作失败</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	    <!--public js&css start-->
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/m-common.css');?>">
+        <script type="text/javascript" src="<?php echo $this->asset->makeApiUrl('v3/js/zepto.min.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeApiUrl('v3/js/o2o/common.js');?>"></script>
+        <link href="<?php echo $this->asset->makeApiUrl('v3/css/o2o/o2o_success.css');?>" rel="stylesheet" type="text/css" />
+	</head>
+    <body>
+        <div class="m-main p_sc">
+            {if $IS_APP}
+            {else}
+            <div class="ui_title">
+                {if $redirect_uri}<a class="ui_back" href="{$redirect_uri}"><i class="ui_icon_back"></i>返回主页</a>{/if}
+                操作失败
+            </div>
+            {/if}
+            <div class="sc_result"><i class="sc_error"></i>操作失败</div>
+            <div class="sc_tip">
+                <div class="sc_line f14">失败原因：{$errMsg}</div>
+            </div>
+            {if $flag eq 'acquireExchange'}
+                {if $IS_APP}
+                <div class="sc_done"><a href="firstp2p://api?type=native&name=home" class="btn_red">完成</a></div>
+                {else}
+                <div class="sc_done"><a href="/coupon/pickList?action={$action}&load_id={$load_id}&oauth_token={$oauth_token}" class="btn_red">重新领取</a></div>
+            {/if}
+            {else}
+                {if $IS_APP}
+                <div class="sc_done"><a href="firstp2p://api?type=native&name=home" class="btn_red">完成</a></div>
+                {else}
+                <div class="sc_done"><a href="/coupon/mine?oauth_token={$oauth_token}" class="btn_red">重新选择</a></div>
+                {/if}
+            {/if}
+        </div>
+        {include file="openapi/views/baidutongji.html"}
+        {if $IS_APP}
+        <script>
+        var  triggerScheme = function(scheme) {
+            var iframe = document.createElement("iframe");
+            iframe.src= scheme;
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+        };
+        triggerScheme("firstp2p://api?method=updatebacktype&param=3");
+        </script>
+        {/if}
+    </body>
+</html>

@@ -1,0 +1,120 @@
+{include file="web/views/fenzhan/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/investment_view.css');?>" />
+<!--面包屑导航结束-->
+<section class="clearfix">
+<script type="text/javascript" charset="utf-8">
+    var change_sort = function(field,types){
+        var parse_res = window.location.href.split('?');
+        var path = parse_res[0];
+        var url = path + '?field=' + field;
+        var type = '0';
+        if(parse_res[1]){
+            var params = parse_res[1].split('&');
+            for(var i = 0; i < params.length; i++){
+                var param = params[i].split('=');
+                if(param[0] == 'cate'){//tab
+                    continue;
+                }
+                if(param[0] == 'type'){
+                    if(param[1] == '0'){
+                        type = '1';
+                    }
+                } else if(param[0] != 'field'){
+                    url = url + '&'+ param[0] + '=' + param[1];
+                }
+            }
+        }
+        url = url + '&type=' + type+'&cate='+types;
+        window.location.href = url;
+    }
+
+</script>
+<div class="box">
+<div class="product_con">
+        <!---->
+        <div class="tab" >
+                <ul class="tabhd clearfix indexlist-tab-num{$count}">
+                    <li class="j_index_tab active" ><a href="/jijin/">全部({$fund_list.count})</a></li>
+                </ul>
+        <div class="tabContent">
+            <div class="product_hd">
+                <ul>
+                    <li class=" w212 tc pr20">基金名称</li>
+                    <li class=" w190 tc">年化收益率</li>
+                    <li class=" w80 tc">期限</li>
+                    <li class=" w133 tc">起投金额</li>
+                    <li class=" w220 tc">预约人数</li>
+                    <li class=" w110 linehg_set">状态</li>
+                </ul>
+            </div>
+            <div class="product_bd2">
+                {if $cate eq 0}<adv adv_id="全部tab广告描述语">{/if}
+                {if $brief && (app_conf('TEMPLATE_ID') eq 1 || app_conf('TEMPLATE_ID') eq 7 || app_conf('TEMPLATE_ID') eq 6)}<div class="w980 tab_tip_index color-yellow1 f14">{$brief}</div>{/if}
+                <table>
+                    <colgroup>
+                        <col width="63">
+                        <col width="170">
+                        <col width="195">
+                        <col width="90">
+                        <col width="140">
+                        <col width="210">
+                        <col width="135">
+                    </colgroup>
+                    <tbody class="j_index_tbody">
+                    {foreach from=$fund_list.list item="fund"}
+                        <tr>
+                            <td>
+                            <div class="tc"><i class="icon_ZSZ icon_jijin"></i></div>
+                            </td>
+                            <th>
+                                <div class="pro_name">
+                                    <p>
+                                    {if $fund.status eq 1}
+                                        <a title="{$fund.name}" alt="{$fund.name}"  href="/jijin/detail?id={$fund.id}" target="_blank" >{$fund.name}</a>
+                                    {else}
+                                        <i title="{$fund.name}" alt="{$fund.name}" class='notoutitle'>{$fund.name}</i>
+                                    {/if}
+                                    </p>
+                            </th>
+                            <th>
+                                <div class="tips_1">
+                                    <p class="btm f14 tc">{$fund.income_min}<em>%</em>~{$fund.income_max}<em>%</em></p>
+                                </div>
+                            </th>
+                             <th>
+                               <p class="btm f14 tc w80">{$fund.repay_time}</p>
+                            </th>
+                            <td><p class="color-yellow1 tc">{$fund.loan_money_min}元</p></td>
+                            <td><p class="color-yellow1 tc">{$fund.subscribe_count}人</p></td>
+                            <td>
+                                {if $fund.status eq 1}
+                                    <div class="table_cell"><a href="/jijin/detail?id={$fund.id}" class="view" target="_blank">预约中</a></div>
+                                {else}
+                                    <div class="table_cell"><em class="view_02">已结束</em></div>
+                                {/if}
+                            </td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+                </div>
+                <div class="pages pl10 pr10">{$page}</div>
+        </div>
+            </div>
+            </div>
+         </div>
+        </div>
+      </div>
+</section>
+
+<script type="text/javascript">
+/* $(document).ready(function(){
+    $('#index_list_tab').goodTab({
+        cur : "active" ,
+        tagPos: {$cate},
+        tabLab : ".j_index_tab"
+    });
+}); */
+</script>
+
+{include file="web/views/fenzhan/footer.html"}

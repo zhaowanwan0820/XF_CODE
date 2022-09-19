@@ -1,0 +1,274 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">网信速贷参数配置</div>
+<div class="blank5"></div>
+<form name="ConfSettings" id="ConfSettings" method="POST" action="__APP__" onsubmit="return checkForm()">
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="4" class="topTd" >&nbsp;</td>
+        </tr>
+        <tr>
+            <th colspan="4" style="background-color:#efefef; font-weight:bold; font-size:16px;padding-left:20px;text-align:left;">基础配置</th>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">网信速贷开关</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="RADIO" name="SPEED_LOAN_SWITCH" <if condition="$settings['SPEED_LOAN_SWITCH'] eq 1">checked="checked"</if> value="1">开启 &nbsp;&nbsp;<input type="RADIO" name="SPEED_LOAN_SWITCH" <if condition="$settings['SPEED_LOAN_SWITCH'] eq 0">checked="checked"</if> value="0" />关闭</td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">平台服务费收取账号</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()" name="SPEED_LOAN_SERVICE_FEE_UID" value="{$settings.SPEED_LOAN_SERVICE_FEE_UID}"><span id="SPEED_LOAN_SERVICE_FEE_UID"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">平台服务费率（总）</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_SERVICE_RATE" value="{$settings.SPEED_LOAN_SERVICE_RATE}"> % <span>（注：输入1代表1%）</span> <span id="SPEED_LOAN_SERVICE_RATE"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">平台服务费率（第一段）</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_SERVICE_FEE_STEP_ONE" value="{$settings.SPEED_LOAN_SERVICE_FEE_STEP_ONE}"> % <span>（注：第一段服务费 ）</span> <span id="SPEED_LOAN_SERVICE_FEE_STEP_ONE"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">平台服务费率（第二段）</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_SERVICE_FEE_STEP_TWO" value="{$settings.SPEED_LOAN_SERVICE_FEE_STEP_TWO}"> % <span>（注：第二段服务费，由总服务费-第一段服务费）</span> <span id="SPEED_LOAN_SERVICE_FEE_STEP_TWO"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">第一段服务费应用时间</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_SERVICE_FEE_STEP_TERM" value="{$settings.SPEED_LOAN_SERVICE_FEE_STEP_TERM}"> 天 <span>（注：即从用户放款开始，5天内按照第一段服务费收取，在第6天叠加第二段服务费）</span> <span id="SPEED_LOAN_SERVICE_FEE_STEP_TERM"></span></td>
+        </tr>
+
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">服务时间</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_SERVICE_HOUR_START" value="{$settings.SPEED_LOAN_SERVICE_HOUR_START}"  style="width: 30px"> 时
+                <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_SERVICE_MINUTE_START" value="{$settings.SPEED_LOAN_SERVICE_MINUTE_START}"  style="width: 30px"> 分
+                -
+                <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_SERVICE_HOUR_END" value="{$settings.SPEED_LOAN_SERVICE_HOUR_END}" style="width: 30px"> 时
+                <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_SERVICE_MINUTE_END" value="{$settings.SPEED_LOAN_SERVICE_MINUTE_END}" style="width: 30px"> 分
+                <span id="SPEED_LOAN_SERVICE_HOUR"></span>
+                <span>(小时如果小于10，请在前面加0)</span>
+            </td>
+        </tr>
+
+        <!-- 借款配置 -->
+        <tr>
+            <th colspan="4" style="background-color:#efefef; font-weight:bold; font-size:16px;padding-left:20px;text-align:left;">借款配置</th>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">单笔借款最小金额</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_MIN_AMOUNT" value="{$settings.SPEED_LOAN_MIN_AMOUNT}"> 元 <span id="SPEED_LOAN_MIN_AMOUNT"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">单笔借款最大金额</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_MAX_AMOUNT" value="{$settings.SPEED_LOAN_MAX_AMOUNT}"> 元 <span id="SPEED_LOAN_MAX_AMOUNT"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">用户借款上限</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_USER_LIMIT_AMOUNT" value="{$settings.SPEED_LOAN_USER_LIMIT_AMOUNT}"> 元 <span id="SPEED_LOAN_USER_LIMIT_AMOUNT"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">借款日利率</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_DAILY_RATE" value="{$settings.SPEED_LOAN_DAILY_RATE}"> % <span>（注：输入1代表1%）</span><span id="SPEED_LOAN_DAILY_RATE"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">借款用途</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input style="width:90%;" type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_USE_PURPOSE" value="{$settings.SPEED_LOAN_USE_PURPOSE}"> <span id="SPEED_LOAN_USE_PURPOSE"></span></td>
+        </tr>
+
+        <!-- 抵押物管理配置 -->
+        <tr>
+            <th colspan="4" style="background-color:#efefef; font-weight:bold; font-size:16px;padding-left:20px;text-align:left;">抵押物管理配置</th>
+        </tr>
+
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">抵押物质押率</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <input type="RADIO" name="SPEED_LOAN_MORTGAGE_TYPE" <if condition="$settings['SPEED_LOAN_MORTGAGE_TYPE'] eq 1">checked="checked"</if> value="1">统一质押率 <input type="TEXT" name="SPEED_LOAN_MORTGAGE_RATE" value="{$settings.SPEED_LOAN_MORTGAGE_RATE}" onblur="checkForm()"> % <span>（注：输入1代表1%）</span><span id="SPEED_LOAN_MORTGAGE_RATE"> </span>  &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="RADIO" name="SPEED_LOAN_MORTGAGE_TYPE" <if condition="$settings['SPEED_LOAN_MORTGAGE_TYPE'] eq 2">checked="checked"</if> value="0"/>分类质押率(暂不可用)
+            </td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">贷款类型</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <?php foreach ($settings['SPEED_LOAN_DEAL_TYPE_DICTIONARY'] as $typeId => $typeName) { ?>
+                <input type="CHECKBOX" name="SPEED_LOAN_DEAL_TYPE[]" value="<?php echo $typeId;?>" <?php if (in_array($typeId, $settings['SPEED_LOAN_DEAL_TYPE_ARRY'])) { ?> checked ="checked" <?php } ?> > <?php echo $typeName;?>
+                <?php } ?>
+                <span id="SPEED_LOAN_DEAL_TYPE"></span>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">产品类别</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <?php foreach ($settings['SPEED_LOAN_PRODUCT_TYPE_DICTIONARY'] as $typeId => $typeName) { ?>
+                <input type="CHECKBOX" name="SPEED_LOAN_PRODUCT_TYPE[]" value="<?php echo $typeId;?>" <?php if (in_array($typeId, $settings['SPEED_LOAN_PRODUCT_TYPE_ARRY'])) { ?> checked ="checked" <?php } ?> > <?php echo $typeName;?>
+                <?php } ?>
+                <span id="SPEED_LOAN_PRODUCT_TYPE"></span>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">抵押还款方式</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <?php foreach ($GLOBALS['dict']['LOAN_TYPE'] as $typeId => $typeName) { ?>
+                <input type="CHECKBOX" name="SPEED_LOAN_DEAL_REPAY_TYPE[]" value="<?php echo $typeId;?>" <?php if (in_array($typeId, $settings['SPEED_LOAN_DEAL_REPAY_TYPE_ARRY'])) { ?> checked ="checked" <?php } ?> > <?php echo $typeName;?>
+                <?php } ?>
+                <span id="SPEED_LOAN_DEAL_REPAY_TYPE"></span>
+            </td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">抵押物持有时间</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_PAWN_HOLD_DAYS" value="{$settings.SPEED_LOAN_PAWN_HOLD_DAYS}"> 天（含）以上 <span id="SPEED_LOAN_PAWN_HOLD_DAYS"></span></td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">抵押物到期剩余时间</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_PAWN_REMAIN_DAYS_START" value="{$settings.SPEED_LOAN_PAWN_REMAIN_DAYS_START}"  style="width: 30px"> 天（含）
+                -
+                <input type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_PAWN_REMAIN_DAYS_END" value="{$settings.SPEED_LOAN_PAWN_REMAIN_DAYS_END}" style="width: 30px"> 天（含）
+                <span id="SPEED_LOAN_PAWN_REMAIN_DAYS"></span>
+            </td>
+        </tr>
+
+
+        <!-- 其他用途抵押物管理 -->
+        <tr>
+            <th colspan="4" style="background-color:#efefef; font-weight:bold; font-size:16px;padding-left:20px;text-align:left;">其他用途抵押物管理</th>
+        </tr>
+
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">贷款类型</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <?php foreach ($settings['SPEED_LOAN_DEAL_TYPE_DICTIONARY'] as $typeId => $typeName) { ?>
+                <input type="CHECKBOX" name="SPEED_LOAN_OTHER_DEAL_TYPE[]" value="<?php echo $typeId;?>" <?php if (in_array($typeId, $settings['SPEED_LOAN_OTHER_DEAL_TYPE_ARRY'])) { ?> checked ="checked" <?php } ?> > <?php echo $typeName;?>
+                <?php } ?>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">产品类别</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <?php foreach ($settings['SPEED_LOAN_PRODUCT_TYPE_DICTIONARY'] as $typeId => $typeName) { ?>
+                <input type="CHECKBOX" name="SPEED_LOAN_OTHER_PRODUCT_TYPE[]" value="<?php echo $typeId;?>" <?php if (in_array($typeId, $settings['SPEED_LOAN_OTHER_PRODUCT_TYPE_ARRY'])) { ?> checked ="checked" <?php } ?> > <?php echo $typeName;?>
+                <?php } ?>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">抵押还款方式</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;">
+                <?php foreach ($GLOBALS['dict']['LOAN_TYPE'] as $typeId => $typeName) { ?>
+                <input type="CHECKBOX" name="SPEED_LOAN_OTHER_DEAL_REPAY_TYPE[]" value="<?php echo $typeId;?>" <?php if (in_array($typeId, $settings['SPEED_LOAN_OTHER_DEAL_REPAY_TYPE_ARRY'])) { ?> checked ="checked" <?php } ?> > <?php echo $typeName;?>
+                <?php } ?>
+            </td>
+        </tr>
+        <tr>
+            <th style="background-color:#efefef; width:240px;padding-left:20px;">标的TAG</th>
+            <td colspan="3" style="padding-left:10px;font-size:12px;"> <input style="width:70%;" type="TEXT" onblur="checkForm()"  name="SPEED_LOAN_OTHER_DEAL_TAG" value="{$settings.SPEED_LOAN_OTHER_DEAL_TAG}"> <span id="SPEED_LOAN_OTHER_DEAL_TAG"></span></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align:center"><input type="SUBMIT" value="设置" name="commit" class="button"/>
+            <input type="RESET" value="重置" class="button"/></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="topTd" >&nbsp;</td>
+        </tr>
+    </table>
+    <input type="hidden" name="m" value="SpeedLoan"/>
+    <input type="hidden" name="a" value="updateSetttings"/>
+</form>
+    <div class="blank5"></div>
+</div>
+<script>
+    function checkForm() {
+        var flag = true;
+        $('input[name=commit]').removeAttr('disabled').css({color:'',background:''});
+        $('span#SPEED_LOAN_SWITCH').text('');
+        $('span#SPEED_LOAN_SERVICE_FEE_UID').text('');
+        $('span#SPEED_LOAN_SERVICE_RATE').text('');
+        $('span#SPEED_LOAN_SERVICE_HOUR_START').text('');
+        $('span#SPEED_LOAN_SERVICE_HOUR_END').text('');
+        $('span#SPEED_LOAN_MIN_AMOUNT').text('');
+        $('span#SPEED_LOAN_MAX_AMOUNT').text('');
+        $('span#SPEED_LOAN_USER_LIMIT_AMOUNT').text('');
+        $('span#SPEED_LOAN_DAILY_RATE').text('');
+        $('span#SPEED_LOAN_MORTGAGE_TYPE').text('');
+        $('span#SPEED_LOAN_MORTGAGE_RATE').text('');
+        $('span#SPEED_LOAN_DEAL_TYPE').text('');
+        $('span#SPEED_LOAN_PRODUCT_TYPE').text('');
+        $('span#SPEED_LOAN_DEAL_REPAY_TYPE').text('');
+        $('span#SPEED_LOAN_PAWN_HOLD_DAYS').text('');
+        $('span#SPEED_LOAN_PAWN_REMAIN_DAYS_START').text('');
+        $('span#SPEED_LOAN_PAWN_REMAIN_DAYS_END').text('');
+        $('span#SPEED_LOAN_PAWN_REMAIN_DAYS').text('');
+        $('span#SPEED_LOAN_OTHER_DEAL_TYPE').text('');
+        $('span#SPEED_LOAN_OTHER_PRODUCT_TYPE').text('');
+        $('span#SPEED_LOAN_OTHER_DEAL_REPAY_TYPE').text('');
+        $('span#SPEED_LOAN_OTHER_DEAL_TAG').text('');
+        // 平台服务费收取账号
+        userId = parseInt($('input[name=SPEED_LOAN_SERVICE_FEE_UID]').val());
+        if (isNaN(userId) || userId <0) {
+            $('span#SPEED_LOAN_SERVICE_FEE_UID').text('平台服务费收取账号错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查平台服务费率
+        serviceRate = parseFloat($('input[name=SPEED_LOAN_SERVICE_RATE]').val());
+        if (isNaN(serviceRate) || serviceRate <0) {
+            $('span#SPEED_LOAN_SERVICE_RATE').text('平台服务费率错误').css('color', 'red');
+            flag = false;
+        }
+        // 检查服务时间
+        serviceHourStart = parseInt($('input[name=SPEED_LOAN_SERVICE_HOUR_START]').val());
+        serviceHourEnd = parseInt($('input[name=SPEED_LOAN_SERVICE_HOUR_END]').val());
+        if (isNaN(serviceHourStart) || isNaN(serviceHourEnd)) {
+            $('span#SPEED_LOAN_SERVICE_HOUR').text('服务时间错误').css('color', 'red');
+            flag = false;
+        }
+        // 单笔最小金额
+        minAmount = parseInt($('input[name=SPEED_LOAN_MIN_AMOUNT]').val());
+        if (isNaN(minAmount) || minAmount <0) {
+            $('span#SPEED_LOAN_MIN_AMOUNT').text('单笔最小金额错误').css('color', 'red');
+            flag = false;
+        }
+        // 单笔最大金额
+        maxAmount = parseInt($('input[name=SPEED_LOAN_MAX_AMOUNT]').val());
+        if (isNaN(maxAmount) || maxAmount <0) {
+            $('span#SPEED_LOAN_MAX_AMOUNT').text('单笔最大金额错误').css('color', 'red');
+            flag = false;
+        }
+        // 用户借款上限
+        limitAmount = parseInt($('input[name=SPEED_LOAN_USER_LIMIT_AMOUNT]').val());
+        if (isNaN(limitAmount) || limitAmount <0) {
+            $('span#SPEED_LOAN_USER_LIMIT_AMOUNT').text('用户借款上限错误').css('color', 'red');
+            flag = false;
+        }
+        // 借款日利率
+        dailyRate = parseFloat($('input[name=SPEED_LOAN_DAILY_RATE]').val());
+        if (isNaN(dailyRate) || dailyRate <0) {
+            $('span#SPEED_LOAN_DAILY_RATE').text('借款日利率错误').css('color', 'red');
+            flag = false;
+        }
+        // 抵押物质押率
+        mortgageRate = parseFloat($('input[name=SPEED_LOAN_MORTGAGE_RATE]').val());
+        if (isNaN(mortgageRate) || mortgageRate <0.1) {
+            $('span#SPEED_LOAN_MORTGAGE_RATE').text('抵押物质押率错误，不能小于0.1%').css('color', 'red');
+            flag = false;
+        }
+        // 抵押物持有时间
+        pawnHoldDays = parseInt($('input[name=SPEED_LOAN_PAWN_HOLD_DAYS]').val());
+        if (isNaN(pawnHoldDays) || pawnHoldDays <0) {
+            $('span#SPEED_LOAN_PAWN_HOLD_DAYS').text('抵押物持有时间错误').css('color', 'red');
+            flag = false;
+        }
+        // 抵押物到期剩余时间
+        pawnRemainDaysStart = parseInt($('input[name=SPEED_LOAN_PAWN_REMAIN_DAYS_START]').val());
+        pawnRemainDaysEnd = parseInt($('input[name=SPEED_LOAN_PAWN_REMAIN_DAYS_END]').val());
+        if (isNaN(pawnRemainDaysStart) || isNaN(pawnRemainDaysEnd)) {
+            $('span#SPEED_LOAN_PAWN_REMAIN_DAYS').text('抵押物到期剩余时间错误').css('color', 'red');
+            flag = false;
+        }
+
+        return flag;
+    }
+</script>
+<include file="Public:footer" />
+

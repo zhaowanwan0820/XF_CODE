@@ -1,0 +1,59 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+<div class="main_title">智多鑫用户投资列表 <a href="{:u("DtUserLoan/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            用户ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" size="8"/>
+            标的ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['deal_id'])}" size="8"/>
+            <input type="hidden" value="DtUserLoan" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th width="70px">投资编号</th>
+        <th width="50px">投资人</th>
+        <th>投资金额</th>
+        <th>待投本金</th>
+        <th>待付利息</th>
+        <th>已结利息</th>
+        <th>投资时间</th>
+        <th>起息时间</th>
+        <th>上次结息时间</th>
+        <th>赎回时间</th>
+        <th>状态</th>
+    </tr>
+
+    <?php foreach($data as $k=>$v) :?>
+    <tr class="row">
+        <td><?= $v['id']?></td>
+        <td><?= $v['userId']?></td>
+        <td><?= $v['money']?></td>
+        <td><?= $v['待投本金']?></td>
+        <td><?= $v['待付利息']?></td>
+        <td><?= $v['hasRepayInterest']?></td>
+        <td><?= date('Y-m-d H:i:s',$v['createTime'])?></td>
+        <td><?=$v['interestStartTime'] ? date('Y-m-d H:i:s',$v['interestStartTime']) : '--'?></td>
+        <td><?=$v['lastInterestTime'] ? date('Y-m-d H:i:s',$v['lastInterestTime']) : '--' ?></td>
+        <td><?=$v['redemptionSuccessTime'] ? date('Y-m-d H:i:s',$v['redemptionTime']) : '--'?></td>
+        <td>
+           <?php if($v['status'] == 0):?> 投资成功<?php endif;?>
+           <?php if($v['status'] == 1):?> 切片成功<?php endif;?>
+           <?php if($v['status'] == 2):?> 匹配成功<?php endif;?>
+           <?php if($v['status'] == 3):?> 赎回申请中<?php endif;?>
+           <?php if($v['status'] == 4):?> 赎回成功<?php endif;?>
+           <?php if($v['status'] == 5):?> 已结清<?php endif;?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

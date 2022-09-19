@@ -1,0 +1,16 @@
+类型：用户提现 
+付款金额（大写）{$usercarry[0].money|floatval|get_amount} （小写）{$usercarry[0].money|format_price} 
+支付方式：易宝支付 
+收款方名称：{$usercarry[0].real_name} 
+收款方开户行：{$bank.bankzone} 
+收款方账号：{$bank.bankcard} 
+付款内容：{$deal.name}放款      付款备注：{$user.real_name}款项 
+付款日期                             付款编号 
+申请人：                出纳：               财务副总：                   
+网信理财平台     {$user.user_name}     {$user.real_name}      
+  {$deal.name} （{$deal.id}）    {$deal.borrow_amount|format_price}   {$deal.text} 
+  咨询费：{$cost.consult_fee|format_price}&nbsp;&nbsp;担保费{$cost.guarantee_fee|format_price}&nbsp;&nbsp;平台手续费{$cost.loan_fee|format_price}&nbsp;&nbsp;借款 {$usercarry[0].money|format_price} 
+    ID 投标用户名 姓名 投标金额 投标时间 
+<foreach name="deal_load" item="load">
+        {$load.id} {$load.user_name} {$load.user_deal_name} {$load.money|format_price} {$load.create_time|to_date}<br>
+</foreach>

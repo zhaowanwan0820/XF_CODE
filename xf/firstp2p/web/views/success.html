@@ -1,0 +1,26 @@
+{include file="web/views/header.html"}
+{if $stay eq 0}
+<meta http-equiv="refresh" content="{$refresh_time};URL={$jump}"/>
+{/if}
+
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v1/css/edit-password.css');?>"  rel="stylesheet" type="text/css">
+<link href="<?php echo $this->asset->makeUrl('v1/css/edit-password_skin.css');?>"  rel="stylesheet" type="text/css">
+<!--private js&css end-->
+
+<div class="edit-mid">
+    <div class="edit-success"><i class="edit-suc"> </i>
+        <span class="font24">{$success_title}</span>
+    </div>
+    <span class="font16">{$success_msg}</span>
+    <br/>
+    <span class="font14">
+         {if $stay eq 0}
+            {function name="sprintf" format=$LANG.NEW_JUMP_TIP value1=$refresh_time value2=$jump}
+         {/if}
+    </span>
+    <span class="blank80"></span>
+</div>
+<span class="blank80"></span>
+
+{include file="web/views/footer.html"}

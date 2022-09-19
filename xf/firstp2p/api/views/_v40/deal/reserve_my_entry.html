@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>我的预约</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('css/common/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('css/common/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/p_reserve_my_entry.css');?>" />
+</head>
+
+<body>
+    <div class="p_reserve_my_entry">
+        <div class="banner"></div>
+        <div class="entry_list">
+            {foreach from=$entry_data item="entry_item"}
+            <a href='{$entry_item.my_url}' class="product_type{$entry_item.product_type}">
+                <i class="fr"></i>{$entry_item.product_name}
+            </a>
+            {/foreach}
+        </div>
+    </div>
+    <script>
+        // title右上角增加帮助中心
+        location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+        function gobackjsfuncReserve(){
+            location.href = 'firstp2p://api?type=webview&gobackrefresh=false&url='+ encodeURIComponent(location.origin + '/help/faq_list/?cid=227');
+            setTimeout(function(){
+                location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+            },0)
+        }
+    </script>
+</body>
+
+</html>

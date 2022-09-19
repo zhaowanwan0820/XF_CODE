@@ -1,0 +1,64 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__ROOT__/system/region.js' />
+<style>
+.textline {
+	line-height: 30px;
+}
+</style>
+<div class="main" style='padding-left:100px;'>
+	<form name="edit" action="__APP__" method="post"
+		enctype="multipart/form-data">
+		<div id='contactinfo'>
+			<foreach name="contact_info" key='k' item="val">
+			<div class='pid'>
+				<div class='textline'>
+					姓名：<input value="{$val.name}" class="textbox" name="name[]" size='30'>
+						<input type='hidden' value='{$val.id}' name='id[]'>
+				</div>
+				<div class='textline'>
+					关系：<select name='relation[]' style="width: 228px">
+						<option value='0'>请选择</option>
+						<foreach name='relation' key='rekey' item='info'>
+						<option value='{$rekey}'
+							<if condition="$rekey eq $val['relation']">selected="selected"</if>
+							>{$info}
+						</option>
+						</foreach>
+					</select>
+				</div>
+				<div class='textline'>
+					手机：<input value="{$val.mobile}" class="textbox" name="mobile[]"
+						size='30'>&nbsp;&nbsp;<input type='button' value='删除' onclick='delcontact($(this));'><br /> <br />
+				</div>
+			</div>
+			</foreach>
+		</div>
+		<input type='button' value='添加联系人' onclick='addcontact();'>&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type='submit' value='提交' name='submit'>
+		<input type='hidden' name='user_id' value='{$user_id}'>
+		<input type="hidden" name="{:conf("VAR_MODULE")}" value="User" />
+		<input type="hidden" name="{:conf("VAR_ACTION")}" value="modify_contact" />
+	</form>
+</div>
+<div style='display: none' id='newcontact'>
+	<div class='pid'>
+		<div class='textline'>
+			姓名：<input value="" class="textbox" name="name[]"
+				size='30'>
+		</div>
+		<div class='textline'>
+			关系：<select name='relation[]' style="width: 228px">
+					<option value='0'>请选择</option>
+					<foreach name='relation' key='rekey' item='info'>
+					<option value='{$rekey}'>{$info}</option>
+					</foreach>
+			</select>
+		</div>
+		<div class='textline'>
+			手机：<input value="" class="textbox" name="mobile[]"
+				size='30'>&nbsp;&nbsp;<input type='button' value='删除' onclick='delcontact($(this));'><br /> <br />
+		</div>
+	</div>
+</div>

@@ -1,0 +1,86 @@
+{include file="web/views/v3/en/header.html"}
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/company_profile.css');?>"/>
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/company_profile_pc.css');?>" media="screen and (min-width: 1200px)"/>
+    <div class="company_profile">
+        <div class="bg1">COMPANY PROFILE</div>
+        <div class="slide2">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/video.jpg');?>" class="videoImg">
+            <img class="about_trangle" src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/about_trangle.png');?>">
+            <p>{function name="get_adv" x="英文站视频简介"}</p>
+        </div>
+        <div class="bg2">QUALIFICATION</div>
+        <div class="aboutBox">
+            <ul class="about_ul">
+                <li class="about_list1 common-an-start">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/icon1.png');?>"/>
+                    <p class="yellow_text">National Internet Finance Association of China (NIFA)</p>
+                    <p class="gray_text">STANDING COUNCIL MEMBER</p>
+                </li>
+                <li class="about_list2 common-an-start">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/icon2.png');?>"/>
+                    <p class="yellow_text">Beijing Internet Finance Industry Association(former Beijing P2P Association)</p>
+                    <p class="gray_text long_text">FOUNDING MEMBER AND STANDING VICE-CHAIRMANSHIP AGENCY</p>
+                </li>
+                <li class="about_list3 common-an-start delay1">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/icon3.png');?>"/>
+                    <p class="yellow_text">Securities Association of China</p>
+                    <p class="gray_text">MEMBER</p>
+                </li>
+                <li class="about_list4 common-an-start delay1">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/icon4.png');?>"/>
+                    <p class="yellow_text">Payment & Clearing Association of China</p>
+                    <p class="gray_text">SUPERVISING AGENCY</p>
+                </li>
+                <li class="about_list5 common-an-start delay2">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/icon5.png');?>"/>
+                    <p class="yellow_text">Internet Finance Working Committee of NIFA</p>
+                    <p class="gray_text">INITIATING AGENCY</p>
+                </li>
+                <li class="about_list6 common-an-start delay2">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/icon6.png');?>"/>
+                    <p class="yellow_text">G20/B20 topic group</p>
+                    <p class="gray_text">MEMBER</p>
+                </li>
+                <li class="about_list7 common-an-start delay2">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/icon7.png');?>"/>
+                    <p class="yellow_text">B20 China Business Council</p>
+                    <p class="gray_text">MEMBER</p>
+                </li>
+                <li class="about_list8 common-an-start delay2">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/company_profile/icon8.png');?>"/>
+                    <p class="yellow_text">APEC China Business Council</p>
+                    <p class="gray_text">MEMBER</p>
+                </li>
+            </ul>
+        </div>
+{include file="web/views/v3/en/footer.html"}
+
+<script>
+    var flag = IsPC(); 
+    if(flag){//pc
+        var about_ul_top = $(".about_ul").offset().top;
+        var about_ul_height = $(".about_ul").height();
+        $(window).scroll(function(){
+            var this_scrollTop = $(this).scrollTop();
+            if(this_scrollTop > about_ul_top - 800){
+                setTimeout(function(){
+                    $(".about_list1").addClass("an-end");
+                    $(".about_list2").addClass("an-end");
+                },500)
+                setTimeout(function(){
+                    $(".about_list3").addClass("an-end");
+                    $(".about_list4").addClass("an-end");
+                },1000)
+                setTimeout(function(){
+                    $(".about_list5").addClass("an-end");
+                    $(".about_list6").addClass("an-end");
+                },1500)
+                setTimeout(function(){
+                    $(".about_list7").addClass("an-end");
+                    $(".about_list8").addClass("an-end");
+                },2000)
+            }
+        });
+    }
+</script>
+</html>

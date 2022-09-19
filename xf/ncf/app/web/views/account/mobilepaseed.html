@@ -1,0 +1,95 @@
+{include file="web/views/header.html"}
+
+<script type="text/javascript">
+    var today = new Date();
+    var  year = today .getFullYear();
+    var month = today .getMonth() + 1;
+    var day= today .getDate();
+    var ymd = year +""+ month+"" + day;
+    var oHead = document.getElementsByTagName('HEAD').item(0);
+    var oScript= document.createElement("script");
+    oScript.type = "text/javascript";
+    oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+    oHead.appendChild( oScript);
+</script>
+<div class="p_user_addbank">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_user_addbank.css');?>" rel="stylesheet">
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="reg-mid">
+                {if isset($from) && $from eq 'reg'}
+                <div class="gx tc">
+                    身份验证
+                </div>
+                {/if}
+                <div class="ui-form">
+                    <form id="bindcard" method="post" action="/account/registerWithBank" >
+                        <div class="te-wrap">
+                            <div class="total-error">务必填写本人身份信息，设置后不可更改。未满18周岁和70周岁(含)以上的用户不支持实名认证</div></div>
+                        <?php echo token_input(); ?>
+                        <ul class="clearfix">
+                            <li class="tel-ver clearfix">
+                                <label>姓名</label>
+                                <span class="tel-btn"></span>
+                                <input type="text" data-con="require" placeholder="您的姓名" data-placeholder="您的姓名" name="realName" id="name" value="" class="txt int_placeholder">
+                                <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                                <div class="error-wrap">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <label> 身份证号
+                                </label>
+                                <input type="text" data-con="require" value="" placeholder="您的身份证号码" data-placeholder="您的身份证号码" id="input-cardNo" name="cardNo" class="txt int_placeholder">
+                                <div class="form-sprite pwd-hide"></div>
+                                <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                                <div class="error-wrap">
+                                    <div class="form-sprite e-arrow"></div>
+                                    <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                    <div class="e-text"></div>
+                                </div>
+                            </li>
+                            {if !$is_firstp2p }
+                            <div class="gat" style="line-height:20px;height:40px;margin-left:130px;">港/澳/台用户点击 <a href="/account/passporttype/" class="blue">这里</a></div>
+                            <div class="gat" style="line-height:20px;height:40px;margin-left:130px;display:block;">特殊身份（军人、外籍）认证用户点击  <a href="/account/specialusertype/" class="blue">这里</a></div>
+                            {/if}
+                        </ul>
+                        <div class="btn-w30">
+                            <input class="common-sprite btn-red-h46" type="submit" id="submit_button" value="下一步">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.bgiframe.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.weebox.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/p2p-ui-checkbox.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/p2p_validate.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/jquery_placeholder-1.0.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/bindcard.js');?>"></script>
+<script type="text/javascript">
+    var norealErr ='{function name="get_adv" x="身份认证未通过实名认证_2015"}';
+    if(norealErr == ""){
+        norealErr = '如您属于更改过名字/正在更改名字/户口迁移/现役军人等情况导致验证失败，可通过拨打客服热线<span style="color:#f75939;">400-890-9888</span>（工作时间8:00-20:00）寻求帮助。'
+    }
+    //埋点
+    $(function(){
+        zhuge.track('进入身份认证页面')
+    })
+    function zhugeTrack(place, name, id, content){
+        $('html').on('click',place,function(){
+            var data = {};
+            data[id] = content;
+            zhuge.track(name, data)
+        })
+    }
+    zhugeTrack('#submit_button','身份认证页面_点击下一步','','')
+</script>
+<link href="<?php echo $this->asset->makeUrl('v3/css/p_register_new.css');?>" type="text/css" rel="stylesheet">
+{include file="web/views/footer.html"}

@@ -1,0 +1,317 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<div class="main">
+<div class="main_title"><a href="{:u("Life/consumeList?$nowParam")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="main_title">订单信息</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <tr class="row">
+           <th>消费订单号</th>
+           <th>城市</th>
+           <th>商品名称</th>
+           <th>车辆级别</th>
+           <th>车辆信息</th>
+           <th>订单状态</th>
+           <th>上车地点</th>
+           <th>下车地点</th>
+           <th>服务时长(分钟)/里程(KM)</th>
+           <th>订单金额</th>
+           <th>支付金额</th>
+           <th>付款方式</th>
+           <th>支付状态</th>
+           <th>开票状态</th>
+           <th style="width:150px">
+               操作
+           </th>
+       </tr>
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$data.order_info.outOrderId}</td>
+           <td>&nbsp;{$data.order_info.cityName}</td>
+           <td>&nbsp;{$data.order_info.serviceTypeName}</td>
+           <td>&nbsp;{$data.order_info.carTypeIdName}</td>
+           <td>&nbsp;{$data.order_info.carDisplay}</td>
+           <td>&nbsp;{$data.order_info.statusName}</td>
+           <td>&nbsp;{$data.order_info.fromAddress}</td>
+           <td>&nbsp;{$data.order_info.toAddress}</td>
+           <td>&nbsp;{$data.order_info.travelTime}/{$data.order_info.mileage}</td>
+           <td>&nbsp;{$data.order_info.shouldAmount}</td>
+           <td>&nbsp;{$data.order_info.actualAmount}</td>
+           <td>&nbsp;{$data.order_info.cardPayName}</td>
+           <td>&nbsp;{$data.order_info.payStatusName}</td>
+           <td>&nbsp;{$data.order_info.invoiceName}</td>
+           <td>
+               <if condition="$data['order_info']['payStatus'] eq 1">
+                   <if condition="$isRefund eq 0">
+                   <a href="javascript:tripRefund('{$data.order_info.outOrderId}','{$data.order_info.merchantId}')">退款</a>&nbsp;
+                   </if>
+               </if>
+               <a href="javascript:tripRemark('{$data.order_info.outOrderId}','{$data.order_info.merchantId}')">备注</a>
+           </td>
+       </tr>
+</table>
+<div class="blank5"></div>
+<div class="main_title">支付明细</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <tr class="row">
+           <th>支付订单号</th>
+           <th>支付类型</th>
+           <th>银行卡类型</th>
+           <th>金额</th>
+           <th>付款详情</th>
+           <th>支付状态</th>
+           <th>创建时间</th>
+           <th>完成时间</th>
+       </tr>
+       <volist name="data.payment_list" id="payment_info">
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$payment_info.payOrderId}
+           <span style="display:none;">出行子订单号：{$payment_info.subOutOrderId}</span>
+           <span style="display:none;"><a target="_blank" href="/m.php?m=Life&a=query&q=payment_user_order_map|pay_order_id={$payment_info.payOrderId}">查询</a></span>
+           </td>
+           <td>&nbsp;{$payment_info.playFlagName}</td>
+           <td>&nbsp;{$payment_info.cardTypeName}</td>
+           <td>&nbsp;{$payment_info.payAmount}</td>
+           <td>&nbsp;{$payment_info.cardPayName}</td>
+           <td>&nbsp;{$payment_info.statusName}</td>
+           <td>&nbsp;{$payment_info.createTime}</td>
+           <td>&nbsp;{$payment_info.tradeTime}</td>
+       </tr>
+       </volist>
+</table>
+<div class="blank5"></div>
+<div class="main_title">退款明细</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <if condition="count($data['payment_refund_list']) neq 0">
+       <tr class="row">
+           <th>退款订单号</th>
+           <th>支付类型</th>
+           <th>金额</th>
+           <th>退款方式</th>
+           <th>退款状态</th>
+           <th>创建时间</th>
+           <th>完成时间</th>
+       </tr>
+       <volist name="data.payment_refund_list" id="refund_info">
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$refund_info.outRefundId}</td>
+           <td>&nbsp;{$refund_info.playFlagName}</td>
+           <td>&nbsp;{$refund_info.refundAmount}</td>
+           <td>&nbsp;{$refund_info.refundType}</td>
+           <td>&nbsp;{$refund_info.statusName}</td>
+           <td>&nbsp;{$refund_info.createTime}</td>
+           <td>&nbsp;{$refund_info.tradeTime}</td>
+       </tr>
+       </volist>
+       </if>
+</table>
+<div class="blank5"></div>
+<div class="main_title">活动信息</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <if condition="count($data['award_info']) neq 0">
+       <tr class="row">
+           <th>活动ID</th>
+           <th>活动类型</th>
+           <th>下单时适用的活动规则</th>
+           <th>奖励状态</th>
+           <th>奖励方式</th>
+           <th>奖励时间</th>
+       </tr>
+       <volist name="data.award_info" id="award_info">
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$award_info.awardCode}<a href="javascript:bonusQuery('{$award_info.awardCode}')" style="display:none;">红包详情</a></td>
+           <td>&nbsp;{$award_info.awardTypeName}</td>
+           <td>&nbsp;{$award_info.awardRule}</td>
+           <td>&nbsp;{$award_info.awardStatusName}</td>
+           <td>&nbsp;{$award_info.awardMemo}</td>
+           <td>&nbsp;{$award_info.createTime}</td>
+       </tr>
+       </volist>
+       </if>
+</table>
+<div class="blank5"></div>
+<div class="main_title">人员信息</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <tr class="row">
+           <th>订车人用户ID</th>
+           <th>订车人姓名</th>
+           <th>订车人手机号</th>
+           <th>乘车人</th>
+           <th>乘车人手机号</th>
+           <th>司机</th>
+           <th>司机手机号</th>
+           <th>车牌号</th>
+       </tr>
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$data.user_info.userId}</td>
+           <td>&nbsp;{$data.user_info.userName}</td>
+           <td>&nbsp;{$data.user_info.userPhone}</td>
+           <td>&nbsp;{$data.user_info.passengerName}</td>
+           <td>&nbsp;{$data.user_info.passengerPhone}</td>
+           <td>&nbsp;{$data.user_info.driverName}</td>
+           <td>&nbsp;{$data.user_info.driverPhone}</td>
+           <td>&nbsp;{$data.user_info.driverCarno}</td>
+       </tr>
+</table>
+<div class="blank5"></div>
+<div class="main_title">订单时间流转</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <if condition="count($data['status_list']) neq 0">
+       <tr class="row">
+           <th>时间</th>
+           <th>状态</th>
+       </tr>
+       <volist name="data.status_list" id="status_info">
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$status_info.changeTime}</td>
+           <td>&nbsp;{$status_info.statusName}</td>
+       </tr>
+       </volist>
+       </if>
+</table>
+<div class="blank5"></div>
+<div class="main_title">下单时适用的计费规则</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <tr class="row">
+           <th>基础价格</th>
+           <th>超公里单价</th>
+           <th>超时间单价</th>
+           <th>空驶单价</th>
+           <th>价格类型</th>
+           <th>夜间服务费</th>
+       </tr>
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$data.rule_list.baseFeeName}</td>
+           <td>&nbsp;{$data.rule_list.exceedKmFee}</td>
+           <td>&nbsp;{$data.rule_list.exceedTimeFeeName}</td>
+           <td>&nbsp;{$data.rule_list.actualKongshiFeeName}</td>
+           <td>&nbsp;{$data.rule_list.priceTypeName}</td>
+           <td>&nbsp;{$data.rule_list.realNightFee}</td>
+       </tr>
+</table>
+<div class="blank5"></div>
+<div class="main_title">计费信息</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <tr class="row">
+           <th>行驶里程</th>
+           <th>行驶时间（分）</th>
+           <th>超时费用（元）</th>
+           <th>超公里数（KM）</th>
+           <th>超公里数费用（元）</th>
+           <th>空驶距离（KM）</th>
+           <th>空驶费用（元）</th>
+           <th>高速费用（元）</th>
+           <th>停车费用（元）</th>
+           <th>夜间服务费（元）</th>
+           <th>优惠券</th>
+           <th>优惠金额（元）</th>
+           <th>支付金额（元）</th>
+           <th>总金额（元）</th>
+           <th>支付完成时间</th>
+           <th>付款人</th>
+       </tr>
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$data.fee_info.mileage}</td>
+           <td>&nbsp;{$data.fee_info.travelTime}</td>
+           <td>&nbsp;{$data.fee_info.exceedTimeFee}</td>
+           <td>&nbsp;{$data.fee_info.exceedKm}</td>
+           <td>&nbsp;{$data.fee_info.exceedKmFee}</td>
+           <td>&nbsp;{$data.fee_info.actualKongshiKm}</td>
+           <td>&nbsp;{$data.fee_info.actualKongshiFee}</td>
+           <td>&nbsp;{$data.fee_info.highSpeedCharge}</td>
+           <td>&nbsp;{$data.fee_info.parkCharge}</td>
+           <td>&nbsp;{$data.fee_info.realNightFee}</td>
+           <td>&nbsp;/</td>
+           <td>&nbsp;{$data.fee_info.discountAmount}</td>
+           <td>&nbsp;{$data.fee_info.actualAmount}</td>
+           <td>&nbsp;{$data.fee_info.totalAmount}</td>
+           <td>&nbsp;{$data.fee_info.payTime}</td>
+           <td>&nbsp;{$data.fee_info.payUserName}</td>
+       </tr>
+</table>
+<div class="blank5"></div>
+<div class="main_title">地图轨迹</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <if condition="$data['trip_url'] neq ''">
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;<img title="地图轨迹" src="{$data.trip_url}" /></td>
+       </tr>
+       </if>
+</table>
+<div class="blank5"></div>
+<div class="main_title">备注信息</div>
+   <table id="dataTable1" class="dataTable" cellpadding=0 cellspacing=0 >
+       <tr>
+           <td colspan="22" class="topTd" >&nbsp; </td>
+       </tr>
+       <if condition="count($data['remark_list']) neq 0">
+       <tr class="row">
+           <th>备注时间</th>
+           <th>备注内容</th>
+           <th>备注人</th>
+       </tr>
+       <volist name="data.remark_list" id="remark_info">
+       <tr class="row" style="text-align:center;">
+           <td>&nbsp;{$remark_info.createTime}</td>
+           <td>&nbsp;{$remark_info.remark}</td>
+           <td>&nbsp;{$remark_info.operateName}</td>
+       </tr>
+       </volist>
+</table>
+</div>
+
+<script type="text/javascript">
+function tripRefund(outOrderId, merchantId) {
+    $.weeboxs.open(ROOT+'?m=Life&a=tripRefund&outOrderId='+outOrderId+'&merchantId='+merchantId,
+        {contentType:'ajax',showButton:false,title:'退款提示',width:450,height:300,onopen: function(){forms_lock();}});
+}
+function tripRemark(outOrderId, merchantId) {
+    $.weeboxs.open(ROOT+'?m=Life&a=tripRemark&outOrderId='+outOrderId+'&merchantId='+merchantId,
+        {contentType:'ajax',showButton:false,title:'请输入备注',width:450,height:300,onopen: function(){forms_lock();}});
+}
+// 查询红包详情
+function bonusQuery(awardCode) {
+    $.getJSON("/m.php?m=Life&a=getUserBonusData", {awardCode:awardCode},function(data) {
+        console.log(data);
+    });
+    return false;
+}
+</script>
+<include file="Public:footer" />

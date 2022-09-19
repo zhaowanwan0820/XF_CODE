@@ -1,0 +1,80 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<style>
+.vip_title_row{ font-size:14px;padding:10px 0px;;}
+.vip_row{ font-size:12px; font-weight:bold; padding:10px 0px; }
+.item_title {text-align:center;}
+</style>
+<div class="main">
+    <div class="main_title">会员等级奖励配置</div>
+    <div class="blank5"></div>
+    <form id="formData" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <foreach name="vipLevels" key="vipLevel" item="vipData">
+            <tr>
+                <input type="hidden" name="vipConfig[{$vipLevel}][vipGrade]" value="{$vipData.vipGrade}" />
+                <input type="hidden" name="vipConfig[{$vipLevel}][name]" value="{$vipData.name}" />
+                <td class="item_title">{$vipData.name}</td>
+                <td class="item_input">
+                    <div>
+                        <div class="vip_row">
+                            <span>生日券</span>
+                            <select name="vipConfig[{$vipLevel}][birthdayGroupType]">
+                                <foreach name="allowanceTypes" key="type" item="typeName">
+                                    <option value="{$type}" <if condition="$vipData.birthdayGroupType eq $type">selected="selected"</if>>{$typeName}</option>
+                                </foreach>
+                            </select>
+                            <input type="text" class="textbox" name="vipConfig[{$vipLevel}][birthdayGroupId]" value="{$vipData.birthdayGroupId}" placeholder="请输入礼券/投资券ID"/>
+                            <span>生日券推送文案</span>
+                            <input type="text" class="textbox" name="vipConfig[{$vipLevel}][birthdayPushMsg]" value="{$vipData.birthdayPushMsg}" placeholder="请输入推送文案"/>
+                        </div>
+                        <div class="vip_row">
+                            <span>周年券</span>
+                            <select name="vipConfig[{$vipLevel}][anniverGroupType]">
+                                <foreach name="allowanceTypes" key="type" item="typeName">
+                                    <option value="{$type}" <if condition="$vipData.anniverGroupType eq $type">selected="selected"</if>>{$typeName}</option>
+                                </foreach>
+                            </select>
+                            <input type="text" class="textbox" name="vipConfig[{$vipLevel}][anniverGroupId]" value="{$vipData.anniverGroupId}" placeholder="请输入礼券/投资券ID"/>
+                            <span>周年券推送文案</span>
+                            <input type="text" class="textbox" name="vipConfig[{$vipLevel}][anniverPushMsg]" value="{$vipData.anniverPushMsg}" placeholder="请输入推送文案"/>
+                        </div>
+                        <div class="vip_row">
+                            <span>升级礼包</span>
+                            <select name="vipConfig[{$vipLevel}][giftGroupType]">
+                                <foreach name="allowanceTypes" key="type" item="typeName">
+                                    <option value="{$type}" <if condition="$vipData.giftGroupType eq $type">selected="selected"</if>>{$typeName}</option>
+                                </foreach>
+                            </select>
+                            <input type="text" class="textbox" name="vipConfig[{$vipLevel}][giftGroupId]" value="{$vipData.giftGroupId}" placeholder="请输入礼券/投资券ID"/>
+                            <span>升级短信模板ID</span>
+                            <input type="text" class="textbox" name="vipConfig[{$vipLevel}][giftSmsId]" value="{$vipData.giftSmsId}" placeholder="请输入礼券/投资券ID"/>
+                            <span>升级推送文案</span>
+                            <input type="text" class="textbox" name="vipConfig[{$vipLevel}][giftPushMsg]" value="{$vipData.giftPushMsg}" placeholder="请输入推送文案"/>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </foreach>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="VipUser" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveRebateConfig" />
+                    <!--隐藏元素-->
+                    <input id="submitBut" type="submit" class="button" value="{%SAVE}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+    $(function(){
+    });
+</script>
+<include file="Public:footer" />

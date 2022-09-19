@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="<?php echo $this->asset->makeApiUrl('v3/js/zepto.min.js');?>"></script>
+<script src="<?php echo $this->asset->makeApiUrl('v3/js/iscroll.js');?>"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/p-yibao.css');?>">
+<title>支付验证</title>
+</head>
+<body>
+    <div class="ui_title">{if !$returnBtn}<a class="ui_back" href="javascript:void(0)" onclick="window.history.back();"><i class="ui_icon_back"></i>返回</a>{/if}支付验证</div>
+    <div class="p_new_unimport">
+        <form id="bincard_form" name="bincard_form" action="/payment/YeepayBindCardVcodeH5" method="POST">
+        <div class="information">
+            <div class="inf">
+                <span>真实姓名</span>
+                <input type="text" placeholder="姓名" readonly="readonly" value="{$realName}"/>
+            </div>
+            <div class="inf inf_unborder">
+                <span>身份证号</span>
+                <input type="text" placeholder="身份证号码" readonly="readonly" value="{$idno}"/>
+            </div>
+        </div>
+        <div class="information">
+            <div class="inf" id="bank_list_choice">
+                <div class="list_text">
+                借记卡所属银行
+                {if $isAccord eq 0}
+                <i class="holder" id="bank_list_txt">请选择</i>
+                <input id="JS-backName" type="hidden" name="bankName" value="">
+                {else}
+                <i id="bank_list_txt">{$bankName}</i>
+                <input id="JS-backName" type="hidden" name="bankName" value="{$bankName}">
+                {/if}
+                </div>
+            </div>
+            <div class="inf inf_unborder">
+                <span>银行卡号</span>
+                <input id="JS-bankCard" type="text" name="bankCard" placeholder="请输入借记卡号" {if $isAccord eq 1}readonly="readonly" value="{$bankCard}"{/if}/>
+            </div>
+            <input type="hidden" name="userClientKey" value="{$userClientKey}" />
+        </div>
+        <div class="but">
+            <input id="JS-submit_btn" type="submit" value="下一步" {if $isAccord eq 0}disabled="disabled"{/if}/>
+        </div>
+        </form>
+    </div>
+    {if $isAccord eq 0}
+    <div id="p_bank_list" class="p_bank_list">
+        <div class="ui_title"><a class="ui_back" id="bank_back_btn" href="javascript:void(0)"><i class="ui_icon_back"></i>返回</a>银行列表</div>
+        <div class="panel_bd">
+            <div class="panel_list"></div>
+        </div>
+    </div>
+    {/if}
+{if $isAccord eq 0}
+<script>
+$(function(){
+    var bankListHash = {$bankList};
+    var _bankListClickFlag = true;
+    function upateSubmitButton() {
+        var disabled = $('#JS-backName').val() == '' || $('#JS-bankCard').val() == '' || $('#bank_list_txt').html() == '请选择';
+        if (disabled) {
+            $('#JS-submit_btn').attr('disabled', 'disabled');
+            } else {
+            $('#JS-submit_btn').removeAttr('disabled');
+        }
+    }
+    $('#JS-bankCard').bind("input", upateSubmitButton);
+
+    var _upateSubmitButtonCount = 10;
+    var _upateSubmitButtonTimer = setInterval(function(){
+        upateSubmitButton();
+        _upateSubmitButtonCount--;
+        if (_upateSubmitButtonCount < 0) {
+            clearInterval(_upateSubmitButtonTimer);
+        }
+    }, 300);
+
+    $('#p_bank_list .panel_list').html(function() {
+        var html = '';
+        for (var i = 0; i < bankListHash.length; i++) {
+            html += '<div class="bank_item">' + bankListHash[i] + '</div>';
+        }
+        return html;
+    });
+
+    //iscroll实例化
+    window['scrollBankList'] = new IScroll('#p_bank_list .panel_bd', {
+         click: true
+    });
+
+    $('#bank_list_choice').click(function(){
+        if ( !_bankListClickFlag )  return;
+        _bankListClickFlag = false;
+        document.body.scrollTop = 0;
+        $('#p_bank_list').addClass('p_show');
+    });
+    $('#bank_back_btn').click(function(){
+        $('#p_bank_list').removeClass('p_show');
+        setTimeout(function(){
+            _bankListClickFlag = true;
+        },600);
+    });
+    $('#p_bank_list .panel_list .bank_item').click(function(){
+        var $this = $(this);
+        $this.addClass('active').siblings().removeClass('active');
+        $('#JS-backName').val($this.html());
+        $('#bank_list_txt').removeClass('holder').html($this.html());
+        $('#p_bank_list').removeClass('p_show');
+        upateSubmitButton();
+        setTimeout(function(){
+            _bankListClickFlag = true;
+        },600);
+    });
+});
+</script>
+{/if}
+{include file="openapi/views/baidutongji.html"}
+</body>
+</html>

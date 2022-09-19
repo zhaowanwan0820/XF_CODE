@@ -1,0 +1,72 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">优惠码附加返利 - {$deal_name}</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <if condition="$_REQUEST['deal_id'] eq 0">
+        <input type="button" class="button" value="{%ADD}" onclick="add();" />
+        <else/>
+        <input type="button" class="button" value="重置全局优惠码附加返利规则" onclick="resetGlobal({$_REQUEST['deal_id']});" />
+        <input type="button" class="button" value="全部有效" onclick="effectAll({$_REQUEST['deal_id']}, '1');" />
+        <input type="button" class="button" value="全部无效" onclick="effectAll({$_REQUEST['deal_id']}, '0');" />
+        <if condition="!$list">
+            <span style="color:red;"> 注：“进行中”的标如果没有优惠码返利规则，会致使前台用户投标时，相应优惠码无法使用！</span>
+        </if>
+    </if>
+</div>
+<!---->
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    action="true"
+    datasource="list"
+    show="id:ID
+		,source_type:投资性质:edit
+		,rebate_ratio:投资人返点比例
+		,referer_rebate_ratio:推荐人返点比例
+		,remark:备注说明
+		,is_effect|get_is_effect=$item['id']:{%IS_EFFECT}
+		"
+    actionlist="opt_edit,opt_del"
+    actionwidth="120px"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />
+
+<script type="text/javascript">
+    //复制全局返利规则
+    function resetGlobal(deal_id, el) {
+        var ele = $(el);
+        ele.css("background-color", '#ccc').attr("disabled", "disabled");
+        if (confirm("确认要重置该标的附加返利规则为当前全局特殊优惠码规则吗？")) {
+            location.href = ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=resetGlobal&deal_id=" + deal_id;
+        } else {
+            ele.css("background-color", '#4e6a81').removeAttr("disabled");
+        }
+
+    }
+
+    //全部无效
+    function effectAll(deal_id,is_effect,el) {
+        var ele = $(el);
+        ele.css("background-color", '#ccc').attr("disabled", "disabled");
+        var effect_str = is_effect == '1' ? '有效' : '无效';
+        if (confirm("确认要把该标的附加返利规则全部置为" + effect_str + "吗？")) {
+            location.href = ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=effectAll&is_effect=" + is_effect + "&deal_id=" + deal_id;
+        } else {
+            ele.css("background-color", '#4e6a81').removeAttr("disabled");
+        }
+
+    }
+</script>

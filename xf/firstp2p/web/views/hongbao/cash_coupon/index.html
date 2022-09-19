@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>网信理财新手礼包</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no,email=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <!--public js&css end-->
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-base.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-common.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/index.css?v=1', 1);?>" rel="stylesheet" type="text/css">
+    {else}
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-base_pc.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-common_pc.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/index_pc.css?v=2', 1);?>" rel="stylesheet" type="text/css">
+    {/if}
+    <!--[if lte IE 9]>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/html5shiv.js', 1);?>"></script>
+    <![endif]-->
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/zepto.js', 1);?>"></script>
+    {else}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/jquery-1.10.2.min.js', 1);?>"></script>
+    {/if}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/validateConf.js', 1);?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/validate.js', 1);?>"></script>
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common.js?v=8', 1);?>"></script>
+    {else}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common_pc.js', 1);?>"></script>
+    {/if}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/index.js', 1);?>"></script>
+</head>
+
+<body class="p-index">
+    <header class="m-head p-index">
+        <a href="" class="logo"></a>
+        <div class="banner"></div>
+    </header>
+    <section class="m-main p-index">
+        <div class="cash">
+            <span class="money">{$money}元</span>
+        </div>
+        <div class="ui-instrution">首次投资还有奖励，最高奖励金额150元！</div>
+        <div class="ui-all-error"></div>
+        <div class="ui-form">
+            <form id="register_form" name="register_form" action="" method="POST" onsubmit="return false;">
+                <div class="form-center">
+                    <div class="input-list">
+                        <div class="txt-wrap">
+                            <input id="mobile" type="text" name="mobile" placeholder="输入手机号领取" class="phone-txt" />
+                        </div>
+                    </div>
+                    <div class="msg-wrapper  no-mobile">
+                        <span class="msg"></span>
+                    </div>
+                    <div class="input-list vertical-list">
+                        <div class="txt-wrap">
+                            <input id="captcha" class="img-yanzheng"  type="text" placeholder="输入验证码" name="captcha" />
+                        </div>
+                        <div class="form-Verification">
+                            <img src="/verify.php?w=73&h=29&rb=0" />
+                        </div>
+                        <i class="icon-yes yes-captcha"></i>
+                    </div>
+                    <div class="msg-wrapper  no-captcha">
+                        <span class="msg"></span>
+                    </div>
+                    <?php echo token_input(); ?>
+                    <input id='cn' type='hidden' value='{$cn}'/>
+                    <input id='site_id' type='hidden' value='{$site_id}'/>
+                    <input id='bg' type='hidden' value='{$bg}'/>
+                </div>
+                <div class="form-footer">
+                    <input type="submit" id="register-btn" class="sub_form" value="马上领取" />
+                </div>
+            </form>
+        </div>
+
+    </section>
+
+    <footer class="m-foot p-index mar-t-8">
+        <span>网信理财 www.firstp2p.com</span>
+    </footer>
+    <div class="ui-tab p-index">
+        <div class="bg-white clearfix">
+            <div class="tabs_nav_box">
+                <ul>
+                    <li class="select" data-url="CashNewList?cn={$cn}">领取列表</li>
+                    <li>活动规则</li>
+                    <li>关于网信理财</li>
+                </ul>
+            </div>
+            <div class="tab_box">
+                <div class="con">
+                    {include file="web/views/hongbao/cash_coupon/list_new.html"}
+                </div> 
+                <div class="con">
+                    <div class="tab-cont">
+                        <p>邀请人邀请新用户在网信理财投资任一P2P理财产品（非私募和基金）,满足以下条件即可获得奖励：</p>
+                        <br/>
+                        <p><b>注册奖励红包</b></p>
+                        <p>邀请新用户注册网信理财账户：</p>
+                        <p>1、新用户奖励5元投资红包（有效期15天）</p>
+                        <p>2、邀请人奖励5元投资红包（有效期24小时)</p>
+                        <br/>
+                        <p><b>投资奖励红包</b></p>
+                        <p>1、新用户首次投资满100元：邀请人得20元投资红包，新用户得30元投资红包；</p>
+                        <p>2、新用户首次投资满500元：邀请人得40元投资红包，新用户得60元投资红包；</p>
+                        <p>3、新用户首次投资满5000元：邀请人得80元投资红包，新用户得100元投资红包；</p>
+                        <p>4、新用户首次投资满10000元：邀请人得100元投资红包，新用户得150元投资红包。</p>
+                        <p>以上投资红包有效期均为24小时</p>
+                        <br/>
+                        <p><b>规则说明</b></p>
+                        <p>1、投资过两次以上（含两次）P2P理财产品（非私募和基金）的用户均有邀请资格；</p>
+                        <p>2、每位邀请人一天内最多可获得3个投资奖励红包；但注册奖励红包获得个数不受限制；</p>
+                        <p>5、如新用户未填写满足邀请资格的邀请人的邀请码，则新用户无法获得5元现金奖励；</p>
+                        <br/>
+                        <p><b>备注</b></p>
+                        <p>注册奖励红包和投资奖励红包发放时间：将于新用户首次投资后的24小时之内进行发放。</p>
+                    </div>
+                </div>
+                <div class="con">
+                    <div class="tab-cont">
+                        <adv adv_id="WAP_WANGXIN_ABOUT"/>
+                    </div>
+                </div>               
+            </div>
+            {if $bg == 'xiecheng'}
+            <div style="text-align:center;width:90%;margin:0 auto;">
+                <span style="color:#D2D2D2">本活动携程网提供展示,对其所述内容不做任何保证及承担责任 携程网并未以任何方式参与其中!</span>
+            </div>
+            {/if}
+        </div>
+    </div>
+    <div  class="ui_mask" style="display: none">
+        <div class="ui_dialog">
+            <div class="pop_head">
+                <h2>提示</h2>
+            </div>
+            <div class="pop_body">
+                <div class="pop_text">
+                    <h3>领取本活动奖励：</h3>
+                    <table>
+                        <colgroup>
+                            <col width="30%" />
+                            <col width="40%" />
+                            <col width="30%" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <td colspan="3" class="xs_title">
+                                    新手礼包3.1
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>投资红包</th>
+                                <th>有效期至</th>
+                                <th>邀请人</th>
+                            </tr>
+                            <tr>
+                                <td class="xs_money">--</td>
+                                <td class="xs_date">--</td>
+                                <td class="xs_name">--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+              
+                    <h3>将放弃已领取的奖励：</h3>
+                    <table>
+                        <colgroup>
+                            <col width="30%" />
+                            <col width="40%" />
+                            <col width="30%" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <td colspan="3" class="ts_title">
+                                    轮盘抽奖
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>投资红包</th>
+                                <th>有效期至</th>
+                                <th>邀请人</th>
+                            </tr>
+                            <tr>
+                                <td class="ts_money">--</td>
+                                <td class="ts_date">--</td>
+                                <td class="ts_name">--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="pop_tip">是否继续领取？</p>
+                <div class="pop-btn fr">
+                    <input type="button" value="继续领取" class="btn-ok">
+                </div>
+                <div class="pop-btn mr10">
+                    <input type="button" value="取消" class="btn-cancel">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+<script>
+    var appid = '{$appid}';
+    var nonceStr = '{$nonceStr}';
+    var timeStamp = '{$timeStamp}';
+    var signature = '{$signature}';
+    wx.config({
+        appId:appid,
+        timestamp:timeStamp,
+        nonceStr:nonceStr,
+        signature:signature,
+        jsApiList:[
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'hideOptionMenu',
+            'showOptionMenu',
+            'closeWindow'
+        ],
+    });
+</script>
+<script>
+    var imgUrl = '{$img}';
+    var lineLink = '{$linkUrl}';
+    var descContent = '{$desc}';
+    var shareTitle = '{$title}';
+    wx.ready(function() {
+        // wx.hideOptionMenu();
+        wx.onMenuShareTimeline({
+            title: shareTitle, // 分享标题
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function (res) { 
+                // 用户确认分享后执行的回调函数
+                document.getElementById('captcha').value = '';
+                document.querySelector('.form-Verification img').src = '/verify.php?w=73&h=29&rb=0&rand=' + new Date().valueOf();
+            },
+            cancel: function (res) { 
+                // 用户取消分享后执行的回调函数
+                document.getElementById('captcha').value = '';
+                document.querySelector('.form-Verification img').src = '/verify.php?w=73&h=29&rb=0&rand=' + new Date().valueOf();
+            },
+        });
+        wx.onMenuShareAppMessage({
+            title: shareTitle, // 分享标题
+            desc: descContent, // 分享描述
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function (res) { 
+                // 用户确认分享后执行的回调函数
+                document.getElementById('captcha').value = '';
+                document.querySelector('.form-Verification img').src = '/verify.php?w=73&h=29&rb=0&rand=' + new Date().valueOf();
+            },
+            cancel: function (res) { 
+                // 用户取消分享后执行的回调函数
+                document.getElementById('captcha').value = '';
+                document.querySelector('.form-Verification img').src = '/verify.php?w=73&h=29&rb=0&rand=' + new Date().valueOf();
+            },
+        });
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>详情</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/user_authorize.css');?>" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        $(function () {
+            var token=$('#tokenInput').val();//token值
+            var submitBtn=$('#submitBtn');
+            var token=$('#tokenInput').val();
+            submitBtn.on('click',function () {
+                if(submitBtn.data('locked')){
+                    return;
+                }
+                submitBtn.data('locked',1);
+                $.ajax({
+                    "url":'/gold/Authorized',
+                    "type":'post',
+                    "dataType":"json",
+                    "data":{
+                        "token":token
+                    },
+                    "success":function (returnVal) {
+                        submitBtn.data('locked',0);
+                        if (returnVal.errno == 0) {
+                            location.reload();
+                        }else{
+                            P2PWAP.ui.toast(returnVal.error);
+                        }
+                    },
+                    "error":function (returnVal) {
+                        submitBtn.data('locked',0);
+                        P2PWAP.ui.toast("服务器端异常，请稍后重试！");
+                    }
+                });
+            });
+            var urlencode = location.origin + "/gold/gold_protocol?token="+token;
+            $('#protocolBtn').attr('href','firstp2p://api?type=webview&gobackrefresh=false&url='+encodeURIComponent(urlencode));
+        });
+    </script>
+</head>
+<body>
+<div class="user_authorize">
+    <input type="hidden" value="{$usertoken}" id="tokenInput" />
+    <div class="authorize_text">
+        <img class="img_auth" src="<?php echo $this->asset->makeAppUrl('v4.6/images/user_authorize.png');?>" alt="">
+        <p class="title_auth">网信优金</p>
+        <div class="content_auth">深圳市众瑞珠宝有限公司在门户方为其提供的平台发布、运营各类黄金产品，为客户提供产品报价、加工、物流等服务。深圳市众瑞珠宝有限公司应确保在平台展示的各信息及资料真实有效。</div>
+    </div>
+    <div class="authorize_info">
+        <div class="info_title">该网站将获取以下授权</div>
+        <p class="info_detail"><i class="point_gray"></i>获取您的实名信息(姓名、身份证、手机号等)</p>
+        <p class="info_detail"><i class="point_gray"></i>获得您的余额消费权限</p>
+        <a href="javascript:;" class="agree_authorize_btn" id="submitBtn">同意协议并提交授权</a>
+        <a href="javascript:;" class="protocol_link" id="protocolBtn">《黄金产品服务协议》</a>
+    </div>
+</div>
+<script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/base.js');?>"></script>
+{include file="api/views/_v32/footer.html"}

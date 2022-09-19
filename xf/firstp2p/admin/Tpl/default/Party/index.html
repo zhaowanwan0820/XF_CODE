@@ -1,0 +1,40 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery-1.10.2.min.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/user.js' />
+
+<script>
+
+function party_alert(info,reload){
+    $('.button').css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+    if(info){
+        alert(info);
+    }
+    if(reload){
+        window.location.href = ROOT + '?m=Party&a=index';
+    }
+}
+
+</script>
+
+<div class="main">
+    <div class="main_title">用户头像导出 </div>
+        <div class="blank5"></div>
+        <iframe name="ajaxiframe" style="display:none;"></iframe>
+        <form  name="search" method="post" enctype="multipart/form-data" action="__APP__" target="ajaxiframe">
+        <div class="button_row">
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Party">
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="importCsvShortAlias">
+            <input type="file" name="upfile" style="width:150px" >
+            <input type="submit" class="button" name='submit' value="下载用户头像" />
+        </div>
+        </form>
+    <div class="blank5"></div>
+</div>
+
+<include file="Public:footer" />
+

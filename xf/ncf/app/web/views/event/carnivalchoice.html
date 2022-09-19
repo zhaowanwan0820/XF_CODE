@@ -1,0 +1,128 @@
+{include file="web/views/header.html"}
+<script>
+    var Firstp2p = {
+        "staticUrl": "<?php echo $this->asset->makeUrl();?>".replace(/\/?\?[\w=]+/,''),
+        "seajsUri": '/v2/js/widget'
+    };
+</script>
+<!-- http://webdesign/static届时换为php变量 -->
+<script src="<?php echo $this->asset->makeUrl('v2/js/widget/seajs/pc/common/js/sea.min.js');?>" type="text/javascript"></script>
+<script src="<?php echo $this->asset->makeUrl('v1/js/topic/carnival/carnival_choice.js');?>" type="text/javascript"></script>
+<!--<div class="wrap" style="margin:30px auto;">-->
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/carnival_choice.css');?>">
+<section>
+    <div class="shadow">
+        <div class="mess_title tc">选择奖品</div>
+        <input type="hidden" id="user_id" value="{$user_id}">
+        <input type="hidden" id="is_commit" value="{$is_commit}">
+        {if $is_commit eq 0}
+        <div class="carnival_choice_box">
+            <!--<div class="tip mb15">您已选过奖品，不可重复提交</div>-->
+            <div class="mb30">您可以从以下奖品中选择</div>
+            {foreach item="gift" key=key from=$gift}
+            <div class="award_type">
+                {if $gift.type eq 0}
+                <label><input id="award{$key}" type="radio" name="award_type" kind="virtual" value={$key} />{$gift.gift}</label>
+                {/if}
+                {if $gift.type eq 1}
+                <label><input id="award{$key}" type="radio" name="award_type" kind="practical" value={$key} />{$gift.gift}</label>
+                {/if}
+            </div>
+            {/foreach}
+            <form method="post" action="DoCarnivalChoice" id="form_virtual" class="carnival_choice" ajaxsubmit="true">
+                <div class="virtual_box">您的电子券将于12月初以站内信形式发送给您，请注意查收</div>
+                <div class="tc"><input class="sumbtn" type="submit" value="确定"></div>
+            </form>
+            <form method="post" action="DoCarnivalChoice" id="form_practical" class="carnival_choice" ajaxsubmit="true">
+                <div class="practical_box">
+                    <div class="mb10">请填写有效的收件信息，方便您接受您的奖品：</div>
+                    <table width="500">
+                        <tr>
+                            <th><label for="recipient_name">姓名：</label></th>
+                            <td><input id="recipient_name" name="recipient_name" class="text" type="text" data-rule="required;chineseName"/></td>
+                        </tr>
+                        <tr>
+                            <th><label for="mobile">联系电话：</label></th>
+                            <td><input id="mobile" name="mobile" class="text" type="text" data-rule="required;mobile"/></td>
+                        </tr>
+                        <tr>
+                            <th><label>收件地址：</label></th>
+                            <td><input type="hidden" value="1" id="deflv1">
+                                <input type="hidden" value="2" id="deflv2">
+                                <input type="hidden" value="52" id="deflv3">
+                                <input type="hidden" value="500" id="deflv4">
+
+                                <select class="select_box" name="region_lv1">
+                                    <option value="0">=请选择=</option>
+                                    <option  value="1">中国</option>
+                                </select>
+                                <select class="select_box" name="region_lv2" >
+                                    <option value="0">=请选择=</option>
+                                </select>
+                                <select class="select_box" name="region_lv3" >
+                                    <option value="0">=请选择=</option>  
+                                </select>
+                                <select class="select_box" name="region_lv4" >
+                                    <option value="0">=请选择=</option>  
+                                </select></td>
+
+                        </tr>
+                        <tr>
+                            <th><label for="address">详细地址：</label></th>
+                            <td><input id="address" name="address" class="text" type="text" data-rule="required;"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tc"><input class="sumbtn" type="submit" value="确定"></div>
+            </form>
+        </div>
+        {/if}
+
+        {if $is_commit eq 1}
+        <div class="carnival_choice_box">
+            <div class="tip mb15">您已选过奖品，不可重复提交</div>
+            <div class="award_type">
+                <label><input id="award" type="radio" name="award_type" kind="{$gift_type}" value=0 checked="checked" />{$gift_choose}</label>
+            </div>
+
+            <form method="post" action="DoCarnivalChoice" id="form_virtual" class="carnival_choice" ajaxsubmit="true">
+                <div class="virtual_box">您的电子券将于12月初以站内信形式发送给您，请注意查收</div>
+            </form>
+            <form method="post" action="DoCarnivalChoice" id="form_practical" class="carnival_choice" ajaxsubmit="true">
+                <div class="practical_box">
+                    <div class="mb10">您的收件地址信息为：</div>
+                    <table width="500">
+                        <tr>
+                            <th><label for="recipient_name">姓名：</label></th>
+                            <td><input id="recipient_name" class="text" type="text" data-rule="required;chineseName" disabled="disabled" value="{$recipient_name}"/></td>
+                        </tr>
+                        <tr>
+                            <th><label for="mobile">联系电话：</label></th>
+                            <td><input id="mobile" class="text" type="text" data-rule="required;mobile" disabled="disabled" value="{$mobile}"/></td>
+                        </tr>
+                        <tr>
+                            <th><label>收件地址：</label></th>
+                            <td>
+                                <select class="select_box" disabled="disabled">
+                                    <option value="0">{$province}</option>
+                                </select>
+                                <select class="select_box" disabled="disabled">
+                                    <option value="0">{$city}</option>  
+                                </select>
+                                <select class="select_box" disabled="disabled">
+                                    <option value="0">{$country}</option>  
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="address">详细地址：</label></th>
+                            <td><input id="address" class="text" type="text" data-rule="required;" disabled="disabled" value="{$address}"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+        {/if}
+    </div>
+</section>
+{include file="web/views/footer.html"}

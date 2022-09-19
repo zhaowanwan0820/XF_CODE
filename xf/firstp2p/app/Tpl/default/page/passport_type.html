@@ -1,0 +1,59 @@
+{include file="inc/header.html"}
+<div class="blank"></div>
+<div class="wrap clearfix">
+  <div class="deal_box_top"></div>
+  <div class="deal_box_data">
+    <div class="con">
+      <div class="contentn">
+        <h1>感謝您選擇中國領先的網絡理財平台——网信理财</h1>
+        <h2>選擇您所在的地區：</h2>
+        <div class="contentn_1">
+          <ul class="passport-type-list">
+            <li class="active first" data-type="1"><span>我是香港投資人</span></li>
+            <li data-type="2"><span>我是澳門投資人</span></li>
+            <li data-type="3"><span>我是台灣投資人</span></li>
+          </ul>
+          <input id="passport-type-input" type="hidden" name="passport_type" value="0">
+        </div>
+        <h4>请准备以下材料：</h4>
+         <div class="contentn_2">
+            <div class="newn">                    
+              <span><b>1.   以下證件的正反面彩色照片或彩色掃描件：</b></span><br />
+              <span class="gio"><b id="text_1">1）港澳居民來往內地通行</b></span>
+              <span class="gio"><b id="text_2">2）香港永久性居民身份證</b></span>
+            </div>                    
+            <div class="newn_2">
+              <ul>
+                  <li>您必須同時持有以上證件，且每個證件的有效期至少還有<span style="color:#cd1223">2個月</span>有效身份證件超過<br />有效期後，您將不能進行充值、投資。</li>
+                  <li id="cai">材料要求：</li>
+                  <li>圖片清晰、證件文字易識別</li>
+                  <li>圖片格式僅限JPG</li>
+                  <li>圖片大小不超過1.5MB <a id="img_example" href="./static/default/images/hk.jpg" target="_blank" class="pp-btn">材料範例</a></li>
+              </ul>
+            </div>
+            <div class="newn_4">                    
+                    <span><b>2.  內地以下任一銀行正常可用的借記卡，且該卡開戶姓名與您證件姓名一致： </b></span><br />
+                    <span class="gio"><b> 中國工商銀行、招商銀行、中國建設銀行、中國農業銀行、中國民生銀行、中信銀行</b></span>
+                  </div>
+                <div class="newn_5"><a id="possport" href="/uc_account-passport/type-1" class="pp-btn-lg">繼續認證</a></div>
+            </div>            
+       </div>
+    </div>
+  </div>
+  <div class="deal_box_bot"></div>
+</div>
+
+<script>
+var text_html = {$text};
+$('.passport-type-list li').on('click', function(event){
+  $(this).addClass('active').siblings().removeClass('active');
+  $('#possport').attr('href','/uc_account-passport/type-' + $(this).data('type'));
+  var type = $(this).data('type');
+  $("#text_1").html(text_html[type][0]);
+  $("#text_2").html(text_html[type][1]);
+  $("#img_example").attr('href',text_html[type][2]);
+  
+});
+</script>
+
+{include file="inc/footer.html"}

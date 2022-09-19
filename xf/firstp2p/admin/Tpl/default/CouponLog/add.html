@@ -1,0 +1,125 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<!--div class="main_title">添加 <a href="javascript:history.back(-1);" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div-->
+
+<form name="edit" action="__APP__" class="yh-form" method="post" enctype="multipart/form-data">
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+<input type='hidden' name='user_id' value='{$user.id}'>
+<input type='hidden' name='deal_load_id' value='{$deal_load.id}'>
+<input type='hidden' name='deal_id' value='{$deal_load.deal_id}'>
+	<!--tr>
+		<td colspan=2 class="topTd"></td>
+	</tr-->
+
+    <tr>
+        <td class="item_title">投标ID:</td>
+        <td class="item_input">{$deal_load.id}</td>
+    </tr>
+    <tr>
+        <td class="item_title">订单ID:</td>
+        <td class="item_input">{$deal_load.deal_id}</td>
+    </tr>
+    <tr>
+        <td class="item_title">投资人:</td>
+        <td class="item_input">{$user.id}&nbsp;&nbsp;&nbsp;{$user.id|get_user_name}&nbsp;&nbsp;&nbsp;{$user.id|get_user_name="real_name"}</td>
+    </tr>
+    <tr>
+        <td class="item_title">投资人等级优惠码:</td>
+        <td class="item_input">
+            {$user.id|get_user_coupon_level}&nbsp;&nbsp;&nbsp;{$user.id|get_user_coupons}
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">推荐人会员ID:</td>
+        <td class="item_input"><input type="text" class="textbox check_user_id" name="refer_user_id" value=""/>
+            &nbsp;&nbsp;<span class="check_user_name"></span>&nbsp;&nbsp;<a href="/m.php?m=User&a=index&" target="_blank">会员列表</a>
+            <br><span>{%COUPON_TIPS_LOG_REFER_USER_ID}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">机构会员ID:</td>
+        <td class="item_input"><input type="text" class="textbox check_user_id" name="agency_user_id"/>
+            &nbsp;&nbsp;<span class="check_user_name"></span>
+            <br><span>{%COUPON_TIPS_LOG_AGENCY_USER_ID}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">优惠券短码:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="short_alias" value=""/>
+            <br><span>{%COUPON_TIPS_LOG_SHORT_ALIAS}</span>
+        </td>
+    </tr>
+    <!--tr>
+        <td class="item_title">推荐人返点比例系数:</td>
+        <td class="item_input"><input type="text" class="textbox " name="referer_rebate_ratio_factor" value=""/></td>
+    </tr-->
+    
+     <tr>
+        <td class="item_title">投资人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox " name="rebate_amount" value=""/>
+            <br><span>{%COUPON_TIPS_LOG_REBATE_AMOUNT}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox " name="rebate_ratio" value=""/></td>
+    </tr>
+    
+    <tr>
+        <td class="item_title">推荐人返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox " name="referer_rebate_amount" value=""/></td>
+    </tr>
+    <tr>
+        <td class="item_title">推荐人返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox " name="referer_rebate_ratio" value=""/></td>
+    </tr>
+    
+    <tr>
+        <td class="item_title">机构返点金额:</td>
+        <td class="item_input"><input type="text" class="textbox " name="agency_rebate_amount" value=""/></td>
+    </tr>
+    <tr>
+        <td class="item_title">机构返点比例:</td>
+        <td class="item_input"><input type="text" class="textbox " name="agency_rebate_ratio" value=""/></td>
+    </tr>
+
+    <input type="hidden" name="id" value="{$vo.id}" />
+	<input type="hidden" name="{:conf("VAR_MODULE")}" value="CouponLog" />
+	<input type="hidden" name="{:conf("VAR_ACTION")}" value="addCouponLog" />
+	<tr>
+	<td class="item_title"></td>
+	<td>
+		<input type="submit" class="button" value="{%ADD}" />
+		<input type="reset" class="button" value="{%RESET}" />
+	</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+</form>
+
+<script>
+    $(".yh-form").bind("submit", function () {
+        var btn = $('form input[type="submit"]');
+        $(btn).css({ "color": "gray", "background": "#ccc" }).attr("disabled", "disabled");
+
+        if (confirm("确定此操作吗？")) {
+            return true;
+        } else {
+            $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+            return false;
+        }
+    });
+	
+</script>
+
+<include file="Public:footer" />

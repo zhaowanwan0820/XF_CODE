@@ -1,0 +1,61 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v3/css/oauth/password.css');?>" rel="stylesheet" type="text/css">
+<link href="<?php echo $this->asset->makeUrl('v3/css/oauth/password_skin.css');?>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/pas_strength.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/password.js');?>"></script>
+<link href="<?php echo $this->asset->makeUrl('v3/css/user_pwdrule.css');?>" type="text/css" rel="stylesheet">
+<div class="main pt23">
+    <section>
+        <div class="ui_product_tab box mb30">
+        <div class="product_type">
+            <div class="fl title">
+                <i class="icon_line mr15"></i>修改密码
+            </div>
+        </div>
+            <div class="pw-info">
+                <form method="post" action="/user/savepwd" id="modify">
+                    <?php echo token_input(); ?>
+                    <ul class="clearfix">
+                        <li>
+                            <label> <span>*</span> 旧密码： </label>
+                            <input type="password" value="" name="old_password"
+                            id="old_password" class="txt" autocomplete="off" maxlength="25">
+                            &nbsp;&nbsp;&nbsp;<font
+                            class="error_tip old_password_tip" style="color: #CC1223">{$error.old_password}</font></li>
+                        <li>
+                            <label> <span>*</span> 新密码： </label>
+                            <input type="password" value="" name="new_password"
+                            id="new_password" class="txt" autocomplete="off" data-stretype="1" maxlength="20"/>
+                            &nbsp;&nbsp;&nbsp;<font
+                            class="error_tip new_password_tip" style="color: #CC1223">{$error.new_password}</font>
+                            <span class="color-gray2" style="display:none">密码安全程度：<span class="color-low">低</span></span>
+                            <div id="" class="pass-item-tip-password">
+                                <div class="pwd-checklist-wrapper"><span class="pwd-checklist-arrow"><em class="arrowa">◆</em><em class="arrowb">◆</em></span>
+                                    <ul id="pwd-checklist" class="pwd-checklist">
+                                        <li class="safety-level"> <span class="pr9">安全程度：</span><span class="process low"></span><span class="process"></span><span class="process"></span><span class="ml4 color-low">低</span>
+                                        </li>
+                                        <li id="" data-rule="len" class="pwd-checklist-item pwd-checklist-item-error">6-20位</li>
+                                        <li id="" data-rule="cha" class="pwd-checklist-item pwd-checklist-item-success">支持数字、大小写字母、标点符号</li>
+                                        <li id="" data-rule="spa" class="pwd-checklist-item pwd-checklist-item-error">不允许有空格</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            </li>
+                            <li>
+                                <label> <span>*</span> 确认密码： </label>
+                                <input type="password" value="" name="re_new_password"
+                                id="re_new_password" class="txt" autocomplete="off" maxlength="20">
+                                &nbsp;&nbsp;&nbsp;<font
+                                class="error_tip re_new_password_tip" style="color: #CC1223">{$error.re_new_password}</font></li>
+                            <li class="btn-w30">
+                                <label> <span></span> </label>
+                                <input type="submit" class="sumbtn" id="settings-submit"
+                                value="确定" />
+                            </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{include file="web/views/footer.html"}

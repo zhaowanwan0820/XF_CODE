@@ -1,0 +1,298 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<script type="text/javascript">
+
+    function repay(id){
+        window.location.href = ROOT + '?m=DealProjectRepay&a=repay&project_repay_id='+id+"&role="+$("#role").val();
+    }
+
+    function apply_prepay(id,loantype, type) {
+        window.location.href = ROOT + '?m=DealProjectRepay&a=prepay&project_repay_id=' + id + '&type=' + type+"&role="+$("#role").val();
+    }
+
+</script>
+
+<div class="main">
+<if condition="$role eq 'b'">
+<div class="main_title">待审核列表</div>
+<else/>
+<div class="main_title">{$main_title}</div>
+</if>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" size="10"/>
+        项目id：<input type="text" class="textbox" name="project_id" value="{:trim($_REQUEST['project_id'])}" size="10"/>
+        项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        项目业务状态：
+        <select name="business_status">
+            <option value="999" <if condition="$_REQUEST['business_status'] eq 999">selected="selected"</if>>全部</option>
+            <option value="5" <if condition="$_REQUEST['business_status'] eq 5">selected="selected"</if>>还款中</option>
+            <option value="6" <if condition="$_REQUEST['business_status'] eq 6">selected="selected"</if>>正在还款</option>
+        </select>
+        借款人用户名：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" />
+        最近一期还款日期开始：
+            <input type="text" class="textbox" name="repay_time_begin" id="repay_time_begin" value="{:trim($_REQUEST['repay_time_begin'])}" size="10" onfocus="this.blur();" />
+        最近一期还款日期结束：
+            <input type="text" class="textbox" name="repay_time_end" id="repay_time_end" value="{:trim($_REQUEST['repay_time_end'])}" size="10" onfocus="this.blur();" />
+        <if condition="$role eq 'b'">
+            申请人员：
+            <input type="text" class="textbox" name="submit_uid" value="{$_REQUEST['submit_uid']}" size="10" />
+            还款类型：
+            <select class="require" name="service_type">
+                <option value="0" <if condition="$_REQUEST['service_type'] eq 0">selected="selected"</if>>全部</option>
+                <option value="4" <if condition="$_REQUEST['service_type'] eq 4">selected="selected"</if>>正常还款</option>
+                <option value="5" <if condition="$_REQUEST['service_type'] eq 5">selected="selected"</if>>提前还款</option>
+            </select>
+        <else/>
+            审核状态：
+            <select class="require" name="audit_status">
+                <option value="0" <if condition="$_REQUEST['audit_status'] eq 0">selected="selected"</if>>全部</option>
+                <option value="1" <if condition="$_REQUEST['audit_status'] eq 1">selected="selected"</if>>还款待审核</option>
+                <option value="2" <if condition="$_REQUEST['audit_status'] eq 2">selected="selected"</if>>还款已通过</option>
+                <option value="3" <if condition="$_REQUEST['audit_status'] eq 3">selected="selected"</if>>还款已退回</option>
+                <option value="4" <if condition="$_REQUEST['audit_status'] eq 4">selected="selected"</if>>还款待处理</option>
+            </select>
+
+        </if>
+        <input type="hidden" value="DealProjectRepay" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="hidden" value="{$role}" id="role" name="role" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv();" />
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="21" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px   ">
+                    编号
+            </th>
+            <th width="50px   ">
+                    项目id
+            </th>
+            <th style="width:150px">
+                    项目标题
+            </th>
+            <th>
+                    借款金额
+            </th>
+            <th>
+                    年化借款利率
+            </th>
+            <th>
+                    借款期限
+            </th>
+            <th>
+                    放款日期
+            </th>
+            <th>
+                    费用收取方式
+            </th>
+            <th>
+                   还款方式
+            </th>
+            <th>
+                   资产管理方
+            </th>
+            <th>
+                   用户类型
+            </th>
+            <th>
+                    借款人用户名
+            </th>
+            <th>
+                    借款人姓名
+            </th>
+            <th>
+                    借款人id
+            </th>
+            <th>
+                    借款人账户余额
+            </th>
+            <th style="width:100px">
+                    最近一期还款日
+            </th>
+            <th>
+                    本期还款金额
+            </th>
+            <th>
+                    项目状态
+            </th>
+            <th>
+                    审核状态
+            </th>
+            <if condition="$role eq 'b'">
+            <th>
+                    还款类型
+            </th>
+            <th>
+                    申请人员
+            </th>
+            </if>
+            <th style="width:150px">
+                    操作
+            </th>
+        </tr>
+        <volist name="list" id="project_repay">
+        <tr class="row" >
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$project_repay.id}">
+            </td>
+            <td>
+                &nbsp;{$project_repay.id}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_id}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.name}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.borrow_amount|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.rate}%
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.repay_period}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.repay_start_time}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.fee_rate_type_name}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.loantype}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.agency}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.user_id|getUserTypeName}
+            </td>
+            <td>
+                &nbsp;<a href="?m=User&a=index&user_id={$project_repay.user_info.id}" target="_blank">{$project_repay.user_info.user_name}</a>
+            </td>
+            <td>
+                &nbsp;<a href="?m=User&a=index&user_id={$project_repay.user_info.id}" target="_blank">{$project_repay.user_info.real_name}</a>
+            </td>
+            <td>
+                &nbsp;{$project_repay.user_info.id}
+            </td>
+            <td <?php if($project_repay['user_info']['insufficient']) echo 'style="background: yellow"';?>>
+                &nbsp;{$project_repay.user_info.money|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project_repay.repay_time|to_date='Y-m-d'}
+            </td>
+            <td>
+                &nbsp;{$project_repay.repay_money|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project_repay.project_info.business_status|getProjectBusinessStatusNameByValue}
+            </td>
+            <td>
+                &nbsp;{$project_repay.audit_info.status_name}
+            </td>
+            <if condition="$role eq 'b'">
+                <td>
+                    &nbsp;{$project_repay.audit_info.service_type_name}
+                </td>
+                <td>
+                    <if condition="$project_repay['audit_info']['submit_user_name']">
+                        {$project_repay.audit_info.submit_user_name}
+                    </if>
+                </td>
+            </if>
+            <td>
+                &nbsp;
+                <if condition="$project_repay['audit_info']['status'] eq 2">
+                    -(审核通过)
+                <elseif condition="$role eq 'b'" />
+                    <if condition="$project_repay['audit_info']['status'] eq 1 and $project_repay['audit_info']['is_prepay']">
+                        <a href="javascript:apply_prepay('{$project_repay.id}','{$project_repay.project_info.loantype}', '1');">审核</a>
+                    <else/>
+                        <a href="javascript:repay('{$project_repay.id}')">审核</a>&nbsp;
+                    </if>
+                <else/>
+                    <if condition="$project_repay['project_info']['is_repay'] eq 1">
+                        -(项目已全部还款)
+                    <elseif condition="$project_repay['audit_info']['status'] eq 1" />
+                        <if condition="$project_repay['audit_info']['is_prepay']">
+                            <a href="javascript:repay('{$project_repay.id}')">还款</a>&nbsp;
+                        <else />
+                            <a href="javascript:apply_prepay('{$project_repay.id}','{$project_repay.project_info.loantype}', 1)">提前还款</a>
+                        </if>
+                    <else/>
+                            <a href="javascript:repay('{$project_repay.id}')">还款</a>&nbsp;
+                            <a href="javascript:apply_prepay('{$project_repay.id}','{$project_repay.project_info.loantype}', 1)">提前还款</a>
+                    </if>
+                </if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+    $(document).ready(function(){
+        //投标起始时间必须小于投标终止时间
+        $("#repay_time_begin").blur(function(){
+            return showCalendar('repay_time_begin', '%Y-%m-%d', false, false, 'repay_time_begin',function() {
+                if('' == $("#repay_time_end").val()) {
+                    return true;
+                }
+                var repay_start_times = get_unix_time($("#repay_time_begin").val());
+                var repay_end_times = get_unix_time($("#repay_time_end").val());
+                if(repay_start_times > repay_end_times) {
+                    alert('最近一期还款日期选择有误，请确认！');
+                    $("#repay_time_begin").val('');
+                }
+            });
+        });
+
+        //投标终止时间必须大于投标起始时间
+        $("#repay_time_end").blur(function(){
+            return showCalendar('repay_time_end', '%Y-%m-%d', false, false, 'repay_time_end',function() {
+                if('' == $("#repay_time_begin").val()) {
+                    return true;
+                }
+                var repay_start_times = get_unix_time($("#repay_time_begin").val());
+                var repay_end_times = get_unix_time($("#repay_time_end").val());
+                if(repay_start_times > repay_end_times) {
+                    alert('最近一期还款日期选择有误，请确认！');
+                    $("#repay_time_end").val('');
+                }
+            });
+        });
+    });
+    function get_unix_time(hm) {
+        var date = new  Date();
+        var hms = hm.split('-');
+        var year = hms[0];
+        var month = hms[1];
+        var day = hms[2];
+        var today = new Date(year,month,day,'0','0','00');
+        return today.getTime();
+    }
+</script>
+<include file="Public:footer" />

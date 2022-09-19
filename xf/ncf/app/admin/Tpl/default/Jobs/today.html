@@ -1,0 +1,104 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__Common/js/Chart.min.js' />
+<style>
+table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">任务管理 - 今日任务总览</div>
+<div class="blank5"></div>
+
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+<tr>
+<td colspan="7" class="topTd" >&nbsp; </td>
+</tr>
+<tr class="row">
+<th>任务名</th>
+<th>方法</th>
+<th>总任务数</th>
+<th>待执行任务</th>
+<th>执行完成任务数</th>
+<th>优先级</th>
+<th>执行时长</th>
+</tr>
+
+<volist name="list" id="job">
+<tr class="row">
+<td>{$job.name}</td>
+<td><a href="javascript:detail('{$job.function|addslashes}');">{$job.function}</a></td>
+<td>{$job.total|intval}</td>
+<td>{$job.wait|intval}</td>
+<td>{$job.done|intval}</td>
+<td>{$job.priority|intval}</td>
+<td>{$job.cost}</td>
+</tr>
+</volist>
+</table>
+
+<div class="blank5"></div>
+</div>
+
+<if condition="$arr_date">
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+<tr><td colspan="2" class="topTd" >&nbsp; </td></tr>
+<tr>
+<th width="100">任务数</th>
+<td>
+<canvas id="total" width="1080" height="400"></canvas>
+</td>
+</tr>
+<tr>
+<th width="100">平均耗时</th>
+<td>
+<canvas id="avgcost" width="1080" height="400"></canvas>
+</td>
+</tr>
+
+<tr><td colspan="2" class="bottomTd">&nbsp; </td></tr>
+</table>
+</if>
+
+<div class="blank5"></div>
+</div>
+
+<script>
+
+function detail(func) {
+    window.location.href=ROOT+'?m=Jobs&a=today&func='+escape(func);
+}
+
+var data = {
+labels : <?php echo json_encode($arr_date); ?>,
+         datasets : [{
+fillColor : "rgba(151,187,205,0.5)",
+            strokeColor : "rgba(151,187,205,1)",
+            pointColor : "rgba(151,187,205,1)",
+            pointStrokeColor : "#fff",
+            data : <?php echo json_encode($count); ?>
+         }]
+}
+var ctx = document.getElementById("total").getContext("2d");
+new Chart(ctx).Line(data, {});
+
+var data = {
+labels : <?php echo json_encode($arr_date); ?>,
+         datasets : [{
+fillColor : "rgba(151,187,205,0.5)",
+            strokeColor : "rgba(151,187,205,1)",
+            pointColor : "rgba(151,187,205,1)",
+            pointStrokeColor : "#fff",
+            data : <?php echo json_encode($cost); ?>
+         }]
+}
+var ctx = document.getElementById("avgcost").getContext("2d");
+new Chart(ctx).Line(data, {});
+
+</script>
+
+<include file="Public:footer" />
+

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="apple-mobile-web-app-title" content="" />
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+    <link href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/images/icon/touch-icon.png', 1);?>" rel="apple-touch-icon-precomposed">
+    <link href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/images/icon/favicon.ico', 1);?>" type="image/x-icon">
+    <title>网信 APP下载</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="logo-icon.png">
+    <link rel="stylesheet" type="text/css" href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/css/index.css', 1);?>">
+    <link rel="stylesheet" type="text/css" href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/css/base.css', 1);?>">
+</head>
+
+<body id="down_body">
+{function name="get_adv" x="网信理财APP下载页_2017"}
+<div class="inv-fbtn android_bottom" id="p_btn">
+    <span id="a_link" class="ui_red_btn" downUrl="{$down_url}">立即下载</span>
+</div>
+<script type="text/javascript">
+    function evokeAndroid() {
+        var userAgentApp = navigator.userAgent.toLowerCase(),
+            type = 'type',
+            queryStr = getQueryString(type),
+            aLink = document.getElementById("a_link"),
+            downloadAndroid = aLink.getAttribute("downUrl") || aLink.downUrl,
+            TencentStore = 'http://a.app.qq.com/o/simple.jsp?pkgname=com.ncf.firstp2p',
+            downConfig = {
+                TencentStore: TencentStore,
+                schemeAndroid: 'firstp2p://123456',
+                downloadAndroid: downloadAndroid,
+                timeout: 600
+            },
+            timer;
+        //微信环境调应用宝
+        if (/micromessenger/.test(userAgentApp)) {
+            window.location.href = downConfig.TencentStore;
+            return;
+        } else if (queryStr !== "" && queryStr !== "e") {
+            window.location.href = downConfig.downloadAndroid;
+            return;
+        }
+        //iframe尝试唤起
+        var startTime = Date.now(),
+            ifr = document.createElement('iframe');
+        ifr.src = downConfig.schemeAndroid;
+        ifr.style.display = 'none';
+        document.body.appendChild(ifr);
+        timer = setTimeout(function() {
+            if (document.hidden || document.webkitHidden) {
+                return;
+            }
+            var endTime = Date.now();
+            document.body.removeChild(ifr);
+            if (!startTime || endTime - startTime < downConfig.timeout + 200) {
+                setTimeout(function () {
+                    window.location.href = downConfig.downloadAndroid;
+                },1000);
+            } else {
+                //todo
+            }
+        }, downConfig.timeout);
+        var visibilitychange = function() {
+            var flag = document.hidden || document.webkitHidden;
+            flag && clearTimeout(timer);
+        };
+        document.addEventListener('visibilitychange', visibilitychange, false);
+        document.addEventListener('webkitvisibilitychange', visibilitychange, false);
+        window.addEventListener('pagehide', function() {
+            clearTimeout(timer);
+        }, false);
+        window.onblur = function() {
+            clearTimeout(timer);
+        }
+    }
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = (window.location.href.indexOf('?') > -1) && window.location.href.split('?')[1].match(reg);
+        if (r) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+
+    document.addEventListener("DOMContentLoaded", evokeAndroid, false);
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("a_link").addEventListener('touchstart',
+            evokeAndroid, false)
+    }, false)
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7e385de805034ba6983c196ca9c6fcba";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+</body>
+
+</html>

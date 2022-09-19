@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>分享列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base_v32.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common_v32.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-bonus.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="p_bonus">
+        {if $show_btn eq 1}
+        <div class="b_bonus">
+            <a href="firstp2p://api?type=buybonus"><img src="<?php echo $this->asset->makeAppUrl('v3.2/images/bonus/red.png');?>" width="100%"></a>
+        </div>
+        {/if}
+        {if $list}
+        <div class="list">
+            {foreach from=$list item=bonus}
+            	<dl>
+            	    <dt>
+            	        {if $bonus.flag eq 1}
+            	        <a class="bonus_btn" href="bonus://api?title={$title}&content={$bonus.shareContent}&face={$face}&url={$bonus.url}">
+            	            去分享
+            	        </a>
+            	        {elseif $bonus.flag eq 0 }
+            	        <a class=" bonus_btn bonus_gay">
+            	            发光了
+            	        </a>
+            	        {elseif $bonus.flag eq 2 }
+            	        <a class="bonus_btn bonus_gay" >
+            	            已过期
+            	        </a>
+            	        {/if}
+            	    </dt>
+
+            	    <a href="/bonus/summary?id={$bonus.id}&site_id={$site_id}">
+            	        <dd>
+                            {if $bonus.flag neq 2}
+                            <h3 class="ts_color">
+                                {if $bonus.flag eq 0}
+                                {$bonus.count}个已被全部领取
+                                {else}
+                                {$bonus.sendNum}个已被领取，还剩{$bonus.leftNum}个
+                                {/if}
+                            </h3>
+                            <p >有效期至：{$bonus.expiredAt}</p>
+                            {else}
+                            <h3 class="ts_gaycolor">
+                                {if $bonus.flag eq 0}
+                                {$bonus.count}个已被全部领取
+                                {else}
+                                {$bonus.sendNum}个已被领取，还剩{$bonus.leftNum}个
+                                {/if}
+                            </h3>
+                            <p class="ts_gaycolor">有效期至：{$bonus.expiredAt}</p>
+            	            {/if}
+
+            	        </dd>
+                    </a>
+                </dl>
+           {/foreach}
+        </div>
+	    <div class="hb-more">
+	        {if $count gt 10}
+	        <a href="javascript:void(0);" class="tb0-more jia_zai">点击加载更多</a>
+	        {else}
+	        <p class='pb10 f16'>仅显示最近30天内的{$new_bonus_title}</p>
+	        {/if}
+	    </div>
+        <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>" type="text/javascript"></script>
+        <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/touch.min.js');?>" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(function () {
+                var $tb0 = $(".list");
+                var page0 = 1;
+                var site_id = '{$site_id}';
+                var new_bonus_title = "{$new_bonus_title}";
+                $(".jia_zai").bind("click", function () {
+                    page0++;
+                    $.ajax({
+                        url: '/bonus/ajaxSend?token={$token}&page=' + page0 + '&site_id=' + site_id,
+                        type: 'POST',
+                        dataType: 'json',
+                        async: false,
+                        success: function (data) {
+                            var dataObj = eval(data);
+                            console.log(dataObj);
+                            if (page0 * 10 > dataObj.data.count) {
+                                $(".tb0-more").html("<p class='pb10 f16'>仅显示最近30天内的"+new_bonus_title+"</p>").addClass("hb-no").removeClass("jia_zai");
+                            }
+                            $.each(dataObj.data.list, function(idx, item) {
+                                var html = "";
+                                html += '<dl> <dt>';
+                                if (item.flag == 1) {
+                                    html += ' <a class=\"bonus_btn\" href="bonus:\/\/api?title=' + dataObj.data.title + '&content=' + item.shareContent + '&face=' + dataObj.data.face + '&url=' + item.url + '">去分享</a>';
+                                } else if (item.flag == 0) {
+                                    html += '        <a  class="bonus_btn bonus_gay">发光了</a>';
+                                } else {
+                                    html += '        <a  class="bonus_btn bonus_gay">已过期</a>';
+                                }
+                                html += " </dt>";
+
+                                html += '        <a href="/bonus/summary?id=' + item.id + '&site_id=' + site_id + '" >';
+                                html += '        <dd>';
+                                if (item.flag != 2) {
+                                    html += ' <h3 class="ts_color">';
+                                    if (item.flag == 0)
+                                        html += item.count + '  个已被全部领取 ';
+                                    else {
+                                        html += item.sendNum + '个已被领取，还剩' + item.leftNum + '个';
+                                    }
+                                    html += '</h3><p >有效期至：' + item.expiredAt + '</p>';
+                                } else {
+                                    html += ' <h3 class="ts_gaycolor">';
+                                    if (item.flag == 0)
+                                        html += item.count + '  个已被全部领取 ';
+                                    else {
+                                        html += item.sendNum + '个已被领取，还剩' + item.leftNum + '个';
+                                    }
+                                    html += '</h3><p class="ts_gaycolor">有效期至：' + item.expiredAt + '</p>';
+                                }
+                                html += "</dd></a></dl>";
+                                $tb0.append(html);
+                            });
+                        }
+                    });
+                });
+            });
+
+        </script>
+        {else}
+        <!-- <div class="ui_un_tips">
+            <i class="ui_icon_un"></i>
+            <p>这里空空如也</p>
+        </div> -->
+        <div class="no_coupon"><p>这里空空如也</p></div>
+        {/if}
+    </div>
+{include file="api/views/_v32/footer.html"}

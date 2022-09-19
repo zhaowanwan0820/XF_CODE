@@ -1,0 +1,81 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/pact.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/js/widget/ui/jquery-ui-1.10.3.custom.min.css');?>">
+
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/pact/pact.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/widget/ui/jquery-ui-1.10.3.custom.js');?>"></script>
+<style>
+.pact-mr-top{height: 36px;}
+</style>
+<div class="user_right">
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1>
+                <i class="ico_huankuan"></i>我的合同列表
+            </h1>
+        </div>
+        <ul class="huank_nav">
+            <li class="select"><a href="/account/contract">合同总览</a></li>
+        </ul>
+        <div class="pact-list">
+			<form id="search" action='{url x="index" r="account/contract"}' method="get">
+				<div class="screening clearfix">
+					<div class="ui_select_box select_box JS_select_box" data-name="role">
+						<div class="j_select"></div>
+						<ul class="select_ul none j_selectContent">
+							<li data-value="2" {if $role eq 2}data-select="1"{/if}>出借方/受让方</li>
+							{if $is_borrow eq true}
+							<li data-value="1" {if $role eq 1}data-select="1"{/if}>借款方/转让方</li>
+							{/if}
+							{if $is_agency eq true}
+							<li data-value="3" {if $role eq 3}data-select="1"{/if}>担保方</li>
+							{/if}
+							{if $is_advisory eq true}
+							<li data-value="4" {if $role eq 4}data-select="1"{/if}>资产管理方</li>
+							{/if}
+							{if $is_entrust eq true}
+							<li data-value="5" {if $role eq 5}data-select="1"{/if}>受托方</li>
+							{/if}
+						</ul>
+					</div>
+					<input type="submit" value="筛选" class="button_shaixian">
+				</div>
+			</form>
+            {if empty($list)}
+            <div class="empty-box">没有合同，快去投资项目吧!</div>
+            {else}
+	            {foreach from=$list item='deal'}
+	            <div class="pact-main">
+	                <div class="pact-m-left">
+	                    <div class="pact-ml-top">
+	                        <p><span title='{$deal.old_name}'>{$deal.name}</span><span><em>总额：</em>{$deal.borrow_amount_format_detail}万</span>
+	                        </p>
+	                        <p>
+	                            <em class="no-marleft">融资人：</em>{$deal.user_real_name}
+	                        </p>
+	                    </div>
+	                    <div class="pact-ml-center">利率为{$deal.income_fee_rate_format}%，期限为{if $deal.loantype eq 5}{$deal.repay_time}天{else}{$deal.repay_time}个月{/if}，还款方式为{$deal.loantype_name}</div>
+	                </div>
+	                <div class="pact-m-right">
+	                    <div class="pact-mr-top">
+	                        {if $deal.is_have_sign eq 1}
+	                        <a href="javascript:void(0)" class="btn-base pact-btn but-disabled">已签署</a>
+	                        {else}
+	                        <a href="javascript:void(0)" data-pos="{$deal.id}" data-role="{$role}" class="btn-base but-yellow pact-btn j-click-qianshu">一键签署</a>
+	                        {/if}
+	                    </div>
+	                    <div class="pact-mr-link">
+	                        <a href="/account/contlist/{$deal.id}?role={$role}" class="blue">查看合同</a>
+	                    </div>
+	                </div>
+	            </div>
+	            {/foreach}
+            {/if}
+        </div>
+        <div class="pages w715">
+            <!-- <i>共23231个投资项目，22页</i>  -->
+            {$pages}
+        </div>
+    </div>
+</div>
+<div id="pact-dialog" style="display: none"></div>

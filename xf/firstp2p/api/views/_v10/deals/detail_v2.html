@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>投资详情 - {$deal.name} </title>
+    {include file="api/views/_v10/header_v2.html"}
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/investment.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="inv-main">
+        <div class="inv-header">
+            <div class="inh-title">
+                 {if $deal.deal_tag_name}
+                    <span>{$deal.deal_tag_name}</span>
+                {/if}
+                {$deal.old_name}
+            </div>
+            <div class="invh-center">
+                <div class="invh-left fl">
+                    {function name='get_app_num_pic' x='$deal.income_all_rate' y='$STATIC_PATH'}
+                </div>
+                <div class="invh-right fl">
+                    {function name='get_app_num_pic' x='$deal.repay_time' y='$STATIC_PATH'}
+                    <em>{if $deal.loantype eq 5}天{else}个月{/if}</em>
+                    <span>{$deal.loantype_name}</span>
+                </div>
+            </div>
+            <div class="invh-prog clearfix">
+                <div class="progress-blue">
+                    <span style="width: {$deal.loan_rate}%" class="pgbar"></span>
+                </div>
+                <span class="prognum">0</span>%
+                <span class="probeifen" style="display: none">{$deal.loan_rate}</span>
+            </div>
+            <div class="invh-bottom">
+                {if $deal.min_loan_money<1000}{$deal.min_loan_money}元{else}{$deal.min_loan}万{/if}起
+                <span>剩{if $deal.deal_status eq 3}0.00{else}{$deal.need_money_detail}{/if}/{$deal.borrow_amount_format_detail}万</span>
+            </div>
+        </div>
+         {if $deal.is_crowdfunding eq 0}
+        <div class="inv-center">
+            <h2>
+                <i></i>收益简述</h2>
+            <p>
+            每<em>万元</em>投资收益<em>{$deal.income_by_wan}</em>元</p>
+            <p>
+            
+            {if $deal.income_subsidy_rate > 0}
+                收益中{$deal.income_subsidy_rate}%为平台补贴，不在合同中体现</p>
+            {/if}
+        </div>
+        {/if}
+        <div class="inv-footer">
+            <div class="invf_top">
+                <ul id="menu">
+                    <li class="select" {if $deal.is_crowdfunding eq 1}style="width:50% " {/if}><span>融资方信息<em></em></span></li>
+                    {if $deal.is_crowdfunding eq 0}<li><span>保障方式<em></em></span></li>{/if}
+                    <li {if $deal.is_crowdfunding eq 1}style="width:50%" {/if}><span>投资记录<em></em></span></li>
+                </ul>
+            </div>
+            <div class="invf_txt">
+                <div id="tb0">
+                    <table>
+                        <colgroup>
+                            <col width="25%" />
+                            <col width="75%" />
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>简介：</th>
+                                <td class="tb_line">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tb_line" colspan="2" style="word-break:break-word !important">
+                                {if $project_intro}
+                                    {$project_intro}
+                                {elseif $company.is_company eq 1}
+                                    {if $company.company_description_html}
+                                        {$company.company_description_html}
+                                    {else}
+                                        -
+                                    {/if}
+                                {elseif $deal.is_crowdfunding eq 1 || $company.is_company eq 0}
+                                    {if $deal_user_info.info}
+                                        {$deal_user_info.info}
+                                    {else}
+                                        -
+                                    {/if}
+                                {else}
+                                    -
+                                {/if}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {if $deal.is_crowdfunding eq 0}
+                <div id="tb1">
+                    <table>
+                        <colgroup>
+                            <col width="25%" />
+                            <col width="75%" />
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th>保障方式：</th>
+                            <td>
+                                {if $deal.warrant eq 1}担保本金{elseif $deal.warrant eq 2}担保本息{else}无担保{/if}
+                            </td>
+                        </tr>
+                        {if $deal.agency_info.brief}
+                        <tr>
+                            <th colspan='2'>担保方介绍：</th>
+                        </tr>
+                        <tr>
+                            <td colspan='2'>
+                                {$deal.agency_info.brief}
+                            </td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                    </table>
+
+                </div>
+                {/if}
+                <div id="tb2">
+                    <table>
+                        <colgroup>
+                            <col width="35%" />
+                            <col width="30%" />
+                            <col width="30%" />
+                        </colgroup>
+                        <tbody>
+                    {if $load_list}
+                    {foreach from=$load_list item="loan"}
+                    <tr>
+                        <th>
+                            {$loan.user_deal_name}
+                        </th>
+                        <td class="g-money">
+                            {function name="format_price" v="$loan.money" b=0}
+                        </td>
+                        <td class="tr">
+                            {function name="to_date" v="$loan.create_time" f="Y-m-d"}
+                        </td>
+                    </tr>
+                    {/foreach}
+                    {else}
+                    <tr>
+                        <td colspan="3">暂无投资人</td>
+                    </tr>
+                    {/if}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="api/views/_v10/footer_v2.html"}
+
+    <script type="text/javascript">
+
+        $(function () {
+            //进度条动画
+            var $el = $(".progress-blue > span"),
+                elwidth = $el.width();
+            $el.data("origWidth", elwidth)
+                .width(0)
+                .animate({
+                    width: elwidth
+                }, prosum * 10);
+
+            //alert(ulsum + ";" + lisum + ";" + selsum);
+        });
+        //变更数字
+        var i = 0,
+            $probeifen = $(".probeifen"),
+            $pro = $(".prognum"),
+            prosum = parseInt($probeifen.html());
+        function doit() {
+            if (prosum != 0) {
+                i++;
+                $pro.html(i.toString());
+                if (i < prosum) {
+                    setTimeout('doit()', 10);
+                }
+            }
+        }
+        doit();
+    
+    </script>
+</body>
+</html>

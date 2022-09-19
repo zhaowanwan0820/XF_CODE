@@ -1,0 +1,48 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user.field.js' />
+<div class="main">
+<div class="main_title">新增冻结/解冻申请<a href="{:u('UserFreezeMoney/index')}" class="back_list">返回用户列表</a></div>
+<div class="blank5"></div>
+<form name="doadd" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">冻结/解冻会员编号:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="userno" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">金额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="money" />
+        <span class='tip_span'>[正数为增加冻结资金，负数为减少冻结资金]</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">备注:</td>
+        <td class="item_input"><input type="text" size="150" class="textbox" name="note" />
+        <span class='tip_span'></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="user_id" value="{$user_info.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="UserFreezeMoney" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="doadd" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%ADD}" onclick='return confirm("确认提交？")'/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

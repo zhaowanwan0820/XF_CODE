@@ -1,0 +1,102 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__chosen/js/chosen.jquery.min.js' />
+<load href='__TMPL__chosen/css/chosen.min.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<php>
+    function get_user_group($group_id)
+    {
+        $group_name = M("UserGroup")->where("id=".$group_id)->getField("name");
+        if($group_name)
+        {
+            return $group_name;
+        }
+        else
+        {
+            return l("NO_GROUP");
+        }
+    }
+    function f_to_date($date){
+        return to_date($date,"Y-m-d H:i");
+    }
+    function refund_status_color($refundStatus) {
+        // 退款状态为待支付、处理中，则标红显示
+        if ($refundStatus == 0) {
+            return "<font color='red'>已受理</font>";
+        } else if ($refundStatus == 1) { // 成功则标绿显示
+            return "<font color='green'>成功</font>";
+        } else if ($refundStatus == 3) {
+            return "<font color='red'>处理中</font>";
+        } else if ($refundStatus == 2) {
+            return "失败";
+        }
+    }
+</php>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row"></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        消费订单号：<input type="text" class="textbox" id="outOrderId" name="outOrderId" value="{:trim($_REQUEST['outOrderId'])}" style="width:200px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+        退款状态：<select name="status" id="status">
+                <option value="-1" <if condition="intval($_REQUEST['status']) eq '-1'">selected="selected"</if>>全部</option>
+                <foreach name="refund_status_list" item="refund_item">
+                    <option value="{$refund_item.id}" <if condition="intval($_REQUEST['status']) eq $refund_item['id']">selected="selected"</if>>{$refund_item.name}</option>
+                </foreach>
+        </select>&nbsp;&nbsp;&nbsp;&nbsp;
+        用户UID：<input type="text" class="textbox" id="userId" name="userId" value="{:trim($_REQUEST['userId'])}" style="width:200px;" />
+        用户姓名：<input type="text" class="textbox" id="realName" name="realName" value="{:trim($_REQUEST['realName'])}" style="width:200px;" /><br />
+        用户手机号：<input type="text" class="textbox" id="mobile" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:200px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+        商户名称：<select name="merchantId" id="merchantId">
+                <foreach name="merchant_list" item="item">
+                    <option value="{$item.id}" <if condition="intval($_REQUEST['merchantId']) eq $item['id']">selected="selected"</if>>{$item.name}</option>
+                </foreach>
+        </select>
+    退款时间：<input type="text" class="textbox search_export" id="startCreateTime" name="startCreateTime" value="{:trim($_REQUEST['startCreateTime'])}" style="width:150px;" onfocus="return showCalendar('startCreateTime', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('startCreateTime', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+至
+        <input type="text" class="textbox search_export" name="endCreateTime" id="endCreateTime" value="{:trim($_REQUEST['endCreateTime'])}" style="width:150px;" onfocus="return showCalendar('endCreateTime', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('endCreateTime', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" /><br />
+        <input type="hidden" value="Life" name="m" />
+        <input type="hidden" value="<?php echo ACTION_NAME;?>" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="清空" onclick="clear_form_data();" />
+    </form>
+</div>
+<div class="blank5"></div>
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="user"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="outOrderId:消费订单号|50px,outRefundId:退款订单号|50px,userId:用户ID,userId|get_user_name=real_name:用户姓名,userId|get_user_name='mobile':手机号,merchantId:商户编号|30px,merchantName:商户名称,serviceTypeName:商品名称,refundAmount:退款金额|30px,status|refund_status_color:退款状态|50px,createTime:创建时间,refundTime:完成时间 "
+    actionlist="view_detail_info:查看" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function view_detail_info(id) {
+    window.location.href = '/m.php?m=Life&a=consumeDetail&id='+id;
+}
+function clear_form_data() {
+    $("#outOrderId").val("");
+    $("#userId").val("");
+    $("#realName").val("");
+    $("#mobile").val("");
+}
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <title>借款</title>
+    {include file="api/views/_v32/header.html"}
+    <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/net_mortgage_profile.css');?>">
+    <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+</head>
+<body>
+<!-- 借款首页页面 -->
+<div class="net_loan_index_container">
+
+  <!-- 推荐借款部分 -->
+  <div class="top">
+    <span class="recommended_loan"><i></i>推荐借款<i></i></span>
+    <div class="loan_money_limit">
+      {if $isHouseOpen eq 1}
+      <a href="#">
+        <div class="loan_title">有房就贷，额度高放款快</div>
+        <div class="small_title1"><span>期限灵活</span><span>月息0.8%</span></div>
+        <span class="application_now">立即申请</span>
+      </a>
+      {else}
+      <div class="loan_title">有房就贷，额度高放款快</div>
+      <div class="small_title1"><span>期限灵活</span><span>月息0.8%</span></div>
+      <span class="application_now">暂无借款资格</span>
+      {/if}
+    </div>
+  </div>
+  <!-- 借款频道banner部分 -->
+  <div class="carousel_container">
+    <ul>
+      <li>
+        <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/loan_index_carousel_banner.png');?>"/>
+      </li>
+    </ul>
+  </div>
+  <!-- 其他借款部分 -->
+  <div class="other_borrowings_lists">
+    {if $is_credit_loan_user eq 1}
+    <!-- 银信通 -->
+    <div class="loan_yxt common">
+      <a href="/creditloan/applyList?token={$token}">
+        <div class="top">
+          <span><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/net_loan_yxt.png');?>"><i>银信通</i></span>
+          <span>500元起 , 最高<i>可借20万</i></span>
+          <span><i>申请门槛低</i><i>日息最低0.018%</i></span>
+        </div>  
+        <div class="bottom">
+          立即申请
+        </div>
+      </a>
+    </div>
+    {/if}
+    {if $is_bxt_user eq 1}
+    <!-- 变现通 -->
+    <div class="loan_bxt common">
+      <!-- <a href="/account/intention_detail?token={$token}&code={$code_bxt}"> -->
+        <div class="top">
+          <span><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/net_loan_bxt.png');?>"><i>变现通</i></span>
+          <span>5万起 , 额度依<i>投资额</i>而定</span>
+          <span><i>到期自动还</i><i>收益不受影响</i></span>
+        </div>
+        <div class="bottom" style="color:#909090">
+          <!-- 立即申请 -->服务升级中
+        </div>
+      <!-- </a> -->
+    </div>
+    {/if}
+    <!-- 不能点击的 begin -->
+    {if $is_credit_loan_user neq 1}
+    <!-- 银信通 -->
+    <div class="loan_yxt common">
+      <div class="top">
+        <span><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/net_loan_yxt.png');?>"><i>银信通</i></span>
+        <span>500元起 , 最高<i>可借20万</i></span>
+        <span><i>申请门槛低</i><i>日息最低0.018%</i></span>
+      </div>  
+      <div class="bottom" style="color:#909090">
+        暂无借款资格
+      </div>
+    </div>
+    {/if}
+    {if $is_bxt_user neq 1}
+    <!-- 变现通 -->
+    <div class="loan_bxt common">
+      <div class="top">
+        <span><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/net_loan_bxt.png');?>"><i>变现通</i></span>
+        <span>5万起 , 额度依<i>投资额</i>而定</span>
+        <span><i>到期自动还</i><i>收益不受影响</i></span>
+      </div>
+      <div class="bottom" style="color:#909090">
+        <!-- 暂无借款资格 -->服务升级中
+      </div>
+    </div>
+    {/if}
+  </div>
+</div>
+  <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+  <script>
+    $(".loan_money_limit a").click(function(){
+      /* 判断用户是否实名认证变量 */
+      var idPass = "{$idcardpassed}"
+      /* 判断用户是否点击{$is_house_user}存在则用进入过房贷介绍页面并且点击过同意用户服务协议按钮 */
+      var is_house_user = "{$is_house_user}"
+      if(idPass == 1){
+        if(is_house_user != 0){
+          $(".loan_money_limit a").attr("href","/house/PreApply?token={$token}")
+        }else{
+          // 跳转到到产品介绍页面
+          $(".loan_money_limit a").attr("href","/house/ProductIntroduction?token={$token}")
+        }
+      }else{
+        $(".loan_money_limit a").attr("href","/house/AuthInfo?token={$token}")
+      }
+    })
+    /* 判断从借款首页进入时用户是否之前选择过借款金额、借款期限 */
+    if(P2PWAP.cache.get("_money_amount_") || P2PWAP.cache.get("_date_number_selected_") || P2PWAP.cache.get("_loan_record_status_") || P2PWAP.cache.get("_money_amount_left_")){
+      P2PWAP.cache.del("_money_amount_")
+      P2PWAP.cache.del("_date_number_selected_")
+      P2PWAP.cache.del("_loan_record_status_")
+      P2PWAP.cache.del("_money_amount_left_")
+    }
+  </script>
+</body>
+</html>

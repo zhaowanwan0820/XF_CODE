@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>登录 - 典当联盟</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="apple-touch-icon-precomposed" href="{$STATIC_PATH}/v2/images/favicon.png">
+        <!--<link rel="shortcut icon" type="image/x-icon" href="{$STATIC_PATH}/v2/images/favicon.png">-->
+
+        <!--public js&css start-->
+        <link href="{$STATIC_PATH}/v3/css/m-base.css?v=20150914" rel="stylesheet" type="text/css" />
+        <link href="{$STATIC_PATH}/v3/css/m-common.css?v=20150914" rel="stylesheet" type="text/css" />
+        <link href="{$STATIC_PATH}/v3/css/p-login-new.css?v=20150914" rel="stylesheet" type="text/css" />
+        <script type="text/javascript">
+            var today = new Date();
+            var  year = today.getFullYear();
+            var month = today.getMonth() + 1;
+            var day= today.getDate();
+            var ymd = year +""+ month+"" + day;
+            var oHead = document.getElementsByTagName('HEAD').item(0); 
+            var oScript= document.createElement("script"); 
+            oScript.type = "text/javascript"; 
+            oScript.src="https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd="+ymd;
+            oHead.appendChild( oScript); 
+        </script>
+        <script type="text/javascript" src="{$STATIC_PATH}/v3/js/zepto.min.js"></script>
+        <!--public js&css end-->
+        <!--private js&css start-->
+        <script src="{$STATIC_PATH}/v3/js/common.js?v=20151228" type="text/javascript"></script>
+        <!--private js&css end-->
+        {if isset($fzjs)}
+        <script type="text/javascript" src="{$fzjs}"></script>
+        {/if}
+    </head>
+    <body>
+        <div class="p_login_new">
+            {if !$isMicroMessengerUserAgent}
+            <div class="ui_title JS-title"><a class="ui_back" href="http://m.cnpawn.cn"><i class="ui_icon_back"></i>返回</a><span class="JS-title_name">登录</span></div>
+            {/if}
+            <div class="login_banner JS-banner">
+                <img src="{$STATIC_PATH}/v3/images/upload/login_diandang_banner.png" width="100%">
+            </div>
+            <div class="ui_register gray JS-main">
+                <div class="tr pt10 f14">没有账号？<a href="http://m.cnpawn.cn/Pwap/User/register">立即注册</a></div>
+                <form id="login_form" class="JS-form" name="login_form" action="doLogin{$querystring}" method="POST">
+                    <div class="form_box clearfix">
+                        <div class="border_b"><input id="account" name="account" type="text" class="ui_reg_input" placeholder="手机号" value="{$account}"></div>
+                        <div class="border_b"><input id="password" name="password" type="password" class="ui_reg_input" placeholder="登录密码"></div>
+                        {if $show_vcode == 1}
+                        <div class="border_b">
+                            <input id="verify" name="verify" type="tel" class="ui_reg_input" placeholder="右侧数字">
+                            <div class="yz_img"><img src="" width="80"></div>
+                        </div>
+                        {/if}
+                    </div>
+                    <div class="JS-submit_btn_box">
+                        <input id="login_btn" type="submit" class="reg_finish_btn JS-submit_btn" value="登录"> 
+                        <p class="tc gray pt10 f14">忘记密码，请登录典当联盟电脑版进行修改</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+        $(function(){
+            // 按钮disable状态逻辑
+            function upateSubmitButton() {
+                var disabled = $('#account').val() == '' || $('#password').val() == '' || ($('#verify').length != 0 && $('#verify').val() == '');
+                if (disabled) {
+                    $('#login_btn').attr('disabled', 'disabled');
+                } else {
+                    $('#login_btn').removeAttr('disabled');
+                }
+            }
+            $('#account').bind("input", upateSubmitButton);
+            $('#password').bind("input", upateSubmitButton);
+            $('#verify').bind("input", upateSubmitButton);
+            var _upateSubmitButtonCount = 10;
+            var _upateSubmitButtonTimer = setInterval(function(){
+                upateSubmitButton();
+                _upateSubmitButtonCount--;
+                if (_upateSubmitButtonCount < 0) {
+                    clearInterval(_upateSubmitButtonTimer);
+                }
+            }, 300);
+
+            $(".JS-submit_btn").click(function(){  
+                $('#login_form').submit();  
+                $(this).attr("disabled","disabled").val('登录中');
+            }); 
+
+            // 图片验证码逻辑
+            function updateCaptchaImg() {
+                $('.yz_img img').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+            }
+            $('.yz_img').click(function() {
+                updateCaptchaImg();
+            });
+            updateCaptchaImg();
+
+            // 错误提示 php动态插入
+            {if isset($error)}
+            P2PWAP.ui.showErrorTip('{$error}');
+            {elseif $from_register}
+            P2PWAP.ui.showErrorTip('恭喜您注册成功！\<br\/\>为了您的账户安全，请重新登录');
+            {/if}
+
+            // 禁用微信分享
+            function onBridgeReady() {
+                WeixinJSBridge.call('hideOptionMenu');
+            }
+
+            if (typeof WeixinJSBridge == "undefined") {
+                if (document.addEventListener) {
+                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                } else if (document.attachEvent) {
+                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                }
+            } else {
+                onBridgeReady();
+            }
+            // 禁用微信分享 end
+        });
+        </script>
+    </body>
+</html>

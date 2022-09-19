@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>合同和协议</title>
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/deal_contract.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="m-main">
+        <div class="p_contract">
+            <div class="pct_main">
+                {if $type eq 1}
+                    <div class="ditf_list">
+                        <a href="{$cont_url}"><span class="fr"></span><adv adv_id="优金宝合同协议_标题"/></a>
+                    </div>
+                {else}
+                    {foreach from=$deal.contract item=contract }
+                    <div class="ditf_list">
+                    {if $deal.is_attachment}
+                        <a href="{$contract.url}"><span class="fr"></span>{$contract.nameSrc}</a>
+                    {else}
+                        <!--<a href="invest://api?type=contract&name={$contract.name}&url={$contract.url}"><span class="fr"></span>{$contract.nameSrc}</a>  -->
+                        <a href="firstp2p://api?type=webview&gobackrefresh=true&url={$contract.url}"><span class="fr"></span>{$contract.nameSrc}</a>
+                    {/if}
+                    </div>
+                    {/foreach}
+                {/if}
+                
+            </div>
+            <p class="pct_p">您点击购买按钮时即表示同意以上合同及协议内容</p>
+        </div>
+    </div>
+</body>
+</html>

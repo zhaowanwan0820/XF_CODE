@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+{include file="web/views/hongbao/shareLogo.html"}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<title>打开红包</title>
+<link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+<script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+<link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/dayueye.css', 1);?>" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+	<div class="p_dayueye">
+        <div class="logo">
+            <a href="#"></a>
+        </div>
+        <div class="hb_bg">
+        	<div class="tel_box">
+                <div class="icon_yqw"></div>
+                <p><a href="http://m.firstp2p.com/?from_platform=dayueye" class="go_btn">前往网信</a></p>
+            </div>
+            <div class="new_tip">
+                <p>1.本活动与网信红包3.1活动不相叠加；</p>
+                <p>2.红包有效期为领取后3天内，过期将会作废。</p>
+                <p>3.活动最终解释权归网信所有。</p>
+            </div>
+        </div>
+    </div>
+    {include file="web/views/hongbao/js.html"}
+    <script>
+        wx.ready(function() {
+            wx.hideOptionMenu();
+        });
+        function onBridgeReady(){
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        }else{
+            onBridgeReady();
+        }
+    </script>
+</body>
+</html>

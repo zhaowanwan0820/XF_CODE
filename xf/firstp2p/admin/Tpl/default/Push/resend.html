@@ -1,0 +1,135 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#title").keyup(function(){
+	    check_title();	   
+	});
+	
+	$("#content").keyup(function(){
+		check_submit();        
+    });
+	
+	function check_submit() {
+		var max = 40; var min = 18;
+        var content_len = $("#content").val().length;
+        var content = $("#content").val();
+        var can_len = max - content_len;
+        var tip = '<b>'+content_len+'/'+max+'字,要求'+min+'~'+max+'字</b>';
+        
+        if(content_len >= min && content_len <= max) {
+            $("#submit").attr("disabled",false);
+       }else{
+           $("#submit").attr("disabled",true);
+       }
+        
+        if(content_len < min) {
+            $("#rs_con").html('<span class="tip_span">'+tip+'</span>');
+        }else if(content_len > max){
+            $("#content").val(content.substr(0,max));
+            $("#rs_con").html('<b>'+max+'/'+max+'字,要求'+min+'~'+max+'字</b>');
+            $("#submit").attr("disabled",false);
+        }else {
+            $("#rs_con").html(tip);
+        }
+	}
+	
+	function check_title() {
+		var length = 8;
+        var title_len = $("#title").val().length;
+        var in_len = length-title_len;
+       
+        // 当用户输入的字数大于制定的数时，让提交按钮失效
+        // 小于制定的字数，就可以提交
+        if(in_len >=0){
+           $("#result").html(title_len+'/8字,要求4-8个字');
+           if(title_len >= 4 && title_len <= length) {
+                $("#submit").attr("disabled",false);
+           }else{
+               $("#submit").attr("disabled",true);
+           }
+           // 可以继续执行其他操作
+        }else{
+           $("#result").html(title_len+'/8字,要求4-8个字');
+           
+           return false;
+        }
+	}
+	
+	check_title();
+	check_submit();
+});
+	
+</script>
+<div class="main">
+<div class="main_title">{%RESEND} <a href="{:u("Push/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">{%PUSH_TITLE}:</td>
+		<td class="item_input">   <!-- <span class="tip_span"></span> -->
+		<input type="text" class="textbox require" name="title" id="title" value="{$row.title}" maxlength="8"/><span><b id="result"></b></span></td>
+	</tr>
+	<tr>
+		<td class="item_title">{%PUSH_CONTENT}:</td>
+		<td class="item_input">
+		<textarea class="textarea require" name="content" id="content">{$row.content}</textarea>
+		<div id="rs_con"></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="item_title">{%PUSH_DEAL_ID}:</td>
+		<td class="item_input">
+		  <input type="text" class="textbox require" name="deal_id" value="{$row.deal_id}" /> <a href='{:u("Deal/index")}' target="__blank">查看借款列表</a></td>
+	</tr>
+	<tr>
+		<td class="item_title">{%PUSH_PLATFORM}:</td>
+		<td class="item_input">
+			<input type="checkbox" name="platform[]" id="platform" value='ios' <if condition="$row['platform'] eq 'IOS'"> checked </if>>IOS
+			<input type="checkbox" name="platform[]" id="platform" value="android" <if condition="$row['platform'] eq 'ANDROID'"> checked </if>>ANDROID
+			<input type="checkbox" name="platform[]" id="platform" value="ios_test" <if condition="$row['platform'] eq 'IOS_TEST'"> checked </if>>IOS测试
+			<input type="checkbox" name="platform[]" id="platform" value="android_test" <if condition="$row['platform'] eq 'ANDROID_TEST'"> checked </if>>ANDROID测试
+		</td>
+	</tr>
+	<tr>
+		<td class="item_title">{%SEND_TIME}:</td>
+		<td class="item_input">
+		  <div><input type="radio" class="f-radio" name="send_type" value="1" checked>立即发送</div>
+		  <!-- 
+		  <div><input type="radio" class="f-radio" name="send_type" value="2">定时发送</div>
+		  <div><input type="text" class="textbox" name="send_time" id="send_time" value="{$default_send_time}" onfocus="this.blur(); return showCalendar('send_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_send_time');" />
+            <input type="button" class="button" id="btn_send_time" value="{%SELECT_TIME}" onclick="return showCalendar('send_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_send_time');" />   
+            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#send_time').val('');" />
+            </div>
+             -->
+		</td>
+	</tr>	
+
+	<tr>
+		<td class="item_title"></td>
+		<td class="item_input">
+			<!--隐藏元素-->
+			<input type="hidden" name="push_id" value="{$row.id}" />
+			<input type="hidden" name="{:conf("VAR_MODULE")}" value="Push" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+			<!--隐藏元素-->
+			<input type="submit" class="button" value="{%ADD}" id="submit" disabled="true" />
+			<input type="reset" class="button" value="{%RESET}" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>	 
+</form>
+</div>
+<include file="Public:footer" />

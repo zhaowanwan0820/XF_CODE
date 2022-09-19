@@ -1,0 +1,41 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<php>
+    function dateFormat($date){
+        return date("Y-m-d H:i:s",$date);
+    }
+    function isEffectFormat($isEffect){
+        if($isEffect){
+            return '有效';
+        }
+        return '无效';
+    }
+</php>
+<div class="main">
+    <div class="main_title">闪屏列表</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <!--<input type="button" class="button" value="{%ADD}" onclick="location.href = '{:u("Adv/add",array("rel_table"=>$default_map['rel_table'],"rel_id"=>$default_map['rel_id']))}';" />-->
+        <input type="button" class="button" value="{%ADD}" onclick="add();" />
+        <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+    </div>
+    <div class="blank5"></div>
+    <html:list
+        id="dataTable"
+        style="dataTable"
+        name="splash"
+        checkbox="true"
+        action="true"
+        datasource="list"
+        show="id:{%ID}|50px
+        ,title:标题:edit
+        ,last_changed_time|dateFormat:最后修改时间
+        ,site_name:所属分站
+        ,is_effect|isEffectFormat:状态"
+        actionlist="edit:{%EDIT},foreverdel:{%FOREVERDEL}" />
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

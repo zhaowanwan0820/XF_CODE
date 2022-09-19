@@ -1,0 +1,64 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<php>
+	function dateFormat($date){
+	return date("Y-m-d H:i:s",$date);
+	}
+	function isDefault($val){
+	return $val == 1 ? '是' : '否';
+	}
+</php>
+<div class="main">
+	<div class="main_title">渠道列表</div>
+
+	<div class="blank5"></div>
+	<div class="button_row">
+		<if condition="$default_map">
+			<input type="button" class="button" value="{%ADD}" onclick="location.href='{:u("NewUserPage/add",array("rel_table"=>$default_map['rel_table'],"rel_id"=>$default_map['rel_id']))}';" />
+			<else />
+			<input type="button" class="button" value="{%ADD}" onclick="add();" />
+		</if>
+		<input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+	</div>
+	<div class="blank5"></div>
+	<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+		<tbody>
+		<tr><td colspan="7" class="topTd">&nbsp; </td></tr>
+		<tr class="row"><th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+			<th width="50px  ">
+				<a href="javascript:sortBy('id','1','NewUserPage','index')" title="按照编号升序排列 ">编号<img src="/static/admin/Common/images/desc.gif" width="12" height="17" border="0" align="absmiddle"></a>
+			</th>
+			<th><a href="javascript:sortBy('title','1','NewUserPage','index')" title="按照标题升序排列 ">标题</a></th>
+			<th><a href="javascript:sortBy('remark','1','NewUserPage','index')" title="按照备注  升序排列 ">备注  </a></th>
+			<th><a href="javascript:sortBy('create_time','1','NewUserPage','index')" title="按照创建时间  升序排列 ">创建时间  </a></th>
+			<th><a href="javascript:sortBy('update_time','1','NewUserPage','index')" title="按照更改时间升序排列 ">更改时间</a></th>
+			<th style="width:">操作</th>
+		</tr>
+
+		<volist name="list" id="row">
+			<tr class="row">
+				<td>
+					<if condition="($row.is_default eq 0)">
+						<input type="checkbox" name="key" class="key" value="{$row.id}">
+					</if>
+				</td>
+				<td>&nbsp;{$row.id}</td>
+				<td>&nbsp;<a href="javascript:edit('{$row.id}')">{$row.title}</a></td>
+				<td>&nbsp;{$row.remark}</td>
+				<td>&nbsp;{$row.create_time|dateFormat}</td>
+				<td>&nbsp;{$row.update_time|dateFormat}</td>
+				<td><a href="javascript:edit('{$row.id}')">编辑</a>&nbsp;
+					<if condition="($row.is_default eq 0)">
+						<a href="javascript: foreverdel('{$row.id}')">彻底删除</a>&nbsp;
+					</if>
+				</td>
+			</tr>
+		</volist>
+		</tbody></table>
+
+	<div class="blank5"></div>
+	<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

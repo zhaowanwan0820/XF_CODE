@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>合同签署</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeWebUrl('v3/css/o2o/m-base.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeWebUrl('v3/css/o2o/m-common.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeWebUrl('v3/css/contract/get_tmp_contracts.css');?>">
+    <script src="<?php echo $this->asset->makeWebUrl('v3/js/common/jquery-1.10.2.min.js');?>" type="text/javascript"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeWebUrl('v3/js/o2o/common.js');?>"></script>
+    <!--public js&css end-->
+
+</head>
+<body>
+    <input type="hidden" value={$list.signUrl} class="JS_signUrl">
+    <input type="hidden" value={$call_back_url} class="JS_callBackUrl">
+    <input type="hidden" class="JS_preLoadImg">
+    <div class="wrap">
+        <div class="tit">
+            您正在申请通过网信普惠平台发布借款需求，点击确认按钮即表示同意签署以下文件。
+        </div>
+        <div class="contract_list">
+            <ul>
+                {foreach from=$list.contracts item="list" key="title" }
+                <li><img src="<?php echo $this->asset->makeWebUrl('v3/images/contract/contract_icon.png');?>"/><a href={$list.url}>{$list.title}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="contract_btn">
+            <a href="javascript:void(0)">确认</a>
+        </div>
+        <div class="others">
+            {foreach from=$list.others item="list" key="title" }
+            <span><a href={$list.url}>{$list.title}</a></span>
+            {/foreach} 
+        </div>
+        
+    </div>
+</body>
+
+<script>
+    var callBackUrl = unescape($('.JS_callBackUrl').val());
+    var signUrl = $('.JS_signUrl').val();
+    // console.log(callBackUrl)
+    function handBtnClick(mask_img) {
+        var html = '';
+        html = "<div class='mask'><div class='" + mask_img + "'><span class='mask_toast'>签署成功</span></div></div>";
+        $('.wrap').append(html)
+        setTimeout(function() {
+            $('.mask').fadeOut();
+        },1000)
+    }
+    $('.wrap .contract_btn').click(function() {
+        $.ajax({
+            url: signUrl,
+            data: '',
+            dataType: "json",
+            success: function(res){
+                if(res.errorCode == 0){
+                    handBtnClick("mask_img_true")
+                    setTimeout(function() {
+                        location.href = callBackUrl;
+                    },1000)
+                }else {
+                    handBtnClick("mask_img_err")
+                    $('.mask .mask_toast').html(res.errorMsg)
+                }
+            },
+            error: function() {
+                handBtnClick("mask_img_err")
+                $('.mask .mask_toast').html("合同签署失败")
+            }
+        })
+    })
+</script>
+{include file="openapi/views/baidutongji.html"}
+</html>

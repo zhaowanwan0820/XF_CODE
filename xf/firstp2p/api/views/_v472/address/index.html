@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>收货地址</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/address.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/widget/dialog/dialog.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('js/widget/dialog/dialog.iOS7.css');?>" rel="stylesheet" />
+</head>
+<body>
+{if $addressList}
+
+<div class="common-wrapper">
+  <div class="from-sys">
+    <div class="address" id="">
+    <input type="hidden" name="token" id="token" value="{$token}">
+    <input type="hidden" name="entryType" id="entryType" value="{$entryType}">
+    <input type="hidden" name="returnUrl" id="returnUrl" value="{$returnUrl}">
+
+    {foreach from=$addressList item="address" key="k"}
+
+      <!--list start-->
+      <div class="item-addr bdb-1px" data-isoversea="false" data-id="{$address.id}" data-name="{$address.consignee}" data-mobile="{$address.mobile}" data-area="{$address.area}" data-address="{$address.address}">
+        <a class='JS_choose_address' data-name="{$address.consignee}" data-mobile="{$address.mobile}" data-area="{$address.area}" data-address="{$address.address}" data-id="{$address.id}">
+        <div class="ia-m m clearfix">
+            <div class="mt_new">
+            <span>{$address.consignee}</span>
+            <strong class="fr">{$address.mobile}</strong>
+            </div>
+          <div class="mc">
+            <p style="word-break: break-all;">
+              {$address.area}&nbsp;{$address.address}</p>
+           </div>
+        </div>
+        </a>
+        <div class="mt15 fc action ">
+        <div class="p15 clearfix">
+        <span class="fl {if $address.is_default eq 1}select{/if} j_addr_list" data-url="/address/updateAddr" data-id="{$address.id}">{if $address.is_default neq 1}<em></em>{/if}<span>{if $address.is_default eq 1}默认地址{else}设为默认{/if}</span></span>
+        <div  class="fr">
+        <a class="fr-edit j_href" href="###" data-url="/address/edit?token={$token}&id={$address.id}">编辑</a>
+        <span class="fr-del j_index_del" data-url="/address/del" data-id="{$address.id}">删除</span>
+        </div>
+        </div>
+        </div>
+      </div>
+      <!--list end-->
+   {/foreach}
+    </div>
+</div>
+<div class="p_error" style="display:none;">
+     <div class="error_img"><img src="<?php echo $this->asset->makeAppUrl('v4.72/images/address/no.png');?>" width="100%"></div>
+     <div class="tc">暂无收货地址<br>点击下方按钮添加</div>
+</div>
+{else}
+
+<div class="p_error">
+     <div class="error_img"><img src="<?php echo $this->asset->makeAppUrl('v4.72/images/address/no.png');?>" width="100%"></div>
+     <div class="tc">暂无收货地址<br>点击下方按钮添加</div>
+</div>
+{/if}
+<script type="text/javascript">
+   function gobackjsfunc() {
+     location.reload();
+   }
+   var triggerScheme = function(scheme) {
+     var iframe = document.createElement("iframe");
+     iframe.src = scheme;
+     iframe.style.display = "none";
+     document.body.appendChild(iframe);
+ };
+ triggerScheme("firstp2p://api?type=rightbtn&title=&callback=add_submit");
+</script>
+<div class="pay-btn" style="background:#f8f8f8;">
+      <a href="###" class="btn1 tip-btn j_href j_list_limit" data-url="/address/add?token={$token}">
+        添加新地址</a></div>
+ <div id="dialog1" title="提示">
+        <p>确定要删除吗？</p>
+    </div>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.72/js/common/zepto.min.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.72/js/common/common.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/widget/core/core.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/widget/dialog/dialog.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('js/widget/dialog/$position.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v4.72/js/address/index.js');?>?t=888"></script>
+</body>
+</html>

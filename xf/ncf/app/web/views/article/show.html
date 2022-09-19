@@ -1,0 +1,36 @@
+﻿{include file="web/views/header.html"}
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/base.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/common.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('meiti/p-news-mediadetail.css');?>" />
+
+    <div class="main  pt23 pb30 clearfix">
+        <div class="ui-new-sidebar">
+            <ul class="new-tab">
+                <li {if $article.category == 1}class="select"{/if}><a href="/article/lists?type=1">媒体报道</a></li>
+                <li {if $article.category == 2}class="select"{/if}><a href="/article/lists?type=2">平台公告</a></li>
+                <li {if $article.category == 3}class="select"{/if}><a href="/article/lists?type=3">还款公告</a></li>
+            </ul>
+        </div>
+        <div class="ui-new-mainbody">
+            <div class="p_news_mediadetail">
+
+                <div class="ui-box">
+                    <div class="h-title">
+                        <h2><i></i>{if $article.category == 1}媒体报道{elseif $article.category == 2}平台公告{else}还款公告{/if}</h2>
+                    </div>
+                    <div class="media-article">
+                        <div class="news-tit">
+                            <h1>{$article.title|escape}</h1>
+                            <span class="time">{function name="to_date" v=$article.createTime f="Y-m-d H:i:s"}</span>
+                            <span class="time">来源：</span>
+                            <span class="time">{$article.author}</span>
+                        </div>
+                        <div class="news-cont htmleditor">{$article.content|stripcslashes}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{include file="web/views/footer.html"}

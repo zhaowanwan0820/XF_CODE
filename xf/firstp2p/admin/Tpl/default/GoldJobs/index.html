@@ -1,0 +1,91 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<style>
+    table .warn-cell {color:#F00;}
+</style>
+<div class="main">
+<div class="main_title">任务管理</div>
+<div class="blank5"></div>
+<php>
+function f_to_date($stamp) {
+    if (empty($stamp)) {
+        return '-';
+    }
+    return date('Y-m-d H:i:s', $stamp);
+}
+function f_cutstr($string) {
+    $subString = $string;
+    if (mb_strlen($string) > 15) {
+        $subString = '<a href="javascript:;" title="'.str_replace('"',"'", $string).'">' . mb_substr($string, 0, 15) . '...</a>';
+    }
+    return $subString;
+}
+
+</php>
+
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="12" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px   ">编号</th>
+            <th>待执行脚本</th>
+            <th>参数</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>指定启动时间</th>
+            <th>启动时间</th>
+            <th>结束时间</th>
+            <th>执行时长</th>
+            <th>优先级</th>
+            <th>操作</th>
+        </tr>
+
+        <foreach name="data" item="jobs">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$jobs.id}"></td>
+            <td>&nbsp;{$jobs.id}</td>
+            <td>&nbsp;{$jobs.func}</td>
+            <td>&nbsp;{$jobs.params|f_cutstr}</td>
+            <td>&nbsp;{$jobs.statusCn}</td>
+            <td>&nbsp;{$jobs.createTime|f_to_date}</td>
+            <td>&nbsp;{$jobs.startTime|f_to_date}</td>
+            <td>&nbsp;{$jobs.beginTime|f_to_date}</td>
+            <td>&nbsp;{$jobs.finishTime|f_to_date}</td>
+            <td>&nbsp;{$jobs.jobCost}</td>
+            <td>&nbsp;{$jobs.priority}</td>
+            <td>&nbsp;<a href="javascript:view('{$jobs.id}');">查看</a>&nbsp;<a href="javascript:redo('{$jobs.id}');">重新执行</a></td>
+        </tr>
+        </foreach>
+
+</table>
+
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+
+<div class="blank5"></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    var status = '{$status}';
+    var p = '{$p}';
+    function view(id) {
+        if (parseInt(p) > 0) {
+            window.location.href = "/m.php?m=GoldJobs&a=view&status="+status+"&p="+p+"&id="+id;
+            return ;
+        }
+        window.location.href = "/m.php?m=GoldJobs&a=view&status="+status+"&id="+id;
+    }
+    function redo(id) {
+        window.location.href = "/m.php?m=GoldJobs&a=redo&id="+id;
+    }
+</script>
+<include file="Public:footer" />

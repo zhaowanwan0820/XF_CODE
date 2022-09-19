@@ -1,0 +1,95 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script>
+
+function agree_contract(id, agency_uid) {
+	if (!id) {
+		alert('操作有误');
+		return false;
+	}
+	$.ajax({ 
+        url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=agree&id="+id+"&agency_uid="+agency_uid, 
+        data: "ajax=1",
+        dataType: "json",
+        success: function(obj){
+            if(obj.status==1){
+            	location.href=location.href;
+            } else {
+            	alert(obj.info);
+            	return false;
+            }
+        }
+    });
+}
+
+function flush() {
+	var con = confirm("确认清除缓存？");
+	if (con==false) {
+		return false;
+	} else {
+		$.ajax({
+			url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=flush", 
+			data: "ajax=1",
+			dataType: "json",
+			success: function(obj) {
+				if(obj.status==1){
+	            	location.href=location.href;
+	            } else {
+	            	alert(obj.info);
+	            	return false;
+	            }
+	        }
+		});
+	}
+}
+</script>
+<div class="main">
+	<div class="main_title">数据字典管理    
+
+	</div>
+	<div class="blank5"></div>
+	<div class="button_row">
+    <input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="清除缓存" onclick="flush();">
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+	<!-- Think 系统列表组件开始 -->
+	<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+		<tr>
+
+			<td colspan="14" class="topTd">&nbsp;</td>
+		</tr>
+		<tr class="row">
+			<th width="8"><input type="checkbox" id="check"
+				onclick="CheckAll('dataTable')"></th>
+			<th width="50px">编号</th>
+			<th width="150px">字典键</th>
+			<th width="250px">描述</th>
+			<th width="250px">操作</th>
+		</tr>
+		<foreach name="list" item="item">
+		<tr class="row">
+			<td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+			<td>&nbsp;{$item.id}</td>
+			<td>&nbsp;<a href='/m.php?m=Dictionary&a=edit&id={$item.id}'>{$item.key}</a></td>
+			<td>&nbsp;{$item.note}</td>
+			<td><a href="/m.php?m=Dictionary&a=edit&id={$item.id}">修改</a> &nbsp;
+			<a href="/m.php?m=Dictionary&a=foreverdelete&id={$item.id}&ajax=0" onclick='return confirm("确认彻底删除？");'>删除</a></td>
+		</tr>
+		</foreach>
+		<tr>
+			<td colspan="5" class="bottomTd">&nbsp;</td>
+		</tr>
+	</table>
+	<!-- Think 系统列表组件结束 --> 
+	<div class="blank5"></div>
+	<div class="page">{$page}</div>
+</div>
+
+<include file="Public:footer" />

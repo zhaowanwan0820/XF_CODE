@@ -1,0 +1,105 @@
+<link href="/static/v1/css/user.css" rel="stylesheet" type="text/css">
+<div class="user_right">
+    <div class="user_right_box">
+        <div class="user_title"><h1><i class="ico_huankuan"></i>还款计划</h1></div>
+        <ul class="huank_nav">
+            <li {if $status eq 0} class="select" {/if}><a href="{url x="index" r="uc_deal#refund" p="status=0"}">还 款</a></li>
+            <li {if $status eq 1} class="select" {/if}><a href="{url x="index" r="uc_deal#refund" p="status=1"}">已还清</a></li>
+        </ul>
+        {if $deal_list}
+        <div class="huankuan_list clearfix">
+            {if $status eq 1}
+            <table class="plan">
+                <colgroup>
+                    <col width="90">
+                    <col width="220">
+                    <col width="130">
+                    <col width="110">
+                    <col width="120">
+                    <col width="80">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="ml10">项目</th>
+                        <th>借款金额（元）</th>
+                        <th>类型</th>
+                        <th>期限/利率</th>
+                        <th>还清日期</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {foreach from="$deal_list" item="deal" key="key"}
+                    <tr {if $key%2 eq 1} class="tr_bg" {/if}>
+                        <td><em class="color-blue1"><a href="{$deal.url}" title='{$deal.name}'>{$deal.name}</a></td>
+                        <td><em class="color-yellow1">{$deal.borrow_amount}</em></td>
+                        <td>{$deal.loantype_name}</td>
+                        <td>
+                            {if $deal.loantype == 5}
+                                {$deal.repay_time}天
+                            {else}
+                                {$deal.repay_time}个月
+                            {/if}
+                            <br>
+                            {$deal.deal_rate}
+                        </td>
+                        <td><em class="color-yellow1">{function name="to_date" v=$deal.last_repay_time f="Y-m-d"}</em></td>
+                        <td><em class="color-green1">已还清</em></td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {else}
+            <table class="plan">
+                <colgroup>
+                    <col width="90">
+                    <col width="130">
+                    <col width="120">
+                    <col width="90">
+                    <col width="100">
+                    <col width="155">
+                    <col width="80">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="ml10">项目</th>
+                        <th>借款金额（元）</th>
+                        <th>类型</th>
+                        <th>期限/利率</th>
+                        <th>下一还款日</th>
+                        <th>每期还款本息（元）</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {foreach from="$deal_list" item="deal" key="key"}
+                <tr {if $key%2 eq 1} class="tr_bg" {/if}>
+                    <td><em class="color-blue1"><a href="{$deal.url}" title='{$deal.name}'>{$deal.name}</a></em></td>
+                        <td><em class="color-yellow1">{function name="number_format" v=$deal.borrow_amount}</em></td>
+                        <td>{$deal.loantype_name}</td>
+                        <td>
+                            {if $deal.loantype == 5}
+                                {$deal.repay_time}天
+                            {else}
+                                {$deal.repay_time}个月
+                            {/if}
+                            <br>
+                            {$deal.deal_rate}
+                        </td>
+                        <td><em class="color-yellow1">{function name="to_date" v=$deal.next_repay_time f="Y-m-d"}</em></td>
+                        <td><em class="color-yellow1">{function name="number_format" v=$deal.true_month_repay_money f=2}</em></td>
+                        <td><a href="{url x="index" r="uc_deal#quick_refund" p="id=$deal.id"}" class="button_hk">还 款</a></td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {/if}
+        </div>
+        <div class="pages w715"> 
+            {$pages}
+        </div>
+        {else}
+        <div class="empty-box">没有记录</div>
+        {/if}
+    </div>
+</div>    

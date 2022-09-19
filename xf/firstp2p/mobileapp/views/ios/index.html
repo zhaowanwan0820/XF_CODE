@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="apple-mobile-web-app-title" content="" />
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui"/>
+<link href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/images/icon/touch-icon.png', 1);?>" rel="apple-touch-icon-precomposed">
+<link href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/images/icon/favicon.ico', 1);?>" type="image/x-icon">
+<title>网信 APP下载</title>
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="logo-icon.png">
+<link rel="stylesheet" type="text/css" href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/css/index.css', 1);?>">
+<link rel="stylesheet" type="text/css" href="{$static_host}<?php echo $this->asset->makeUrl('mobile/app/css/base.css', 1);?>">
+</head>
+    <body id="down_body">
+    {function name="get_adv" x="网信理财APP下载页_2017"}
+        <div class="inv-fbtn" id="p_btn">
+            <a  id="a_link" class="ui_red_btn" href="{$down_url}">立即下载</a>
+        </div>
+        <script type="text/javascript">
+            function evokeIos() {
+                var userAgentApp = navigator.userAgent.toLowerCase(),
+                    aLink = document.getElementById("a_link"),
+                    downloadIos = aLink.href,
+                    isSafari = userAgentApp.indexOf("safari") > -1 && userAgentApp.indexOf("chrome") < 1,
+                    downConfig = {
+                        schemeIOS: 'firstp2p://12345',
+                        downloadIos: downloadIos,
+                        timeout: 600
+                    },timer;
+                if (isSafari) {
+                    window.location.href = downConfig.downloadIos;
+                    return;
+                }
+                if (/micromessenger/.test(userAgentApp)) {
+                    window.location.href = downConfig.downloadIos;
+                    return;
+                }
+               //iframe尝试唤起
+                var startTime = Date.now(),
+                    ifr = document.createElement('iframe');
+                //平台userAgent二次校验
+                ifr.src = userAgentApp.indexOf('os') > 0 ? downConfig.schemeIOS : downConfig.downloadIos;
+                ifr.style.display = 'none';
+                document.body.appendChild(ifr);
+                timer = setTimeout(function() {
+                    if (document.hidden || document.webkitHidden) {
+                        return;
+                    }
+                    var endTime = Date.now();
+                    document.body.removeChild(ifr);
+                    if (!startTime || endTime - startTime < downConfig.timeout + 200) {
+                        window.location.href = downConfig.downloadIos;
+                    } else {
+                        //todo
+                    }
+                }, downConfig.timeout);
+                var visibilitychange = function() {
+                    var flag = document.hidden || document.webkitHidden;
+                    flag && clearTimeout(timer);
+                };
+                document.addEventListener('visibilitychange', visibilitychange, false);
+                document.addEventListener('webkitvisibilitychange', visibilitychange, false);
+                window.addEventListener('pagehide', function() {
+                    clearTimeout(timer);
+                }, false);
+                window.onblur = function() {
+                    clearTimeout(timer);
+                }
+            }
+            document.addEventListener("DOMContentLoaded", evokeIos, false);
+        </script>
+        <script type="text/javascript">
+            var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+            (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+        </script>
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+           var hm = document.createElement("script");
+             hm.src = "//hm.baidu.com/hm.js?7e385de805034ba6983c196ca9c6fcba";
+               var s = document.getElementsByTagName("script")[0];
+                 s.parentNode.insertBefore(hm, s);
+                 })();
+        </script>
+    </body>
+</html>

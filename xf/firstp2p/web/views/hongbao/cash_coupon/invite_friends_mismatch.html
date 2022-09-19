@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>网信理财新手礼包</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no,email=no">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <!--public js&css end-->
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-base.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-common.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/invite.css', 1);?>" rel="stylesheet" type="text/css">
+    {else}
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-base_pc.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/m-common_pc.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/cash_coupon/invite_pc.css', 1);?>" rel="stylesheet" type="text/css">
+    {/if}
+    <!--[if lte IE 9]>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/html5shiv.js', 1);?>"></script>
+    <![endif]-->   
+    {if $uaInfo.from eq 'weixin' || $uaInfo.from eq 'mobile'}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/zepto.js', 1);?>"></script>
+    {else}
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/cash_coupon/common/jquery-1.10.2.min.js', 1);?>"></script>
+    {/if}
+
+</head>
+<body class="p-invite-no">
+    <header class="m-head p-invite-no">
+        <a href="" class="logo"></a>
+        <div class="banner"></div>
+    </header>
+    <section class="m-main p-invite-no">
+        <p align="center" class="inv-tit"><img src="<?php echo $this->asset->makeUrl('v2/images/cash_coupon/invite_tit_new.png', 1);?>" alt="" width="238" height="18"></p>
+        <p align="center" class="inv-con">
+        <img src="<?php echo $this->asset->makeUrl('v2/images/cash_coupon/invite_con.png', 1);?>" alt="" width="272" height="202">
+        <span class="reward01 red">5元奖励</span>
+         <span class="reward02 red">100元奖励</span>
+        </p>
+
+        <div class="ui-instrution">
+            <div class="yellow font18">很遗憾！</div>
+            <div>{$tips}</div>
+        </div>
+        <div class="ui-loading">
+            <img src="<?php echo $this->asset->makeUrl('v2/images/cash_coupon/common/list_loading.gif', 1);?>" />
+        </div>
+    </section>
+    <footer class="m-foot p-invite-no">
+        <span>网信理财 www.firstp2p.com</span>
+    </footer>
+{include file="web/views/hongbao/cash_coupon/jsapi_config.html"}
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+{// 引入标签库 }
+<tagLib name="html"/>   
+<include file="Public:header"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="__ROOT__/static/admin/Common/js/bank.js"></script>
+<div class="main">
+    <div class="main_title">支行信息列表</div>
+    <div class="blank5"></div>
+
+    <div class="button_row">
+        <input type="button" class="button" value="{%ADD}" onclick="location.href='/m.php?m=BankList&a=add'"/>
+    </div>
+
+    <div class="blank5"></div>
+
+    <div class="main_title">
+        <form name="search" id='frm' method='get' action='m.php'>
+            <input type='hidden' name='m' value='BankList' />
+            <input type='hidden' name='a' value='index' />
+            银行名称：<input type='text' name='branch' value='<?php echo trim($_REQUEST['branch']); ?>' />
+            支行名称：<input type='text' name='name' value='<?php echo trim($_REQUEST['name']); ?>' />
+            联行号：<input type='text' name='bank_id' value='<?php echo trim($_REQUEST['bank_id']); ?>' />
+            操作人：<input type='text' name='oper_name' value='<?php echo trim($_REQUEST['oper_name']); ?>' />
+            <input type='submit' value='搜索' class="button">
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <html:list
+        id="dataTable"
+        style="dataTable"
+        name="item"
+        checkbox="true"
+        action="true"
+        datasource="list"
+        show="id:{%ID}|50px,branch:银行名称|200px,name:支行名称|300px,bank_id:联行号|100px,province:支行所在省份|80px,city:支行所在城市|80px,oper_id|get_admin_name:操作人,oper_time|format_date:操作时间"
+        actionlist="edit:编辑"
+     />
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer"/>

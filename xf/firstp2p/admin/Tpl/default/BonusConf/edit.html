@@ -1,0 +1,169 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("BonusConf/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+	<form method='post' id="form" name="form" action="__APP__">
+		<table cellpadding="4" cellspacing="0" border="0" class="form">
+			<tr>
+				<td colspan="2" class="topTd"></td>
+			</tr>
+            <tr>
+                <td class="item_title">互斥配置</td>
+                <td class="item_input">
+                    <input type="radio" name="mutex" value="1" disabled>是
+                    <input type="radio" name="mutex" value="0" disabled>否
+                </td>
+            </tr>
+            <tbody id="normal">
+            <tr>
+                <td class="item_title">{%CONF_TITLE}</td>
+                <td class="item_input">
+                    <input size="100" id="conf_title" type="text" class="textbox require" name="title" value="{$vo.title}"/>
+                    &emsp;
+                    <span class="tip_span">配置项文字说明</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_NAME}</td>
+                <td class="item_input">
+                    <input size="100" id="conf_name" type="text" class="textbox require" name="name" value="{$vo.name}"/>
+                    &emsp;
+                    <span class="tip_span">KEY, 由大写字母,数字,下划线组成</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_VALUE}</td>
+                <td class="item_input">
+                <textarea id="conf_value" style="width:800px" class="textarea" name="value"  />{$vo.value}</textarea>
+                    <span class="tip_span">VALUE</span>
+                </td>
+            </tr>
+            </tbody>
+            <tbody id="mutex">
+            <tr>
+                <td class="item_title">规则类型<br/>（筛选条件进互斥池，条件同时成立）</td>
+                <td class="item_input">
+                    <input type="radio" name="ruleType" value="GROUPID" checked>互斥groupID <span class="tip_span">（例：100126488）</span><br>
+                    <input type="radio" name="ruleType" value="TYPE">红包类型<span class="tip_span">（例：BONUS_CASH_FOR_NEW）</span><br>
+                    <input type="radio" name="ruleType" value="NAME">活动规则名<span class="tip_span">（例：网信贵宾卡）</span><br>
+                    <input type="radio" name="ruleType" value="OUT_GROUPID">需要排除的groupID
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_VALUE}</td>
+                <td class="item_input">
+                    <textarea id="mutex_value" style="height: 80px; width: 400px;"></textarea>
+                    &emsp;
+                    <span class="tip_span">多个用|隔开</span>
+                </td>
+            </tr>
+            </tbody>
+
+            <tr>
+                <td class="item_title">开始时间</td>
+                <td class="item_input">
+
+                    <input type="text" class="textbox" name="start_time" value="{$vo.start_time|to_date}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_start_time');" />
+                            <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_start_time');" />
+                            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />
+                    &emsp;
+                    <span class="tip_span"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">失效时间</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="end_time" value="{$vo.end_time|to_date}" id="end_time"  onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />
+                            <input type="button" class="button" id="btn_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />
+                            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#end_time').val('');" />
+                    &emsp;
+                    <span class="tip_span"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONF_TIP}</td>
+                <td class="item_input">
+                    <input size="100" type="text" class="textbox" name="tip" value="{$vo.tip}"/>
+                    &emsp;
+                    <span class="tip_span">可空</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%IS_EFFECT}:</td>
+                <td class="item_input">
+                    <lable>{%IS_EFFECT_1}<input type="radio" name="is_effect" value="1" <if condition="$vo['is_effect'] eq 1">checked="checked"</if> /></lable>
+                    <lable>{%IS_EFFECT_0}<input type="radio" name="is_effect" value="0" <if condition="$vo['is_effect'] eq 0">checked="checked"</if> /></lable>
+                </td>
+            </tr>
+            <input type="hidden" name="id" value="{$vo.id}" />
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusConf" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+			<tr>
+				<td class="item_title"></td>
+				<td class="item_input">
+				<input type="submit" class="button" value="{%EDIT}" />
+				<input type="reset" class="button" value="{%RESET}" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="bottomTd"></td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<include file="Public:footer" />
+<script>
+$(function() {
+    var isMutex = false;
+    var getMutexType = function(confName) {
+        var type = confName.split('_')[2];
+        switch (type) {
+            case 'GROUPID':
+                return 0;
+            case 'TYPE':
+                return 1;
+            case 'NAME':
+                return 2;
+            case 'OUT_GROUPID':
+                return 3;
+            default:
+                return 0;
+        }
+    }
+    if ($('#conf_title').val() == '返利叠加控制规则') {
+        $('input[name=mutex]').get(0).checked = true;
+        $('#normal').hide();
+        $('#mutex_value').val($('#conf_value').val());
+        $('input[name=ruleType]')
+            .get(getMutexType($('#conf_name').val()))
+            .checked = true;
+    } else {
+        $('input[name=mutex]').get(1).checked = true;
+        $('#mutex').hide();
+    }
+    $('input[name=ruleType]').change(function() {
+        var type = $(this).val(),
+            date = $('#conf_name').val().split('_')[3];
+        $('#conf_name').val('MUTEX_RULE_' + type + '_' + date);
+    })
+    $('#mutex_value').blur(function() {
+        var val = $(this).val();
+        if (val.length > 255) {
+            alert('配置值超长，最大长度255，如有更多配置，请新建配置项');
+            return;
+        }
+        $('#conf_value').val(val);
+    })
+
+    
+
+}())
+</script>

@@ -1,0 +1,166 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">新增规则 <a href="{:u("BonusJobs/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">规则名</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="name" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包组数/人次</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="group_count" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">每组红包个数</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="bonus_count" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">每组红包金额总额</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="group_money" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用限制</td>
+                <td class="item_input">
+                    <select name="use_type" class='require'>
+                        <foreach name="use_type" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">领用人会员组号</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="user_group" />&emsp;
+                    <span class="tip_span">请填写组id,多个组别请用半角逗号分开</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">领用人tag</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="user_tag" />&emsp;
+                    <span class="tip_span">请填写标签键名，如：REG_Y_2014，多个tag请用半角逗号分开</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">多个tag之间的关系</td>
+                <td class="item_input">
+                    <label><input type="radio" name="tag_relation" value="1" checked="checked"/>并且</label>
+                    <label><input type="radio" name="tag_relation" value="0" />或者</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包发送有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="group_validity" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">红包使用有效期</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="bonus_validity" />&emsp;
+                    <span class="tip_span">天</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">状态</td>
+                <td class="item_input">
+                    <label><input type="radio" name="is_effect" value="1" checked="checked"/>有效</label>
+                    <label><input type="radio" name="is_effect" value="0" />无效</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送开始时间</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="start_time" value="{$start_time}" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />&emsp;
+                    <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d %H:%M:00', true, false, 'btn_start_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#start_time').val('');" />&emsp;
+                    <span class="tip_span">填写之后不可编辑</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送结束时间</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="end_time" value="{$end_time}" id="end_time"  onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />&emsp;
+                    <input type="button" class="button" id="btn_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('end_time', '%Y-%m-%d %H:%M:%S', true, false, 'btn_end_time');" />
+                    <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#end_time').val('');" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">是否发送短信</td>
+                <td class="item_input">
+                    <label><input type="radio" name="send_sms" value="1" />发送</label>
+                    <label><input type="radio" name="send_sms" value="0" checked="checked"/>不发送</label>
+                </td>
+            </tr>
+            <tr id='smsTpl' style="display:none">
+                <td class="item_title">短信模板</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="sms_tpl_show" disabled value="1168"/>&emsp;
+                    <span class="tip_span">短信后台配置的短信模板ID（一定要通过审核）现在暂时就只是 1168这个模板，不能修改</span>
+                    <input type="hidden" name="sms_tpl" value="1168"/>&emsp;
+                </td>
+            </tr>
+            <!--<tr id='smsParam' style="display:none">
+                <td class="item_title">短信参数</td>
+                <td class="item_input">
+                    <input type="text" class="textbox" name="sms_tpl_params" />&emsp;
+                    <span class="tip_span">GROUP_COUNT(红包组数/人次), GROUP_MONEY(每组红包金额总额), BONUS_COUNT(每组红包个数), GROUP_VALIDITY(红包有效期) 半角逗号分隔，按照短信模板参数顺序, 可为空</span>
+                </td>
+            </tr>-->
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="BonusJobs" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+                <input type="submit" class="button" value="{%ADD}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript" charset="utf-8">
+function showSmsConfig(){
+    $('input[name="sms_tpl"]').addClass('require');
+    $('#smsTpl').show();
+    //$('#smsParam').show();
+}
+
+function hideSmsConfig(){
+    $('input[name="sms_tpl"]').removeClass('require');
+    $('#smsTpl').hide();
+    //$('#smsParam').hide();
+}
+$("input[name='send_sms']").click(function(){
+    if ($(this).val() == 1){
+        showSmsConfig();
+    } else {
+        hideSmsConfig();
+    }
+});
+
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>公益报告</title>
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <link href="<?php echo $this->asset->makeUrl('v2/css/charity/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/charity/login.css');?>" rel="stylesheet" />
+    <script src="<?php echo $this->asset->makeUrl('v2/js/common/jquery-1.10.2.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/common/toast.js');?>"></script>
+</head>
+    <body>
+        <div class="pt"></div>
+        <form method="post" action="/user/WeiXinLogin">
+            <?php echo token_input(); ?>
+            <div class="report">
+                <div class="input_box">
+                    <input type="text" class="ui_input JS-input_account" name="username" placeholder="手机号码/用户名" value="{$username}">
+                </div>
+                <div class="input_box">
+                    <input type="password" class="ui_input JS-input_password" name="password" placeholder="密码">
+                </div>
+                <div class="input_box">
+                    <input type="text" class="ui_input mr10 JS-input_code" name="captcha" placeholder="验证码">
+                    <div class="yz_img"><img src="/verify.php?w=40&h=20&rb=0&rand=" width="120" height="38"></div>
+                </div>
+                <div class="input_box">
+                    <input type="submit" class="generated_btn J_submit_btn" value="">
+                </div>
+            </div>
+        </form>
+        <script type="text/javascript">
+        $(function() {
+            function upateSubmitButton() {
+                var disabled = $('.JS-input_account').val() == '' || $('.JS-input_password').val() == '' || $('.JS-input_code').val() == '';
+                if (disabled) {
+                    $('.J_submit_btn').attr('disabled', 'disabled');
+                } else {
+                    $('.J_submit_btn').removeAttr('disabled');
+                }
+            }
+            $('.JS-input_account').bind("input", upateSubmitButton);
+            $('.JS-input_password').bind("input", upateSubmitButton);
+            $('.JS-input_code').bind("input", upateSubmitButton);
+            var _upateSubmitButtonCount = 10;
+            var _upateSubmitButtonTimer = setInterval(function(){
+                upateSubmitButton();
+                _upateSubmitButtonCount--;
+                if (_upateSubmitButtonCount < 0) {
+                    clearInterval(_upateSubmitButtonTimer);
+                }
+            }, 300);
+            //图片验证码逻辑
+            function updateCaptchaImg() {
+                $('.yz_img img').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+            }
+            $('.yz_img').click(function() {
+                updateCaptchaImg();
+            });
+            updateCaptchaImg();
+
+            function onBridgeReady() {
+                WeixinJSBridge.call('hideOptionMenu');
+            }
+
+            if (typeof WeixinJSBridge == "undefined") {
+                if (document.addEventListener) {
+                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                } else if (document.attachEvent) {
+                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                }
+            } else {
+                onBridgeReady();
+            }
+
+            {if !empty($errMsg)}
+                P2PWAP.ui.showErrorTip('{$errMsg}');
+            {/if}
+        })
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>网银充值流程</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.100/css/payment/p_no_support_charge.css');?>" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="p_no_support_charge">
+      <div class="ui_page_title">
+        <div class="ui_page_title_con">
+          <a class="backbutton" href="firstp2p://api?type=local&action=closeself"><span class="back_arrow"></span>返回</a>
+          <div class="page_middle_title">网银充值流程</div>
+        </div>
+      </div>
+      <div class="title">{if $isSaveOrder eq 1}<i></i>已保存订单，{/if}请使用电脑进行网银充值</div>
+      <img src="<?php echo $this->asset->makeAppUrl('v4.100/images/payment/scan_qrcode.gif');?>"/>
+      <div class="adv_text">{function name="get_adv" x="网信大额充值pc引导文案"}</div>
+      <a class="scan_btn_href" href="firstp2p://api?type=native&name=qrcode&cloself=true"><div class="scan_btn">扫一扫</div></a>
+    </div>
+    <script>
+        window.zhuge = window.zhuge || [];
+        window.zhuge.methods = "_init debug identify track trackLink trackForm page".split(" ");
+        window.zhuge.factory = function (b) {
+        return function () {
+        var a = Array.prototype.slice.call(arguments);
+        a.unshift(b);
+        window.zhuge.push(a);
+        return window.zhuge;
+        }
+        };
+        for (var i = 0; i < window.zhuge.methods.length; i++) {
+        var key = window.zhuge.methods[i];
+        window.zhuge[key] = window.zhuge.factory(key);
+        }
+        window.zhuge.load = function (b, x) {
+        if (!document.getElementById("zhuge-js")) {
+        var a = document.createElement("script");
+        var verDate = new Date();
+        var verStr = verDate.getFullYear().toString() + verDate.getMonth().toString() + verDate.getDate().toString();
+        a.type = "text/javascript";
+        a.id = "zhuge-js";
+        a.async = !0;
+        a.src = 'https://stat.ncfwx.com/zhuge.js?v=' + verStr;
+        a.onerror = function () {
+        window.zhuge.identify = window.zhuge.track = function (ename, props, callback) {
+        if (callback && Object.prototype.toString.call(callback) === '[object Function]') callback();
+        };
+        };
+        var c = document.getElementsByTagName("script")[0];
+        c.parentNode.insertBefore(a, c);
+        window.zhuge._init(b, x)
+        }
+        };
+        window.zhuge.load('6f33d6821b27439dae59698798ef81d6', { debug: true, superProperty: { PlatformType: 'H5', xinbao: 1 }, autoTrack: true, singlePage: true }); //配置应用的AppKey -->
+        $(function(){
+          $(".scan_btn_href").click(function(){
+            zhuge.track("提示前往PC端充值页面_点击扫一扫");
+          });
+          var u = navigator.userAgent, app = navigator.appVersion;
+          var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+          var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+          if (isAndroid) {
+            //这个是安卓操作系统
+            $(".ui_page_title").addClass("font_normal")
+          }
+        })
+        $(function(){
+          zhuge.track("进入提示前往PC端充值页面");
+        })
+    </script>
+</body>
+</html>

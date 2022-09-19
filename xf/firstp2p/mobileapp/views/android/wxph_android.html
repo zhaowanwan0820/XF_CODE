@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="apple-mobile-web-app-title" content="" />
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui"/>
+<link href="{$static_host}<?php echo $this->asset->makeAppUrl('mobile/app/images/icon/touch-icon.png', 1);?>" rel="apple-touch-icon-precomposed">
+<link href="{$static_host}<?php echo $this->asset->makeAppUrl('mobile/app/images/icon/favicon.ico', 1);?>" type="image/x-icon">
+<title>网信普惠 APP下载</title>
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="logo-icon.png">
+<link rel="stylesheet" type="text/css" href="{$static_host}<?php echo $this->asset->makeAppUrl('mobile/app/css/index_wxph.css', 1);?>">
+<link rel="stylesheet" type="text/css" href="{$static_host}<?php echo $this->asset->makeAppUrl('mobile/app/css/base.css', 1);?>">
+</head>
+    <body id="down_body">
+        {function name="get_adv" x="网信普惠APP下载页_2017"}
+        <div class="inv-fbtn" id="p_btn">
+            <a href="{$down_url}" id="a_link" class="ui_red_btn">立即下载</a>
+        </div>
+        <script type="text/javascript">
+                var tip = document.getElementById("tip");
+                //判断是否微信
+                function weixinFacility() {
+                    var userAgentString = window.navigator ? window.navigator.userAgent : "";
+                    var weixinreg = /MicroMessenger/i;
+                    return weixinreg.test(userAgentString);
+                };
+                //跳转监听
+                if (weixinFacility()) {
+                    document.getElementById('a_link').onclick = function(e) {
+                        document.getElementById("down_body").style.overflow = "hidden";
+                        tip.style.display = "block";
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }
+                //tip消失
+                tip.onclick= function() {
+                    document.getElementById("down_body").style.overflow = "auto";
+                    this.style.display = "none";
+                }
+
+            var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+            (function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","//assets1.ncfstatic.com/default/js/ncfpb.1.5.min.js?v=201503191540");
+        </script>
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+           var hm = document.createElement("script");
+             hm.src = "//hm.baidu.com/hm.js?7e385de805034ba6983c196ca9c6fcba";
+               var s = document.getElementsByTagName("script")[0];
+                 s.parentNode.insertBefore(hm, s);
+                 })();
+        </script>
+    </body>
+</html>

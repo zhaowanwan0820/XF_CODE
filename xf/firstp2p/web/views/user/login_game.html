@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeUrl('game/roulette/css/login.css');?>">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('game/roulette/js/lib/zepto.min.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('game/roulette/js/lib/base.js');?>"></script>
+    <title>登录游戏</title>
+</head>
+<body class="login_body">
+<img src="<?php echo $this->asset->makeUrl('game/roulette/images/lib/loginIcon.png');?>" class="loginIcon"/>
+<div class="errorTip">{$error}</div>
+<form class="loginForm" id="loginForm" method="post" action="/user/doLogin{$querystring}">
+    <?php echo token_input(); ?>
+    <input type="hidden" name="tpl" value="game" />
+    <div class="fgroup">
+        <input type="text" placeholder="手机号" name="username" id="accountInput" autoComplete="off" />
+    </div>
+    <div class="fgroup">
+        <input type="password" placeholder="登录密码" name="password" id="pasInput" autoComplete="off" />
+    </div>
+    {if isset($show_vcode) && $show_vcode eq '1'}
+    <div class="fgroup">
+        <input type="text" placeholder="验证码" name="captcha" id="codeInput" autoComplete="off" />
+        <a href="javascript:;" class="codeBox">
+            <img class="codeImg" id="codeImg" src="/verify.php?w=91&h=36&rb=0"/>
+        </a>
+    </div>
+    {/if}
+    <input type="submit" value="登录" class="submitBtn" id="submitBtn"/>
+</form>
+</div>
+<script>
+    $(function(){
+        $('#codeImg').on('click', refresh);
+        function refresh(){
+            var srcStr="/verify.php?w=91&h=36&rb=0&rand=" + new Date().getTime();
+            $(this).attr('src', srcStr);
+        }
+        function verifyForm() {
+            var flag=true;
+            var account=$('#accountInput');
+            var pas=$('#pasInput');
+            var code=$('#codeInput');
+
+            if (emptyReg.test(account.val())){
+                showToast('帐号不能为空');
+                flag=false;
+                return flag;
+            }
+            if (emptyReg.test(pas.val())){
+                showToast('密码不能为空');
+                flag=false;
+                return flag;
+            }
+            if (code.length && emptyReg.test(code.val())){
+                showToast('验证码不能为空');
+                flag=false;
+                return flag;
+            }
+            return flag;
+        }
+        $('#submitBtn').on('click',function (event) {
+            if (!verifyForm()){
+                event.preventDefault();
+            }
+        });
+    });
+    function refresh() {
+        document.getElementById("codeImg").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+    }
+</script>
+</body>
+</html>

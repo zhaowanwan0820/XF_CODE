@@ -1,0 +1,107 @@
+{include file="web/views/header.html"}
+    <!--银行卡管理 start-->
+    <div class="p_account_receiveadd">
+      <link href="<?php echo $this->asset->makeUrl('v3/css/p_account_bankcard_manage.css');?>"  type="text/css" rel="stylesheet">
+      <script src="<?php echo $this->asset->makeUrl('v3/js/life/index.js');?>" type="text/javascript"></script>
+
+      <span class="blank23"></span>
+      <div class="wrap clearfix">
+        <div class="ui-box">
+          <div class="h-title">
+            <h2>
+              <i>
+              </i>银行卡</h2>
+          </div>
+          {$formString}
+          {$bankcardValidateForm}
+          <div class="add-mid">
+            <div class="add_newbtn">
+             我的银行卡：
+             </div>
+             <div class="infor_atten">
+             目前支持对理财卡进行管理，如需管理消费卡，请前往APP端操作。
+             </div>
+            <div class="add_list_con clearfix">
+            {foreach from=$list.cardList item="cardList" key="k"}
+            <dl>
+                <dt class="clearfix">
+                 {if $cardList.card_purpose eq 1}
+                  <div class="fr xfc">
+                   消费卡
+                    </div>
+                 {elseif $cardList.card_purpose eq 2}
+                  <div class="fr lcc">
+                   理财卡
+                    </div>
+                 {else}
+                 <div class="fr lcc">
+                   理财/消费卡
+                    </div>
+                 {/if}
+                 <div class="clearfix">
+                  <span class="addr_name fl"><img src="{$cardList.bank_logo}" width="40" height="40" alt="{$cardList.bank_shortname}"></span>
+                  <span class="shortname fl" title="{$cardList.bank_shortname}">{$cardList.bank_shortname}</span>
+                  </div>
+                  </dt>
+                <dd class="num">
+                 {$cardList.bankcard}
+                 </dd>
+                <dd class="action_card">
+                  {$cardList.cardtype_name}
+                  {if $cardList.card_purpose neq 1}
+                  <input  type="hidden" id="haslicai" value="1">
+                      {if $cardList.status eq 1}
+                            {if $is_audit neq 1}
+                                {if !$isEnterprise}
+                                    {if !$cardList.is_valid}
+                                    <a href="javascript:void(0);" class="newBtn mr10" id="yanzheng">验证</a>
+                                    {/if}
+                                {/if}
+                                {if $svData.isOpenAccount and $isSvDown}
+                                    <a href="javascript:void(0);" class="j_isSvDown newBtn newBtn2">更换</a>
+                                {else}
+                                    <a {if $isEnterprise eq 1}
+                                                href="/account/baseinfoCompany" target="_blank"
+                                         {else}
+                                            href="javascript:gotoValidate();"
+                                         {/if} class="newBtn newBtn2">更换
+                                    </a>
+                                {/if}
+                                {if !$isEnterprise}
+                                    {if $canResetBank}
+                                        {if $svData.isOpenAccount and $isSvDown}
+                                        <a href="javascript:void(0);" class="j_isSvDown newBtn">解绑</a>&nbsp;&nbsp;
+                                        {else}
+                                        <a href="/account/removeBankcard" class="newBtn">解绑</a>&nbsp;&nbsp;
+                                        {/if}
+                                    {/if}
+                                {/if}
+                            {else}
+                                <a class="newBtn">审核中</a>
+                            {/if}
+                        {/if}
+                   {/if}
+                  </dd>
+              </dl>
+           {/foreach}
+           {if !$isEnterprise}
+                  {if $user_info.idcardpassed eq 1}
+                      {if $hasPassport}
+                      <a class="add_bank_card" data-url="/account/addbank" href="/account/addbank"></a>
+                      {else}
+                      <a class="add_bank_card"  href="javascript:;"></a>
+                      {/if}
+                  {/if}
+            {else}
+              <a class="add_bank_card" data-url="/account/baseinfoCompany" href="/account/baseinfoCompany" target="_blank"></a>
+            {/if}
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="blank23"></span>
+    </div>
+    <!--银行卡管理 end-->
+
+   {include file="web/views/footer.html"}

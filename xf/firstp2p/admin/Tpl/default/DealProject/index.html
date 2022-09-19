@@ -1,0 +1,382 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<php>
+function subtraction($num1,$num2) {
+    $num = $num1 - $num2;
+    $num = format_price($num,false);
+    return $num;
+}
+function get_rate($rate) {
+    return $rate.'%';
+}
+function get_link($link){
+    return "<a href='$link' target='_blank'>链接</a>";
+}
+</php>
+<style>
+ a {
+     white-space:nowrap;
+ }
+</style>
+
+<div class="main">
+<div class="main_title">项目列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%DELETE}" onclick="del();" />
+    <if condition="$isSvDown"><input type="button" class="button" value="将掌众标的置为无效" onclick="setZhangzhongInvalid()" /></if>
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        项目编号：<input type="text" class="textbox" name="pro_id" value="{:trim($_REQUEST['pro_id'])}" size="8"/>
+        项目名称：<input type="text" class="textbox" name="pro_name" value="{:trim($_REQUEST['pro_name'])}" size="8"/>
+        借款人会员ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" size="8"/>
+        借款人会员名称：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="8"/>
+        借款人姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="8"/>
+        放款审批单编号：<input type="text" class="textbox" name="approve_number" value="{:trim($_REQUEST['approve_number'])}" size="10"/>
+        贷款类型：
+        <select name="deal_type">
+            <option value="0" <if condition="$_REQUEST['deal_type'] eq 0">selected</if>>网贷</option>
+            <if condition="!$is_cn">
+            <option value="2" <if condition="$_REQUEST['deal_type'] eq 2">selected</if>>交易所</option>
+            <option value="3" <if condition="$_REQUEST['deal_type'] eq 3">selected</if>>专享</option>
+            <option value="5" <if condition="$_REQUEST['deal_type'] eq 5">selected</if>>小贷</option>
+            </if>
+        </select>
+        业务状态：
+        <select name="business_status">
+            <option value="999" <if condition="$_REQUEST['business_status'] eq 999">selected="selected"</if>>全部</option>
+            <foreach name="project_business_status" key='status_value' item="status_name">
+                <option value="{$status_value}" <if condition="$_REQUEST['business_status'] eq $status_value">selected="selected"</if>>{$status_name}</option>
+            </foreach>
+        </select>
+        固定起息日：
+            <input type="text" class="textbox" style="width:140px;" name="fixed_value_date_start" id="fixed_value_date_start" value="{$_REQUEST['fixed_value_date_start']}" onfocus="this.blur(); return showCalendar('fixed_value_date_start', '%Y-%m-%d', false, false, 'btn_fixed_value_date_start');" title="固定起息日开始" />
+            <input type="button" class="button" id="btn_fixed_value_date_start" value="{%SELECT_TIME}" onclick="return showCalendar('fixed_value_date_start', '%Y-%m-%d', false, false, 'btn_fixed_value_date_start');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="fixed_value_date_end" id="fixed_value_date_end" value="{$_REQUEST['fixed_value_date_end']}" onfocus="this.blur(); return showCalendar('fixed_value_date_end', '%Y-%m-%d', false, false, 'btn_fixed_value_date_end');" title="固定起息日结束" />
+            <input type="button" class="button" id="btn_fixed_value_date_end" value="{%SELECT_TIME}" onclick="return showCalendar('fixed_value_date_end', '%Y-%m-%d', false, false, 'btn_fixed_value_date_end');" />
+        <input type="hidden" value="DealProject" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv_file('');" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="19" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">
+                <a href="javascript:sortBy('id','1','DealProject','index')" title="按照编号升序排列 ">
+                    编号
+                    <img src="/static/admin/Common/images/desc.gif" width="12" height="17"
+                    border="0" align="absmiddle">
+                </a>
+            </th>
+            <th>
+                <a href="javascript:sortBy('name','1','DealProject','index')" title="按照借款标题升序排列 ">
+                    项目名称
+                </a>
+            </th>
+            <th>
+                期限
+            </th>
+            <th>
+                还款方式
+            </th>
+            <th>
+                借款综合成本（年化）
+            </th>
+            <th>
+                用户类型
+            </th>
+            <th>
+                借款人会员ID
+            </th>
+            <th>
+                借款人会员名称
+            </th>
+            <th>
+                借款人姓名
+            </th>
+            <th>
+                借款总额
+            </th>
+            <th>
+                已上标金额
+            </th>
+            <th>
+                待上标金额
+            </th>
+            <th>
+                已投资金额
+            </th>
+            <th>
+                差额
+            </th>
+            <th>
+                放款审批单编号
+            </th>
+            <th>
+                项目授信额度
+            </th>
+            <th>
+                固定起息日
+            </th>
+            <th>
+                借款人合同委托签署
+            </th>
+            <th>
+                担保方合同委托签署
+            </th>
+            <th>
+                资产管理方合同委托签署
+            </th>
+            <th>
+                项目简介
+            </th>
+            <th>
+                项目要素
+            </th>
+            <th>
+                业务状态
+            </th>
+            <th>
+                状态
+            </th>
+            <th style="width:250px">
+                操作
+            </th>
+
+        </tr>
+        <volist name="list" id="project">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$project.id}" />
+            </td>
+            <td>
+                &nbsp;{$project.id}
+            </td>
+            <td>
+                &nbsp;
+                <a href="javascript:view('{$project.id}')">
+                    {$project.name}
+                </a>
+            </td>
+            <td>
+                &nbsp;{:getRepayTime($project['repay_time'], $project['loantype'])}
+            </td>
+            <td>
+                &nbsp;{$project.loantype|get_loantype}
+            </td>
+            <td>
+                &nbsp;{$project.rate|get_rate}
+            </td>
+            <td>
+                &nbsp;{$project.user_id|getUserTypeName=0|default=''}
+            </td>
+            <td>
+                &nbsp;{$project.user_id}
+            </td>
+            <td>
+                &nbsp;{$project.user_id|get_user_name}
+            </td>
+            <td>
+                &nbsp;{$project.user_id|get_user_name='real_name'}
+            </td>
+            <td>
+                &nbsp;{$project.borrow_amount|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project.money_borrowed|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project.borrow_amount|subtraction=$project['money_borrowed']}
+            </td>
+            <td>
+                &nbsp;{$project.money_loaned|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project.diff|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project.approve_number}
+            </td>
+            <td>
+                &nbsp;{$project.credit|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project.fixed_value_date|to_date='Y-m-d'}
+            </td>
+            <td>
+                &nbsp;{$project.entrust_sign}
+            </td>
+            <td>
+                &nbsp;{$project.entrust_agency_sign}
+            </td>
+            <td>
+                &nbsp;{$project.entrust_advisory_sign}
+            </td>
+            <td>
+                &nbsp;{$project.project_info_url|get_link}
+            </td>
+            <td>
+                &nbsp;{$project.project_extrainfo_url|get_link}
+            </td>
+            <td>
+                <if condition="$project['is_entrust_zx']">
+                &nbsp;{$project.business_status|getProjectBusinessStatusNameByValue}
+                <else />
+                    --
+                </if>
+            </td>
+            <td>
+                &nbsp;{$project.status}
+            </td>
+            <td>
+                <a href="javascript:add_deal({$project.id})">上标</a>&nbsp;
+                <a href="javascript:view({$project.id})">查看</a>&nbsp;
+                <a href="javascript:edit({$project.id})">编辑</a>&nbsp;
+                <a href="javascript:del({$project.id})">彻底删除</a>&nbsp;
+                <a href="javascript:copy({$project.id})">复制</a>&nbsp;
+                <a href="javascript:show_deals({$project.id})">标的列表</a>&nbsp;
+                <if condition=" $project['business_status'] egt 3">
+                    <a href="javascript:show_contract({$project.id})">合同列表</a><br />
+                    <if condition=" $project['business_status'] eq 5">
+                    <a href="javascript:show_loan_log('{$project.name}')">标的放款操作记录</a><br />
+                    </if>
+                    <if condition=" $project['business_status'] gt 6">
+                    <a href="javascript:show_repay_log('{$project.id}')">标的还款操作记录</a><br />
+                    </if>
+                </if>
+            </td>
+
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<script type="text/javascript">
+    function del(id) {
+
+        if(!id) {
+
+            idBox = $(".key:checked");
+            if(idBox.length == 0)
+            {
+                alert(LANG['DELETE_EMPTY_WARNING']);
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            id = idArray.join(",");
+        }
+        if(confirm(LANG['CONFIRM_DELETE'])){
+            //判断该项目是否有子标  如没有才能删除
+            var is_submit = 0;
+            $.ajax({
+                url:ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=checkSave&id="+id,
+                dataType:"json",
+                async:false,
+                success:function(rs){
+                    if(rs.status ==1)
+                    {
+                        if(rs.data.sum > 0) {
+                            //alert('项目id:'+id+'下有子标，不能直接删除！');
+                            alert('该项目下有子标，不能直接删除！');
+                            return;
+                        }
+                        is_submit = 1;
+                    }else{
+                        is_submit = 0;
+                    }
+                }
+            });
+
+            if(is_submit == 1) {
+                $.ajax({
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id,
+                    data: "ajax=1",
+                    dataType: "json",
+                    success: function(obj){
+                        $("#info").html(obj.info);
+                        if(obj.status==1) {
+                            location.href=location.href;
+                        }
+                    }
+                });
+            }
+
+
+        }
+    }
+
+    function add_deal(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=add&proid="+id;
+    }
+    function view(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=view&id="+id;
+    }
+
+    function copy(id) {
+        $.ajax({
+            url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=copy&id=" + id,
+            data: "ajax=1",
+            dataType: "json",
+            success: function (obj) {
+                $("#info").html(obj.info);
+            }
+        });
+    }
+
+    // csv导出
+    function export_csv_file()
+    {
+        var confirm_msg = "\n\r大数据量请增加筛选条件缩小结果集条数，以免导出失败";
+        confirm_msg = "确认要导出csv文件数据吗？" + confirm_msg + "\n\r导出过程中请耐心等待，不要关闭页面。";
+        if (!confirm(confirm_msg)) {
+            return;
+        }
+        return export_csv();
+    }
+
+    function show_contract(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=ProjectContract&"+VAR_ACTION+"=index&project_id="+id;
+    }
+
+    function show_deals(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=deals&project_id="+id;
+    }
+
+    function show_loan_log(name) {
+        location.href = ROOT+"?"+VAR_MODULE+"=LoanOplog&"+VAR_ACTION+"=index&project_name="+name;
+    }
+
+    function show_repay_log(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealRepayOplog&"+VAR_ACTION+"=index&project_id="+id;
+    }
+
+    function setZhangzhongInvalid() {
+        if (confirm('确认操作？（处理时间较长，请耐心等待）')) {
+            location.href='/m.php?m=DealProject&a=setZhangzhongInvalid'
+        }
+    }
+</script>

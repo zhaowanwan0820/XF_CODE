@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>随心约信息披露</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('css/common/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('css/common/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.75/css/p_reserve_disclosure.css');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_reserve_disclosure">
+        <div class="load_box">
+            {if $list.total gt 0 }
+            {foreach from=$list.list item=data}
+            <div class="ui_common_list">
+                <div class="common_btn">
+                    <a href="/deal/reserveDisclosureList?userClientKey={$userClientKey}&invest={$data.invest}">
+                        {$data.desc}
+                        <i class="icon_arrow fr"></i>
+                    </a>
+                </div>
+            </div>
+            {/foreach}
+            {else}
+            <div class="no_coupon">
+                暂无信息
+            </div>
+            {/if}
+        </div>
+    </div>
+</body>
+
+</html>

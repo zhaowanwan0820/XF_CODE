@@ -1,0 +1,68 @@
+{include file="web/views/v3/en/header.html"}
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/social_response.css');?>"/>
+<link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/en/social_response_pc.css');?>" media="screen and (min-width: 1200px)"/>
+    <div class="social_response">
+        <div class="bg1">SERVICE GROUPS<img class="trangle1" src="<?php echo $this->asset->makeUrl('v3/images/en/social_response/trangle1.png');?>"></div>
+        <div class="social_content">
+          <img class="trangle2" src="<?php echo $this->asset->makeUrl('v3/images/en/social_response/trangle2.png');?>">
+          <p class="top_detail">NCF Wealth has relied on block chain, big data, AI and other technical means, continued to optimize and improve business and risk control models to provide service groups with one-stop investment and financing services.</p>
+          <div class="title_line"></div>
+          <ul class="social_ul">
+              <li class="social_list1 common-an-start">
+                  <img src="<?php echo $this->asset->makeUrl('v3/images/en/service_groups/2.jpg');?>" alt="Individual and Family" title="Individual and Family"/>
+                  <div class="social1">
+                    <p class="title">Individual and Family</p>
+                    <div class="line"></div>
+                    <div class="detail">Through the application of the unique smart risk control mode, big data and AI, NCF Wealth has continuously upgraded the technology and level of the risk control, applied it to the personal consumption credit approval field, and offered financial support to personal consumption. At the same time, an individual user could lend funds to a borrower through the platform, gain a certain amount of interest, achieve an increase in personal and family wealth, and promote the life quality and happiness index. </div>
+                  </div>
+              </li>
+              <li class="social_list2 common-an-start">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/en/service_groups/3.jpg');?>" alt="Peasant Household and Peasant" title="Peasant Household and Peasant"/>
+                <div class="social2">
+                  <p class="title">Peasant Household and Peasant</p>
+                  <div class="line"></div>
+                  <div class="detail">Under the new agricultural model, peasants need more funds to upgrade agricultural machinery and equipment, improve the kinds of agricultural produce, etc. The funds that peasants need are often small in amount, high in cost and lack effective collateral, which have restricted the traditional financial institutions from granting agricultural loans. NCF Wealth, making use of the high-efficient and convenient advantages of the financial technology, has helped peasants gain financial support more directly and dredge “the last mile” for the rural funds accommodation.</div>
+                </div>
+              </li>
+              <li class="social_list3 common-an-start">
+                <img src="<?php echo $this->asset->makeUrl('v3/images/en/service_groups/4.jpg');?>" alt="Middle, Small and Micro-sized Enterprises" title="Middle, Small and Micro-sized Enterprises"/>
+                <div class="social3">
+                  <p class="title">Middle, Small and Micro-sized Enterprises</p>
+                  <div class="line"></div>
+                  <div class="detail">Micro, small and medium enterprises account for over 80% of China's enterprise volume, however, "Financing was difficult, expensive and slow" was a major challenge for them. NCF Wealth has positively carried out the concept of inclusive finance, depended on the bridge function between advanced internet technology and cooperation enterprise, and solved the SMEs' financial difficulties. The achievements of inclusive finance have benefited the vulnerable groups in the enterprise chain and really given the wealth back to the communities.</div>
+                </div>
+              </li>
+              <li class="social_list2 social_list4 common-an-start">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/en/service_groups/1.jpg');?>" alt="Enterprises of the Industrial Chain" title="Enterprises of the Industrial Chain"/>
+                    <div class="social2">
+                      <p class="title">Enterprises of the Industrial Chain</p>
+                      <div class="line"></div>
+                      <div class="detail">NCF Wealth has creatively presented the industrial chain mode of “1+N”. Through strategic cooperation with the core enterprises in the industrial chain, the investment and financing service could be offered to the core enterprise as well as the upstream and downstream firms. Through the ERP data system of the core enterprise, the risk control model could be built up to sharply reduce the risk factor and level up the capital operation efficiency of the industrial chain. </div>
+                    </div>
+                  </li>
+          </ul>
+        </div>
+{include file="web/views/v3/en/footer.html"}
+<script>
+    var flag = IsPC(); 
+    if(flag){//pc
+        var social_ul_top = $(".social_ul").offset().top;
+        var social_ul_height = $(".social_ul").height();
+        $(".social_list1").addClass("an-end");
+        $(window).scroll(function(){
+            var this_scrollTop = $(this).scrollTop();
+            if(this_scrollTop > social_ul_top - social_ul_height-200){
+                setTimeout(function(){
+                    $(".social_list2").addClass("an-end");
+                },500)
+                setTimeout(function(){
+                    $(".social_list3").addClass("an-end");
+                },1000)
+                setTimeout(function(){
+                    $(".social_list4").addClass("an-end");
+                },1500)
+            }
+        });
+    }
+</script>
+</html>

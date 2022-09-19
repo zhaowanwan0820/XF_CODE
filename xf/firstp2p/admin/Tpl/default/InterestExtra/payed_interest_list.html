@@ -1,0 +1,43 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">贴息记录</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            标id:<input type="text" class="textbox" style="width:50px;" name="deal_id" value="{$_REQUEST['deal_id']}" />
+            批次编号:<input type="text" class="textbox" name="batch_number" id="batch_number" value="{$_REQUEST['batch_number']}" onClick=" return showCalendar('batch_number', '%Y-%m-%d', false, false, 'batch_number');" />
+
+            <input type="hidden" value="InterestExtra" name="m" />
+            <input type="hidden" value="getPayedInterestList" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr class="row">
+            <th><a href="javascript:sortBy('pay_date','{$_sort}','InterestExtra','getPayedInterestList')" title="按照日期 ">批次编号</a></th>
+            <th><a href="javascript:sortBy('total_amount','{$_sort}','InterestExtra','getPayedInterestList')" title="按照金额 ">金额</a></th>
+            <th style="width:70px">csv文件</th>
+        </tr>
+        <volist name="list" id="interst_payed_list">
+            <tr class="row">
+                <td>{$interst_payed_list.pay_date}</td>
+                <td>{$interst_payed_list.total_amount}</td>
+                <td><a href="/m.php?m=InterestExtra&a=export_csv&batch_number={$interst_payed_list.pay_date}">下载</a></td>
+            </tr>
+            </volist>
+    </table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,307 @@
+{// 引入标签库 此文件已弃用}
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/deal.js' />
+
+<div class="main">
+    <div class="main_title">提前还款试算<a href="{$redirectUrl}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <table class="form conf_tab"  rel="1">
+        <tr>
+            <td class="item_title">借款标题:</td>
+            <td width="400">
+                {$deal.name}
+            </td>
+            <td class="item_title"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="item_title">
+                剩余本金:
+            </td>
+            <td>
+                {$remain_principal}元
+            </td>
+            <td class="item_title">
+                借款期限:
+            </td>
+            <td>
+                {$deal.repay_time}<if condition="$deal['loantype'] eq 5">天<else />个月</if>
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">
+                借款年利率:
+            </td>
+            <td>
+                <php>echo number_format($deal['rate'], 2);</php>%
+            </td>
+            <td class="item_title">
+                提前还款锁定期:
+            </td>
+            <td>
+                {$deal.prepay_days_limit}天
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">
+                出借人年化收益率:
+            </td>
+            <td>
+                <php>echo number_format($deal['income_fee_rate'], 2)</php>%
+            </td>
+            <td class="item_title">
+                提前还款违约金系数:
+            </td>
+            <td>
+                <php>echo number_format($deal['prepay_rate'], 2)</php>%
+            </td>
+        </tr>
+        <tr>
+            <td class="item_title">
+                还款方式:
+            </td>
+            <td>
+                {$deal.loantype|get_loantype}
+            </td>
+            <td class="item_title">
+                提前还款罚息天数:
+            </td>
+            <td>
+                {$deal.prepay_penalty_days}天
+            </td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+    <div>
+        <table border="1">
+            <tr>
+                <th height="20px" width="550px" >到期还款明细</th>
+                <th height="20px" width="550px" >提前还款明细</th>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                到期时间：
+                            </td>
+                            <td class="item_input">{$repay_end_time}</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                计息日期：
+                            </td>
+                            <td class="item_input" id="repay_start_time">{$repay_start_time}</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                利息天数：
+                            </td>
+                            <td class="item_input">{$interest_days}天</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                应还本金：
+                            </td>
+                            <td class="item_input">{$remain_principal}元</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                应还利息：
+                            </td>
+                            <td class="item_input">{$interest}元</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                提前还款违约金：
+                            </td>
+                            <td class="item_input">{$prepay_penalty}元</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                手续费：
+                            </td>
+                            <td class="item_input">{$loan_fee}元</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                咨询费：
+                            </td>
+                            <td class="item_input">{$consult_fee}元</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                担保费：
+                            </td>
+                            <td class="item_input">{$guarantee_fee}元</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                支付服务费：
+                            </td>
+                            <td class="item_input">{$pay_fee}元</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                还款总额：
+                            </td>
+                            <td class="item_input">{$total_repay_money}元</td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                计息结束日期：
+                            </td>
+                            <td class="item_input">
+                                <input type="text" class="textbox"  name="prepay_end_time" id="prepay_end_time" value="{$prepay_end_time}" onfocus="this.blur(); return showCalendar('prepay_end_time', '%Y-%m-%d', false, false, 'btn_prepay_end_time');" />
+                                <input type="button" class="button" id="btn_prepay_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('prepay_end_time', '%Y-%m-%d', false, false, 'btn_prepay_end_time');" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                计息日期：
+                            </td>
+                            <td class="item_input">{$repay_start_time}</td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                利息天数：
+                            </td>
+                            <td class="item_input" id="interest_days"></td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                应还本金（理论值）：
+                            </td>
+                            <td class="item_input" id="principal"></td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                应还利息（理论值）：
+                            </td>
+                            <td class="item_input" id="prepay_interest"></td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                提前还款违约金：
+                            </td>
+                            <td class="item_input" id="prepay_penalty"></td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                手续费：
+                            </td>
+                            <td class="item_input" id="loan_fee"></td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                咨询费：
+                            </td>
+                            <td class="item_input" id="consult_fee"></td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                担保费：
+                            </td>
+                            <td class="item_input" id="guarantee_fee"></td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                支付服务费：
+                            </td>
+                            <td class="item_input" id="pay_fee"></td>
+                        </tr>
+                        <tr>
+                            <td class="item_title" style="height:30px;">
+                                还款总额：
+                            </td>
+                            <td class="item_input" id="prepay_money"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="button" value="计算" onclick="compute('{$deal.id}','{$repay_start_time}', '{$deal.prepay_days_limit}');"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+
+    });
+
+    function toDate(dateStr) {
+        var date = dateStr.split('-');
+        dateObj = new Date();
+        dateObj.setFullYear(date[0]);
+        dateObj.setMonth(date[1] - 1);
+        dateObj.setDate(date[2]);
+        dateObj.setHours(0);
+        dateObj.setMinutes(0);
+        dateObj.setSeconds(0);
+        return dateObj;
+    }
+
+    function compute(deal_id, repay_start_time, prepay_days_limit) {
+        var prepay_end_date = $("#prepay_end_time").val();
+        if(prepay_end_date == null|| prepay_end_date == '') {
+            alert("请填写提前还款日期");
+            return;
+        }
+        //转换成Date对象做判断
+        var prepayDate = toDate(prepay_end_date);
+        var repayStartDate = toDate(repay_start_time);
+        if(prepayDate <= repayStartDate) {
+            alert("计息结束日期必须大于计息日期！");
+            return;
+        }
+        prepayDateTime = parseInt(prepayDate.getTime() / 1000);
+        prepayLimitDateTime = parseInt(repayStartDate.getTime() / 1000) + prepay_days_limit * 86400;
+
+        var sure = true;
+        if(prepayDateTime < prepayLimitDateTime) {
+            sure = window.confirm("选择此日期后利息天数将小于提前还款锁定期，确定此操作吗？");
+        }
+        if(sure) {
+            $.ajax(
+                    {
+                        url:ROOT + "?" + VAR_MODULE + "=Deal&" + VAR_ACTION + "=do_prepay_compute&deal_id=" + deal_id + "&prepay_end_date=" + prepay_end_date,
+                        dataType: "json",
+                        async: false,
+                        success: function(rs) {
+                            if(rs.status == 1) {
+                                $("#interest_days").html(rs.data.interest_days + "天");
+                                $("#principal").html(rs.data.principal + "元");
+                                $("#prepay_interest").html(rs.data.prepay_interest + "元");
+                                $("#prepay_penalty").html(rs.data.prepay_penalty + "元");
+                                $("#loan_fee").html(rs.data.loan_fee + "元");
+                                $("#consult_fee").html(rs.data.consult_fee + "元");
+                                $("#guarantee_fee").html(rs.data.guarantee_fee + "元");
+                                $("#pay_fee").html(rs.data.pay_fee + "元");
+                                $("#prepay_money").html(rs.data.prepay_money + "元");
+                            } else {
+                                alert(rs.error_msg);
+                            }
+                        }
+                    }
+            );
+        }
+    }
+</script>
+<include file="Public:footer" />

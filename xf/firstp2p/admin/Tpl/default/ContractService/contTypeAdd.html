@@ -1,0 +1,79 @@
+{// 引入标签库 }
+<script type="text/javascript">
+    function checkform(){
+        if($('#typeName').val().length == 0 || $('#typeTag').val().length == 0){
+            alert('分类名称和标识不能为空！');
+            return false;
+        }
+        return true;
+    }
+</script>
+<div class="main">
+
+    <form name="search" action="__APP__" method="post">
+        <table class="form conf_tab" cellpadding=0 cellspacing=0 rel="3">
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">分类名称:</td>
+                <td class="item_input">
+                    <input type='text' name='typeName' id='typeName' value=''>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">分类标识:</td>
+                <td class="item_input">
+                    <input type='text' name='typeTag' id='typeTag' value=''>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">借款类型:</td>
+                <td class="item_input">
+                    <input type='radio' name='contractType' value='0' checked>个人借款
+                    <input type='radio' name='contractType' value='1'>公司借款
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">使用状态:</td>
+                <td class="item_input">
+                    <input type='radio' name='useStatus' value='1' checked>当下使用
+                    <input type='radio' name='useStatus' value='0'>历史使用
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">合同版本号:</td>
+                <td class="item_input">
+                    <input type='text' name='contractVersion' id='contractVersion' value='1.0' disabled>
+                </td>
+            </tr>
+
+            <if condition='$isCn neq true'>
+                <tr>
+                    <td class="item_title">标的类型:</td>
+                    <td class="item_input">
+                        <select name="dealType" class="require">
+                            <foreach name="dealType" item="type_item">
+                                <option value="{$type_item.id}" >{$type_item.name}</option>
+                            </foreach>
+                        </select>
+                    </td>
+                </tr>
+            </if>
+
+            <tr>
+                <td class="item_input" colspan=2 style="text-align:center;">
+                    <input type="hidden" value="true" name="save" />
+                    <input type="hidden" value="0" name="type" />
+                    <input type="hidden" value="ContractService" name="m" />
+                    <input type="hidden" value="contTypeAdd" name="a" />
+                    <input type="submit" class="button" onclick="return checkform();" value="添加" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

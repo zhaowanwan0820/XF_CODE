@@ -1,0 +1,99 @@
+<!-- $Id: goods_list.htm 16529 2009-08-12 05:38:57Z wangleisvn $ -->
+
+
+
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+{insert_scripts files="validator.js"}
+<!-- 库存调整 -->
+<div class="list-div" style="margin-bottom: 5px; margin-top: 10px;" id="listDiv">
+
+
+
+<form method="post" action="goods.php?act=update_stock" name="addForm" id="addForm" onsubmit="return checkNum()">
+  <input type="hidden" name="goods_id" value="{$goods_id}" />
+  <table width="100%" cellpadding="3" cellspacing="1" id="table_list">
+    <tr>
+      <th colspan="20" scope="col">{$goods_name}&nbsp;&nbsp;&nbsp;&nbsp;{$goods_sn}</th>
+    </tr>
+  {if $is_product}
+    <tr>
+      {foreach from=$attribute item=attribute_value}
+      <td scope=""><div align="center"><strong>{$attribute_value.attr_name}</strong></div></td>
+      {foreachelse}
+      <td scope="">&nbsp;</td>
+      {/foreach}
+      <td class="">{$lang.goods_sn}</td>
+      <td class="">{$lang.goods_number}</td>
+      <td class="">设置库存</td>
+      <td class="">数量</td>
+    </tr>
+
+    {foreach from=$product_list item=product}
+    <tr>
+      {foreach from=$product.goods_attr item=goods_attr}
+      <td scope=""><div align="center">{$goods_attr}</div></td>
+      {/foreach}
+      <td class=""><span>{$product.product_sn|default:$lang.n_a}</span></td>
+      <td class=""><span>{$product.product_number}</span></td>
+      <td ><select name="product_type[]" id="">
+        <option value="1">增加</option>
+        <option value="0">减少</option>
+      </select></td>
+      <td class=""><input type="number" name="product_num[]" style="width: 88px" autocomplete="off"></td>
+      <input type="hidden" name="product_id[]" value="{$product.product_id}">
+    </tr>
+    {/foreach}
+  {else}
+    <tr>
+      <td class="">{$lang.goods_number}</td>
+      <td class="">设置库存</td>
+      <td class="">数量</td>
+    </tr>
+    <tr>
+      <td class=""><span>{$goods_number}</span></td>
+      <td ><select name="goods_type">
+        <option value="1">增加</option>
+        <option value="0">减少</option>
+      </select></td>
+      <td class=""><input type="number" id="goods_num" name="goods_num" style="width: 88px" autocomplete="off"></td>
+    </tr>
+  {/if}
+  </table>
+  <input type="hidden" name="type" value="{if $is_product}1{else}0{/if}">
+  <div align="center"><input type="submit" class="button" value="{$lang.button_save}" /></div>
+</form>
+
+
+
+</div>
+
+<script type="text/javascript">
+{literal}
+function checkNum(){
+  var is_product = '{$is_product}'
+  var reg = /^\d*$/
+  if(is_product){
+    var num = document.getElementsByName('product_num[]');
+    for(i=0;i<num.length;i++){
+      if(!reg.test(num[i].value)){
+        alert("请输入正整数")
+        return false;
+      }
+    }
+  }else{
+    var num = document.getElementById('goods_num').value;
+    if(!reg.test(num)){
+      alert("请输入正整数")
+      return false;
+    }
+  }
+  return true;
+}
+
+
+{/literal}
+</script>
+{include file="pagefooter.htm"}
+
+

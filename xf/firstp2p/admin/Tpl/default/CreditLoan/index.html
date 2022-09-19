@@ -1,0 +1,198 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+        用户id：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+        质押项目id：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" style="width:100px;" />
+        项目状态
+        <select name="status">
+            <option value="all" <if condition="$_REQUEST['status'] eq 'all' || trim($_REQUEST['status']) eq ''">selected="selected"</if>>所有状态</option>
+            <option value="0" <if condition="$_REQUEST['status'] neq 'all' && trim($_REQUEST['status']) neq '' && intval($_REQUEST['status']) eq 0">selected="selected"</if>>申请中</option>
+            <option value="1" <if condition="intval($_REQUEST['status']) eq 1">selected="selected"</if>>已取消</option>
+            <option value="2" <if condition="intval($_REQUEST['status']) eq 2">selected="selected"</if>>使用中</option>
+            <option value="3" <if condition="intval($_REQUEST['status']) eq 3">selected="selected"</if>>还款中</option>
+            <option value="5" <if condition="intval($_REQUEST['status']) eq 5">selected="selected"</if>>已还清</option>
+        </select>
+        申请起始日期：
+        <input type="text" class="textbox" style="width:140px;" name="apply_start" id="apply_start" value="{$_REQUEST['apply_start']}" onfocus="this.blur(); return showCalendar('apply_start', '%Y-%m-%d', false, false, 'btn_apply_start');" title="申请起始日期" />
+        <input type="button" class="button" id="btn_apply_start" value="{%SELECT_TIME}" onclick="return showCalendar('apply_start', '%Y-%m-%d', false, false, 'btn_apply_start');" />
+        申请结束日期：
+        <input type="text" class="textbox" style="width:140px;" name="apply_end" id="apply_end" value="{$_REQUEST['apply_end']}" onfocus="this.blur(); return showCalendar('apply_end', '%Y-%m-%d', false, false, 'btn_apply_end');" title="申请结束日期" />
+        <input type="button" class="button" id="btn_apply_end" value="{%SELECT_TIME}" onclick="return showCalendar('apply_end', '%Y-%m-%d', false, false, 'btn_apply_end');" />
+
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="CreditLoan" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv();" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="17" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="50px"><a href="javascript:sortBy('id','<?php echo ($sort); ?>','CreditLoan','index')" title="按照<?php echo L("ID");?>
+                <?php echo ($sortType); ?> "><?php echo L("ID");?><?php if(($order)  ==  "id"): ?>
+                <img src="__TMPL__Common/images/<?php echo ($sortImg); ?>.gif" width="12" height="17" border="0" align="absmiddle">
+                <?php endif; ?></a>
+            </th>
+            <th>
+                会员ID
+            </th>
+            <th>
+                质押标的
+            </th>
+            <th>
+                申请时间
+            </th>
+            <th>
+                申请金额
+            </th>
+            <th>
+                申请期限
+            </th>
+            <th>
+                利率
+            </th>
+            <th>
+               实际放款时间
+            </th>
+            <th>
+                预计还款时间
+            </th>
+            <th>
+                实际还款时间
+            </th>
+            <th>
+                借款期限
+            </th>
+            <th>
+                利息
+            </th>
+            <th>
+                业务服务费
+            </th>
+            <th>
+                状态
+            </th>
+            <th>是否报备</th>
+            <th style="width:250px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="deal">
+        <tr class="row">
+            <td align="center" >
+                {$deal.id}
+            </td>
+            <td align="center" >
+                {$deal.user_id}
+            </td>
+            <td align="center" >
+                {$deal.deal_id}
+            </td>
+            <td align="center" >
+                <if condition="($deal.create_time neq 0)">
+                    {$deal.create_time|date='Y-m-d H:i:s',###}
+                <else/>
+                    - -
+                </if>
+            </td>
+            <td align="center" >
+                {$deal.money}
+            </td>
+            <td align="center" >
+                {$deal.period_apply}天
+            </td>
+            <td align="center" >
+                {$deal.rate}%
+            </td>
+            <td>
+                 <if condition="($deal.loan_time neq 0)">
+                    {$deal.loan_time|date='Y-m-d H:i:s',###}
+                <else/>
+                    - -
+                </if>
+            </td>
+            <td align="center" >
+                <if condition="($deal.plan_time neq 0)">
+                    {$deal.plan_time|date='Y-m-d H:i:s',###}
+                <else/>
+                    - -
+                </if>
+            </td>
+            <td align="center" >
+                <if condition="($deal.finish_time neq 0)">
+                    {$deal.finish_time|date='Y-m-d H:i:s',###}
+                <else/>
+                    - -
+                </if>
+            </td>
+            <td align="center" >
+                {$deal.period_repay}天
+            </td>
+            <td align="center" >
+                {$deal['interest']}
+            </td>
+            <td align="center" >
+                {$deal.service_fee}元
+            </td>
+            <td align="center" >
+                <if condition="($deal.status eq 0)">申请中</if>
+                <if condition="($deal.status eq 1)">已取消</if>
+                <if condition="($deal.status eq 2)">使用中</if>
+                <if condition="($deal.status eq 3) || ($deal.status eq 4) || ($deal.status eq 6)">还款中</if>
+                <if condition="($deal.status eq 5)">已还清</if>
+            </td>
+            <td align="center">{$deal.deal_id|getDealReportStatus}</td>
+            <td align="center" >
+<!--                 <if condition="($deal.status eq 0)">
+                    <a href="javascript:revoke('{$deal.id}')">撤销</a>
+                </if> -->
+                <if condition="($deal.status eq 2)">
+                    <a href="javascript:manual_repay('{$deal.id}')">手动还款</a>
+                </if>
+
+            </td>
+        </tr>
+        </volist>
+    </table>
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+    function revoke(id) {
+        if(confirm('撤销后该笔项目投资记录将解锁，确认撤销？'))
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=revoke&id="+id,
+                data: "ajax=1",
+                dataType: "json",
+                success: function(obj){
+                    $("#info").html(obj.info);
+                    if(obj.status==1)
+                        location.href=location.href;
+                }
+            });
+    }
+
+    function manual_repay(id){
+        window.location.href = ROOT + '?m=CreditLoan&a=manual_repay&loan_id='+id;
+    }
+</script>
+<include file="Public:footer" />
+

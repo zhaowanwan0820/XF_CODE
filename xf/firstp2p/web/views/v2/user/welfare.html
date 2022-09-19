@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>公益报告</title>
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <link href="<?php echo $this->asset->makeUrl('v2/css/charity/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/charity/index.css?v=20151221');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/charity/jquery.fullPage.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeUrl('v2/css/charity/animate.css');?>" rel="stylesheet" />
+    <script src="<?php echo $this->asset->makeUrl('v2/js/common/jquery-1.10.2.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/charity/jquery-ui.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/charity/jquery.fullPage.js');?>"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.m_main').fullpage({
+                'verticalCentered': false,
+                'anchors': ['page1', 'page2', 'page3'],
+                'sectionsColor': ['', '', ''],
+                'navigation': false,
+                'navigationPosition': 'right',
+                afterLoad: function (anchorLink, index) {
+                },
+                onLeave: function(index, nextindex, direction) {
+                }
+            });
+        });
+    </script>
+</head>
+    <body>
+        <div class="m_main">
+            <div class="section page1">
+                <div class="head_img"><img src="{$wxinfo.headimgurl}"></div>
+                <div class="user_info clearfix">
+                    <p><span>{$wxinfo.nickname}</span> 在网信理财</p>
+                    <p>捐赠总额为 <span>{$dealInfo.sum}</span> 元</p>
+                    <p class="border_t">共参与 <span>{$dealInfo.count}</span> 个公益项目</p>
+                </div>
+                <div class="story">
+                    <div class="story_one">
+                        <a href="#"><img src="<?php echo $this->asset->makeUrl('v2/images/charity/2.png');?>"></a>
+                    </div>
+                    <div class="story_two">
+                        <a href="#"><img src="<?php echo $this->asset->makeUrl('v2/images/charity/3.png');?>"></a>
+                    </div>
+                    <div class="story_three">
+                        <a href="#"><img src="<?php echo $this->asset->makeUrl('v2/images/charity/4.png');?>"></a>
+                    </div>
+                </div>
+                <div class="ui_arrow"></div>
+            </div>
+            <div class="section page2">
+               <div class="user_hot clearfix">
+                   <p class="user_hot_text1">{$dealInfo.money}元</p>
+                   <p class="user_hot_text2">{$dealInfo.loan_time}</p>
+                   <h2 class="user_hot_text3">The greatest amount of projects you donated</h2>
+                   <p class="color_white border_t user_hot_text4">您捐赠金额最高的一期项目为</p>
+                   <p class="clear user_hot_text5">{$dealInfo.deal.name}</p>
+                   <div class="deal_img"><a href="#"><img src="<?php echo $this->asset->makeUrl('v2/images/charity/5.png');?>"></a></div>
+               </div>
+               <div class="ui_arrow"></div>
+            </div>
+            <div class="section page3">
+                <div class="pt"></div>
+                <div class="text_bg">
+                    <div class="text_img"></div>
+                </div>
+                <div class="btn">
+                    {if !$is_self}
+                    <a href="{$seeMeUrl}" class="btn_see"></a>
+                    {/if}
+                    <a href="javascript:void(0);" class="btn_shear"></a>
+                </div>
+            </div>
+        </div>
+        <div class="ui_mask" style="display:none"></div>
+        <div class="shear_icon" style="display:none"></div>
+        <script language="javascript">
+        $(function(){
+            $(".btn_shear").click(function(){
+               $(".ui_mask,.shear_icon").show();
+               $(".section").removeClass("fp-section");
+            });
+            $(".ui_mask").click(function() {
+                $(".ui_mask,.shear_icon").hide();
+                $(".section").addClass("fp-section");
+            });
+
+            function getUrlParam  (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(unescape(r[2])); return null;
+            }
+            var u = getUrlParam("u")
+            var ucode = 0;
+            for (var i = 0; i < u.length; i++) {
+                ucode = ucode + u.charCodeAt(i);
+            }
+            var userId = ucode;
+            var ArrList = [
+                    "<?php echo $this->asset->makeUrl('v2/images/charity/1.png');?>",
+                    "<?php echo $this->asset->makeUrl('v2/images/charity/2.png');?>",
+                    "<?php echo $this->asset->makeUrl('v2/images/charity/3.png');?>",
+                    "<?php echo $this->asset->makeUrl('v2/images/charity/4.png');?>",
+                    "<?php echo $this->asset->makeUrl('v2/images/charity/5.png');?>",
+                    "<?php echo $this->asset->makeUrl('v2/images/charity/6.png');?>",
+                    "<?php echo $this->asset->makeUrl('v2/images/charity/7.png');?>",
+                    "<?php echo $this->asset->makeUrl('v2/images/charity/8.png');?>"
+                ];
+            function getRandPiceByUid(arrLen, getNum, randomKey) {
+                
+                var seeds = [];
+                for (var i = 0; i < arrLen; i++) {
+                    seeds.push(i);
+                    //console.log(i);
+                }
+
+                var result = [];
+                for (var i = 0; i < getNum; i++) {
+                    var key = randomKey % seeds.length;
+                    result.push(seeds[key]);
+                    seeds.splice(key,1);
+                }
+                return result;
+            }
+            // console.log(getRandPiceByUid(8, 4, userId))
+            // console.log(userId)
+            var imgSrc = getRandPiceByUid(8, 4, userId)
+            $('.story_one img').attr("src",ArrList[imgSrc[0]]);
+            $('.story_two img').attr("src",ArrList[imgSrc[1]]);
+            $('.story_three img').attr("src",ArrList[imgSrc[2]]);
+            $('.deal_img img').attr("src",ArrList[imgSrc[3]]);
+            var aHref1 =ArrList.indexOf(ArrList[imgSrc[0]]);
+            var aHref2 =ArrList.indexOf(ArrList[imgSrc[1]]);
+            var aHref3 =ArrList.indexOf(ArrList[imgSrc[2]]);
+            var aHref4 =ArrList.indexOf(ArrList[imgSrc[3]]);
+            var url= "http://event.firstp2p.com/zt/gygs?p=";
+            $('.story_one a').attr("href",url+(aHref1+1));
+            $('.story_two a').attr("href",url+(aHref2+1));
+            $('.story_three a').attr("href",url+(aHref3+1));
+            $('.deal_img a').attr("href",url+(aHref4+1));
+        })
+        </script>
+    </body>
+{include file="web/views/hongbao/jsapi_config.html"}
+<script>
+    var imgUrl = '{$wxShareImg}';
+    var lineLink = "{$currentUrl}";
+    var descContent = '{$wxShareDesc}';
+    var shareTitle = '{$wxShareTitle}';
+    wx.ready(function() {
+        wx.showOptionMenu();
+        wx.onMenuShareTimeline({
+            title: shareTitle, // 分享标题
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function (res) {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function (res) {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+        wx.onMenuShareAppMessage({
+            title: shareTitle, // 分享标题
+            desc: descContent, // 分享描述
+            link: lineLink, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function (res) {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function (res) {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    });
+</script>
+</html>

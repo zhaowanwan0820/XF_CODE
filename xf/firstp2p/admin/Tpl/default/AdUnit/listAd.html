@@ -1,0 +1,120 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<script src="/static/admin/avgrund/js/avgrund.js"></script>
+<link rel="stylesheet" href="/static/admin/avgrund/css/avgrund.css">
+
+
+
+<div class="main">
+    <div class="main_title"><a href="/m.php?m=AdPub&a=index&" class="back_list">返回列表</a></div>
+    <div class="blank5"></div>
+    <input type="button" class="button" value="添加广告" onclick="location.href='/m.php?m=AdUnit&a=addAd&pubId={$pubId}'">
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th>广告ID</th>
+            <th>发布商</th>
+            <th>渠道名称</th>
+            <th>邀请码</th>
+            <th>广告类型</th>
+            <th>尺寸</th>
+            <th>代码</th>
+            <th>创建时间</th>
+            <th>操作</th>
+
+
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+
+            <td>{$item.ad_id}</td>
+            <td>{$item.pub_name}</td>
+            <td>{$item.channel_name}</td>
+            <td>{$item.link_coupon}</td>
+            <td>{$item.name}</td>
+            <td>{$item.size}</td>
+            <td><a href="javascript:void(0)" data="{$item.ad_id}" class="showCodeBtn">显示</a>
+                
+                <textarea style="display:none" id="code_{$item.ad_id}">{$item.code}</textarea>
+
+            </td>
+            <td>{$item.create_time}</td>
+
+            <td>
+                <a href="/m.php?m=AdUnit&a=previewRealAd&code={$item.code|urlencode|base64_encode}" target="_blank" data="{$item.ad_id}" class="showPreviewBtn">预览</a>
+                <a href="javascript:deleteConfirm({$item.id})">删除</a>
+
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<aside id="showCode" class="avgrund-popup" style="margin-top:50px;">
+    <p></p>
+    <p></p>
+    <h2>代码</h2>
+    <textarea id="code" rows="8" cols="45"></textarea>
+    <p></p>
+
+    <button onclick="javascript:closeDialog();">Close</button>
+</aside>
+
+<!-- <aside id="showPreview" class="avgrund-popup" style="margin-top:50px;">
+    <div id="adContent"></div>
+    <button onclick="javascript:closeDialog();">Close</button>
+</aside> -->
+
+
+
+
+<script>
+
+$(function(){
+    $(".showCodeBtn").click(function(){
+
+        Avgrund.show( "#showCode" );
+        $("#code").text($("#code_"+$(this).attr('data')).text());
+    });
+
+    // $(".showPreviewBtn").click(function(){
+    // $("#adContent").load("/m.php?m=AdUnit&a=previewAd&tplId="+$(this).attr("data"), function(){
+    //     $("#showPreview").css("width", $(".j_firstp2p_ad").width());
+    //     $("#showPreview").css("height", $(".j_firstp2p_ad").height()); 
+    //     $("#showPreview").css("margin-left", 0-$(".j_firstp2p_ad").width()/2); 
+    //     Avgrund.show( "#showPreview" );   
+    // });
+    // });
+});
+
+function closeDialog() {
+    Avgrund.hide();
+}
+
+function deleteConfirm(id){
+    var r=confirm("确认删除?")
+    if (r==true){
+        location.href="/m.php?m=AdUnit&a=doDelAd&id="+id;
+    }
+}
+
+function preview(){
+
+}
+
+
+
+</script>

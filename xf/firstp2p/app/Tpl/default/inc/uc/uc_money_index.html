@@ -1,0 +1,142 @@
+<link rel="stylesheet" type="text/css" href="{$TMPL}/css/datepicker.css" />
+<script type="text/javascript" src="{$TMPL}/js/jquery.ui.core.js"></script>
+<script type="text/javascript" src="{$TMPL}/js/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="{$TMPL}/js/jquery.ui.datepicker.js"></script>
+<div class="inc">
+	<div class="inc_main">
+		{if $t neq 'money'}
+		<div id="dashboard" class="dashboard">
+			<ul>
+				<li {if $ACTION_NAME eq 'index'}class="current"{/if}><a href="{url x="index" r="uc_money#index"}">{$LANG.UC_LOGS}</a></li>
+				<li {if $ACTION_NAME eq 'incharge'}class="current"{/if}><a href="{url x="index" r="uc_money#incharge"}">{$LANG.UC_MONEY_INCHARGE}</a></li>
+				<li {if $ACTION_NAME eq 'carry'}class="current"{/if}><a href="{url x="index" value="uc_money#carry"}">{$LANG.UC_CARRY}</a></li>
+				{if $allow_exchange}
+				<li {if $ACTION_NAME eq 'exchange'}class="current"{/if}><a href="{url x="index" value="uc_money#exchange"}">{$LANG.UC_EXCHANGE}</a></li>
+				{/if}
+				<li {if $ACTION_NAME eq 'bank'}class="current"{/if}><a href="{url x="index" value="uc_money#bank"}">{$LANG.UC_BANK}</a></li>
+			</ul>
+		</div>	
+		<div class="clearfix" style="border:1px solid #e1e1e1;border-top:0;background-color:#fff;padding-top:20px">
+		{else}
+		<div class="clearfix" style="border:1px solid #e1e1e1;background-color:#fff;padding-top:20px">
+		{/if}
+		
+				<table border="0" cellspacing="0" cellpadding="0" class="tb_sty2 tb_sty6" >
+				<colgroup>
+				<col width="155">
+				<col width="147">
+				<col>
+				</colgroup>
+				{if $t eq ''}
+				<tbody>
+					<tr>
+						<td>
+							<div class="txt_sty5">资金余额</div>
+						</td>
+						<td>
+							<div class="txt_sty5">可用资金</div>
+						</td>
+						<td>
+							<div class="txt_sty5">冻结资金</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						<div class="pr5">
+						    <?php echo format_price($this->_var['user_info']['money'] + $this->_var['user_info']['lock_money']); ?>
+						</div>
+						</td>
+						<td>
+						<div class="pr5">
+						    {function name="format_price" v=$user_info.money}
+						</div>
+						</td>
+						<td>
+						<div class="pr5">
+						    {function name="format_price" v=$user_info.lock_money}
+						</div>
+						</td>
+					</tr>
+				</tbody>
+				{/if}
+				</table>
+			<div class="tab_sty">
+			
+				{if $t eq ''}<div class="user_log"> <a href='{url x="index" r="uc_money#index" p="t=money"}'>更多</a><strong>最近交易</strong>  </div>{/if}
+				{if $t eq 'money'}
+				<form action='{url x="index" r="uc_money#index"  p="t=money"}' type="post">
+				<div class="pr40 pb20">
+					<select id="_js_log_info_show" name="log_info">
+						<option value="" selected="selected">全部</option>
+						{foreach from=$filter item=log key=key}
+						<option value="{$log}">{$log}</option>
+						{/foreach}
+					</select>
+					<input id="start" name="start" type="text" value="<?php echo $_GET['start'];?>" placeholder="起始日期" class="w100 pl5"/> -
+					<input id="end" name="end" type="text" value="<?php echo $_GET['end'];?>" placeholder="终止日期" class="w100 pl5"/>
+					<input id="_js_log_info" type="hidden" value="<?php echo $_GET['log_info'];?>" class="w100 pl5"/>
+					<input type="submit" value="筛选" />
+				</div>
+				</form>
+				<script type="text/javascript">
+				  $(document).ready(function(){
+				    $("#start").datepicker({
+				      showAnim:'fadeIn',
+				      changeMonth: true,
+				      changeYear: true,
+				      yearRange: "2013:2050"
+				    });
+				    $("#end").datepicker({
+				      showAnim:'fadeIn',
+				      changeMonth: true,
+				      changeYear: true,
+				      yearRange: "1950:2014",
+				      minDate: "-60Y", 
+				      maxDate: 0
+				    });
+				    //修正下拉列表
+				    $("#_js_log_info_show").val($("#_js_log_info").val());
+				  });
+				</script>
+				{/if}
+				<!--<span {if $t eq 'money'}class="act"{/if}><a href="{url x="index" r="uc_money#index" p="t=money"}">资金</a></span>-->
+				<?php /*<span {if $t eq 'score'}class="act"{/if}><a href="{url x="index" r="uc_money#index" p="t=score"}">积分</a></span>*/?>
+				
+			</div>
+			<div class="blank1"></div>
+			<table border="0" cellspacing="0" cellpadding="0" class="tb_sty2 tb_sty6">
+				<colgroup>
+                    <col width="160">
+                    <col width="155">
+                    <col width="155">
+                    <col width="100">
+                    <col width="250">
+				<col>
+				</colgroup>
+				<tr>
+                    <td class="txt_sty5">{$LANG.CREATE_TIME}</td>
+					<td class="txt_sty5">{$LANG.EVENT}</td>
+                    <td class="txt_sty5">冻结(+)/解冻(-)</td>
+					<td class="txt_sty5">{$LANG.PRICE_AMOUNT}</td>
+                    <td class="txt_sty5">备注</td>
+					<?php /*{if $t eq '' or $t eq 'score'}<th width="80">{$LANG.SCORE}</th>{/if}*/?>
+					<!--{if $t eq '' or $t eq 'quota'}<td class="txt_sty5">额度</td>{/if}-->
+				</tr>
+				{foreach from=$list item=log key=key}
+				<tr {if $key mod 2 eq  1}class=""{/if}>
+                    <td><?php echo to_date($this->_var['log']['log_time'],"Y-m-d H:i"); ?></td>
+					<td>{$log.log_info}</td>
+                    <td>{function name="format_price" value=$log.lock_money c=1 d=0}</td>
+					<td>{function name="format_price" value=$log.money c=1 d=0}</td>
+                    <td>{$log.note}</td>
+					<!--{if $t eq '' or $t eq 'score'}<td>{function name="format_score" value=$log.score}</td>{/if}
+					{if $t eq '' or $t eq 'quota'}<td>{$log.quota}</td>{/if}-->
+				</tr>
+				{/foreach}
+			</table>
+			<div class="blank"></div>
+			<div class="pages">{$pages}</div>
+		</div>	
+	</div>
+	<div class="inc_foot"></div>
+</div>

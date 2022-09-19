@@ -1,0 +1,105 @@
+{include file="web/views/v2/header.html"}
+    <div class="p_user_register">
+        <link href="<?php echo $this->asset->makeUrl('v2/css/user_register.css');?>" rel="stylesheet">
+        <link href="<?php echo $this->asset->makeUrl('v2/css/user_charge.css');?>" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/weebox.css');?>">
+        <style type="text/css">
+            .ui-form .er-icon, .ui-form .error-wrap{display: none;}
+        </style>
+
+        <span class="blank23"></span>
+        <div class="wrap clearfix">
+            <div class="ui-box">
+                <div class="h-title">
+                    <h2>
+            <i></i>注册
+        </h2>
+                    <div class="r-menu">已有账户？ <a href="/user/login" class="blue">立刻登录</a></div>
+                </div>
+                <div class="reg-mid">
+                    <div class="reg-title first-tep"></div>
+                    <div class="ui-form">
+                        <form action="/user/doRegister{$querystring}" method="post" id="reg_v2">
+                            <?php echo token_input(); ?>
+                            <input data-label="短信验证码" type="hidden" id="input-code" name="code" value="" >
+                            <ul class="clearfix">
+                                <li class="tel-ver clearfix">
+                                    <label> 手机号
+                                    </label>
+                                     <span class="tel-btn"></span>
+                                    <input type="text" value="{$data.mobile}" data-con="require" placeholder="您的手机号码" name="mobile" id="input-mobile" class="txt int_placeholder" data-placeholder="span请输入用户名">
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text">{$error.mobile}</div>
+                                    </div>
+                                </li>
+                                <li class="pwd-item" id="pwd-item">
+                                    <label> 登录密码
+                                    </label>
+                                    <span>
+                                        <input type="password" value="" data-con="require" placeholder="5-25位数字／字母" name="password" id="input-password" class="txt">
+                                    </span>
+                                    <div class="pwd-sprite form-sprite pwd-show"></div>
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text">{$error.password}</div>
+                                    </div>
+
+                                </li>
+                                <li>
+                                    <label> 邀请码
+                                    </label>
+                                    <input type="text" value="" data-con="require" placeholder="选填" name="invite" id="input-invite" class="txt">
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text">邀请码不对</div>
+                                    </div>
+                                </li>
+                                <li class="graph-ver clearfix">
+                                    <label> 图形验证
+                                    </label>
+                                    <input type="text" value="" data-con="require" placeholder="右侧数字" name="captcha" id="input-captcha" class="txt">
+                                    <div class="img-Veri">
+                                        <img title="点击刷新" src="/verify.php?w=50&h=36&rb=0" id="captcha" width="100">
+                                    </div>
+                                    <div class="refresh">换一张</div>
+                                    <div class="er-icon"><i class="form-sprite icon-right"></i><span></span></div>
+                                    <div class="error-wrap">
+                                        <div class="form-sprite e-arrow"></div>
+                                        <div class="ew-icon"><i class="form-sprite icon-wrong"></i></div>
+                                        <div class="e-text">{$error.captcha}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="btn-w30">
+                                <input class="common-sprite btn-red-h46" type="submit" id="submit_button" value="下一步">
+                            </div>
+                            <div class="p2p-ui-checkbox pad_left">
+                                <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal check-select"></a>
+                                <span>我已阅读并同意<a href="/help/register_terms" class="blue" target="_blank">《注册协议》</a></span><span id="agreement_msg"></span>
+                                <input data-con="require" type="hidden" name="agreement" value="1" id="agree">
+                                <i></i>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="blank23"></span>
+    </div>
+
+
+    <!-- 短信验证码弹出框 -->
+    <script src="<?php echo $this->asset->makeUrl('v2/js/temp/jquery.bgiframe.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/temp/jquery.weebox.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v2/js/widget/p2p-ui-checkbox.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/common/p2p_validate.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/oauth/user_reg.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/common/jquery_placeholder-1.0.js');?>"></script>
+
+{include file="web/views/v2/footer.html"}

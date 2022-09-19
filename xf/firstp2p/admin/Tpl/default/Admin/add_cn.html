@@ -1,0 +1,118 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href="__ROOT__/static/admin/easyui/jquery.password.css" />
+<load href='__TMPL__chosen/css/chosen.min.css' />
+<load href='__TMPL__chosen/js/chosen.jquery.min.js' />
+<style type="text/css">
+.pw_strengthIndicator .strength{
+    font-weight:normal;
+}
+.strongy{
+    float:left;
+}
+.pw_strengthIndicator{
+    float:left;
+    width:120px;
+}
+</style>
+<div class="main">
+<div class="main_title">{%ADD} <a href="{:u("Admin/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data" id="adm_form">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">{%ADM_NAME}:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="adm_name" id="adm_name"/></td>
+    </tr>
+    <tr>
+        <td class="item_title">{%ADM_PASSWORD}:</td>
+        <td class="item_input">
+            <input type="password" class="textbox require" name="adm_password" style="float:left;" />
+            <div id="strongy" class="strongy"></div>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">{%ROLE}:</td>
+        <td class="item_input">
+            <select name="role_id" class="require" id="role_id">
+                <option value="0">=={%EMPTY_SELECT}==</option>
+                <foreach name="role_list" item="role_item">
+                    <option value="{$role_item.id}">{$role_item.name}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">{%IS_EFFECT}:</td>
+        <td class="item_input">
+            <lable>{%IS_EFFECT_1}<input type="radio" name="is_effect" value="1" checked="checked" /></lable>
+            <lable>{%IS_EFFECT_0}<input type="radio" name="is_effect" value="0" /></lable>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">姓名:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="name" id="name"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">手机号码:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="mobile" id="mobile"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="Admin" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            <!--隐藏元素-->
+            <input type="button" id="sub_btn" class="button" value="{%ADD}" />
+            <input type="reset" class="button" value="{%RESET}" />
+            <input type="hidden" name="is_cn" value="1" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>     
+</form>
+</div>
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/jquery.password.min.js"></script>
+<script>
+    var G_PASS = false;
+    var pwdEx = /^(?=.{8,})((?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])).*$/g;
+    $(function(){
+        $('input[name="adm_password"]').password({
+            minLength:8,
+            strengthIndicator:$('#strongy'),
+            change:function(score, issues, pass) {
+                if(score>80){
+                    G_PASS = true;
+                }else{
+                    G_PASS = false;
+                }
+            }
+            }
+        );
+        $('#sub_btn').click(function(){
+            if($('input[name="adm_password"]').val() == $('#adm_name').val()){
+                alert('密码不能与用户名重复');
+            }else{
+                if(G_PASS == true){
+                //if(pwdEx.test(pwd) == true){
+                    $('#adm_form').submit();
+                }else{
+                    alert('密码长度不少于8位，必须为数字、大写字母、小写字母和特殊字符的组合');
+                }
+            }
+        });
+        $('#role_id').chosen();
+    });
+</script>
+<include file="Public:footer" />

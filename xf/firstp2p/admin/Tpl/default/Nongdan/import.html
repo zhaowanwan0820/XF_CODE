@@ -1,0 +1,55 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__Common/js/check_user_id.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<!--div class="main_title">{%EDIT} <a href="javascript:history.back(-1);" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div-->
+
+<form name="upload" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+
+    <tr>
+        <td class="item_title">csv文件:</td>
+        <td class="item_input"><input type="file" class="" name="upfile"/></td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <input type='button' value='下载模板文件' class="button" onclick='window.location.href="http://static.firstp2p.com/attachment/201805/07/17/381cd761ffa7bb1a5bd3c632f5d05ac7/95757301557b5e3b92a6fcf1b88dc6a6.csv"'>
+            <br><span style="color:red;">按指定列名编辑，不要有空行，‘备注’可空</span>
+        </td>
+    </tr>
+	<input type="hidden" name="id" value="{$vo.id}" />
+	<input type="hidden" name="{:conf("VAR_MODULE")}" value="Nongdan" />
+	<input type="hidden" name="{:conf("VAR_ACTION")}" value="do_import" />
+	<tr>
+	<td class="item_title"></td>
+	<td>
+		<input type="submit" class="button" value="确认" onclick="return do_import()"/>
+		<input type="reset" class="button" value="{%RESET}" />
+	</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+</form>
+
+<script type="text/javascript">
+    function do_import(){
+        if(confirm("确认要导入上传的会员转账csv文件数据吗？\n\r导入过程中请耐心等待，不要关闭页面。")){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+</script>
+
+<include file="Public:footer" />

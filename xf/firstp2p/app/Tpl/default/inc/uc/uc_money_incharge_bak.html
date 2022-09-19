@@ -1,0 +1,266 @@
+<div class="inc">
+	<div class="inc_main">
+		<div id="dashboard" class="dashboard">
+			<ul>
+				<li {if $ACTION_NAME eq 'index'}class="current"{/if}><a href="{url x="index" r="uc_money#index"}">{$LANG.UC_LOGS}</a></li>
+				<li {if $ACTION_NAME eq 'incharge'}class="current"{/if}><a href="{url x="index" r="uc_money#incharge"}">{$LANG.UC_MONEY_INCHARGE}</a></li>
+				<li {if $ACTION_NAME eq 'carry'}class="current"{/if}><a href="{url x="index" value="uc_money#carry"}">{$LANG.UC_CARRY}</a></li>
+				{if $allow_exchange}
+				<li {if $ACTION_NAME eq 'exchange'}class="current"{/if}><a href="{url x="index" value="uc_money#exchange"}">{$LANG.UC_EXCHANGE}</a></li>
+				{/if}
+				<li {if $ACTION_NAME eq 'bank'}class="current"{/if}><a href="{url x="index" value="uc_money#bank"}">{$LANG.UC_BANK}</a></li>
+			</ul>
+		</div>
+		<div class="uc_r_bl_box p10">
+		
+		<div class="fw txt_tip">
+			1、所有投资保证金将由第三方平台托管。 <br> 
+			2、请注意您的银行卡充值限制，以免造成不便。 <br> 
+			3、如果充值金额没有及时到账，请和客服联系。
+		</div>
+		<div class="blank1"></div>
+				
+		<form name="incharge_form" id="incharge_form" action="{url x="index" r="uc_money#incharge_done"}" method="post" />			
+			<?php echo token_input(); ?>
+			
+			<div class="sect cf">
+				{if $list}
+				<table border="0" cellspacing="0" cellpadding="0" class="tb_sty2 tb_sty6">
+					<colgroup>
+					<col width="180">
+					<col width="100">
+					<col width="50">
+					<col width="56">
+					<col width="58">
+					<col width="90">
+					<col width="80">
+					<col>
+					</colgroup>
+						<tr>
+							<th class="txt_sty5 tl">{$LANG.INCHARGE_SN}</th>
+							<th class="txt_sty5">{$LANG.INCHARGE_MONEY}</th>
+							<th class="txt_sty5">{$LANG.PAYMENT_FEE}</th>
+							<th class="txt_sty5">{$LANG.PAYMENT_INFO}</th>
+							<th class="txt_sty5">{$LANG.PAYMENT_STATUS}</th>
+							<th class="txt_sty5">{$LANG.PAYMENT_GEN_TIME}</th>
+							<th class="txt_sty5">{$LANG.PAYMENT_PAID_TIME}</th>
+							<th class="txt_sty5">{$LANG.OPERATION}</th>
+						</tr>
+						{foreach from=$list item=order key=key}
+						<tr {if $key mod 2 eq  1}class="alt"{/if}>
+							<td style="text-align:left;">
+								{$LANG.INCHARGE_SN}：{$order.order_sn}<br />
+								{$LANG.PAYMENT_SN}：{$order.payment_notice.notice_sn}
+							</td>
+							<td>
+							<?PHP echo format_price($this->_var['order']['total_price']-$this->_var['order']['payment_fee']);?>
+							</td>
+							<td>
+								{function name="format_price" value=$order.payment_fee}
+							</td>
+							<td>
+								{$order.payment.name}
+							</td>
+							<td>
+								<?PHP echo $GLOBALS['lang']['ORDER_PAY_STATUS_'.intval($this->_var['order']['pay_status'])];?>
+							</td>
+							<td>
+								{function name="to_date" value=$order.create_time f="Y-m-d"}&nbsp;{function name="to_date" value=$order.create_time f="H:i"}
+							</td>
+							<td>
+								{function name="to_date" value=$order.payment_notice.pay_time f="Y-m-d"}&nbsp;{function name="to_date" value=$order.payment_notice.pay_time f="H:i"}
+							</td>
+							<td>
+								{if $order.pay_status eq 2}
+								{$LANG.PAID_INCHARGE_DONE}
+								{else}
+								<a href="<?PHP echo url("index","payment#pay",array("id"=>$this->_var['order']['payment_notice']['id']));?>">{$LANG.PAID}</a>
+								<a href="<?PHP echo url("index","payment#delpay",array("id"=>$this->_var['order']['payment_notice']['id']));?>" onclick="return delpay();" >删除</a>
+								{/if}
+							</td>
+						</tr>
+						{/foreach}
+				</table>
+				
+				<div class="pages">{$pages}</div>
+				{else}
+				<p style="padding-left:2em">暂无充值记录，请选择下方的充值方式进行充值</p>
+				{/if}
+				
+				
+				<div class="p10 clearfix tab-container">
+					
+					<ul class="tab clearfix" style="margin-top:0">
+					  {foreach from=$payment_list item=payment_item key=key}
+					       {if $key == 0}<input style="display:none" type="text" name="payment" value="{$payment_item.id}">{/if}
+						  <li{if $key == 0} class="active"{/if} data-payment-id="{$payment_item.id}"><a href="#" rel="tab">{$payment_item.name}</a></li>
+						{/foreach}
+					</ul>
+					
+					<!-- 20130816要求屏蔽 -->
+					<div style="display:none;">
+					<p class="payment-rule-1">即时充值所产生的转账费用，每笔收取支付总额的<span id="hcharge">0</span>%手续费，由第三方平台收取。手续费最高收取<span class="maxfee">0</span>元。</p>
+					<p class="payment-rule-0">即时充值所产生的转账费用，每笔收取<span class="fixed-fee">10</span>元手续费，由第三方平台收取。</p>
+					</div>
+					
+					{foreach from=$payment_list item=payment_item}									
+						{$payment_item.display_code}	
+						<div style="display:none;" id="payment_{$payment_item.id}" feetype="{$payment_item.fee_type}" maxfee="{$payment_item.max_fee}" desc="{$payment_item.description}" >{$payment_item.fee_amount}</div>
+					{/foreach}
+					<table class="simple-form-helper">
+						<tr>
+							<th><label for="money">{$LANG.PRICE_AMOUNT}：</label></th>
+							<td><input type="text" class="f-input" id="money" name="money"></td>
+							<td>元 <span id="money-input-error" class="f_red" style="display:none;margin-left:2em">请输入正确的金额</span></td>
+						</tr>
+						<!--  
+						<tr>
+							<th>{$LANG.PAYMENT_FEE}：</th>
+							<td><input type="text" class="f-input" id="fee" name="fee" readonly style="border-color:#fff"></td>
+							<td>元
+								<span style="margin-left:2em">
+								    <div style="display:none;">
+									<span class="payment-rule-1">第三方支付按支付总额<span id="gcharge">0</span>%收取手续费，最高<span class="maxfee">0</span>元</span>
+									<span class="payment-rule-0">第三方支付收取固定的<span class="fixed-fee">10</span>元手续费</span>
+									</div>
+									<span id="payment-rule-desc"></span>
+								</span>
+							</td>
+						</tr>
+						
+						<tr>
+							<th>{$LANG.PAY_TOTAL_PRICE}：</th>
+							<td><input type="text" class="f-input" id="total" name="total" readonly style="border-color:#fff"></td>
+							<td>元</td>
+						</tr>
+						-->
+						<tr >
+							<th></th>
+							<td ><br/><input type="submit" id="incharge_done" value="{$LANG.DO_INCHARGE}" class="formbutton"></td>
+							<td >
+								<br>
+								<a  style="font-weight:normal;display:block;height:15px;" href="./helpcenter/id-bank" target="_blank">查看支付限额</a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div><!--end sect-->
+		</form>
+				
+		</div>
+	</div>
+	<div class="inc_foot"></div>
+</div>
+<style>
+.bank-container {float: left;
+width: 200px;
+height: 50px;}
+.bank-container * {vertical-align: middle}
+
+.payment-type-logo img { max-width: 150px; max-height: 25px; }
+.payment-type-description { font-size: 12px; color: #888;display:none; }
+</style>
+<script type="text/javascript">
+  
+  function delpay()
+  {
+	  if(confirm('确定删除该充值订单？'))
+		  return true;
+	  else
+		  return false;
+  }
+  
+  function recharge()
+  {
+    var pid = $("input[name='payment']").val();
+    var hcharge = $("#payment_" + pid).html();
+    var feetype = $("#payment_" + pid).attr('feetype');
+    var maxfee = $("#payment_" + pid).attr('maxfee');
+    var desc = $("#payment_" + pid).attr('desc');
+    
+    $("#payment-rule-desc").html(desc);
+    
+    if (feetype == '0') {
+    	$('.fixed-fee').html(hcharge);
+    	$('.payment-rule-1').hide();
+    	$('.payment-rule-0').show();
+    } else if (feetype == '1') {
+    	$("#hcharge").html(hcharge);
+    	$("#gcharge").html(hcharge);
+    	$(".maxfee").html(maxfee);
+    	$('.payment-rule-0').hide();
+    	$('.payment-rule-1').show();
+    }
+    $("#type_" + feetype).show();
+  }
+  function calculateFee(money, feetype, feeFactor, maxfee) {
+  	var fee = 0;
+  	if (feetype == "0") {
+			fee = feeFactor;
+		} else if (feetype == "1") {
+			var hcharge = feeFactor * 0.01;
+			fee = money * hcharge / (1 - hcharge);
+      if(fee > maxfee) {
+      	fee = maxfee;
+      }
+    }
+    return parseFloat(fee);
+  }
+  function displayFeeAndTotal() {
+		var money = $('#money').val();
+		var pid = $("input[name='payment']").val();
+    var hcharge = parseFloat($("#payment_" + pid).html()) * 0.01;
+    var feetype = $("#payment_" + pid).attr('feetype'); // 0 - 定额; 1 - 比例
+    var maxfee = $("#payment_" + pid).attr('maxfee');
+
+		if (!isNaN(money) && money > 0) {
+			var fee = calculateFee(money, feetype, parseFloat($("#payment_" + pid).html()), maxfee);
+			var total = parseFloat(money) + fee;
+			$('#fee').val(fee.toFixed(2));
+			$('#total').val(total.toFixed(2));
+			$('#money-input-error').hide();
+		} else {
+			$('#fee').val('');
+			$('#total').val('');
+			$('#money-input-error').show();
+		}
+  }
+
+	$(document).ready(function(){
+		var initTypeId = $('.tab .active').attr('data-payment-id');
+		$('.payment-type-container').hide();
+		$('#payment-type-' + initTypeId).show();
+
+		$('a[rel=tab]').click(function(e) {
+			e.preventDefault();
+			$('.tab li').removeClass('active');
+			$(this).parent().addClass('active');
+			var paymentTypeId = $(this).parent().attr('data-payment-id');
+			$('input[name=payment]').val(paymentTypeId);
+			$('.payment-type-container').hide();
+			$('#payment-type-' + paymentTypeId).show();
+			$('input[type=radio]').attr('checked', false);
+			recharge();
+			displayFeeAndTotal();
+		});
+		$('#money').keyup(displayFeeAndTotal).change(displayFeeAndTotal);
+		$("#incharge_done").click(function(){
+			if(!($("input[name='money']").val()!=''&&!isNaN($("input[name='money']").val())&&$("input[name='money']").val()>0))			
+			{
+				$.showErr("{$LANG.PLEASE_INPUT_CORRECT_INCHARGE}");
+				return false;
+			}
+			else if(!$("input[name='payment']").val())
+			{
+				$.showErr("{$LANG.PLEASE_SELECT_PAYMENT}");
+				return false;
+			}
+		});
+		
+		$("input[type='radio']").eq(0).attr("checked", 'checked');
+		recharge();
+		 var desc = $("#payment_" + initTypeId).attr('desc');
+		    
+		    $("#payment-rule-desc").html(desc);
+	});
+</script>

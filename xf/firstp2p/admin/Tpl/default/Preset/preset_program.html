@@ -1,0 +1,85 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script>
+function delp(id){
+	if(!id)
+	{
+		idBox = $(".key:checked");
+		if(idBox.length == 0)
+		{
+			alert(LANG['DELETE_EMPTY_WARNING']);
+			return;
+		}
+		idArray = new Array();
+		$.each( idBox, function(i, n){
+			idArray.push($(n).val());
+		});
+		id = idArray.join(",");
+	}
+	if(confirm(LANG['CONFIRM_DELETE']))
+	$.ajax({ 
+			url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=deletef&id="+id, 
+			data: "ajax=1",
+			dataType: "json",
+			success: function(obj){
+				$("#info").html(obj.info);
+				if(obj.status==1)
+				location.href=location.href;
+			}
+	});
+}
+function show_pre(id){
+	
+}
+
+function file_list(id){
+	location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=file_list&id="+id;
+}
+</script>
+<php>    
+    function f_to_date($date){
+		return to_date($date,"Y-m-d H:i");
+	}
+    function status_program($id){
+    	$pro_status = array("项目创建", "预约开始", "预约结束",  "项目关闭");
+    	return $pro_status[$id];
+    }
+    function desc_program($desc){
+    	return mb_substr($desc,0,30,"utf8");
+    }
+    function proname($name,$id){
+    	return '<a href="/m.php?m=Preset&a=index&program_id='.$id.'" >'.$name.'</a>';
+    }
+    function proshow($url){
+    	return '<a href="'.get_www_url().'huodong-index/act-'.$url.'" target="_blank" >'.$url.'</a>';
+    }
+    $program_status = $_REQUEST['program_status'];
+</php>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="button_row">
+	<input type="button" class="button" value="{%ADD}" onclick="add();" />
+	<input type="button" class="button" value="{%DEL}" onclick="delp();" />
+</div>
+
+<div class="blank5"></div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="preset" 
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|50px,program_name|proname=$preset['id']:项目名称,program_url|proshow:项目别名,program_status|status_program:状态,program_content|desc_program:描述" 
+	actionlist="edit:{%EDIT},file_list:附件列表, delp:{%DEL}" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

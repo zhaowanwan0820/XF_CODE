@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>已投详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=no">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/p_done_detail.css');?>" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="p_done_detail">
+        <div class="has-main">
+
+            <div class="has-header">
+                <h2>{if $deal.data.dealLoan.status lte 1}<span class="state-mb state-tzz">投资中{elseif $deal.data.dealLoan.status eq 2}<span class="state-mb">可转让{elseif $deal.data.dealLoan.status eq 3}<span class="state-mb state-green">转让中{elseif $deal.data.dealLoan.status eq 4}<span class="state-mb state-dsh">已转让{elseif $deal.data.dealLoan.status eq 5}<span class="state-mb state-yhq">已结清{else}<span>{/if}</span>{function name="msubstr" v=$deal.data.projectInfo.name f=0 l=10}</h2>
+            </div>
+            <div class="title">投资详情</div>
+            <div class="already_details">
+                <ul class="details_list">
+                    <li><span>{if $deal.data.dealLoan.status gt 1}已获/{/if}至今日收益</span><span class="de_num color_black">{if $deal.data.dealLoan.status gt 1}<span class="color_red">{function name="number_format" v="$deal.data.dealLoan.hasRepayInterest" f="2"}元</span>/{/if}{function name="number_format" v="$deal.data.norepayInterest" f="2"}元</span></li>
+                    <li><span>投资金额</span><span class="de_num color_black">
+                    {if $deal.data.dealLoan.money > 1000}
+                    {function name="number_format" v="$deal.data.dealLoan.money" f="2"}
+                    {else}
+                    {$deal.data.dealLoan.money}
+                    {/if}
+                    元</span></li>
+                    <li><span>预期年化收益率</span><span class="de_num color_black">{function name="number_format" v="$deal.data.projectInfo.rateYear" f="2"}%</span></li>
+                    <li><span>计息日</span><span class="de_num color_black">{if $deal.data.dealLoan.status lte 1}-{else}{$deal.data.repayStartTime}{/if}</span></li>
+                    <li><span>到账日</span>
+                        {if ($deal.data.dealLoan.status eq 4 || $deal.data.dealLoan.status eq 5) }
+                        <span class="de_num color_black">{$deal.data.redeemFinishTime}</span>
+                        {else}
+                        <span class="de_num">转让成功后显示</span>
+                        {/if}
+                    </li>
+                    <li><span>收益方式</span><span class="de_num color_black">按月支付收益</span></li>
+                     <li><span>
+                    {if ($deal.data.dealLoan.status eq 4 || $deal.data.dealLoan.status eq 5) }
+                    手续费<span class="de_num">{if $deal.data.manageFee eq 0}免费{else} {$deal.data.manageFee}元{/if}</span>
+                    {else}
+                    {if ( $deal.data.projectInfo.feeDays eq 0 || $deal.data.projectInfo.feeRate eq 0) }
+                    手续费<span class="de_num">免费</span>
+                    {else}
+                    手续费年化{function name="number_format" v="$deal.data.projectInfo.feeRate" f="2"}%，持有满{$deal.data.projectInfo.feeDays}天免费{if ($deal.data.dealLoan.status gt 1)}，您已持有<span class="color_red">{$deal.data.ownDay}天{/if}</span>
+                    {/if}
+                    {/if}
+                    </span></li>
+                </ul>
+            </div>
+            <div class="title">合同与协议</div>
+            <div class="has-center mrb20">
+                <div class="hasc-btn">
+                    <a href="/duotou/loanTansContract?token={$token}&number={$contract.0.number}&ctype=1&title=智多新协议">智多新协议<i class="icon_arrow fr"></i></a>
+                </div>
+            </div>
+            {if $deal.data.dealLoan.status eq 2}
+            <div class="has-center mrb56">
+                <div class="hasc-btn">
+                    <a href="/duotou/investList?token={$token}&deal_loan_id={$deal.data.dealLoan.id}&deal_id={$deal.data.dealInfo.id}">投资列表<i class="icon_arrow fr"></i></a>
+                </div>
+            </div>
+            {/if}
+           <!--  <div class="inv-fbtn">
+                <a href="/duotou/applyTrans?token={$token}&deal_loan_id={$deal.data.dealLoan.dealId}" class="ui_red_btn j-errorMsgBtn" {if $errmsg }data-errmsg="{$errmsg}"{/if}>转让</a>
+            </div>  -->
+        </div>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/duotou/common.js');?>"></script>
+</body>
+</html>

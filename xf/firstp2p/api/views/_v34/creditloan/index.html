@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>银信通</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/index.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/default.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-common.css');?>" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v2/js/widget/slider/css/slider.css'); ?>">
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v2/js/widget/slider/css/slider.default.css'); ?>">
+    <link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('js/lib/dropload/dropload.css'); ?>">
+</head>
+<body>
+    <div class="login_index">
+        {function name="get_adv" x="信用贷轮播图"}
+
+        {if empty($credit_deal_list)}
+        <div class="default">
+            <img style="padding-top:15%;" src="<?php echo $this->asset->makeAppUrl('v3.4/images/creditloan/Group_null.png');?>">
+            <p>您目前没有适合选用的金融资产</p>
+            <p>请先到网信进行投资吧</p>
+            {if $is_exist_record eq 1}
+            <p>查看<a href="/creditloan/applyList?token={$token}" class="co_blue">我的申请</a></p>
+            {/if}
+        </div>
+        {else}
+        <div class="choose_text"><span class="fl">选择可使用的金融资产</span>
+        {if $is_exist_record eq 1}
+        <a href="/creditloan/applyList?token={$token}" class="co_blue"><span class="fr">我的申请</span></div></a>
+        {else}
+        <a href="/creditloan/applyList?token={$token}" class="co_blue"><span class="fr"></span></div></a>
+        {/if}
+        <div id="container">
+        {foreach from=$credit_deal_list item="credit_deal"}
+        <a href="/creditloan/apply?token={$token}&deal_id={$credit_deal.id}">
+            <div class="loan_detail">
+                <div class="money_top">
+                    <span>总成本</span>
+                    <span class="red">{$credit_deal.rate}%</span>
+                    <span>| 可使用</span>
+                    <span class="red">{$credit_deal.duration}天</span>
+                </div>
+                <div class="money_bottom">
+                    <div class="money_detail">
+                        <div class="m_left">
+                            <p class="m_text">参考金额(元)</p>
+                            <p class="sum">{$credit_deal.totalmoney}</p>
+                        </div>
+                        <span><div class="m_right">申请</div></span>
+                    </div>
+                    <div class="introduce">已投标的：{$credit_deal.name}（年化{$credit_deal.income_rate}%）</div>
+                </div>
+            </div>
+        </a>
+        {/foreach}
+        </div>
+        <div id="tips" style="display:none;">点击加载更多</div>
+        {/if}
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('js/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js'); ?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/lib/lib.js'); ?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/widget/slider/js/slider.js'); ?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/dropload/dropload.js'); ?>"></script>
+    <script type="text/javascript">
+
+             //body.scrollTop = 0;
+             ;(function($){
+                $(function() {
+                    var body = (document.body || document.documentElement);
+                    //点击加载更多
+                    P2PWAP.ui.frontPage();
+                     //判断大于10条 是否显示点击加载更多
+                    if($("#container").children().length > 10){
+                        $("#tips").css("display" , "block");
+                    }
+
+                    if($('#slider').find("img").length > 1){
+                        $('#slider').slider({
+                            loop: true,
+                            autoPlay: true,
+                            imgZoom: false,
+                            arrow: false,
+                            stopPropagation : true
+                        });
+                        $('#slider').find('.ui-slider-dots').css({"text-align": "center","width": "100%"});
+                    }
+
+                    var dropload = $('.login_index').dropload({
+                        loadUpFn : function(me){
+                            if(body.scrollTop <= 0){
+                                location.reload();
+                            }
+
+                        }
+                    });
+
+                });
+
+            })(Zepto);
+
+    </script>
+</body>
+</html>

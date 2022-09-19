@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>借款记录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/apply_list.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/creditloan/m-common.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="wrap container">
+
+        <div class="load_container"></div>
+        <div class="load_more tb0-more">
+
+        </div>
+       <!--  {foreach from=$credit_loan_record_list item='credit_loan_record'}
+        <div class="apply_state">
+            <a href="/creditloan/detail?token={$token}&credit_loan_id={$credit_loan_record.id}">
+                <div class="apply_content">
+                    <div class="apply_left">
+                        <p class="a_top"><span>{$credit_loan_record.money}元</span></p>
+                        <p class="a_bottom">{$credit_loan_record.time_show}{$credit_loan_record.time_describe}</p>
+                    </div>
+                    {if $credit_loan_record.status eq 5 or $credit_loan_record.status eq 1}
+                    <div class="apply_right">{$credit_loan_record.status_mark}</div>
+                    {else}
+                    <div class="apply_right red">{$credit_loan_record.status_mark}</div>
+                    {/if}
+                </div>
+            </a>
+        </div>
+        {/foreach}
+        <div id="tips">点击加载更多</div> -->
+    </div>
+    <style>
+    .load_more {text-align: center;margin:15px 0;}
+    </style>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/creditloan/apply_loan.js');?>"></script>
+    <script type="text/javascript">
+            ;(function($){
+                $(function() {
+                    // 是否白名单
+                    var isWhiteList = '{$isWhiteList}';
+                    // P2PWAP.ui.frontPage({
+                    //     list : $(".apply_state")
+                    // });
+                    $(".apply_state:last").addClass("last_border").children('a').children('.apply_content').addClass('remove_border');
+                    var loadmore = new P2PWAP.P2PLoadMore($(".load_container")[0], $('.load_more')[0], '/creditloan/applyList?token={$token}&ajax=1' ,0, 'get', 10);
+
+                    loadmore.createItem = function(item){
+
+                        var dl = document.createElement("div");
+                        var html = "";
+                        html += '<div class="apply_state">\
+                                <a href="/creditloan/detail?token={$token}&credit_loan_id='+ item.id +'">\
+                                    <div class="apply_content">\
+                                        <div class="apply_left">\
+                                            <p class="a_top"><span>'+ item.money +'元</span></p>\
+                                            <p class="a_bottom">'+ item.time_show + item.time_describe + '</p>\
+                                        </div>';
+                       if(item.status == 5 || item.status == 1){
+                           html += '<div class="apply_right">'+ item.status_mark +'</div>';
+                       }else {
+                           html += '<div class="apply_right red">'+ item.status_mark +'</div>';
+                       }
+                       html += '</div></a></div>';
+                        dl.innerHTML = html;
+                        dl.className="item JS_item";
+                        return dl;
+                    };
+            loadmore.processData=function (ajaxData) {
+                var noRecordHtml="";
+                if (isWhiteList==1){
+                    noRecordHtml='<div class="noRecord applyList"><p>银信通已升级为新产品“网信速贷”</p><p>按日计息，随借随还，请前往借款频道申请！</p></div>';
+                }else {
+                    noRecordHtml='<div class="noRecord applyList"><p>银信通全面升级，敬请期待！</p><p>如有任何疑问，请致电客服电话：400-890-9888</p></div>';
+                }
+                if(ajaxData.data && ajaxData.data.length <= 0  && this.page <= 0){
+                    $(this.container).html(noRecordHtml);
+                    this.loadmorepanel.innerHTML = '';
+                }else{
+                    P2PWAP.P2PLoadMore.prototype.processData.call(this,ajaxData);
+                }
+            }
+                    loadmore.refresh();
+                });
+
+             })(Zepto);
+
+    </script>
+</body>
+</html>

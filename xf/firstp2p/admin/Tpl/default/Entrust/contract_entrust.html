@@ -1,0 +1,144 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<script>
+function signAll() {
+    if (!confirm('确认操作？')) {
+        return false;
+    }
+    checkedBox = $(".key:checked");
+    if(checkedBox.length == 0)
+    {
+        alert("请选择要签署的标的！");
+        return;
+    }
+    // 获取所有选中的checkbox行对应的deal_id、user_id
+    var signInfoArr = [];
+    checkedBox.each(
+        function()
+        {
+            var tableRow = $(this).parent().parent();
+            var dealID = tableRow.find("td#dealID").text();
+            var userID = tableRow.find("td#userID").text();
+            signInfoArr.push({"deal_id" : parseInt(dealID), "user_id" : parseInt(userID)});
+        }
+    );
+
+    $.ajax({
+        url : "/m.php?m=Entrust&a=signContractEntrust",
+        type : "GET",
+        data: {signGroup : signInfoArr},
+        dataType: "json",
+        success: function(rt){
+            alert(rt.info);
+            location.reload();
+        }
+    });
+}
+
+function signOne(obj) {
+    if (!confirm('确认操作？')) {
+        return false;
+    }
+
+    // 获取对应行的dealid userid
+    var tableRow = $(obj).parent().parent();
+    var dealID = tableRow.find("td#dealID").text();
+    var userID = tableRow.find("td#userID").text();
+
+    var signInfoArr = [];
+    signInfoArr.push({"deal_id" : parseInt(dealID), "user_id" : parseInt(userID)});
+
+    $.ajax({
+        url : "/m.php?m=Entrust&a=signContractEntrust",
+        type : "GET",
+        data: {signGroup : signInfoArr},
+        dataType: "json",
+        success: function(rt){
+            alert(rt.info);
+            location.reload();
+        }
+    });
+}
+</script>
+<div class="main">
+    <div class="main_title">借款人合同_未代签</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            满标时间：
+            <input type="text" class="textbox" value="{:trim($_REQUEST['successTimeStart'])}" name="successTimeStart" id="successTimeStart" onfocus="this.blur(); return showCalendar('successTimeStart', '%Y-%m-%d %H:%M:%S', false, false, 'btn_successTimeStart');">
+            <input type="button" class="button" id="btn_successTimeStart" value="选择时间" onclick="return showCalendar('successTimeStart', '%Y-%m-%d', false, false, 'btn_successTimeStart');">
+            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#successTimeStart').val('');" />
+            到
+            <input type="text" class="textbox" value="{:trim($_REQUEST['successTimeEnd'])}" name="successTimeEnd" id="successTimeEnd" onfocus="this.blur(); return showCalendar('successTimeEnd', '%Y-%m-%d %H:%M:%S', false, false, 'btn_successTimeEnd');">
+            <input type="button" class="button" id="btn_successTimeEnd" value="选择时间" onclick="return showCalendar('successTimeEnd', '%Y-%m-%d', false, false, 'btn_successTimeEnd');">
+            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#successTimeEnd').val('');" />
+            <br />
+            标的编号：<input type="text" class="textbox" name="dealID" value="{:trim($_REQUEST['dealID'])}"/>
+            借款人User_ID：<input type="text" class="textbox" name="bUserID" value="{:trim($_REQUEST['bUserID'])}"/>
+            借款人姓名：<input type="text" class="textbox" name="bRealName" value="{:trim($_REQUEST['bRealName'])}"/>
+
+            <!-- <input type="hidden" id="page_now" value="{$_GET.p}" name="p" /> -->
+            <input type="hidden" value="Entrust" name="m" />
+            <input type="hidden" value="contract_entrust" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <input type="button" class="button" value="批量签署" onclick="signAll();" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>
+            <th>标的编号</th>
+            <th>借款标题</th>
+            <th>借款人姓名</th>
+            <th>借款人User_ID</th>
+            <th>满标时间</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="list" item="deal">
+        <tr class="row">
+            <td align="center">
+                <input type="checkbox" name="key" class="key">
+            </td>
+            <td align="center" name="dealID" id="dealID">
+                {$deal.id}
+            </td>
+            <td align="center">
+                {$deal.name}
+            </td>
+            <td align="center">
+                {$deal.user_id|get_user_name="real_name"}
+            </td>
+            <td align="center" name="userID" id="userID" value="2">
+                {$deal.user_id}
+            </td>
+            <td align="center">
+                {$deal.success_time|to_date}
+            </td>
+            <td align="center">
+                <input type="button" id="one-qianshu" value="代理签署" onclick="signOne(this)">
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

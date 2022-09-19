@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file='web/views/hongbao/shareLogo.html'}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/qiangdaohongbao.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css start-->
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+{include file="web/views/hongbao/logo.html"}
+<!--<a href="#" class="logo"></a>
+<a href="#" class="rule">活动规则</a>-->
+    <div class="rob-tel clearfix">
+        <h2 class="f16 color-white tc mt100 mb10" id='current_mobile'>当前手机号：{$mobile}</h2>
+        <form id="register-form" action="" onsubmit="return false;" method="post" class="clearfix">
+            <?php echo token_input(); ?>
+            <input type="tel" class="tel-box change-tel mb15" style="" id="input-mobile" placeholder="请输入您的手机号" maxlength="11">
+            <input type="button" class="tel-btn change-btn" value="确定">
+        </form>
+        <div class="pt20 tc color-white">说明：下次领红包，自动放入新账户</div>
+        <div id='msg_tip' class="pt20 none color-white">修改成功<div>
+    </div>
+{include file="web/views/hongbao/jsapi_config.html"}
+<script>
+    wx.ready(function() {
+        wx.hideOptionMenu();
+    });
+</script>
+    <script>
+        function onBridgeReady(){
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        }else{
+            onBridgeReady();
+        }
+    </script>
+    <script type="text/javascript">
+        var sn = '{$sn}';
+        var count = 1;
+        $(function(){
+            var mobileRegEx = /^0?(13[0-9]|15[0-9]|18[0-9]|17[0678]|14[457])[0-9]{8}$/;
+            $('.tel-btn').addClass('no-change').attr('disabled','disabled');
+            $('.tel-box').on('input propertychange', function() {
+                if (count > 1) {
+                    return false;
+                }
+                var tel= $('.tel-box').val();
+                if(!tel || tel==null){
+                    $('.tel-btn').addClass('no-change').attr('disabled','disabled');
+                    //$('.tel-box').focus();
+                    return false;
+                }else if(!mobileRegEx.test(tel)){
+                    $('.tel-btn').addClass('no-change').attr('disabled','disabled');
+                    //$('.tel-box').focus();
+                    return false;
+                }else{
+                    $('.tel-btn').removeClass('no-change').removeAttr('disabled','disabled');
+                    return true;
+                }
+            });
+            $('.tel-btn').on('click', function() {
+                var changeMobile = $("#input-mobile").val();
+                var token_id = $("#token_id").val();
+                var token = $("#token").val();
+                $.post("ChangeMobile",{newMobile:changeMobile,sn:sn,token_id:token_id, token:token},function(result){
+                    $('#msg_tip').html(result.info).removeClass('none');
+                    if (result.status) {
+                        $('#current_mobile').html('当前手机号：'+changeMobile);
+                    }
+                    $('.tel-btn').addClass('no-change').attr('disabled','disabled');
+                    count++;
+                }, 'json');
+            });
+        })
+    </script>
+</body>
+</html>

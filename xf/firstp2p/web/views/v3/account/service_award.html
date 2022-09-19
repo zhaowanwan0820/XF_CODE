@@ -1,0 +1,191 @@
+<div class='p_account_coupon'>
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/jiathis_share.css');?>" />
+  <script src="<?php echo $this->asset->makeUrl('v3/js/vendor/ZeroClipboard.min.js');?>"></script>
+  <link href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.2.css');?>" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_coupon.css');?>" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/share.v1.css');?>" />
+  <!-- 查询 -->
+  <script src="<?php echo $this->asset->makeUrl('v3/js/common/jquery_placeholder-1.0.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('v3/js/widget/share/share.v1.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('v3/js/widget/qrcode/qrcode.v1.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('v3/js/account/service_award.js?v=cccc');?>"></script>
+  <style>
+    .p_account_coupon .bannerBox .contBox .item {width: 49.5%;}
+    .p_account_coupon .bannerBox .contBox .item.mid{border-left: none;}
+  </style>
+  <div>
+    <div class="account_user_title">
+      <h1>
+        <i class="ico_yaoqing"></i>
+        <span class="titleSpan fl">服务奖励</span>
+      </h1>
+    </div>
+    <div class="bannerBox">
+      <div class="contBox clearfix">
+        <div class="item mid">
+          <p class="title">已奖励金额(元)</p>
+          <p class="text">{function name="number_format" v=$rotalRefererRebateAmount.referer_rebate_amount f="2"}</p>
+        </div>
+        <div class="item">
+          <p class="title">待奖励金额(元)</p>
+          <p class="text">{function name="number_format" v=$rotalRefererRebateAmount.referer_rebate_amount_no f="2"}</p>
+        </div>
+      </div>
+    </div>
+    {if !$showSiteCoupon}
+      <div class="tabBox">
+        <ul class="tabTitle clearfix" id="tabTitle">
+            {foreach from=$couponModelTypes name='couponModelTypes' key='key' item='modelName'}
+                <li data-tabName="{$key}" {if $key == 'p2p'}class="active"{/if} >{$modelName}</li>
+            {/foreach}
+        </ul>
+        <div class="tabCont" id="tabCont">
+          <div class="item">
+            <div class="gridWrap">
+              <div class="searchBox clearfix">
+                <input type="text" class="searchInput fl int_placeholder" placeholder="手机号" data-placeholder="手机号" value="{$content}" data-content="{$content}" />
+                <input name="is_big_user" class="is_big_user" type="hidden" value="{$isBigUser}">
+                <input type="button" value="查询" class="searchBtn fl"/>
+                <span class="errorTip fl color-red">手机号格式不正确！</span>
+              </div>
+              <table  class="scListTable">
+                <colgroup>
+                  <col width="145">
+                  <col width="145">
+                  <col width="145">
+                  <col width="145">
+                  <col width="auto">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <td>状态</td>
+                    <td>获奖时间</td>
+                    <td>投资时间</td>
+                    <td>好友名</td>
+                    <td>备注</td>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div class="no_record" ><i></i><span>暂无记录</span></div>
+            </div>
+            <div class="pagination"></div>
+          </div>
+          <div class="item">
+            <div class="gridWrap">
+              <div class="searchBox clearfix">
+                <input type="text" class="searchInput fl int_placeholder" placeholder="手机号" data-placeholder="手机号" value="{$content}" data-content="{$content}" />
+                <input name="is_big_user" class="is_big_user" type="hidden" value="{$isBigUser}">
+                <input type="button" value="查询" class="searchBtn fl" data-type-name=""/>
+                <span class="errorTip fl color-red">手机号格式不正确！</span>
+              </div>
+              <table  class="scListTable">
+                <colgroup>
+                  <col width="145">
+                  <col width="145">
+                  <col width="145">
+                  <col width="145">
+                  <col width="auto">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <td>状态</td>
+                    <td>获奖时间</td>
+                    <td>加入时间</td>
+                    <td>好友名</td>
+                    <td>备注</td>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div class="no_record" ><i></i><span>暂无记录</span></div>
+            </div>
+            <div class="pagination"></div>
+          </div>
+
+          <div class="item">
+            <div class="gridWrap">
+              <div class="searchBox clearfix">
+                <input type="text" class="searchInput fl int_placeholder" placeholder="手机号" data-placeholder="手机号" value="{$content}" data-content="{$content}" />
+                <input name="is_big_user" class="is_big_user" type="hidden" value="{$isBigUser}">
+                <input type="button" value="查询" class="searchBtn fl" data-type-name=""/>
+                <span class="errorTip fl color-red">手机号格式不正确！</span>
+              </div>
+              <table  class="scListTable">
+                <colgroup>
+                  <col width="145">
+                  <col width="145">
+                  <col width="145">
+                  <col width="145">
+                  <col width="auto">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <td>状态</td>
+                    <td>获奖时间</td>
+                    <td>投资时间</td>
+                    <td>好友名</td>
+                    <td>备注</td>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div class="no_record" ><i></i><span>暂无记录</span></div>
+            </div>
+            <div class="pagination"></div>
+          </div>
+        </div>
+      </div>
+    {/if}
+    <div class="busInfor">{if !$showSiteCoupon}北京经讯时代科技有限公司保留对本活动的最终解释权。{/if}</div>
+  </div>
+</div>
+<!-- 服务奖励 + 智多新返回数据模板嵌套 -->
+<script id="invest_data" type="text/html">
+    <% if (data.list.length > 0) { %>
+    <% for (var i = 0; i < data.list.length; i++) { %>
+      <% if(i % 2 == 0) {%>
+        <tr class="odd">
+      <% }else{ %>
+        <tr class="even">
+      <% } %>
+        <td>
+          <div class="dataTr02">
+            <% if(data.list[i].deal_type != 1){ %>
+            <%=# data.list[i].pay_status_text %>
+            <% if(data.list[i].pay_status_text == "已返"){ %>
+            <span class="color-red2"><%=# data.list[i].pay_money %></span> 元
+            <% } else { %>
+            <%=# data.list[i].pay_money %> 元
+            <% } %>
+            <% }else{ %>
+            <%  if(data.list[i].pay_status != 5 && data.list[i].pay_status != 2 && data.list[i].pay_status != 1){ %>
+            <%=# data.list[i].pay_status_text   %>
+            <% }else{ %>
+            已返 <span class="color-red2"><%=# data.list[i].count_pay %></span> 次 <br/> 共 <span class="color-red2"><% if(!!data.list[i].pay_money){ %><%=# data.list[i].pay_money %>
+                            <% } else { %>0<% } %></span> 元<% } %>
+            <% } %>
+          </div>
+        </td>
+        <td><div class="dataTr"><%=# dateFormat(data.list[i].pay_time) %></div></td>
+        <td><div class="dataTr"><%=# dateFormat(data.list[i].create_time) %></div></td>
+        <td>
+          <div class="dataTr">
+            <p title="<%= data.list[i].consume_real_name %>"><%= data.list[i].consume_real_name %></p>
+            <p><%= data.list[i].mobile %></p>
+          </div>
+        </td>
+        <td><div class="dataTr02"><%= data.list[i].note %></div></td>
+      </tr>
+    
+    <% if(i % 2 == 0) {%>
+      <tr class="odd">
+    <% }else{ %>
+      <tr class="even">
+    <% } %>
+      <td colspan="5"><div class="textTr"><%= data.list[i].log_info %></div></td>
+    </tr>
+    <% } %>
+  <% } %>
+</script>
+<!-- end -->

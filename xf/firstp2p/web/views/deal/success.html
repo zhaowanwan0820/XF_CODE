@@ -1,0 +1,181 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/investment_view.css');?>" />
+<link href="<?php echo $this->asset->makeUrl('v1/css/red-paper-ok.css');?>" rel="stylesheet" type="text/css">
+<link href="<?php echo $this->asset->makeUrl('v1/css/red-paper-ok_v2.css');?>" rel="stylesheet" type="text/css">
+
+
+<div class="mauto clearfix main">
+            <div class="hong-ok">
+                {if $deal.type_id eq 25}
+                    <h2><i class="icon-ok"></i>恭喜您，捐赠成功！</h2>
+                    <h3>本次捐赠金额：<span><em>{function name="number_format" v=$loan_info.money f=2}</em>元</span>{if $bonus_use_money gt 0}（使用账户金额：<span>{$user_use_money}元</span>  红包：<span>{$bonus_use_money}元</span>）{/if}</h3>
+                {else}
+                    <h2><i class="icon-ok"></i>恭喜您，投资成功！</h2>
+                {if $gS eq 0}
+                    {if $bonus_maked}
+                        {if $site_id eq 1}
+                            <div class="hong-bg">
+                                 {if $bonus_maked.bonus_type_id eq 3}
+                                    <div class="fl super-hongbao"><span>{$bonus_maked.money}</span>元红包</div>
+                                 {/if}
+                        {else}
+                            <div class="hong-bg sub_bg">
+                        {/if}
+                        <div class="hong-number">获得<em>{$bonus_maked.count}</em>个红包
+                            <!--<p class="f14 color-black">投资满<span class="f20">500元</span>就有机会中<span class="f20">888元</span>超级红包  每小时仅一名</p>-->
+                        </div>
+                        <div class="hong-share">
+                            <h4>分享至朋友圈<br>和小伙伴一起拼手气抢红包吧！</h4>
+                            <div class="hong-code"><img src="/deal/bonusQrcode?code={$bonus_maked.id_encrypt}" width='160px' height='160px'></div>
+                            <h5>打开微信，使用“扫一扫”即可<br>将网页分享到我的朋友圈。</h5>
+                            <h6>红包最终解释权归{$site_name}所有</h6>
+                        </div>
+                    </div>
+                    {/if}
+                {elseif $gS eq 1}
+                   <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/account_o2o_gift.css');?>">
+                   <div class="p_account_o2o_gift">
+                        <span class="blank23"></span>
+                            <div class="ui-box">
+                                <div class="ui_suc_title">礼券领取</div>
+                                <div class="gift_list">
+                                    <h2 class="list_title gift_receive_color">以下礼券只能选择领取其一，礼券库存有限，请及时领取</h2>
+                                    <div class="gift_tab">
+                                        <ul class="gift_thead">
+                                            <li class="gift_name">礼券名称</li>
+                                            <li class="gift_money">价值</li>
+                                            <li class="gift_operation">操作</li>
+                                        </ul>
+
+                                        {foreach from=$couponList item=coupon}
+                                        <ul class="gift_tbody">
+                                            <li class="one">
+                                               <div class="gift_product">
+                                                   <dl>
+                                                       <dt><img src="{$coupon.pcPic}"></dt>
+                                                       <dd>
+                                                            <div class="v_middle">
+                                                               <h2>{$coupon.productName}</h2>
+                                                               {if $coupon.useEndTime neq 0}
+                                                                   {if $coupon.useTimeType eq 2}
+                                                                    <p class="color_gray">有效期至：{function name="date" v="Y.m.d" b=$coupon.useEndTime}</p>
+                                                                   {/if}
+                                                                {/if}
+
+                                                            </div>
+                                                       </dd>
+                                                   </dl>
+                                               </div>
+                                            </li>
+
+                                            <li class="two">
+                                            {if $coupon.goodPrice neq 0 || $coupon.useRules eq 1}
+                                            {if $coupon.goodPrice neq 0}&yen;{$coupon.goodPrice}{/if}
+                                            {/if}
+                                            </li>
+
+                                            <li class="three"><a href="/gift/acquireDetail?action={$action}&load_id={$load_id}&couponGroupId={$coupon.id}&deal_type={$deal_type}" class="operation_btn">查看详情</a></li>
+                                        </ul>
+                                         {/foreach}
+
+                                    </div>
+                                </div>
+                            </div>
+                        <span class="blank60"></span>
+                    </div>
+                {/if}
+
+                <!-- 如果是多投宝产品 -->
+                {if $isDt eq 1}
+                <div class="f16 tc pt25 dt-msg">您可以在起息后申请赎回，赎回款项最快将在一个工作日后到账</div>
+                {/if}
+                <!-- //如果是多投宝产品 -->
+                <h3>本次投资金额：<span><em>{function name="number_format" v=$loan_info.money f=2}</em>元</span>{if $bonus_use_money gt 0}（使用账户金额：<span>{$user_use_money}元</span>  红包：<span>{$bonus_use_money}元</span>）{/if}</h3>
+                <!-- 判断后才能显示 -->
+                {if $discountGoodsPrice gt 0}<h3 class="tit pb10">获得{$discountTypeDesp}返利 <span>{$discountGoodsPrice}元</span> ，预计24小时内到账</h3>{/if}
+                {/if}
+                <div class="hong-item">
+                    <ul>
+                        <li>项目名称： <span>{$deal.old_name}</span></li>
+                        {if $deal.type_id neq 25}
+                        {if $deal.deal_type eq 0 ||  $deal.deal_type eq 3}
+                            <li>年化收益率：
+                            <span>
+                            {if $deal.income_ext_rate eq 0}{$deal.rate_show}%{else}{$deal.income_base_rate}%+{$deal.income_ext_rate}%{/if}
+                                {if $isDt eq 1}
+                                    ，一次性还本，按月付息
+                                {else}
+                                <em>
+                                {if $deal.loantype eq 5}
+                                    {$deal.repay_time}天
+                                {else}
+                                    {$deal.repay_time}个月
+                                {/if}</em>{$deal.loantype_name}</span></li>
+                                <li>预期收益：<span>{function name="number_format" v=$loan_info.income f=2}元</span></li>
+                            {/if}
+                            <!-- 如果是多投宝产品 -->
+                            {if $isDt eq 1}
+                               {if $deal.projectInfo.feeDays gt 0 && $deal.projectInfo.feeRate gt 0}
+                                   <li>管理费：<span>年化{function name="number_format" v=$deal.projectInfo.feeRate f=2}%（持有满{$deal.projectInfo.feeDays}天免费）</span></li>
+                               {else}
+                                   <li>管理费：<span>无</span></li>
+                               {/if}
+                            {/if}
+                            <!-- //如果是多投宝产品 -->
+                        {else}
+                            <li>年化收益率：
+                                <span>
+                                {if $deal.income_ext_rate eq 0}
+                                    {$deal.rate_show}%
+                                {else}
+                                    {$deal.income_base_rate}%+{$deal.income_ext_rate}%
+                                {/if}
+                                起
+                                    <em>{function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{$deal.repay_time}天</em>
+                                    提前{$deal.redemption_period}天申请赎回  <em>赎回时将有机会获得投资红包</em>
+                                </span>
+                            </li>
+                        {/if}
+                        {/if}
+                      </ul>
+                </div>
+                <h3 class="back">您可以：<a href="{$deal.url}" target="_blank">查看项目详情</a> 或 <a href="/" target="_blank">返回首页</a>继续投资{if $deal.type_id eq 25}/捐赠{/if}</h3>
+            </div>
+</div>
+        <div class="mark"></div>
+        <div class="big-hongbao">
+            <div class="fl super-hongbao"><span>{$bonus_maked.money}</span>元红包</div>
+            <div class="hong-code fl"><img src="/deal/bonusQrcode?code={$bonus_maked.id_encrypt}" width='160px' height='160px'></div>
+        </div>
+        <script>
+
+        {if $deal.deal_type neq 1}
+        {if $loan_info.short_alias eq 'CPSFBB'}
+        //富爸爸渠道增加统计参数（邀请码CPSFBB ）
+        $.get("http://www.fbaba.net/track/cps.php" , {
+            "action" : "create",
+            "planid" : "107" ,
+            "order" : "{$loan_info.id}" ,
+            "goodsmark" : "1" ,
+            "goodsprice" : "{$cps_fbb_fee}" ,
+            "goodsname" : "名称:{$deal.name},类型:{$deal.type_info.name},周期:{$deal.repay_time}{if $deal.loantype eq 5}天{else}月{/if}" ,
+            "sig" : "{$fubaba_cps_sig}" ,
+            "status" : "直投【{$loan_info.money}元：已付款】" ,
+            "uid" : "{$euid}"
+        });
+        {/if}
+        {/if}
+
+        if('{$bonus_maked.bonus_type_id}' == '3'){
+            $('.mark,.big-hongbao').show();
+            $('.hong-bg').css({"background":"url(<?php echo $this->asset->makeUrl('v1/images/red-paper/bg-02.png');?>)"});
+            $('.hong-share .hong-code').css({"margin-top":"135px"});
+            $('.hong-share').css({"width":"294px"});
+            $('.hong-number,.hong-share h4,.hong-share h5,.hong-share h6').hide();
+            $('.mark,.big-hongbao').click(function(){
+                $('.mark,.big-hongbao').hide();
+                })
+        };
+
+        </script>
+{include file="web/views/footer.html"}

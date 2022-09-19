@@ -1,0 +1,97 @@
+{include file="web/views/header.html"}
+<link href="<?php echo $this->asset->makeUrl('v3/css/duotou/p_finplan_information.css');?>" rel="stylesheet" type="text/css" />
+<link  href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.1.3.css');?>" rel="stylesheet" type="text/css">
+<script src="<?php echo $this->asset->makeUrl('v3/js/duotou/cancle_deal.js');?>" type="text/javascript"></script>
+
+<!--面包屑导航开始-->
+<section class="crumbs">
+  <div class="w1100">
+    <a href="/">首页</a>
+    <i></i>
+    <span>智多新</span>
+  </div>
+</section>
+<!--面包屑导航结束-->
+<div class="w1100 p_finplan_cancle p_info_common">
+  <div class="main ui-box mt20 clearfix">
+    {if $code eq -1}
+      <div class="noCancleList">
+        <p class="icon_no ft20">已超过操作时间，您已无法取消。</p>
+        <p class="jump">系统将在3秒后自动跳转，如果没有跳转，请点击 <a href="/finplan/Publish?&page_num=1&page_size=10">这里</a> 跳转<span class="blank80"></p>
+      </div>
+      <script>
+        setTimeout('window.location.href = "/finplan/Publish?&page_num=1&page_size=10"',3000);
+      </script>
+    {elseif $list neq null}
+      <div class="h-title">
+        <h2><i></i>取消</h2>
+      </div>
+      <p class="words">您今天的待匹配本金存在于以下几笔中，您可以通过点击取消按钮来取消该部分本金的匹配。</p>
+      <div class="disclosure">
+        {foreach from=$list item='list' key='listkey'}
+          <div class="info_box clearfix bg_whtie">
+            {if $list.status eq 2}
+              <i class="dt_state jxz"></i>
+            {elseif $list.status eq 0 || $list.status eq 1}
+              <i class="dt_state djx"></i>
+            {/if}
+            <div class="con_l">
+              <h3 class="f16 info_title">{$list.money}</h3>
+              <div class="fl w360">
+                <p class="pb5">
+                  <span class="gray">加入天数:</span>
+                  <span class="red">{$list.loadDays}天</span>
+                </p>
+                <p>
+                  <span class="gray">管理服务费:</span>
+                  <span class="red">
+                    {if ($list.loadDays lt $list.projectInfo.feeDays)}
+                      {function name="number_format" v="$list.fee" f="2"}元
+                    {else}
+                      免费
+                    {/if}
+                  </span>
+                  <span class="gray pl5">本金的年化{function name="number_format" v="$list.projectInfo.feeRate" f="2"}%，满{$list.projectInfo.feeDays}天免收</span>
+                </p>
+              </div>
+              <div class="fl w265 progress_rate">
+                <p class="pb5">
+                  <span class="gray">起算日:</span>
+                  <span>{if $date >= $list.repayStartTime }{$list.repayStartTime}{elseif ($list.status eq 1 || $list.status eq 0)}&#45;&#45;{else}{$list.repayStartTime}{/if}</span>
+                </p>
+              </div>
+              <div class="fl w265 progress_rate" >
+                <p class="pb5">
+                  <span class="gray">往期年化:</span>
+                  <span>
+                    {if $list.activityId gt 0}
+                      {$list.activityInfo.min_rate}%~{$list.activityInfo.max_rate}%
+                    {else}
+                      {function name="number_format" v="$list.projectInfo['rateYearBase']" f="2"}%~{function name="number_format" v="$list.projectInfo['rateYear']" f="2"}%
+                    {/if}
+                  </span>
+                </p>
+                <p>
+                  <span class="gray">计息方式:</span>
+                  <span>匹配后按日计算</span>
+                </p>
+              </div>
+              <div class="fr">
+                <a class="j_cancle info_details" data-cancleinfo='{"loanid":{$list.dealLoanId},"cancelType":{$list.cancelType},"money":"{$list.money}","manageFee":"{$list.fee}","norepayInterest":"{$list.noRepayInterest}"}'>取消</a>
+              </div>
+            </div>
+          </div>
+        {/foreach}
+      </div>
+    {else}
+      <div class="noCancleList">
+        <p class="icon_no ft20">当前无可取消项目</p>
+        <p class="jump">系统将在3秒后自动跳转，如果没有跳转，请点击 <a href="/finplan/Publish?&page_num=1&page_size=10">这里</a> 跳转</p> <span class="blank80"></p>
+      </div>
+      <script>
+        setTimeout('window.location.href = "/finplan/Publish?&page_num=1&page_size=10"',3000);
+      </script>
+    {/if}
+  </div>
+</div>
+{include file="web/views/footer.html"}

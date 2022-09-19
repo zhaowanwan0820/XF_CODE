@@ -1,0 +1,118 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<div class="main">
+<div class="main_title">网信生活-收银台</div>
+<div class="blank5"></div>
+
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="10" class="topTd" >&nbsp;</td></tr>
+    <!--收银台主订单超时关闭-->
+    <tr class="row" >
+        <th width="150">收银台主订单超时关闭</th>
+        <td>
+            <form action="__APP__" method="post" target="_blank" name="search">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="paymentColse" />
+                输入支付主订单号：
+                <div class="blank5"></div>
+                <input name="payOrderId" value="" width="200px" />
+                <div class="blank5"></div>
+                <input type="submit" class="button" value="提交" />
+            </form>
+        </td>
+    </tr>
+    <!--把银行卡置为无效-->
+    <tr class="row" >
+        <th width="150">把银行卡置为无效</th>
+        <td>
+            <form action="__APP__" method="post" target="_blank" name="search">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="paymentCardStatus" />
+                输入用户UID：
+                <div class="blank5"></div>
+                <input name="userId" value="" width="200px" />
+                <div class="blank5"></div>
+                输入银行卡签名：
+                <div class="blank5"></div>
+                <input name="bankSign" value="" width="200px" />
+                <div class="blank5"></div>
+                <input type="submit" class="button" value="提交" />
+            </form>
+        </td>
+    </tr>
+    <!--清理用户银行卡列表缓存-->
+    <tr class="row" >
+        <th width="150">清理用户银行卡列表缓存</th>
+        <td>
+            <form action="__APP__" method="post" target="_blank" name="search">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="clearUserCardList" />
+                输入用户ID：
+                <div class="blank5"></div>
+                <input name="userId" value="" width="200px" />
+                <div class="blank5"></div>
+                <input type="submit" class="button" value="提交" />
+            </form>
+        </td>
+    </tr>
+    <tr><td colspan="10" class="bottomTd">&nbsp; </td></tr>
+</table>
+<div class="main_title">网信生活-网信出行</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="10" class="topTd" >&nbsp;</td></tr>
+    <!--出行主订单设置是否有效-->
+    <tr class="row" >
+        <th width="150">出行主订单设置是否有效</th>
+        <td>
+            <form action="__APP__" method="post" target="_blank" name="search">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="tripEffect" />
+                输入出行主订单号：
+                <div class="blank5"></div>
+                <input name="outOrderId" value="" width="200px" />
+                <div class="blank5"></div>
+            商户名称：<select name="merchantId" id="merchantId" class="textbox" >
+                       <foreach name="allMerList" item="item">
+                           <option value="{$item.merchant_id}" <if condition="intval($_REQUEST['merchantId']) eq $item['merchant_id']">selected="selected"</if>>{$item.merchant_name}</option>
+                       </foreach>
+                </select>
+                <div class="blank5"></div>
+                <input type="submit" class="button" value="提交" />
+            </form>
+        </td>
+    </tr>
+    <!--进行中的出行发票状态置为失败-->
+    <tr class="row" >
+        <th width="150">进行中的出行发票状态置为失败</th>
+        <td>
+            <form action="__APP__" method="post" target="_blank" name="search">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="Life" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="invoiceFailed" />
+                输入出行发票主订单号：
+                <div class="blank5"></div>
+                <input name="invoiceOrderId" value="" width="200px" />
+                <div class="blank5"></div>
+            商户名称：<select name="merchantId" id="merchantId" class="textbox" >
+                       <foreach name="allMerList" item="item">
+                           <option value="{$item.merchant_id}" <if condition="intval($_REQUEST['merchantId']) eq $item['merchant_id']">selected="selected"</if>>{$item.merchant_name}</option>
+                       </foreach>
+                </select>
+                <div class="blank5"></div>
+                <input type="submit" class="button" value="提交" />
+            </form>
+        </td>
+    </tr>
+    <tr><td colspan="10" class="bottomTd">&nbsp; </td></tr>
+</table>
+<div class="blank5"></div>
+</div>
+<script type="text/javascript">
+
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{$dealInfo.name}</title>
+    {include file="api/views/_v32/header.html"}
+    <meta name="format-detection" content="telephone=no" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/p2p_affirm.css?v=1');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/virtual.v1.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.6/css/gold/format_money.css');?>" rel="stylesheet" />
+    <script>
+        console.log( '{$dealInfo_str}' );
+        window["_P2P_APPVERSION_"] = "{$appversion}";
+        window['_userid_'] = "{$userId}";
+        window['_needForceAssess_'] = "{$needForceAssess}";
+        window['siteId'] = "{$siteId}";
+    </script>
+</head>
+<body>
+
+ <div class="disnone">
+    <em class="val_discount_id" style="display:none;">{$data.discount_id}</em>
+    <em class="val_discount_group_id">{$data.discount_group_id}</em>
+    <em class="val_discount_sign">{$data.discount_sign}</em>
+    <em class="val_discount_goodprice"></em>
+    <em class="val_discount_amount"></em>
+    <em class="val_discount_bidAmount">{$data.discount_bidAmount}</em>
+    <em class="val_discount_type">{$data.$discount_type}</em>
+</div>
+<input type="hidden" value="{$dealInfo.min_loan_amount}" id="minLimitInput"/>
+<input type="hidden" value="{$dealInfo.rate}" id="rateInput"/>
+<input type="hidden" value="{$dealInfo.buyer_fee}" id="buyerFee"/>
+<input type="hidden" value="{if $dealInfo.couponIsFixed}{$dealInfo.couponStr}{else}{$data.code}{/if}" id="valCode"/>
+<input type="hidden" value="{$dealInfo.couponIsFixed}" id="couponIsFixed"/>
+<input type="hidden" value="{$dealInfo.usable_quality}" id="remainNum"/>
+<input type="hidden" value="{$dealInfo.gold_price}" id="goldPrice"/>
+<input type="hidden" value="{$dealInfo.days}" id="days"/>
+<input type="hidden" value="{$usertoken}" id="usertoken">
+<input type="hidden" value="{$dealId}" id="dealId">
+<input type="hidden" value="{$dealInfo.buyAmount}" id="initBuyAmount">
+<input type="hidden" value="{$ticket}" id="ticket">
+<input type="hidden" value="{$data.type}" id="gold_current">
+<input type="hidden" value="0" id="consume_type">
+<input type="hidden" id="o2oDiscountSwitch" value="{$o2oDiscountSwitch}">
+<input type="hidden" id="o2oGoldDiscountSwitch" value="{$o2oGoldDiscountSwitch}">
+<input type="hidden" id="appversion" value="{$appversion}">
+    <div class="p2p_main m-main p_affirm pb20">
+        <div class="pa_top conf_top">
+                <p class="pt_title">年化收益{if $data.type neq "gold_current"}克重{$dealInfo.annual_comp_rate}克/100克{else}率{$dealInfo.annual_comp_rate}%{/if}{if $data.type neq "gold_current"} ／ {$dealInfo.period}{if $dealInfo.loantype eq 5}天{else}个月{/if}{/if}</p>
+                <p>实时金价{$dealInfo.gold_price}元/克{if $data.type neq "gold_current"} ／ 可购克重 { $dealInfo.usable_quality }克{/if}</p>
+        </div>
+        {if $isShowVip}
+        {if $vipInfo.raiseInterest}
+        <div class="vipBenefit">
+            <p>{$vipInfo.vipGradeName}享受</p><p>{$vipInfo.raiseInterest}%额外收益</p>
+        </div>
+        {/if}
+        {/if}
+        <div class="pa_center clearfix">
+            <div class="input_deal">
+                <div class="p2p_ipt clearfix">
+                    <div class="realTime_val" id="realTime_val">
+                        <p>预计金额<span></span>元</p>
+                        <p>含手续费<span></span>元</p>
+                    </div>
+                    <div class="show_daxie"></div>
+                    <div class="ui_input clearfix"></div>
+                </div>
+                <!-- 预期收益 -->
+                <span class="dit_yq color_yellow f11"></span>
+            </div>
+            <!-- <div class="ditm_right fr">
+                <a class="a_lock to_recharge" href="invest://api?type=recharge">充值</a>
+            </div> -->
+            <div class="ditm_left">
+                <div class="ditm_top">
+                <!-- 当是公益标和通知贷的时候 -->
+                <a class="charge color_blue fr" href="invest://api?type=recharge">充值</a>
+                <div class="remain_money clearfix"> 
+                <div class="remain_money_text fl">可用余额：{if $svInfo.isSvUser eq 1}{$totalMoney}{else}{$remainMoney}{/if}元
+                {if $bonusMoney > 0}
+                    (含{$new_bonus_title}{$bonusMoney}{$new_bonus_unit} {if $deal.loantype neq 7}{/if})
+                {/if}
+                </div>
+                {if $svInfo.status eq 1 && $siteId neq 100}<i class="point_open fl{if $isServiceDown eq 1} down_img{/if}"></i>{/if}
+                </div>
+                {if $svInfo.status eq 1}
+                <div class="account_money"{if $isServiceDown neq 1} style="display:none;"{/if}>
+                    <div>-网信账户现金余额: <span class="val_wxMoney">{$wxMoney}</span>元</div>
+                    {if $svInfo.isSvUser neq 0}
+                    <div>-网贷P2P账户现金余额: <span class="val_svBalance">{$svInfo.svBalance}</span>元{if $isServiceDown eq 1}<span class="color_red">(海口联合农商银行系统维护，暂不可用)</span>{/if}</div>
+                    {else}
+                    <div>-尚未开通网贷P2P账户</div>
+                    {/if}
+                </div>
+                {/if}
+            </div>
+        </div>
+            <div class="dit_list">
+            </div>
+        </div>
+        {if $o2oDiscountSwitch eq 1 && $o2oGoldDiscountSwitch eq 1 && $siteId neq 100}
+        <div class="JS-youhuiquanpannel dit_footer new_guide_box">
+            <div class="ditf_list disn_border">
+                <div class="JS-touziyindao new_guide_icon new_guide_gold_icon" style="display:none;"></div>
+                <a class='to_youhuiquanList' href="#">
+                    <i class="icon_arrow fr"></i>
+                    <span class="JS-couponnum_label pr10 fr" style="font-size:13px;">未选择</span>
+                    优惠券<span class="can_use color_red" style="display:none;"><span class="JS_coupon_num num_canuse"></span>张可用</span>
+                </a>
+            </div>
+            <input type="hidden" name="isChoose" value="{$data.discount_id}">
+            <div class="ditf_list JS-selected_discount" style="display:none; border-top:1px solid #d9d9d9;">
+                <div class="coupon_detail"><span class="icon_coupon fl"></span><i class="close_btn fr JS_close"></i><div class="con">计算中...</div></div>
+            </div>
+        </div>
+        {/if}
+        <div class="dit_footer">
+            {if !$dealInfo.couponIsFixed  && $data.type neq "gold_current"}
+            <div class="ditf_list">
+                <a href="#" class='to_coupon'><span class="fr"><em>{if $data.code}{$data.code}{else}输入邀请码，可获得额外收益{/if}</em><i class="icon_arrow fr"></i></span>邀请码</a>
+            </div>
+            {/if}
+            <div class="ditf_list">
+                <a class='to_contractList' href="#"><span class="fr"><i class="icon_arrow fr"></i></span>合同和协议</a>
+            </div>
+        </div>
+
+        {if $o2oDiscountSwitch eq 1 && $o2oGoldDiscountSwitch eq 1 && $siteId neq 100}
+        <div class="investBg disnone"></div>
+        <div class="investList">
+            <h2 class="listTitle">使用一张优惠券吗? <span><a href="javascript:;" id="closeInvest"></a></span></h2>
+            <div class="tab_con tab_con2">
+                <div class="load_box">
+
+                </div>
+                <div class="load_more tb0-more"></div>
+            </div>
+            <p class="investChoose disnone">
+                <a href="javascript:;" class="chooseNo">放弃使用</a>
+                <a href="javascript:;" class="chooseYes">确认使用</a>
+            </p>
+        </div>
+        {/if}
+        <!-- 购买黄金提示 begin -->
+        <div class="goldTip">
+            <p>黄金价格实时波动，在<span>{$dealInfo.price_rate}元</span>的波动范围内成交，成交瞬间系统价格不高于<span>{$dealInfo.max_price}元/克</span>则立即为你买入</p>
+            <a href="javascript:;" id="chargeComputed" class="color_blue">买金提示</a>
+        </div>
+        <!-- 购买黄金提示 end -->
+        <!-- 计算规则弹层 begin -->
+        <div class="goldComputedRuleBox" id="goldComputedRuleBox">
+            <div class="inner">
+                <h3>买金提示</h3>
+                <p class="ruleText">预计金额 = 实时金价(元/克) x 购入克重 + 手续费(元/克) x 购入克重</p>
+                <div class="valueInfor color_gray">
+                    <p>购入金价(元/克)</p>
+                    <p>页面金价仅供参考，具体以成交时金价为准</p>
+                </div>
+                <div class="chargeInfor color_gray">
+                    <p>手续费(元/克)</p>
+                    <p>{$dealInfo.buyer_fee}</p>
+                </div>
+            </div>
+            <a href="javascript:;" class="closeA"></a>
+        </div>
+        <!-- 计算规则弹层 end -->
+
+        <div class="dit_btn">
+            <!--<input type="submit" class="sub_btn sub_gay" value="同意合同并投资" />-->
+            <input type="submit" data-showDiscount="0" class="sub_btn sub_gay" value="同意合同和协议并购买" />
+            <!--<a class="sub_btn sub_gay" data-showDiscount="0" href="javascript:void(0);"> 同意合同和协议并购买</a>-->
+        </div>
+        {if $svInfo.isFreePayment eq 0 && $svInfo.isSvUser eq 1 && $isServiceDown neq 1}
+        <!-- <div class="unopen_free">尚未开通快捷投资服务  <a href="" class="JS_is_freepayment_btn">去开通</a><i class="go_open"></i></div> -->
+        {/if}
+        
+        <!-- 验密余额划转 -->
+        {if $svInfo.isSvUser eq 1}
+        <div class="JS_is_transfer JS_open_box" style="display:none">
+            <div class="cunguan_bg"></div>
+            <div id="JS_balance_transfer" class="alert_evaluate">
+                <div class="free_title">余额划转</div>
+                <div class="trans_money JS_trans_money">20000元</div>
+                <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.5/images/balance_img.png');?>">
+                <div><span class="text_length">网贷P2P账户</span><span>网信账户</span></div>
+                <p class="free_text">网信账户现金余额不足，需从网贷P2P账户转账<span class="trans_m JS_trans_money">20,000</span>至网信账户，转账后网贷P2P账户现金余额为<span class="remain_m">40,000</span>元</p>
+                <div class="sc_footer clearfix">
+                    <div class="left_div"><a href="javascript:void(0)" class="a_left JS_close_transfer">取消</a></div>
+                    <div class="left_div"><a href="" class="a_right JS_transfer_btn" style="margin-left:0px;">确定</a></div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <!-- 提示余额划转 -->
+        <div class="JS_is_transfer_tips JS_open_box" style="display:none;">
+            <div class="cunguan_bg"></div>
+            <div id="JS_balance_transfer" class="alert_evaluate">
+                <div class="free_title">余额划转</div>
+                <div class="trans_money JS_trans_money">20000元</div>
+                <img class="transfer_img" src="<?php echo $this->asset->makeAppUrl('v4.5/images/balance_img.png');?>">
+                <div><span class="text_length">网贷P2P账户</span><span>网信账户</span></div>
+                <p class="free_text">网信账户现金余额不足，需从网贷P2P账户转账<span class="trans_m JS_trans_money">20,000</span>至网信账户，转账后网贷P2P账户现金余额为<span class="remain_m">40,000</span>元</p>
+                <div class="sc_footer clearfix">
+                    <!-- <div class="left_div"><a href="javascript:void(0)" class="a_left JS_close_transfer">取消</a></div> -->
+                    <!-- <a href="javascript:void(0)" class="a_right JS_transfer_btn" style="margin-left:0px;">确定</a> -->
+                    <input type="button" value="确定" class="a_right JS_transfer_btn" style="margin-left:0px;">
+                    <div class="pt20 color_gray"><span class="tips_icon"><input type="checkbox" class="no_tip_checkbox" value="0"></span>不再提示，下次自动划转</div>
+                </div>
+                <div class="JS_close_transfer_tips close_p2p_btn"></div>
+            </div>
+        </div>
+    </div>
+    <div class="ui_risk_tips"><em class="line"></em><span>市场有风险，购买需谨慎</span></div>
+    {if $o2oDiscountSwitch eq 1 && $o2oGoldDiscountSwitch eq 1 &&$siteId neq 100}
+    <div class="JS-touziyindao ui_mask_touziyindao" style="display:none"></div>
+    <div class="JS-touziyindao ui_mask_white" style="display:none"></div>
+    {/if}
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/fastclick.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.6/js/gold/virtual.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.6/js/gold/formatMoney.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.v2.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.6/js/gold/deal_investment.js?v=2');?>"></script>
+    <script>
+        {if $data.type eq "gold_current"} var dealId = '1'; {else} var dealId = '{$dealId}';{/if}
+        var usertoken = '{$usertoken}',siteId = '{$siteId}',discountListNum = 0,remainNum= '{$dealInfo.usable_quality}';
+    </script>
+{include file="api/views/_v32/footer.html"}

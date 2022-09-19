@@ -1,0 +1,47 @@
+<div class="p_account_medal">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_medal.css');?>">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/mymedals.js');?>"></script>
+    <script>
+        var datajson = {$list};
+    </script>
+    <div class="ui-box">
+        <div class="h-title">
+            <h2><i></i>勋章</h2>
+            <div class="h-line"></div>
+            <ul class="sub-nav clearfix j_sub_nav">
+                <li>
+                    <a href="/medal/wall">勋章墙</a>
+                </li>
+                <li class="select">
+                    <a href="/medal/mymedals">我的勋章</a>
+                </li>
+            </ul>
+            <div class="r-decs" style="display:none;"><a href="">什么是勋章？</a></div>
+        </div>
+        <div class="r_cont">
+        <div id="mymedal_container" class="pl50 pt50"></div>
+        <script id="mymedal_list" type="text/html">
+                <% if(list.length <= 0 || !list) { %>
+                <div class="no_list">
+                    暂无记录
+                </div>
+                <% } else { %>
+                <ul class="medal_list clearfix">
+                    <% for(var i = 0 ; i < list.length ; i++){ %>
+                    <li class="ml_bg_yellow">
+                    <a href="/medal/detail?medal_id=<%= list[i].medalId %>" alt="">
+                        <div class="ml_img tc"><img src="<%= list[i].icon.iconSmall %>" alt="" width="141" height="141"></div>
+                        <span class="ml_tit f16" title="<%= list[i].name %>"><%= list[i].name %></span>
+                        <% if(list[i].myStatus == 3 && list[i].prizes.length > 0){ %>
+                        <div class="ml_icon"><span class="dailing icon_sprite">待领奖</span></div>
+                        <% } %>
+                    </a>
+                    </li>
+                    <% } %> 
+                </ul>
+                <% } %>
+            </script>
+          
+        </div>
+    </div>
+</div>

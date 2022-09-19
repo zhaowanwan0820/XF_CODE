@@ -1,0 +1,224 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.min.js' />
+<load href='__TMPL__Common/js/jquery.ui.widget.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/bootstrap.min.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/style/bootstrap.min.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+
+</php>
+<style>
+.tooltip {
+    word-wrap:break-word;
+    word-break:break-all;
+}
+.tooltip-inner {
+    text-align:left;
+}
+</style>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+<div class="main">
+<div class="main_title">O2O领券查询(输入条件后显示结果)</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号ID:
+        <input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:70px;" />
+        券组ID:
+        <input type="text" class="textbox" name="group_id" value="{:trim($_REQUEST['group_id'])}" style="width:70px;" />
+        券码:
+        <input type="text" class="textbox" name="gift_code" value="{:trim($_REQUEST['gift_code'])}" style="width:70px;" />
+        投资人ID:
+        <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:70px;" />
+        投资人手机号:
+        <input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" style="width:70px;" />
+        触发事件：
+        <select style="color:#555" name="trigger_mode" id="trigger_mode">
+                <option value=10000 <if condition="intval($_REQUEST['trigger_mode']) eq 10000">selected="selected"</if>>==请选择==</option>
+                <foreach name="actionEnum" item="trigger_mode" key="key">
+                    <option value="{$key}" <if condition="$_REQUEST['trigger_mode'] eq $key">selected="selected"</if>>{$trigger_mode}</option>
+                </foreach>
+        </select>
+        行为记录ID:
+        <input type="text" class="textbox" name="deal_load_id" value="{:trim($_REQUEST['deal_load_id'])}" style="width:70px;" />
+        触发事件发生时间：
+        <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        -
+        <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        投资人会员编号:
+        <input type="text" class="textbox" name="userIdNo" value="{:trim($_REQUEST['userIdNo'])}" style="width:70px;" />
+        <input type="hidden" value="O2OAcquireList" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="20" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <!--<th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>-->
+        <th>编号</th>
+        <th>投资人ID</th>
+        <th>投资人姓名</th>
+        <th>投资人会员编号</th>
+        <th>投资人手机号</th>
+        <th>邀请人优惠码</th>
+        <th>邀请人ID</th>
+        <th>行为类型</th>
+        <th>行为记录ID</th>
+        <th>触发事件</th>
+        <th>触发事件发生时间</th>
+        <th>领奖机会截止时间</th>
+        <th>可触发券组</th>
+        <th>已领券组名称</th>
+        <th>补贴记录</th>
+        <th>补贴兑换结果</th>
+    </tr>
+    <foreach name="list" item="item">
+    <tr class="row">
+        <!--<td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>-->
+        <td>{$item.id}</td>
+        <td>
+            <a href="#" data-toggle="tooltip" data-html="true" data-original-title="{$item.user_tooltips}">{$item.user_id}</a>
+        </td>
+        <td>{$item.real_name}</td>
+        <td>{$item.userIdNo}</td>
+        <td>{$item.mobile}</td>
+        <td>{$item.invite_code}</td>
+        <td>
+            <if condition="$item['refer_user_id'] neq 0">
+            <a href="javascript:void(0)" data-toggle="tooltip" data-html="true" data-placement="left" data-original-title="{$item.refer_user_tooltips}">{$item.refer_user_id}</a>
+            </if>
+        </td>
+        <td>{$item.deal_type_desc}</td>
+        <td>
+            <if condition="$item['deal_load_id'] neq 0">
+            <a href="javascript:void(0)" data-toggle="tooltip" data-html="true" data-placement="left" data-original-title="{$item.deal_detail}">{$item.deal_load_id}</a>
+            </if>
+        </td>
+        <td><?php echo $actionEnum[$item['trigger_mode']];?></td>
+        <td>{$item.create_time}</td>
+        <td>{$item.expire_time}</td>
+        <td>
+            <?php if($item['group_status'] == '点击查看' || $item['group_status'] == '待触发') { ?>
+            <a href="javascript:void(0)" onclick="showGroupList({$item.user_id}, {$item.trigger_mode}, {$item.deal_load_id}, {$item.deal_type})">{$item.group_status}</a>
+            <?php } else { ?>
+            {$item.group_status}
+            <?php } ?>
+        </td>
+        <td>
+        <if condition="intval($item['gift_id']) neq 0">
+        <a href="javascript:void(0)" data-toggle="tooltip" data-html="true" data-placement="left" data-original-title="{$item.coupon_detail}">{$item.coupon_name}</a>
+        </if>
+        </td>
+
+        <td>
+        <if condition="intval($item['gift_id']) neq 0">
+        <?php if ($item['transfer_detail'] != '') { ?>
+            <a href="javascript:void(0)" data-toggle="tooltip" data-html="true" data-placement="left" data-original-title="{$item.transfer_detail}">补贴记录</a>
+        <?php } else { ?>
+            无补贴
+        <?php }?>
+        </if>
+        </td>
+        <td id='action{$item.id}'>
+            <if condition="$item['confirm'] eq 0">
+            <a href="javascript:re_confirm('<?php echo ($item["id"]); ?>', '<?php echo ($item["gift_id"]); ?>', '<?php echo ($item['coupon_info']['store_id']); ?>')">重新兑换</a>
+            </if>
+        </td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="20" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<!-- Think 系统列表组件结束 -->
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<div class="modal" id="myModal" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close"
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+                触发券组列表
+            </h4>
+         </div>
+         <div class="modal-body" id="myModalBody">
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+<script>
+function re_confirm(id, giftId, storeId){
+    $.post("m.php?m=O2OAcquireList&a=reConfirm", {gift_id:giftId, store_id:storeId}, function (rs){
+        var rs = $.parseJSON(rs);
+        if (!rs.status) {
+            alert(rs.info);
+        } else {
+            alert(rs.info);
+            $('#action'+id).html('');
+        }
+    }, 'json');
+}
+function showGroupList(userId, action, dealLoadId, dealType) {
+    $("#myModalBody").html();
+    $.post("m.php?m=O2OAcquireList&a=getCouponGroupList", {userId:userId,action:action,dealLoadId:dealLoadId,dealType:dealType}, function(rs) {
+        if (typeof(rs) != 'undefined') {
+            html = '<table class="table table-bordered">';
+            html+= '<thead>';
+            html+= '<tr>';
+            html+= '    <th>券组编号</th>';
+            html+= '    <th>券组名称</th>';
+            html+= '    <th>券组价格</th>';
+            html+= '</tr> ';
+            html+= '</thead> ';
+            html+= '<tbody> ';
+
+            for(var i in rs) {
+                html += ' <tr>';
+                html += '    <td scope="row">'+rs[i].id+'</td>';
+                html += '    <td>'+rs[i].productName+'</td>';
+                html += '    <td>'+rs[i].goodPrice+'</td>';
+                html += '</tr>';
+            }
+            html += '</tbody>';
+            html += '</table>';
+            $("#myModalBody").html(html);
+        }
+        $('#myModal').modal('show');
+    }, 'json');
+}
+function centerModals(){
+    $('.modal').each(function(i){
+        var $clone = $(this).clone().css('display', 'block').appendTo('body');    var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+        top = top > 0 ? top : 0;
+        $clone.remove();
+        $(this).find('.modal-content').css("margin-top", top);
+    });
+}
+$('.modal').on('show.bs.modal', centerModals);
+$(window).on('resize', centerModals);
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,71 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<php>
+    function get_repay_time($time, $type)
+    {
+        if($type == '1'){
+            return $time.'天';
+        }elseif($type == '2'){
+            return $time.'月';        
+        }else{
+            return $time;
+        }
+    }
+    function get_fund_status($status)
+    {
+        if($status == 0){
+            return '未开始';
+        }elseif($status == '1'){
+            return '进行中';
+        }elseif($status == '2'){
+            return '已结束';
+        }
+    }
+    function get_fund_effect($effect)
+    {
+        if($effect == 0){
+            return '无效';
+        }elseif($effect == '1'){
+            return '有效';
+        }
+    }
+</php>
+<div class="main">
+<div class="main_title">基金列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">  
+        名称：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['title'])}" />     
+        <input type="hidden" value="Fund" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list 
+    id="dataTable" 
+    style="dataTable" 
+    name="fund" 
+    checkbox="true" 
+    action="false" 
+    datasource="list" 
+    show="id:{%ID}|50px,name:基金名称,income_min:最小收益(%),income_max:最大收益(%),repay_time|get_repay_time=$fund['repay_type']:借款期限,loan_money_min:起投金额(元),status|get_fund_status:状态,is_effect|get_fund_effect:是否有效,create_time|to_date:创建时间" 
+    actionlist="show_web:查看页面,member:预约列表,edit:{%EDIT}" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+    function member(id){
+        location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=member&id="+id;
+    }
+    function show_web(id){
+        window.open('http://{$GLOBALS['sys_config']['SITE_DOMAIN']['firstp2p']}/jijin/detail?id='+id);
+    }
+</script>
+<include file="Public:footer" />

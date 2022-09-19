@@ -1,0 +1,44 @@
+{
+    "author": "wangfei5",
+    "comment": "资金纪录proto",
+    "namespace": "NCFGroup\\Protos\\Ptp",
+    "use": ["NCFGroup\\Common\\Extensions\\Base\\ProtoBufferBase", "Assert\\Assertion"],
+    "extend": "ProtoBufferBase",
+    "properties": [
+        {
+            "name": "userId",
+            "comment": "用户ID",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "offset",
+            "comment": "纪录偏移量",
+            "type": "int",
+            "required": false,
+            "default" : 0
+        },
+        {
+            "name": "count",
+            "comment": "纪录数量",
+            "type": "int",
+            "required": false,
+            "default":20
+        },
+        {
+            "name": "status",
+            "comment": "状态，默认为0；0-全部 1-投资中 2-满标 4-还款中 5-已还清；status>0时，支持多个状态合并查询，status值以英文逗号隔开，如status=1,2 查询投资中和满标的列表",
+            "type": "int",
+            "required": false,
+            "default":"0"
+        },
+        {
+            "name": "compound",
+            "comment": "是否展示通知贷的标，默认不传为0，不展示，1展示",
+            "type": "int",
+            "required": false,
+            "default":0
+        }
+    ]
+}
+

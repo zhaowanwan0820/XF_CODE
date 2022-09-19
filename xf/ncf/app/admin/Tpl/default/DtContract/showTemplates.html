@@ -1,0 +1,127 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript">
+    function gotoUrl(str){
+        var type_id = {$type_id};
+        var url ="m.php?m=DtContract&a=showTemplates&editId="+str+"&contractVersion="+{$contract_version};
+        if(type_id){
+            url += "&typeId="+type_id;
+        }
+        location.href=url;
+    }
+
+    function check_tpl_name(id){
+        var name = $('#name').val();
+        if(id){
+            if(name.length > 0){
+                url = "/m.php?m=DtContract&a=checkTplName";
+                $.getJSON(url, { tpl_name: name, tag: "edit", id:id },function(data){
+                    if(data.status == 0){
+                        $('#checktplname').html(data.data);
+                    }else{
+                        $('#checktplname').html('模板标识可以使用');
+                    }
+                });
+            }else{
+                $('#checktplname').html('不可以为空');
+            }
+        }
+    }
+    function copy_tpl(id){
+        $.weeboxs.open(ROOT+'?m=MsgTemplate&a=copy_tpl&id='+id, {contentType:'ajax',showButton:false,title:'复制模板',width:550,height:265});
+    }
+
+    function add()
+    {
+        location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=add&typeId={$type_id}&contractVersion={$contract_version}";
+    }
+</script>
+<div class="main">
+    <div class="main_title">
+        <if condition="$type_name neq ''">{$typeName}分类 &gt; </if>
+        消息模板管理
+        <if condition="$type_name neq ''"> &nbsp;&nbsp;<a href='m.php?m=DtContract&a={$from}&typeId={$type_id}&contractVersion=01.00' class="back_list">返回分类列表</a></if>
+    </div>
+    <div class="blank5"></div>
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    选择模板进行编辑：
+    <select name="name" onChange="javascript:gotoUrl(this.value);">
+        <option value="">{%SELECT_MSG_TPL}</option>
+        <foreach name="tpl_list" item="tpl_item">
+            <option value="{$tpl_item.id}" <if condition="$tpl['id'] eq $tpl_item['id']">selected="selected"</if>>{$tpl_item.contractTitle}</option>
+        </foreach>
+    </select>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">合同标题:</td>
+                <td class="item_input">
+                    <input type='text' id='contractTitle' name='contractTitle' value='{$tpl.contractTitle}' size='30' />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">模板标识:</td>
+                <td class="item_input">
+<!--                标识前缀：
+                <select name="tplIdentifierId" id="tplIdentifierId" >
+                    <foreach name="tpl_identifier_list" item="tpl_identifier">
+                        <option value="{$tpl_identifier.id}" <if condition="$tpl['tplIdentifierId'] eq $tpl_identifier['id']">selected="selected"</if>>{$tpl_identifier.name}({$tpl_identifier.title})</option>
+                    </foreach>
+                </select>
+                标识后缀：-->
+                    <input type='text' id='name' name='name' value='{$tpl.name}' size='30' >
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">{%CONTENT}:</td>
+                <td class="item_input">
+
+                    <table class="two-columns" style='width:100%;'>
+                        <tr>
+                            <td>
+                                <html:editor id="editor" name="content" type="KINDEDITOR" content="{$tpl.content}" style="width:700px; height:450px;"/>
+                            </td>
+                            <td style='font-size:13px;'><if condition="$tpl['id'] gt 0">
+                                <foreach name="param" item="lang">
+                                    {$key}: {$lang}<br />
+                                </foreach>
+                            </if></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr id="content_tip">
+                <td colspan="2">
+
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="DtContract" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="updateTpl" />
+                    <input type="hidden" name="id" value="{$tpl.id}">
+                    <input type="hidden" name="type" value="0">
+                    <input type="hidden" name='isHtml' value="1">
+                    <input type="hidden" name="typeId" value="{$type_id}">
+                    <input type="hidden" name="version" value="{$contract_version}">
+                    <input type="submit" class="button" value="更新" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

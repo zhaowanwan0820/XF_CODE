@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>兑换失败</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <!--public js&css start-->
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeAppUrl('v3.3/css/o2o/o2o_success.css');?>" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <div class="m-main p_sc">
+            <div class="sc_result"><i class="sc_error"></i>操作失败</div>
+            <div class="sc_tip">
+                <div class="sc_line f14">失败原因：{$errMsg}</div>
+            </div>
+            {if $flag eq 'acquireExchange'}
+            <div class="sc_done"><a data-proto="coupon://api" data-type="webview" data-backtype="finish" data-backid="couponList" data-title="领取礼券" data-identify="couponList" data-needback="true" data-needrefresh="true" href="{$APP_HOST}/gift/pickList?action={$action}&load_id={$load_id}&token={$token}&deal_type={$deal_type}" class="btn_red">重新领取</a></div>
+            {else}
+            <div class="sc_done"><a href="coupon://api?type=native&name=coupontab&selectedtab=mine?token={$token}" class="btn_red">重新选择</a></div>
+            {/if}
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    </body>
+</html>

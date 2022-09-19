@@ -1,0 +1,73 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+    <div class="main_title">代签存管升级协议</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        会员编号：<input type="text" class="textbox" name="userId" value="{:trim($_REQUEST['userId'])}" style="width:100px;" />
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="wxFreepayment" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+    </div>
+
+<div class="blank5"></div>
+<!-- Think 系统列表组件开始 -->
+
+<form id="updateContractForm" name="search" action="__APP__" method="post">
+    <input type="hidden" value="User" name="m" />
+    <input type="hidden" value="wxFreepayment" name="a" />
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="5" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th>用户ID</a></th>
+        <th>姓名</th>
+        <th>手机号</th>
+        <th>存管升级协议签署状态</th>
+        <th>操作</th>
+
+        <if condition="$userInfo">
+        <tr class="row">
+            <td>{$userInfo.id}</td>
+            <td>{$userInfo.real_name}</td>
+            <td>{$userInfo.mobile}</td>
+            <td><if condition="$userInfo.wx_freepayment eq 1">已签署<else/>未签署</if></td>
+            <td>
+                <input type="hidden" value="{$userInfo.id}" name="userId" />
+                <if condition="$userInfo.wx_freepayment eq 1">
+                <input type="hidden" value="0" name="status" />
+                <input type="submit" class="button" value="取消签署" />
+                <else/>
+                <input type="hidden" value="1" name="status" />
+                <input type="submit" class="button" value="代签" />
+                </if>
+            </td>
+        </tr>
+        </if>
+
+        <tr>
+            <td colspan="5" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+</form>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#updateContractForm').submit(function() {
+        var updateStatus= $(this).find('[name=status]').val();
+        var tip = updateStatus == 1 ? '确认代用户签署开户协议？' : '确认将用户签署协议状态置为未签署？';
+        if (!confirm(tip)) {
+            return false;
+        }
+    });
+});
+</script>
+<include file="Public:footer" />

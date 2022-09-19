@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>邀请好友</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <link href="{$STATIC_PATH}/css/m-base.css" rel="stylesheet" type="text/css" />
+    <link href="{$STATIC_PATH}/css/m-common.css" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <!--private js&css start-->
+    <link href="{$STATIC_PATH}/css/Invite-code.css" rel="stylesheet" type="text/css" />
+    <!--private js&css end-->
+</head>
+<body>
+    <section>
+        <div class="code-top">
+        </div>
+        <div class="code-list">
+
+            {if $is_not_code}
+                    <div class="code-main">
+                        <div class="cdm-left" style="width:88%">
+                            <p class="code-num">
+                                完成身份验证，开启邀请返利</p>
+                            <p class="code-tip">
+                                {if $firstCoupon !='' }
+                                        投资人返利{$firstCoupon[rebate_ratio]}%, 您的返利{$firstCoupon[referer_rebate_ratio]}%
+                                {/if}
+                            </p>
+                        </div>
+
+                    </div>
+            {else}
+
+                {foreach from=$coupons item="coupon" key="couponId" }
+
+                    <div class="code-main">
+                        <div class="cdm-left">
+                            <p class="code-num">
+                                {$couponId}</p>
+                            <p class="code-tip">
+                                投资人返利{$coupon.rebate_ratio}%, 您的返利{$coupon.referer_rebate_ratio}%</p>
+                        </div>
+                        <div class="cdm-right">
+                            <a href="invite://api?coupon={$couponId}&msg={$coupon.shareMsg}">邀请</a>
+                        </div>
+                    </div>
+
+                {/foreach}
+
+            {/if}
+
+
+
+            <div class="code-bottom">
+            </div>
+            <div class="code-center">
+                <p>
+                <adv adv_id="我的邀请码说明"/>
+                </p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

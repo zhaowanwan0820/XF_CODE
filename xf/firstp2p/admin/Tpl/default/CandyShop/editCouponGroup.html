@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <load href='__TMPL__Common/js/jquery.min.js' />
+    <load href='__TMPL__Common/js/jquery-ui.min.js' />
+    <load href='__TMPL__Common/js/bootstrap.min.js' />
+    <load href='__TMPL__Common/style/bootstrap.min.css' />
+    <load href='__TMPL__Common/js/bootstrap-filestyle.min.js' />
+    <meta charset="UTF-8">
+    <title>编辑券</title>
+</head>
+<body style="margin:0 auto; width:960px;">
+<div class="page-header page-header_info" id="actionTab">
+    <h3>编辑券</h3><a href="m.php?m=CandyShop&a=listProduct">返回列表</a>
+</div>
+<form class="form-horizontal" action="#" method="post" id="couponGroupForm">
+    <div class="form-group">
+        <label class="col-lg-2 control-label">券ID：</label>
+        <div class="col-lg-3">
+            <input type="test" name="couponGroupId" class="form-control" id="couponGroupId" value="{$product['coupon_group_id']}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">市场价格：</label>
+        <div class="col-lg-3">
+            <input type="text" name="market_price" class="form-control" id="market_price" value="{$product['market_price']}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">销售价格：</label>
+        <div class="col-lg-3">
+            <input type="text" name="price" class="form-control" id="price" value="{$product['price']}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">排序：</label>
+        <div class="col-lg-3">
+            <input type="text" name="sort" class="form-control" id="sort" value="{$product['sort']}">
+            (数字越大排序越靠前)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">限制库存：</label>
+        <div class="col-lg-3">
+            <!-- <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="isLimited" onclick="listChange(this)" id="isLimited">
+                </label>
+            </div> -->
+            <label class="radio-inline">
+                <input type="radio" name="isLimited" id="isLimited" onclick="listChange(this)">
+            </label>
+        </div>
+    </div>
+    <div class="form-group" id="div1" style="display:none">
+        <label class="col-lg-2 control-label">每日兑换量：</label>
+        <div class="col-lg-3">
+            <input type="text" name="daily_stock"  class="form-control" id="daily_stock" value="{$product['daily_stock']}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">是否列表页推荐：</label>
+        <div class="col-lg-3">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="isSuggest" id="isSuggest" <?php if ($product['is_suggest'] == 1) { ?> checked <?php } ?>>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">是否首页推荐：</label>
+        <div class="col-lg-3">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="isTop" id="isTop" <?php if ($product['is_top'] == 1) { ?> checked <?php } ?>>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label"></label>
+        <div class="col-sm-1">
+            <button id="doSubmit" type="button" class="btn btn-primary btn-default btn-block">保存</button>
+        </div>
+    </div>
+    <input type="hidden" name="productId" value="{$product.id}" />
+    </div>
+</form>
+<script>
+    $(function() {
+        // Variable to store your files
+        $('#doSubmit').click(function() {
+            $.ajax({
+                url: 'm.php?m=CandyShop&a=doEditCouponGroup',
+                type: 'POST',
+                data: $('#couponGroupForm').serialize(),
+                cache: false,
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR)
+                {
+                    alert(data.msg);
+                    if(data.code == 0)
+                    {
+                        window.location.href="m.php?m=CandyShop&a=listProduct";
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown)
+                {
+                    // Handle errors here
+                    console.log('ERRORS: ' + textStatus);
+                    // STOP LOADING SPINNER
+                }
+            });
+        });
+
+    });
+</script>
+<script >
+    function listChange(radio){
+        if(radio.tag==1)
+        {
+            radio.checked=false;
+            radio.tag=0;
+            radio.value=0;
+            document.getElementById("div1").style.display= "none";
+        } else {
+            radio.checked=true;
+            radio.tag=1;
+            radio.value=1;
+            document.getElementById("div1").style.display= "inline";
+        }
+    }
+</script>
+</body>
+</html>

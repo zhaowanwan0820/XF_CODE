@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>红包详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base_v32.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common_v32.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-bonus.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="p_bonus">
+    	<div class="status">
+        	<dl>
+                {if $bonus.status eq 2}
+            	<dd>
+                	<div class="status_ysy"></div>
+                </dd>
+                {elseif $bonus.status eq 3}
+                <dd>
+                    <div class="status_ygq"></div>
+                </dd>
+                {/if}
+            	<dt>
+                	<div class="con">
+                        <h3>
+                            {if $bonus.fromType}
+                                {if $bonus.type == 31 or $bonus.type == 32}
+                                <span class="ui_tips showGift">{$bonus.fromType}</span>
+                                {else}
+                                <span class="ui_tips">{$bonus.fromType}</span>
+                                {/if}
+                            {/if}
+                            {$bonus.bonusType}
+                        </h3>
+                        <h4 class="color_red f20">{function name="format_price" v="$bonus.money" b=0}<em class="f12">元</em></h4>
+                        <p>有效期至：{$bonus.expiredAt}</p>
+                    </div>
+                </dt>
+            </dl>
+        </div>
+        <div class="text_box">
+        	<h3>红包来源</h3>
+            <p>{if !empty($bonus.fromDetail) } {$bonus.fromDetail} {else} {$bonus.fromType} {/if}</p>
+            {if $bonus.type == 31 or $bonus.type == 32}
+            <h3>祝福语</h3>
+            <p>爱、笑声、礼物，当然少不了送给您的一声生日问候。推开财富的大门，我们与您携手开启新一载的征程！</p>
+            {/if}
+            <h3>领取时间</h3>
+            <p>{$bonus.createdAt}</p>
+        </div>
+    </div>
+{include file="api/views/_v32/footer.html"}

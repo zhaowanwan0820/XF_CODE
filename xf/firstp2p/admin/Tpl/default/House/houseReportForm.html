@@ -1,0 +1,111 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+<load href='__TMPL__Common/js/jquery.min.js'/>
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<load href='__TMPL__Common/js/jquery.ui.widget.js'/>
+<load href='__TMPL__Common/js/jquery.weebox.js'/>
+<load href='__TMPL__Common/js/bootstrap.min.js'/>
+<load href='__TMPL__Common/js/user.js'/>
+<load href='__TMPL__Common/style/weebox.css'/>
+<load href='__TMPL__Common/style/bootstrap.min.css'/>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js"></script>
+<load href='__TMPL__Common/js/calendar/calendar.css'/>
+<load href='__TMPL__Common/js/calendar/calendar.js'/>
+<style>
+    .tooltip {
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+    .tooltip-inner {
+        text-align: left;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<div class="main">
+    <div class="main_title">房贷报表</div>
+    <div class="search_row">
+        <form id="formData" action="__APP__" method="get" enctype="multipart/form-data">
+            实际放款时间：
+            <input type="text" class="textbox" name="time_start" id="time_start"
+                   value="{:trim($_REQUEST['time_start'])}"
+                   onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');"
+                   style="width:120px;"/>
+            <input type="button" class="button" id="btn_time_start" value="选择"
+                   onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');"/>
+            -
+            <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}"
+                   onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');"
+                   style="width:120px;"/>
+            <input type="button" class="button" id="btn_time_end" value="选择"
+                   onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');"/>
+            <!--隐藏元素-->
+            <input type="hidden" name="m" value="House"/>
+            <input type="hidden" name="a" value="houseReportForm"/>
+            <input type="submit" class="button" value="{%SEARCH}"/>
+            <button type="submit" name="export" value="1" class="button">导出</button>
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 style="text-align: center;">
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th>借款ID</th>
+            <th>实际放款时间</th>
+            <th>借款服务机构</th>
+            <th>借款人ID</th>
+            <th>借款金额(元)</th>
+            <th>借款期限</th>
+            <th>返利基数(年化借款额)(元)</th>
+            <th>借款人所属组别ID</th>
+            <th>借款人所属组别名称</th>
+            <th>推荐人邀请码</th>
+            <th>推荐人ID</th>
+            <th>推荐人所属组别ID</th>
+            <th>推荐人所属组别名称</th>
+            <th>推荐人返点比例</th>
+            <th>推荐人返点金额(元)</th>
+            <th>返利机构ID</th>
+            <th>返利机构名称</th>
+            <th>机构返点比例</th>
+            <th>机构返点金额(元)</th>
+        </tr>
+        <foreach name="list" item="item">
+            <tr class="row">
+                <td>{$item.id}</td>
+                <td>{$item.actualDate}</td>
+                <td>{$item.supplier}</td>
+                <td>{$item.userId}</td>
+                <td>{$item.actualMoney}</td>
+                <td>{$item.deadline}</td>
+                <td>{$item.annualized}</td>
+                <td>{$item.borrowerGroupId}</td>
+                <td>{$item.borrowerGroupName}</td>
+                <td>{$item.recommendCode}</td>
+                <td>{$item.recommenderId}</td>
+                <td>{$item.recommenderGroupId}</td>
+                <td>{$item.recommenderGroupName}</td>
+                <td>{$item.recommendPercent}</td>
+                <td>{$item.recommendMoney}</td>
+                <td>{$item.rebateOrganizationId}</td>
+                <td>{$item.rebateOrganizationName}</td>
+                <td>{$item.OrganizationPercent}</td>
+                <td>{$item.OrganizationMoney}</td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 -->
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer"/>

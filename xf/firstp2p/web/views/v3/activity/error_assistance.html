@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>页面没有找到 - 网信理财</title>
+  <link rel="shortcut icon" href="/static/skins/default/images/favicon.png" type="image/x-icon" />
+  <link rel="apple-touch-icon-precomposed" href="/static/skins/default/images/favicon.png" type="image/x-icon" />
+  <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/assistance/jquery.min.js');?>"></script>
+<style>
+  body{
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    font-size: 0.14rem;
+    }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  .p_error{
+    padding-top: 0.78rem;
+  }
+  .errorImg{
+    width: 2.62rem;
+    height: 4.07rem;
+    margin: 0 auto;
+    display: block;
+  }
+  .goTip{
+    width: 100%;
+    text-align: center;
+    font-size: 0.15rem;
+    margin: 0.46rem auto;
+    color: #ff5534;
+    display: block;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+  <div class="p_error">
+    <img src="<?php echo $this->asset->makeUrl('v3/images/assistance/error.png');?>" class="errorImg">
+    <a class="goTip" href="https://www.ncfwx.com/app">去网信APP看看其他活动吧</a>
+  </div>
+<script>
+  var winW = document.documentElement.clientWidth;
+  var fontSize = winW / 375 * 100;
+  document.documentElement.style.fontSize = fontSize + "px";
+  /*控制原生title右侧隐藏title传空按钮4.7.3*/
+  window.location.href = "firstp2p://api?type=rightbtn&title=";
+
+  var p2pBrowser = (function () {
+    var u = navigator.userAgent
+    return {
+      wx: /MicroMessenger/i.test(u),
+      webkit: /AppleWebKit/i.test(u),
+      gecko: /gecko/i.test(u),
+      ios: /\(i[^;]+;( U;)? CPU.+Mac OS X/.test(u),
+      android: /android/i.test(u),
+      iPhone: /iPhone/i.test(u),
+      iPad: /iPad/i.test(u),
+      app: /wx/i.test(u),
+      androidApp: /wxAndroid/i.test(u),
+      iosApp: /wxiOS/i.test(u)
+    }
+  })()
+  if (p2pBrowser.app) {
+    $(".goTip").hide();
+  }
+</script>
+</body>
+</html>

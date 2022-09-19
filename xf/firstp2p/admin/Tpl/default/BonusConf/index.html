@@ -1,0 +1,32 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">红包返利配置</div>
+<div class="blank5"></div>
+<div class="button_row">
+	<input type="button" class="button" value="{%ADD}" onclick="add();" />
+	<input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+	<form name="search" action="__APP__" method="get">
+        {%CONF_TITLE}：<input type="text" class="textbox" name="title" value="{:trim($_REQUEST['title'])}" />
+        <input type="hidden" value="BonusConf" name="m" />
+		<input type="hidden" value="index" name="a" />
+		<input type="submit" class="button" value="{%SEARCH}" />
+	</form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="role"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px,title:配置名称,name:配置键名,value:配置值,is_effect|get_is_effect=$role['id']:{%IS_EFFECT},start_time|to_date:生效时间,end_time|to_date:失效时间"
+    actionlist="edit:{%EDIT}" />
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

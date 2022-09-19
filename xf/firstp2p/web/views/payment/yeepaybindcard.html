@@ -1,0 +1,34 @@
+{include file="web/views/fenzhan/header.html"}
+
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>"  rel="stylesheet" type="text/css">
+<!--private js&css end-->
+
+
+<div class="w980 mauto clearfix">
+
+    <section>
+        <div class="pay">
+            <div class="pay_con">
+                <form action="/payment/yeepayValidate" method="POST" name="bankInfoForm" id="bankInfoForm">
+                <p>真实姓名：{$userInfo.realName}</p>
+                <p>身份证号：{function name='idnoFormat' v=$userInfo.idno}</p>
+                <p>借记卡所属银行：{if $lockFields}{$userInfo.bankName}{else}<select name="bankName">{$bankList}</select>{/if}</p>
+                <p>银行卡号：{if $lockFields}{$userInfo.cardNoDisplay}{else}<input type="text" name="cardNo"/>{/if}</p>
+                <p class="pay_other">
+                    <button class="user_button mt10 mb20" id="confirmInfoBtn" type="button">下一步</a>
+                </p>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#confirmInfoBtn').click(function(){
+            $('#bankInfoForm').submit();
+        })
+    });
+</script>
+{include file="web/views/fenzhan/footer.html"}

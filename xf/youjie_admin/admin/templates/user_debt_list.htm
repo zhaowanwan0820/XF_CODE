@@ -1,0 +1,135 @@
+{if $full_page}
+<!-- $Id: users_list.htm 17053 2010-03-15 06:50:26Z sxc_shop $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+<div class="form-div">
+  <form action="javascript:searchForm()" name="searchForm">
+    &nbsp;{$lang.debt_user_name}&nbsp;        <input type="text" name="user_name" />
+    &nbsp;{$lang.debt_user_mobile_phone}&nbsp;<input type="text" name="mobile_phone" />
+    &nbsp;{$lang.debt_user_id}&nbsp;          <input type="text" name="user_id" />
+    &nbsp;{$lang.debt_status}&nbsp;
+    <select name="status">
+      <option value="-1">请选择</option>
+      {foreach from=$status_list item=item}
+        <option value="{$item.id}" {if 1 eq $item.check}selected{/if}>{$item.name}</option>
+      {/foreach}
+    </select>
+    &nbsp;{$lang.debt_is_rollback}&nbsp;
+    <select name="is_rollback">
+      <option value="-1">请选择</option>
+      {foreach from=$is_rollback_list item=item}
+        <option value="{$item.id}">{$item.name}</option>
+      {/foreach}
+    </select>
+    <input type="submit" class="button" value="{$lang.button_search}">
+  </form>
+</div>
+
+<form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
+
+<!-- start users list -->
+<div class="list-div" id="listDiv">
+{/if}
+<!--用户列表部分-->
+<table cellpadding="3" cellspacing="1">
+
+  <tr>
+    <th style="width: 8%;">
+      <a href="javascript:listTable.sort('order_id'); ">{$lang.debt_order_id}</a>{$sort_order_id}
+    </th>
+    <th style="width: 8%;"><a href="javascript:listTable.sort('user_name'); ">{$lang.debt_user_name}</a>{$sort_user_name}</th>
+    <th style="width: 8%;">{$lang.debt_user_id}</th>
+    <th style="width: 8%;">{$lang.debt_user_mobile_phone}</th>
+    <th style="width: 8%;"><a href="javascript:listTable.sort('account'); ">{$lang.debt_account}</a>{$sort_account}</th>
+    <th>{$lang.debt_detail}</th>
+    <th style="width: 8%;">{$lang.debt_order_sn}</th>
+    <th style="width: 8%;">{$lang.debt_is_rollback}</th>
+    <th style="width: 8%;">{$lang.debt_status}</th>
+    <th style="width: 8%;"><a href="javascript:listTable.sort('createtime'); ">{$lang.debt_createtime}</a>{$sort_createtime}</th>
+  </tr>
+
+  {foreach from=$list item=item}
+  <tr>
+    <td>{$item.order_id}</td>
+    <td class="first-cell">{$item.user_name|escape}</td>
+    <td>{$item.user_id}</td>
+    <td>{$item.mobile_phone}</td>
+    <td>{$item.account}</td>
+    <td style='text-align: left;'>{$item.format_detail}</td>
+    <td>{$item.order_sn}</td>
+    <td {$item.format_is_rollback_style}>{$item.format_is_rollback}</td>
+    <td {$item.format_status_style}>{$item.format_status}</td>
+    <td>{$item.format_createtime}</td>
+  </tr>
+  {foreachelse}
+  <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+  {/foreach}
+
+  <tr>
+      <td colspan="2">
+      <td align="right" nowrap="true" colspan="6">
+      {include file="page.htm"}
+      </td>
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+<!-- end users list -->
+</form>
+<script type="text/javascript" language="JavaScript">
+<!--
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+
+{literal}
+onload = function()
+{
+    document.forms['searchForm'].elements['keyword'].focus();
+    // 开始检查订单
+    startCheckOrder();
+}
+
+/**
+ * 搜索用户
+ */
+function searchForm()
+{
+    listTable.filter['user_name']   = Utils.trim(document.forms['searchForm'].elements['user_name'].value);
+    listTable.filter['user_id']     = Utils.trim(document.forms['searchForm'].elements['user_id'].value);
+    listTable.filter['mobile_phone']= Utils.trim(document.forms['searchForm'].elements['mobile_phone'].value);
+    listTable.filter['status']      = document.forms['searchForm'].elements['status'].value;
+    listTable.filter['is_rollback'] = document.forms['searchForm'].elements['is_rollback'].value;
+    // listTable.filter['pay_points_gt'] = Utils.trim(document.forms['searchForm'].elements['pay_points_gt'].value);
+    // listTable.filter['pay_points_lt'] = Utils.trim(document.forms['searchForm'].elements['pay_points_lt'].value);
+    listTable.filter['page'] = 1;
+    listTable.loadList();
+}
+
+function confirm_bath()
+{
+  userItems = document.getElementsByName('checkboxes[]');
+
+  cfm = '{$lang.list_remove_confirm}';
+
+  for (i=0; userItems[i]; i++)
+  {
+    if (userItems[i].checked && userItems[i].notice == 1)
+    {
+      cfm = '{$lang.list_still_accounts}' + '{$lang.list_remove_confirm}';
+      break;
+    }
+  }
+
+  return confirm(cfm);
+}
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}
+{/if}

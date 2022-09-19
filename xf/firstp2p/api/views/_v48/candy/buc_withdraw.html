@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>提取</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="format-detection" content="telephone=no" />
+  {include file="api/views/_v48/candy/candy_header.html"}
+</head>
+
+<body class="p_draw_body">
+  <div class="p_extract">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/extract.css');?>" rel="stylesheet" />
+    <input type="hidden" value="{$token}" name="token" id="token">
+    <input type="hidden" value="{$bucAmount}" name="bucAmount" id="buc_amount">
+      <div class="ex_address">
+        <h2>
+          <i class="title"></i>提取地址</h2>
+        <div class="cont">
+          <div class="ta">
+            <textarea name="" class="draw_add" id="JS_draw_add" cols="30" rows="4" placeholder="请输入提取地址">{$lastWithdrawAddress}</textarea>
+          </div>
+          <div class="mt15 tc">
+            <div class="btn_h25_black JS_liji_draw">获取地址</div>
+          </div>
+        </div>
+      </div>
+      <div class="ex_num mt10">
+        <span class="left">提取数量</span>
+        <span class="right">{$bucAmount} BUC</span>
+      </div>
+      <div class="ex_info mt20 tc">
+        <span class="gray_line"></span>
+        <span class="text">目前只支持全部提取</span>
+        <span class="gray_line"></span>
+      </div>
+      <div class="plr15 mt43">
+        <div class="btn_h40_red{if $lastWithdrawAddress} JS_confirm_draw{/if}">确认提取</div>
+      </div>
+      <!-- 短信验证码弹窗 -->
+      <div class="mobile_code_box_mask" style="display:none;">
+        <div class="mobile_code_box">
+          <div class="mobile_code_close"></div>
+          <div class="mobile_num">
+            <p>验证码短信已发送至</p>
+            <p><span class="mobile_num JS_mobile_num">{function name="moblieFormat" value=$mobile}</span></p>
+            <div class="send_code">
+              <div class="countdown">
+                  <canvas id="canvas" width="80" height="80"></canvas>
+              </div>
+              <input type="button" value="重新发送" class="again_send JS_again_send" autofocus="autofocus">
+              <p class="error_tips">验证码错误</p>
+            </div>
+            <div class="code_box">
+              <div class="input_default">
+                <div class="input_focus"></div>
+                <div class="input_error"></div>
+                <input type="tel" class="code_input" maxlength="6">
+                <div class="input_mask"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="error_pop_mask" style="display:none">
+        <div class="error_pop">
+          <div class="con"></div>
+          <div class="close_btn">关闭</div>
+        </div>
+      </div>
+  </div>
+  
+  <!-- 获取地址弹窗-->
+  <div class="ui_pop_ex" id="JS_ui_pop_ex" style="display:none;">
+    <div class="popup_bg"></div>
+    <div class="popup_box">
+      <div class="popup_head">
+        <a class="btn_close JS_close_pop" href="javascript:void(0);"></a>获取地址</div>
+      <div class="popup_content" id="">
+        <div class="img_com">
+          <img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/41531386827_.pic@3x.png');?>" width="165" height="165">
+        </div>
+        <div class="down_load color_blue mt10">
+            <a href="http://www.bitun.io/download" target="_blank">点击下载</a>
+        </div>
+        <div class="mt32 color_black tc">请下载BitUN,注册即可获取专属提取地址</div>
+      </div>
+    </div>
+  </div>
+  <!--public js-->
+  <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeAppUrl('js/common/common.js');?>" type="text/javascript"></script>
+  <script src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/p_buc_withdraw.js');?>"></script>
+
+</body>
+
+</html>

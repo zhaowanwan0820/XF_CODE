@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <load href='__TMPL__Common/js/jquery.min.js' />
+    <load href='__TMPL__Common/js/jquery-ui.min.js' />
+    <load href='__TMPL__Common/js/bootstrap.min.js' />
+    <load href='__TMPL__Common/style/bootstrap.min.css' />
+    <load href='__TMPL__Common/js/bootstrap-filestyle.min.js' />
+    <meta charset="UTF-8">
+    <title>上传照片</title>
+</head>
+<body style="margin:0 auto; width:960px;">
+<div class="page-header page-header_info" id="actionTab">
+    <h3>上传照片</h3>
+</div>
+<form class="form-horizontal" action="#" method="post" id="photoForm">
+    <!-- 图片相关配置 -->
+    <div class="form-group">
+        <label class="col-lg-2 control-label">照片上传：</label>
+        <div class="col-lg-1 form-inline">
+                <input id="photo" type="file" class="filestyle" data-input="false" data-buttonText="点我上传" data-icon="false">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-2 control-label">预览图：</label>
+        <div class="col-lg-3 form-inline">
+            <img src='__TMPL__Common/images/photo_demo.jpeg' id="photoPreview" class="img-thumbnail" style="width: 165px;height: 212px;">
+            <input type="hidden" id="photoUrl" name="photoUrl">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">照片背景：</label>
+        <div class="col-lg-3 form-inline">
+            <span class="form-control" style="background-color:#ccffff"><input type="radio" value="blue" name="bgColor"/></span>
+            <span class="form-control" style="background-color:#ffcccc"><input type="radio" value="red" name="bgColor"/></span>
+            <span class="form-control" style="background-color:#ffffaa"><input type="radio" value="yellow" name="bgColor"/></span>
+            <span class="form-control" style="background-color:#e5ffb3"><input type="radio" value="green" name="bgColor"/></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">是否大图：</label>
+        <div class="col-lg-3">
+            <label class="checkbox-inline">
+                <input type="checkbox" name="isBig" id="isBig">
+                (选中这个才是大图)
+            </label>
+        </div>
+    </div>
+    <!--
+       -<div class="form-group">
+       -    <label class="col-lg-2 control-label">大图顺序：</label>
+       -    <div class="col-lg-6">
+       -        <label class="form-inline">
+       -            <input type="text" name="sort" id="sort">
+       -            (数字越小排序越靠前, 默认0)
+       -        </label>
+       -    </div>
+       -</div>
+       -->
+    <div class="form-group">
+        <label class="col-lg-2 control-label"></label>
+        <div class="col-sm-1">
+            <button id="doSubmit" type="button" class="btn btn-primary btn-default btn-block">保存</button>
+        </div>
+    </div>
+    <input type="hidden" name="m" value="FiveYear" />
+    <input type="hidden" name="a" value="doAddPhoto" />
+    </div>
+</form>
+<script>
+    $(function() {
+        // Variable to store your files
+        var files;
+        // Add events
+        $('input[type=file]').on('change', prepareUpload);
+        // Grab the files and set them to our variable
+        function prepareUpload(event)
+        {
+            files = event.target.files;
+            var id = $(this).attr("id");
+            var formData = new FormData();
+            $.each(files, function(key, value)
+            {
+                formData.append(key, value);
+            });
+            $.ajax({
+                url: 'm.php?m=FiveYear&a=uploadImg',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(data, textStatus, jqXHR)
+                {
+                    if(data.code == 0)
+                    {
+                        $("#"+id+"Preview").attr("src", 'http:' + data.data.imgUrl);
+                        $("#"+id+"Url").val(data.data.imgUrl);
+                    }
+                    else
+                    {
+                        alert(data.msg);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown)
+                {
+                    // Handle errors here
+                    console.log('ERRORS: ' + textStatus);
+                    // STOP LOADING SPINNER
+                }
+            });
+        }
+        $('#doSubmit').click(function() {
+            $.ajax({
+                url: 'm.php?m=FiveYear&a=doAddPhoto',
+                type: 'POST',
+                data: $('#photoForm').serialize(),
+                cache: false,
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR)
+                {
+                    alert(data.msg);
+                    if(data.code == 0)
+                    {
+                        window.location.reload();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown)
+                {
+                    // Handle errors here
+                    console.log('ERRORS: ' + textStatus);
+                    // STOP LOADING SPINNER
+                }
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

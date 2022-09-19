@@ -1,0 +1,57 @@
+{// 引入标签库 }
+<script type="text/javascript">
+function checkform(){
+    if($('#type_name').val().length == 0 || $('#type_tag').val().length == 0){
+        alert('分类名称和标识不能为空！');
+        return false;
+    }
+    return true;
+}
+</script>
+<div class="main">
+
+<form name="search" action="__APP__" method="post">  
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="3">
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">分类名称:</td>
+        <td class="item_input">
+          <input type='text' name='type_name' id='type_name' value=''>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">分类标识:</td>
+        <td class="item_input">
+            <input type='text' name='type_tag' id='type_tag' value=''>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款类型:</td>
+        <td class="item_input">
+            <input type='radio' name='contract_type' value='0' checked>个人借款
+            <input type='radio' name='contract_type' value='1'>公司借款
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">使用状态:</td>
+        <td class="item_input">
+            <input type='radio' name='use_status' value='1' checked>当下使用
+            <input type='radio' name='use_status' value='0'>历史使用
+        </td>
+    </tr>
+    <tr>
+        <td class="item_input" colspan=2 style="text-align:center;">
+            <input type="hidden" value="MsgTemplate" name="m" />
+            <input type="hidden" value="cont_type_add" name="a" />
+            <input type="submit" class="button" onclick="return checkform();" value="添加" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd">
+        </td>
+    </tr>
+</table>
+</form>
+</div>

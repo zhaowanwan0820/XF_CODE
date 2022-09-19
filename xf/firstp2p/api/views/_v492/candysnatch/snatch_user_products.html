@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的夺宝</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/flexible.js?1');?>"></script>
+    <link href="<?php echo $this->asset->makeAppUrl('v4.83/css/snatch.css?14');?>" rel="stylesheet" />
+    {include file="api/views/_v492/candysnatch/snatch_zhuge.html"}
+</head>
+
+<body class="snatch_mine_body">
+    <script>
+        window.onload = function(){
+            setTimeout(function(){
+                zhuge.track('信宝夺宝-我的夺宝');
+            },1000)
+        }
+        var currentUserId = "{$currentUserId}"
+    </script>
+    <input type="text" class="token" value="{$token}" hidden>
+    <div class="snatch_mine_wrap">
+        <div class="mine_header_wrap">
+            <!-- 头部波浪动画 -->
+            <div class="waveWrapper waveAnimation">
+                <div class="waveWrapperInner bgMiddle">
+                    <div class="wave waveMiddle" style="background-image: url('<?php echo $this->asset->makeAppUrl('v4.8/images/candy/lang01.png');?>')"></div>
+                </div>
+                <div class="waveWrapperInner bgBottom">
+                    <div class="wave waveBottom" style="background-image: url('<?php echo $this->asset->makeAppUrl('v4.8/images/candy/lang02.png');?>')"></div>
+                </div>
+            </div>
+
+            <div class="mine_header">
+                <p class="mine_chance">剩余夺宝机会(次)</p>
+                <p class="chance_num">
+                    {if $availableCount gt 0}
+                    {$availableCount}
+                    {else}
+                    0
+                    {/if}
+                </p>
+            </div>
+            <!-- <div class="day_gain_chan">
+                <div class="gain_left">
+                    <p class="free_gain">每日赠送获得(次)</p>
+                    <p class="free_num">4</p>
+                </div>
+                <div class="gain_right">
+                    <p class="pay_gain">通过投资获得(次)</p>
+                    <p class="pay_num">2</p>
+                </div>
+            </div> -->
+        </div>
+
+        <ul class="product_list">
+            <!-- 当数据为空时显示这个 -->
+            <div class="my_prize_null" style="display:none">
+                <div class="null_wrap user_pro_null_wrap">
+                    <img src="<?php echo $this->asset->makeAppUrl('v4.83/images/Group 6@3x.png');?>" alt="">
+                </div>
+                <p class="null_note">还未参与哦~</p>
+                <p class="null_test">多多参与，一定有惊喜哦~</p>
+                <div class="prize_btn_wrap">
+                    <a class="cli_jump_snatch_now JS_lldb" href="/candysnatch/SnatchAuction?token={$token}&clearCookie=1">立即夺宝</a>
+                </div>
+            </div>
+        </ul>
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.0/js/common/common.js');?>"></script>
+    <script>
+        WXP2P.APP.triggerScheme("firstp2p://api?type=rightbtn&title=" + encodeURIComponent("我的奖品") + "&callback=jumpMyPrize");
+        function jumpMyPrize(){
+            var href = 'firstp2p://api?type=webview&gobackrefresh=true&url='+ encodeURIComponent(location.origin + '/candysnatch/SnatchUserPrize?token={$token}');
+            $(".JS_to_intrction").remove();
+            $("body").append('<a class="JS_to_intrction"></a>');
+            $("body .JS_to_intrction").attr("href", href);
+            $("body .JS_to_intrction").click();
+            zhuge.track("信宝夺宝-我的夺宝页面-点击我的奖品")
+        }
+        $('.timeStamp').html(function(){
+            var time = new Date(($(this).data('time'))*1000);
+            return time.getFullYear() + "." + ((time.getMonth()+1 > 9) ? (time.getMonth()+1) : '0'+(time.getMonth()+1)) + "." + (time.getDate() > 9 ? time.getDate() : '0'+time.getDate()) + "  " + (time.getHours() > 9 ? time.getHours() : '0'+time.getHours()) + ":" + (time.getMinutes() > 9 ? time.getMinutes() : '0'+time.getMinutes()) + ":" + (time.getSeconds() > 9 ? time.getSeconds() : '0'+time.getSeconds());
+        });
+        //跳转隐藏原生头
+        $('.JS_todetail').attr('href',function () {
+            return $(this).attr('href')+encodeURIComponent(location.origin + $(this).data('pram'));
+        })
+        $('.JS_lldb').click(function(){
+            zhuge.track("信宝夺宝-我的夺宝页面-点击立即夺宝")
+        })
+    </script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.83/js/candy/snatch_user_products.js');?>"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+{include file="web/views/v3/header.html"}
+<div class='p_account_coupon'>
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/jiathis_share.css');?>" />
+  <script src="<?php echo $this->asset->makeUrl('v3/js/vendor/ZeroClipboard.min.js');?>"></script>
+  <link href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.2.css');?>" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_coupon.css');?>" />
+  <!-- 查询 -->
+  <script src="<?php echo $this->asset->makeUrl('v3/js/common/jquery_placeholder-1.0.js');?>"></script>
+  <div class="p_invited_award w1100">
+    <p class="invited_award_title"><i class="icon_line mr15"></i>历史邀请奖励</p>
+    {if !$showSiteCoupon}
+      <div class="tabBox">
+        <div class="tabCont" id="tabCont">
+          <div class="item">
+            <div class="gridWrap">
+              <div class="searchBox clearfix">
+                <input type="text" class="searchInput fl int_placeholder" placeholder="{$select_content}" data-placeholder="{$select_content}" value="{$content}" data-content="{$content}" />
+                <input name="is_big_user" class="is_big_user" type="hidden" value="{$isBigUser}">
+                <input type="button" value="查询" class="searchBtn fl"/>
+                <span class="errorTip fl color-red">{$select_content}格式不正确！</span>
+              </div>
+              <table class="scListTable">
+                <colgroup>
+                  <col width="220">
+                  <col width="auto">
+                  <col width="140">
+                </colgroup>
+                <thead>
+                  <!-- 点击历史邀请奖励显示的tr -->
+                  <tr>
+                    <td>状态</td>
+                    <td>获奖时间</td>
+                    <td>投资时间</td>
+                    <td>好友名</td>
+                    <td>备注</td>
+                  </tr>
+                </thead>
+                <tbody id="tabs_content02"></tbody>
+              </table>
+              <div class="no_record" ><i></i><span>暂无记录</span></div>
+            </div>
+            <div class="pagination"></div>
+          </div>
+        </div>
+      </div>
+      {/if}
+    <div class="busInfor">{if !$showSiteCoupon}北京经讯时代科技有限公司保留对本活动的最终解释权。{/if}</div>
+  </div>
+</div>
+
+<script id="invest_data" type="text/html">
+<!-- 历史邀请奖励html -->
+<% if (data.list.length > 0) { %>
+  <% for (var i = 0; i < data.list.length; i++) { %>
+    <% if(i % 2 == 0) {%>
+      <tr class="odd">
+    <% }else{ %>
+      <tr class="even">
+    <% } %>
+      <td>
+        <div class="dataTr02">
+          <% if(data.list[i].deal_type != 1){ %>
+          <%=# data.list[i].pay_status_text %>
+          <% if(data.list[i].pay_status_text == "已返"){ %>
+          <span class="color-red2"><%=# data.list[i].pay_money %></span> 元
+          <% } else { %>
+          <%=# data.list[i].pay_money %> 元
+          <% } %>
+          <% }else{ %>
+          <%  if(data.list[i].pay_status != 5 && data.list[i].pay_status != 2 && data.list[i].pay_status != 1){ %>
+          <%=# data.list[i].pay_status_text   %>
+          <% }else{ %>
+          已返 <span class="color-red2"><%=# data.list[i].count_pay %></span> 次 <br/> 共 <span class="color-red2"><% if(!!data.list[i].pay_money){ %><%=# data.list[i].pay_money %>
+                          <% } else { %>0<% } %></span> 元<% } %>
+          <% } %>
+        </div>
+      </td>
+      <td><div class="dataTr"><%=# dateFormat(data.list[i].pay_time) %></div></td>
+      <td><div class="dataTr"><%=# dateFormat(data.list[i].create_time) %></div></td>
+      <td>
+        <div class="dataTr">
+          <p title="<%= data.list[i].consume_real_name %>"><%= data.list[i].consume_real_name %></p>
+          <p><%= data.list[i].mobile %></p>
+        </div>
+      </td>
+      <td><div class="dataTr02"><%= data.list[i].note %></div></td>
+    </tr>
+  
+  <% if(i % 2 == 0) {%>
+    <tr class="odd">
+  <% }else{ %>
+    <tr class="even">
+  <% } %>
+    <td colspan="5"><div class="textTr"><%= data.list[i].log_info %></div></td>
+  </tr>
+  <% } %>
+<% } %>
+<!-- end -->
+</script>
+
+<script>
+  (function() {
+    template.helper('dateFormat',function (str) {
+        var html="";
+        var arr=[];
+        if (str){
+            arr=str.split(/\s+/);
+            html='<p>'+arr[0]+'</p>'+'<p>'+arr[1]+'</p>';
+        }else{
+            html='--';
+        }
+        return html;
+    });
+    var tabItem=$('#tabCont .item');
+
+    function setpro(input) {
+      var errorTip=input.siblings('.errorTip');
+      var isBigUser=$.trim(input.siblings('.is_big_user').val());
+      var userVerify = false;
+      var userVal = $.trim(input.val());
+      if('1'==isBigUser){
+        userVerify = (userVal == "") || /^1[3456789]\d{9}$/.test(userVal);
+      }else{
+        userVerify = (userVal == "") || /^[\u0391-\uFFE5]{2,12}$|^1[3456789]\d{9}$/.test(userVal);
+      }
+
+      input.val(userVal);
+      if (!userVerify) {
+        errorTip.show();
+        return false;
+      } else {
+        errorTip.hide();
+        return true;
+      }
+    };
+
+    $("#tabCont .searchInput").on('blur',function() {
+      setpro($(this));
+    });
+
+    // 点击查询按钮
+    $("#tabCont .searchBtn").on("click", function() {
+      var input=$(this).siblings('.searchInput');
+      var curItem=$(this).parents('.item');
+      if(setpro(input)){
+        input.data('content',$.trim(input.val()));
+        reqData(curItem,'p2p',1);
+      }
+    });
+
+    // ajax请求
+    function reqData(curItem,type,page) {
+        var curInput=curItem.find('.searchInput');
+        var content=curInput.data('content');
+        var ajaxData={
+            'type':type,
+            'page':page,
+            "content": content,
+            "dataType":1
+        };
+        var _lock = curItem.data('lock');
+        if(_lock == "1"){
+            return;
+        }
+        curItem.data('lock','1');
+        
+        $.ajax({
+            url: '/coupon/lists',
+            type: 'GET',
+            data: ajaxData,
+            dataType: 'json',
+            success: function(result) {
+              investHtml(curItem,result,type);
+              curItem.data('lock','0');
+            },
+            error: function() {
+              curItem.data('lock','0');
+            }
+        });
+    }
+    // 数据拼接
+    function investHtml(curItem,result,type) {
+      var curTbody=curItem.find('tbody');
+      var noRecord=curItem.find('.no_record');
+      var curTable=curItem.find('table');
+      var pagination=curItem.find('.pagination');
+      var html = template('invest_data', result);
+
+      curTbody.html(html);
+
+      if(result.pagecount <= 0){
+        noRecord.show();
+        curTable.add(pagination).hide();
+      } else {
+        noRecord.hide();
+        curTable.add(pagination).show();
+        pageFn(curItem,result,type);
+      }
+    }
+
+    function pageFn(curItem,result,type) {
+        var indexPage=null;
+        var lastPage=null;
+        var pageText = '';
+        var curPaginate=curItem.find('.pagination');
+
+        curPaginate.show();
+        Firstp2p.paginate(curPaginate, {
+          pages: result.pagecount,
+          currentPage: result.page,
+          displayedPages:3,
+          onPageClick: function(page, $obj) {
+            reqData(curItem,type,page);
+          }
+        });
+        //分页结构二次加工
+        if(result.page==1){
+          indexPage=$('<li><span class="index" title="首页">首页</span></li>');
+        }else{
+          indexPage=$('<li><a href="#page=1" class="page-link index" title="首页">首页</a></li>');
+        }
+        if(result.page==result.pagecount){
+          lastPage=$('<li><span class="last" title="尾页">尾页</span></li>');
+        }else{
+          lastPage=$('<li><a href="#page='+result.pagecount+'" class="page-link last" title="尾页">尾页</a></li>');
+        }
+        pageText = '<li><span class="total">共<i>'+result.pagecount+'</i>页</span></li>';
+        curPaginate.find("ul").append(lastPage,pageText).prepend(indexPage);
+        curPaginate.find('a.last,a.index').on('click',function (event) {
+          event.preventDefault();
+          var page=$(this).attr('href').match(/.*#page=(\d*)$/)[1];
+          reqData(curItem,type,page);
+        });
+    }
+
+    reqData(tabItem,'p2p',1);
+})();
+</script>
+
+{include file="web/views/v3/footer.html"}

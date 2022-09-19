@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>优惠券详情</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <!--public js&css start-->
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+        <!--public js&css end-->
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+
+        <div class="m-main">
+            <div class="p_coupon_detailed">
+                <div class="goods">
+                    <dl class="clearfix">
+                        <dt><img src="{$coupon.pic}"></dt>
+                        <dd>
+                            <h3>{$coupon.productName}</h3>
+                            {if $coupon.isShowCouponNumber eq 1}
+                            <p>券码：<span id="coupon_num"></span></p>
+                            {/if}
+                            {if $coupon.goodPrice neq 0}<p>价值：{$coupon.goodPrice}元</p>{/if}
+                        </dd>
+                    </dl>
+                </div>
+                <div class="detailed_text">
+                    <h2>详情</h2>
+                    <p>
+                        {function name='htmlspecialchars_decode' v=$coupon.couponDesc}
+                    </p>
+                    <h2>会员名称</h2>
+                    <p>{$userInfo.user_name}</p>
+                    <h2>有效期至</h2>
+                    <p>{function name="format_date_by_type" b=$coupon.useEndTime}</p>
+                </div>
+            </div>
+            <div class="ui_h56"></div>
+            <div class="ui_btn_box">
+                <a data-proto="coupon://api" data-type="webview" data-backtype="finish" data-backid="couponRedeem" data-title="礼券详情" data-identity="couponRedeemResult" data-needback="false" data-needrefresh="true" href="{$APP_HOST}/seller/doApply?couponId={$coupon.id}&token={$token}" class="btn_red">兑换</a>
+            </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+        <script>
+            var bonusCode = '123456';
+            //券码分割
+            var str = '{$coupon.couponNumber}';
+            var couponNumber = '';
+            for (var i = 0; i < str.length; i++) {
+                couponNumber += str[i];
+                if ((i + 1) % 4 == 0) couponNumber += ' ';
+            }
+            document.getElementById("coupon_num").innerHTML = couponNumber;
+        </script>
+    </body>
+</html>

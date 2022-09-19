@@ -1,0 +1,218 @@
+<!-- $Id: order_query.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+<script type="text/javascript" src="../js/calendar.php"></script>
+<link href="../js/calendar/calendar.css" rel="stylesheet" type="text/css" />
+<div class="main-div">
+<form action="order.php?act=insert_export" method="post"  name="searchForm" onsubmit="return checkEmail()">
+
+      <table cellspacing="1" cellpadding="3" width="100%">
+          <!-- 商家分类 -->
+          <tr>
+              <td><div align="right"><strong>{$lang.label_Supplier}</strong></div></td>
+              <td>
+                  <select name="suppliers_type" onchange="checkSupplers(this)">
+                      <option value="0">{$lang.select_please}</option>
+                      {foreach from=$suppliersTypeList  item=item key=key}
+                      <option value="{$key}" >{$item} </option>
+                      {/foreach}
+                  </select>
+                  <select name="suppliers_id" id="suppliers_id" style="display: none">
+                      <option value="-1">{$lang.select_please}</option>
+                  </select>
+
+              </td>
+          </tr>
+
+          <!-- 商品分类 -->
+          <tr>
+              <td>
+                  <div align="right"><strong>{$lang.lab_goods_cat}</strong></div>
+              </td>
+              <td>
+                  <select name="cat_id_1" id="cat_id_1" onchange="checkCat(this, 1, 'cat_id_2')">
+                      <option value="0">{$lang.select_please}</option>
+                      {foreach from=$category_list item=category}
+                      <option value="{$category.cat_id}" >{$category.cat_name}</option>
+                      {/foreach}
+                  </select>
+                  <select name="cat_id_2" id="cat_id_2" onchange="checkCat(this, 1, 'cat_id')" style="display: none">
+                      <option value="0">{$lang.select_please}</option>
+                  </select>
+                  <select name="cat_id" id="cat_id" style="display: none">
+                      <option value="0">{$lang.select_please}</option>
+                  </select>
+              </td>
+          </tr>
+
+          <!-- 支付方式 -->
+          <tr>
+              <td><div align="right"><strong>{$lang.p_name}</strong></div></td>
+              <td> <select name="pay_name" >
+                  <option value="-1">{$lang.select_please}</option>
+                  <option value="1">余额支付</option>
+                  <option value="2">微信支付</option>
+                  <option value="3">支付宝</option>
+              </select></td>
+          </tr>
+
+          <!-- 配送地区-->
+          <tr>
+              <td>
+                  <div align="right"><strong>{$lang.label_area}</strong></div>
+              </td>
+              <td>
+                  <select name="country" id="selCountries" onChange="region.changed(this, 1, 'selProvinces')">
+                      <option value="0" selected="true">{$lang.select_please}</option>
+                      {foreach from=$country_list item=country}
+                      <option value="{$country.region_id}">{$country.region_name}</option>
+                      {/foreach}
+                  </select> <select name="province" id="selProvinces" onChange="region.changed(this, 2, 'selCities')">
+                  <option value="0">{$lang.select_please}</option>
+              </select> <select name="city" id="selCities" onchange="region.changed(this, 3, 'selDistricts')">
+                  <option value="0">{$lang.select_please}</option>
+              </select>
+                  <select name="district" id="selDistricts">
+                      <option value="0">{$lang.select_please}</option>
+                  </select>
+              </td>
+          </tr>
+
+          <!-- 下单时间 -->
+          <tr>
+              <td><div align="right"><strong>{$lang.label_time}</strong></div></td>
+              <td>
+                  <input type="date"  step="01" size="18" id="start_time" name="start_time" style="display: inline-block;width: 130px;height: 28px;font-size: 13px;font-family: -apple-system"/>
+                  ~ <input type="date"  step="01" size="18" id="end_time"  name="end_time" style="display: inline-block;width: 130px;height: 28px;font-size: 13px;font-family: -apple-system"/>
+              </td>
+          </tr>
+
+
+          <!-- 订单状态 -->
+          <tr>
+              <td><div align="right"><strong>{$lang.label_order_status}</strong></div></td>
+              <td colspan="3">
+                  <select name="order_status" id="select9">
+                      <option value="-1">{$lang.select_please}</option>
+                      {html_options options=$os_list selected=-1}
+                  </select>
+                  <strong>{$lang.label_pay_status}</strong>        <select name="pay_status" id="select11">
+                  <option value="-1">{$lang.select_please}</option>
+                  {html_options options=$ps_list selected=-1}
+              </select>
+                  <strong>{$lang.label_shipping_status}</strong>        <select name="shipping_status" id="select10">
+                  <option value="-1">{$lang.select_please}</option>
+                  {html_options options=$ss_list selected=-1}
+              </select></td>
+          </tr>
+
+          <!-- 配送方式 -->
+          <!--<tr>-->
+              <!--<td><div align="right"><strong>{$lang.s_name}</strong></div></td>-->
+              <!--<td> <select name="shipping_id" >-->
+                  <!--<option value="-1">{$lang.select_please}</option>-->
+                  <!--{foreach from=$shipping_list item=shipping}-->
+                  <!--<option value="{$shipping.shipping_id}">{$shipping.shipping_name}</option>-->
+                  <!--{/foreach}-->
+              <!--</select></td>-->
+          <!--</tr>-->
+
+
+          <tr>
+              <td colspan="100%"><hr></td>
+          </tr>
+
+          <!-- 邮箱 -->
+          <tr>
+              <td><div align="right"><strong>{$lang.set_to_email}</strong></div></td>
+              <td><input type="email" id="email" name="email" size="25">&nbsp;<span class="notice-span">{$lang.email_info}</span></td>
+          </tr>
+
+          <!-- 文件名称 -->
+          <tr>
+              <td><div align="right"><strong>{$lang.file_name}</strong></div></td>
+              <td><input type="text" id="file" name="export_name" size="24">&nbsp;<span class="notice-span">{$lang.export_name_info}</span></td>
+          </tr>
+
+      </table>
+
+    <div style="margin-left: 40%">
+      <input class="btn" name="query" type="submit" class="button" id="query" value="{$lang.export_order}" />
+      <input class="btn" name="reset" type="reset" class='button' value='{$lang.button_reset}' />
+    </div>
+
+</form>
+</div>
+{insert_scripts files="../js/transport.js,../js/region.js"}
+{literal}
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script language="JavaScript">
+region.isAdmin = true;
+
+function checkSupplers(obj){
+      var parent = obj.options[obj.selectedIndex].value;
+      Ajax.call('order.php?is_ajax=1&act=show_suppliers', "suppliers_type=" + parent, suppliersResposen, "GET", "JSON");
+}
+
+function checkCat(obj, type, selName) {
+    var parent = obj.options[obj.selectedIndex].value;
+    if (parent == 0) parent = 99;
+    Ajax.call('goods.php?act=get_category', 'type=' + type + '&target=' + selName + "&parent=" + parent, catResponse, "GET", "JSON");
+}
+
+function suppliersResposen(result) {
+    var sel = document.getElementById('suppliers_id');
+    sel.length = 1;
+    sel.selectedIndex = 0;
+    sel.style.display = (result.suppliers.length == 0) ? "none" : '';
+    if (result.suppliers) {
+        for (i = 0; i < result.suppliers.length; i++) {
+            var opt = document.createElement("OPTION");
+            opt.value = result.suppliers[i].suppliers_id;
+            opt.text = result.suppliers[i].suppliers_name;
+            sel.options.add(opt);
+        }
+    }
+}
+
+function catResponse(result) {
+    var sel = document.getElementById(result.target);
+    sel.length = 1;
+    sel.selectedIndex = 0;
+    if (result.target == 'cat_id_2') {
+        document.getElementById('cat_id').style.display = 'none';
+    }
+    sel.style.display = (result.regions.length == 0) ? "none" : '';
+    if (result.regions) {
+        for (i = 0; i < result.regions.length; i++) {
+            var opt = document.createElement("OPTION");
+            opt.value = result.regions[i].cat_id;
+            opt.text = result.regions[i].cat_name;
+            sel.options.add(opt);
+        }
+    }
+}
+function checkEmail(){
+    var email = document.getElementById('email').value;
+    var file = document.getElementById('file').value;
+    var start_time = $("#start_time").val()
+    var end_time   = $("#end_time").val()
+    if(start_time > end_time){
+        alert('开始时间不能大于结束时间')
+        return false;
+    }
+    if(email == ''){
+        alert('请填写邮箱');
+        return false;
+    }
+    if(file == ''){
+        alert('请填写文件名称');
+        return false;
+    }
+    return true;
+}
+
+
+
+</script>
+{/literal}
+{include file="pagefooter.htm"}

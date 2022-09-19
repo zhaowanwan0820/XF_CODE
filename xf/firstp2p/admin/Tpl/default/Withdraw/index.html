@@ -1,0 +1,43 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<div class="main">
+<div class="main_title">提现批量审查</div>
+<div class="blank5"></div>
+
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+    <tr><td colspan="10" class="topTd" >&nbsp; </td></tr>
+    <!--提现批量处理-->
+    <tr class="row" >
+        <th>批量提现编号</th>
+        <td>
+            <form action="__APP__" method="post" target="_blank" name="search">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="Withdraw" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="process" />
+                输入提现ID:
+                <span class='tip_span'>(支持多个提现编号,每行一个)</span>
+                <div class="blank5"></div>
+                <textarea name="ids" style="width:500px;height:100px;"></textarea>
+                <div class="blank5"></div>
+                操作类型
+                <div class="blank5"></div>
+                <select name="op">
+                    <option selected="true" value=''>请选择操作类型</option>
+                    <option value="refuse">拒绝提现</option>
+                    <!-- <option value="pass">批准提现</option> -->
+                </select>
+                <div class="blank5"></div>
+                <input type="submit" class="button" value="提交" />
+            </form>
+        </td>
+    </tr>
+    <tr><td colspan="10" class="bottomTd">&nbsp; </td></tr>
+</table>
+
+<div class="blank5"></div>
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,58 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user_edit.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="main_title">修改受托支付收款人信息</div>
+<div class="blank5"></div>
+
+<form id="addform" name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr id="cardname">
+        <td class="item_title">收款账户账户名:</td>
+        <td class="item_input">
+            <input type="text" name="card_name" class="textbox require" id="card_name" value="{$vo['card_name']}" />
+        </td>
+    </tr>
+
+    <include file="DealProject:bankzone_selector" />
+
+    <tr id="bankcardnumber">
+        <td class="item_title">收款账户银行卡号:</td>
+        <td class="item_input">
+            <input type="text" name="bankcard" class="textbox require" id="bankcard" value="{$vo['bankcard']}" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+        <!--隐藏元素-->
+        <input type="hidden" name="id" id="id" value="{$vo.id}" />
+        <input type="hidden" name="{:conf("VAR_MODULE")}" value="DealProject" />
+        <input type="hidden" name="{:conf("VAR_ACTION")}" value="saveBankInfo" />
+        <!--隐藏元素-->
+        <input type="submit" class="button" value="{%SAVE}" id="submit" onclick="return checkSave();" />
+        <input type="reset" class="button" value="{%RESET}" />
+    </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+
+</div>
+<include file="Public:footer" />

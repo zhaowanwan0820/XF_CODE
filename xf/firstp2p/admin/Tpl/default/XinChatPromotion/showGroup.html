@@ -1,0 +1,134 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<load href='__TMPL__Common/js/jquery.weebox.js'/>
+<load href='__TMPL__Common/style/weebox.css'/>
+<load href='__TMPL__Common/js/conf.js'/>
+<load href='__TMPL__Common/js/Chart.min.js'/>
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js"></script>
+<load href='__TMPL__Common/js/calendar/calendar.css'/>
+<load href='__TMPL__Common/js/calendar/calendar.js'/>
+
+<div class="main">
+    <div class="main_title">活动组编辑</div>
+    <div class="blank5"></div>
+
+    <form name="search" action="/m.php" method="post" enctype="multipart/form-data">
+        <input type="hidden" value="XinChatPromotion" name="m"/>
+        <input type="hidden" value="saveGroup" name="a"/>
+        <input type="hidden" value="{$imageUrl}" name="imageUrl"/>
+        <input type="hidden" value="{$group['promotionGroupId']}" name="groupId"/>
+
+        有效期起始日期:
+        <input type="text" class="textbox" style="width:140px;" name="validityStart" id="start_success_date"
+               value="{$group['validityStart']}"
+               onfocus="this.blur(); return showCalendar('start_success_date', '%Y-%m-%d 00:00:00', false, false, 'btn_start_success_date');"
+               title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}"/>
+        <input type="button" class="button" id="btn_start_success_date" value="{%SELECT_TIME}"
+               onclick="return showCalendar('start_success_date', '%Y-%m-%d %H:%M', false, false, 'btn_start_success_date');"/>
+        有效期结束日期
+        <input type="text" class="textbox" style="width:140px;" name="validityEnd" id="end_success_date"
+               value="{$group['validityEnd']}"
+               onfocus="this.blur(); return showCalendar('end_success_date', '%Y-%m-%d 23:59:59', false, false, 'btn_end_success_date');"
+               title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}"/>
+        <input type="button" class="button" id="btn_end_success_date" value="{%SELECT_TIME}"
+               onclick="return showCalendar('end_success_date', '%Y-%m-%d %H:%M', false, false, 'btn_end_success_date');"/>
+
+        <br/>
+        <br/>
+        <empty name="imageUrl"><span class="">添加</span>
+            <else/>
+            <span class="">替换</span></empty>
+        活动头图:
+        <input type="file" class="textbox" name="image" style="width:150px">600kb以内, 750px*300px
+
+        <hr/>
+
+        <div id="promotion_list">
+            <volist name="group['voPromotions']" id="promotion">
+                <div>
+                    活动标题:
+                    <input type="text" class="textbox" name="promotion[title][]" value="{$promotion['title']}"
+                           size="30"/>
+                    活动链接:
+                    <input type="text" class="textbox lianjie" name="promotion[url][]" value="{$promotion['url']}"
+                           size="60"/>
+
+                    <input type="button" class="button delete" value="删除"/>
+                </div>
+            </volist>
+        </div>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        <input type="button" class="button" id="add" value="新增活动"/>
+        <input type="submit" class="button" id="submit" value="提交"/>
+    </form>
+
+    <div id="promotion_hidden_item" hidden="hidden">
+        <div>
+            活动标题:
+            <input type="text" class="textbox" name="promotion[title][]" value="" size="30"/>
+            活动链接:
+            <input type="text" class="textbox lianjie" name="promotion[url][]" value="" size="60"/>
+            <input type="button" class="button delete" value="删除"/>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $("#add").click(function () {
+            $("#promotion_list").append($("#promotion_hidden_item").html());
+        });
+
+        $(".delete").live("click", function () {
+            $(this).parent().remove();
+        });
+
+        $("#submit").click(function (event) {
+            $("#promotion_list input:text").each(function () {
+                if ($.trim($(this).val()) == "") {
+                    alert("活动标题与链接不能为空");
+                    event.preventDefault();
+
+                    return false;
+                }
+            })
+
+            $("#promotion_list .lianjie").each(function () {
+                var url = $(this).val();
+                var reg = /^http(s)?:\/\/.*$/;
+
+                if (!reg.test(url)) {
+                    alert("链接非法:" + url);
+                    event.preventDefault();
+
+                    return false;
+                }
+            })
+
+            if ($.trim($("#start_success_date").val()) == "") {
+                alert("有效期开始时间不能为空");
+
+                event.preventDefault();
+
+                return false;
+            }
+
+            if ($.trim($("#end_success_date").val()) == "") {
+                alert("有效期结束时间不能为空");
+
+                event.preventDefault();
+
+                return false;
+            }
+        });
+    })
+</script>
+
+<include file="Public:footer"/>

@@ -1,0 +1,72 @@
+<tagLib name="html" />
+<include file="Public:header" />
+
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+    <div class="main_title">批量锁定/解锁记录</div>
+    <div class="blank5"></div>
+
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            时间段：
+            <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" style="width:150px;"
+                   onfocus="return showCalendar('time_start', '%Y-%m-%d', false, false, 'btn_time_start');" />
+            <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d', false, false, 'btn_time_start');" />
+            -
+            <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}"  style="width:150px;"
+                   onfocus="return showCalendar('time_end', '%Y-%m-%d', false, false, 'btn_time_end');" />
+            <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d', false, false, 'btn_time_end');" />
+
+            <input type="hidden" value="batchUserLog" name="m" />
+            <input type="hidden" value="index" name="a" />
+
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+
+        <tr class="row">
+            <th>编号</th>
+            <th>完成时间</th>
+            <th>申请人</th>
+            <th>范围</th>
+            <th>备注</th>
+        </tr>
+
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td>{$item.id}</td>
+            <td>{$item.finish_time|to_date}</a></td>
+            <td>{$item.operate_author}</td>
+            <td>
+                <a href="/m.php?m=batchUserLog&a=show&id={$item.id}">{$item.file_name}</a>
+                &nbsp;
+                <a href="/m.php?m=batchUser&a=downCsv&id={$item.id}" style="float:right">下载</a>
+                &nbsp;
+            </td>
+            <td>{$item.comments}</td>
+        </tr>
+        </foreach>
+
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+
+    <div class="page">{$page}</div>
+
+</div>
+<include file="Public:footer" />

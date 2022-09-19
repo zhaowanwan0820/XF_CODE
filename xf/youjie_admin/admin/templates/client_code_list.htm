@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>客户号列表</title>
+    <link rel="stylesheet" href="../js/calendar/init.css">
+    <style>
+        table{border-collapse: collapse;border-spacing: 0;table-layout: fixed;}
+        thead{border:1px solid #EEE;height: 40px;line-height: 40px;}
+        th{font-size: 14px;font-weight: 700;border-right: 1px solid #eee;}
+        .conter-tr{white-space: nowrap; text-align: center;height: 40px;line-height: 40px;background-color: #faf8f8;}
+        .conter-tr td{font-size: 14px;border-right: 1px solid #eee;border-bottom: 1px solid #eee;}
+        .button-c{margin: 0;padding: 0;border: 1px solid transparent;outline: none;background-color: #fff;cursor: pointer;border-radius: 3px;width: 70px;height: 30px;line-height: 30px;text-align: center;font-size: 14px;letter-spacing: 2px;}
+        .btn-blue{background-color: #108ee9;color: #fff;border:#108ee9;   }
+        .btn-red{background-color: #fb3a40;color: #fff;border:#fb3a40;}
+        .coverup{width: 100%;position: fixed;top: 0;left: 0;background-color:rgba(0,0,0,0.2);display: none;}
+        .coverup-box{width: 36%;min-width:412px;max-height:460px;z-index: 9999;overflow-y: auto;background-color: #fff;border-radius: 4px;margin: 4% auto 0;}
+        .coverup-title{width: 100%;height: 40px;line-height: 40px;text-indent: 20px;background-color: #eee;font-size: 16px;font-weight: 800;color: #222;}
+        .coverup-x{float: right;margin-top: 10px;margin-right: 30px;cursor: pointer;}
+        .coverup-conter{width: 90%;margin: 10px auto 0;font-size: 14px;}
+        input {border: none;outline: none;-webkit-appearance: none;}
+        input{height: 30px;line-height: 30px;font-size: 14px;border:1px solid #eee;border-radius: 3px;text-indent: 6px;}
+        .coverup-conter span{font-weight: 800;}
+        .tips{height: 50px;line-height: 50px;text-align: center;position: relative;}
+        .tips-h{height: 100px;line-height: 100px;}
+        .coverup-textarea{width: 240px;height: 100px;max-width: 240px;max-height: 100px;resize:none;border:1px solid #eee;font-size: 14px;text-indent: 6px;vertical-align: -webkit-baseline-middle;}
+        .coverup-footer{width:50%;min-width:230px;margin: 10px auto 20px; text-align: center;}
+        .coverup-btn,.coverup-cancel{display: inline-block;width: 70px;height: 30px;background-color:#108ee9;border-radius: 3px; line-height: 30px;text-align: center;color: #fff;margin: 0 20px;cursor: pointer;}
+        .coverup-btn{background-color: #fb3a40;}
+        .marginbor{margin: 20px 70px;}
+        .select { width: 160px;height: 34px;line-height: 34px;border:1px solid #eee; }
+        .select option {font-size: 14px;line-height: 34px;}
+        label{
+            display: inline-table;
+            width:160px;
+            text-align: right;
+        }
+        @media screen and (max-width:1440px){
+            .coverup-box{
+                width: 46%;
+                min-width: 412px;
+            }
+            /*.tips span{
+                position: absolute;left: -10px;top: 0;
+            }*/
+        }
+        @media screen and (max-width:900px){
+            .select{
+                height: 34px;
+                line-height: 34px;
+            }
+            label {
+                display: block;
+                width: none;
+                text-align: left;
+            }
+            .tips{
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 10px;
+                height: auto;
+                line-height: auto;
+                text-align: left;
+            }
+            .coverup-footer{
+                width: 100%;
+            }
+            .tips span{
+                position: absolute;left: -10px;top: 0;
+            }
+        }
+        tr {
+            transition: all .3s;
+            -webkit-transition: all .3s;
+        }
+        th {
+            display: table-cell;
+            vertical-align: inherit;
+        }
+        .conter-tr td{
+            font-size: 14px;
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            max-width:100px;
+            word-wrap: break-word;
+            white-space: initial;
+        }
+        tbody {
+            display: table-row-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <div class="condition clearfix">
+        <div class="button-c btn-blue float marginbor" id="addcoverup">添加</div>
+    </div>
+    <table class="layui-table" width="100%">
+        <thead>
+            <tr>
+                <th width="50">
+                    序号
+                </th>
+                <th width="100">
+                    快递公司
+                </th>
+                <th>
+                    电子面单客户号
+                </th>
+                <th width="150">
+                    客户密码
+                </th>
+                <th>
+                    月结号或秘钥串
+                </th>
+                <th>
+                    快递网点
+                </th>
+                <th width="200">
+                    操作
+                </th>
+
+            </tr>
+        </thead>
+        <tbody id="shops-site">
+            <tr class="conter-tr"><td>1</td><td>顺丰</td><td></td><td></td><td></td><td></td><td></td></tr><tr class="conter-tr"><td>2</td><td>宅急送</td><td></td><td></td><td></td><td></td><td></td></tr><tr class="conter-tr"><td>3</td><td>邮政快递包裹</td><td></td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+        <div class="msg"></div>
+    </table>
+    <div class="coverup">
+        <div class="coverup-box">
+           <div class="coverup-title clearfix">
+               <span></span>
+               <img class="coverup-x" src="./images/x.png" alt="" width="16" height="16">
+           </div>
+           <div class="coverup-conter">
+               <div class="tips">
+                 <label>物流公司：</label>
+                 <select name="expressCompanyId" class="select" id="expressCompanyId">
+                    <option value="-1">-请选择-</option>
+                </select>
+                   <span style="color:red;">*</span>
+               </div>
+               <div class="tips">
+                <label>电子面单客户号：</label>
+                <input class="coverup-input" type="text" value="" name="customerName" autocomplete="off" />
+                   <span style="color:red;">*</span>
+              </div>
+              <div class="tips">
+                <label>客户密码：</label>
+                <input class="coverup-input" type="text" value="" name="customerPwd" autocomplete="off" />
+                  <span style="color:red;">*</span>
+              </div>
+              <div class="tips">
+                <label>月结号或秘钥串：</label>
+                <input class="coverup-input" type="text" value="" name="monthCode" autocomplete="off" />
+                  <span style="color:red;">*</span>
+              </div>
+              <div class="tips">
+                <label>快递网点：</label>
+                <input class="coverup-input" type="text" value="" name="sendSite" autocomplete="off" />
+                  <span style="color:red;">*</span>
+              </div>
+           </div>
+           <div class="coverup-footer">
+               <div class="coverup-btn">提交</div>
+               <div class="coverup-cancel">取消</div>
+           </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    {insert_scripts files="../js/util.js"}
+    <script>
+
+        $(function () {
+            $('.coverup').css('height',window.outerHeight);
+            const suppId = {$suppliersId};
+            /*
+                获取列表信息
+                url express.php?act=show_electronic_code
+                suppliersId 商家id
+            */
+            function shopsSite(){
+                let obj = {
+                    type:'GET',
+                    site:'express.php?act=show_electronic_code',
+                    data:{admin_id:suppId}
+                };
+                U.https(obj).then(data=>{
+                    let datas= data.data, str = '';
+                    // console.log(datas)
+                    if(datas.length>0){
+                        str = '<tr class="conter-tr"><td>1</td><td>顺丰</td><td></td><td></td><td></td><td></td><td></td></tr><tr class="conter-tr"><td>2</td><td>宅急送</td><td></td><td></td><td></td><td></td><td></td></tr><tr class="conter-tr"><td>3</td><td>邮政快递包裹</td><td></td><td></td><td></td><td></td><td></td></tr>';
+                        datas.forEach((item,i,arr) => {
+                            str+=`<tr class="conter-tr"><td>${i+4}</td><td>${item.expressCompany.expressCompanyName}</td><td>${item.customerName}</td><td>${item.customerPwd}</td><td>${item.monthCode}</td><td>${item.sendSite}</td><td><button class="button-c btn-blue btn-click" data-id="${item.id}" data-expressid="${item.expressCompanyId}" data-customername="${item.customerName}" data-customerpwd="${item.customerPwd}" data-monthcode="${item.monthCode}" data-sendsite="${item.sendSite}" data-suppliersid="${item.suppliersId}">编辑</button><button style="margin:0 10px;" class="button-c btn-red btn-delete" data-id="${item.id}">删除</button></td></tr>`;
+                        });
+                        $('#shops-site').html(str);
+                    }else{
+                        $('#shops-site').html(`<tr class="conter-tr"><td>1</td><td>顺丰</td><td></td><td></td><td></td><td></td><td></td></tr><tr class="conter-tr"><td>2</td><td>宅急送</td><td></td><td></td><td></td><td></td><td></td></tr><tr class="conter-tr"><td>3</td><td>邮政快递包裹</td><td></td><td></td><td></td><td></td><td></td></tr>`);
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                    if(err.msg){
+                        alert(err.msg)
+                    }
+
+                })
+            }
+            shopsSite();
+            /**
+             * 快递公司展示接口
+             * url express.php?act=express_company
+             */
+            function expressCompany() {
+                U.https({type:'GET', site: 'express.php?act=express_company', data: {} }).then(data => {
+                    // console.log(data)
+                    let datas = data.data;
+                    let str = `<option value="-1">-请选择-</option>`;
+                    if(datas.length>0) {
+                        for (var i of datas) {
+                            str += `<option data-load="0" value="${i.id}" data-key="${i.expressCompanyCode}">${i.expressCompanyName}</option>`;
+                        }
+                        $('#expressCompanyId').html(str);
+                    }else {
+                        $('#expressCompanyId').html(`<option value="-1">-请选择-</option>`);
+                    }
+                })
+                    .catch(err => {
+                        console.log(err)
+                        if(err.msg){
+                            alert(err.msg)
+                        }
+                    });
+            }
+            expressCompany()
+            /**
+             新增/修改地址信息
+             url express.php?act=add_electronic_simplex
+             suppliersId     商家id
+             expressCompanyId 物流公司id
+             customerName   电子面单客户号
+             customerPwd    客户密码
+             monthCode      月结号或密钥串
+             sendSite       快递网点
+             */
+            function edit(a,obj) {
+                U.https(obj).then(data=>{
+                    // console.log(data)
+                    if(data.code == 1){
+                        if(a.suppliersEorderInfoId){
+                            alert(`修改成功`);
+                        }else if(a.key == 'delete'){
+                            alert('删除成功')
+                        }else{
+                            alert(`添加成功`);
+                        }
+                        $('.coverup').fadeOut(300);
+                        shopsSite();
+                    }
+                }).catch(err=>{
+                    console.log(err);
+                    if(err.msg){
+                        alert(err.msg)
+                    }
+                    $('.coverup').fadeOut(300);
+                })
+            }
+            //编辑
+            $('#shops-site').on('click','.btn-click',function (e) {
+                let a = e.target.dataset,sel=$('#expressCompanyId')[0];
+                // console.log(a)
+                $('.coverup').fadeIn(300);
+                $('.coverup-title span').text('编辑电子面单客户号');
+                $('input[name=customerName]').val(a.customername);
+                $('input[name=customerName]').attr('disabled',true);
+                $('input[name=customerPwd]').val(a.customerpwd);
+                $('input[name=monthCode]').val(a.monthcode);
+                $('input[name=sendSite]').val(a.sendsite);
+                $('.coverup-btn').attr('data-id','edit');
+                $('.coverup-btn').attr('data-key',a.id);
+                for(var i=0;i<sel.options.length;i++){
+                    if(sel.options[i].value == a.expressid){
+                        sel.options[i].selected=true;
+                        break;
+                    }
+                }
+            })
+            //关闭
+            $('.coverup-x').on('click',function () {
+                $('.coverup').fadeOut(300);
+            })
+            $('.coverup-cancel').on('click',function () {
+                $('.coverup').fadeOut(300);
+            })
+            //提交
+            $('.coverup-btn').on('click',function () {
+                let a_ = {};
+                let expressCompanyId = $('#expressCompanyId option:selected').val();
+                let customerName = $('input[name=customerName]').val();
+                let customerPwd = $('input[name=customerPwd]').val();
+                let monthCode = $('input[name=monthCode]').val();
+                let sendSite = $('input[name=sendSite]').val();
+                let id = $('.coverup-btn').attr('data-id');
+                if(expressCompanyId=='-1'){
+                    alert(`请选择快递公司`)
+                    return
+                }
+                if(expressCompanyId != "13" && expressCompanyId != "12"&& expressCompanyId != "6"){
+                    if(customerName ==''){
+                        alert('请填写电子面单客户号！');
+                        return
+                    }
+                }
+                if(expressCompanyId != "13"&&expressCompanyId != "12"&&expressCompanyId != "6"&&expressCompanyId != "11"&&expressCompanyId != "9"){
+                    if(customerPwd ==''){
+                        alert('请填写客户密码！');
+                        return
+                    }
+                }
+                if(expressCompanyId == '4'){
+                    if(monthCode ==''){
+                        alert('圆通请填写月结号或秘钥串！');
+                        return
+                    }
+                }
+                if(expressCompanyId == '3' || expressCompanyId == '8'){
+                    if(sendSite ==''){
+                        alert('申通、天天请填写快递网点！');
+                        return
+                    }
+                }
+                if(id == 'add'){
+                    a_={
+                        expressCompanyId, customerName,customerPwd,monthCode,sendSite,suppliersId:suppId
+                    }
+                    let obj={
+                        type:'GET',
+                        site:'express.php?act=add_electronic_simplex',
+                        data:a_
+                    }
+                    edit(a_,obj)
+                }else{
+                    let suppliersEorderInfoId = $('.coverup-btn').attr('data-key');
+                    a_={
+                        suppliersEorderInfoId,expressCompanyId, customerName,customerPwd,monthCode,sendSite,suppliersId:suppId
+                    }
+                    let obj={
+                        type:'GET',
+                        site:'express.php?act=update_electronic_code',
+                        data:a_
+                    }
+                    edit(a_,obj)
+                }
+            })
+            //新增
+            $('#addcoverup').on('click',function () {
+                let obj = {},pro=$('#expressCompanyId')[0];
+                $('.coverup').fadeIn(300);
+                $('.coverup-title span').text('添加电子面单客户号');
+                $('input[name=customerName]').attr('disabled',false);
+                // $('#expressCompanyId option:selected').html('-请选择-');
+                $('#expressCompanyId option:selected').val('-1');
+                $('input[name=customerName]').val('');
+                $('input[name=customerPwd]').val('');
+                $('input[name=monthCode]').val('');
+                $('input[name=sendSite]').val('');
+                $('.coverup-btn').attr('data-id','add');
+                // for(var i=0;i<pro.options.length;i++){
+                //     if($(pro.options[i]).val() == '-1'){
+                //         pro.options[i].selected=true;
+                //         break;
+                //     }
+                // }
+                expressCompany();
+            })
+            //删除
+            $('#shops-site').on('click','.btn-delete',function (e){
+                let r = confirm('确认删除此条信息吗？');
+                if(r){
+                    let id = $(this).attr('data-id');
+                    a_={
+                        id,key:'delete'
+                    }
+                    let obj={
+                        type:'GET',
+                        site:'express.php?act=del_electronic_code',
+                        data:a_
+                    }
+                    edit(a_,obj)
+                }
+            });
+        })
+    </script>
+</body>
+</html>

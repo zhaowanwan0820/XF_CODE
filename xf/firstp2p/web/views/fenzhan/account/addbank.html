@@ -1,0 +1,208 @@
+{include file="web/views/fenzhan/header.html"}
+<link href="{$TMPL_NEW}/css/collection.css" rel="stylesheet" type="text/css">
+<div class="w980 mauto clearfix">
+	   <section>
+       		<div class="shadow">
+            	<div class="mess_title tc">收款银行卡信息</div>
+                <div class="collection ">
+                    <form name="Jcarry_From" id="Jcarry_From_2" action="{url x="index" r="account/savebank"}" method="post">
+                	<table width="100%">
+						<?php echo token_input(); ?>
+                        <tbody class="colltab">
+                        	<tr>
+                            	<td colspan="2" class="color-yellow1 pl20">
+                                	<p class="w740 pl10">温馨提醒：</p>
+									<p class="w740 pl10">1.请务必提交本人名下的储蓄卡账户信息；</p>
+									<!-- <p class="w740 pl10">2.银行卡账户信息一旦提交将锁定，不能自己修改。如需修改，请向客服人员提出申请。</p> -->
+                                </td>
+                            </tr>
+                            <tr>
+                            	<th><i class="ico_asterisk"></i> 开户名：</th>
+                                <td>
+                                	<input type="text" class="idbox" disabled="disabled" name="" value="<?php echo nameFormat($this->_var['bankcard_info']['card_name'],1);?>">
+                                	<input type="hidden" name="isnew" id="" value="1" />
+                                    <input type="hidden" name="card_name" id="Jcarry_real_name" value="{$bankcard_info.card_name}" />
+                                </td>
+                            </tr>
+                            <tr>
+                            	<th>账户类型：</th>
+                                <td>借记卡<em class="color-red1">（不支持信用卡）</em></td>
+                            </tr>
+                            <tr>
+                            	<th><i class="ico_asterisk"></i> 选择银行：</th>
+                                <td>
+                                	<select class="select_box w140" id="Jcarry_bank_id" name="bank_id" {if $bankcard_info.status eq 1}disabled="true"{/if} >
+			                		<option value="">请选择</option>
+									{foreach from="$bank_list" item="item"}
+										<option value="{$item.id}" day="{$item.day}" {if $item.id eq $bankcard_info.bank_id}selected="selected"{/if}>{$item.name}</option>
+									{/foreach}
+									</select>
+                                </td>
+                            </tr>
+                            <script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+                            <tr>
+                            	<th><i class="ico_asterisk"></i> 开户行所在地：</th>
+                                <td >
+									<input type="hidden" value="{$bankcard_info.region_lv1}" id="deflv1">
+					                <input type="hidden" value="{$bankcard_info.region_lv2}" id="deflv2">
+					                <input type="hidden" value="{$bankcard_info.region_lv3}" id="deflv3">
+					                <input type="hidden" value="{$bankcard_info.region_lv4}" id="deflv4">
+									<label>{$LANG.REGION_LV1}：</label>
+									<select class="select_box" style='width:100px;' name="region_lv1" {if $bankcard_info.status eq 1}disabled="true" {/if} >
+									    <option value="0">={$LANG.SELECT_PLEASE}=</option>
+										{foreach from=$region_lv1 item=lv1}
+										<option {if $lv1.selected eq 1}selected="selected"{/if} value="{$lv1.id}">{$lv1.name}</option>
+										{/foreach}
+									</select>
+											
+									<label>{$LANG.REGION_LV2}：</label>
+									<select class="select_box" name="region_lv2" {if $bankcard_info.status eq 1}disabled="true"{/if}>
+										<option value="0">={$LANG.SELECT_PLEASE}=</option>
+									</select>
+											
+									<label>{$LANG.REGION_LV3}：</label>
+									<select class="select_box" name="region_lv3" {if $bankcard_info.status eq 1}disabled="true"{/if}>
+										<option value="0">={$LANG.SELECT_PLEASE}=</option>	
+									</select>
+
+                                </td>
+                            </tr>
+                            <tr>
+                            	<th><i class="ico_asterisk"></i> 开户行网点：</th>
+                                <td id="_js_bank_site">
+                                    <select class="" name="bankzone" {if $bankcard_info.status eq 1}readonly="readonly" disabled="disabled"{/if} >
+                                        <option value="{$bankcard_info.bankzone}">{$bankcard_info.bankzone}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                            	<th><i class="ico_asterisk"></i> 银行卡号：</th>
+                                <td><input type="text" class="idbox w315" name="bankcard" id="Jcarry_bankcard" value="{if $bankcard_info.status eq 1}<?php echo formatBankcard($this->_var['bankcard_info']['bankcard']);?>{else}{$bankcard_info.bankcard}{/if}" {if $bankcard_info.status eq 1}readonly="readonly" disabled="disabled"{/if} ></td>
+                            </tr>
+                            {if $bankcard_info.status neq 1}
+                            <tr>     
+                            	<th><i class="ico_asterisk"></i> 确认卡号：</th>
+                                <td><input type="text" class="idbox w315" name="reBankcard" id="Jcarry_rebankcard" value="{if $bankcard_info.status eq 1}<?php echo formatBankcard($this->_var['bankcard_info']['bankcard']);?>{else}{$bankcard_info.bankcard}{/if}"></td>
+                            </tr>
+                            
+                            <tr>
+                            	<td></td>
+                                <td>
+                                	<input type="submit" value="确  定" class="but-gray but-yellow w90">
+                                	<input type="hidden" name="acount_balance" id="Jcarry_acount_balance_res" style="width:70px">
+                                </td>
+                            </tr>
+                            {/if}
+                            <script>$("#Jcarry_rebankcard,#Jcarry_bankcard").on("paste copy" , function(){
+                                  return false;
+                            });</script> 
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+            </div>
+       </section>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){	
+		$("select[name='region_lv1']").bind("change",function(){
+			load_select("1");
+		});
+		$("select[name='region_lv2']").bind("change",function(){
+			load_select("2");
+		});
+		$("select[name='region_lv3']").bind("change",function(){
+			load_select("3");
+            bank_site();
+		});
+        //银行网点
+        $("select[name='bank_id']").bind("change",function(){
+            bank_site();
+        });
+        setTimeout("bank_site();",1000);
+        //手动填写
+        $("#Jcarry_From_2").on("click", "#_js_shoudong" ,function(){
+            $("#_js_shoudong_input").show();
+        });
+        $("#Jcarry_From_2").on("change", "#_js_bankone" ,function(){
+            $("#_js_shoudong_input").val('');
+            $("#_js_shoudong_input").hide();
+        });
+        // init region
+				var devlv1Option = $("select[name='region_lv1'] option[value='" + $("#deflv1").val() + "']")[0];
+				if (devlv1Option) {
+					devlv1Option.selected = true;
+					load_select("1");
+					var devlv2Option = $("select[name='region_lv2'] option[value='" + $("#deflv2").val() + "']")[0];
+					if (devlv2Option) {
+					    devlv2Option.selected = true;
+						load_select("2");
+						var devlv3Option = $("select[name='region_lv3'] option[value='" + $("#deflv3").val() + "']")[0];
+						if (devlv3Option) {
+							devlv3Option.selected = true;
+							load_select("3");
+							var devlv4Option = $("select[name='region_lv4'] option[value='" + $("#deflv4").val() + "']")[0];
+							if (devlv4Option) {
+								devlv4Option.selected = true;
+							}
+						}
+					}
+				}
+	});
+	
+	function load_select(lv)
+	{
+		var name = "region_lv"+lv;
+		var next_name = "region_lv"+(parseInt(lv)+1);
+		var id = $("select[name='"+name+"']").val();
+		
+		if(lv==1)
+		var evalStr="regionConf.r"+id+".c";
+		if(lv==2)
+		var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+id+".c";
+		if(lv==3)
+		var evalStr="regionConf.r"+$("select[name='region_lv1']").val()+".c.r"+$("select[name='region_lv2']").val()+".c.r"+id+".c";
+		
+		if(id==0)
+		{
+			var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+		}
+		else
+		{
+			var regionConfs=eval(evalStr);
+			evalStr+=".";
+			var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+			for(var key in regionConfs)
+			{
+				html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+			}
+		}
+		$("select[name='"+next_name+"']").html(html);
+		
+		if(lv == 4)
+		{
+			load_delivery();
+		}
+		else
+		{
+			load_select(parseInt(lv)+1);
+		}
+		
+		
+	}
+    //银行网点
+    function bank_site(){
+        var c = $("select[name='region_lv3']").find("option:selected").text();
+        var p = $("select[name='region_lv2']").find("option:selected").text();
+        var b = $("select[name='bank_id']").find("option:selected").text();
+        var n = '{$bankcard_info.bankzone}';
+        var data = {c:c,p:p,n:n,b:b};
+        $.post('/api/banklist',data,function(rs){
+            if(rs != ""){
+                $("#_js_bank_site").html(rs);
+            }
+        });
+    }
+</script>
+ <script src="<?php echo $this->asset->makeUrl('v1/js/risk/frms-fingerprint-min.js')?>"></script>
+{include file="web/views/fenzhan/footer.html"}

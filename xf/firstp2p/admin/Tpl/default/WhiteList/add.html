@@ -1,0 +1,73 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="main_title">{%ADD} <a href="{:u("WhiteList/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">用户ID:</td>
+		<td class="item_input"><input type="text" class="textbox require" name="user_id" value="" width="200px;"/></td>
+	</tr>
+	<tr>
+        <td class="item_title">项目:</td>
+        <td class="item_input">
+            <select name="project">
+	            <foreach name="white_list" item="vo" key="key">
+	                <option value="{$key}">{$vo}</option>
+	            </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">类型:</td>
+        <td class="item_input">
+            <lable><input type="radio" name="type" value="0" checked="checked" />白名单</lable>
+            <lable><input type="radio" name="type" value="1"/>黑名单</lable>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">生效起始时间:</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="start_time" value="0" id="start_time"  onfocus="this.blur(); return showCalendar('start_time', '%Y-%m-%d', false, false, 'btn_start_time');" />
+            <input type="button" class="button" id="btn_start_time" value="{%SELECT_TIME}" onclick="return showCalendar('start_time', '%Y-%m-%d', false, false, 'btn_start_time');" />
+            <input type="button" class="button" value="不限制" onclick="$('#start_time').val('0');" />
+            <span class="tip_span">不限制表示没没有时间限制</span>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="item_title">生效结束时间:</td>
+        
+        <td class="item_input">
+            <input type="text" class="textbox" name="end_time" value="0" id="end_time"  onfocus="this.blur(); return showCalendar('end_time', '%Y-%m-%d', false, false, 'btn_end_time');" />
+            <input type="button" class="button" id="btn_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('end_time', '%Y-%m-%d', false, false, 'btn_end_time');" />
+            <input type="button" class="button" value="不限制" onclick="$('#end_time').val('0');" />
+        </td>
+    </tr>
+	<tr>
+		<td class="item_title"></td>
+		<td class="item_input">
+		    <input type="hidden" name="{:conf("VAR_MODULE")}" value="WhiteList" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            
+			<input type="submit" class="button" value="添加" />
+			<input type="reset" class="button" value="{%RESET}" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>	 
+</form>
+</div>
+<include file="Public:footer" />

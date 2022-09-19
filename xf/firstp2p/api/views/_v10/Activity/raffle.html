@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+<title>幸运大转盘</title>
+<link type="text/css" rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v3.2/css/p_roll_award.css');?>"/>
+</head>
+<body>
+<div class="p_roll_award">
+    <div class="roll_box">
+        <div id="JS-turn_table" class="turn_table"></div>
+        <div id="JS-roll_arrow" class="roll_arrow"></div>
+    </div>
+    <div id="JS-award_name" class="award_name"></div>
+    <div id="JS-award_des" class="award_des"></div>
+    <div class="award_count">剩余抽奖次数<span id="JS-award_count"></span>次</div>
+    <div class="back_deal_btn"><a href="{if $fromwap eq 1}http://m.ncfwx.com{else}coupon://api?type=native&name=home{/if}"><img src="<?php echo $this->asset->makeAppUrl('v3.2/images/activity/icon_back_deal.png');?>"/></a></div>
+</div>
+<script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+<script>
+window['awardCount'] = {$chance};
+
+var rollAwardConf = {
+    turnTableBg: 'zhuan6.png',
+    awardNameArr: ['<span>3元</span>投资礼包', '<span>iPhone 6s</span>手机一部', '<span>99元</span>投资礼包', '<span>20元</span>投资礼包', '<span>10元</span>投资礼包', '<span>5元</span>投资礼包'],
+    awardDesArr: [ '可在“我收到的红包”中查看', '工作人员将与您的注册手机号码联系', '可在“我收到的红包”中查看', '可在“我收到的红包”中查看', '可在“我收到的红包”中查看', '可在“我收到的红包”中查看'],
+    awardCount: 1
+}
+</script>  
+<script>
+// $(function(){
+    var _turnFlag = false;
+    $('#JS-turn_table').css('background-image','url(<?php echo $this->asset->makeAppUrl(v3.2/images/activity/' + rollAwardConf.turnTableBg +');?>)');
+    $('#JS-award_count').html(rollAwardConf.awardCount);
+    rollAwardConf.awardLen = rollAwardConf.awardNameArr.length;
+
+    function updateArrow(){
+        if (_turnFlag || rollAwardConf.awardCount <= 0) {
+            $('#JS-roll_arrow').addClass('roll_arrow_disable');
+        } else {
+            $('#JS-roll_arrow').removeClass('roll_arrow_disable');
+        }
+    }
+
+
+    var recordRotate = 0;
+    var animationtime = 1000; //与CSS一致
+    var animationcirclenum = 2;
+    var rotateTimer = null; //
+    var rotateTimestamp = 0; //
+    var addStyleCircle = 1;
+    function startRotate() {
+        recordRotate = recordRotate + 360 * animationcirclenum;
+        rotateTimestamp = (new Date()).getTime();
+        $('#JS-turn_table').css('-webkit-transform','rotate(' + recordRotate + 'deg)');
+        rotateTimer = setTimeout(function(){
+            startRotate();
+        }, animationtime);
+    }
+
+    function stopAt(piecenum, index, callback) {
+        if (rotateTimer) {
+            clearTimeout(rotateTimer);
+            delete rotateTimer;
+        }
+        var addCircle = (piecenum - index - 0.5) / piecenum;
+        var leftCircle = (animationtime - ((new Date()).getTime() - rotateTimestamp) % animationtime) / animationtime;
+        var finalDeg = recordRotate + (addStyleCircle + addCircle) * 360;
+        var timecross = (addCircle + leftCircle + addStyleCircle) * animationtime / animationcirclenum;
+        finalDeg = Math.round(finalDeg / (180 / piecenum)) * (180 / piecenum);
+        $('#JS-turn_table').css({
+            '-webkit-transition': 'all ' + timecross + 'ms linear',
+            '-webkit-transform': 'rotate(' + finalDeg+ 'deg)'
+        });
+        setTimeout(function(){
+            callback.call(null);
+        }, timecross);
+    }
+
+    function resetRotate(){
+        if (rotateTimer) {
+            clearTimeout(rotateTimer);
+            delete rotateTimer;
+        }
+        _turnFlag = false;
+        updateArrow();
+    }
+
+    function initRoll(){
+        if (window['awardCount'] > 0) return;
+        rollAwardConf.awardCount = 0;
+        updateArrow();
+        $('#JS-award_count').html(rollAwardConf.awardCount);
+        $('#JS-award_des').html('请在“礼券-已领取”中查看奖品');
+    }
+    initRoll();
+
+    $('#JS-roll_arrow').click(function(){
+        if (_turnFlag) return;
+        if (rollAwardConf.awardCount <= 0) {
+            P2PWAP.ui.toast('您已经抽过奖了，<br>请在“礼券-已领取”中查看奖品');
+            return;
+        }
+        _turnFlag = true;
+        startRotate();
+        updateArrow();
+        $.ajax({
+            url: '/activity/raffle',
+            type: "post",
+            dataType: 'json',
+            data: {'couponId':'{$couponId}','action':'goodLuck','sign':'{$sign}'},
+            timeout: 15000,
+            success: function(data) {
+                if (data.errCode != 0) {
+                    P2PWAP.ui.toast(data.errMsg);
+                    resetRotate();
+                    return;      
+                }
+                stopAt(rollAwardConf.awardLen, data.awardNum, function(){
+                    _turnFlag = false;
+                    rollAwardConf.awardCount--;
+                    updateArrow();
+                    $('#JS-award_count').html(rollAwardConf.awardCount);
+                    $('#JS-award_name').html('恭喜您获得' + rollAwardConf.awardNameArr[data.awardNum]);
+                    $('#JS-award_des').html(rollAwardConf.awardDesArr[data.awardNum]);
+                });
+            },
+            error: function() {
+                P2PWAP.ui.toast("当前抽奖人数过多，请稍后重试");
+                resetRotate();
+            }
+        });
+    });
+    var P2PWAP = {};
+    P2PWAP.ui = {};
+
+    P2PWAP.ui.showErrorInstance_ = null;
+    P2PWAP.ui.showErrorInstanceTimer_ = null;
+    P2PWAP.ui.showErrorTip = function(msg) {
+        if (P2PWAP.ui.showErrorInstance_) {
+            clearTimeout(P2PWAP.ui.showErrorInstanceTimer_);
+            P2PWAP.ui.showErrorInstance_.updateContent(msg);
+        } else {
+            P2PWAP.ui.showErrorInstance_ = new P2PWAP.ui.ErrorToaster_(msg);
+            P2PWAP.ui.showErrorInstance_.show();
+        }
+        P2PWAP.ui.showErrorInstanceTimer_ = setTimeout(function() {
+            P2PWAP.ui.showErrorInstance_.dispose();
+            P2PWAP.ui.showErrorInstance_ = null;
+            P2PWAP.ui.showErrorInstanceTimer_ = null;
+        }, 2000);
+    };
+    P2PWAP.ui.toast = P2PWAP.ui.showErrorTip;
+
+    P2PWAP.ui.ErrorToaster_ = function(msgHtml) {
+        this.ele = null;
+        this.msgHtml = msgHtml;
+    };
+
+    P2PWAP.ui.ErrorToaster_.prototype.createDom = function() {
+        this.ele = document.createElement("div");
+        this.ele.innerHTML = "<span style=\"display: inline-block;color:#FFF;max-width:250px;min-width:100px;word-break:break-word;padding:10px;background:rgba(0,0,0,0.7);border-radius:5px;\">" + this.msgHtml + "</span>";
+        this.ele.setAttribute("style", "z-index:1002;position:fixed;width:100%;text-align:center; left:0%; bottom:50%;-webkit-transition:opacity linear 0.5s;opacity:0;");
+        document.body.appendChild(this.ele);
+    };
+
+    P2PWAP.ui.ErrorToaster_.prototype.updateContent = function(msgHtml) {
+        this.msgHtml = msgHtml;
+        if (!this.ele) return;
+        $(this.ele).find("span").html(this.msgHtml);
+    };
+
+    P2PWAP.ui.ErrorToaster_.prototype.show = function() {
+        if (!this.ele) {
+            this.createDom();
+        }
+        var pThis = this;
+        setTimeout(function() {
+            if (!pThis.ele) return;
+            pThis.ele.style.opacity = "1";
+        }, 1);
+    };
+
+    P2PWAP.ui.ErrorToaster_.prototype.hide = function() {
+        if (!this.ele) return;
+        this.ele.style.opacity = "0";
+        var ele = this.ele;
+        delete this.ele;
+        setTimeout(function() {
+            document.body.removeChild(ele);
+        }, 500);
+    };
+
+    P2PWAP.ui.ErrorToaster_.prototype.dispose = function() {
+        this.hide();
+    };
+// });
+</script>
+</body>
+</html>

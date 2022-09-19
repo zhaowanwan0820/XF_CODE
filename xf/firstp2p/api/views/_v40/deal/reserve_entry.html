@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('css/common/m-base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('css/common/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v4.0/css/p_reserve_entry.css?v=mmm');?>"
+    />
+</head>
+
+<body>
+    {include file="api/views/_v492/common/zhugemaidian.html"}
+    <div class="p_reserve_entry">
+        <div class="banner_wrap">
+            <div class="banner"></div>
+        </div>
+        {foreach from=$entry_data item="item"} 
+        {if $item.product_type eq 2 }
+        <div class="yuyue_card yuyue_card_zx JS_zx">
+            <a href='{$item.index_url}'>
+                <div class="card_tit">
+                    <h2>
+                        <i class="zx_icon"></i>{$item.product_name}
+                    </h2>
+                </div>
+                <div class="card_cont">
+                    <div class="disc color_black f22">量身定制 享特权</div>
+                    <div class="tag">
+                        <span>尊享好标</span>
+                        <span class="ml5">随时随地省心约</span>
+                    </div>
+                </div>
+                <div class="link link_zx">立即查看</div>
+            </a>
+        </div>
+        {else}
+        <div class="yuyue_card yuyue_card_wd JS_wd">
+            <a href='{$item.index_url}'>
+                <div class="card_tit">
+                    <h2>
+                        <i class="p2p_icon"></i>{$item.product_name}</h2>
+                    <div class="sub_tit">
+                        <i class="quan"></i>消费贷
+                        <i class="quan"></i>供应链
+                        <i class="quan"></i>经营贷</div>
+                </div>
+                <div class="card_cont">
+                    <div class="disc color_black f22">多种优质产品 放心借</div>
+                    <div class="tag">
+                        <span>小额可约</span>
+                        <span class="ml5">期限丰富灵活约</span>
+                    </div>
+                </div>
+                <div class="link link_wd">立即查看</div>
+            </a>        
+        </div>
+        {/if} {/foreach}
+    </div>
+<script src="<?php echo $this->asset->makeAppUrl('js/common/zepto.min.js');?>"></script>
+<?php echo $this->asset->renderAppJsV2("app_common_v40"); ?>
+<script>
+    WXP2P.APP.triggerScheme("firstp2p://api?type=local&action=changetitle&newtitle=随心约")
+    // title右上角增加帮助中心
+    location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+    function gobackjsfuncReserve(){
+        location.href = 'firstp2p://api?type=webview&gobackrefresh=false&url='+ encodeURIComponent(location.origin + '/help/faq_list/?cid=227');
+        setTimeout(function(){
+            location.href = 'firstp2p://api?type=rightbtn&image=help&callback=gobackjsfuncReserve';
+        },100)
+    }
+    $('.JS_zx').click(function() {
+        zhuge.track('点击选择随心约类型',{
+            "类型": '尊享'
+        })
+    });
+    $('.JS_wd').click(function() {
+        zhuge.track('点击选择随心约类型',{
+            "类型": '网贷'
+        })
+    });  
+    $(function(){
+        zhuge.track('进入随心约类型选择页');
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+	<div class="main_title">项目黑白名单</div>
+	<div class="blank5"></div>
+	<div class="button_row">
+		<input type="button" class="button" value="{%ADD}" onclick="add();" /> 
+		<!--  
+		<input type="button" class="button" value="{%FOREVERDEL}"
+			onclick="foreverdel();" />
+			-->
+	</div>
+	<div class="blank5"></div>
+	<!-- Think 系统列表组件开始 -->
+	<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+		<tr>
+			<td colspan="14" class="topTd">&nbsp;</td>
+		</tr>
+		<tr class="row">
+			<th width="8"><input type="checkbox" id="check"
+				onclick="CheckAll('dataTable')"></th>
+			<th>ID</th>
+			<th>用户ID</th>
+			<th>用户名</th>
+			<th>项目</th>
+			<th>类型</th>
+			<th>添加时间</th>
+			<th>生效起始时间</th>
+			<th>生效结束时间</th>
+			<th><a href="">操作</a></th>
+		</tr>
+		<foreach name="list" item="item">
+		<tr class="row">
+			<td><input type="checkbox" name="key" class="key" value="{$item.id}"></td>
+			<td>&nbsp;{$item.id}</td>
+			<td>&nbsp;{$item.user_id}</td>
+			<td>&nbsp;{$item.user_name}</td>
+			<td>&nbsp;{$item.project_str}</td>
+			<td>&nbsp;{$item.type_str}</td>
+			<td>&nbsp;{$item.create_time}</td>
+			<td>&nbsp;{$item.start_time}</td>
+			<td>&nbsp;{$item.end_time}</td>
+			
+            <td>
+                <a href="/m.php?m=WhiteList&a=edit&id={$item.id}">修改</a>
+                &nbsp;&nbsp;
+                <a href="javascript:del({$item.id})">删除</a>
+            </td>
+		</tr>
+		</foreach>
+		<tr>
+			<td colspan="14" class="bottomTd">&nbsp;</td>
+		</tr>
+	</table>
+	<!-- Think 系统列表组件结束 --> 
+	<div class="blank5"></div>
+	<div class="page">{$page}</div>
+</div>
+<script>
+function openw(id){
+	$.weeboxs.open(ROOT+'?m=Adviser&a=brokerage&id='+id, {contentType:'ajax',showButton:false,title:'顾问佣金',width:650,height:500});
+}
+</script>
+<include file="Public:footer" />

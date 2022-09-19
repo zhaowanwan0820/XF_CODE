@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$tplTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-base.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/discount.css');?>">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/zepto.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/base.js');?>" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+{include file="web/views/v3/marketing/share_js.html"}
+{include file="web/views/v3/marketing/top.html"}
+    <div class="discount_box">
+		<div class="discount_box_top">
+            <div class="account">本活动仅适用未注册用户</div>
+            <div class="discount_old_icon"></div>
+            {if $isBidMore}
+            <a href="javascript:void(0)" class="reg_btn JS-share_btn">马上邀请</a>
+            {else}
+            <a href="javascript:void(0)" class="reg_btn JS_no_share">马上邀请</a>
+            {/if}
+        </div>
+        <div class="line">
+            <div class="line_right">
+                <div class="line_center"></div>
+            </div>
+        </div>
+        <div class="discount_box_bottom">
+          <div class="active_rule">
+            <div class="fengexian">
+                活动规则
+            </div>
+            <p class="active_rule_p">1.邀请好友完成投资任务点亮起航勋章，可获得25元投资券。</p>
+<p class="active_rule_p">2.注册30天内邀请好友完成首投可点亮带你飞勋章，点亮后可获得10元投资券。</p>
+<p class="active_rule_p">3.参与活动，即视为同意遵守本活动各项规则，活动规则详询400-890-9888。</p>
+<p class="active_rule_p">4.如活动参与者采用任何技术或非技术手段，扰乱正常的活动秩序，一经核实，网信将拒绝兑现奖品并保留追究法律责任的权利。</p>
+<p class="active_rule_p">5.在依法合规前提下，网信保留对活动修改、调整和终止的权利。</p>
+        </div>
+        </div>
+	</div>
+    </div>
+    <div class="ui_mask" style="display:none"></div>
+    <div class="share_icon" style="display:none"></div>
+{if !$isBidMore}
+<script>
+    $('.JS_no_share').on("click" , function(){
+        P2PWAP.ui.showErrorTip("投资过两次(含以上)网贷理财产品(非私募和基金)的用户才有邀请资格。");
+    })
+</script>
+{/if}
+</body>
+</html>

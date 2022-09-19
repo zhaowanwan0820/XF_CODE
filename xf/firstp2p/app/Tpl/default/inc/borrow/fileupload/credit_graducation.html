@@ -1,0 +1,152 @@
+{include file="inc/borrow/fileupload/credit_header.html"}
+<style type="text/css">
+	.credit_upload .field{ margin:2px 0; width:600px}
+	.credit_upload .field label{
+		height: 26px;
+		font-size: 12px;
+		line-height: 26px;
+		width: 150px;
+	}
+</style>
+<div class="hd-bg">
+	<form action="{url x="index" r="borrow#file_upload_save"}" method="post" id="graducationForm" name="graducationForm">
+		<div id="item">
+	    	<div class="blank20"></div>
+	        <div style="width:90%;background:#FEFEFC;border:1px solid #CCC;padding:10px;margin:0 auto;">
+	            <div class="f16 b pt5 pb5" style="color:#003C85;">
+				学历认证
+	            </div>
+	            <div class="f_dgray" style="text-indent: 2em;">
+				出者在选择借款列表投标时，借款者的学历也是一个重要的参考因素。为了让投资者更好、更快地相信您的学历是真实的，强烈建议您对学历进行在线验证。   
+				</div>
+	        </div>
+	        <div class="blank20"></div>
+	        <div id="explain" style="width:80%;padding-left:40px;margin:0 auto;">
+	            <p class="f_dgray b">
+	            	学历认证方法：
+	            </p>
+				<div class="f14 f_red">一、2001年至今获得学历，需学历证书编号</div>
+	            <div id="explain_item">
+                    <div style="padding-left:20px">
+                        <div class="lh22">
+                            1、点击 <a href="http://www.chsi.com.cn/xlcx/" target="_blank">网上学历查询</a>。
+                        </div>
+                        <div class="lh22">
+                            2、选择“零散查询”。
+                        </div>
+                        <div class="lh22">
+                            3、输入证书编号、查询码（通过手机短信获得，为12位学历查询码）、姓名、以及验证码进行查询。
+                        </div>
+                        <div class="lh22">
+                            4、查询成功后，您将查获得《教育部学历证书电子注册备案表》。
+                        </div>
+                        <div class="lh22">
+                            5、将该表<span class="f_red">右下角的12位在线验证码</span><a href="{$APP_ROOT_SATAIC}img/xueli_1.jpg" target="_blank">（见样本图01）</a>，输入下面的文本框。
+                        </div>
+                        <div class="lh22">
+                            6、点击提交审核。
+                        </div>
+                    </div>
+	            </div>
+				<div class="f14 f_red">二、1991年至今获得学历，无需学历证书编号</div>
+				<div id="explain_item">
+                    <div style="padding-left:20px">
+                        <div class="lh22">
+                            1、点击 <a href="http://www.chsi.com.cn/xlcx/" target="_blank">网上学历查询</a>。
+                        </div>
+                        <div class="lh22">
+                            2、选择“本人查询”。
+                        </div>
+                        <div class="lh22">
+                            3、注册学信网账号。
+                        </div>
+                        <div class="lh22">
+                            4、登录学信网，点击“学历信息”。
+                        </div>
+                        <div class="lh22">
+                            5、选择您的最高学历，并点击“申请验证报告”（申请过程中，您需通过手机短信获得12位学历查询码，此查询码与{function name="app_conf" v="SHOP_TITLE"}所需验证码不同）。
+                        </div>
+                        <div class="lh22">
+                            6、申请成功后，您将获得<span class="f_red">12位在线验证码</span><a href="./static/img/xueli_2.jpg" target="_blank">（见样本图02）</a>
+                        </div>
+                        <div class="lh22">
+                            7、将12位在线验证码输入下面的文本框
+                        </div>
+                        <div class="lh22">
+                            8、点击提交审核
+                        </div>
+                    </div>
+                </div>
+				<div class="blank5"></div>
+				<p class="lh24">
+                    <span class="f_dgray b">认证条件：</span>
+                    <span>大专或以上学历（普通全日制）</span>
+                </p>
+	            <p class="lh24">
+	                <span class="f_dgray b">审核时间：</span>
+	                <span class="f_red">3个工作日内</span>
+	            </p>
+	            <p class="lh24">
+	                <span class="f_dgray b">认证有效期：</span>
+	                <span class="f_red">永久</span>
+	            </p>
+				<div class="blank5"></div>
+	            <div class="dot"></div>
+	            <div class="blank20"></div>
+	        </div>
+			<div class="credit_upload">
+                <div class="field">
+                    <label>12位在线验证码：</label>
+                    <span><input type="text" name="validcode" size="30" id="validCode"></span>
+                </div>
+                <div class="field">
+                    <label><span class="f_red b">*</span>最高学历：</label>
+                    <span>
+                        <select name="graduation" id="settings-graduation">
+							<option value="" {if $user_info.graduation eq ''}selected="selected"{/if}>={$LANG.SELECT_PLEASE}=</option>
+							<option value="{$LANG.GRADUATION_1}" {if $user_info.graduation eq $LANG.GRADUATION_1}selected="selected"{/if}>{$LANG.GRADUATION_1}</option>
+							<option value="{$LANG.GRADUATION_2}" {if $user_info.graduation eq $LANG.GRADUATION_2}selected="selected"{/if}>{$LANG.GRADUATION_2}</option>
+							<option value="{$LANG.GRADUATION_3}" {if $user_info.graduation eq $LANG.GRADUATION_3}selected="selected"{/if}>{$LANG.GRADUATION_3}</option>
+							<option value="{$LANG.GRADUATION_4}" {if $user_info.graduation eq $LANG.GRADUATION_4}selected="selected"{/if}>{$LANG.GRADUATION_4}</option>
+						</select>
+                    </span>
+                </div>
+                <div class="field">
+                    <label><span class="f_red b">*</span>毕业院校：</label>
+                   <input type="text" value="{$user_info.university}" class="f-input" id="settings-university" name="university" size="30">
+                </div>
+                <div class="field">
+                    <label><span class="f_red b">*</span>入学年份：</label>
+					<select name="graduatedyear" id="settings-graduatedyear">
+					<?php $y = date("Y"); for($i=$y;$i>=$y-100;$i--): ?>
+						<option value="<?php echo $i;?>" <?php if($i == intval($this->_var['user_info']['graduatedyear'])):?>selected="selected"<?php endif; ?>><?php echo $i;?></option>
+					<?php endfor; ?>
+					</select>
+                </div>           
+            </div>
+	       	
+	        <div class="blank20"></div>
+	        <div class="blank20"></div>
+	        <div style="text-align: center">
+	            <input type="hidden" id="path" value="{$path}" name="path"/>
+				<input type="hidden" id="auth" value="{$auth}" name="auth"/>
+	            <input type="hidden" id="uploaded" name="uploaded" value="0"/>
+	            <input type="submit" value="提交审核" class="saveSettingBnt"/>
+	        </div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+	$("#graducationForm").submit(function(){
+		if($.trim($("#validCode").val())=="" || $.trim($("#validCode").val()).length != 12 ){
+			$.showErr("请输入12位在线验证码。",function(){
+				$("#validCode").focus();
+			});
+			return false;
+		}
+		
+		return true;
+	});
+
+</script>
+{include file="inc/borrow/fileupload/credit_footer.html"} 

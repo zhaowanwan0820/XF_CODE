@@ -1,0 +1,94 @@
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+var appid = "{$appid}";
+var nonceStr = "{$nonceStr}";
+var timeStamp = "{$timeStamp}";
+var signature = "{$signature}";
+wx.config({
+    appId:appid,
+    timestamp:timeStamp,
+    nonceStr:nonceStr,
+    signature:signature,
+    jsApiList:[
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow'
+    ],
+});
+wx.ready(function(){
+    wx.hideOptionMenu();
+});
+
+var imgUrl = "http://event.ncfwx.com/upload/image/20181025/14-16-_20181025141617.png";
+var lineLink = location.protocol + '//' + location.hostname + "/rank";
+var descContent = "叮咚，您有一条新消息未点击！挑战排行榜，得惊喜好礼，速来围观！";
+var shareTitle = "参与排行榜活动，有机会获得惊喜好礼！精彩不容错过呦，快来参与吧！";
+
+wx.ready(function() {
+    wx.showOptionMenu();
+    wx.onMenuShareTimeline({
+        title: shareTitle, // 分享标题
+        link: lineLink, // 分享链接
+        imgUrl: imgUrl, // 分享图标
+    });
+    wx.onMenuShareAppMessage({
+        title: shareTitle, // 分享标题
+        desc: descContent, // 分享描述
+        link: lineLink, // 分享链接
+        imgUrl: imgUrl, // 分享图标
+    });
+});
+
+function onBridgeReady(){
+    WeixinJSBridge.call('showOptionMenu');
+}
+
+if (typeof WeixinJSBridge == "undefined"){
+    if( document.addEventListener ){
+        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+    }else if (document.attachEvent){
+        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+    }
+} else {
+    onBridgeReady();
+}
+function shareFriend() {
+    WeixinJSBridge.invoke('sendAppMessage',{
+        "appid": appid,
+        "img_url": imgUrl,
+        "img_width": "200",
+        "img_height": "200",
+        "link": lineLink,
+        "desc": descContent,
+        "title": shareTitle
+    }, function(res) {
+        //_report('send_msg', res.err_msg);
+    })
+}
+function shareTimeline() {
+    WeixinJSBridge.invoke('shareTimeline',{
+        "img_url": imgUrl,
+        "img_width": "200",
+        "img_height": "200",
+        "link": lineLink,
+        "desc": descContent,
+        "title": shareTitle
+    }, function(res) {
+        //_report('timeline', res.err_msg);
+    });
+}
+// 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+    // 发送给好友
+    WeixinJSBridge.on('menu:share:appmessage', function(argv){
+        shareFriend();
+    });
+    // 分享到朋友圈
+    WeixinJSBridge.on('menu:share:timeline', function(argv){
+        shareTimeline();
+    });
+}, false);
+</script>

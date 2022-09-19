@@ -1,0 +1,105 @@
+{include file="web/views/header.html"}
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_charge.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/charge/index.js');?>"></script>
+<script type="text/javascript">
+    var doneBankOperate_url = '{$doneBankOperate_url}';
+</script>
+<!--private js&css end-->
+<div class="w1100">
+<form name="chargeForm" id="chargeFormCg" action='/payment/transit' method="get" target="_blank">
+    <div class="p_account_charge p_p2p_charge">
+        <div class="user_right_box" id="chargeSelect">
+            <div class="user_title"><h1><i class="ico_chongzhi"></i>网贷账户大额充值</h1></div>
+            <input type="hidden" name="srv" value="p2pOfflineCharge">
+            <input type="hidden" name="orderId" value="{$orderId}">
+            <input type="hidden" name="return_url" value="{$returnUrl}">
+            <div class="big_charge_setp">
+                <p>大额充值操作步骤</p>
+                <img src="<?php echo $this->asset->makeUrl('v3/images/account/big_charge_setp.png');?>" alt="">
+            </div>
+            <div class="take">
+                <div>
+                   <dl class="clearfix" style="margin-bottom:15px;margin-top:15px;color:#000">
+                        <dt>
+                            <img src="{$bankcardInfo.bankLogo}" width="55" height="55">
+                        </dt>
+                        <dd>{$bankcardInfo.bankName}</dd>
+                        <dd>{$bankcardInfo.hideCard}</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>充值账户：</dt>
+                        {if $isEnterprise}
+                        <dd>{$enterpriseInfo.company_name}</dd>
+                        {else}
+                        <dd>{$user_info.real_name}</dd>
+                        {/if}
+                    </dl>
+                    <dl class="clearfix pb7">
+                        <dt>账户余额：</dt>
+                        <dd><span class="color-yellow2">{function name="number_format" v=$user_info.svCashMoney f="2"}</span>&nbsp元</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt class="pt3">充值金额：</dt>
+                        <dd><input type="text" class="user_name validate[required,funcCall[X.V.checkCrash]]" id="charge" name="amount" data-int="10" data-xiaoshu="2" /><span class="need_money">元</span></dd>
+                        <dd ><span class="chargeformError"></span></dd>
+                    </dl>
+                </div>
+
+            </div>
+            <div class="line_for_btn"></div>
+            <div class="f14 charge_btn">
+                <a href="javascript:void(0)" class="sv_charge_top2p_md"><button class="user_button mt10 j_czp2pAccount" id="incharge_done" type="submit">下一步</button></a>
+            </div>
+
+            <div class="user_tip charge_tip">
+                <p>1、所有资金均由第三方银行存管。</p>
+
+                <p>2、请注意您的银行卡的充值限制，以免造成不便。</p>
+
+                <p>3、如果充值金额没有及时到账，请拨打客服热线寻求帮助。</p>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+<script type="text/javascript">
+var payButtonClickTime = 0;
+var orderSn = '{$orderId}';
+var checkInterval = 2000;
+
+$(document).ready(function(){
+    $("#incharge_done").bind("click",function(){
+        //埋点
+        zhuge.track('充值_大额充值输入金额页面_点击下一步')
+        payButtonClickTime = (new Date()).getTime();
+        autoCheckStatus();
+    });
+});
+
+function autoCheckStatus() {
+    var cost = (new Date()).getTime() - payButtonClickTime;
+    if (cost > 600000) {
+        return;
+    }
+    if (cost < 10000) {
+        setTimeout('autoCheckStatus()', checkInterval);
+        return;
+    }
+
+    $.getJSON('/payment/payCheckAsyn', {orderSn:orderSn}, function(data) {
+        if (data.status != 1) {
+            setTimeout('autoCheckStatus()', checkInterval);
+            return;
+        }
+        location.href = '{$doneBankOperate_url}&autoCheck=1';
+    });
+}
+//埋点
+$(function(){
+    zhuge.track('充值_进入大额充值输入金额页面')
+})
+</script>
+{include file="web/views/footer.html"}

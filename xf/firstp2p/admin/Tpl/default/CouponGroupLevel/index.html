@@ -1,0 +1,81 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<?php
+    function mark_red($flag){
+        return $flag == "异常" ? '<font color="red">异常</font>' : '合理';
+    }
+?>
+<div class="main">
+<div class="main_title">会员组-等级</div>
+<div class="blank5"></div>
+<input type="button" class="button export" value="导出" />
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            会员组ID：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['group_id']}" name="group_id">
+            会员组名称：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['group_name']}" name="group_name">
+            服务标识：
+            <select name="service_status" >
+                <option value='-1' <if condition="$_REQUEST['service_status'] eq -1 || !isset($_REQUEST['service_status'])">selected</if>>全部</option>
+                <option value='1' <if condition="isset($_REQUEST['service_status']) && $_REQUEST['service_status'] eq 1">selected</if>>有效</option>
+                <option value='0' <if condition="isset($_REQUEST['service_status']) && $_REQUEST['service_status'] eq 0">selected</if>>无效</option>
+            </select name="group_is_effect">
+            会员组状态：
+                <select name="group_is_effect">
+                <option value='-1' <if condition="$_REQUEST['group_is_effect'] eq -1 || !isset($_REQUEST['group_is_effect'])">selected</if>>全部</option>
+                <option value='1' <if condition="isset($_REQUEST['group_is_effect']) && $_REQUEST['group_is_effect'] eq 1">selected</if>>有效</option>
+                <option value='0' <if condition="isset($_REQUEST['group_is_effect']) && $_REQUEST['group_is_effect'] eq 0">selected</if>>无效</option>
+            </select>
+            服务等级ID：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['level_id']}" name="level_id">
+            服务等级：<input class="textbox" type="text" style="width:100px;" value="{$_REQUEST['level_name']}" name="level_name">
+            <input type="hidden" value="CouponGroupLevel" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="button" class="button index" value="{%SEARCH}" />
+        </form>
+    </div>
+
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    datasource="list"
+    checkbox="true"
+    pk="user_id"
+    show="id:编号
+    ,group_id:会员组ID
+    ,group_name:会员组名称
+    ,service_status:服务标识
+    ,group_is_effect:会员组状态
+    ,level_id:服务等级ID
+    ,level_name:服务等级
+    ,rebate_ratio:服务等级系数
+    ,level_is_effect:服务等级状态
+    ,pack_ratio:打包比例
+    ,agency_rebate_ratio:机构比例
+    ,max_pack_ratio:打包比例上限
+    ,is_related:是否联动
+    ,rule_status|mark_red:规则校验
+    ,create_time:创建时间
+    ,update_time:更新时间
+    "
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<script>
+$(function(){
+    $(".button.index").click(function(){
+        $("[name='a']").val("index");
+        $("[name='search']").submit();
+    });
+    $(".button.export").click(function(){
+        $("[name='a']").val("export");
+        $("[name='search']").submit();
+    });
+});
+</script>
+
+<include file="Public:footer" />

@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html>
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/conf.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<head>
+    <title>测试机jobsworker工作情况</title>
+    <div class="main_title">测试机Jobs执行情况监测</div>
+    <style>
+        div .warn-cell {color:#F00;}
+    </style>
+    <script>
+        function getStatus( seq )
+        {
+            // 通过jQuery的方法取得json对象
+            $.getJSON(
+                "/m.php?m=GetJobsWorkerState",
+                "seq=" + seq,
+                function(jsonObj)
+                {
+                    $("#dbip" + seq).html(jsonObj.dbip);
+                    if ("" == jsonObj.jobsworker) {
+                        $("#jobsworker" + seq).html("无");
+                    } else {
+                        $("#jobsworker" + seq).html(jsonObj.jobsworker);
+                    }
+                }
+             );
+        }
+    </script>
+</head>
+<body>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr><td colspan="12" class="topTd" >&nbsp; </td></tr>
+        <tr class="row" >
+            <th>服务器名称</th>
+            <th>数据库IP</th>
+            <th>Jobs执行情况</th>
+        </tr>
+        <volist name="list" id="vo">
+            <tr class="row" id="tr{$vo}" align="center" onload="">
+                <td>
+                    <input type="button" id="bt{$vo}" onclick=getStatus("{$vo}") value="test{$vo}" />
+                </td>
+                <td id="dbip{$vo}" > - </td>
+                <td id="jobsworker{$vo}"> - </td>
+            </tr>
+        </volist>
+
+</table> 
+</body>
+</html>

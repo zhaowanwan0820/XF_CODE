@@ -1,0 +1,124 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__widget/leanModal.min.js' />
+<style type="text/css">
+.strnormal {
+    word-wrap: break-word;
+    width: 350px;
+    margin-top: -1em;
+}
+.str2long
+{
+/*	display: -webkit-box;
+    word-wrap: break-word;
+    width: 400px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    margin-bottom: 15px;
+*/
+/*兼容ie方案*/
+	width: 350px;
+	position: relative;
+	line-height: 1.4em;
+	height: 4.2em;
+	overflow: hidden;
+	word-wrap: break-word;
+	margin: 2px 12px;
+	padding: 0px;
+}
+.str2long::after {
+	content: "…";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 0 10px 0px 5px;
+}
+.str2longwhite::after {
+	background: white;
+}
+.str2longgreen::after {
+	background: #D5F7E2;
+}
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
+#showDetail {
+	width: 600px;
+	padding: 30px;
+	display:none;
+	background: white;
+	border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+	box-shadow: 0px 0px 4px rgba(0,0,0,0.7); -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.7); -moz-box-shadow: 0 0px 4px rgba(0,0,0,0.7);
+}
+#showDetail p {
+	color: #666;
+	text-shadow: none;
+	display: block;
+	word-wrap: break-word;
+	max-height: 400px;
+	overflow-y: auto;
+}
+</style>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="search_row">
+	<form name="search" action="__APP__" method="get">
+		{%KEYWORD}：<input type="text" class="textbox" name="log_info" value="{:trim($_REQUEST['key'])}" />
+		{%LOG_TIME}：
+		<input type="text" class="textbox" name="log_begin_time" id="log_begin_time" value="{:trim($_REQUEST['log_begin_time'])}" onfocus="return showCalendar('log_begin_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_log_begin_time');" />
+		<input type="button" class="button" id="btn_log_begin_time" value="{%SELECT_TIME}" onclick="return showCalendar('log_begin_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_log_begin_time');" />
+		-
+		<input type="text" class="textbox" name="log_end_time" id="log_end_time" value="{:trim($_REQUEST['log_end_time'])}" onfocus="return showCalendar('log_end_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_log_end_time');" />
+		<input type="button" class="button" id="btn_log_end_time" value="{%SELECT_TIME}" onclick="return showCalendar('log_end_time', '%Y-%m-%d %H:%M:%S', false, false, 'btn_log_end_time');" />
+
+
+		<input type="hidden" value="Log" name="m" />
+		<input type="hidden" value="index" name="a" />
+		<input type="submit" class="button" value="{%SEARCH}" />
+	</form>
+</div>
+<div class="blank5"></div>
+<html:list
+	id="dataTable"
+	style="dataTable"
+	name="log"
+	checkbox="true"
+	datasource="list"
+	show="id:{%ID}|50px,log_info|short:{%LOG_INFO}|350px,log_time|to_date:{%LOG_TIME},log_ip:{%LOG_IP},log_admin|get_admin_name:{%LOG_ADMIN},log_status|get_log_status:{%LOG_STATUS},module:{%MODULE},action:{%ACTION},extra_info:旧值,new_info:新值"
+	/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+<div id="showDetail"><p></p></div>
+</div>
+<script>
+// 初始化
+$(function()
+{
+	$('a[rel*=leanModal]').leanModal();
+	$('.str2long').each(function(_, div) {
+		var trColor = $($(div).parents('tr').get(0)).css('background-color');
+		if (trColor == 'rgba(0, 0, 0, 0)') $(div).addClass('str2longwhite');
+		else $(div).addClass('str2longgreen');
+	});
+})
+var showAll = function (obj)
+{
+	$("#showDetail p").text($(obj).next('div').text());
+}
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,22 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript">
+function show_detail(id) {
+    $.weeboxs.open(ROOT+'?m=Deal&a=show_detail&id='+id, {contentType:'ajax',showButton:false,title:LANG['COUNT_TOTAL_DEAL'],width:600,height:330});
+}
+function preview(id) {
+    window.open("{:get_www_url('')}deal/"+id+"?preview=1");
+}
+function contract(id){
+    window.location.href = ROOT+'?m=Contract&a=index&deal_id='+id;
+}
+function show_repay_list(id) {
+    $.weeboxs.open(ROOT+'?m=Deal&a=compound_repay_list&id='+id, {contentType:'ajax',showButton:false,title:'还款计划',width:450,height:230});
+}
+</script>
+<include file="Public:footer" />

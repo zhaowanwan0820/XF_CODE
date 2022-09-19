@@ -1,0 +1,93 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<PHP>
+	
+</PHP>
+<script type="text/javascript">	
+	/* function resend(id) {
+		if(id > 0) {			
+			$.ajax({ 
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=resend&id="+id, 
+                data: "ajax=1",
+                dataType: "json",
+                success: function(obj){
+                    $("#info").html(obj.info);
+                    if(obj.status==1) {                        
+                        location.href=location.href;
+                    }
+                }
+            });
+		}
+	} */
+	
+	function resend(id) {
+		if(id > 0){
+			location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=resend&id="+id;
+		}
+	}
+	
+	function del(id) {
+		
+		if(!id) {
+			
+			idBox = $(".key:checked"); 
+	        if(idBox.length == 0)
+	        {
+	            alert(LANG['DELETE_EMPTY_WARNING']);
+	            return;
+	        }
+	        idArray = new Array();
+	        $.each( idBox, function(i, n){
+	            idArray.push($(n).val());
+	        });
+	        id = idArray.join(","); 
+		}
+		if(confirm(LANG['CONFIRM_DELETE'])){
+	        $.ajax({ 
+	            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id, 
+	            data: "ajax=1",
+	            dataType: "json",
+	            success: function(obj){
+	                $("#info").html(obj.info);
+	                if(obj.status==1) {
+	                	location.href=location.href;
+	                }
+	            }
+	        });
+		}		
+	}
+</script>
+<div class="main">
+<div class="main_title">{$main_title} <!-- 
+			<input type="text" class="textbox" name="test_email" />
+			<input type="button" class="button" name="test_mail_btn" value="{%TEST}" />
+			 -->
+</div>
+<div class="blank5"></div>
+<div class="button_row">
+	<input type="button" class="button" value="{%ADD}" onclick="add();" />
+	<input type="button" class="button" value="{%DELETE}" onclick="del();" />
+</div>
+<div class="blank5"></div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="serveritem" 
+	checkbox="true" 
+	action="true" 
+	datasource="list" 
+	show="id:{%ID}|50px
+	,title:{%TITLE}
+	,content:{%PUSH_CONTENT}
+	,deal_id:{%PUSH_DEAL_ID}
+	,deal_status|get_buy_status=$serveritem['deal_id']:{%PUSH_BUY_STATUS}
+	,platform|L:{%PUSH_PLATFORM}
+	,send_time:{%SEND_TIME}
+	,send_status|get_push_send_status:{%SEND_STATUS}" 
+	actionlist="resend:{%RESEND}, del:{%DELETE}" /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

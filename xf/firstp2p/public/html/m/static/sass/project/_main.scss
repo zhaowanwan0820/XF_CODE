@@ -1,0 +1,306 @@
+@charset "utf-8";
+html,body{
+    width: 100%;
+    min-height: 100%;
+    background: #f7f7f7;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+a{
+    color: #333;
+    text-decoration: none;
+}
+
+img{
+    max-width: 100%;
+    object-fit: cover;
+}
+
+ul,ol{
+    list-style: none;
+}
+
+.wxlc-container{
+    position: relative;
+    margin: 0 auto;
+    max-width: 540px;
+    font-size: pxToRem(28);
+    font-family: 'Microsoft YaHei';
+}
+
+.plr{
+    padding-left: pxToRem(30);
+    padding-right: pxToRem(30);
+}
+
+.ptb{
+    padding-top: pxToRem(30);
+    padding-bottom: pxToRem(30);
+}
+
+.pp{
+    @extend .plr;
+    @extend .ptb;
+}
+
+.wxlc_head{
+    background: #0f1824;
+    .wxlc_top{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        // -webkit-transform: translateX(-50%);
+        // transform: translateX(-50%);
+        @extend .plr;
+        height: pxToRem(96);
+        background: rgba(0,0,0,.7);
+        overflow: hidden;
+        z-index: 100;
+        
+        .wxlc_logo{
+            display: block;
+            margin-top: pxToRem(18);
+            width: pxToRem(180);
+            height: pxToRem(60);
+            background: transparent url('../images/logo.png') no-repeat left center;
+            background-size: contain;
+        }
+    }
+
+    .wxlc_banner{
+        // margin-top: pxToRem(96);
+        // height: pxToRem(560);
+        height: pxToRem(667);
+
+        i{
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: transparent url("../images/banner.jpg") no-repeat center;
+            background-size: contain;
+        }
+    }
+}
+
+.wxlc_section{
+    position: relative;
+    @extend .plr;
+    padding-top: pxToRem(60);
+    padding-bottom: pxToRem(50);
+    background: #fff;
+
+    .wxlc_section_head{
+        font-size: pxToRem(32);
+        font-weight: bold;
+        text-align: center;
+        color: #999;
+        span{
+            color: #333;
+        }
+    }
+    .wxlc_section_body{
+        padding-top: pxToRem(40);
+    }
+}
+
+.wx_list{
+    @extend %clearfix;
+    .list_item + .list_item{
+        margin-top: pxToRem(80);
+    }
+    .list_media{
+        float: left;
+        width: pxToRem(110);
+        height: pxToRem(110);
+        background: #eee;
+        border-radius: pxToRem(24);
+        overflow: hidden;
+        span{
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            &.i1{
+                background: transparent url("../images/a1.png") no-repeat;
+                background-size: 100% auto;
+            }
+
+            &.i2{
+                background: transparent url("../images/a2.png") no-repeat;
+                background-size: 100% auto;
+            }
+
+            &.i3{
+                background: transparent url("../images/a3.png") no-repeat;
+                background-size: 100% auto;
+            }
+
+            &.i4{
+                background: transparent url("../images/a4.png") no-repeat;
+                background-size: 100% auto;
+            }
+        }
+    }
+    .list_body{
+        padding-left: pxToRem(130);
+
+        .list_body_title{font-size: pxToRem(30);}
+        .list_body_text{
+            padding-top: pxToRem(10);
+            color: #999;
+            font-size: pxToRem(26);
+        }
+    }
+}
+
+.wx_ol{
+    list-style:  none;
+    li{
+        dl{
+            @extend %clearfix;
+            color: #fff;
+            dt{
+                float: left;
+                width: pxToRem(100);
+                line-height: pxToRem(80);
+                text-align: center;
+                font-size: pxToRem(72);
+                font-weight: lighter;
+            }
+
+            dd{
+                padding: pxToRem(15) 0;
+                padding-left: pxToRem(140);
+                line-height: pxToRem(50);
+                font-size: pxToRem(30);
+
+                &>div{
+                    font-size: pxToRem(30);
+
+                    &+p{
+                        font-size: pxToRem(24);
+                        opacity: .5;
+                    }
+                }
+            }
+        }
+        &+li{
+            margin-top: pxToRem(50);
+        }
+    }
+}
+
+.wx-list-c{
+    list-style: none;
+    @extend %clearfix;
+
+    .wx-list-item{
+        float: left;
+        padding: pxToRem(20);
+        width: 50%;
+        min-height: pxToRem(140*2);
+    }
+}
+
+.list-cell{
+    text-align: center;
+    .list-cell-media{
+        display: block;
+        margin: 0 auto;
+        width: pxToRem(94);
+        height: pxToRem(94);
+        background: #eee;
+        border-radius: pxToRem(5);
+        i{
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            &.i1{
+                background: #fff url("../images/o1.png") no-repeat center;
+                background-size: contain;
+            }
+
+            &.i2{
+                background: #fff url("../images/o2.png") no-repeat center;
+                background-size: contain;
+            }
+
+            &.i3{
+                background: #fff url("../images/o3.png") no-repeat center;
+                background-size: contain;
+            }
+
+            &.i4{
+                background: #fff url("../images/o4.png") no-repeat center;
+                background-size: contain;
+            }
+        }
+    }
+
+    .list-cell-block{
+        margin-top: pxToRem(15);
+        .list-cell-text2{
+            color: #999;
+            font-size: pxToRem(24);
+        }
+    }
+}
+
+
+/* 关于我们 */
+.wxlc_aboutUs{
+    
+}
+
+/* 业务介绍 */
+.wxlc_business{
+    padding-left: pxToRem(50);
+    padding-right: pxToRem(50);
+    // margin-top: pxToRem(20);
+    background: #19233e url("../images/bi.png") no-repeat center;
+    background-size: auto 100%;
+
+    .wxlc_section_head{
+        color: #96a1bc;
+        span{
+            color: #fff;
+        }
+    }
+}
+
+.wxlc_contactUs{
+    background: #f5f5f5;
+
+    .contact_img{
+        width: 100%;
+        height: pxToRem(248);
+        background: #eee url("../images/c.png") no-repeat center;
+        background-size: 100% auto;
+    }
+
+    .contact_list{
+        margin-top: pxToRem(30);
+        li{
+            margin-top: pxToRem(20);
+
+            .contact_label{
+                font-size: pxToRem(30);
+                color: #666;
+
+                &+p{
+                    margin-top: pxToRem(8);
+                    font-size: pxToRem(26);
+                    color: #999;
+                }
+            }
+        }
+    }
+}

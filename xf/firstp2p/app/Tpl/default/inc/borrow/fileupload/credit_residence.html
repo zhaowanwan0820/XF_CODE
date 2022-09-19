@@ -1,0 +1,203 @@
+{include file="inc/borrow/fileupload/credit_header.html"}
+<style type="text/css">
+	.credit_upload .field{ margin:2px 0; width:600px}
+	.credit_upload .field label{
+		height: 26px;
+		font-size: 12px;
+		line-height: 26px;
+		width: 150px;
+	}
+</style>
+<div class="hd-bg">
+	<form action="{url x="index" r="borrow#file_upload_save"}" method="post" id="homeCreditForm" name="homeCreditForm">
+		<div id="item">
+	    	<div class="blank20"></div>
+	        <div style="width:90%;background:#FEFEFC;border:1px solid #CCC;padding:10px;margin:0 auto;">
+	            <div class="f16 b pt5 pb5" style="color:#003C85;">
+				居住地证明
+	            </div>
+	            <div class="f_dgray" style="text-indent: 2em;">
+				居住地的稳定性，是{function name="app_conf" v="SHOP_TITLE"}考核借款人的主要评估因素之一，通过{function name="app_conf" v="SHOP_TITLE"}居住地证明，您将获得一定的信用加分。   
+				</div>
+	        </div>
+	        <div class="blank20"></div>
+	        <div id="explain" style="width:80%;padding-left:40px;margin:0 auto;">
+	            <p class="f_dgray b">
+	            	认证说明：
+	            </p>
+	            <div id="explain_item">
+                    <div style="padding-left:20px">
+                        <div class="lh22">
+                            1、请上传以下任何一项可证明<span class="f_red">现居住地址</span>的证明文件原件的照片。
+                        </div>
+                        <div class="lh22" style="padding-left:20px">
+                            1) 用您姓名登记的水、电、气最近三期缴费单；
+                        </div>
+                        <div class="lh22" style="padding-left:20px">
+                            2) 用您姓名登记固定电话最近三期缴费单；
+                        </div>
+                        <div class="lh22" style="padding-left:20px">
+                            3) 您的信用卡最近两期的月结单；
+                        </div>
+                        <div class="lh22" style="padding-left:20px">
+                            4) 您的自有房产证明；
+                        </div>
+                        <div class="lh22" style="padding-left:20px">
+                            5) 您父母的房产证明，及证明您和父母关系的证明材料。
+                        </div>
+                        <div class="lh22">
+                            2、请确认您上传的资料是清晰的、未经修改的数码照片（不可以是扫描图片）。
+                        </div>
+                        <div class="lh22">
+                        	每张图片的尺寸<span class="f_red">不大于1.5M</span>。
+                        </div>
+                    </div>
+                </div>
+				<div class="blank5"></div>
+	            <p class="lh24">
+	                <span class="f_dgray b">审核时间：</span>
+	                <span class="f_red">3个工作日内</span>
+	            </p>
+	            <p class="lh24">
+	                <span class="f_dgray b">认证有效期：</span>
+	                <span class="f_red">6个月</span>
+	            </p>
+				<div class="blank5"></div>
+	            <div class="dot"></div>
+	            <div class="blank20"></div>
+	        </div>
+			<div class="clearfix credit_upload">
+				<script type="text/javascript" src="{$APP_WEB_STATIC}system.region.js"></script>
+				<div class="field">										
+					<label for="settings-region"><span class="red">*</span>目前所在省市</label>
+					<select name="province_id">
+						<option value="0">={$LANG.SELECT_PLEASE}=</option>
+						{foreach from=$region_lv2 item=lv2}
+						<option {if $lv2.selected eq 1}selected="selected"{/if} value="{$lv2.id}">{$lv2.name}</option>
+						{/foreach}
+					</select>
+											
+					<select name="city_id">
+						<option value="0">={$LANG.SELECT_PLEASE}=</option>		
+						{foreach from=$region_lv3 item=lv3}
+						<option {if $lv3.selected eq 1}selected="selected"{/if} value="{$lv3.id}">{$lv3.name}</option>
+						{/foreach}
+					</select>
+					
+				</div>
+				<div class="field address">
+					<label for="settings-address"><span class="red">*</span>{$LANG.ADDRESS}</label>
+					<input value="{$user_info.address}" class="f-input" name="address" id="settings-address">
+				</div>
+				
+				<div class="field phone">
+					<?php $phone_s = explode("-",$this->_var['user_info']['phone']);?>
+					<label for="settings-phone">{$LANG.PHONE}</label>
+					<input type="text" value="<?php echo $phone_s[0];?>" class="f-input f_l" id="frphone" onkeyup="setPhone();" onblur="setPhone();" style="width:32px">
+					<span class="f_l">&nbsp;-&nbsp;</span>
+					<input type="text" value="<?php echo $phone_s[1];?>" class="f-input f_l" id="numphone" onkeyup="setPhone();" onblur="setPhone();" style="width:80px">
+					<input type="hidden" value="{$user_info.phone}" name="phone" id="phone">
+				</div>
+				<div class="field postcode">
+                    <label for="settings-postcode"><span class="f_red b">*</span> 居住地邮编：</label>
+                    <span><input name="postcode" class="f-input" value="{$user_info.postcode}" id="settings-postcode" style="width:180px"></span>
+                </div>
+			</div>
+	       	<div>
+				<span style="padding-left:83px" class="f_red b">*</span>上传居住地证明：
+				<div class="blank5"></div>
+				<div style="width:83%;padding-left:39px;margin:0 auto;" id="upload_file_box">
+	       			<div class="plupload_header_text pl10">每张图片最大限制为3MB，图片格式为JPG,GIF,PNG,PDF</div>
+					<div class="blank5"></div>
+					{function name="show_ke_image" v="file1"}
+					{function name="show_ke_image" v="file2"}
+					<div class="blank1"></div>
+					{function name="show_ke_image" v="file3"}
+					{function name="show_ke_image" v="file4"}
+				</div>
+			</div>
+	        <div class="blank20"></div>
+	        <div class="blank20"></div>
+	        <div style="text-align: center">
+	            <input type="hidden" id="path" value="{$path}" name="path"/>
+				<input type="hidden" id="auth" value="{$auth}" name="auth"/>
+	            <input type="hidden" id="uploaded" name="uploaded" value="0"/>
+	            <input type="submit" value="提交审核" class="saveSettingBnt"/>
+	        </div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+	jQuery(function(){
+		$("select[name='province_id']").bind("change",function(){
+			load_city($("select[name='province_id']"),$("select[name='city_id']"));
+		});
+		$("#homeCreditForm").submit(function(){
+			if($("select[name='province_id']").val()== 0||$("select[name='city_id']").val() == 0)
+			{
+				$("select[name='province_id']").focus();
+				$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value="目前所在省市"}");
+				
+				return false;
+			}
+			if($("#settings-address").val() == ""){
+				$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value=$LANG.ADDRESS}",function(){
+					$("#settings-address").focus();
+				});
+				return false;
+			}
+			if($("#settings-postcode").val() == ""){
+				$.showErr("{function name="sprintf" format=$LANG.EMPTY_ERROR_TIP value="居住地邮编"}",function(){
+					$("#settings-postcode").focus();
+				});
+				return false;
+			}
+			
+			var is_upload_file = false;
+			for(var i=1;i<=4;i++){
+				$("#upload_file_box #file"+i).val(KE.util.getData('file'+i));
+				if($.trim($("#upload_file_box #file"+i).val())!=""){
+					is_upload_file = true;
+				}
+			}
+			if(!is_upload_file){
+				$.showErr("请完成文件上传后提交审核。");
+				return false;
+			}
+			
+			return true;
+		});
+	});
+	function setPhone(){
+		var frphone = $.trim($("#frphone").val());
+		var numphone = $.trim($("#numphone").val());
+		if(frphone!=""&&numphone!=""){
+			$("#phone").val(frphone+"-"+numphone);
+		}
+		else{
+			$("#phone").val("");
+		}
+	}
+	function load_city(pname,cname)
+	{
+		var id = pname.val();
+		var evalStr="regionConf.r"+id+".c";
+
+		if(id==0)
+		{
+			var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+		}
+		else
+		{
+			var regionConfs=eval(evalStr);
+			evalStr+=".";
+			var html = "<option value='0'>="+LANG['SELECT_PLEASE']+"=</option>";
+			for(var key in regionConfs)
+			{
+				html+="<option value='"+eval(evalStr+key+".i")+"'>"+eval(evalStr+key+".n")+"</option>";
+			}
+		}
+		cname.html(html);
+	}
+</script>
+{include file="inc/borrow/fileupload/credit_footer.html"} 

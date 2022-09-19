@@ -1,0 +1,35 @@
+{include file="openapi/views/header_v2.html"}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+    body{ background-color:rgba(239,239,244,1); }
+    .edit-mid{ background:url(./static/v3/images/index_err.png) no-repeat center 24%; height:100%; background-size:37%; text-align:center; }
+    .edit-mid .edit-success{ padding-top:78%; font-size:16px; color:#909090; line-height:29px; }
+    .edit-mid .font16{ font-size:14px; color:#909090; line-height:21px; }
+    .edit-mid .font14{ color:#bcbcbc; }
+    .edit-mid .btn{ width:150px; height:40px; margin:0 auto; border:1px solid #909090; border-radius:4px; font-size:16px; line-height:40px; margin-top:15px; }
+    .edit-mid .btn a{ color:#909090; display:block; text-decoration:none; }
+</style>
+
+{if $stay eq 0}
+<meta http-equiv="refresh" content="{$refresh_time};URL={$jump}" />
+{/if}
+
+<div class="edit-mid">
+    <div class="edit-success"><i class="edit-fail"> </i>
+        <span class="font24">{$error_title}</span>
+    </div>
+    <span class="font16">{$error_msg}</span>
+    <br/>
+    <span class="font14">
+         {if $stay eq 0}
+            系统将在3s后自动跳转，如果没有跳转，请点击按钮跳转
+         {/if}
+    </span>
+    <div class="btn">
+        <a href='/' class="index_url">点击跳转</a>
+    </div>
+    <span class="blank80"></span>
+</div>
+<span class="blank80"></span>
+
+{include file="openapi/views/footer_v2.html"}

@@ -1,0 +1,37 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+    <foreach name="list" item="oneDeal">
+        <div class="main_title">
+            标的ID： <span style="color:red">{$oneDeal.dealId}</span><br/>
+            合同编号不同的共有 <span style="color:red">{$oneDeal.contractNum}</span>份<br/>
+            已经完成签署的共有 <span style="color:red">{$oneDeal.tsaNum}</span>份<br/>
+        </div>
+        <if condition='$oneDeal.hasfail neq 0'>
+            <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 style="color:black">
+                <tr>
+                    <td colspan="20" class="topTd">&nbsp;</td>
+                </tr>
+                <tr class="row">
+                    <th>合同id</th>
+                    <th>合同编号</th>
+                    <th>操作</th>
+                </tr>
+                <foreach name="oneDeal['failInfo']" item="value">
+                <tr class="row">
+                    <td>{$value.id}</td>
+                    <td>{$value.number}</td>
+                    <td><a href="/m.php?m=Contract&a=signTsaSync&id={$value.id}&serviceId={$oneDeal.dealId}">立刻打戳(1-2s)</a></td>
+                </tr>
+                </foreach>
+                <tr>
+                    <td colspan="20" class="bottomTd">&nbsp;</td>
+                </tr>
+            </table>
+        </if>
+    </foreach>
+<include file="Public:footer" />

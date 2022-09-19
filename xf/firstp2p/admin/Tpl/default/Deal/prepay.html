@@ -1,0 +1,33 @@
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="search_row">
+    <form name="search" action="__APP__" method="get" id="ThreeGetForm">    
+        项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        <input type="hidden" value="Deal" name="m" />
+        <input type="hidden" value="prepay" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<html:list 
+    id="dataTable"
+    style="dataTable"
+    name="prepays"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="deal_id:{%ID}|50px
+        ,deal.name:借款标题
+        ,deal_id|getOldDealNameWithPrefix:旧版借款标题
+        ,prepay_time|to_date:提交时间
+        ,user_id|getUserTypeName:用户类型
+        ,deal.user_id|get_user_name=real_name:借款人
+        ,status:状态"
+    actionlist="edit:{%EDIT}"
+    actionwidth="160px" />
+    <div class="page">{$page}</div>
+    <script type="text/javascript" charset="utf-8">
+        function edit(id){
+            window.location.href = ROOT + '?m=Deal&a=prepay_edit&id='+id;
+        }
+    </script>
+<include file="Public:footer" />

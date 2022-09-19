@@ -1,0 +1,48 @@
+{include file="web/views/v3/header.html"}
+<div class="p_account_removeBankcard">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_account_removeBankcard.css');?>" rel="stylesheet" type="text/css">
+    <!--<link href="<?php echo $this->asset->makeUrl('v3/js/widget/validator/validator.v1.1.css');?>" rel="stylesheet" type="text/css">-->
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/oauth/account_removeBankcard.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/cookie/cookie.js');?>"></script>
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                <h2>
+                    <i></i>验证身份
+                </h2>
+            </div>
+            <div class="removeBankcard-mid">
+                <div class="ui-form">
+                    <form method="post" action="" id="resetBank_form" autocomplete="off">
+                        <?php echo token_input(); ?>
+                        <ul>
+                            <li class="clearfix">
+                                <label>手机号</label>
+                                <div class="mb fl" id="input-mobile">
+                                    <label id="labels-mobile">{function name="moblieFormat" value=$user_info.mobile mobile_code=$user_info.mobile_code}</label>
+                                </div>
+                            </li>
+                            <li class="clearfix">
+                                <label> 验证码</label>
+                                <div class="fl">
+                                    <input type="text" value="" placeholder="请输入验证码" name="code" id="validNum" class="txt w131 int_placeholder" data-placeholder="请输入验证码">
+                                    <input type="button" class="ml15 btn-send-blue" id="bt" value="免费获取验证码">
+                                </div>
+                                <span class="msg-box n-right" for="validNum" id="code-err"></span>
+                            </li>
+                        </ul>
+                        <div class="btn-w30">
+                            <input class="btn-sub" id="submit_btn" type="submit" value="下一步">
+                        </div>
+                    </form>
+                    <div class="edts-footer">
+                        无法接收短信，请拨打客服热线&nbsp;400-890-9888
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+{include file="web/views/v3/footer.html"}

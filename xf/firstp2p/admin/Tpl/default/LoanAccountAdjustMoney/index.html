@@ -1,0 +1,191 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+    function formatDate($timestamp)
+    {
+        return $timestamp > 0 ? date('Y-m-d H:i:s', $timestamp) : ' - ';
+    }
+
+    function formatStatus($status)
+    {
+        return core\\dao\\LoanAccountAdjustMoneyModel::$loan_account_adjust_money_status[$status];
+    }
+
+    function formatType($type)
+    {
+        return core\\dao\\LoanAccountAdjustMoneyModel::$loan_account_adjust_money_type[$type];
+    }
+
+    function formatAccountType($accountType)
+    {
+        return NCFGroup\\Protos\\Ptp\\Enum\\UserAccountEnum::$accountDesc[1][$accountType];
+    }
+
+    function createOp($status,$row)
+    {
+        switch ($status)
+        {
+            case 1:
+                return '<a href="javascript:;" onclick="apass('.$row['id'].')">A角色通过</a>&nbsp;&nbsp;<a href="javascript:;" onclick="arefuse('.$row['id'].')">A角色拒绝</a>';
+            case 2:
+                return '<a href="javascript:;" onclick="bpass('.$row['id'].')">B角色通过</a>&nbsp;&nbsp;<a href="javascript:;" onclick="brefuse('.$row['id'].')">B角色拒绝</a>';
+
+        }
+    }
+
+</php>
+<div class="main">
+<div class="main_title">网贷调账管理</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="addm();" />
+    <input type="button" class="button" value="批量导入" onclick="importCsv();" />
+    <input type="button" class="button" value="A角色通过" onclick="apass()" />
+    <input type="button" class="button" value="A角色拒绝" onclick="arefuse()" />
+    <input type="button" class="button" value="B角色通过" onclick="bpass()" />
+    <input type="button" class="button" value="B角色拒绝" onclick="brefuse()" />
+</div>
+
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        用户ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+        会员名称：<input type="text" class="textbox" name="vip_name" value="{:trim($_REQUEST['vip_name'])}" style="width:100px;" />
+        业务单号：<input type="text" class="textbox" name="order_id" value="{:trim($_REQUEST['order_id'])}" style="width:100px;" />
+        审核状态:
+        <select name="status" id="js_type">
+            <option value="0" <if condition="intval($_REQUEST['status']) eq 0 ">selected="selected"</if>>==请选择==</option> <foreach name="loan_account_adjust_money_status" item="status" key="key">
+                <option value="{$key}" <if condition="intval($_REQUEST['status']) eq $key">selected="selected"</if>>{$status}</option>
+            </foreach>
+        </select>
+
+        <input type="hidden" value="LoanAccountAdjustMoney" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+
+    </form>
+</div>
+
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="data"
+    checkbox="true"
+    datasource="list"
+    show="order_id:业务单号,user_id:用户ID|80px,vip_name:会员名称|80px,user_name:用户名称|80px,account_type|formatAccountType:账户类型|100px,money:调账金额,type|formatType:类型,create_time|formatDate:申请时间,note:备注,status|formatStatus:审核状态,log|nl2br:操作记录,status|createOp=$data:操作|120px"
+    />
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+        function apass(id)
+        {
+            // 提交批量审核接口
+            var url = '/m.php?m=LoanAccountAdjustMoney&a=audit';
+            if (typeof(id) == 'undefined')
+            {
+                getCheckedRecord();
+                id = checkIds;
+                if (id.length == 0)
+                {
+                    return false;
+                }
+                url += '&id='+id.join(',');
+            } else {
+                url += '&id='+id;
+            }
+            window.location.href= url;
+        }
+        // 选取的id框
+        var checkIds = [];
+
+        function getCheckedRecord()
+        {
+            checkIds = [];
+            $('input.key:checked').each(function(){checkIds.push($(this).val());});
+            if (checkIds.length == 0)
+            {
+                alert('请勾选要操作的记录');
+                return [];
+            }
+        }
+
+        function addm()
+        {
+            location.href = "?" + VAR_MODULE + "=LoanAccountAdjustMoney&" + VAR_ACTION + "=add";
+        }
+
+        function importCsv(){
+            location.href = "?" + VAR_MODULE + "=LoanAccountAdjustMoney&" + VAR_ACTION + "=import";
+        }
+
+        function arefuse(id)
+        {
+            // 提交批量拒绝
+            var url = '/m.php?m=LoanAccountAdjustMoney&a=disagree';
+            if (typeof(id) == 'undefined')
+            {
+                getCheckedRecord();
+                id = checkIds;
+                if (id.length == 0)
+                {
+                    return false;
+                }
+                url += '&id='+id.join(',');
+            } else {
+                url += '&id='+id;
+            }
+            window.location.href= url;
+
+        }
+
+        function bpass(id)
+        {
+            // 提交B角色通过
+            var url = '/m.php?m=LoanAccountAdjustMoney&a=finalAudit';
+            if (typeof(id) == 'undefined')
+            {
+                getCheckedRecord();
+                id = checkIds;
+                if (id.length == 0)
+                {
+                    return false;
+                }
+                url += '&id='+id.join(',');
+            } else {
+                url += '&id='+id;
+            }
+            window.location.href= url;
+        }
+
+        function brefuse(id)
+        {
+            // 提交批量拒绝
+            var url = '/m.php?m=LoanAccountAdjustMoney&a=refuse';
+            if (typeof(id) == 'undefined')
+            {
+                getCheckedRecord();
+                id = checkIds;
+                if (id.length == 0)
+                {
+                    return false;
+                }
+                url += '&id='+id.join(',');
+            } else {
+                url += '&id='+id;
+            }
+            window.location.href = url;
+        }
+
+
+</script>
+
+<include file="Public:footer" />

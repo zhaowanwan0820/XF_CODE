@@ -1,0 +1,110 @@
+<!--个人中心左侧开始-->
+
+<ul>
+    <li class="first_li change_bg JS_account_li account_li_1">我的账户</li>
+    <li class="{if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'index'}user_select{/if} JS_account_li account_li_2"><a href="{url x="index" r="account"}"><i class="ico_gailan"></i>账户总览<span class="new_picture_for"></span></a></li>
+    <li class="{if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'money' }user_select{/if} JS_account_li account_li_3"><a href="{url x="index" r="account/money"}"><i class="ico_jilu"></i>资金记录<span class="new_picture_for"></span></a></li>
+    <!--回款计划、已投项目、合同列表增加农担贷去掉专享逻辑 $is_nongdan 布尔值为真时表示来自农担贷 -->
+    <li class="{if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'loan' }user_select{/if} JS_account_li account_li_4"><a href='{if !$is_nongdan}{url x="index" r="account/loan"}{else}{url x="index" r="account/loan?type=2"}{/if}'><i class="ico_huikuan"></i>回款计划<span class="new_picture_for"></span></a></li>
+    <li class="{if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'refund' }user_select{/if} JS_account_li account_li_5"><a href="{url x="index" r="account/refund"}"><i class="ico_huankuan"></i>标的还款计划<span class="new_picture_for"></span></a></li>
+    <li class="{if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'refund' }user_select{/if} JS_account_li account_li_6"><a href="{url x="index" r="account/project_refund"}"><i class="ico_huankuan"></i>转让还款计划<span class="new_picture_for"></span></a></li>
+    <li class="first_title change_bg JS_account_li account_li_7">已{if !$is_firstp2p}投{else}出借{/if}项目</li>
+    {if !$is_nongdan}
+    <li class="{if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'load') }user_select{/if} JS_account_li account_li_8"><a href="{url x="index" r="account/load"}"><i class="ico_redp"></i>{if !$is_firstp2p}专享{else}我的出借{/if}<span class="new_picture_for"></span></a></li>
+    {/if}
+     <li class="{if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'loadph') }user_select{/if} JS_account_li account_li_8"><a href="{url x="index" r="account/loadph?type=3"}"><i class="ico_redp"></i>网贷<span class="new_picture_for"></span></a></li>
+    {if $isEnterpriseSite neq 1}
+    <li class="{if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'finplan') }user_select{/if} JS_account_li account_li_9"><a href="{url x="index" r="account/finplan"}"><i class="ico_redp"></i>智多新<span class="new_picture_for"></span></a></li>
+    {/if}
+    <!-- <li {if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'load?type=2') }class="user_select"{/if}><a href="{url x="index" r="account/load?type=2"}"><i class="ico_redp"></i>交易中心<span class="new_picture_for"></span></a></li> -->
+    <li class="first_title change_bg JS_account_li account_li_10">我的福利</li>
+    <li class="{if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'discount') }user_select{/if} JS_account_li account_li_11"><a href="{url x="index" r="account/discount"}"><i class="ico_redp"></i>优惠券<span class="use_amount">0</span><span class="new_picture_for"></span></a></li>
+    <li class="{if $MODULE_NAME eq 'medal' && ($ACTION_NAME eq 'wall' or 'mymedals' or 'detail') }user_select{/if} JS_account_li account_li_12"><a href="{url x="index" r="medal/wall"}"><i class="ico_redp"></i>勋章<span class="new_picture_for"></span></a>
+    <?php $medalBubbleInfo = showMedalBubbleInfo(); if($medalBubbleInfo && $medalBubbleInfo['isShowMedalBubble']) {echo "<i class='icon_medel'>新手任务" . $medalBubbleInfo['userBeginnerMedalCount'] . "/" . $medalBubbleInfo['beginnerMedalCount'] . "</i>"; } ?>
+    </li>
+    <li class="{if $MODULE_NAME eq 'gift'  }user_select{/if} JS_account_li account_li_13"><a href="/gift"><i class="ico_redp"></i><span class="new_unpick_gift">礼券</span><span class="new_picture_for"></span></a></li>
+    <li class="{if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'bonus') }user_select{/if} JS_account_li account_li_14"><a href="{url x="index" r="account/bonus"}"><i class="ico_redp"></i>{$new_bonus_title}<span class="new_picture_for"></span></a></li>
+    <li class="first_title change_bg JS_account_li account_li_15">其他</li>
+   <!--  <li class="{if $MODULE_NAME eq 'user' && ($ACTION_NAME eq 'loanintentionenter' or 'loanIntention' or 'borrowAgreement') }user_select{/if} JS_account_li account_li_16"><a href="/user/loanIntentionEnter"><i class="ico_redp"></i>我想借款</a></li> -->
+    {if $isSeller }<li class="{if $MODULE_NAME eq 'seller' && ($ACTION_NAME eq 'appliedlist') }user_select{/if} JS_account_li account_li_17"><a href="{url x="index" r="seller/appliedlist"}"><i class="ico_redp"></i>商家服务</a></li>{/if}
+    <li class="{if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'setup' or $ACTION_NAME eq 'setmessage') }user_select{/if} JS_account_li account_li_18"><a href="{url x="index" r="account/setup"}"><i class="ico_redp"></i>会员设置<span class="new_picture_for"></span></a></li>
+    {if isCouponValidForBranchSite()}
+    <li class="{if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'coupon'}user_select{/if} JS_account_li account_li_19"><a href="{url x="index" r="account/coupon"}"><i class="ico_yaoqing"></i>{if $bonus_coupon_trun_on eq '1'}邀请奖励{else}邀请返利{/if}<span class="new_picture_for"></span></a></li>
+    {/if}
+
+    <!-- 网信邀请码体系升级：tab添加服务奖励;如果用户有服务能力或是有服务奖励历史记录则显示该模块，如果没有则不显示该模块入口-->
+    {if $haveServiceEntrance}
+    <li class="{if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'coupon'}user_select{/if} account_li_19"><a href="{url x="index" r="account/serviceaward"}"><i class="ico_yaoqing"></i>服务奖励<span class="new_picture_for"></span></a></li>
+    {/if}
+    <!-- end -->
+
+    <li class="{if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'contract' or $ACTION_NAME eq 'contlist' or $ACTION_NAME eq 'contractph') }user_select{/if} JS_account_li account_li_20"><a href='{if !$is_nongdan}{url x="index" r="account/contract"}{else}{url x="index" r="account/contractph"}{/if}'><i class="ico_hetong"></i>合同列表<span class="new_picture_for"></span></a></li>
+    <li class="{if $MODULE_NAME eq 'account' && ($ACTION_NAME eq 'agreement' or $ACTION_NAME eq 'agreementDetail') }user_select{/if} JS_account_li account_li_21"><a href="{url x="index" r="help/agreement_list"}"><i class="ico_hetong"></i>平台协议<span class="new_picture_for"></span></a></li>
+
+
+   <!--  <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'load' }class="user_select"{/if}><a href="{url x="index" r="account/load"}"><i class="ico_xiangmu"></i>已投项目</a></li>
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'charge' }class="user_select"{/if}><a href="{url x="index" r="account/charge"}"><i class="ico_chongzhi"></i>充值</a></li>
+
+    <li {if $MODULE_NAME eq 'account' && $ACTION_NAME eq 'carry' }class="user_select"{/if}><a href="{url x="index" r="account/carry"}"><i class="ico_tixian"></i>提现</a></li> -->
+    <!--li {if $MODULE_NAME eq 'uc_account' && $ACTION_NAME eq 'invitation'}class="user_select"{/if}><a href="{url x="index" r="uc_account#invitation"}"><i class="ico_yonghu"></i>邀请好友</a></li-->
+
+
+
+
+    <!-- <li {if $MODULE_NAME eq 'user' && ($ACTION_NAME eq 'loanintentionenter' or 'loanIntention' or 'borrowAgreement') }class="user_select"{/if}><a href="/user/loanIntentionEnter"><i class="ico_redp"></i>我想借款</a></li> -->
+
+</ul>
+<!--个人中心左侧开始-->
+<script>
+        //礼券数量调取接口
+        $.ajax({
+            url: 'gift/UnpickCount',
+            type: 'GET',
+            dataType: 'json',
+            success: function(result) {
+                if(result.giftType && result.desc) {
+                    $('.new_unpick_gift').html("礼券 ("+result.desc+")")
+                }
+            },
+            error: function(error) {
+                console.log("礼券gift/UnpickCount接口出错了，Error："+error)
+            }
+        });
+
+;(function($) {
+        var url = location.pathname + location.search;
+
+        $(".ui_user_nav li").each(function(){
+            var $t = $(this);
+            if(url == $t.find("a").attr("href")){
+                $t.find($('.new_picture_for')).show();
+                $t.addClass('user_select').siblings().removeClass('user_select');
+            }
+
+        });
+
+        //黄金券数量调取异步接口
+        {if $is_firstp2p}
+        var consume_type = 1;
+        {else}
+        var consume_type = 0;
+        {/if}
+        $.ajax({
+            url: '/account/discountCount',
+            type: 'GET',
+            data: {
+                consume_type: consume_type,
+                page: 1
+            },
+            dataType: 'json',
+            success: function(result) {
+                $('.ui_user_nav .use_amount').html(result.count);
+            },
+            error: function() {
+
+            }
+        });
+
+})(jQuery);
+</script>
+

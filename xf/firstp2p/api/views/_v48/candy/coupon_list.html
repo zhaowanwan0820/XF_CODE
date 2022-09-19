@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>优惠券</title>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/m-base.css?v=20170516');?>">
+    <link href="<?php echo $this->asset->makeAppUrl('v3.3/css/discount/p_pick_discount.css?v=20170516');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/coupon_list.css?v=3');?>" rel="stylesheet" />
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/base.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.8/js/candy/coupon_list.js');?>" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<input type="hidden" id="candy_amount" value="{$userSummary.amount}" data-explain="信宝总额度" />
+<input type="hidden" id="token_hidden" value="{$token}" data-explain="信宝总额度" />
+<div class="m-main">
+    <div class="loadbox p_pick_discount">
+        {foreach from=$couponList item=productList}
+        <div class="card">
+            <div class="con">
+                <dl>
+                    <dt>
+                    <h2><span class="f28">{$productList.couponGroup.goodsPrice}</span>{if $productList.couponGroup.type eq 1}元{elseif $productList.couponGroup.type eq 2}%{/if}</h2>{if $productList.couponGroup.type eq 1}返现券{elseif $productList.couponGroup.type eq 2}加息券{/if}</h2>
+                    </dt>
+                    <dd>
+                        <p>投资满{$productList.couponGroup.bidAmount}元</p>
+                        <p>期限满{$productList.couponGroup.bidDayLimit}天可用</p>
+                        {if $productList.couponGroup.useTimeType eq 1}
+                        <p>有效期<span class="useDayLimit">{$productList.couponGroup.useDayLimit}</span>天</p>
+                        {elseif $productList.couponGroup.useTimeType eq 2}
+                        <p><span class="useStartTime"></span>至<span class="useEndTime"></span>有效</p>
+                        {/if}
+                        {if $productList.is_limited}
+                        <p>剩余可兑：<span class="stock">{$productList.stock}</span></p>
+                        {/if}
+                    </dd>
+                    <dt class="btn">
+                        <span class="ling" data-id="{$productList.id}" data-is_limited="{$productList.is_limited}" data-price="{$productList.price}" data-stock="{$productList.stock}" data-type="{$productList.product_type}" data-name="{if $productList.couponGroup.type eq 1}返现券{elseif $productList.couponGroup.type eq 2}加息券{/if}">立即兑换</span>
+                        <span class="color_gray pt5" style="display:inline-block">{$productList.price}信宝</span>
+                    </dt>
+                </dl>
+            </div>
+        </div>
+        {/foreach}
+    </div>
+</div>
+<!-- 弹窗 有地址-->
+<div class="confirm_exchange_mask">
+    <div class="bg"></div>
+    <div class="cont">
+        <div class="tit">确定要兑换该商品吗？</div>
+        <div class="btn_box">
+            <div class="btn btn1" data-close-class="confirm_exchange_mask">
+                暂不兑换
+            </div>
+            <div class="btn btn2">
+                确定兑换
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

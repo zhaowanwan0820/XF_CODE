@@ -1,0 +1,28 @@
+<?php
+return array (
+  0 => 'id',
+  1 => 'name',
+  2 => 'const_name',
+  3 => 'type',
+  4 => 'times',
+  5 => 'money',
+  6 => 'count',
+  7 => 'consume_type',
+  8 => 'send_way',
+  9 => 'send_condition',
+  10 => 'send_limit_day',
+  11 => 'use_limit_day',
+  12 => 'is_sms',
+  13 => 'sms_temp_id',
+  14 => 'create_time',
+  15 => 'update_time',
+  16 => 'start_time',
+  17 => 'continue_times',
+  18 => 'source',
+  19 => 'is_effect',
+  20 => 'status',
+  21 => 'extra',
+  '_autoinc' => true,
+  '_pk' => 'id',
+);
+?>

@@ -1,0 +1,141 @@
+{// 超额收益管理页面 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            满标起始日期:
+            <input type="text" class="textbox" style="width:140px;" name="start_success_date" id="start_success_date" value="{$_REQUEST['start_success_date']}" onfocus="this.blur(); return showCalendar('start_success_date', '%Y-%m-%d 00:00:00', false, false, 'btn_start_success_date');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_BEGIN}" />
+            <input type="button" class="button" id="btn_start_success_date" value="{%SELECT_TIME}" onclick="return showCalendar('start_success_date', '%Y-%m-%d', false, false, 'btn_start_success_date');" />
+            满标结束日期
+            <input type="text" class="textbox" style="width:140px;" name="end_success_date" id="end_success_date" value="{$_REQUEST['end_success_date']}" onfocus="this.blur(); return showCalendar('end_success_date', '%Y-%m-%d 23:59:59', false, false, 'btn_end_success_date');" title="{%COUPON_TIPS_LEVEL_REBATE_VALID_END}" />
+            <input type="button" class="button" id="btn_end_success_date" value="{%SELECT_TIME}" onclick="return showCalendar('end_success_date', '%Y-%m-%d', false, false, 'btn_end_success_date');" />
+            <br/>
+            标编id:<input type="text" class="textbox" name="deal_id" value="{$_REQUEST['deal_id']}" />
+            所属分站:
+            <html:select name="site_id" options="site_list" selected="_REQUEST[site_id]" first="请选择"/>
+            <input type="hidden" value="IncomeExcess" name="m" />
+            <input type="hidden" value="getIncomeExcessDealsList" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+<div class="blank5"></div>
+    <div class="button_row">
+    <input type="button" class="button" value="删除" _status='0' onclick="delDeal(this);"/>
+</div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th width="8"><input id="check" onclick="CheckAll('dataTable')" type="checkbox"></th>
+        <th width="50px">标的ID</th>
+        <th>贴息类型</th>
+        <th>所属分站</th>
+        <th>满标日</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    <tr>
+        <td colspan="20" class="bottomTd"> &nbsp;</td>
+    </tr>
+
+    <?php foreach($list as $k=>$v) :?>
+    <tr class="row">
+        <td><input name="key" class="key" value="<?= $v['id'] ?>" type="checkbox"></td>
+        <td><?= $v['id']?></td>
+        <td>超额收益</td>
+        <td><?= $site_list[$v['site_id']]?></td>
+        <td><?= date('Y-m-d',$v['success_time'])?></td>
+        <td>
+            <?php if($v['status'] == -2):?> 删除无效<?php endif;?>
+            <?php if($v['status'] == -1):?> 被驳回<?php endif;?>
+            <?php if($v['status'] == 100):?> 待配置<?php endif;?>
+            <?php if($v['status'] == 0):?> 待审批<?php endif;?>
+            <?php if($v['status'] == 1):?> 待结算<?php endif;?>
+            <?php if($v['status'] == 2):?> 已结算<?php endif;?>
+            <?php if($v['status'] == 3):?> 审核通过<?php endif;?>
+        </td>
+        <td>
+            <?php if($v['status'] != 0):?>
+	            <a href="javascript:weebox_showConf({$v.id});">配置</a>
+            <?php endif;?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+
+<script type="text/javascript">
+    function weebox_showConf(id){
+        var dialogBox = $.weeboxs.open(ROOT+'?m=IncomeExcess&a=showConfig&id='+id, {contentType:'ajax',showButton:true,title:'超额收益配置',width:440,height:143,
+            onok:function(){
+                var excessRate = dialogBox.find('#excessRate').val();
+                if(isNaN(excessRate)){
+                    alert("取值必须为数字，请重新输入！");
+                    return false;
+                }
+                if(excessRate <= 0) {
+                    dialogBox.find('#excessRate').focus();
+                    alert('取值需大于0，请重新输入！');
+                    return false;
+                }
+                $.post("/m.php?m=IncomeExcess&a=setExcessRate", { dealId: id, excessRate: excessRate }, function(rs) {
+                    var rs = $.parseJSON(rs);
+                    if (rs.status) {
+                        alert("超额收益配置成功！");
+                        location.href="/m.php?m=IncomeExcess&a=getIncomeExcessDealsList";
+                    } else {
+                        alert("操作失败！" + rs.data + rs.info);
+                    }
+                });
+                
+                dialogBox.close();
+            },
+            oncancel:function(box){
+                dialogBox.close();
+            }
+        });
+    }
+    
+    //删除标
+    var delDeal = function (e) {
+        button_name = $(e).val();
+        idBox = $(".key:checked");
+        if(idBox.length == 0)
+        {
+            alert("请选择要"+button_name+"的标");
+            return;
+        }
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        deal_ids = idArray.join(",");
+        if(confirm("请确认要"+button_name+"？")) {
+            $.ajax({
+                url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delDeal&deal_ids="+deal_ids,
+                data: "ajax=1",
+                dataType: "json",
+                success: function(obj){
+                    if(obj.status==1)
+                    {
+                        location.href="/m.php?m=IncomeExcess&a=getIncomeExcessDealsList";
+                    } else {
+                        alert(obj.info);
+                    }
+                }
+            });
+        }
+    }
+ </script>
+<include file="Public:footer" />

@@ -1,0 +1,164 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<PHP>
+    function showMoney($amount)
+    {
+        return number_format(bcdiv($amount, 100, 2),2);
+    }
+
+    function showDatetime($timestamp)
+    {
+        return date('Y-m-d H:i:s', $timestamp);
+    }
+
+    function showBizType($bizType)
+    {
+        $bizTypeDesc = array(
+            1 => '本金',
+            2 => '利息',
+            3 => '银信通服务费',
+            4 => '银信通本金',
+            5 => '银信通利息',
+            6 => '银信通解冻本金',
+            7 => '速贷还款本息',
+            8 => '速贷服务费',
+            9 => '速贷解冻本金',
+            10 => '偿还债权',
+        );
+
+        return $bizTypeDesc[$bizType];
+    }
+
+    function showUserType($type)
+    {
+        switch ($type)
+        {
+            case 1: return '对私';
+            case 2: return '对公';
+        }
+    }
+
+    function showStatus($status)
+    {
+        switch ($status)
+        {
+            case 0:
+                return '等待发送';
+            case 1:
+                return '等待通知';
+            case 2:
+                return '成功';
+            case 3:
+                return '失败';
+            case 4:
+                return '重新代发';
+        }
+    }
+    function showOperation($id, $row)
+    {
+        if($row['order_status'] != 3)
+        {
+            return '';
+        }
+        return "<a href='javascript:redoWithdrawProxy($id)'>重新代发</a> &nbsp;&nbsp; <a href='javascript:watchRetry($id)'>查看历史重发</a>";
+    }
+</PHP>
+<div class="main">
+<div class="main_title">代发列表</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" id="search_form" action="__APP__" method="get">
+        项目ID：<input type="text" class="textbox" name="project_id" value="{:trim($_REQUEST['project_id'])}" style="width:100px;" />
+        代发时间：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['apply_time_start'])}" name="apply_time_start" id="apply_time_start"  onfocus="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        至 <input type="text" value="{:trim($_REQUEST['apply_time_end'])}" name="apply_time_end" id="apply_time_end" class="textbox" onfocus="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        用户ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+        代发记录编号：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['request_no'])}" name="request_no" />
+
+        <input type="hidden" value="WithdrawProxy" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="hidden" value="3" name="order_status" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="BUTTON" class="button" onclick="resetSearch()" value="重置搜索条件"/>
+    </form>
+
+    <!-- <input type="button" class="button" value="导出" onclick="export_csv();" /> -->
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    checkbox="true"
+    style="dataTable"
+    name="record"
+    datasource="list"
+    show="project_id:项目ID|50px,create_time|showDatetime:代发时间,project_name:项目标题,user_id:用户ID,request_no:代发记录编号,biz_type|showBizType:业务类型,user_type|showUserType:收款账户类型,account_name:收款账户姓名,account_no|bankNoFormat:收款账户银行卡号,bank_no:收款账户银行编码,resp_message:失败原因,amount|showMoney:代发金额(元),merchant_id:代发商户号,order_status|showStatus:代发结果,retry_admin_name:操作人,id|showOperation=$record:操作"
+     />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<SCRIPT type="text/javascript">
+    //csv 导出
+    function export_csv(){
+        var type = $('#js_type').val();
+        if(type !=1 && type !=2 ){
+            alert("请选择导出类型！");
+            return false;
+        }
+        var parm = $('#search_form').serialize();
+        window.open(ROOT+'?'+parm+'&a=export');
+    }
+
+
+    function redoWithdrawProxy(id)
+    {
+        if (confirm("确定此操作吗?"))
+        {
+            $.getJSON("/m.php?m=WithdrawProxy&a=redoWithdrawProxy", {id:id},function(data){
+                if (data.errCode != 0) {
+                    alert(data.errMsg);
+                    return false;
+                }
+                alert("操作成功");
+                return true;
+            });
+        }
+    }
+
+    function resetNotifyCounter(id)
+    {
+        if (confirm("确定此操作吗?"))
+        {
+            $.getJSON("/m.php?m=WithdrawProxy&a=resetNotifyCounter", {id:id},function(data){
+                if (data.errCode != 0) {
+                    alert(data.errMsg);
+                    return false;
+                }
+                alert("操作成功");
+                return true;
+            });
+        }
+    }
+
+    function watchRetry(id)
+    {
+        window.location.href="/m.php?m=WithdrawProxy&a=index&watch_retry=1&recId="+id;
+    }
+
+    function resetSearch()
+    {
+        window.location.href="/m.php?m=WithdrawProxy&a=index";
+    }
+
+</SCRIPT>

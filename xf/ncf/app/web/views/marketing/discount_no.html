@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$tplTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-base.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/m-common.css');?>">
+    <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('v3/css/discount_pick/discount.css');?>">
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/zepto.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/base.js');?>" type="text/javascript" charset="utf-8"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/discount_pick/discount_pick.js');?>"></script>
+</head>
+<body>
+{include file="web/views/v3/marketing/top.html"}
+    <div class="discount_box">
+    	<div class="discount_box_top">
+          <div class="discount_no_icon"></div>
+          <a href="{$downloadUrl}" class="reg_btn">{$downloadDesc}</a>
+        </div>
+        <div class="line">
+            <div class="line_right">
+                <div class="line_center"></div>
+            </div>
+        </div>
+        <div class="discount_box_bottom">
+          {include file="web/views/v3/marketing/rules.html"}
+        </div>
+    </div>
+    </div>
+    <script type="text/javascript">
+    $(function(){
+        function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+    });
+    </script>
+</body>
+</html>

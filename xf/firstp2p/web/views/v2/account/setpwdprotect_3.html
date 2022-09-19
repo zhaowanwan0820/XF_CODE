@@ -1,0 +1,38 @@
+﻿{include file="web/views/v2/header.html"}
+    <div class="p_account_pwprotect">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v2/css/weebox.css');?>">
+        <link href="<?php echo $this->asset->makeUrl('v2/css/account_pwprotect.css');?>" type="text/css" rel="stylesheet">
+        <span class="blank23"></span>
+        <div class="wrap clearfix">
+            <div class="ui-box">
+                <div class="h-title">
+                    <h2>
+            <i></i>设置密保问题
+        </h2>
+                </div>
+                <div class="pwp-mid  mb170">
+                    <div class="pwp-title third-tep"></div>
+                    <div class="ui-edit-mid">
+                        <div class="edit-success"> <i class="icon-suc"> </i>
+                            <span class="font24">密保问题设置成功！</span>
+                        </div>
+                        <span class="font16">系统将在<span id="jumpTime">3</span>秒后自动跳转，如果没有跳转，请点击 <a href="/account/setup" class="blue">返回个人设置</a></span>
+                        <script>
+                           var jumpTime = 3,
+                           setJump = setInterval(function(){
+                                jumpTime--;
+                                if(jumpTime < 0){
+                                    clearInterval(setJump);
+                                    location.href = "/account/setup";
+                                }else{
+                                    $("#jumpTime").html(jumpTime);
+                                }
+                           },1000);
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="blank23"></span>
+    </div>
+{include file="web/views/v2/footer.html"}

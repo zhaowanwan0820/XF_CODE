@@ -1,0 +1,112 @@
+<tagLib name="html" />
+
+<include file="Public:header" />
+
+<link rel="stylesheet" type="text/css" href="/static/admin/Common/js/calendar/calendar.css" />
+<script type="text/javascript" src="/static/admin/Common/js/calendar/calendar_lang.js" ></script>
+<script type="text/javascript" src="/static/admin/Common/js/calendar/calendar.js"></script>
+
+<div class="main">
+    <div class="main_title">
+        <label>编辑客户投资</label>
+        <a href="{:u("ExchangeLoad/index?batch_id=". $loadInfo['batch_id'])}" class="back_list">{%BACK_LIST}</a>
+    </div>
+    <div class="blank5"></div>
+
+    <form name="edit" action="{:u("ExchangeLoad/save")}" method="post" enctype="multipart/form-data">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd">
+                    <input type="hidden" name="id" value="{$loadInfo['id']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">用户名称:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="real_name" value="{$loadInfo['real_name']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">身份证类型:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="certificate_type" value="{$loadInfo['certificate_type']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">证件号:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="certificate_no" value="{$loadInfo['certificate_no']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">手机号:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox" name="mobile" value="{$loadInfo['mobile']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">银行卡号:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="bank_no" value="{$loadInfo['bank_no']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开户行名称:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="bank_name" value="{$loadInfo['bank_name']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">联行号:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox" name="cnaps_no" value="{$loadInfo['cnaps_no']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开户行所在省:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="bank_province" value="{$loadInfo['bank_province']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">开户行所在市:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="bank_city" value="{$loadInfo['bank_city']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">邀请码:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="invite_code" value="{$loadInfo['invite_code']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">认购金额:</td>
+                <td class="item_input">
+                   <input type="text" class="textbox require" name="pay_money" value="{:sprintf("%.2f", $loadInfo['pay_money'] / 100)}" readonly="readonly"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">打款时间:</td>
+                <td class="item_input">
+                  <input type="text" class="textbox require" name="pay_time" id="pay_time" value="{:date('Y-m-d', $loadInfo['pay_time'])}" />
+                  <input type="button" class="button" id="btn_pay_time" value="选择时间" onclick="return showCalendar('pay_time', '%Y-%m-%d', false, false, 'btn_pay_time');" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <input type="submit" class="button" value="{%EDIT}" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+    <div class="blank5"></div>
+
+</div>
+
+<include file="Public:footer" />

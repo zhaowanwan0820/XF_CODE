@@ -1,0 +1,92 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<PHP>
+    function showMoney($amount)
+    {
+        return number_format(bcdiv($amount, 100, 2),2).'元';
+    }
+
+    function showDatetime($timestamp)
+    {
+        return date('Y-m-d H:i:s', $timestamp);
+    }
+
+    function showBizType($bizType)
+    {
+        $bizTypeDesc = array(
+            1 => '本金',
+            2 => '利息',
+            3 => '银信通服务费',
+            4 => '银信通本金',
+            5 => '银信通利息',
+            6 => '银信通解冻本金',
+            7 => '速贷还款本息',
+            8 => '速贷服务费',
+            9 => '速贷解冻本金',
+        );
+
+        return $bizTypeDesc[$bizType];
+    }
+
+    function showUserType($type)
+    {
+        switch ($type)
+        {
+            case 1: return '对私';
+            case 2: return '对公';
+        }
+    }
+
+    function showStatus($status)
+    {
+        switch ($status)
+        {
+            case 0:
+                return '等待发送';
+            case 1:
+                return '等待通知';
+            case 2:
+                return '成功';
+            case 3:
+                return '失败';
+            case 4:
+                return '重新代发';
+        }
+    }
+
+    function formatOrderStatus($status)
+    {
+        switch ($status)
+        {
+            case 2: return 'S';
+            case 3: return 'F';
+            case 4: return 'REDO';
+            case 1: return 'I';
+            case 0: return 'N';
+        }
+    }
+</PHP>
+<div class="main">
+<div class="main_title">{:trim($_REQUEST['date'])} 异常订单列表</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    checkbox="true"
+    style="dataTable"
+    name="record"
+    datasource="list"
+    show="order_id:业务单号,amount:P2P金额,order_status|formatOrderStatus:P2P订单状态,success_time|showDatetime:P2P完成时间,remote_amount:支付金额,remote_order_status:支付订单状态,remote_success_time|showDatetime:支付完成时间"
+     />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

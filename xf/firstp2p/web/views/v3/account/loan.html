@@ -1,0 +1,100 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_loan.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/investment/investment_view.js');?>" ></script>
+<div class="user_right_box p_account_loan">
+    <div class="user_title"><h1 class="fl"><i class="ico_huikuan"></i>回款计划
+
+    </h1>
+    <ul class="ui_huank_nav clearfix fl">
+       <!--回款计划增加农担贷去掉专享逻辑 $is_nongdan 布尔值为真时表示来自农担贷-->
+        {if !$is_nongdan}
+        <li {if $type eq 1} class="select" {else} class=""  {/if}><a href="/account/loan?type=1">专享</a>
+        </li>
+        {/if}
+        <li {if $type eq 2} class="select" {else} class="" {/if}><a href="/account/loan?type=2">网贷</a>
+        </li>
+
+    </ul>
+    </div>
+    <form id="search" action='{url x="index" r="account/loan"}' method="get">
+    {if $history eq 1}
+        <input type="hidden" name="history" value="1" />
+    {/if}
+    <input type="hidden" name="type" value="{$type}" />
+    <div class="screening clearfix">
+        <div class="ui_select_box JS_select_box" data-name="money_type">
+           <div class="j_select"></div>
+             <ul class="select_ul j_selectContent none">
+                <li data-value=''>全部回款类型</li>
+                {foreach from=$money_type item=type key=key}
+                <li data-value="{$key}" {if $search.money_type eq $key}data-select="1"{/if}>{$type}</li>
+                {/foreach}
+             </ul>
+        </div>
+        <div class="ui_select_box JS_select_box"  data-name="repay_status">
+           <div class="j_select"></div>
+             <ul class="select_ul j_selectContent none">
+                {foreach from=$repay_status item=status key=key}
+                <li data-value="{$key}" {if $search.repay_status === $key}data-select="1"{/if}>{$status}</li>
+                {/foreach}
+             </ul>
+        </div>
+        <div class="sel_time">
+            <span>时间</span>
+            <input type="text" name='start_time' class="time_box" id="dateInput1" value="{$search.start_time}"><span class="pl10">-</span><input type="text" name='end_time' class="time_box j_date" id="dateInput2" value="{$search.end_time}">
+        </div>
+         <input type="submit" value="筛选" class="button_shaixian fr">
+    </div>
+    </form>
+</div>
+<section class="p_account_loan">
+    <div class="project clearfix u_zijin">
+        <div class="pro_detailed clearfix">
+	        {if empty($list)}
+            <div class="empty-box">没有记录</div>
+            {if $type eq 2 && $history neq 1 && $last_page eq 1}
+            <div class="tc"><a href="/account/loan?type=2&history=1" class="blue">查看历史回款计划</a></div>
+            {/if}
+	        {else}
+	       <table class="plan zj_tab" width="100%">
+	           <colgroup>
+	               <col width="140">
+                    <col width="125">
+                    <col width="158">
+                    <col width="180">
+                    <col width="140">
+                    <col width="122">
+	           </colgroup>
+	           <thead>
+	               <tr>
+	                   <th><div class="pl5">回款日</div></th>
+	                   <th><div class="">金额（元）</div></th>
+	                   <th>类型</th>
+	                   <th>项目</th>
+	                   <th>实际回款日</th>
+	                   <th><div class="pr25">状态</div></th>
+	               </tr>
+	           </thead>
+	           <tbody>
+	               {foreach from=$list item="repay" key=key}
+	               <tr {if $key mod 2 eq  1}class="tr_bg"{/if}>
+	                   <td><div class="tl pl25">{$repay.time}</div></td>
+	                   <td><div><em class="color-yellow1">{function name="format_price" value=$repay.money c=0 d=0}</em></div></td>
+	                   <td>{if $repay.money_type eq '提前还款' || $repay.money_type eq '提前还款补偿金'}{$repay.money_type}{else}{$repay.money_type}{/if}</td>
+	                   <td id='{$repay.deal_id}'><div class="pl20 pr20">{$repay.deal_name}</div></td>
+	                   <td>{if $repay.is_timeout eq 1}{$repay.real_time}{else}{$repay.real_time}{/if}</td>
+	                   <td><div class="pr25">{if $repay.repay_status eq '因提前还款而取消'}{$repay.repay_status}{else}{$repay.repay_status}{/if}</div></td>
+	               </tr>
+	               {/foreach}
+	           </tbody>
+	       </table>
+           <div class="pages mb30">{$pages}</div>
+           {if $type eq 2 && $history neq 1 && $last_page eq 1}
+           <div class="tc"><a href="/account/loan?type=2&history=1" class="blue">查看历史回款计划</a></div>
+           {/if}
+       {/if}
+        </div>
+        <div class="user_tip charge_tip">
+        {function name="get_adv" x="回款计划提示_2015"}
+        </div>
+    </div>
+</section>

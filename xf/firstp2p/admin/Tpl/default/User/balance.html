@@ -1,0 +1,221 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<div class="main">
+<div class="main_title">余额查询 <a href="#" onclick="history.go(-1); return false;" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<table class="form" cellpadding=0 cellspacing=0>
+<tr>
+    <td colspan=2 class="topTd"></td>
+</tr>
+<tr>
+    <td class="item_title">是否关联支付</td>
+    <td class="item_input">
+    <?php if ($p2pUserInfo['payment_user_id']) { ?>
+    已关联
+    <?php } else { ?>
+    未关联
+    <?php } ?>
+    </td>
+</tr>
+<tr>
+    <td class="item_title"><if condition="$isEnterprise eq 1">支付账户ID<else/>用户ID</if></td>
+    <td class="item_input">{$result.userId}</td>
+</tr>
+<tr>
+    <td class="item_title">可用余额</td>
+    <td class="item_input">{$result.availableBalance.amount} (元)</td>
+</tr>
+<tr>
+    <td class="item_title">冻结金额</td>
+    <td class="item_input">{$result.freezeBalance.amount} (元)</td>
+</tr>
+<tr>
+    <td colspan=2 class="bottomTd"></td>
+</tr>
+</table>
+
+<div class="blank5"></div>
+<div class="main_title">用户信息</div>
+<div class="blank5"></div>
+
+<table class="form" cellpadding=0 cellspacing=0>
+<tr>
+    <td colspan=2 class="topTd"></td>
+</tr>
+<tr>
+    <td class="item_title">存管账户类型</td>
+    <td class="item_input"><?php if (!empty($supervisionUserInfo)) { ?>{$supervisionUserInfo.bizType} <?php } ?></td>
+</tr>
+<tr>
+    <td class="item_title"><if condition="$isEnterprise eq 1">用户ID<else/>ID</if></td>
+    <td class="item_input">{$userInfo.userId}</td>
+</tr>
+<tr>
+    <td class="item_title"><if condition="$isEnterprise eq 1">企业全称<else/>姓名</if></td>
+    <td class="item_input">{$userInfo.realName}</td>
+</tr>
+<tr>
+<tr>
+    <td class="item_title"><if condition="$isEnterprise eq 1">企业证件号码<else/>身份证号</if></td>
+    <td class="item_input">{$userInfo.cardNo}</td>
+</tr>
+<tr>
+    <td class="item_title"><if condition="$isEnterprise eq 1">企业账户负责人手机号码<else/>手机号</if></td>
+    <td class="item_input">{$userInfo.phone}</td>
+</tr>
+<tr>
+    <td class="item_title">是否设置交易密码</td>
+    <td class="item_input">{$userInfo.isSetTransPWD}</td>
+</tr>
+<tr>
+    <td colspan=2 class="bottomTd"></td>
+</tr>
+</table>
+
+<div class="blank5"></div>
+<div class="main_title">银行卡绑定</div>
+<div class="blank5"></div>
+
+<foreach name="bankInfo.list" item="item">
+<table class="form" cellpadding=0 cellspacing=0>
+<tr>
+    <td colspan=2 class="topTd"></td>
+</tr>
+<tr>
+<tr>
+    <td class="item_title">卡号</td>
+    <td class="item_input">{$item.cardNo}</td>
+</tr>
+<tr>
+    <td class="item_title">卡类型</td>
+    <td class="item_input">{$item.cardType}</td>
+</tr>
+<tr>
+    <td class="item_title">银行编码</td>
+    <td class="item_input">{$item.bankCode}</td>
+</tr>
+<tr>
+    <td class="item_title">银行名称</td>
+    <td class="item_input">{$item.bankName}</td>
+</tr>
+<tr>
+    <td class="item_title">联行号</td>
+    <td class="item_input">{$item.branchBankId}</td>
+</tr>
+<tr>
+    <td class="item_title">省</td>
+    <td class="item_input">{$item.province}</td>
+</tr>
+<tr>
+    <td class="item_title">市</td>
+    <td class="item_input">{$item.city}</td>
+</tr>
+<tr>
+    <td class="item_title">卡状态</td>
+    <td class="item_input">{$item.status} (S 成功 F 失败 I处理中)</td>
+</tr>
+<tr>
+    <td class="item_title">唯一标识</td>
+    <td class="item_input">{$item.bankCardId}</td>
+</tr>
+<tr>
+    <td class="item_title">业务类型</td>
+    <td class="item_input">{$item.bankCardType} (0主卡 1充值卡)</td>
+</tr>
+<tr>
+    <td class="item_title">预留手机号</td>
+    <td class="item_input">{$item.phone}</td>
+</tr>
+<tr>
+    <td class="item_title">认证类型</td>
+    <td class="item_input">
+        <?php
+            if ($item['certStatus'] == 'EXTERNAL_CERT') {
+                echo 'IVR语音认证';
+            } else if ($item['certStatus'] == 'FASTPAY_CERT') {
+                echo '快捷认证(四要素认证)';
+            } else if ($item['certStatus'] == 'TRANSFER_CERT') {
+                echo '转账认证';
+            } else if ($item['certStatus'] == 'WHITELIST_CERT') {
+                echo '白名单';
+            } else if ($item['certStatus'] == 'REMIT_CERT') {
+                echo '打款认证';
+            } else if ($item['certStatus'] == 'ONLY_CARD') {
+                echo '卡密认证';
+            } else if ($item['certStatus'] == 'AUDIT_CERT') {
+                echo '人工认证';
+            } else if ($item['certStatus'] == 'NO_CERT') {
+                echo '未认证';
+            } else if ($item['certStatus'] == 'MER_WHIT_CERT') {
+                echo '商户白名单认证';
+            } else {
+                echo $item['certStatus'];
+            }
+        ?>
+        <input type="hidden" id="_js_bankinfo_uid" value="{$userInfo.userId}">
+        <?php if ($item['bankCardType'] == 0) { ?>
+        <button id="_js_sync_cert_status">同步认证类型</button>
+        <?php }?>
+    </td>
+</tr>
+<tr>
+    <td colspan=2 class="bottomTd"></td>
+</tr>
+</table>
+</foreach>
+
+<div class="blank5"></div>
+{$showCreateAccount}
+</div>
+
+<?php if (!empty($userInfo['userId']) && empty($p2pUserInfo['payment_user_id'])) { ?>
+    <a class="button" id="button" href="/m.php?m=User&a=updatePaymentUserId&id=<?php echo $p2pUserInfo['id']; ?>" >更新payment_user_id</a>
+<?php } ?>
+<?php if (!empty($p2pUserInfo['payment_user_id'])) { ?>
+    <a class="button" id="button" href="/m.php?m=User&a=resetPaymentUserId&id=<?php echo $p2pUserInfo['id']; ?>" >删除payment_user_id</a>
+<?php } ?>
+
+<?php if (!empty($p2pUserInfo['mobile']) && !empty($p2pUserInfo['payment_user_id']) && $p2pUserInfo['mobile'] != $userInfo['phone']) { ?>
+    <a class="button" id="button" href="/m.php?m=User&a=updatePaymentPhone&id=<?php echo $p2pUserInfo['id']; ?>" >更新用户手机号</a>
+<?php } ?>
+
+<?php if (!empty($p2pUserInfo['supervision_user_id']) && $p2pUserInfo['supervision_user_id'] == app_conf('SUPERVISION_ADVANCE_ACCOUNT')) { ?>
+    <a class="button" id="button" href="/m.php?m=User&a=syncUserBalance&id=<?php echo $p2pUserInfo['id']; ?>" >同步垫资金额</a>
+<?php } ?>
+
+
+
+    <a class="button" id="button" href="/m.php?m=User&a=clearUserSupervisionCache&id=<?php echo $p2pUserInfo['id']; ?>" >清理用户存管缓存</a>
+<script type="text/javascript">
+jQuery(function() {
+    //同步认证类型
+    $("#_js_sync_cert_status").click(function () {
+        var uid = $('#_js_bankinfo_uid').val();
+        if (uid == 0) {
+            alert("没有用户信息！");
+            return false;
+        }
+        if (uid > 0) {
+            $.ajax({
+                type: "POST",
+                url: ROOT + '?m=User&a=syncCertStatus',
+                data: "uid=" + uid,
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.code !== '0000') {
+                        return alert(msg.msg);
+                    }
+                }
+            });
+        }
+        return false;
+    });
+})
+</script>
+
+<include file="Public:footer" />

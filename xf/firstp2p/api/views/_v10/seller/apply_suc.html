@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>兑换详情</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <!--public js&css start-->
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>" rel="stylesheet" type="text/css" />
+        <!--public js&css end-->
+        <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/o2o/o2o_coupon.css');?>" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+
+        <div class="m-main">
+            <div class="p_coupon_change">
+                <div class="sc_top">
+                    <i class="sc_success"></i>
+                    <p>兑换成功</p>
+                </div>
+                <div class="sc_list clearfix">
+                    <div class="scl_show">
+                        <span>商品名称</span>
+                        <p class="ts_color">{$couponInfo.productName}</p>
+                    </div>
+                    <div class="scl_show">
+                        <span>兑换时间</span>
+                        <p>{function name="format_date_by_type" b=$couponInfo.updateTime}</p>
+                    </div>
+                </div>
+                <div class="sc_list clearfix">
+                    <div class="scl_show">
+                        <span>会员名称</span>
+                        <p>{$couponUserInfo.user_name}</p>
+                    </div>
+                </div>
+                <div class="ui_h56"></div>
+                <div class="ui_btn_box">
+                    <a data-proto="coupon://api" data-type="webview" data-backtype="finish" data-backid="couponRedeem" data-title="优惠券兑换" data-identity="couponRedeem" data-needback="true" data-needrefresh="true" href="{$APP_HOST}/seller/AppliedList?token={$token}" class=" btn_red" >完成</a>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+        <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    </body>
+</html>

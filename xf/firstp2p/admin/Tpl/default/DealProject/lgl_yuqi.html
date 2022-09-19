@@ -1,0 +1,147 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<php>
+function subtraction($num1,$num2) {
+    $num = $num1 - $num2;
+    $num = format_price($num,false);
+    return $num;
+}
+</php>
+
+<script type="text/javascript">
+    function del(id) {
+        if(!id) {
+            idBox = $(".key:checked");
+            if(idBox.length == 0)
+            {
+                alert(LANG['DELETE_EMPTY_WARNING']);
+                return;
+            }
+            idArray = new Array();
+            $.each( idBox, function(i, n){
+                idArray.push($(n).val());
+            });
+            id = idArray.join(",");
+        }
+        if(confirm(LANG['CONFIRM_DELETE'])){
+            //判断该项目是否有子标  如没有才能删除
+            var is_submit = 0;
+            $.ajax({
+                url:ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=checkSave&id="+id,
+                dataType:"json",
+                async:false,
+                success:function(rs){
+                    if(rs.status ==1)
+                    {
+                        if(rs.data.sum > 0) {
+                            //alert('项目id:'+id+'下有子标，不能直接删除！');
+                            alert('该项目下有子标，不能直接删除！');
+                            return;
+                        }
+                        is_submit = 1;
+                    }else{
+                        is_submit = 0;
+                    }
+                }
+            });
+            if(is_submit == 1) {
+                $.ajax({
+                    url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=delete&id="+id, 
+                    data: "ajax=1",
+                    dataType: "json",
+                    success: function(obj){
+                        $("#info").html(obj.info);
+                        if(obj.status==1) {
+                            location.href=location.href;
+                        }
+                    }
+                });
+            }
+        }
+    }
+    function add_deal(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=Deal&"+VAR_ACTION+"=add&proid="+id;
+    }
+
+    function add() {
+        location.href = ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=add&deal_type=1";
+    }
+</script>
+
+
+<div class="main">
+    <div class="main_title">逾期标的列表</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+
+    </div>
+    <!-- <div class="blank5"></div>
+    <div class="search_row">
+          
+        <form name="search" action="__APP__" method="get">  
+                            借款标题：<input type="text" class="textbox" name="cname" value="{:trim($_REQUEST['cname'])}" size="8"/>
+                            分类：<input type="text" class="textbox" name="cnum" value="{:trim($_REQUEST['cnum'])}" size="15"/>
+                            贷款人：<input type="text" class="textbox" name="cuser_name" value="{:trim($_REQUEST['cuser_name'])}" size="8"/>
+
+            <input type="hidden" value="Contract" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form> 
+        
+    </div>-->
+    <div class="blank5"></div>
+    <!-- Think 系统列表组件开始 -->
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="8"><input type="checkbox" id="check"
+                onclick="CheckAll('dataTable')"></th>
+            <th width="20px"><a
+                href="javascript:sortBy('id','1','Contract','index')" title="按照编号升序排列 ">编号</a></th>
+            <th>借款标题</th>
+            <th>旧版借款标题</th>
+            <th>借款金额</th>
+            <th>年化借款利率</th>
+            <th>借款期限</th>
+            <th>还款方式</th>
+            <th>赎回周期</th>
+            <th>借款人ID/用户名/姓名/手机号</th>
+            <th>账户余额</th>
+            <th>今日应还</th>
+            <th width='148px'>操作</th>
+        </tr>
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td><input type="checkbox" name="key" class="key" value="{$item.deal_id}"></td>
+            <td>{$item.deal_id}</td>
+            <td>{$item.name}</td>
+            <td>{$item.deal_id|getOldDealNameWithPrefix}</td>
+            <td>{$item.borrow_amount}</td>
+            <td>{$item.rate}%</td>
+            <td>{$item.repay_time}</td>
+            <td>{$item.loan_type}</td>
+            <td>{$item.redemption_period}天</td>
+            <td>{$item.list_name}</td>
+            <td>{$item.money} </td>
+            <td>{$item.need_repay} </td>
+            <td>
+                <if condition='$item.is_during_repay eq 1'>
+                还款中
+                <else/>
+                <a href="/m.php?m=DealProject&a=repayCompound&deal_id={$item.deal_id}&ajax=0" onclick='return confirm("是否确认将用户余额扣成负数？");'>扣负强制还款</a> &nbsp;
+                </if>
+            </td>
+        </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <!-- Think 系统列表组件结束 --> 
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

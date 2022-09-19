@@ -1,0 +1,482 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<script type="text/javascript">
+var auto_change_loanrate = false;
+
+//检查借款人身份
+function checkSubmit() {
+
+    var user_id = $("#user_id").val();
+    if(isNaN(user_id)){
+        alert("必须为数字");
+        return false;
+    }
+    is_submit = 0;
+    $.ajax({
+        url: ROOT + "?" + VAR_MODULE + "=DealProject&" + VAR_ACTION + "=checkSubmit&user_id=" + user_id + "&borrow_amount=" + $("#borrow_amount").val(),
+        dataType: "json",
+        async: false,
+        success: function(rs) {
+            if (rs.status == 1) {
+                is_submit = 1;
+                //$("#addform").submit();
+                //return true;
+            } else {
+                if (rs.data.bank_auth == 0) {
+                    alert('借款人未进行银行卡绑定');
+                    return;
+                }
+
+                if (rs.data.user_auth == 0) {
+                    alert('用户未进行身份认证');
+                    return;
+                }
+
+                if (rs.data.amount_auth == 0) {
+                    alert(rs.message);
+                    $("#borrow_amount").focus();
+                    return;
+                }
+            }
+        }
+    });
+    if(is_submit) {
+        return true;
+    }else {
+        return false;
+    }
+
+}
+
+
+function changeRepay(tag){
+    var repay_mode = $('#repay_mode').val();
+
+    changeLoantype();
+    //切换html
+    if(repay_mode == 5){
+        $('.xhsoi').hide();
+        $('.xhsot').show();
+
+        var repay_period = $('#repay_period2').val();
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+        $('#repay_period2,#tian').show();
+        $('#repay_period2').attr('name', 'repay_time');
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+    }else if(repay_model == 4 || repay_mode == 3 || repay_mode == 2){
+        $('.xhsoi').show();
+        $('.xhsot').hide();
+
+        var repay_period = $("#repay_period3").val();
+        $('#repay_period3').show();
+        $('#repay_period3').attr('name', 'repay_time');
+        $('#repay_period2,#tian').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+    }else{
+        $('.xhsoi').show();
+        $('.xhsot').hide();
+
+        var repay_period = $("#repay_period").val();
+        $('#repay_period').show();
+        $('#repay_period').attr('name', 'repay_time');
+        $('#repay_period2,#tian').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+    }
+}
+
+
+function changeRepay(tag){
+    var repay_mode = $('#repay_mode').val();
+
+    changeLoantype();
+    //切换html
+    if(repay_mode == 5){
+        $('.xhsoi').hide();
+        $('.xhsot').show();
+
+        var repay_period = $('#repay_period2').val();
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+        $('#repay_period2,#tian').show();
+        $('#repay_period2').attr('name', 'repay_time');
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+    }else if(repay_mode == 4 || repay_mode == 3 || repay_mode == 2 || repay_mode == 8){
+        $('.xhsoi').show();
+        $('.xhsot').hide();
+
+        var repay_period = $("#repay_period3").val();
+        $('#repay_period3').show();
+        $('#repay_period3').attr('name', 'repay_time');
+        $('#repay_period2,#tian').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+    }else{
+        $('.xhsoi').show();
+        $('.xhsot').hide();
+
+        var repay_period = $("#repay_period").val();
+        $('#repay_period').show();
+        $('#repay_period').attr('name', 'repay_time');
+        $('#repay_period2,#tian').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+    }
+}
+function changeLoantype() {
+    var loantype = $("#repay_mode").val();
+    var deal_status = $("input[name='deal_status']:checked").val();
+    if((loantype == 4 || loantype == 6) && deal_status == 4) {
+        $("#first_repay_day_box").show();
+    } else {
+        $("#first_repay_day_box").hide();
+    }
+}
+
+function changeLoanMoneyMode() {
+    var loan_money_type = $("#loan_money_mode").val();
+
+    if (loan_money_type == 3) { //受托支付
+        $('#cardname').show();
+        $('#bankcardnumber').show();
+        $('.bankzone_selector').show();
+    } else {
+        $('#cardname').hide();
+        $('#bank').hide();
+        $('.bankzone_selector').hide();
+    }
+}
+
+function changeRate(tag){
+    if(!tag)   return false;
+    var repay_time = $("select[name='repay_time']").val();
+    var loantype = $("select[name='loantype']").val();
+
+    if(loantype == 5){
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+        $('#repay_period2').show();
+        $('#repay_period2').attr('name', 'repay_time');
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+
+        repay_time = $('#repay_period2').val();
+    }else if(loantype == 4 || loantype == 3 || loantype == 2){
+        $('#repay_period3').show();
+        $('#repay_period3').attr('name', 'repay_time');
+        $('#repay_period2').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period').hide();
+        $('#repay_period').removeAttr('name');
+        repay_time = $('#repay_period3').val();
+    }else{
+        $('#repay_period').show();
+        $('#repay_period').attr('name', 'repay_time');
+        $('#repay_period2').hide();
+        $('#repay_period2').removeAttr('name');
+        $('#repay_period3').hide();
+        $('#repay_period3').removeAttr('name');
+        repay_time = $('#repay_period').val();
+    }
+}
+
+function getDayRate() {
+    rate = $("#rate").val();
+
+    if(isNaN(rate)){
+        alert("必须为数字");
+        return false;
+    }
+
+    $.ajax({
+        url: ROOT + "?" + VAR_MODULE + "=DealProject&" + VAR_ACTION + "=convertRateYearToDay&rate=" + rate,
+        dataType: "json",
+        async: false,
+        success: function(rs) {
+            $("#day_rate").html(rs.day_rate)
+        }
+    });
+}
+</script>
+<div class="main">
+    <div class="main_title">通知贷项目{%ADD} <a href="{:u("DealProject/compound_project")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form id="addform" name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">项目名称:</td>
+        <td class="item_input">   <!-- <span class="tip_span"></span> -->
+        <input type="text" class="textbox require" name="name" id="name"  />
+        <span id="name_tip"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">产品大类:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="product_class" id="product_class" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">产品名称:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="product_name" id="product_name" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款人会员ID:</td>
+        <td class="item_input">
+        <input type="text" class="textbox require" name="user_id" id="user_id"/>
+        <a href='{:u("User/index")}' target="__blank">会员列表</a>
+        <span id="user_name"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款总额:</td>
+        <td class="item_input">
+          <input type="text" class="textbox require" name="borrow_amount" id="borrow_amount"/>
+          <span id="borrow_tip"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">还款方式:</td>
+        <td class="item_input">
+            <select name="loantype" id="repay_mode" onchange="javascript:changeRepay();" >
+                <foreach name="loan_type" key='type_key' item="type_item">
+                <if condition="$type_key eq 5">
+                    <option value="{$type_key}" >{$type_item}</option>
+                </if>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">{%REPAY_TIME}:</td>
+        <td class="item_input">
+            <select id="repay_period" name="repay_time" onchange="javascript:changeRepay();" >
+                <foreach name="repay_time" key='time_key' item="time_item">
+                <option value="{$time_key}" <if condition="$time_key eq 5">selected="selected"</if>>{$time_item}</option>
+                </foreach>
+            </select>
+
+            <input type="text" class="changepmt textbox" SIZE="8" onchange="javascript:changeRepay();" name="repay_time" id="repay_period2" <if condition="$vo.loantype eq 5">value="{$vo.repay_time}"</if> /> <span id='tian'>天</span>
+
+            <select id="repay_period3" name="repay_time" onchange="javascript:changeRepay();" >
+                <foreach name="repay_time_month" key='time_key' item="time_item">
+                <option value="{$time_key}" <if condition="$time_key eq $vo['repay_time']">selected="selected"</if>>{$time_item}</option>
+                </foreach>
+            </select>
+            <span id="repay_period2_tip"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">借款综合成本(年化):</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" SIZE="8"  name="rate" id="rate" value="">%
+            <!--
+            日利率：
+            <span id="day_rate"></span>%
+             -->
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">费用收取方式:</td>
+        <td class="item_input">
+            <select name="borrow_fee_type" id="borrow_fee_mode" >
+                <foreach name="borrow_fee_type" key='type_key' item="type_item">
+                    <option value="{$type_key}" <if condition="$type_key eq $vo['borrow_fee_type']">selected="selected"</if>>{$type_item}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">放款方式:</td>
+        <td class="item_input">
+            <select name="loan_money_type" id="loan_money_mode" onchange="javascript:changeLoanMoneyMode();">
+                <foreach name="loan_money_type" key='type_key' item="type_item">
+                    <option value="{$type_key}" <if condition="$type_key eq $vo['loan_money_type']">selected="selected"</if>>{$type_item}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+
+    <tr id="cardname" style="display:none;">
+        <td class="item_title">收款账户账户名:</td>
+        <td class="item_input">
+            <input type="text" name="card_name" class="textbox" id="card_name" value="" />
+        </td>
+    </tr>
+
+    <include file="DealProject:bankzone_selector" />
+
+    <tr id="bankcardnumber" style="display:none;">
+        <td class="item_title">收款账户银行卡号:</td>
+        <td class="item_input">
+            <input type="text" name="bankcard" class="textbox" id="bankcard" value="" />
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">锁定期:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" SIZE="8"  name="lock_period" id="lock_period" value="">天
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">赎回周期:</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" SIZE="8"  name="redemption_period" id="redemption_period" value="">天
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">放款审批单编号</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="approve_number" id="approve_number" value="">
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">项目授信额度</td>
+        <td class="item_input">
+            <input type="text" class="textbox" name="credit" id="credit" value="">
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title">项目简介:</td>
+        <td class="item_input">
+        <script id="editor" name="intro" type="text/plain" style="width:800px;height:200px; float:left;"></script>
+       <!--  <html:editor id="editor" name="intro" type="KINDEDITOR" content="" style="width:800px; height:600px;"/> -->
+
+        </td>
+    </tr>
+
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="DealProject" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            <input type="hidden" name="deal_type" value="{$deal_type}" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%ADD}" id="submit" onclick="return checkSubmit();"/>
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<script>
+
+$(document).ready(function(){
+    changeLoanMoneyMode();
+    changeRepay();
+    //检验user_id是否存在 如果存在则显示用户名
+    $("input[name='user_id']").bind("blur",function(){
+        user_id = $(this).val();
+        if(isNaN(user_id)){
+            alert("必须为数字");
+            return false;
+        }
+        if($(this).val().length>0)
+        {
+            $.ajax({
+                url:ROOT+"?"+VAR_MODULE+"=User&"+VAR_ACTION+"=getAjaxUser&id="+$(this).val(),
+                dataType:"json",
+                success:function(result){
+                    if(result.status ==1)
+                    {
+                        if(result.user.user_name) {
+                            $("#user_name").html("  会员名称:<a href='{:U(\'User/edit\')}id="+user_id+"' target='__blank'>"+result.user.user_name+"</a>  会员姓名:"+result.user.name+" 用户类型:"+result.user.user_type_name);
+                        }                      
+                    }
+                    else{
+                        alert("会员不存在");
+                        $("#user_id").val('');
+                        $("#user_name").text('');
+                        $("#user_id").focus();
+                    }
+                }
+            });
+        }
+    });
+    // 检测项目名称是否重名
+    $("input[name='name']").bind("blur",function(){
+        if($(this).val().length>0)
+        {
+            $.ajax({
+                url:ROOT+"?"+VAR_MODULE+"=DealProject&"+VAR_ACTION+"=getCntByName&ajax=1&name="+$(this).val(),
+                dataType:"json",
+                success:function(result){
+                    if(result.status ==1)
+                    {
+                        if(result.cnt >0) {
+                            $("#name_tip").text('项目名称已经存在');
+                            $("#name").focus();
+                        }
+                    }
+                    else{
+                         $("#name_tip").text('');
+                    }
+                }
+            });
+        }
+    });
+
+    // 检测借款总额是否为数字
+    $("input[name='borrow_amount']").bind("blur",function(){
+        if($(this).val().length>0)
+        {
+            if(isNaN($(this).val())){
+                $("#borrow_tip").text('借款总额必须为数字');
+                $("#borrow_amount").val('');
+                $("#borrow_amount").focus();
+                return false;
+            }
+        }
+    });
+
+ // 检测 还款天数是否为数字
+    $("#repay_period2").bind("blur",function(){
+        if($(this).val().length>0)
+        {
+            if(isNaN($(this).val())){
+                $("#repay_period2_tip").text('还款天数必须为数字');
+                $("#repay_period2").val('');
+                $("#repay_period2").focus();
+                return false;
+            }
+        }
+    });
+    //实例化编辑器
+    UE.getEditor('editor');
+
+});
+</script>
+<include file="Public:footer" />

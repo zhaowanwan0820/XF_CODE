@@ -1,0 +1,77 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<div class="main">
+<div class="main_title">{%ADD} <a href="{:u("BookingSession/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form id="addform" name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+    <tr>
+        <td class="item_title">城市列表:</td>
+        <td class="item_input">
+            <select name="citys_name" id="citys_id" >
+                <foreach name="citys" key='city_key' item="city_item">
+                    <option value="{$city_key}"> {$city_item}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">人数上限:</td>
+        <td class="item_input">
+          <input type="text" class="textbox require" name="limit_count" id="name"  />
+          <span id="name_tip"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">开始时间</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="start_time" id="fixed_start_date"  onfocus="this.blur(); return showCalendar('fixed_start_date', '%Y-%m-%d %H:%M:%S', false, false, 'btn_fixed_start_date');" />
+            <input type="button" class="button" id="btn_fixed_start_date" value="{%SELECT_TIME}" onclick="return showCalendar('fixed_start_date', '%Y-%m-%d %H:%M:%S', false, false, 'btn_fixed_start_date');" />
+            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#fixed_start_date').val('');" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">结束时间</td>
+        <td class="item_input">
+            <input type="text" class="textbox require" name="end_time" id="fixed_end_date"  onfocus="this.blur(); return showCalendar('fixed_end_date', '%Y-%m-%d %H:%M:%S', false, false, 'btn_fixed_end_date');" />
+            <input type="button" class="button" id="btn_fixed_end_date" value="{%SELECT_TIME}" onclick="return showCalendar('fixed_end_date', '%Y-%m-%d %H:%M:%S', false, false, 'btn_fixed_end_date');" />
+            <input type="button" class="button" value="{%CLEAR_TIME}" onclick="$('#fixed_end_date').val('');" />
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">备注:</td>
+        <td class="item_input">
+          <input type="text" class="textbox require" name="remark" id="name"  />
+          <span id="name_tip"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title"></td>
+        <td class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="{:conf("VAR_MODULE")}" value="BookingSession" />
+            <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+            <!--隐藏元素-->
+            <input type="submit" class="button" value="{%ADD}" id="submit" />
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>
+<include file="Public:footer" />

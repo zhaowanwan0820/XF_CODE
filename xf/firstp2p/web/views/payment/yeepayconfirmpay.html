@@ -1,0 +1,49 @@
+{include file="web/views/fenzhan/header.html"}
+
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>"  rel="stylesheet" type="text/css">
+<!--private js&css end-->
+
+
+<div class="w980 mauto clearfix">
+
+    <section>
+        <div class="pay">
+            {if $newBindCard}
+            <div class="pay_con">
+                绑定支付银行卡成功.
+            </div>
+            {/if}
+            <div class="pay_con">
+                <p>充值金额</p>
+                <p style="color:red; font-size:24px;">￥{$userInfo.moneyFormat}</p>
+                <p>借记卡所属银行：{$userInfo.bankName}</p>
+                <p>银行卡号：{$userInfo.cardNoDisplay}</p>
+                <p class="pay_other">
+                    <button class="user_button mt10 mb20" id="confirmInfoBtn" type="button">确认充值</a>
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#confirmInfoBtn').click(function(){
+            $.post('/payment/yeepayRequest', {}, function(response){
+                if (response.status == 0)
+                {
+                    alert('支付请求已受理，可能会有5-10分钟的延迟，请耐心等待，谢谢');
+                    window.location.href='/account/';
+                }
+                else
+                {
+                    alert(response.msg);
+                    window.location.href='/account/charge/';
+                }
+            },
+            'JSON');
+        })
+    });
+</script>
+{include file="web/views/fenzhan/footer.html"}

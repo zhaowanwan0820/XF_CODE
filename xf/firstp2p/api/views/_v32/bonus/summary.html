@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>红包详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=yes">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base_v32.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common_v32.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-bonus.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="p_bonus">
+        <div class="status">
+            <dl>
+                {if $sendFlag eq 0}
+                <dd>
+                    <div class="status_ygq"></div>
+                </dd>
+                {elseif $sendFlag eq 2}
+                <dd>
+                    <div class="status_fgl"></div>
+                </dd>
+                {/if}
+                <dt>
+                    <div class="con">
+                        <h3>{$group.sendNum}个红包已被拆开</h3>
+                        <h4 class="color_red f20"><span class="f12">还剩</span>{$group.leftNum}<span class="f12">个</span></h4>
+                        <p>有效期至：{$group.expiredAt}</p>
+                    </div>
+                </dt>
+            </dl>
+        </div>
+        <div class="text_box">
+            <h3>红包来源</h3>
+            <p>{$group.bonusInfo}</p>
+            <h3>{if !empty($group.bonusTitle) } {$group.bonusTitle} {else}领取时间{/if}</h3>
+            <p>{$group.createdAt}</p>
+        </div>
+    </div>
+{include file="api/views/_v32/footer.html"}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>邀请好友返现金</title>
+<style>
+*{ margin:0; padding:0;}
+body{background:#34424f;}
+.wrap{ width:1100px; margin:0 auto;}
+img{ display:block; border:0;}
+.line{height:89px; overflow:hidden;}
+.share_box{ background:url(<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_10.jpg')?>) no-repeat; height:328px; overflow:hidden;}
+.share_content{ width:230px; height:134px; margin:66px auto 0; position:relative;}
+#share_text{ width:825px; margin:0 auto; font:17px/24px "Microsoft YaHei"; color:#58554e;}
+#share_text span{ color:#fc0000;}
+.share_box .cover{ position:absolute; left:-36px; top:0px; width:302px; height:55px; background:url(<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/anniu.png')?>) no-repeat;}
+#jiathis_weixin_share img{ display:inline-block;}
+.jiathis_modal_footer{ display:none;}
+#jiathis_weixin_modal{ height:310px !important;}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_01_wx.jpg');?>"/></div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_02.jpg');?>"/></div>
+    <div class="line">
+        <div style="float:left; width:434px;"><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_03.jpg');?>"/></div>
+        <div style="float:left; width:281px;"><a href="{$coupon_url}" target="_blank"><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_04.jpg');?>"/></a></div>
+        <div style="float:left; width:385px;"><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_05.jpg');?>"/></div>
+    </div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_06_2_wx.jpg');?>"/></div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_07_wx.jpg');?>"/></div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_08.jpg');?>"/></div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_09_wx.jpg');?>"/></div>
+    <div class="share_box">
+        <div class="share_content">
+         {if $user_id == ''}
+            <a class="cover" href="{$share_url}" target="_blank"></a>
+          {else}
+            <!-- JiaThis Button BEGIN -->
+			<div class="jiathis_style_32x32">
+				<a class="jiathis_button_qzone"></a>
+				<a class="jiathis_button_tsina"></a>
+				<a class="jiathis_button_tqq"></a>
+				<a class="jiathis_button_renren"></a>
+				<a class="jiathis_button_weixin"></a>
+				<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+			</div>
+            {/if}
+            </div>
+            
+            <div id="share_text">【亲，有钱一起赚吧】我在网信理财（www.firstp2p.com）投资啦，他们是央行互联网金融专业委员会首批成员。产品收益高、期限短、本息担保。现在用我的“邀请码”<span> {$coupon} </span>，注册后投资“新立赢”，四天后，你我各赚20元。咱们关系这么铁，当然有钱一起赚啦！</div>
+        
+    </div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_11_wx.jpg');?>"/></div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_12_wx.jpg');?>"/></div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_14_wx.jpg');?>"/></div>
+    <div><img src="<?php echo $this->asset->makeUrl('v1/images/topic/invite-money/img_15_wx.jpg');?>"/></div>
+</div>
+<script>
+var jiathis_config = {
+    boldNum:0,
+    showClose:false,
+    url:"http://" + location.host + "/?cn={$coupon}",
+    summary: document.getElementById('share_text').innerHTML.replace('<span>','').replace('</span>','')
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<script type='text/javascript'>
+var _ncf={"prd":"firstp2p","pstr":"","pfunc":null,"pcon":"","pck":{"channel":"channel","fpid":"fpid"},"trid":"","channel":['pubid','mediumid','adid','adsize'],"rfuniq":[],"rfmuti":[]};
+(function(p,h,s){var o=document.createElement(h);o.src=s;p.appendChild(o)})(document.getElementsByTagName("HEAD")[0],"script","<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+</script>
+</body>
+</html>

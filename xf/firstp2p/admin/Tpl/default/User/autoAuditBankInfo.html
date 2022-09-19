@@ -1,0 +1,137 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery-1.10.2.min.js' />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<style>
+.span_block{
+    display:block;
+}
+.content{width: 100%;overflow:hidden;}
+.content .left{width:50%;float: left;overflow:hidden;}
+.content .right{width: 50%;float: left;}
+.content .info{height: 20px;line-height: 20px;}
+/*.image{
+    width:400px;
+    overflow:hidden;
+}*/
+/*#status_div{width:175px;float: left}*/
+#status_div .failReasonSpan{display: block;float: left;}
+#passedBox{position: relative;}
+.status_value{width: 171px;text-indent: 5px;border:2px solid #ccc;}
+</style>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        会员名：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" />
+        姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" />
+        手机号：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}" />
+        人脸验证：<select name="face_verified">
+            <option value="0"<?= $_REQUEST['face_verified']==0 ? ' selected' : '' ?>>所有</option>
+            <option value="1"<?= $_REQUEST['face_verified']==1 ? ' selected' : '' ?>>人脸识别</option>
+            <option value="2"<?= $_REQUEST['face_verified']==2 ? ' selected' : '' ?>>非人脸识别</option>
+        </select>
+        申请时间：<input type="text" class="textbox" id="apply_start" name="apply_start" value="{:trim($_REQUEST['apply_start'])}" onfocus="return showCalendar('apply_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+至
+                  <input type="text" class="textbox" name="apply_end" id="apply_end" value="{:trim($_REQUEST['apply_end'])}"  onfocus="return showCalendar('apply_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:150px;" />
+            <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="User" name="m" />
+        <input type="hidden" value="autoAuditBankInfo" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" id="export" class="button" onclick="export_csv();" value="导出" />
+    </form>
+</div>
+<php>
+function get_user_by_name($name){
+    return '<a href="/m.php?user_name='.$name.'&m=User&a=index" target="_blank">'.$name."</a>";
+}
+function get_user_by_real_name($name){
+    return '<a href="/m.php?real_name='.$name.'&m=User&a=index" target="_blank">'.$name."</a>";
+}
+function get_user_by_mobile($name){
+    return '<a href="/m.php?mobile='.$name.'&m=User&a=index" target="_blank">'.$name."</a>";
+}
+function get_list_by_user_id($name, $item){
+    return '<a href="/m.php?mobile='.$item['mobile'].'&status=0&m=User&a=autoAuditBankInfo">'.$name."</a>";
+}
+</php>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px,user_name|get_user_by_name:用户名,real_name|get_user_by_real_name:姓名,mobile|get_user_by_mobile:手机号,create_time|to_date:申请时间,total_assets:申请时总资产,face_verified:人脸验证,count|get_list_by_user_id=$item:累计申请次数"
+    actionlist="getAutoAuditBankInfo:查看"
+/>
+
+<div class="blank5"></div>
+<!-- 查看 -->
+<div id='dialogbox_msg' class="dialog-box dialogbox" style="display: none; position: absolute; overflow: hidden; z-index: 999; width: 800px; top: 200px; right: 200px;">
+    <div class="dialog-header">
+        <div class="dialog-title">修改银行卡认证</div>
+        <div class="dialog-close" onclick='close_div()'></div>
+    </div>
+    <div class="dialog-content" id="bankInfo" >
+    </div>
+</div>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script>
+function get_query_string(){
+    querystring = '';
+    querystring += "&apply_start="+$("input[name='apply_start']").val();
+    querystring += "&apply_end="+$("input[name='apply_end']").val();
+    querystring += "&user_name="+$("input[name='user_name']").val();
+    querystring += "&mobile="+$("input[name='mobile']").val();
+    querystring += "&status="+$("select[name='status']").val();
+    return querystring;
+
+}
+
+function export_csv() {
+    window.location.href = ROOT+'?export=1&m=User&a=autoAuditBankInfo'+get_query_string();
+}
+
+function close_div() {
+    $('.dialogbox').hide();
+}
+//获取银行信息
+function getAutoAuditBankInfo(id) {
+    if(id) {
+        $.ajax({
+               type: "POST",
+               url: "/m.php?m=User&a=getAutoAuditBankInfo",
+               data: "id="+id,
+               dataType:'json',
+               success: function(msg){
+                       if(msg.code == '0000') {
+                       $('#bankInfo').html(msg.msg);
+                       $('#dialogbox_msg').show();
+                       $('#dialogbox_div').hide();
+                    }else{
+                        alert(msg.msg);
+                    }
+               }
+        });
+    }else{
+        alert('参数id不能为空');
+    }
+}
+
+</script>
+<include file="Public:footer" />

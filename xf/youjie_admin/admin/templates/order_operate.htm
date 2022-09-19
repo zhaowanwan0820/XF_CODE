@@ -1,0 +1,291 @@
+<!-- $Id -->
+{include file="pageheader.htm"}
+<form name="theForm" method="get" action="order.php" onsubmit="return check()">
+  <div class="list-div">
+    <table>
+      <tr>
+        <th width="120">{$lang.label_action_note}</th>
+        <td><textarea id="action_note" name="action_note" cols="60" rows="3">{$action_note}</textarea>
+          {if $require_note}{$lang.require_field}{/if}</td>
+      </tr>
+
+      <!-- 取消 -->
+      {if $show_cancel_note}
+      <tr>
+        <th>{$lang.label_cancel_note}</th>
+        <td><textarea name="cancel_note" cols="60" rows="3" id="cancel_note">{$cancel_note}</textarea>
+          {$lang.require_field}{$lang.notice_cancel_note}</td>
+      </tr>
+      {/if}
+      {if $show_invoice_no}
+      <tr>
+        <th>{$lang.label_invoice_no}</th>
+        <td><input name="invoice_no" type="text" size="30" /></td>
+      </tr>
+      {/if}
+
+      <!-- 退现金 -->
+      {if $show_refund}
+      <tr>
+        <th>{$lang.label_handle_refund}</th>
+        <td><p>{if !$anonymous}<label style="display: none"><input type="radio" name="refund" value="1" disabled="true" />{$lang.return_user_money}<br></label>{/if}
+          <label style="display: none"><input type="radio" name="refund" value="2" disabled="true" />{$lang.create_user_account}<br></label>
+          <label><input name="refund" type="radio" value="3" checked />
+            {$lang.not_handle}</label><br>
+        </p></td>
+      </tr>
+      <tr>
+        <th>{$lang.label_refund_note}</th>
+        <td><textarea name="refund_note" cols="60" rows="3" id="refund_note">{$refund_note}</textarea>{$lang.require_field}</td>
+      </tr>
+      {/if}
+
+      <!-- 售后 -->
+      {if $after_service}
+      <tr>
+        <th>{$lang.order_info}</th>
+        <td>{$refund_huan_default}</td>
+      </tr>
+        {if $surplus_line > 0}
+        <tr>
+          <th>{$lang.refund_huan}</th>
+          <td>
+            {$lang.require_field}
+            <span>{$refund_surplus_default}</span>
+            <input id="after_service_surplus_back" style="margin-left: 1%;" name="after_service_surplus_back" type="text" size="30" value="{$input_surplus}"  onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"/>
+            <span>{$refund_order_surplus}，已退还：{$surplus_back}元</span>
+          </td>
+        </tr>
+        {/if}
+        {if $cash_back <=0 && $cash_line > 0}
+        <tr>
+          <th>{$lang.refund_cash}</th>
+          <td>
+            {$lang.require_field}
+            <span>{$refund_money_paid_default}</span>
+            <input id="after_service_cash_back" style="margin-left: 1%;" name="after_service_cash_back" type="text" size="30" value="{$input_money_paid}"  onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"/>
+            <span>{$refund_order_money_paid}，已退还：{$cash_back}元</span>
+          </td>
+        </tr>
+        {/if}
+      <tr>
+        <th>{$lang.refund_action}</th>
+        <td>{$lang.require_field}<textarea id="after_service_refund_note" name="after_service_refund_note" cols="60" rows="3">{$refund_note}</textarea></td>
+      </tr>
+      {/if}
+
+      <!-- 线下退浣币 -->
+      {if $return_offline}
+      <tr>
+        <th>{$lang.return_offline_huanbi}</th>
+        <td style="line-height: 45px;">
+          <input id="offline_huanbi" style="margin-left: 1%;" name="offline_huanbi" type="text" size="30" value="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"/>
+          <span>(注：只支持浣币退款)</span>
+        </td>
+      </tr>
+      {/if}
+
+      <tr>
+        <td colspan="2">
+          <div align="center">
+            <input type="submit" id="submit" name="submit" value="{$lang.button_submit}" class="button" />
+            <input type="button" id="back" name="back" value="{$lang.back}" class="button" onclick="history.back()" />
+            <input type="hidden" id="order_id" name="order_id" value="{$order_id}" />
+            <input type="hidden" id="operation" name="operation" value="{$operation}" />
+            <input type="hidden" id="act" name="act" value="{if $batch}batch_operate_post{else}operate_post{/if}" />
+          </div></td>
+      </tr>
+    </table>
+  </div>
+</form>
+{insert_scripts files="uploader/jquery.js"}
+<script language="JavaScript">
+    var require_note = '{$require_note}';
+    var show_refund  = '{$show_refund}';
+    var show_cancel = '{$show_cancel_note}';
+
+    var after_service = '{$after_service}';
+    var return_offline = '{$return_offline}';
+    var shipping_status = '{$shipping_status}';
+
+    var surplus_line = parseFloat('{$surplus_line}');
+    var cash_line = parseFloat('{$cash_line}');
+
+    var input_surplus = parseFloat('{$input_surplus}');
+    var input_money_paid = parseFloat('{$input_money_paid}');
+
+    var surplus_back  = parseFloat('{$surplus_back }');
+    var cash_back = parseFloat('{$cash_back}');
+
+    var operation = "{$operation}";
+    var apiHost = '{$api_host}';
+    var token = '{$token}';
+    var order_id = {$order_id};
+    var order_type = {$order_type};
+
+    console.log(operation);
+
+    {literal}
+    function check()
+    {
+        try{
+            if (require_note && document.forms['theForm'].elements['action_note'].value == '')
+            {
+                alert(pls_input_note);
+                return false;
+            }
+            if (show_cancel && document.forms['theForm'].elements['cancel_note'].value == '')
+            {
+                alert(pls_input_cancel);
+                return false;
+            }
+            if (show_refund)
+            {
+                var selected = false;
+                for (var i = 0; i < document.forms['theForm'].elements.length; i++)
+                {
+                    ele = document.forms['theForm'].elements[i];
+                    if (ele.tagName == 'INPUT' && ele.name == 'refund' && ele.checked)
+                    {
+                        selected = true;
+                        break;
+                    }
+                }
+                if (!selected)
+                {
+                    alert(pls_select_refund);
+                    return false;
+                }
+                if (document.forms['theForm'].elements['refund_note'].value == '')
+                {
+                    alert(pls_input_refund);
+                    return false;
+                }
+            }
+            if (after_service)
+            {
+                if(surplus_back <= 0 && surplus_line > 0){
+                    var surplus_value = document.forms['theForm'].elements['after_service_surplus_back'].value;
+                    if(surplus_value == '')
+                    {
+                        alert(pls_input_huan);
+                        return false;
+                    }
+                    else if(surplus_value < 0 || surplus_value > input_surplus){
+                        alert('{$refund_surplus_default}');
+                        return false;
+                    }
+                }
+                if(cash_back <= 0 && cash_line > 0){
+                    var cash_value = document.forms['theForm'].elements['after_service_cash_back'].value;
+                    if(cash_value == '')
+                    {
+                        alert(pls_input_cash);
+                        return false;
+                    }
+                    else if(cash_value < 0 || cash_value > input_money_paid){
+                        alert('{$refund_money_paid_default}');
+                        return false;
+                    }
+                }
+                if(document.forms['theForm'].elements['after_service_refund_note'].value == ''){
+                    alert(pls_input_refund);
+                    return false;
+                }
+                if(!shipping_status && order_type != 1)
+                {
+                    alert(pls_input_order_status);
+                    return false;
+                }
+            }
+
+            if (return_offline) {
+              var offline_huanbi = document.forms['theForm'].elements['offline_huanbi'].value;
+              if (offline_huanbi  == 0 || offline_huanbi == '') {
+                alert('请输入正确的浣币数量');
+                return false;
+              }
+            }
+            
+            // 防止重复点击
+            document.forms['theForm'].elements['submit'].disabled = true;
+
+            // 取消、退货、售后用异步处理
+            if(operation == 'cancel' || operation == 'return' || operation == 'after_service'){
+              var postData = {
+                order_id: $('#order_id').val(),
+                action_note: $('#action_note').val(),
+                refund_note: $('#refund_note').val() ? $('#refund_note').val() : $('#after_service_refund_note').val() ? $('#after_service_refund_note').val() : $('#cancel_note').val(),
+                operation: operation,
+              };
+              if(operation == 'cancel'){
+                postData.cancel_note = $('#cancel_note').val();
+              }else if(operation == 'after_service'){
+                postData.after_service_refund_note = $('#after_service_refund_note').val();
+                postData.after_service_cash_back = $('#after_service_cash_back').val();
+                if($('#after_service_surplus_back')){
+                  postData.after_service_surplus_back = $('#after_service_surplus_back').val();
+                }
+              }
+              syncHost = '';
+              if(operation == 'cancel' || operation == 'return'){
+                syncHost = apiHost + 'admin/api.order.cancel';
+              }else{
+                syncHost = apiHost + 'admin/api.order.service';
+              }
+              $.ajax({
+                url: syncHost,
+                headers: {
+                  'X-ADMIN-Authorization': token,
+                },
+                type: 'POST',
+                dataType: 'json',
+                data: postData,
+                success: function(res){
+                  var msg = res.code == 0 ? res.data.info : res.info;
+                  location.href = 'order.php?act=async_operation&order_id=' + order_id + '&error_code=' + res.code + '&msg=' + msg;
+                },
+                error: function(e){
+                  alert("请求失败");
+                  document.forms['theForm'].elements['submit'].disabled = false;
+                }
+              });
+              return false;
+            }
+
+            if (return_offline) {
+              var postData = {
+                order_id: $('#order_id').val(),
+                action_note: $('#action_note').val(),
+                huanbi: $('#offline_huanbi').val(),
+              };
+              var syncHost = apiHost + 'admin/api.offline.huanbi';
+              $.ajax({
+                url: syncHost,
+                headers: {
+                  'X-ADMIN-Authorization': token,
+                },
+                type: 'POST',
+                dataType: 'json',
+                data: postData,
+                success: function(res){
+                  var msg = res.code == 0 ? res.data.info : res.info;
+                  // console.log(res);
+                  location.href = 'order.php?act=async_operation&order_id=' + order_id + '&error_code=' + res.code + '&msg=' + msg;
+                },
+                error: function(e){
+                  alert("请求失败");
+                  document.forms['theForm'].elements['submit'].disabled = false;
+                }
+              });
+              return false;
+            }
+
+            return true;
+        }catch(err){
+            return false;
+        }
+    }
+    {/literal}
+</script>
+{include file="pagefooter.htm"}

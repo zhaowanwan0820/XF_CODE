@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>投资确认</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/invest_confirm.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.3/css/p2p_affirm.css?v=20160714');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.3/css/virtual.css');?>" rel="stylesheet" />   
+    <!--public js&css end-->
+    <script>
+        var productID = '{$deal.id}';
+        var token = '{$token}';
+    </script>
+    <style>
+        .dit_yq {right:3px;}
+    </style>
+</head>
+<body>
+    <div class="invest_confirm">
+        <div class="pa_top">
+            <i class="pat_line"></i>
+            <p class="pt_title">预期年化{$deal.projectInfo.rateYear}%<i>/</i>按月支付收益</p>
+            <p id="payment">手续费{if $deal.projectInfo.feeDays gt 0 && $deal.projectInfo.feeRate gt 0}年化{function name="number_format" v="$deal.projectInfo.feeRate" f="2"}%（持有满{$deal.projectInfo.feeDays}天免费）<i class="ico_sigh" title='手续费={function name="number_format" v="$deal.projectInfo.feeRate" f="2"}% *投资金额*实际持有天数 /360。实际持有天数=到帐日-计息日。持有满{$deal.projectInfo.feeDays}天免费'></i>{else}免费{/if}<i class="sxf"> <span class="pop_bottom dis_none">手续费={function name="number_format" v="$deal.projectInfo.feeRate" f="2"}% *投资金额*实际持有天数 /360。实际持有天数=到帐日-计息日。持有满{$deal.projectInfo.feeDays}天免费
+              <span class="triangle"></span></span></i></p>
+            <i class="paf_line"></i>
+        </div>
+
+        <div class="disnone">
+            <em class="perpent">{$deal.projectInfo.rateYear}</em>
+            <!--项目ID-->
+            <i class="investmentID">{$deal.id}</i>
+            <!--可投金额-->
+            <em class="ketou_money">{$deal.userMoneyTtl}</em>
+            <em class="deal_money">{$deal.dealMoneyLeft}</em>
+            <!--<em class="val_code">{if $deal.couponIsFixed != 1 && $codeInfo}{$codeInfo.short_alias}{else}{$deal.couponStr}{/if}</em>-->
+            <!-- <em class="val_code">{if $data.forceCodeEmpty != 1 && $deal.couponIsFixed != 1 && $codeInfo}{$codeInfo.short_alias}{elseif $data.forceCodeEmpty != 1}{$deal.couponStr}{/if}</em> -->
+            <em class="val_code">{if $deal.couponIsFixed}{$deal.couponStr}{else}{$data.code}{/if}</em>
+            <em class="val_money">{$data.money}</em>
+            <em class="val_mini">{$deal.projectInfo.minLoanMoney}</em>
+            <em class="is_fixed">{$deal.couponIsFixed}</em>
+            <!--多少起投-->
+            <em class="pl_tip">{$deal.mini}起投</em>
+            <em class="istongzhi">{$deal.deal_type}</em>
+            <em class="token">{$token}</em>
+            <em class="val_discount_id">{$discount_id}</em>
+            <em class="val_discount_group_id">{$discount_group_id}</em>
+            <em class="val_discount_sign">{$discount_sign}</em>
+            <em class="val_discount_goodprice"></em>
+            <em class="val_discount_bidAmount">{$discount_bidAmount}</em>
+            <em class="val_discount_type">{$discount_type}</em>
+            <em class="val_unitLoanMoney">{$deal.projectInfo.unitLoanMoney}</em>
+        </div>
+        <div class="pa_center clearfix">
+            <div class="ditm_right fr">
+                <a class="a_lock to_recharge" href="invest://api?type=recharge">充值</a>
+        
+            </div>
+            <div class="ditm_left">
+                <div class="ditm_top">
+                    可用余额：{function name="number_format" v=$total_money f=2}元
+                </div>
+            </div>
+            <div class="p2p_input clearfix">
+               <!--  <span class="quantou_all">全投</span> -->
+                <span class="dit_yq">预期收益0.00元</span>
+                <div class="ui_input clearfix"></div>
+            </div>
+        </div>
+        <div class="dit_footer">
+            <div class="ditf_list">
+                <a class='Contractpre' href="#"><span class="fr"><i class="icon_arrow fr"></i></span>合同和协议</a>
+        
+            </div>
+        </div>
+        <div class="dit_btn">
+            <a class="j-errorMsgBtn  sub_btn sub_gay" href="javascript:void(0);" {if $errmsg }data-errmsg="{$errmsg}"{/if}> {if $deal.loantype eq 7}捐赠{else}同意合同和协议并预约{/if}</a>
+        </div>
+        <p class="point">预约成功后，0-3天进行债权匹配，匹配成功后开始计息</p>
+        <!-- <div class="charge_money">
+            <div class="money_yu">
+                <span>现金余额: 2.00元</span>
+                <input type="button" name="" value="充值">
+            </div>
+            <div class="input_text">
+                <input id="charge_mon" type="text" name="" placeholder="100元起，且为100的整数倍">
+            </div>
+        </div>
+        <a href="protocol.html"><div class="contract">合同和协议<i></i></div></a>
+        <div class="confirm_but">
+            <input type="button" name="" value="同意合同和协议并预约">
+        </div>-->
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/duotou/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.3/js/common/virtual.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/duotou/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/duotou/invest_confirm.js');?>"></script>
+</body>
+</html>

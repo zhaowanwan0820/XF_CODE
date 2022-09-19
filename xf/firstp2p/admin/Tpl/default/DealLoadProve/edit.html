@@ -1,0 +1,60 @@
+{// 引入标签库 }
+<div class="main">
+<form name="edit" action="__APP__" method="post">
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="3">
+    <tr>
+        <td colspan=2 class="topTd"></td>
+    </tr>
+        <tr>
+        <td class="item_title">收件人姓名:</td>
+        <td class="item_input">{$prove_user.real_name}</td>
+    </tr>
+    <tr>
+        <td class="item_title">省市:</td>
+        <td class="item_input">{$prove_user.province}{$prove_user.city}</td>
+    </tr>
+    <tr>
+        <td class="item_title">详细地址:</td>
+        <td class="item_input">{$prove_user.address}</td>
+    </tr>
+    <tr>
+        <td class="item_title">邮编:</td>
+        <td class="item_input">{$prove_user.postcode}</td>
+    </tr>
+    <tr>
+        <td class="item_title">手机号:</td>
+        <td class="item_input">{$prove_user.mobile}</td>
+    </tr>
+    <tr>
+        <td class="item_title">电话:</td>
+        <td class="item_input">{$prove_user.phone}</td>
+    </tr>
+    <tr>
+        <td class="item_title">邮寄状态:</td>
+        <td class="item_input">
+	        <select name='is_send'>
+		        <option value='1' <if condition='$prove_info.is_send eq 1'>selected</if>>已邮寄</option>
+		        <option value='0' <if condition='$prove_info.is_send eq 0'>selected</if>>未邮寄</option>
+	        </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">备注:</td>
+        <td class="item_input">
+            <textarea name='remark'>{$prove_info.remark}</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="item_input">
+        <input type="hidden" name="id" value="{$prove_info['id']}" >
+        <input type="hidden" name="{:conf("VAR_MODULE")}" value="DealLoadProve" />
+        <input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+        <center><input type='submit' class='button' value='保存' name='send'></center>
+        </td>
+    </tr>
+    <tr>
+        <td colspan=2 class="bottomTd"></td>
+    </tr>
+</table>
+</form>
+</div>

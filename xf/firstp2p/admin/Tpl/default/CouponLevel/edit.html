@@ -1,0 +1,61 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">编辑 <a href="{:u("CouponLevel/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+<input type='hidden' name='user_id' value='{$user.id}'>
+<input type='hidden' name='deal_load_id' value='{$deal_load.id}'>
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+    <tr>
+        <td class="item_title">{%USER_GROUP}:</td>
+        <td class="item_input">
+            <select name="group_id" class="require" disabled>
+                <foreach name="groups" item="item">
+                    <option value="{$item.id}" <if condition="$item['id'] eq $vo['group_id']">selected="selected"</if>>{$item.name}</option>
+                </foreach>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">{%USER_COUPON_LEVEL}:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="level" value="{$vo.level}" maxlength="6"/>
+            &nbsp;&nbsp;<span style="color:red;">{%COUPON_TIPS_LEVEL_LEVEL}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">投资交易额:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="money" value="{$vo.money}" maxlength="20"/>元
+            &nbsp;&nbsp;<span>{%COUPON_TIPS_LEVEL_MONEY}</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="item_title">等级保持有效期:</td>
+        <td class="item_input"><input type="text" class="textbox require" name="valid_days" value="{$vo.valid_days}" maxlength="11"/>天
+            &nbsp;&nbsp;<span style="color:red;">{%COUPON_TIPS_LEVEL_VALID_DAYS}</span>
+        </td>
+    </tr>
+
+    <input type="hidden" name="id" value="{$vo.id}" />
+	<input type="hidden" name="{:conf("VAR_MODULE")}" value="CouponLevel" />
+	<input type="hidden" name="{:conf("VAR_ACTION")}" value="update" />
+	<tr>
+	<td class="item_title"></td>
+        <td>
+            <input type="submit" class="button" value="{%EDIT}" />
+            <input type="reset" class="button" value="{%RESET}" />
+        </td>
+	</tr>
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+</form>
+
+<include file="Public:footer" />

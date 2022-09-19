@@ -1,0 +1,48 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/conf.js' />
+<div class="main">
+<div class="main_title">用户用途刷新<a href="#" onclick="history.go(-1); return false;" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form method="POST" action="?m=User&a=doChangeUserPurpose" >
+<table class="form" cellpadding=0 cellspacing=0>
+<tr>
+    <td colspan=2 class="topTd"></td>
+</tr>
+<tr>
+    <td class="item_title">刷新为用户用途</td>
+    <td class="item_input">
+    <select name="purpose" >
+    <option value="-1" selected="true" >请选择用户类型</option>
+    <?php foreach ($types as $typeid => $typeName): ?>
+    <option value="<?php echo $typeid;?>" ><?php echo $typeName;?></option>
+    <?php endforeach; ?>
+    </td>
+</tr>
+<tr>
+    <td class="item_title">刷新免密授权</td>
+    <td class="item_input">
+        <select multiple="multiple" name="grant[]">
+            <?php foreach ($grantList as $grantId => $grantName): ?>
+            <option value="<?php echo $grantId;?>" ><?php echo $grantName;?></option>
+            <?php endforeach; ?>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td class="item_title">用户列表</td>
+    <td class="item_input"><textarea name="userIds" style="height:300px;" cols="50" ></textarea><td>
+</tr>
+<tr>
+    <td class="item_input" colspan="2"><input class="button" type="SUBMIT" value="刷新"></td>
+</tr>
+<tr>
+    <td colspan=2 class="bottomTd"></td>
+</tr>
+</table>
+</form>
+<include file="Public:footer" />

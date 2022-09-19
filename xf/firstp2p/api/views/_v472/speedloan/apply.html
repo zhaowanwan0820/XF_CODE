@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>基本信息</title>
+</head>
+<body class="sfzl_body">
+<input type="hidden" value="{$token}" id="tokenHidden"/>
+<!-- 用户资料 begin -->
+<ul class="userInfor">
+    <li class="item">
+        <label class="itemLabel">姓名</label>
+        <div class="cont">
+            <p class="text">{$userInfo.real_name}</p>
+        </div>
+    </li>
+    <li class="item">
+        <label class="itemLabel">性别</label>
+        <div class="cont">
+            <p class="text">{if $userInfo.sex == 0}女{/if}{if $userInfo.sex == 1}男{/if}</p>
+        </div>
+    </li>
+    <li class="item">
+        <label class="itemLabel">手机号码</label>
+        <div class="cont">
+            <p class="text">{$userInfo.mobileFormat}</p>
+        </div>
+    </li>
+    <li class="item">
+        <label class="itemLabel">证件号</label>
+        <div class="cont">
+            <p class="text">{$userInfo.idnoFormat}</p>
+        </div>
+    </li>
+    <li class="item">
+        <label class="itemLabel">开户名</label>
+        <div class="cont">
+            <p class="text">{$userInfo.real_name}</p>
+        </div>
+    </li>
+    <li class="item">
+        <label class="itemLabel">开户银行</label>
+        <div class="cont">
+            <p class="text">{$bankcardInfo.bankName}</p>
+        </div>
+    </li>
+    <li class="item">
+        <label class="itemLabel">银行卡号</label>
+        <div class="cont">
+            <p class="text">{$bankcardInfo.cardNoFormat}</p>
+            <p class="text f12">收款及还款会使用此张银行卡</p>
+        </div>
+    </li>
+</ul>
+<!-- 用户资料 end -->
+
+<!-- 上传身份证照片 begin -->
+<div class="photoBox">
+    <div class="title">上传身份证照片</div>
+    <div class="photoCont" id="photoCont">
+        <dl class="photoDl" data-photo-key="frontPhoto">
+            <dd>
+                <img id="frontPhotoImg" src="<?php echo $this->asset->makeAppUrl('v4.72/images/speedloan/identityCard02.jpg');?>"/>
+            </dd>
+            <dt>
+            <p>身份证正面</p>
+            </dt>
+        </dl>
+        <dl class="photoDl" data-photo-key="backPhoto">
+            <dd>
+                <img id="backPhotoImg" src="<?php echo $this->asset->makeAppUrl('v4.72/images/speedloan/identityCard01.jpg');?>"/>
+            </dd>
+            <dt>
+            <p>身份证背面</p>
+            </dt>
+        </dl>
+        <dl class="photoDl" data-photo-key="handHoldPhoto">
+            <dd>
+                <img id="handHoldPhotoImg" src="<?php echo $this->asset->makeAppUrl('v4.72/images/speedloan/identityCard02.jpg');?>"/>
+            </dd>
+            <dt>
+            <p>手持身份证<br>正面</p>
+            </dt>
+        </dl>
+    </div>
+</div>
+<!-- 上传身份证照片 end -->
+
+<!-- 协议 begin -->
+<div class="protocolBox" id="protocolBox" data-checked="false">
+    <p>我已阅读并同意</p>
+    <a href="javascript:;" data-webview-preview="firstp2p://api?type=webview&gobackrefresh=false&url=" data-url-path="/speedloan/creditPrivilegeAgreement?token={$token}" class="setWebviewUrl">《个人征信授权书》</a>
+    <a href="javascript:;" data-webview-preview="firstp2p://api?type=webview&gobackrefresh=false&url=" data-url-path="/speedloan/mortageAgreement?token={$token}" class="setWebviewUrl">《贷款额度协议》</a>
+    <a href="javascript:;" data-webview-preview="firstp2p://api?type=webview&gobackrefresh=false&url=" data-url-path="/speedloan/agreement?token={$token}" class="setWebviewUrl">《个人贷款提款申请书》</a>
+</div>
+<!-- 协议 end -->
+<div class="submitBtnBox">
+    <a href="javascript:;" class="loanBtn noValid" id="submitBtn" >提交</a>
+</div>
+
+<!-- 拍照弹层 begin -->
+<div class="photoPop" id="photoPop">
+    <div class="mask"></div>
+    <ul class="photoPopUl">
+        <li id="photoBtn">
+            拍照
+            <form method="POST" action="/speedloan/applyConfirm" id="formTag" class="formTag" enctype="multipart/form-data">
+                <input type="hidden" name="token" value="{$token}" />
+                <input type="file" name="frontPhoto" accept="image/*"  id="frontPhotoHidden" capture="camera"/>
+                <input type="file" name="backPhoto" accept="image/*"  id="backPhotoHidden" capture="camera"/>
+                <input type="file" name="handHoldPhoto" accept="image/*"  id="handHoldPhotoHidden" capture="camera"/>
+            </form>
+        </li>
+        <li>取消</li>
+    </ul>
+</div>
+<!-- 拍照弹层 end -->
+
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_shenfenziliao.js');?>"></script>
+
+{include file="api/views/_v32/footer.html"}

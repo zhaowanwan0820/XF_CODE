@@ -1,0 +1,428 @@
+{include file="inc/header.html"}
+  <div class="blank"></div>
+  <div class="deals-search-box clearfix">
+    {if $deal_cate_list}
+    <div id="dashboard" class="dashboard clearfix f_l">
+      <ul>
+        <li {if $cate_id eq '0'}class="current"{/if}>
+          <a href="{url x="index" r="deals"}">{$LANG.ALL_DEALS}</a>
+        </li>
+        
+        <li {if $cate_id eq '-1'}class="current"{/if}>
+          <a href="{url x="index" r="deals" p="cid=last"}" style="margin-right:0">{$LANG.LAST_SUCCESS_DEALS}</a>
+        </li>                       
+      </ul>
+    </div>
+    {/if}
+    
+  </div>
+  <div id="content" class="clearfix">
+    <div class="long f_l">
+      <div class="clearfix bddf">
+        {if $cate_id gt 0}
+        <div class="clearfix"><img src="{$TMPL}/images/cate_top_{$cate_id}.jpg"></div>
+        {/if}
+        {if $total_money}
+        <!-- 
+        <div class="biao_top_countbox clearfix">
+          <div class="f_l">总成交金额：<span class="f_red">{function name="format_price" v="$total_money"}</span></div>
+        </div>
+         -->
+        {/if}
+        {if $deal_list}
+          <table class="deal-list">
+            <thead>
+              <tr>
+                {if $cate_id eq "-1"}
+                  <th>基本信息</th>
+                  <th></th>
+                  <th style="text-align:left">可投金额/总金额</th>
+                  <th style="text-align:left">年化收益率</th>
+                  <th style="text-align:left">还款周期</th>
+                  <th>剩余时间</th>
+                {else}
+                  <th>基本信息</th>
+                  <th></th>
+                  <th style="text-align:left"><a href="#" onclick="set_sort('borrow_amount');">可投金额/总金额 <i class="icon-sort"></i></a></th>
+                  <th style="text-align:left"><!--<a href="#" onclick="set_sort('rate');"> -->年化收益率<!--<i class="icon-sort"></i></a> --></th>
+                  <th style="text-align:left"><a href="#" onclick="set_sort('repay_time');">还款周期 <i class="icon-sort"></i></a></th>
+                  <th><a href="#" onclick="set_sort('remain_time');">剩余时间 <i class="icon-sort"></i></a></th>
+                {/if}
+              </tr>
+            </thead>
+            <tbody>
+              {foreach from=$deal_list item="deal" key=key}
+                <tr class="firstline">
+                  <th class="deal-cell-image" rowspan="2">
+                    <div class="ajax_count_{$key}" style="display:none" attr="{$deal.id},{$deal.repay_time},{$deal.loantype}"></div>
+                    <a href="{$deal.url}" target="_blank">
+                      <img src="{$deal.icon}" width="50" height="50" alt="{$deal.name}" title="{$deal.name}">
+                    </a>
+                  </th>
+                  <td class="deal-cell-title">
+                    <div class="deal-info-title">
+                      <a href="{$deal.url}" target="_blank" title='{$deal.name}'>{function name="cutstr" v=$deal.name}</a>
+                    </div>
+                    <div class="deal-info-user">
+                      <!--a href="{$deal.user.url}" target="_blank">{$deal.user_deal_name}</a-->
+                      <!--{$deal.user_deal_name}-->
+                    </div>
+                  </td>
+                  <td class="deal-cell-money">
+                    <div style="height: 22px;">{$deal.need_money_detail}<span class="lesser">万/{$deal.borrow_amount_format_detail}万</span></div>
+                    {if $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                    {else}
+                      <div class="greenProcessBar progressBar prmar" style="margin-top: 6px;">
+                        <div class="p"><div class="c f_l clearfix" style="width:{function name="round" v=$deal.progress_point f=2}%;"></div></div>
+                      </div>
+                    {/if}
+                  </td>
+                  <td class="deal-cell-interest">
+                    <span>{$deal.rate}</span>
+                    <!--{function name="number_format" v="$deal.rate" f="2"}% -->
+                  </td>
+                  <td class="deal-cell-term">
+                    <div class="" style="height: 22px;">{$deal.loantype_name}</div>
+                    {if $deal.loantype eq 5}
+                    <div class="lesser">{$deal.repay_time} 天</div>
+                    {else}
+                    <div class="lesser">{$deal.repay_time} 个月</div>
+                    {/if}
+                  </td>
+                  <td class="deal-cell-action">
+                    <p class="tc">
+                    {if $deal.is_update eq 1}
+                        <span>等待确认</span>
+                    {elseif $deal.deal_status eq 4}
+                        <span>还款中</span>
+                    {elseif $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                        <span class="f_red">流标</span>
+                    {elseif $deal.deal_status eq 0 || $deal.guarantor_status != 2}
+                        <span>等待确认</span>
+                    {elseif $deal.deal_status eq 2}
+                        <span>满标</span>
+                    {elseif $deal.deal_status eq 5}
+                        <span>已还清</span>
+                    {else}
+                        <a class="btn" href="{if $deal.is_update}{$deal.url}{else}{url x="index" r="deal#bid" p="id=$deal.id"}{/if}" target="_blank"><span>我要投资</span></a>
+                    {/if}
+                  </p>
+                  </td>
+                </tr>
+				  <tr class="secondline">
+				    <th colspan="4" style="padding-top: 4px;text-align:left;">
+				    {if $deal.agency_id gt 0}
+					   <span style="display:inline-block;"><span class="ico_danbao"></span>
+					   <span class="ico_label">
+					   {foreach from=$deal_agency item=v key=key}
+                           {if $deal.agency_id eq $v.id}{$v.short_name}{/if}
+                       {/foreach}
+					   </span>
+					   </span>
+					{/if}
+					   {if $deal.agency_id gt 0 and $deal.warrant gt 0}<span style="display:inline-block;margin-left:6px;"><span class="ico_baoben"></span><span class="ico_label">{if $deal.warrant eq 1}保本金{else}担保本息{/if}</span></span>{/if}
+                  </th>
+					<td class="deal-cell-action">
+					{if $deal.is_update eq 1}
+					{elseif $deal.deal_status eq 4}
+                    {elseif $deal.deal_status eq 1 && $deal.remain_time lte 0}
+                    {elseif $deal.deal_status eq 0}
+                    {elseif $deal.deal_status eq 2}
+                    {elseif $deal.deal_status eq 5}
+                    {else}
+                      <p class="time-remained">
+                        {$deal.remain_time_format}
+                      </p>
+                    {/if}
+					</td>
+				  </tr>
+				  <tr>
+				    <th colspan="6" style="padding:0px 15px;background:white;">
+				      <span class="bdrline"></span>
+					</th>
+				  </tr>
+              {/foreach}
+            </tbody>
+          </table>
+          <div class="pages">{$pages}</div>
+        {else}
+          <div class="empty-box">
+            还没有记录
+          </div>
+        {/if}
+      </div>
+    </div>
+    <div class="short f_r">
+      <adv adv_id="我要理财列表页右侧顶部广告" />
+      <div class="cal_con">
+        <div class="comm2_top"></div>
+		<div class="comm2_con">
+			<h4 class="txt_sty5 ml20">按条件搜索</h4>
+			 <div class="clearfix" id="search_condition" style="width: 169px;margin-top:20px">
+                <form action="{url x="index" r="deals" p="cid=$cate_id"}" method="post" id="searchByConditionForm">
+                <input type="hidden" name="cid" value="{$cate_id}" />
+                    <!-- 
+                    <div class="f_l" style="padding-left: 25px; width: 150px;height: 35px;">
+                        <span class="b">等级</span>
+                        <span style="padding-left: 5px;">
+                            <select name="level" style="width: 80px;" id="level">
+                                <option value="all">不限</option>
+                  {foreach from=$level_list key=key item="item"}
+                  {if $key > 1 && $key<6}
+                                <option value="{$item.id}" {if $level eq $item.id}selected="selected"{/if}>{$item.name}以上</option>
+                  {/if}
+                  {/foreach}
+                            </select>
+                        </span>
+                    </div>
+                     -->
+                    <!-- 
+                    <div class="f_l" style="padding-left: 25px; width: 150px;height: 35px;">
+                        <span class="b">利率</span>
+                        <span style="padding-left: 5px;">
+                            <select name="interest" id="interest" style="width: 80px;">
+                                <option value="0">不限</option>
+                                <option value="10" {if $interest eq 10}selected="selected"{/if}>10%以上</option>
+                                <option value="12" {if $interest eq 12}selected="selected"{/if}>12%以上</option>
+                                <option value="15" {if $interest eq 15}selected="selected"{/if}>15%以上</option>
+                                <option value="18" {if $interest eq 18}selected="selected"{/if}>18%以上</option>
+                            </select>
+                        </span>
+                    </div>
+                     -->
+                    <div class="f_l" style="padding-left: 25px; width: 150px;height: 35px;">
+                        <span class="b">期限</span>
+                        <span style="padding-left: 5px;">
+                            <select name="repay_time" style="width: 80px;overflow:hidden;height:20px" id="repay_time">
+                                <option value="0">不限</option>
+                                {foreach from=$repay_time_list item="v" key=key}
+                                    <option value="{$key}" {if $repay_time_search eq $key}selected="selected"{/if}>{$v}</option>
+                                {/foreach}
+                            </select>
+                        </span>
+                    </div>
+                    
+                    <div class="f_l" style="width: 150px;height: 35px;">
+                        <span class="b">借款用途</span>
+                        <span style="padding-left: 5px;">
+                            <select name="loan_type" style="width: 80px;overflow:hidden;height:20px" id="loan_type">
+                                <option value="-1" {if $loan_type_search eq -1}selected="selected"{/if}>不限</option>
+                                <option value="1" {if $loan_type_search eq 1}selected="selected"{/if}>短期周转</option>
+                                <option value="2" {if $loan_type_search eq 2}selected="selected"{/if}>购房借款</option>
+                                <option value="3" {if $loan_type_search eq 3}selected="selected"{/if}>装修借款</option>
+                                <option value="4" {if $loan_type_search eq 4}selected="selected"{/if}>个人消费</option>
+                                <option value="5" {if $loan_type_search eq 5}selected="selected"{/if}>婚礼筹备</option>
+                                <option value="6" {if $loan_type_search eq 6}selected="selected"{/if}>教育培训</option>
+                                <option value="7" {if $loan_type_search eq 7}selected="selected"{/if}>汽车消费</option>
+                                <option value="8" {if $loan_type_search eq 8}selected="selected"{/if}>投资创业</option>
+                                <option value="9" {if $loan_type_search eq 9}selected="selected"{/if}>医疗支出</option>
+                                <option value="10" {if $loan_type_search eq 10}selected="selected"{/if}>其他借款</option>
+                            </select>
+                        </span>
+                    </div>
+                    
+                    <div class="f_l" style="width: 150px;height: 35px;">
+                        <span class="b">还款方式</span>
+                        <span style="padding-left: 5px;">
+                            <select name="repay_type" style="width: 80px;overflow:hidden;height:20px" id="repay_type">
+                                <option value="0">不限</option>
+                                {foreach from=$repay_type item="v" key=key}
+                                    <option value="{$key}" {if $repay_type_search eq $key}selected="selected"{/if}>{$v}</option>
+                                {/foreach}
+                            </select>
+                        </span>
+                    </div>
+                    
+                    <div class="f_l" style="width: 150px;height: 35px;display:none;">
+                        <span class="b">担保机构</span>
+                        <span style="padding-left: 5px;">
+                            <select name="deal_agency" style="width: 80px;overflow:hidden;height:20px" id="deal_agency">
+                                <option value="0">不限</option>
+                                {foreach from=$deal_agency item="v" key=key}
+                                    <option value="{$v.id}" {if $deal_agency_search eq $v.id}selected="selected"{/if}>{$v.name}</option>
+                                {/foreach}
+                            </select>
+                        </span>
+                    </div>
+                    
+                    <div class="f_l" style="width: 150px;height: 35px;display:none;">
+                        <span class="b">担保范围</span>
+                        <span style="padding-left: 5px;">
+                            <select name="warrant" style="width: 80px;overflow:hidden;height:20px" id="warrant">
+					            <option value="0" {if $warrant_search eq 0}selected="selected"{/if}>不限</option>
+					            <option value="1" {if $warrant_search eq 1}selected="selected"{/if}>本金</option>
+					            <option value="2" {if $warrant_search eq 2}selected="selected"{/if}>本金及利息</option>
+					        </select>
+                        </span>
+                    </div>
+                    
+                    <div class="f_l" style="width: 150px;height: 35px;">
+                        <span class="b">剩余时间</span>
+                        <span style="padding-left: 5px;">
+                            <select name="lefttime" style="width: 80px;" id="lefttime">
+                                <option value="0">不限</option>
+                                <option value="1" {if $lefttime_search eq 1}selected="selected"{/if}>1天以内</option>
+                                <option value="3" {if $lefttime_search eq 3}selected="selected"{/if}>3天以内</option>
+                                <option value="5" {if $lefttime_search eq 5}selected="selected"{/if}>5天以内</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div style="text-align:center; margin:5px 0;width: 150px;">
+                       <img src="{$TMPL}/images/search.png" alt="" style="cursor: pointer;margin-left:82px" onclick="searchByCondition()">
+                    </div>
+                </form>
+			</div>
+		</div>
+		<div class="comm2_bot"></div>
+      </div>
+      <div class="blank"></div>
+      <div class="cal_con" style="border-top:0;display:none;">
+        <div class="comm2_top"></div>
+		<div class="comm2_con">
+			<h4 class="txt_sty5 ml20">投资计算器</h4>
+			 <div class="clearfix pt5 pb5" id="calculate" style="width: 169px;margin-top:20px">
+                <div class="f_l clearfix lh24" style="width: 160px;height: 35px;">
+                    <span class="b f_l">初始投资</span>
+                    <span class="f_l" style="padding-left: 5px;">
+                        <input type="text" name="amount" id="calculateAmount" class="f_l" style="width: 70px;"><span class="f_l pl5">元</span>
+                    </span>
+                </div>
+                <div class="f_l clearfix lh24" style="padding-left: 12px; width: 160px;height: 35px;">
+                    <span class="b f_l">年化利率</span>
+                    <span class="f_l" style="padding-left: 5px;">
+                        <input type="text" name="interest" id="calculateInterest" class="f_l" style="width: 70px;"><span class="f_l pl5">%</span>
+                    </span>
+                </div>
+                <div class="f_l clearfix lh24" style="width: 160px;height: 35px;">
+                    <span class="b f_l">投资期限</span>
+                    <span class="f_l" style="padding-left: 5px;">
+                        <input type="text" name="year" id="calculateMonth" class="f_l" style="width: 70px;"><span class="f_l pl5">月</span>
+                    </span>
+                </div>
+          <div class="f_l clearfix lh24" style="width: 180px;height: 30px;">
+                    <span class="b f_l">还款方式</span>
+                    <span class="f_l" style="padding-left: 5px;">
+                        <select id="repayType" >
+                            <option value="0">不限</option>
+                            <option value="1" >按季等额还款</option>
+                            <option value="2" >按月等额还款</option>
+                            <option value="3" >到期支付本金收益</option>
+                        </select>
+                    </span>
+                </div>
+                <div class="f_l">
+                    <div style="text-align:center; margin:5px 0;height:30px;width: 150px;">
+                        <img src="{$TMPL}/images/calculate.png" alt="" style="cursor: pointer; margin-left:82px" onclick="calculate()">
+                    </div>
+                </div>
+                <div class="f_l clearfix lh24 mt5 pt5" style=" border-top:1px solid #ccc;width: 160px;height: 35px;display:none;">
+                    <span class="f_l">本息合计</span>
+                    <span class="f_l f_red" id="lastValue" style="padding-left: 5px;">
+                    </span>
+                </div>
+    
+            </div>
+        </div>
+		<div class="comm2_bot"></div>
+      </div>
+      <adv adv_id="我要理财列表页右侧底部广告" />
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(function(){
+    $("#searchByKeyForm .searchinput").bind("focus",function(){
+      if($.trim($(this).val())=="请输入您的搜索条件"){
+        $(this).val("");
+        $(this).removeClass("f_dgray");
+      }
+    });
+    
+    $("#searchByKeyForm .searchinput").bind("blur",function(){
+      if($.trim($(this).val())=="请输入您的搜索条件" || $.trim($(this).val())==""){
+        $(this).val("请输入您的搜索条件");
+        $(this).addClass("f_dgray");
+      }
+    });
+  });
+  function searchByCondition(){
+    $("#searchByConditionForm").submit();
+  }
+  function searchLoans(){
+    if($.trim($("#searchByKeyForm .searchinput").val())=="请输入您的搜索条件" || $.trim($("#searchByKeyForm .searchinput").val())==""){
+      $.showErr("请输入您的搜索条件");
+      return false;
+    }
+    $("#searchByKeyForm").submit();
+  };
+  
+  function calculate(){
+    var amount=$("#calculateAmount").val();
+    var interest=$("#calculateInterest").val();
+    var month=$("#calculateMonth").val();
+    var repayType = $("#repayType").val();
+    
+    var url = "index.php?ctl=tool&amount="+amount+"&interest="+interest+"&month="+month+"&repayType="+repayType;
+    
+        if((amount.replace(/[ ]/g, "")) == "" || (amount.replace(/[ ]/g, "")) == null||amount==""||amount==null){
+            $.showErr("请输入初始投资");
+            return;
+        }else{
+            amount=$.trim(amount);
+            if(/^(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,2})?$/.test(amount)==false){
+                $.showErr("初始投资只能为整数或者小数且最多只能有两位小数");
+                return;
+            }else{
+                if(amount>1000000){
+                    $.showErr("初始投资为100万以下");
+                    return;
+                }
+            }
+        }
+        if((interest.replace(/[ ]/g, "")) == "" || (interest.replace(/[ ]/g, "")) == null||interest==""||interest==null){
+            $.showErr("请输入年化利率");
+            return;
+        }else{
+            interest=$.trim(interest);
+            if(/^(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,2})?$/.test(interest)==false){
+                $.showErr("年化利率只能为整数或者小数且最多只能有两位小数");
+                return;
+            }else{
+                if(interest>=100){
+                    $.showErr("年化利率必须在100%以下");
+                    return false;
+                }
+            }
+        }
+        if((month.replace(/[ ]/g, "")) == "" || (month.replace(/[ ]/g, "")) == null||month==""||month==null){
+            $.showErr("请输入投资期限");
+            return;
+        }else{
+            month=$.trim(month);
+            if(/^(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,2})?$/.test(month)==false){
+                $.showErr("投资期限只能为整数或者小数且最多只能有两位小数");
+                return;
+            }else{
+                if(month>100){
+                    $.showErr("投资期限为100月以内");
+                    return;
+                }
+            }
+        }
+    window.location.href=url;
+    /*
+    var value = 0;
+    var inters= interest /(100*12);
+    if(repayType==1){
+      value = parseFloat(amount) + parseFloat(inters*amount*month);
+    }
+    else{
+      value= month*amount*(inters*Math.pow((1+inters), month) / (Math.pow((1+inters),month)-1));
+    }
+    
+        $("#lastValue").html(formatNum(value));
+    */     
+    }
+
+</script>
+{include file="inc/footer.html"}

@@ -1,0 +1,45 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+    <div class="main_title">服务等级配置</div>
+    <div class="blank5"></div>
+    <div class="button_row">
+        <input type="button" class="button" value="{%ADD}" onclick="add();" />
+        <input type="button" class="button" value="导出所有记录" onclick="location.href='?m=UserCouponLevel&a=export_csv';" />
+    </div>
+    <div class="blank5"></div>
+
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            等级ID：<input type="text" id="id" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+            等级名称：<input type="text" id="name" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" style="width:100px;" />
+            服务人返利系数：<input type="text" id="rebate_ratio" class="textbox" name="rebate_ratio" value="{:trim($_REQUEST['rebate_ratio'])}" style="width:100px;" />
+            备注：<input type="text" id="comment" class="textbox" name="comment" value="{:trim($_REQUEST['comment'])}" style="width:100px;" />
+            状态：
+            <select name="is_effect" id="is_effect">
+                <option <if condition="$_REQUEST['is_effect'] eq 'all' || trim($_REQUEST['is_effect']) eq ''">selected="selected"</if> value="all">全部</option>
+                <option <if condition="intval($_REQUEST['is_effect']) eq 1">selected="selected"</if> value="1">有效</option>
+                <option <if condition="$_REQUEST['is_effect'] neq 'all' && trim($_REQUEST['is_effect']) neq '' && intval($_REQUEST['is_effect']) eq 0">selected="selected"</if> value="0">无效</option>
+            </select>
+            <input type="hidden" value="UserCouponLevel" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <html:list
+            id="dataTable"
+            style="dataTable"
+            name="group"
+            checkbox="true"
+            action="true"
+            datasource="list"
+            show="id:等级ID|50px,name:服务等级名称:edit,rebate_ratio:服务人返利系数,is_effect:有效状态,comment:备注说明"
+            actionlist="edit:{%EDIT}, foreverdel:{%FOREVERDEL}" />
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

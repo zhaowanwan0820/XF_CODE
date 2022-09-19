@@ -1,0 +1,40 @@
+{include file="web/views/v3/wxinvest/common/header.html"}
+        <div class="discount_box">
+            <div class="user_info">
+                {if $senderInfo.headimgurl}
+                    <div class="left"><img src="{$senderInfo.headimgurl}" alt=""></div>
+                {else}
+                    <div class="left"><img src="<?php echo $this->asset->makeUrl('v1/images/hongbao/wx_def.jpg', 1);?>" alt=""></div>
+                {/if}
+                <div class="right">
+                    {if $senderInfo.nickname}
+                        <p class="user_name">{$senderInfo.nickname}</p>
+                    {else}
+                        <p class="user_name">用户 {$senderInfo.mobile}</p>
+                    {/if}
+                    <p>送你一张优惠券</p>
+                </div>
+            </div>
+            <div class="discount_box_top">
+                <form id="register-form" action="GetDiscount" method="get" >
+                    <!--<div class="account">当前领取手机号  15201600923 </div>-->
+                    <?php echo token_input(); ?>
+                    <div class="import">
+                        <input type="tel" maxlength="11" name="mobile" id="phone_number" class="JS_tel_input" value="" placeholder="请输入手机号">
+                        <input type="hidden" value = "{$sn}" name = 'sn' id="sn">
+                        <input type="hidden" value = "{$cn}" name = 'cn' id="cn">
+                        <input type="hidden" value = "{$site_id}" name = 'site_id' id="site_id">
+                    </div>
+                    <div class="pick_but">
+                        <input type="submit" name="" value="绑定手机号" class="JS_tel_btn" id="JS-submit_change_btn2"/>
+                    </div>
+                    <!--<div class="account">说明 : 下次领福利,自动放入新账户</div>-->
+                </form>
+            </div>
+            {include file="web/views/v3/wxinvest/line.html"}
+            <div class="discount_box_bottom">
+                {include file="web/views/v3/wxinvest/common/rules.html"}
+            </div>
+        </div>
+    </body>
+</html>

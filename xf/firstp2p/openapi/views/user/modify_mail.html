@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>邮箱设置</title>
+    <meta name="keywords" content="网信，第一p2p, p2p，网络借贷，网络贷款，借贷 ，网络平台，民间借贷，小额贷款，无抵押贷款，信用贷款，投资理财，借钱，企业贷款，小企业贷款，个人经营贷款，融资" />
+    <meta name="description" content="网信 — 安全，专业的网络借款、理财平台。提供便捷、安全、低门槛的个人信用贷款和个人理财服务。" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/m-base.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/m-common.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeApiUrl('v3/css/p_email.css');?>">
+    <script src="<?php echo $this->asset->makeApiUrl('v3/js/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeApiUrl('v3/js/email/common.js');?>"></script>
+</head>
+<body>
+    <div class="p_haveEmail">
+        <div class="ui_title">
+            {if !$returnBtn}<a class="ui_back" href="javascript:window.history.back();"><i class="ui_icon_back"></i>返回</a>{/if}邮箱设置
+        </div>
+        <div class="haveE">
+            <img src="<?php echo $this->asset->makeApiUrl('v3/images/haha/wap_email.png');?>" width="65" height="50"/>
+            <p class="f18 e_tips">您绑定的邮箱为</p>
+            <p class="f18">{$user_mail}</p>
+            <p class="b_text">我们会将月账单和投资合同发送至您的邮箱</p>
+        </div>
+        <?php echo token_input(); ?>
+        <div class="inv-fbtn">
+            <a href="doSetEmail?is_modify_email=1" class="ui_red_btn j-changeMail">更换邮箱</a>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    var token  =  $('#token').val();
+    var token_id  =  $('#token_id').val();
+    var href = $(".j-changeMail").prop("href");
+    $('.j-changeMail').bind('click',  function(event) {
+        var $t = $(this),
+        href = $t.attr("href");
+        $t.prop("href",href + '&token=' + token + '&token_id=' + token_id);
+    });
+</script>
+{include file="openapi/views/baidutongji.html"}
+</html>

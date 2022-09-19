@@ -1,0 +1,552 @@
+{
+    "author": "yutao",
+    "comment": "o2o:编辑券组信息",
+    "namespace": "NCFGroup\\Protos\\O2O",
+    "use": ["NCFGroup\\Common\\Extensions\\Base\\ProtoBufferBase", "Assert\\Assertion"],
+    "extend": "ProtoBufferBase",
+    "properties": [
+        {
+            "name": "id",
+            "comment": "券组id",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "productId",
+            "comment": "商品ID",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "couponCount",
+            "comment": "券码数量",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "goodPrice",
+            "comment": "商品价格",
+            "type": "string",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "useTimeType",
+            "comment": "使用期限类型",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "useDayLimit",
+            "comment": "使用期限",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "couponSource",
+            "comment": "券组生成来源",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "triggerMode",
+            "comment": "触发方式",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "useRules",
+            "comment": "使用规则",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "couponGroupStatus",
+            "comment": "券组状态",
+            "type": "int",
+            "required": true
+        },
+        {
+            "name": "couponDesc",
+            "comment": "券组描述",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "downBidAmount",
+            "comment": "投资触发下限",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "upBidAmount",
+            "comment": "投资触发下限",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "supplierUserId",
+            "comment": "供应商网信ID",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "storeId",
+            "comment": "店铺ID",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxUserId",
+            "comment": "网信ID",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "channelId",
+            "comment": "渠道ID",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceSup",
+            "comment": "网信补贴",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "wxAllowanceStore",
+            "comment": "网信补贴",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "wxAllowanceChannel",
+            "comment": "网信补贴",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "wxAllowanceInviter",
+            "comment": "网信补贴",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "supAllowanceStore",
+            "comment": "供应商补贴",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "channelAllowanceStore",
+            "comment": "渠道补贴",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "wxAllowanceSupType",
+            "comment": "网信补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceStoreType",
+            "comment": "网信补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceChannelType",
+            "comment": "网信补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceInviterType",
+            "comment": "网信补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "supAllowanceStoreType",
+            "comment": "供应商补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "channelAllowanceStoreType",
+            "comment": "渠道补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceSupLimit",
+            "comment": "网信补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceStoreLimit",
+            "comment": "网信补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceChannelLimit",
+            "comment": "网信补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceInviterLimit",
+            "comment": "网信补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "supAllowanceStoreLimit",
+            "comment": "供应商补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "channelAllowanceStoreLimit",
+            "comment": "渠道补贴",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "acquireDayLimit",
+            "comment": "领取期限",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "useStartTime",
+            "comment": "使用开始时间",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "useEndTime",
+            "comment": "使用结束时间",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "triggerType",
+            "comment": "触发投资类型",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "downAnnualizedAmount",
+            "comment": "触发投资年化金额下限",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "upAnnualizedAmount",
+            "comment": "触发投资年化金额上限",
+            "type": "float",
+            "required": false,
+            "default": 0.00
+        },
+        {
+            "name": "userTag",
+            "comment": "投资人tag中含有",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "inviterTag",
+            "comment": "邀请人tag中含有",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "isShowCouponNumber",
+            "comment": "前端是否显示券码",
+            "type": "int",
+            "required": false,
+            "default": 1
+        },
+        {
+            "name": "luckyMoneyAllowanceType",
+            "comment": "红包补贴类型",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "luckyMoneyAllowanceLimit",
+            "comment": "红包补贴期限",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "luckyMoneyAllowanceMoney",
+            "comment": "红包补贴金额",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "luckyMoneyAllowanceCount",
+            "comment": "红包补贴个数",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceSupCount",
+            "comment": "网信补贴供应商红包数量",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceStoreCount",
+            "comment": "网信补贴商家红包数量",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceChannelCount",
+            "comment": "网信补贴渠道红包数量",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "supAllowanceStoreCount",
+            "comment": "供应商补贴商家红包数量",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "channelAllowanceStoreCount",
+            "comment": "渠道补贴商家红包数量",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "wxAllowanceInviterCount",
+            "comment": "网信补贴邀请人红包数量",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "couponProvider",
+            "comment": "第三方商家标识",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "couponExchangedDesc",
+            "comment": "券码兑换后显示内容",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "dealTag",
+            "comment": "投标的tag中含有",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "unavailableTime",
+            "comment": "券组下线时间",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "availableTime",
+            "comment": "券组上线时间",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "acquiredWxOwnerAllowanceType",
+            "comment": "领券后网信补贴领券人类型",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "acquiredWxOwnerAllowanceLimit",
+            "comment": "领券后网信补贴领券人红包期限",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "acquiredWxOwnerAllowanceMoney",
+            "comment": "领券后网信补贴领券人红包金额",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "acquiredWxOwnerAllowanceCount",
+            "comment": "领券后网信补贴领券人红包个数",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "nonInviterTag",
+            "comment": "邀请人tag中不含有",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "nonUserTag",
+            "comment": "投资人tag中不含有",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "nonDealTag",
+            "comment": "标tag中不含有",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "triggerInfo",
+            "comment": "触发规则",
+            "type": "array",
+            "required": false,
+            "default": null
+        },
+        {
+            "name": "newNonInviterTag",
+            "comment": "邀请人tag中不含有（新tag）",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "newNonUserTag",
+            "comment": "投资人tag中不含有（新tag）",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "newNonDealTag",
+            "comment": "标tag中不含有（新tag）",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "newUserTag",
+            "comment": "用户tag（新tag）",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "newInviterTag",
+            "comment": "邀请人tag（新tag）",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "newDealTag",
+            "comment": "投标的tag（新tag）",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "couponPcDesc",
+            "comment": "PC上礼券详情",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "couponExchangedPcDesc",
+            "comment": "PC上券码兑换后显示内容",
+            "type": "string",
+            "required": false,
+            "default": ""
+        },
+        {
+            "name": "acquiredWxInviterAllowanceType",
+            "comment": "领券后网信补贴邀请人类型",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "acquiredWxInviterAllowanceLimit",
+            "comment": "领券后网信补贴邀请人红包期限",
+            "type": "int",
+            "required": false,
+            "default": 0
+        },
+        {
+            "name": "acquiredWxInviterAllowanceMoney",
+            "comment": "领券后网信补贴邀请人红包金额",
+            "type": "float",
+            "required": false,
+            "default": 0.0
+        },
+        {
+            "name": "acquiredWxInviterAllowanceCount",
+            "comment": "领券后网信补贴邀请人红包个数",
+            "type": "int",
+            "required": false,
+            "default": 0
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__chosen/js/chosen.jquery.min.js' />
+<load href='__TMPL__chosen/css/chosen.min.css' />
+
+<php>
+    function f_to_date($date){
+        return to_date($date,"Y-m-d H:i");
+    }
+    </php>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        用户ID：<input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:100px;" />
+        银行账户：<input type="text" class="textbox" name="bankcard" value="{:trim($_REQUEST['bankcard'])}" style="width:100px;" />
+
+        <br />
+        <input type="hidden" value="Enterprise" name="m" />
+        <input type="hidden" value="view_bank" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="user"
+    datasource="list"
+    show="id:用户ID|30px,real_name:姓名,user_bankcard_origin:银行账户|50px,card_name:开户名,card_type:银行卡类型,bank_name:开户行名称,bank_shortno:开户行简码,bankzone:开户行网点,branch_no:联行号"
+    />
+<div class="blank5"></div>
+<if condition="!empty($list)">
+<div class="page">{$page}</div>
+</if>
+</div>
+<include file="Public:footer" />
+

@@ -1,0 +1,199 @@
+<!-- $Id: agency_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,selectzone.js,colorselector.js,listtable.js"}
+<div class="main-div">
+    <form method="post" action="goods_home.php" name="theForm">
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <input type="hidden" name="tags_id" value="{$tags_id}">
+            <tr>
+                <td class="label">{$lang.require_field}专区名称</td>
+                <td><input type="text" name="tags_name" maxlength="50" value="{$tags.tags_name}"/></td>
+            </tr>
+            <tr>
+                <td class="label">{$lang.require_field}商品ID</td>
+                <td>
+                    <textarea name="ids" id="" cols="18" rows="10" onkeyup="this.value=this.value.replace(/[^\r\n0-9]/g,'');" style="font-size: 15px"
+                              placeholder="输入商品ID,每行一个&#13;&#10;&#13;&#10;例如：&#13;&#10;9000&#13;&#10;9001&#13;&#10;9002"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">指定债权</td>
+                <td>
+                    <input type="radio" name="appoint" value="0" onclick="toggle(0)" {if !$tags.appoint} checked="checked" {/if}>不指定（即全部用户都有权利购买商品）<br>
+                    <input type="radio" name="appoint" value="1" onclick="toggle(1)" {if $tags.appoint} checked="checked" {/if}>指定债权（仅对指定债权用户拥有购买商品权利）
+                    <div id="appoint_borrow" style="display: none">
+                        <table>
+                            <tr>
+                                <td>尊享项目</td>
+                                <td>普惠项目</td>
+                            </tr>
+                            <tr>
+                                <td><textarea name="zx_borrow" {if !$appoint_debt}readonly{/if} cols="30" rows="10" onkeyup="this.value=this.value.replace(/[^\r\n0-9]/g,'');" placeholder="输入项目ID,每行一个&#13;&#10;&#13;&#10;例如：&#13;&#10;9000&#13;&#10;9001&#13;&#10;9002">{$tags.zx_borrow_ids}</textarea></td>
+                                <td><textarea name="ph_borrow" {if !$appoint_debt}readonly{/if} cols="30" rows="10" onkeyup="this.value=this.value.replace(/[^\r\n0-9]/g,'');" placeholder="输入项目ID,每行一个&#13;&#10;&#13;&#10;例如：&#13;&#10;9000&#13;&#10;9001&#13;&#10;9002">{$tags.ph_borrow_ids}</textarea></td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table align="center">
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="submit" class="button" value="{$lang.button_submit}"/>
+                    <input type="reset" class="button" value="{$lang.button_reset}"/>
+                    <input type="hidden" name="act" value="{$form_action}"/>
+                    <input type="hidden" name="id" value=""/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+        <tr>
+            <th>序号</th>
+            <th>商品ID</th>
+            <th width="25%">商品名称</th>
+            <th>商品图</th>
+            <th>库存</th>
+            <th>销量</th>
+            <th>本店售价</th>
+            <th>权益支付上限</th>
+            <th>排序</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        {foreach from=$goods item=goods key=key}
+        <tr align="center" id="{$goods.goods_id}">
+            <td><span class="num">{if $keys=$key+1}{$keys}{/if}</span></td>
+            <td>{$goods.goods_id}</td>
+            <td>{$goods.goods_name|escape:html}</td>
+            <td><a href="/{$goods.goods_img}" target="_blank"><img src="/{$goods.goods_img}" height="50" width="50"/></a></td>
+            <td>{$goods.goods_number}</td>
+            <td>{$goods.sort_sales}</td>
+            <td>￥{$goods.shop_price}</td>
+            <td>权益{$goods.money_line}</td>
+        <td align="center"><span onclick="javascript:listTable.edit(this, 'edit_sort_order', {$goods.goods_id})">{$goods.sort_order}</span>
+        </td>
+            <td>{if $goods.is_on_sale == 1} 上架 {else} 下架 {/if}</td>
+            <td>
+                <a href="javascript:void(0)" class="remove" goods_id="{$goods.goods_id}">移除</a>
+            </td>
+        </tr>
+        {/foreach}
+    </table>
+</div>
+
+
+{literal}
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script language="JavaScript">
+    onload = function () {
+        if ($("input[name='appoint']:checked").val() == 1) {
+            $("#appoint_borrow").show()
+        }
+    }
+    function toggle(obj) {
+        if (obj) {
+            $("#appoint_borrow").show()
+        } else {
+            $("#appoint_borrow").hide()
+        }
+    }
+    function removeEle(obj, act, id, status) {
+        var val = status == -1 ? 1 : 0
+        var obj_tr = obj.parentNode.parentNode //当前行
+        var obj_table = obj.parentNode.parentNode.parentNode  // 整个table标签
+        var trs = obj_table.getElementsByClassName('tags')//所有行\
+        var index_from = [].indexOf.call(trs, obj_tr)  // 当前行下标
+        if (index_from + status < trs.length && index_from + status >= 0) {
+            var obj_goods   = trs[index_from].getAttribute('id'); //改动的商品
+            var other_goods = trs[index_from + status].getAttribute('id'); //需要改动的另一个商品
+            var obj_sort    = index_from+status+1
+            var other_sort  = index_from+1
+            $.ajax({
+                type : "POST",
+                url : "/admin/goods_home.php",
+                dataType:'json',
+                data: {
+                    act:act,goods:obj_goods,goods_sort:obj_sort,other:other_goods,other_sort:other_sort
+                },
+                success : function(result) {
+                    if (result.error_code == 0) {
+                        remove(obj, status)
+                    } else {
+                        warnMsg();
+                    }
+                },
+                error : function(e){
+                    warnMsg();
+                }
+            });
+        }
+
+    }
+
+    function remove(obj, status) {
+        var obj_tr = obj.parentNode.parentNode //当前行
+        var obj_table = obj.parentNode.parentNode.parentNode  // 整个table标签
+        var trs = obj_table.getElementsByClassName('tags')//所有行\
+        var index_from = [].indexOf.call(trs, obj_tr)  // 当前行下标
+        if (index_from + status < trs.length && index_from + status >= 0) {
+            /**
+             * 创建新的table+tr标签
+             * 当前行内容复制给新的tr标签 并放入新的table标签中
+             * 把目标行的内容 替换原来的内容放入tr标签 插入新table标签
+             * 按顺序将新老table内 相应的tr标签进行替换
+             */
+            var new_table = document.createElement("table")
+            var new_tr = document.createElement("tr")
+            new_tr = trs[index_from].cloneNode(true)
+            new_table.appendChild(new_tr)
+            new_tr = trs[index_from + status].cloneNode(true)
+            new_table.appendChild(new_tr)
+            obj_table.replaceChild(new_table.children[0], trs[index_from + status])
+            obj_table.replaceChild(new_table.children[0], trs[index_from])
+            var obj_num = trs[index_from + status].children[0].children[0].innerHTML;
+            var other_num = trs[index_from].children[0].children[0].innerHTML;
+            trs[index_from + status].children[0].children[0].innerHTML = other_num;
+            trs[index_from].children[0].children[0].innerHTML = obj_num;
+        } else {
+            // warnMsg()
+        }
+    }
+
+    function warnMsg(msg = '移动失败') {
+        alert(msg)
+    }
+
+   $(document).on('click',".remove",function () {
+       var obj      = $(this);
+       var goods_id = obj.attr('goods_id');
+       var tags_id  = '{$tags_id}';
+       var act      = 'del_goods_tags';
+       $.ajax({
+           type:'POST',
+           url : "/admin/goods_home.php",
+           dataType:'json',
+           data:{act:act,goods_id:goods_id,tags_id:tags_id},
+           success:function (result) {
+               if (!result.error_code) {
+                   alert('移除成功');
+                   obj.parent().parent().remove();
+                   for (var i = 0; i < $(".num").length; i++) {
+                       $(".num:eq(" + i + ")").html(i + 1);
+                   }
+               } else {
+                  alert('移除失败');
+               }
+           },
+           error:function (e) {
+              alert('移除1失败');
+           }
+
+       });
+   })
+
+</script>
+{/literal}
+{include file="pagefooter.htm"}

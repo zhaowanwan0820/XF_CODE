@@ -1,0 +1,164 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__widget/leanModal.min.js' />
+<php>
+
+</php>
+<style type="text/css">
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
+#showDetail {
+    width: 600px;
+    padding: 30px;
+    display:none;
+    background: white;
+    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.7); -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.7); -moz-box-shadow: 0 0px 4px rgba(0,0,0,0.7);
+}
+#showDetail p {
+    color: #666;
+    text-shadow: none;
+    display: block;
+    word-wrap: break-word;
+    max-height: 400px;
+    overflow-y: auto;
+}
+</style>
+</style>
+<div class="main">
+<div class="main_title">站内信定向发送列表</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="新增" onclick="window.location.href='/m.php?m=PushTool&a=add';">
+</div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        标题:
+        <input type="text" class="textbox" name="title" value="{:trim($_REQUEST['title'])}" style="width:70px;" />
+        发送内容:
+        <input type="text" class="textbox" name="content" value="{:trim($_REQUEST['content'])}" style="width:70px;" />
+        推送类型：
+        <select name="type" id="type">
+                <option value="0" <if condition="intval($_REQUEST['type']) eq 0">selected="selected"</if>>==请选择==</option>
+                <foreach name="typeMap" item="type" key="key">
+                    <option value="{$key}" <if condition="$_REQUEST['type'] eq $key">selected="selected"</if>>{$type}</option>
+                </foreach>
+        </select>
+        发送状态：
+        <select name="send_status">
+                <option value="0" <if condition="intval($_REQUEST['send_status']) eq 0">selected="selected"</if>>==请选择==</option>
+                <foreach name="sendStatusMap" item="item" key="key">
+                    <option value="{$key}" <if condition="intval($_REQUEST['send_status']) eq $key">selected="selected"</if>>{$item}</option>
+                </foreach>
+        </select>
+        发送时间段：
+        <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        -
+        <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}" onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:120px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+        <input type="hidden" value="PushTool" name="m" />
+        <input type="hidden" value="index" name="a" />
+
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+    <tr>
+        <td colspan="20" class="topTd">&nbsp;</td>
+    </tr>
+    <tr class="row">
+        <!--<th width="8"><input type="checkbox" id="check" onclick="CheckAll('dataTable')"></th>-->
+        <th>编号</th>
+        <th>发送类型</th>
+        <th>标题</th>
+        <th>发送内容</th>
+        <th>可接收的会员</th>
+        <th>链接</th>
+        <th>发送开始时间</th>
+        <th>发送状态</th>
+        <th>操作人</th>
+        <th>操作</th>
+    </tr>
+    <foreach name="list" item="item">
+    <tr class="row">
+        <td>{$item.id}</td>
+        <td><?php echo $typeMap[$item['type']]; ?></td>
+        <td>{$item.title}</td>
+        <td>{$item.content}</td>
+        <td>
+            <?php if ($item['scope'] == 4) { ?>
+            <a href="{$item|getParamShow}">csv下载</a>
+            <?php } else { ?>
+            {$item|getParamShow}
+            <?php if ($item['scope'] == 2 && mb_strlen($item[param]) > 50) { ?>
+            ...<a id="go" rel="leanModal" name="showDetail" href="#showDetail" onclick="showAll('{$item.param}')">显示全部</a>
+            <?php } ?>
+            <?php } ?>
+        </td>
+        <td><?php if (!empty($item['url'])) { ?><a href="{$item.url}" target="_blank">点击打开</a><?php } ?></td>
+        <td>{$item.send_time|format_date}</td>
+        <td><?php echo $sendStatusMap[$item['send_status']]; ?></td>
+        <td>{$item.admin_id|get_admin_name}</td>
+        <td><?php if ($item['send_status'] == 1) { ?><a href="javascript:void(0)" onclick="removeItem({$item.id})">删除 </a><?php } ?></td>
+    </tr>
+    </foreach>
+    <tr>
+        <td colspan="20" class="bottomTd">&nbsp;</td>
+    </tr>
+</table>
+<!-- Think 系统列表组件结束 -->
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+<div id="showDetail"><p></p></div>
+</div>
+<script>
+// 初始化
+$(function()
+{
+    $('a[rel*=leanModal]').leanModal();
+    $('.str2long').each(function(_, div) {
+        var trColor = $($(div).parents('tr').get(0)).css('background-color');
+        if (trColor == 'rgba(0, 0, 0, 0)') $(div).addClass('str2longwhite');
+        else $(div).addClass('str2longgreen');
+    });
+})
+var showAll = function (html)
+{
+    $("#showDetail p").text(html);
+}
+var removeItem = function(id)
+{
+    $.ajax({
+        type: "POST",
+        url: "/m.php?m=PushTool&a=removePushTask",
+        data: {id:id},
+        dataType: 'json',
+        success: (function(data) {
+            alert(data.info);
+            if (data.status == 0) {
+                return false;
+            }
+            window.location.reload();
+        })
+    });
+}
+</script>
+<include file="Public:footer" />

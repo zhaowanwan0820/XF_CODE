@@ -1,0 +1,63 @@
+{include file="web/views/v3/header.html"}
+<!--private js&css start-->
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_charge.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/charge/index.js');?>"></script>
+
+<!--private js&css end-->
+<div class="w1100">
+<form name="chargeForm" id="chargeForm" action='{url x="index" r="account/docharge"}' method="post">
+    <div class="p_account_charge">
+        <div class="user_right_box" id="chargeSelect">
+            <div class="user_title"><h1><i class="ico_chongzhi"></i>充值</h1></div>
+
+            <div class="charge_multi_con clearfix">
+
+                {if $user_info.isSvUser}
+                <div class="cbox fl" style="margin-right:40px;">
+                <h4>{$p2pAccountConfig.desc}</h4>
+                <div class="logo_mon">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/account/c_wx2.jpg');?>">
+                    <h5>{$p2pAccountConfig.name}现金余额(元)</h5>
+                    <h6>{function name="number_format" v=$user_info.svCashMoney f="2"}</h6>
+                </div>
+                <a href="/account/chargeP2P" class="c_wx_btn JS_c_wx_btn" data-name="{$p2pAccountConfig.name}">充值</a>
+                </div>
+                {/if}
+
+                <div class="cbox fl" >
+                <h4>{$wxAccountConfig.desc}</h4>
+                <div class="logo_mon">
+                    <img src="<?php echo $this->asset->makeUrl('v3/images/account/c_wx.jpg');?>">
+                    <h5>{$wxAccountConfig.name}现金余额(元)</h5>
+                    <h6>{function name="number_format" v=$user_info.money f="2"}</h6>
+                </div>
+                <a href="/account/chargeWX" class="c_wx_btn JS_c_wx_btn" data-name="{$wxAccountConfig.name}">充值</a>
+                </div>
+            </div>
+
+
+            <div class="user_tip charge_tip">
+                <p>1、所有资金均由第三方银行存管。</p>
+
+                <p>2、请注意您的银行卡的充值限制，以免造成不便。</p>
+
+                <p>3、如果充值金额没有及时到账，请拨打客服热线寻求帮助。</p>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+<script>
+window.onload = function(){
+    zhuge.track('进入充值账户聚合页面');
+}
+$(".JS_c_wx_btn").click(function(){
+    var name=$(this).data("name");
+    zhuge.track("点击选择充值账户",{
+        "账户类型":name
+    })
+})
+</script>
+{include file="web/views/footer.html"}

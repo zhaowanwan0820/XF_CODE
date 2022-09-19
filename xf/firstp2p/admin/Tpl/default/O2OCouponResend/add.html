@@ -1,0 +1,111 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<load href='__TMPL__Common/js/jquery-1.10.2.min.js' />
+
+<div class="main">
+<div class="main_title">新增直推任务 <a href="{:u("O2OCouponResend/index")}&role={$role}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">券组ID</td>
+                <td class="item_input">
+                    <input size="20" type="text" class="textbox require" name="couponGroupId" id="couponGroupId" /> <span id="tip"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">发送方式</td>
+                <td class="item_input">
+                    <select name="send_way" id="send_way" class="require" onchange="switchCondition();">
+                        <foreach name="send_way_list" key="key" item="item">
+                            <option value="{$key}">{$item}</option>
+                        </foreach>
+                    </select>
+                    &emsp;<span class="tip_span"></span>
+                </td>
+            </tr>
+            <tr id="send_condition">
+                <td class="item_title">领用人会员id</td>
+                <td class="item_input">
+                    <textarea class="textarea require" name="send_condition" placeholder="1.多个用户ID用','分割 2.每次最多填写50个用户 3.请勿填写手机号"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">备注</td>
+                <td class="item_input">
+                    <input size="50" type="text" class="textbox" name="remark" placeholder="请输入触发事件：如首投，第二次投资等" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="O2OCouponResend" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+                <input type="hidden" name="is_effect" value="0" />
+                <input type="hidden" name="couponGroupName" id="couponGroupName" value="" />
+                <input type="submit" class="button" value="{%ADD}" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript" charset="utf-8">
+
+function switchCondition(){
+    var condition = '';
+    var item = 1;
+    item = $("#send_way").val();
+    if (item == 1) {
+        condition += '<td class="item_title">领用人会员id</td>';
+        condition += '<td class="item_input">';
+        condition += '<textarea  class="textarea require" name="send_condition" ></textarea>';
+        condition += '</td>';
+    } else if (item == 2) {
+        condition += '<td class="item_title">导入csv</td>';
+        condition += '<td class="item_input">';
+        condition += '<input type="file" class="textbox require" name="send_condition" />';
+        condition += '&emsp;<a href="/m.php?m=O2OCouponResend&a=download">下载模板</a>';
+        condition += '&emsp;<span class="tip_span">备注：仅支持导入用户ID,每个csv不得超过六万条数据</span>';
+        condition += '</td>';
+    }
+    $('#send_condition').innerHTML = condition;
+    document.getElementById('send_condition').innerHTML = condition;
+}
+$("#couponGroupId").blur(function(){
+    id = $("#couponGroupId").val();
+    $.ajax({
+        type:"post",
+        url:"m.php?m=O2OCouponResend",
+        data :{
+            "a":"getGroupName",
+            "id" :id
+        },
+        dataType:'json',
+        success:function(data){
+            if(data.status == 1){
+                $("#tip").html(data.name).css("color","");
+                $("#couponGroupName").val(data.name);
+            } else {
+                $("#tip").html(data.errorMsg).css("color","red");
+            }
+        },
+    });
+});
+
+$(":reset").click(function(){
+    $("#tip").html('');
+});
+
+</script>
+<include file="Public:footer" />

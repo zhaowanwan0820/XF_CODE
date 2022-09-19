@@ -1,0 +1,287 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<style>
+    .item_title_no {
+        text-align:right; width:130px; color:#000; background:#e2e8eb;
+    }
+    table td.item_title:before {
+        content: '*';
+        color: red;
+    }
+    .moveBtn{text-decoration: none;background: #8ba9c0;color:#fff;margin:0 5px;padding:5px;border-radius: 4px;}
+    .moveBtn:hover{color:#fff;text-decoration: none;}
+    .btn_disabled{background: #ccc;cursor: default;}
+    .fl{float: left;}
+    .upfile_word{width: 0px;}
+    .file {position: relative;display: inline-block;
+        border: 0px solid #FFFFFF;padding: 0px 12px;overflow: hidden;color: #1E88C7;padding-top:10px;padding-bottom: 20px;top:19px;
+        text-decoration: none;text-indent: 0;line-height: 20px;text-decoration: underline; }
+    .file input {position: absolute;font-size: 100px;right: 0;top: 0;opacity: 0;}
+    .changeWord{text-decoration: none;width: 100px;display: block;margin-left: 10px;cursor: pointer;}
+    .textbox{display: inline-block!important;}
+    .urlTips{color:red;}
+    .img_center{width: 100px;height:100px;min-height: 60px;}
+    .img_center:hover{text-decoration: none;}
+    img.sign_up_banner_img{width:80px;height: 80px;}
+    .tip_span{position: absolute;bottom:-3px;left:2px;font-size: 12px;}
+    .zanwu_tips{width: 80px;height: 80px;text-align: center;
+        line-height: 100px;float: left;text-decoration: none;cursor: default;color:#000;}
+    .advContentType{height:27px;}
+    .title_img{margin-right: 10px;display: block;float: left;line-height: 100px;}
+    img{width:100px;height:100px;}
+
+</style>
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__TMPL__Common/js/conf.js' />
+
+<load href='__TMPL__ueditor/ueditor.config.js' />
+<load href='__TMPL__ueditor/ueditor.all.min.js' />
+<load href='__TMPL__ueditor/lang/zh-cn/zh-cn.js' />
+
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<link rel="stylesheet" href="__TMPL__Common/style/bootstrap.min.css">
+<script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+
+<script type="text/javascript" src="__ROOT__/static/admin/easyui/ajaxfileupload.js"></script>
+
+<div class="main">
+    <div class="main_title">{%ADD} <a href="{:u("NewUserPage/index")}" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+        <div class="blank5"></div>
+        <table class="form form" cellpadding=0 cellspacing=0 rel="1">
+            <tr>
+                <td class="item_title">标题:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="title" style="width:400px;" />  </td>
+            </tr>
+            <tr>
+                <td class="item_title">渠道邀请码:</td>
+                <td class="item_input"><input type="text" class="textbox require" name="invite_codes" id="invite_codes" style="width: 500px;" />&nbsp;
+                    <input type="button" id="checkinvite" value="检查有效性" >英文逗号" , "分隔</td>
+            </tr>
+
+            <tr>
+                <td class="item_title">注册奖励配置:</td>
+                <td class="item_input"  width="92%">
+                    <div style="min-height:60px;display:table-cell;">
+                        <span class="title_img">WAP/APP:</span>
+                        <img id="conf_reg_wap_app_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('conf_reg_wap_app')" name="conf_reg_wap_app" id="conf_reg_wap_app" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                        <input id = "conf_reg_wap_app_src" class= "zhimg" des='配置图片' type="hidden" name = "conf_reg_wap_app" value=""/>
+                    </div>
+                    <div style="min-height:60px;display:table-cell;">
+                        <span class="title_img">PC:</span>
+                        <img id="conf_reg_pc_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('conf_reg_pc')" name="conf_reg_pc" id="conf_reg_pc" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                        <input id = "conf_reg_pc_src" class= "zhimg" des='配置图片' type="hidden" name = "conf_reg_pc" value=""/>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">投资奖励配置:</td>
+                <td class="item_input"  width="92%">
+                    <div style="min-height:60px;display:table-cell;">
+                        <span class="title_img">WAP/APP:</span>
+                        <img id="conf_bid_wap_app_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('conf_bid_wap_app')" name="conf_bid_wap_app" id="conf_bid_wap_app" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                        <input id="conf_bid_wap_app_src" class= "zhimg" des='配置图片' type="hidden" name = "conf_bid_wap_app" value=""/>
+                    </div>
+                    <div style="min-height:60px;display:table-cell;">
+                        <span class="title_img">PC:</span>
+                        <img id="conf_bid_pc_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('conf_bid_pc')" name="conf_bid_pc" id="conf_bid_pc" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                        <input id = "conf_bid_pc_src" class= "zhimg" des='配置图片' type="hidden" name = "conf_bid_pc" value=""/>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">邀请奖励配置:</td>
+                <td class="item_input"  width="92%">
+                    <div style="min-height:60px;display:table-cell;">
+                        <span class="title_img">WAP/APP:</span>
+                        <img id="conf_invite_wap_app_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('conf_invite_wap_app')" name="conf_invite_wap_app" id="conf_invite_wap_app" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                        <input id = "conf_invite_wap_app_src" class= "zhimg" des='配置图片' type="hidden" name = "conf_invite_wap_app" value=""/>
+                    </div>
+                    <div style="min-height:60px;display:table-cell;">
+                        <span class="title_img">PC:</span>
+                        <img id="conf_invite_pc_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('conf_invite_pc')" name="conf_invite_pc" id="conf_invite_pc" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                        <input id = "conf_invite_pc_src" class= "zhimg" des='配置图片' type="hidden" name = "conf_invite_pc" value=""/>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">平台介绍配置:</td>
+                <td class="item_input"  width="92%">
+                    <div style="min-height:60px;display:table-cell;">
+                        <span class="title_img">WAP/APP:</span>
+                        <img id="conf_platform_wap_app_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('conf_platform_wap_app')" name="conf_platform_wap_app" id="conf_platform_wap_app" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                        <input id = "conf_platform_wap_app_src" class= "zhimg" des='配置图片' type="hidden" name = "conf_platform_wap_app" value=""/>
+                    </div>
+                    <div style="min-height:60px;display:table-cell;">
+                        <span class="title_img">PC:</span>
+                        <img id="conf_platform_pc_img" class="activity_home_img" src="" data-src="" height="100" width="100" style="display:none;"/>
+                        <span class="zanwu_tips" style="display:block;border:1px solid #ccc;">暂无图片</span>
+                        <a href="javascript:;" class="file">
+                            <span class="changeWord">选择文件</span>
+                            <input type="file" class="textbox" onchange="tryUploadInput('conf_platform_pc')" name="conf_invite_pc" id="conf_platform_pc" class="file"/>
+                            <span class="tip_span">( 限制大小200KB )</span>
+                        </a>
+                        <input id = "conf_platform_pc_src" class= "zhimg" des='配置图片' type="hidden" name = "conf_platform_pc" value=""/>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">备注:</td>
+                <td class="item_input"><textarea class="textbox require" rows="5" cols="100" name="remark"></textarea></td>
+            </tr>
+            <tr>
+                <td class="item_title">跳转链接(H5):</td>
+                <td class="item_input"><input type="text" class="textbox require" style="width:450px;" name="link_more_h5" /></td>
+            </tr>
+            <tr>
+                <td class="item_title">跳转链接(PC):</td>
+                <td class="item_input"><input type="text" class="textbox require"  style="width:450px;" name="link_more_pc" /><span style="color:red">*</span></td>
+            </tr>
+            <tr>
+                <td class="item_title_no"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="{:conf("VAR_MODULE")}" value="NewUserPage" />
+                    <input type="hidden" name="{:conf("VAR_ACTION")}" value="insert" />
+                    <!--隐藏元素-->
+                    <input type="submit" class="button" onclick="return checktosubmit()" id="button_submit" value="创建" />
+                    <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $("#checkinvite").click(function(){
+        checkInvite($("#invite_codes").val());
+    });
+
+    //上传成功  图片显示 且赋值自定义属性
+    function tryUploadInput(img) {
+        var _id = img;
+        var img_id = _id+'_img';
+        var img_scr = _id+'_src';
+        var _hasSrc = $("#" + img_id).attr("data-src");
+        $.ajaxFileUpload({
+            url: '/m.php?m=NewUserPage&a=loadFile',
+            secureuri: false,
+            fileElementId:_id,
+            dataType: 'json',
+
+            success: function (data, status) {
+                if(data.code == 1){
+                    var src = data.imgUrl;
+                    if (src != '') {
+                        if(!_hasSrc){
+                            $("#" + img_id).show();
+                        }
+                        $("#" + img_id).attr("src",src);
+                        $("#" + img_id).attr("data-src",src);
+
+                        $("#" + img_id).siblings(".zanwu_tips").hide();
+                        $("#" + img_scr).val(src);
+                    }
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data, status, e) {
+                alert("上传错误");
+            }
+        })
+    }
+    //异步校验活动名称是否已经存在
+    function checkInvite(invite) {
+        $.ajax({
+            url: ROOT+"?m=NewUserPage&a=checkInvite&invite="+invite,
+            type: 'POST',
+            dataType: "json",
+            success: function(obj){
+                if(obj.errno == 0) {
+                    alert(obj.msg);
+                    return false;
+                }else{
+                    alert(obj.msg);
+                    return true;
+                }
+            }
+        });
+    }
+
+    function checktosubmit() {
+        var imgArr = new Array();
+        imgArr[0] = $("#conf_reg_wap_app_img");
+        imgArr[1] = $("#conf_reg_pc_img");
+        imgArr[2] = $("#conf_bid_wap_app_img");
+        imgArr[3] = $("#conf_bid_pc_img");
+        imgArr[4] = $("#conf_invite_wap_app_img");
+        imgArr[5] = $("#conf_invite_pc_img");
+        imgArr[6] = $("#conf_platform_wap_app_img");
+        imgArr[7] = $("#conf_platform_pc_img");
+
+        var isLoop = true;
+        $(imgArr).each(function(e){
+            if($(this).attr("src") == ''){
+                //alert("请把图片上传完整");
+                //isLoop = false;
+                //return false;
+            }
+        });
+        return isLoop;
+    }
+</script>
+<include file="Public:footer" />

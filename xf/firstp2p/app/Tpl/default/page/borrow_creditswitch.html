@@ -1,0 +1,561 @@
+{include file="inc/header.html"}
+<style type="text/css">
+	.box750 {
+		margin: 10px auto;
+		border: 1px solid #CCC;
+		padding: 15px;
+		border-radius: 5px;
+	}
+	.box750 .blueTable {
+		background:#8DB9FF;
+		text-align: center;
+	}
+	.box750 .blueTable th {
+		background: #D4E5FF;
+		line-height: 26px;
+		text-align: center;
+		font-weight: bold;
+	}
+	.box750 .blueTable td{ background:#fff; line-height:24px}
+	.box750 .blueTable .grayBg {
+		background: #CCC;
+		padding: 2px 10px;
+		color: white;
+	}
+	.box750 .blueTable .blueBg {
+		background: #5896DF;
+		padding: 2px 10px;
+		color: white;
+	}
+	.box750 .blueTable .greenBg { background:#77c22f; padding:2px 10px; color:#fff; }
+	.box750 .blueTable .redBg { background:#ff0000; padding:2px 10px; color:#fff; }
+	.credit_upload .field{ width:98%}
+</style>
+<div class="blank"></div>
+<!--2013/7/4 xuxiaonan begin -->
+<div class="deal_box_top"></div>
+<div class="deal_box_data">
+	<div class="h_con">
+		<h3>{$info.title}</h3>
+	</div>
+	<table cellspacing="0" cellpadding="0" border="0" class="tb_sty2 tb_sty4">
+		<colgroup>
+		<col width="210">
+		<col width="125">
+		<col>
+		</colgroup>
+		<thead>
+		<tr>
+		<th scope="col" class="tl">
+			<p>&nbsp;</p>
+		</th>
+		<th scope="col" class="tl">
+			<p class="txt_sty5">项目</p>
+		</th>
+		<th scope="col" class="tl">
+			<p class="txt_sty5">状态</p>
+		</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+		<td class="tl b_line" rowspan="2">
+			<p class="txt_sty5">基本信息</p>
+		</td>
+		<td class="tl">
+		<p class="txt_sty">个人信息</p>
+		</td>
+		<td class="tl">
+			<p class="txt_sty4 txt_sty"><!--<img width="16" height="16" class="img_answer" alt="" src="{$TMPL}/images/answer_success.jpg">--></p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl b_line">
+			<p class="txt_sty">工作信息</p>
+		</td>
+		<td class="tl b_line">
+			<p>&nbsp;</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl b_line" rowspan="2">
+			<p class="txt_sty5">必要信用认证</p>
+		</td>
+		<td class="tl">
+		<p class="txt_sty">身份证认证</p>
+		</td>
+		<td class="tl">
+			<p>{if $user_info.idcardpassed eq 1}
+				<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+				{elseif $user_info.idcardpassed eq 2}
+				<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+            	{elseif $user_info.idcardpassed eq 0}
+					{if $credit.credit_identificationscanning.file_list}
+					<span class="grayBg">审核中</span>
+					{else}
+					<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+					{/if}
+				{/if}
+			</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl b_line">
+			<p class="txt_sty">视频认证</p>
+		</td>
+		<td class="tl b_line">
+			<p>{if $user_info.videopassed eq 1}
+							<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+							{elseif $user_info.videopassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.videopassed eq 0}
+								{if $user_info.has_send_video eq 1}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl b_line" rowspan="10">
+			<p class="txt_sty5">可选信用认证</p>
+		</td>
+		<td class="tl">
+			<p class="txt_sty">工作认证</p>
+		</td>
+		<td class="tl">
+			<p>
+			{if $user_info.workpassed eq 1}
+				{if $expire.workpassed_expire}
+				<span class="redBg">已过期</span>
+				{else}
+				<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+				{/if}
+			{elseif $user_info.workpassed eq 2}
+			<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+        	{elseif $user_info.workpassed eq 0}
+				{if $credit.credit_contact.file_list}
+				<span class="grayBg">审核中</span>
+				{else}
+				<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+				{/if}
+			{/if}
+			</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">收入认证</p>
+		</td>
+		<td class="tl">
+			<p>
+				{if $user_info.incomepassed eq 1}
+					{if $expire.incomepassed_expire}
+					<span class="redBg">已过期</span>
+					{else}
+					<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+					{/if}
+				{elseif $user_info.incomepassed eq 2}
+				<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+            	{elseif $user_info.incomepassed eq 0}
+					{if $credit.credit_incomeduty.file_list}
+					<span class="grayBg">审核中</span>
+					{else}
+					<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+					{/if}
+				{/if}
+			</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">央行信用认证报告</p>
+		</td>
+		<td class="tl">
+			<p>
+				{if $user_info.creditpassed eq 1}
+								{if $expire.creditpassed_expire}
+								<span class="redBg">已过期</span>
+								{else}
+								<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+								{/if}
+							{elseif $user_info.creditpassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.creditpassed eq 0}
+								{if $credit.credit_credit.file_list}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}
+
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+		<p class="txt_sty">房产认证</p>
+		</td>
+		<td class="tl">
+			<p>
+				{if $user_info.housepassed eq 1}
+							<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+							{elseif $user_info.housepassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.housepassed eq 0}
+								{if $credit.credit_house.file_list}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}
+			</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">技术职称认证</p>
+		</td>
+		<td class="tl">
+			{if $user_info.skillpassed eq 1}
+							<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+							{elseif $user_info.skillpassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.skillpassed eq 0}
+								{if $credit.credit_titles.file_list}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">购车证明</p>
+		</td>
+		<td class="tl">
+			<p>{if $user_info.carpassed eq 1}
+							<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+							{elseif $user_info.carpassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.carpassed eq 0}
+								{if $credit.credit_car.file_list}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">结婚认证</p>
+		</td>
+		<td class="tl">
+			<p>
+				{if $user_info.marrypassed eq 1}
+							<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+							{elseif $user_info.marrypassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.marrypassed eq 0}
+								{if $credit.credit_marriage.file_list}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}
+			</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">居住地证明</p>
+		</td>
+		<td class="tl">
+			<p>
+				{if $user_info.residencepassed eq 1}
+								{if $expire.residencepassed_expire}
+								<span class="redBg">已过期</span>
+								{else}
+								<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+								{/if}
+							{elseif $user_info.residencepassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.residencepassed eq 0}
+								{if $credit.credit_residence.file_list}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}
+			</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">学历认证</p>
+		</td>
+		<td class="tl">
+			<p>{if $user_info.edupassed eq 1}
+							<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+							{elseif $user_info.edupassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.edupassed eq 0}
+								{if $user_info.edu_validcode neq ''}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}</p>
+		</td>
+		</tr>
+		<tr>
+
+		<td class="tl b_line">
+		<p class="txt_sty">手机实名认证</p>
+		</td>
+		<td class="tl b_line">
+			<p>{if $user_info.mobiletruepassed eq 1}
+							<span class="greenBg"><img width="16" height="16" class="img_answer" alt="已通过" title="已通过" src="{$TMPL}/images/answer_success.jpg" /></span>
+							{elseif $user_info.mobiletruepassed eq 2}
+							<span class="redBg"><img src="{$TMPL}/images/credit_reject.png" width="14" height="14" alt="未通过" title="未通过"></span>
+                        	{elseif $user_info.mobiletruepassed eq 0}
+								{if $credit.credit_mobilereceipt.file_list}
+								<span class="grayBg">审核中</span>
+								{else}
+								<span class="blueBg"><img src="{$TMPL}/images/credit_warning.png" width="14" height="14" alt="待完成" title="待完成"></span>
+								{/if}
+							{/if}</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl" rowspan="3">
+			<p class="txt_sty5">网信理财记录</p>
+		</td>
+		<td class="tl">
+			<p class="txt_sty">还清笔数</p>
+		</td>
+		<td class="tl">
+			<p class="txt_sty5">{$level_point.repay_success.total_count}笔</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">逾期次数</p>
+		</td>
+		<td class="tl">
+			<p class="txt_sty5">{$level_point.impose_repay.total_count}次</p>
+		</td>
+		</tr>
+		<tr>
+		<td class="tl">
+			<p class="txt_sty">严重逾期次数</p>
+		</td>
+		<td class="tl">
+			<p class="txt_sty5">{$level_point.yz_impose_repay.total_count}次</p>
+		</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<div class="deal_box_bot"></div>
+    <div class="blank"></div>
+	<div class="item border_2434">
+	<div id="baseR">
+	  	<div class="tit">必要信用认证</div>
+		<div class="blank1"></div>
+	    <p>以下两项为必要信用认证，上传齐全后将开始审核。两项必要认证缺失的用户，无法得到借款。</p>
+	    <div class="clearfix mt10" style="margin-left:10px">
+	    	<ul>
+	        	<li class="cleaarfix" id="base_card">
+		        	<div class="icon card_no"></div>
+					<div class="con">
+						<h3>身份认证</h3>
+						{if $user_info.idcardpassed eq 1}
+							<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+						{else}
+							{if $credit['credit_identificationscanning']['file']}
+								{if $user_info.idcardpassed eq 1}
+									<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+								{else}
+									<div class="status-pending">待审核</div>
+								{/if}
+							{/if}
+							<a href="javascript:openupload('身份证认证','credit_identificationscanning','IDCARD_AUTH');">
+							<div class="bt">{if $credit['credit_identificationscanning']['file']}补充{else}立即{/if}上传</div>
+							</a>
+						{/if}
+					</div>
+					
+	    		</li>
+	    		
+	            <li class="cleaarfix" id="base_work" style="display:none">
+	                <div class="icon work_no"></div>
+					<div class="con"><h3>工作认证</h3>
+					{if $user_info.workpassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+						{if $credit['credit_contact']['file']}
+							{if $user_info.workpassed eq 1}
+								<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+							{else}
+								<div class="status-pending">待审核</div>
+							{/if}
+						{/if}
+					<a href="javascript:openupload('工作认证','credit_contact','JOB_AUTH');"><div class="bt">{if $credit['credit_contact']['file']}补充{else}立即{/if}上传</div></a></div>
+					{/if}
+					
+					
+	           	</li>
+	            <li class="cleaarfix" id="base_credit" style="display:none">
+	           		<div class="icon credit_no"></div><div class="con"><h3>信用报告</h3>
+					{if $user_info.creditpassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+					{if $credit['credit_credit']['file']}
+					{if $user_info.creditpassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+					<div class="status-pending">待审核</div>
+					{/if}
+					{/if}
+					<a href="javascript:openupload('信用报告','credit_credit','BANK_AUTH');"><div class="bt">{if $credit['credit_credit']['file']}补充{else}立即{/if}上传</div></a></div>
+	           		{/if}
+					
+					
+				</li>
+	            <li class="cleaarfix" id="base_income" style="margin-right:0;display:none">
+	            	<div class="icon income_no"></div><div class="con"><h3>收入认证</h3>
+					{if $user_info.incomepassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+					{if $credit['credit_incomeduty']['file']}
+					{if $user_info.incomepassed eq 1}
+					<div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+					{else}
+					<div class="status-pending">待审核</div>
+					{/if}
+					{/if}
+					<a href="javascript:openupload('收入认证','credit_incomeduty','INCOME_AUTH');"><div class="bt">{if $credit['credit_incomeduty']['file']}补充{else}立即{/if}上传</div></a></div>
+	      			{/if}
+				</li>
+				<li class="cleaarfix">
+                    <div class="icon video_no"></div><div class="con"><h3>视频认证</h3>
+                    {if $user_info.videopassed eq 1}
+                        <div class="status-passed"><i class="icon-correct"></i> 审核通过</div>
+                    {else}
+					       <a href="javascript:openupload('视频认证','credit_videoauth','VIDEO_AUTH');"><div class="bt">我要认证</div></a></div>
+                    {/if}
+                </li>
+	   		</ul>
+			<div class="blank1"></div>
+		</div>
+	</div>
+	<div class="line"></div>
+	<div id="otherR">
+		<div class="tit">可选信用认证</div>
+		<div class="blank1"></div>
+	    <p>您可以选择上传的认证项目，只要通过了这些可选信用认证，将会提高您的“信用等级”和“信用额度” 。</p>
+	    <div id="other" >
+	    	<ul class="clearfix" style="height:90px;padding:10px 0">
+	    		{if $user_info.hashouse eq 1}
+	        	<li id="other_house">
+	    			{if $user_info.housepassed neq 1}<a href="javascript:openupload('房产认证','credit_house','ESTATE_AUTH');" >{/if}
+	    				<div class="icon {if $credit['credit_house']['file'] || $user_info.housepassed eq 1}house_yes{else}house_no{/if}"></div>房产认证
+					{if $user_info.housepassed neq 1}</a>{/if}
+					{if $user_info.housepassed eq 1}<br><i class="icon-correct"></i> 审核通过{/if}
+	    		</li>
+				{/if}
+				{if $user_info.hascar eq 1}
+	            <li id="other_car">
+	            	{if $user_info.carpassed neq 1}<a href="javascript:openupload('购车认证','credit_car','CAR_AUTH');">{/if}
+	            		<div class="icon {if $credit['credit_car']['file'] || $user_info.carpassed eq 1}car_yes{else}car_no{/if}"></div>购车认证
+					{if $user_info.carpassed neq 1}</a>{/if}
+	        	</li>
+	            {/if}
+				{if $user_info.marriage eq '已婚'}
+	            <li id="other_marry">
+	            	{if $user_info.marrypassed neq 1}<a href="javascript:openupload('结婚证明','credit_marriage','MARRIED_AUTH');">{/if}
+	            		<div class="icon {if $credit['credit_marriage']['file'] || $user_info.marrypassed eq 1}marry_yes{else}marry_no{/if}"></div>结婚认证
+					{if $user_info.marrypassed neq 1}</a>{/if}
+	    		</li>
+	            {/if}                  
+	            <li id="other_edu">
+	            	{if $user_info.edupassed neq 1}<a href="javascript:openupload('学历认证','credit_graducation','EDUCATION_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon {if $user_info.edu_validcode neq '' || $user_info.edupassed eq 1}edu_yes{else}edu_no{/if}"></div>学历认证
+					{if $user_info.edupassed neq 1}</a>{/if}
+					{if $user_info.edupassed eq 1}<p><i class="icon-correct"></i> 审核通过</p>{/if}
+	    		</li>
+	            
+	            <li id="other_skill">
+	            	{if $user_info.skillpassed neq 1}<a href="javascript:openupload('技术职称认证','credit_titles','TITLES-_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon {if $credit['credit_titles']['file'] || $user_info.skillpassed eq 1}skill_yes{else}skill_no{/if}"></div>技术职称认证
+					{if $user_info.skillpassed neq 1}</a>{/if}
+	    		</li>
+	            
+	            <li id="other_video" style='display:none;'>
+	            	{if $user_info.videopassed neq 1}<a href="javascript:openupload('视频认证','credit_videoauth','VIDEO_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon {if $user_info.has_send_video eq 1 || $user_info.videopassed eq 1}video_yes{else}video_no{/if}"></div>视频认证
+					{if $user_info.videopassed neq 1}</a>{/if}
+	    		</li>
+	            
+	            <li id="other_tel">
+		            {if $user_info.mobiletruepassed neq 1}<a href="javascript:openupload('手机实名认证','credit_mobilereceipt','PHONE_AUTH');" style="display:inline-block;">{/if}
+		            	<div class="icon {if $credit['credit_mobilereceipt']['file'] || $user_info.mobiletruepassed eq 1}tel_yes{else}tel_no{/if}" ></div>手机实名认证
+					{if $user_info.mobiletruepassed neq 1}</a>{/if}
+	    		</li>
+	            <!--
+	            <li id="other_weibo">
+	            	<a href="javascript:openupload('微博认证','credit_weibo','WEIBO_AUTH');"><div class="icon {if $credit['credit_weibo']['file']}weibo_yes{else}weibo_no{/if}"></div>微博认证</a>
+	    		</li>
+	            -->
+	            <li id="other_home">
+	            	{if $user_info.residencepassed neq 1}<a href="javascript:openupload('居住地证明','credit_residence','RESIDENCE_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon {if $credit['credit_residence']['file'] || $user_info.residencepassed eq 1}home_yes{else}home_no{/if}"></div>居住地证明
+					{if $user_info.residencepassed neq 1}</a>{/if}
+	    		</li>
+				
+				<li id="other_work">
+	            	{if $user_info.workpassed neq 1}<a href="javascript:openupload('工作认证','credit_contact','JOB_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon work_{if $credit['credit_contact']['file'] || $user_info.workpassed eq 1}yes{else}no{/if}"></div>工作认证
+					{if $user_info.workpassed neq 1}</a>{/if}
+	    		</li>
+								
+				<li id="other_credit">
+	            	{if $user_info.creditpassed neq 1}<a href="javascript:openupload('信用报告','credit_credit','BANK_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon credit_{if $credit['credit_credit']['file'] || $user_info.creditpassed eq 1}yes{else}no{/if}"></div>信用报告
+					{if $user_info.creditpassed neq 1}</a>{/if}
+	    		</li>
+				
+				<li id="other_income">
+	            	{if $user_info.incomepassed neq 1}<a href="javascript:openupload('收入认证','credit_incomeduty','INCOME_AUTH');" style="display:inline-block;">{/if}
+	            		<div class="icon income_{if $credit['credit_incomeduty']['file'] || $user_info.incomepassed eq 1}yes{else}no{/if}"></div>收入认证
+					{if $user_info.incomepassed neq 1}</a>{/if}
+	    		</li>
+	        </ul>
+		</div>
+	</div>
+	<div class="clearfix" style="color: #444;margin: 10px 0;">注意：如果上传中遇到问题，请联系客服400-890-9888。</div>
+</div>
+<script type="text/javascript">
+	jQuery(function(){
+		$("#otherR #other li a .icon").hover(function(){
+			$(this).css({"margin-top":"-5px"});
+		},function(){
+			$(this).css({"margin-top":"0px"});
+		});
+		
+	});
+	function openupload(title,path,auth){
+		var url = APP_ROOT+"/index.php?ctl=borrow&act=file_upload&path="+path+"&auth="+auth;
+		$.weeboxs.open(url, {boxid:'credit_f_box',contentType:'iframe',showButton:true, showCancel:false, showOk:false,title:title,width:680,height:455,type:'wee'});
+	}
+</script>
+
+<div class="btn_area_out" style="text-align:center;padding:20px 0">
+	<a href="{url x="index" r="borrow#stepone"}"><img src="{$TMPL}/images/sqdk123.jpg"></a>
+</div>
+<!--2013/7/4 xuxiaonan end -->
+
+{include file="inc/footer.html"}

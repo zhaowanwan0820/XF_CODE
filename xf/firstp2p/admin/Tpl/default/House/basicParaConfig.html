@@ -1,0 +1,89 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+<style>
+    .item_title {
+        text-align: center;
+    }
+</style>
+<div class="main">
+    <div class="main_title">网信房贷基本参数配置</div>
+    <form id="formData" action="__APP__" method="post" enctype="multipart/form-data">
+        <input hidden="true" name="confId" value="<?= $confId ?>">
+        <table class="form" cellpadding=1 cellspacing=0>
+            <tr>
+                <td>网信房贷开关配置</td>
+                <td class="item-input">
+                    <label><input type="radio" checked="true" name="radiobutton" value="radiobutton"/>开启</label>
+                    </label><input type="radio" name="radiobutton" value="radiobutton"/>关闭</label>
+                </td>
+            </tr>
+            <tr>
+                <td>借款最低金额</td>
+                <td class="item-input">
+                    <label><input type="number" name="confVal[downMoney]" value="<?= isset($confVal[downMoney]) ? $confVal[downMoney] : '' ?>"
+                                  placeholder="精确到小数点后两位"/>元</label>
+                </td>
+            </tr>
+            <tr>
+                <td>借款最高金额</td>
+                <td class="item-input">
+                    <label><input type="number" name="confVal[upMoney]" value="<?= isset($confVal[upMoney]) ? $confVal[upMoney] : '' ?>"
+                                  placeholder="精确到小数点后两位"/>元</label>
+                </td>
+            </tr>
+            <tr>
+                <td>借款最低期限</td>
+                <td class="item-input">
+                    <label><input type="number" min="1" max="12" name="confVal[downDate]" value="<?= isset($confVal[downDate]) ? $confVal[downDate] : '' ?>" placeholder="整数"/>个月</label>
+                </td>
+            </tr>
+            <tr>
+                <td>借款最高期限</td>
+                <td class="item-input">
+                    <label><input type="number" min="1" max="12" name="confVal[upDate]" value="<?= isset($confVal[upDate]) ? $confVal[upDate] : '' ?>"
+                                  placeholder="整数"/>个月</label>
+                </td>
+            </tr>
+            <tr>
+                <td>借款期限递增单位</td>
+                <td class="item-input">
+                    <label><input type="number" min="1" max="12" name="confVal[dateAdd]" value="<?= isset($confVal[dateAdd]) ? $confVal[dateAdd] : '' ?>"
+                                  placeholder="整数"/>个月</label>
+                </td>
+            </tr>
+            <tr>
+                <td>还款方式</td>
+                <td class="item-input">
+                    <select style="color:#555" name="confVal[paybackModes]">
+                        <foreach name="paybackModes" item="paybackMode" key="key">
+                            <option value="{$key}"
+                            <if condition="$confVal['paybackMode'] eq $key">selected="selected"</if>
+                            >{$paybackMode}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>房产所在城市以及融资成本</td>
+                <td class="item-input">
+                    <input type="text" name="confVal[cityList]" value="<?= isset($confVal[cityList]) ? $confVal[cityList] : '' ?>" placeholder="例如：北京,12%;天津,13.5;"/>
+                    城市与城市的融资成本之间用“,”隔开，不同的城市之间用“;”隔开，符号均为英文半角
+                </td>
+            </tr>
+        </table>
+        <div class="item_input">
+            <!--隐藏元素-->
+            <input type="hidden" name="m" value="House"/>
+            <input type="hidden" name="a" value="saveParaConfig"/>
+            <!--隐藏元素-->
+            <input id="submitBut" type="submit" class="button" value="{%SAVE}"/>
+            <input id="submitBut" type="reset" class="button" value="{%RESET}"/>
+        </div>
+    </form>
+</div>
+<script language="javascript">
+    $(function () {
+    });
+</script>
+<include file="Public:footer"/>

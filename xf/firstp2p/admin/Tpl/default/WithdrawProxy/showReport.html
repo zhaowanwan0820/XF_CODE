@@ -1,0 +1,55 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<PHP>
+    function showMoney($amount)
+    {
+        return number_format(bcdiv($amount, 100, 2),2).'元';
+    }
+
+</PHP>
+<div class="main">
+<div class="main_title">代发近期对账列表</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" id="search_form" action="__APP__" method="get">
+        代发时间：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['date'])}" name="date" id="apply_time_start"  onfocus="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_time_start', '%Y%m%d', false, false, 'btn_time_start');" />
+        <input type="hidden" value="WithdrawProxy" name="m" />
+        <input type="hidden" value="showReport" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="BUTTON" class="button" onclick="resetSearch()" value="重置搜索条件"/>
+        <input type="BUTTON" class="button" onclick="exportcsv()" value="导出"/>
+    </form>
+
+    <!-- <input type="button" class="button" value="导出" onclick="export_csv();" /> -->
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    checkbox="true"
+    style="dataTable"
+    name="record"
+    datasource="list"
+    show="date:对账日期,totalCnt:对账总笔数,totalAmount|showMoney:对账总金额,check_status_1:对账成功,check_status_2:对账失败,check_status_3:理财订单不存在,check_status_4:支付订单不存在,check_status_5:状态不一致,check_status_6:金额不一致"
+     />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<SCRIPT type="text/javascript">
+
+    function viewDiff(dt, stat)
+    {
+        window.location.href="/m.php?m=WithdrawProxy&a=viewDiff&date="+dt+'&status='+stat;
+    }
+</SCRIPT>

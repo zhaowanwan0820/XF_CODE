@@ -1,0 +1,130 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+<script type="text/javascript">
+    function edit(id) {
+        location.href = ROOT+"?"+VAR_MODULE+"=GoldDeal&"+VAR_ACTION+"=edit&id="+id;
+    }
+    function add(queueId,jumpId) {
+        idBox = $(".key:checked");
+        if (idBox.length == 0) {
+            alert("请选择标的");
+            return;
+        }
+        if(!confirm("请确定要操作?")){
+            return;
+        }
+
+        document.getElementById('b_submit').disabled = true;
+        document.getElementById('b_reset').disabled = true;
+        idArray = new Array();
+        $.each( idBox, function(i, n){
+            idArray.push($(n).val());
+        });
+        id = idArray.join(",");
+        $.ajax({
+            url: ROOT+"?"+VAR_MODULE+"=DealQueues"+"&"+VAR_ACTION+"=insertDeals&queueId="+queueId+"&dealIds="+id+"&jumpId="+jumpId,
+            data: "ajax=1",
+            dataType: "json",
+            success: function(obj){
+                if(obj.status==1) {
+                    location.href= ROOT+"?"+VAR_MODULE+"=DealQueues"+"&"+VAR_ACTION+"=show"+"&id="+queueId;
+                }else{
+                    alert(obj.info);
+                    location.href= ROOT+"?"+VAR_MODULE+"=DealQueues"+"&"+VAR_ACTION+"=addDeal"+"&id="+queueId;
+                }
+            }
+        });
+    }
+
+</script>
+
+<div class="main">
+<div class="main_title">新增排队标的 <a href="{:u("DealQueues/show?id=$queueId")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="GET">
+        标ID：<input type="text" class="textbox" name="dealId" value="{:trim($_REQUEST['dealId'])}" />
+        <input type="hidden" value="DealQueues" name="m" />
+        <input type="hidden" value="{$_REQUEST['a']}" name="a" />
+        <input type="hidden" value="{$_REQUEST['queue_id']}" name="queue_id" />
+        <input type="hidden" value="{$_REQUEST['jump_id']}" name="jump_id" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<form id="form1" >
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="16" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th width="50px">借款编号</th>
+            <th>借款标题</th>
+            <th>上标平台</th>
+            <th>借款金额</th>
+            <th>年化利率</th>
+            <th>借款期限</th>
+            <th>还款方式</th>
+            <th>借款人用户名</th>
+            <th>借款人姓名</th>
+            <th>借款人id</th>
+            <th>借款人手机</th>
+            <th>投资状态</th>
+            <th>状态</th>
+        </tr>
+        <volist name="list" id="item">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$item.id}">
+            </td>
+            <td>&nbsp;{$item.id}</td>
+            <td>
+                &nbsp;<a href="javascript:edit('{$item.id}')">{$item.name}</a>
+            </td>
+            <td>
+                &nbsp;{$item.siteId|get_gold_deal_domain='true'}
+            </td>
+            <td>&nbsp;{$item.borrowAmount}</td>
+            <td>&nbsp;{$item.rate}%</td>
+            <td>&nbsp;{$item.repayTime}<if condition="$item.loantype eq 5">天<else/>个月</if></td>
+            <td>&nbsp;
+            <if condition="$item.loantype eq 5">已购黄金及收益克重到期一次性交付<else/>已购黄金到期交付，收益克重按季度交付</if>
+            </td>
+            <td>&nbsp;{$item.userId|get_user_name}</td>
+            <td>&nbsp;{$item.userId|get_user_name="real_name"}</td>
+            <td>&nbsp;{$item.userId}</td>
+            <td>&nbsp;{$item.userId|get_user_name="mobile"}</td>
+            <td>&nbsp;
+            <if condition="$item.dealStatus eq 0">等待确认
+            <elseif condition="$item.dealStatus eq 1" />进行中
+            <elseif condition="$item.dealStatus eq 2" />满标
+            <elseif condition="$item.dealStatus eq 3" />流标
+            <elseif condition="$item.dealStatus eq 4" />还款中
+            <elseif condition="$item.dealStatus eq 5" />已到期
+            </if>
+            </td>
+            <td>&nbsp;
+            <if condition="$item.isEffect eq 1">有效<else/>无效</if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+
+    <input type="button" class="button" value="确定" id="b_submit" onclick="add({$queueId},{$jumpId});" />
+    <input type="button" class="button" value="重置" id="b_reset" onclick="reset();" />
+</form>
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

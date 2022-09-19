@@ -1,0 +1,205 @@
+<!-- $Id: agency_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/region.js"}
+<link href="styles/uploader.css" rel="stylesheet" type="text/css" />
+<div class="main-div">
+<form method="post" action="suppliers.php" name="theForm" enctype="multipart/form-data" onsubmit="return validate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+  <tr><td class="line-title">新增电子面单客户号</td></tr>
+  <!-- 商家id -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_suppliers_id}</td>
+    <td><input type="text" name="label_suppliers_id" maxlength="50" value="{$user_id}" id="label_suppliers_id" /></td>
+  </tr>
+  <!-- 物流公司id -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_customer_name}</td>
+    <td>
+      <select name="label_customer_name" id="">
+        <option value="0">请选择</option>
+        {foreach from=$express item=item key=key}
+        <option value="{$key}" {if $express.id == $key} selected {/if} >{$item.expressCompanyName}</option>
+        {/foreach}
+      </select>
+    </td>
+  </tr>
+  <!-- 电子面单客户号 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_expressCompany_id}</td>
+    <td><input type="text" name="label_expressCompany_id" maxlength="50" value="" id="label_expressCompany_id" /></td>
+  </tr>
+  <!-- 客户密码 -->
+  <tr>
+    <td class="label">{$lang.require_field}{$lang.label_customer_pwd}</td>
+    <td><input type="text" name="label_customer_pwd" maxlength="50" value="" /></td>
+  </tr>
+  <!-- 月结号或密钥串 -->
+  <tr>
+    <td class="label">{$lang.label_month_code}</td>
+    <td><input type="text" name="label_month_code" maxlength="10" value="" /></td>
+  </tr>
+  <!-- 快递网点 -->
+  <tr>
+    <td class="label">{$lang.label_send_site}</td>
+    <td><input type="text" name="label_send_site" maxlength="60" value="" /></td>
+  </tr>
+</table>
+
+{if !$inputForbidden}
+<table align="center">
+  <tr>
+    <td colspan="2" align="center">
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <input type="reset" class="button" value="{$lang.button_reset}" />
+      <input type="hidden" name="act" value="{$form_action}" />
+      <input type="hidden" name="id" value="{$suppliers.suppliers_id}" />
+    </td>
+  </tr>
+</table>
+{/if}
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{insert_scripts files="uploader/jquery.js,uploader/iscroll-zoom.js?1,uploader/hammer.js,uploader/lrz.all.bundle.js,uploader/jquery.photoClip.min.js"}
+
+<!-- 头像上传 -->
+<script>
+$(function(){
+  var clipArea = new bjj.PhotoClip("#clipArea", {
+    size: [300, 300],// 截取框的宽和高组成的数组。默认值为[260,260]
+    outputSize: [300, 300], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+    //outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+    file: "#file", // 上传图片的<input type="file">控件的选择器或者DOM对象
+    view: ".upload_view", // 显示截取后图像的容器的选择器或者DOM对象
+    ok: "#clipBtn", // 确认截图按钮的选择器或者DOM对象
+    loadStart: function() {
+      // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+      $('.cover-wrap').fadeIn();
+      // console.log("照片读取中");
+    },
+    loadComplete: function() {
+        // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+      console.log("照片读取完成");
+    },
+    //loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+    clipFinish: function(dataURL) {
+        // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+        // console.log(dataURL);
+        $("#file1").val(dataURL)
+    }
+  });
+
+  $(".upload_title_right").click(function(){
+    $("#upload_D").fadeOut();
+  });
+  $(".close").click(function(){
+    if ($("#file")[0].files.length) {
+      $("#upload_D").fadeOut();
+    }
+  });
+  $(".open").click(function(){
+    $("#upload_D").fadeIn();
+  });
+})
+$(".checktime").on("blur",function(){
+  if(!this.value) return false
+  var reg = /^(20|21|22|23|[0-1]\d):[0-5]\d$/;
+  var regExp = new RegExp(reg);
+  if(!regExp.test(this.value)){
+　　alert("时间格式不正确");
+    this.value = ''
+  }
+})
+</script>
+
+{literal}
+<script language="JavaScript">
+  document.forms['theForm'].elements['shop_name'].focus();
+  onload = function(){
+    // 开始检查订单
+    startCheckOrder();
+
+    // 查看模式input+textarea禁用
+    var inputForbidden = '{$inputForbidden}'
+    if (inputForbidden) $('form').find('input,textarea,select').attr('disabled',true)
+  }
+    /**
+ * 检查表单输入的数据
+ */
+  function validate(){
+    var validator = new Validator("theForm");
+    var shop_name = document.forms['theForm'].elements['shop_name'].value.length;
+    var shop_desc = document.forms['theForm'].elements['shop_desc'].value.length;
+    var type = document.forms['theForm'].elements['type'].value;
+    var personal_signature = document.forms['theForm'].elements['personal_signature'].value.length;
+    var suppliers_name = document.forms['theForm'].elements['suppliers_name'].value.length;
+    var service_tel = document.forms['theForm'].elements['service_tel'].value;
+    var manager_name = document.forms['theForm'].elements['manager_name'].value.length;
+    var manager_tel = document.forms['theForm'].elements['manager_tel'].value;
+    var main_business = document.forms['theForm'].elements['main_business'].value.length;
+    var admins = $("input[type=radio][name='admins']:checked").val();
+    var platforms = $("input[type=checkbox][name='platforms[]']:checked").length;
+    var t1 = document.forms['theForm'].elements['weekdays_s'].value.length;
+    var t2 = document.forms['theForm'].elements['weekdays_e'].value.length;
+    var t3 = document.forms['theForm'].elements['holiday_s'].value.length;
+    var t4 = document.forms['theForm'].elements['holiday_e'].value.length;
+    var service_qq = document.forms['theForm'].elements['service_qq'].value;
+    var delivery_time = document.forms['theForm'].elements['delivery_time'].value;
+    var platform_user_phone = document.forms['theForm'].elements['platform_user_phone'].value;
+
+    var arr = new Array(24,48,72);
+    if(!shop_name){
+      alert(no_shop_name)
+      return false
+    }
+    if(type<1) {
+      alert(no_type);
+      return false;
+    }
+    if(!suppliers_name) {
+      alert(no_suppliers_name);
+      return false;
+    }
+    if(!service_tel.length && !service_qq.length){
+      alert(no_service_tel);
+      return false;
+    }
+    if(service_tel.length){
+      var reg = /^[0-9-]{1,14}$/;
+      if(!reg.test(service_tel)){
+        alert(service_tel_error);
+        return false;
+      }
+    }
+      if(service_qq.length) {
+        var reg = /^\d{4,14}$/
+        if(!reg.test(service_qq)){
+          alert(service_qq_error)
+          return false;
+        }
+      }
+
+    if(!manager_tel.length) {
+      alert(no_manager_tel);
+      return false;
+    }
+    if (manager_tel) {
+      var telrule = /^1\d{10}$/
+      if (!telrule.test(manager_tel)) {
+        alert(manager_tel_error)
+        return false;
+      }
+    }
+    if (platform_user_phone) {
+      var telrule = /^1\d{10}$/
+      if (!telrule.test(platform_user_phone)) {
+        alert('手机号码格式错误')
+        return false;
+      }
+    }
+    return validator.passed();
+  }
+
+</script>
+{/literal}
+{include file="pagefooter.htm"}

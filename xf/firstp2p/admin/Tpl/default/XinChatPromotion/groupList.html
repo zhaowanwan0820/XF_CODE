@@ -1,0 +1,59 @@
+{// 引入标签库 }
+<tagLib name="html"/>
+<include file="Public:header"/>
+<load href='__TMPL__Common/js/jquery.bgiframe.js'/>
+<load href='__TMPL__Common/js/jquery.weebox.js'/>
+<load href='__TMPL__Common/style/weebox.css'/>
+<load href='__TMPL__Common/js/conf.js'/>
+<load href='__TMPL__Common/js/Chart.min.js'/>
+
+<div class="main">
+    <div class="main_title">活动组列表</div>
+    <div class="blank5"></div>
+
+    <a class="button" href="/m.php?m=XinChatPromotion&a=showGroup">新增活动组</a>
+    <br/>
+    <br/>
+
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <th>活动组id</th>
+            <th>有效期</th>
+            <th>活动</th>
+            <th>操作</th>
+        </tr>
+        <volist name="groupList" id="group">
+            <tr class="row">
+                <td>{$group['promotionGroupId']}</td>
+                <td>{$group['validityStart']} 至 {$group['validityEnd']}</td>
+                <td>
+                    <table frame="void" width="400" border="1" class="dataTable" cellpadding=0 cellspacing=0>
+                        <tr>
+                            <th width="200">标题</th>
+                            <th width="200">封面图</th>
+                            <th width="400">链接</th>
+                        </tr>
+
+                        <volist name="group['voPromotions']" id="promotion">
+                            <tr class="row">
+                                <td>{$promotion['title']}</td>
+                                <td>
+                                    <notempty name="promotion['imageUrl']">
+                                        <img src="{$promotion['imageUrl']}" width="250" height="100"/>
+                                    </notempty>
+                                </td>
+                                <td>{$promotion['url']}</td>
+                            </tr>
+                        </volist>
+
+                    </table>
+                </td>
+                <td>
+                    <a href="/m.php?m=XinChatPromotion&a=showGroup&id={$group['promotionGroupId']}">编辑</a>
+                </td>
+            </tr>
+        </volist>
+    </table>
+</div>
+
+<include file="Public:footer"/>

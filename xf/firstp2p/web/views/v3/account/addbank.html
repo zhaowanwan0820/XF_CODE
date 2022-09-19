@@ -1,0 +1,149 @@
+{include file="web/views/header.html"}
+<div class="p_account_addbank">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_addbank.css');?>">
+<div class="w1100 clearfix bg_white">
+   <section>
+        <div class="shadow">
+            <div class="user_title"><h1><i class="ico_xiangmu"></i>收款银行卡信息</h1></div>
+            <div class="pt20 color-red1 pl30 f14">
+                    <p class="pl20 pt10 mauto">温馨提醒：</p>
+                    <p class="pl20 pt10 mauto">1.请务必提交本人名下的储蓄卡账户信息；</p>
+                </div>
+            <div class="collection">
+                <form name="Jcarry_From" id="Jcarry_From_2" action="{url x="index" r="account/savebank"}" method="post">
+                <table width="100%">
+                    <?php echo token_input(); ?>
+                    <tbody class="colltab f14">
+                        <tr>
+                            <th><i class="ico_asterisk"></i> 姓名：</th>
+                            <td>{$realName}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="ico_asterisk"></i> 证件号：</th>
+                            <td>{$idno}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="ico_asterisk"></i> 开户名：</th>
+                            <td>
+                                <?php echo nameFormat($this->_var['bankcard_info']['card_name'],1);?>
+                                <!--<input type="text" class="idbox w185" disabled="disabled" name="" value="<?php echo nameFormat($this->_var['bankcard_info']['card_name'],1);?>">-->
+                                <input type="hidden" name="isnew" id="" value="1" />
+                                <input type="hidden" name="card_name" id="Jcarry_real_name" value="{$bankcard_info.card_name}" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>账户类型：</th>
+                            <td>借记卡<em class="color-red1">（不支持信用卡）</em></td>
+                        </tr>
+                        <tr>
+                            <th><i class="ico_asterisk"></i> 选择银行：</th>
+                            <td>
+                                <select class="select_box w140 JS_select_box" id="Jcarry_bank_id" name="bank_id" {if $bankcard_info.status eq 1}disabled="true" {/if} >
+                                    <option value="">请选择</option>
+                                    {foreach from="$bank_list" item="item"}
+                                    <option value="{$item.id}" day="{$item.day}" {if $item.id eq $bankcard_info.bank_id}selected="selected"{/if}>{$item.name}</option>
+                                    {/foreach}
+                                </select>
+                            </td>
+                        </tr>
+                        <script type="text/javascript" src="//static.firstp2p.com/attachment/region.js?v=<?php echo app_conf('APP_SUB_VER'); ?>"></script>
+                        <tr style="display: none">
+                            <th><i class="ico_asterisk"></i> 开户行所在地：</th>
+                            <td >
+                                <input type="hidden" value="{$bankcard_info.region_lv1}" id="deflv1">
+                                <input type="hidden" value="{$bankcard_info.region_lv2}" id="deflv2">
+                                <input type="hidden" value="{$bankcard_info.region_lv3}" id="deflv3">
+                                <input type="hidden" value="{$bankcard_info.region_lv4}" id="deflv4">
+                                <label>{$LANG.REGION_LV1}：</label>
+                                <select class="select_box JS_select_box" style='width:100px;' name="region_lv1" {if $bankcard_info.status eq 1}disabled="true" {/if} >
+                                    <option value="0">={$LANG.SELECT_PLEASE}=</option>
+                                    {foreach from=$region_lv1 item=lv1}
+                                    <option {if $lv1.selected eq 1}selected="selected"{/if} value="{$lv1.id}">{$lv1.name}</option>
+                                    {/foreach}
+                                </select>
+                                <label>{$LANG.REGION_LV2}：</label>
+                                <select class="select_box JS_select_box" name="region_lv2" {if $bankcard_info.status eq 1}disabled="true" {/if}>
+                                    <option value="0">={$LANG.SELECT_PLEASE}=</option>
+                                </select>
+                                <label>{$LANG.REGION_LV3}：</label>
+                                <select class="select_box JS_select_box" name="region_lv3" {if $bankcard_info.status eq 1}disabled="true" {/if}>
+                                    <option value="0">={$LANG.SELECT_PLEASE}=</option>
+                                </select>
+
+                            </td>
+                        </tr>
+                        <tr style="display: none">
+                            <th><i class="ico_asterisk"></i> 开户行网点：</th>
+                            <td id="_js_bank_site">
+                                <select class="" name="bankzone" {if $bankcard_info.status eq 1}readonly="readonly" disabled="disabled"{/if} >
+                                    <option value="{$bankcard_info.bankzone}">{$bankcard_info.bankzone}</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th><i class="ico_asterisk"></i> 银行卡号：</th>
+                            <td><input type="text" class="idbox w315" name="bankcard" id="Jcarry_bankcard" value="{if $bankcard_info.status eq 1}<?php echo formatBankcard($this->_var['bankcard_info']['bankcard']);?>{else}{$bankcard_info.bankcard}{/if}" {if $bankcard_info.status eq 1}readonly="readonly" disabled="disabled"{/if} ></td>
+                        </tr>
+                        {if $bankcard_info.status neq 1}
+                        <tr>
+                            <th><i class="ico_asterisk"></i> 确认卡号：</th>
+                            <td><input type="text" class="idbox w315" name="reBankcard" id="Jcarry_rebankcard" value="{if $bankcard_info.status eq 1}<?php echo formatBankcard($this->_var['bankcard_info']['bankcard']);?>{else}{$bankcard_info.bankcard}{/if}"></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" value="确  定" class="but-gray but-yellow btn_tj">
+                                <input type="hidden" name="acount_balance" id="Jcarry_acount_balance_res" style="width:70px">
+                            </td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+                </form>
+            </div>
+        </div>
+   </section>
+</div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $(".JS_select_box").select();
+        $("#Jcarry_rebankcard,#Jcarry_bankcard").on("paste copy", function() {
+            return false;
+        });
+        $("#Jcarry_From_2").on("click", "#_js_shoudong", function() {
+            $("#_js_shoudong_input").show();
+        });
+        $("#Jcarry_From_2").on("change", "#_js_bankone", function() {
+            $("#_js_shoudong_input").val('');
+            $("#_js_shoudong_input").hide();
+        });
+    });
+
+    function load_select(lv) {
+        var name = "region_lv" + lv;
+        var next_name = "region_lv" + (parseInt(lv) + 1);
+        var id = $("select[name='" + name + "']").val();
+        if (lv == 1)
+            var evalStr = "regionConf.r" + id + ".c";
+        if (id == 0) {
+            var html = "<option value='0'>=" + LANG['SELECT_PLEASE'] + "=</option>";
+        } else {
+            var regionConfs = eval(evalStr);
+            evalStr += ".";
+            var html = "<option value='0'>=" + LANG['SELECT_PLEASE'] + "=</option>";
+            for (var key in regionConfs) {
+                html += "<option value='" + eval(evalStr + key + ".i") + "'>" + eval(evalStr + key + ".n") + "</option>";
+            }
+        }
+        $("select[name='" + next_name + "']").html(html);
+        if (lv == 4) {
+            load_delivery();
+        } else {
+            load_select(parseInt(lv) + 1);
+        }
+    }
+</script>
+{include file="web/views/footer.html"}

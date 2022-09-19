@@ -1,0 +1,195 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v1/css/user.css');?>"/>
+<script src="<?php echo $this->asset->makeUrl('v1/js/vendor/ZeroClipboard.min.js');?>"></script>
+<link href="<?php echo $this->asset->makeUrl('v1/css/yaoqingma.css');?>" rel="stylesheet" type="text/css">
+<div class='user_right f_l'>
+    <div class="user_right_box  mb20 pb20">
+        <div class="user_title"><h1><i class="ico_yaoqing"></i>我的邀请码</h1></div>
+
+        <div class="yaoqing">
+
+            <div class="youhui">
+                <div class="icon_yh"></div>
+
+                <p>您的邀请码总利率合计是{$rebate_total}%
+
+                <p>
+                    <adv adv_id="我的邀请码说明"/>
+                <table width="100%" class="cou_tab">
+                    <colgroup>
+                        <col width="80"/>
+                        <col width="80"/>
+                        <col width="80"/>
+                        <col width="460"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <td>
+                            <div class="tc">邀请码</div>
+                        </td>
+                        <td>投资人返利</td>
+                        <td>您的返利</td>
+                        <td>链接</td>
+                    </tr>
+                    </thead>
+                    {if $is_not_code}
+                    <tr>
+                        <td><strong class="color-red1 fw">尚未开通</strong></td>
+                        <td>{$rebate_ratio}%</td>
+                        <td>{$referer_rebate_ratio}%</td>
+                        <td>
+                            <div class="tc">
+                                <a href="/account/addbank" target="_blank">完成身份认证开启优惠码</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {else}
+                    {foreach from=$coupons name='coupons' key='key' item='coupon'}
+                    <tr>
+                        <td><strong class="color-red1 f16 fw">{$coupon.short_alias}</strong></td>
+                        <td>{$coupon.rebate_ratio}%</td>
+                        <td>{$coupon.referer_rebate_ratio}%</td>
+                        <td>
+                            <div class="copy_link">
+                                <span class="link_box">{$domain}/?cn={$coupon.short_alias}</span>
+                                <input type="button" value="复制链接" class="link_but" id="copy-button"
+                                       data-clipboard-target="il_text"
+                                       data-clipboard-text="{$domain}/?cn={$coupon.short_alias}"
+                                       value='{$domain}/?cn={$coupon.short_alias}'>
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    {/if}
+                </table>
+            </div>
+            <adv adv_id="我的邀请码示例"/>
+            <h3>邀请记录：您已累计邀请 <span>{$coupon_log.consume_user_count}</span> 人，
+                获得返利 <em class="color-yellow1">{function name="number_format" v=$coupon_log.referer_rebate_amount f="2"}</em> 元，
+                待返金额 <em class="yanzheng">{function name="number_format" v=$coupon_log.referer_rebate_amount_no f="2"}</em> 元。
+            </h3>
+            <table width="100%" class="yqjilu">
+                <colgroup>
+                    <col width="90">
+                    <col width="100">
+                    <col width="140">
+                    <col width="180">
+                    <col width="115">
+                    <col width="135">
+                </colgroup>
+                <thead>
+                <tr>
+                    <td>
+                        <select onchange="s_click(this)" class="cou-select _js_type">
+                            <option value="all"
+                            {if $type eq 'all'}selected{/if}>全&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;部</option>
+                            <option value="1"
+                            {if $type eq '1'}selected{/if} >邀请注册</option>
+                            <option value="2"
+                            {if $type eq '2'}selected{/if} >邀请投资</option>
+                        </select>
+                    </td>
+                    <td>被邀请人</td>
+                    <td>
+                        {if $coupon_counts lt 2}
+                            邀请码
+                        <input type='hidden' class='_js_code' value=""/>
+                        {else}
+                        <select onchange="s_click(this)" class="cou-select _js_code">
+                            <option  value="" {if $code eq ''}selected{/if} >邀请码</option>
+                            {foreach from=$user_used_coupon_list name='coupons' key='key' item='coupon'}
+                            <option value="{$coupon.short_alias}"
+                            {if $code eq $coupon.short_alias}selected{/if} >{$coupon.short_alias}</option>
+                            {/foreach}
+                        </select>
+                        {/if}
+                    </td>
+                    <td>状态</td>
+                    <td>返利时间</td>
+                    <td>备注</td>
+                </tr>
+                </thead>
+                <tbody>
+                {if $coupon_log.list}
+                {foreach from=$coupon_log.list item='log' key='key'}
+                <tr {if $key%2 neq 0} class="tr_bg" {/if}>
+                    {if $log.type eq 1}
+                    <td {if $is_special} rowspan="2" {/if}>邀请注册</td>
+                    {else}
+                    <td {if $is_special} rowspan="2" {/if}>邀请投资</td>
+                    {/if}
+                    <td>{$log.consume_user_name}<br/>{$log.consume_real_name}</td>
+                    <td>{$log.short_alias}<br/>{function name="to_date" v=$log.create_time}</td>
+                    <td>{$log.pay_status_text}</td>
+                    {if $log.pay_time}
+                    <td>{$log.pay_time}</td>
+                    {else}
+                    <td>--</td>
+                    {/if}
+                    <td>{$log.note}</td>
+
+                {if $is_special}
+                <tr  {if $key%2 neq 0} class="tr_bg" {/if}>
+                    {if $log.type eq 1}
+                    <td colspan="6" style="text-align: left">{$log.mobile}</td>
+                    {else}
+                    <td colspan="6" style="text-align: left">
+                        {$log.log_info}
+                    </td>
+                    {/if}
+                </tr>
+                {/if}
+                {/foreach}
+                {else}
+                <tr>
+                    <td colspan="5">暂无记录</td>
+                </tr>
+                {/if}
+                </tbody>
+            </table>
+            <div class="pages">{$pages}</div>
+            <p class="yq_tip">北京东方联合投资管理有限公司保留对本活动的最终解释权。</p>
+        </div>
+    </div>
+
+    <script>
+        //返利类型筛选
+        var s_click = function (obj) {
+            var type = $("._js_type").val();
+            var code = $("._js_code").val();
+            var url = '/account/coupon?type='+type+'&code='+code;
+            window.location.href = url;
+        }
+
+        $(function () {
+            var hash = {"?type=invest&p=1": "/account/coupon?type=invest&p=1", "?type=reg&p=1": "/account/coupon?type=reg&p=1", "?state=all": "/account/coupon?state=all"};
+            var search = window.location.search;
+            if (search in hash) {
+                var ele = $('.cou-select');
+                ele.val(hash[search]);
+            }
+        });
+    </script>
+
+    <script>
+        var num = $('.link_but')
+        $(function () {
+            for (var i = 0; i < num.length; i++) {
+                copyUrl("copy-button" + i, i);
+            }
+        })
+        function copyUrl(div_id, i) {
+            num[i].id = div_id;
+            var clip = new ZeroClipboard(document.getElementById(div_id), {
+                moviePath: "/static/v1/js/vendor/ZeroClipboard.swf",
+                trustedDomains: ['*'],
+                allowScriptAccess: "always"
+            });
+
+            clip.on("load", function (client) {
+                client.on("complete", function (client, args) {
+                    $.showErr("邀请链接已复制到剪切板", "", "提示")
+                });
+            });
+        }
+    </script>
+</div>

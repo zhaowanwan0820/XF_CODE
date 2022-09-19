@@ -1,0 +1,72 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+</div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<php>
+    function get_status_is_effect($is_effect){
+        if ($is_effect == 1) $is_effect='有效';
+        else $is_effect='无效';
+        return $is_effect;
+    }
+    function get_term_unit($invest_term,$invest_unit){
+        if($invest_unit == 1){
+            return $invest_term.'天';
+        }else{
+            return $invest_term.'月';
+        }
+    }
+    function get_product_type($type){
+        if ($type == 1) $ptype='闪电消费';
+        elseif ($type == 2) $ptype='现金贷闪信贷';
+        elseif ($type == 3) $ptype='现金贷功夫贷';
+        else $ptype='未定义';
+        return $ptype;
+    }
+
+</php>
+<style>
+.dataTable td.topTd, .dataTable td.bottomTd{ display:none;}
+a:link { text-decoration: none;}
+</style>
+<!---->
+<html:list
+    id="dataTable"
+    style="dataTable"
+    action="true"
+    name="item"
+    datasource="list"
+    show="id:{%ID}|50px
+        ,product_type|get_product_type:产品类型|80px
+        ,invest_term|get_term_unit=$item['invest_unit']:投资期限|50px
+        ,repay_guarantee_measur:还款保障措施
+        ,loan_usage:借款用途
+        ,expect_intrerst_date:预计起息日
+        ,limit_manage:限额管理
+        ,project_risk_tip:项目风险提示
+        ,is_effect|get_status_is_effect:状态|50px
+        "
+    actionlist="edit:{%EDIT}"
+/>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+
+    function sortBy(){
+         return false;
+    }
+</script>
+<include file="Public:footer" />

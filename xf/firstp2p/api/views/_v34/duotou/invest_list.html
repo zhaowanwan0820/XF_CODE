@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>投资列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=no">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v3.4/css/duotou/p_invest_list.css');?>" rel="stylesheet" />
+</head>
+<body>
+    <div class="p_invest_list">
+        <div class="has-main">
+            <div class="has-header">
+                <span>待投本金</span><span class="de_num color_black">{$ret.noMappingMoney}元</span>
+            </div>
+            <div class="title">已投记录</div>
+            <div class="invest_cont">
+            <div>
+            <div class="load_more"></div>
+        </div>
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('v2/js/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.4/js/duotou/common.js');?>"></script>
+    <script type="text/javascript">
+        var loadmore = new WXP2P.UI.P2PLoadMore($(".invest_cont")[0], $('.load_more')[0], "/duotou/InvestListData?deal_loan_id={$deal_loan_id}&deal_id={$deal_id}&token={$token}", 1, 'get', 7, 0);
+        loadmore.loadNextPage();
+        {if $ret.count>0}
+        loadmore.createItem = function(item){
+            var dl = document.createElement("div");
+            var html = "";
+            html += '<div class="already_details">';
+            html += '   <div class="details_list">';
+            html += '       <div class="d_list">';
+            html += '           <div>';
+            html += '               <span class="color_black lt_money">' + (typeof item.money != 'undefined' ? item.money : '&nbsp') + '元</span>';
+            html += '               <span class="de_num">成交时间&nbsp' +  (typeof item.loanTime != 'undefined' ? item.loanTime : '&nbsp') +'</span>';
+            html += '           </div>';
+            html += '           <div class="lt_cont">';
+            html += '               <span class="lt_dt" title="'+ item.name +'">'+  (typeof item.name != 'undefined' ? item.name : '&nbsp') +'</span>';
+            html += '               <span class="de_num">融资人:'+ (typeof item.borrowUsername != 'undefined' ? item.borrowUsername : '&nbsp') +'</span>';
+            html += '           </div>';
+            html += '       </div>';
+            html += '   </div>';
+            html += '</div>';
+            html += '<div class="already_detail">';
+            html += '   <div class="details_list">';
+            html += '       <div class="lt_agment">';
+            if(item.contractType==0){
+            html += '           <a href="/duotou/loanTansContract?ctype=0&title=查看借款合同&token='+ item.token +'&number='+ item.contractNo +'"><span class="loan_agment">查看借款合同</span></a>';
+            }else if(item.contractType==1){
+            html += '           <a href="/duotou/loanTansContract?ctype=0&title=查看债权转让协议&token='+ item.token +'&number='+ item.contractNo +'"><span class="loan_agment">查看债权转让协议</span></a>';
+            }
+            html += '           <a href="/duotou/DealProjectShow?token='+ item.token +'&project_id='+ item.project_id +'"><span class="p_detail">查看项目详情</span></a>';
+            html += '       </div>';
+            html += '   </div>';
+            html += '</div>';
+            dl.innerHTML = html;
+            return dl;
+        };
+        {else}
+            $(".invest_cont").html('<div class="empty_list"><img class="imgS" src="<?php echo $this->asset->makeAppUrl('v3.4/images/duotou/empty.png');?>"><p class="gray">这里空空如也</p></div>');
+        {/if};
+    </script>
+</body>
+</html>

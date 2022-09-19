@@ -1,0 +1,94 @@
+{include file="web/views/header.html"}
+ <link href="<?php echo $this->asset->makeUrl('v4/css/activity/p_new_user_p2p.css?v=1" type="text/css');?>" rel="stylesheet">
+ <style>
+        body{background: none;}
+        .m_header{height: 101px;margin-bottom: 0;}
+        .menu_fixed{animation: none}
+        .m_header .top {display: none;}
+        #menu_fixed {position: fixed;z-index:1;}
+ </style>
+<div class="p_new_user_p2p">
+
+    <!-- banner图-->
+    <div class="{if !$user_info}bannerBox{else}_bannerBox{/if}" id="bannerBox">
+        <div class="cont_mid h620">
+            {if !$user_info}
+            <iframe src="/user/register?modal=1" frameborder="0" width="100%" height="100%" class="iframe_register" id="ifm" name="ifm"></iframe>
+            {/if}
+        </div>
+    </div>
+    {function name="get_adv" x="网信普惠PC_新手专区TOP_2018"}
+    <div class="newuser_recommend">
+        <div class="cont_mid">
+            {if !empty($newUserDealsList) }
+                {foreach from=$newUserDealsList item="item" key=key}
+                    {if $key < 3}
+                    <div class="pro_con_list fl">
+                        <h3>{$item.name}
+                            <em>新手推荐</em>
+                        </h3>
+                        <dl>
+                            <dt>{$item.rate}<ins>%</ins>
+                            </dt>
+                            <dd class="color_gray">年化借款利率</dd>
+                            <dd class="pro_mt">
+                                <i>期限：</i>
+                                {if $item.loanType eq 5}
+                                    {$item.repayTime}天
+                                    {else}
+                                    {$item.repayTime}个月
+                                {/if}
+                            </dd>
+                        </dl>
+                        <h4>
+                            <a href="{$item.url}">立即出借</a>
+                        </h4>
+                    </div>
+                    {/if}
+                {/foreach}
+            {/if}
+        </div>
+    </div>
+    {function name="get_adv" x="网信普惠PC_新手专区BOTTOM_2018"}
+</div>
+<script type='text/javascript'>
+    var _ncf = { "prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "&uf=pc", "pck": { "channel": "channel", "fpid": "fpid" }, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": [] };
+    (function (p, h, s) { var o = document.createElement(h); o.src = s; p.appendChild(o) })(document.getElementsByTagName("HEAD")[0], "script", "/static/default/js/ncfpb.1.5.min.js");
+    $(function(){
+        $('.scroll_top').click(function(){
+        //埋点
+        zhuge.track('新手专区页面_点击注册领取大礼包')
+        $('html,body').animate({scrollTop: '0px'}, 800);});
+    });
+//埋点
+$(function(){
+    zhuge.track('进入新手专区页面')
+})
+setTimeout(function (){
+    var ifm_dom = $('#ifm')[0].contentWindow.window.$('.reg-mid #submit_button')
+    ifm_dom.click(function() {
+        zhuge.track('新手专区页面_点击立即注册')
+    });
+},1500)
+var content_top_nav = ''
+function zhugeTrack(place, name, id, content){
+    $('html').on('click',place,function(){
+        //获取顶部导航文案
+        content_top_nav = $(this).attr('data-top-nav')
+        if(!!content_top_nav){
+          content = content_top_nav
+        }
+        var data = {};
+        data[id] = content;
+        zhuge.track(name, data)
+    })
+}
+zhugeTrack('.newuser_recommend a','新手专区页面_点击新手推荐项目','','')
+zhugeTrack('.new_logo','新手专区页面_顶部导航','位置','网站logo')
+zhugeTrack('#top_nav a','新手专区页面_顶部导航','位置',content_top_nav)
+zhugeTrack('.login_btn','新手专区页面_顶部导航','位置','登录')
+zhugeTrack('.reg_btn','新手专区页面_顶部导航','位置','免费注册')
+</script>
+</body>
+
+</html>

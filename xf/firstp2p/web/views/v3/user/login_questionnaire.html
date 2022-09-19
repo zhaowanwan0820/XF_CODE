@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>登录</title>
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/questionnaire/base.css?v=201707060206');?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/questionnaire/login.css?v=201707060206');?>">
+  <script src="<?php echo $this->asset->makeUrl('v3/js/questionnaire/jquery-1.10.2.min.js');?>" type="text/javascript"></script>
+  <script type="text/javascript">
+    (function () {
+      var today = new Date();
+      var year = today.getFullYear();
+      var month = today.getMonth() + 1;
+      var day = today.getDate();
+      var ymd = year + "" + month + "" + day;
+      var oHead = document.getElementsByTagName('HEAD').item(0);
+      var oScript = document.createElement("script");
+      oScript.type = "text/javascript";
+      oScript.src =
+        "https://dfp1api.ncfwx.com/public/downloads/frms-fingerprint.js?custID=dfp&serviceUrl=https://dfp1api.ncfwx.com/public/generate/jsonp&loadSource=script&type=1&ymd=" +
+        ymd;
+      oHead.appendChild(oScript);
+    })();
+  </script>
+  
+</head>
+<body>
+  <!--login-->
+  <div class="p_login">
+    <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/logo.png');?>" alt="" class="logo">
+    <h2 class="title">网信账号登录</h2>
+    <form action="/user/doLogin{$querystring}" id="form_id" method="POST">
+    <?php echo token_input(); ?>
+      <div class="loginBox">
+        <div class="item">
+          <div class="imgBox">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/phone.png');?>" alt="">
+          </div>
+          <input type="text" placeholder="请输入手机号" name="username" id="phoneInput" maxlength="11">
+        </div>
+        <div class="item">
+          <div class="imgBox">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/pwd.png');?>" alt="" style="width:0.4rem;height:0.44rem;margin:0.35rem auto 0">
+          </div>
+          <input type="password" placeholder="请输入密码" name="password" id="pasInput">
+        </div>
+        <div class="item">
+          <div class="imgBox">
+            <img src="<?php echo $this->asset->makeUrl('v3/images/questionnaire/code.png');?>" alt="" style="width:0.44rem;height:0.34rem;margin:0.42rem auto 0">
+          </div>
+          <input type="text" placeholder="请输入验证码" name="captcha" id="codeInput">
+          <img src="/verify.php?w=91&h=36&rb=0" class="verify_img" id="codeImg">
+        </div>
+        <div class="errorTip">{$error}</div>
+        <input type="submit" class="loginBtn" id="loginBtn" value="登录">
+        <a class="registerBtn" href="https://m.ncfwx.com/user/register?activity_from=questionnaire">快速注册></a>
+      </div>
+    </form>
+  </div>
+  <!--end-->
+</body>
+<script>
+  var winW = document.documentElement.clientWidth;
+  var fontSize = winW / 750 * 100;
+  document.documentElement.style.fontSize = fontSize + "px";
+
+  $('#codeImg').on('click', refresh);
+    function refresh(){
+      var srcStr="/verify.php?w=91&h=36&rb=0&rand=" + new Date().getTime();
+      $(this).attr('src', srcStr);
+    }
+
+      var emptyReg=/^\s*$/;
+      //toast提示
+      function showToast(tip) {
+          var toastTip=$('#site_toastTip');
+          if (toastTip.size()==0){
+              toastTip=$('<div class="site_toastTip" id="site_toastTip"><div class="textTip"></div></div>').appendTo(document.body);
+          }
+          var textTip=toastTip.find('.textTip');
+          textTip.text(tip);
+          toastTip.show();
+          setTimeout(function () {
+              toastTip.hide();
+          },2000);
+      }
+
+      /* 手机号只能输数字 */
+      $("#phoneInput").keyup(function(){
+        $(this).val($(this).val().replace(/[^\d]/g,''));
+      })
+
+      function verifyForm() {
+            var flag=true;
+            var account=$('#phoneInput');
+            var pas=$('#pasInput');
+            var code=$('#codeInput');
+
+            if (emptyReg.test(account.val())){
+                showToast('手机号不能为空');
+                flag=false;
+                return flag;
+            }
+            if (emptyReg.test(pas.val())){
+                showToast('密码不能为空');
+                flag=false;
+                return flag;
+            }
+            if (code.length && emptyReg.test(code.val())){
+                showToast('验证码不能为空');
+                flag=false;
+                return flag;
+            }
+            return flag;
+        }
+
+        /* 点击登录 */
+        $("#loginBtn").click(function(event){
+          if(!verifyForm()){
+            event.preventDefault()
+          }else{
+            /*调接口*/
+            $("#form_id").submit()
+          }
+        })
+</script>
+</html>

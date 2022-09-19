@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>我的竞猜记录</title>
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-base.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/m-common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/guessing_record.css?v=99');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeUrl('worldcup2018/css/load_more.css?v=99');?>">
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/jquery-1.10.2.min.js');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/px2rem.js?v=99');?>"></script>
+  <script src="<?php echo $this->asset->makeUrl('worldcup2018/js/load_more.js?v=99');?>"></script>
+</head>
+<body>
+  <!--竞猜记录页面-->
+  <div class="my_guessing_record">
+    <div class="guessing_record_table">
+      <div class="title">
+        <span class="common">时间</span>
+        <span class="middle">比赛名称</span>
+        <span class="common">竞猜结果</span>
+      </div>
+      <!--积分列表-->
+      <ul class="guessing_record_table_lists"></ul>
+      <!--end-->
+    </table>
+    <!--加载更多-->
+    <div class="load_more_container"></div>
+    <!--end-->
+  </div>
+</body>
+</html>
+<script>
+  var load_more_container = $(".load_more_container"),/*loadMore*/
+      isApp = "{$isApp}"
+  /*调用接口显示load_more状态*/
+  var page = 1,
+      dataList = [],
+      html
+  function _interface(){
+    $.ajax({
+      url:"/worldcup/AjaxGuessLog",
+      data:{token:"{$token}",pageNo:page},
+      type:"post",
+      dataType:"json",
+      success:function(res){
+        dataList = dataList.concat(res.data)
+        if(load_more_container.find(".ui_loadmore").length >= 1){
+          load_more_container.children().remove()
+        }
+        if(res.data.length >= 10){
+          _load_more(load_more_container[0],1)
+          /*点击加载更多*/
+          load_more_container.find(".ui_loadmore a").click(function(){
+            if(load_more_container.find(".ui_loadmore").length >= 1){
+              load_more_container.children().remove()
+            }
+            page += 1
+            _load_more(load_more_container[0],2)
+            _interface()
+          })
+        }else if(res.data.length < 10 && dataList.length != 0){
+          _load_more(load_more_container[0],3)
+        }
+
+        if(dataList.length == 0){
+          _load_more(load_more_container[0],3,"暂无竞猜记录")
+        }
+        $(".guessing_record_table_lists").html("")
+        var add_lose_class
+        for (index in dataList) {
+          /*竞猜失败:reduce,竞猜成功:increase,竞猜结果待确认:tobeConfirmed*/
+          add_lose_class = dataList[index].status == 0 ? "tobeConfirmed" : dataList[index].status == 1 ? "increase" : "reduce"
+          html = '<li class="list">'
+                + '<span class="common"><i class="date">' +dataList[index].date+'</i><i class="time">'+dataList[index].time+'</i></span>'
+                + '<span class="middle">'+dataList[index].note + '</span>'
+                + '<span class='+add_lose_class+'>'+dataList[index].statusDesc+'</span>'
+                + '</li>'
+        $(".guessing_record_table_lists").html($(".guessing_record_table_lists").html() + html)
+        }
+      },
+      error:function(error){console.log(error)}
+    })
+  }
+_interface()
+
+</script>

@@ -1,0 +1,59 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript">
+	var fuzhilock = false;
+	function sign_switch(id,typename,prestatus,btn) {
+		$(btn).css({ "color": "grey" }).attr("disabled", "disabled");
+		var check_content =  typename+'实时代签开启';
+		 var status = 1;
+
+		if(prestatus ==1){
+			check_content =  typename+'实时代签停止';
+			status = 0;
+		}
+		if (window.confirm(check_content)) {
+			$.ajax({
+				url: ROOT + "?" + VAR_MODULE + "=" + MODULE_NAME + "&" + VAR_ACTION + "=sign_change&id=" + id+"&status=" + status,
+				data: "ajax=1",
+				dataType: "json",
+				success: function (obj) {
+					if(obj.status==1){
+						location.href=location.href;
+					}else{
+						alert(obj.info);
+					}
+					}
+				});
+			}
+		$(btn).css({ "color": "#ffffff" }).removeAttr("disabled");
+	}
+
+</script>
+<div class="main">
+<div class="main_title">{%VIEW} <a href="{:u("MsgBox/index")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+<table class="form" cellpadding=0 cellspacing=0>
+
+	<foreach name="sign" item="item">
+		<tr>
+			<td>
+				<input type="button" class="button" value="{$item.typename} 实时代签" onclick="sign_switch('{$item.id}','{$item.typename}','{$item.status}',this)" /> 代签功能已{$item.statusname}
+			</td>
+
+		</tr>
+	</foreach>
+
+
+	<!--<tr>
+		<td class="item_title">{%MSG_CONTENT}:</td>
+		<td class="item_input">
+			{$vo.content}
+		</td>
+	</tr>	-->
+
+</table>	 
+</form>
+</div>
+<include file="Public:footer" />

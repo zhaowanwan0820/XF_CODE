@@ -1,0 +1,211 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<php>
+    function get_user_group($group_id)
+    {
+    $group_name = M("UserGroup")->where("id=".$group_id)->getField("name");
+    if($group_name)
+    {
+    return $group_name;
+    }
+    else
+    {
+    return l("NO_GROUP");
+    }
+    }
+    function get_user_level($id)
+    {
+    $level_name = M("UserLevel")->where("id=".$id)->getField("name");
+    if($level_name)
+    {
+    return $level_name;
+    }
+    else
+    {
+    return "没有等级";
+    }
+    }
+    function get_referrals_name($user_id)
+    {
+    $user_name = M("User")->where("id=".$user_id)->getField("user_name");
+    if($user_name)
+    return $user_name;
+    else
+    return l("NO_REFERRALS");
+    }
+    function f_to_date($date){
+    return to_date($date,"Y-m-d H:i");
+    }
+    function lock_money_func($money,$id){
+    //return "<a href='javascript:eidt_lock_money(".$id.");'>".format_price($money)."</a>";
+    return format_price($money);
+    }
+    function money_func($money,$user_id){
+    //return "<a href='/m.php?m=MoneyApply&a=add&user_id=".$user_id."'>".format_price($money)."</a>";
+    return format_price($money);
+    }
+    function verify_status($status){
+        if($status == 1) return '审核成功';
+        if($status == 2) return '审核失败';
+    }
+
+    function get_user_type($user_id) {
+        $type = M("UserPassport")->where("uid=".$user_id)->getField("type");
+        return $type?$type:1;
+    }
+
+    function get_action_list($status, $row){
+        if($status == 2) {
+            if(get_user_type($row['user_id']) == 1)
+                return '<a href="javascript:edit(' . $row['user_id'] . ');">编辑</a> <a href="javascript:user_passport_passed(' . $row['user_id'] . ');">审核</a>';
+            else
+                return '<a href="javascript:edit(' . $row['user_id'] . ');">编辑</a> <a href="javascript:special_user_passed(' . $row['user_id'] . ');">审核</a>';
+        }
+        if($status == 1) {
+            return '<a href="javascript:edit(' . $row['user_id'] . ');">编辑</a>';
+        }
+    }
+
+    function failed_reason($reason) {
+        if ($reason == "")  {
+            return '';
+        }
+        $reasonId = intval($reason);
+        if ($reasonId == 1)
+            return '证件信息模糊';
+        elseif($reasonId == 2)
+            return '上传照片失败';
+        elseif($reasonId == 3)
+            return '上传照片有误';
+        elseif($reasonId == 4)
+            return '证件号码有误';
+        elseif($reasonId == 5)
+            return '证件类型有误';
+        elseif($reasonId == 6)
+            return '有效期填写错误';
+        else
+            return $reason;
+    }
+
+</php>
+<div class="main">
+    <div class="main_title">{$main_title}</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" id="search_form" action="__APP__" method="get">
+            会员名：<input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}"/>
+            姓名：<input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}"/>
+            手机号：<input type="text" class="textbox" name="mobile" value="{:trim($_REQUEST['mobile'])}"/>
+            状态:
+            <select name="verify_status">
+                <option value="0" <if condition="intval($_REQUEST['verify_status']) eq 0 ">selected="selected"</if>>全部</option>
+                <option value="1" <if condition="intval($_REQUEST['verify_status']) eq 1 ">selected="selected"</if>>审核通过</option>
+                <option value="2" <if condition="intval($_REQUEST['verify_status']) eq 2 ">selected="selected"</if>>审核失败</option>
+            </select>
+            申请时间：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['apply_time_start'])}" name="apply_time_start" id="apply_time_start"  onfocus="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+            <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('apply_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+            至 <input type="text" value="{:trim($_REQUEST['apply_time_end'])}" name="apply_time_end" id="apply_time_end" class="textbox" onfocus="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+            <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('apply_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+            处理时间：<input type="text" style="width:150px;" class="textbox" value="{:trim($_REQUEST['verify_time_start'])}" name="verify_time_start" id="verify_time_start"  onfocus="return showCalendar('verify_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_verify_time_start');" />
+            <input type="button" class="button" id="btn_verify_time_start" value="选择" onclick="return showCalendar('verify_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_verify_time_start');" />
+            至 <input type="text" value="{:trim($_REQUEST['verify_time_end'])}" name="verify_time_end" id="verify_time_end" class="textbox" onfocus="return showCalendar('verify_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_verify_time_start');" style="width:150px;" />
+            <input type="button" class="button" id="btn_verify_time_end" value="选择" onclick="return showCalendar('verify_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_verify_time_end');" />
+            处理人：<input type="text" class="textbox" name="verify_admin" value="{:trim($_REQUEST['verify_admin'])}" style="width:100px;" />
+            <input type="hidden" value="User" name="m"/>
+            <input type="hidden" value="passport_verify_log" name="a"/>
+            <input type="submit" class="button" value="{%SEARCH}"/>
+        </form>
+        <input type="button" class="button" value="导出" onclick="export_csv();" />
+    </div>
+    <div class="blank5"></div>
+    <html:list
+            id="dataTable"
+            style="dataTable"
+            name="user"
+            pk="user_id"
+            checkbox="true"
+            datasource="list"
+            show="user_id:{%ID}|50px,user_name:{%USER_NAME}:edit,real_name:姓名,mobile:{%USER_MOBILE},create_time|f_to_date:注册时间,is_effect|get_is_effect=$user['user_id']:{%IS_EFFECT},apply_time|f_to_date:申请时间,verify_time|f_to_date:处理时间,verify_admin:处理人,verify_status|verify_status:审核状态,failed_reason|failed_reason:审核失败原因,verify_status|get_action_list=$user:操作|110px"
+    />
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+    jQuery(function(){
+        //查看图片
+        $("._js_show_pic").live("click",function(){
+            if($(this).html() == "关闭"){
+                $(this).next().next().hide();
+                $(this).html("查看");
+            }else{
+                $(this).next().next().show();
+                $(this).html("关闭");
+            }
+        });
+    });
+    function opcredit(act,uid){
+
+        var forms_lock = function() {
+            var forms = $('form[name=edit]');
+            forms.each(function(i, el){
+                var btn = $(el).find('input[type=submit]');
+                console.log('btn', btn);
+                //删除行内onclick事件
+                btn.attr('onclick', '');
+                btn.click(function(){
+                    $(btn).css({"color":"gray","background":"#ccc"}).attr("disabled","disabled");
+                    if (confirm("确定此操作吗？")) {
+                        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                        return true;
+                    } else {
+                        $(btn).css({ "color": "#fff", "background-color": "#4E6A81" }).removeAttr("disabled");
+                        return false;
+                    }
+
+                });
+            })
+        }
+
+
+        $.weeboxs.open(ROOT+'?m=User&a=op_passed&user_id='+uid+"&field="+act, {contentType:'ajax',showButton:false,title:LANG['USER_PASSED'],width:600,height:300, onopen: function(){forms_lock();}});
+    }
+    function checkidcrad(card){
+        $.ajax({
+            url:ROOT+"?m=Public&a=checkIdCard&card="+card,
+            dataType:"json",
+            success:function(result){
+                if(result.status == 0){
+                    alert(result.info);
+                }
+                else{
+                    var alt = "身份证号："+result.code+"\n";
+                    alt += "籍贯："+result.location+"\n";
+                    alt +="生日："+result.birthday+"\n";
+                    if(result.gender=="m")
+                        alt += "性别：男";
+                    else
+                        alt += "性别：女";
+                    alert(alt);
+                }
+            },
+            error:function(){
+                alert("网络不通，或者当前接口查询次数已满，请等待下个小时！");
+            }
+        });
+    }
+
+    function export_csv(){
+        var parm = $('#search_form').serialize();
+        window.open(ROOT+'?'+parm+'&a=passport_verify_export');
+    }
+</script>
+<include file="Public:footer" />

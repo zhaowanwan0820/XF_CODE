@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>确认收货信息</title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-base.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.2/css/m-common.css');?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeAppUrl('v3.3/css/o2o/o2o_affirm.css');?>">
+    </head>
+    <body>
+    <div class="m-main p_exchange_form">
+        <div class="af_title"></div>
+        {if $coupon.useRules eq 5 || $coupon.useRules eq 6}
+        <div class="coupon_pic"><img src="{$coupon.pic}"></div>
+        <div class="coupon_name">{$coupon.productName}</div>
+        {/if}
+        <div class="af_list">
+            {if $coupon.useRules eq 3 || $coupon.useRules eq 4}
+            <div class="afl_show">
+                <span>姓名</span>
+                <div class="int_right">
+                    <input type="text" id="receiverName" data-name="收货人姓名" name="receiverName" class="input_box" data-require="true" placeholder="请输入收货人姓名" />
+                </div>
+            </div>
+            <div class="afl_show">
+                <span>手机号</span>
+                <div class="int_right">
+                    <input type="tel" maxlength="11" id="receiverPhone"  data-name="手机号" name="receiverPhone" class="input_box"  data-require="true" placeholder="请输入有效的手机号" />
+                </div>
+            </div>
+            <div class="afl_show">
+                <span>邮政编码</span>
+                <div class="int_right">
+                    <input type="tel" maxlength="6" id="receiverCode" data-name="邮政编码" name="receiverCode" class="input_box" placeholder="如不确定可留空" />
+                </div>
+            </div>
+            <div class="afl_show dis_border ts_input">
+                <span>地址</span>
+                <div class="int_right">
+                    <textarea cols="2" rows="3" id="receiverAddress" data-name="详细地址" name="receiverAddress" class="input_box"  data-require="true" placeholder="请输入详细的收货地址"></textarea>
+                </div>
+            </div>
+            {elseif $coupon.useRules eq 5 || $coupon.useRules eq 6}
+                {foreach from=$formConfig item=couponform key=key}
+            <div class="afl_show">
+                <span>{$couponform.displayName}</span>
+                <div class="int_right">
+                    <input {if $key eq 'phone'}type="tel" maxlength="11"{else}type="text"{/if} data-name="{$couponform.displayName}" placeholder="{$storeName}" class="input_box" id="{$key}" name="{$key}" data-require="true" />
+                </div>
+            </div>
+                {/foreach}
+            {/if}
+        </div>
+        <div class="af_btn">
+            <!--<input type="submit" value="确认兑换" class="a_btn gay_btn" disabled="disabled" />-->
+            <a class="a_btn"
+               data-proto="coupon://api" data-type="webview" data-backid="couponConfirmInfo" data-title="领取礼券" data-identity="couponRedeemResult"
+               data-needback="false" data-needrefresh="true" data-needcloseall="true">确认</a>
+        </div>
+    </div>
+    <div class="ui_mask" style="display:none;">
+        <div class="ui_alert_box">
+            <div class="alert_con">
+                <h2>提示</h2>
+                <p>用户名不能为空</p>
+                <h3 class="hide_box">
+                    <span class="close">确认</span>
+                </h3>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/touch.min.js');?>" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            var state = $(".input_box").length;
+            /******************** 判断是否是IOS ****************************/
+            var userAgentString = (window.navigator ? window.navigator.userAgent : null) || "";
+            var iosmatches = /IPHONE OS ([0-9_]*)/i.test(userAgentString);
+            //点击验证
+            $(".a_btn").bind("click", function () {
+                var errtext="";
+                $(".input_box").each(function(k,v) {
+                    var txt = fixinput(this);
+                    if(txt){
+                        errtext = txt;
+                        return false;
+                    }
+                    //errtext += (k+1) + "：" + fixinput(this) + "\n";
+                });
+                if ($(".input_yes").length == state) {
+                    {if $coupon.status}
+                    var shref = "{$APP_HOST}/gift/ExchangeCoupon?token={$usertoken}&storeId={$storeId}&useRules={$coupon.useRules}&couponId={$coupon.id}";
+                    {else}
+                    var shref = "{$APP_HOST}/gift/acquireExchange?token={$usertoken}&storeId={$coupon.storeId}&useRules={$coupon.useRules}&couponGroupId={$coupon.id}&action={$action}&load_id={$load_id}&deal_type={$deal_type}";
+                    {/if}
+                    $(".input_box").each(function (k, v) {
+                        shref += "&" + $(this).attr("name") + "=" + encodeURIComponent($(this).val());
+                    });
+                    $(".a_btn").attr('href', shref);
+                    WXP2P.APP.warpAnchorSchema($(".a_btn")[0]);
+                    return true;
+                } else {
+                    $(".a_btn").removeAttr('href');
+                    // alert(errtext);
+                    $(".a_btn").css("display", "none");
+                    $(".ui_mask").css("display", "block");
+                    $('.ui_alert_box p').html(errtext);
+                    return false;
+                }
+            });
+
+            function fixinput(el) {
+                var error;
+                var $el = $(el);
+                if ($el.attr('data-require') != 'true' && $el.val() == ''){
+                    $el.addClass("input_yes");
+                    return;
+                }
+                if ($el.val().length > 0) {
+                    //此处正则表达式验证
+                    var d_value = $el.val();
+                    switch ($el.attr("name")) {
+                        case "receiverName"://用户名必须为2到6位汉字
+                            if (!/^[a-zA-Z\u0391-\uFFE5]+$/.test(d_value)) {
+                                $el.removeClass("input_yes");
+                                error = "收货人姓名：只能输入汉字或字母";
+                            } else if (!(d_value.toString().length >= 2 && d_value.toString().length < 40)) {
+                                $el.removeClass("input_yes");
+                                error = "收货人姓名：2-40个字符限制";
+                            } else {
+                                $el.addClass("input_yes");
+                                // alert("验证通过");
+                            }
+                            break;
+                        case "receiverPhone"://验证手机
+                            if (/^0?(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/.test(d_value)) {
+                                $el.addClass("input_yes");
+                               // alert("验证通过");
+                            } else {
+                                $el.removeClass("input_yes");
+                                error = "手机号格式不正确";
+                            }
+                            break;
+                        case "phone"://验证手机
+                            if (/^0?(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[57])[0-9]{8}$/.test(d_value)) {
+                                $el.addClass("input_yes");
+                               // alert("验证通过");
+                            } else {
+                                $el.removeClass("input_yes");
+                                error = "手机号格式不正确";
+                            }
+                            break;
+                        case "receiverCode"://邮政编码
+                            if ($.trim(d_value) == '' || /^\d{6}$/.test(d_value)) {
+                                $el.addClass("input_yes");
+                               // alert("验证通过");
+                            } else {
+                                $el.removeClass("input_yes");
+                                error = "邮政编码为6位数字";
+                            }
+                            break;
+                        case "receiverAddress"://验证地址
+                            if (d_value.toString().length <= 80 && d_value.toString().length >= 5) {
+                                $el.addClass("input_yes");
+                              //  alert("验证通过");
+                            } else {
+                                $el.removeClass("input_yes");
+                                error = "详细地址：5-80个字符限制";
+                            }
+                            break;
+                        case "idno"://身份证号
+                            if (/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[A-Z])$/.test(d_value)) {
+                                $el.addClass("input_yes");
+                               // alert("验证通过");
+                            } else {
+                                $el.removeClass("input_yes");
+                                error = "身份证号输入有误";
+                            }
+                            break;
+                        case "email"://邮箱
+                            if (!(d_value.toString().length >= 5 && d_value.toString().length <= 60)) {
+                                $el.removeClass("input_yes");
+                                error = "邮箱：5-60个字符限制";
+                            }
+                            else if (!/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/i.test(d_value)) {
+                                $el.removeClass("input_yes");
+                                error = "邮箱格式不正确";
+                            } else {
+                                $el.addClass("input_yes");
+                                // alert("验证通过");
+                            }
+                            break;
+                        case "userName"://用户名
+                            if (d_value.toString().length <= 30 && d_value.toString().length >= 1) {
+                                $el.addClass("input_yes");
+                               // alert("验证通过");
+                            } else {
+                                $el.removeClass("input_yes");
+                                error = "用户名：1-25个字符限制";
+                            }
+                            break;
+                        default:
+                            $el.addClass("input_yes");
+                            break;
+                    }
+                } else {
+                    $el.removeClass("input_yes");
+                    error = $el.attr('data-name') + "不能为空";
+                }
+                return error;
+            }
+
+            $(".hide_box").bind("click", function() {
+                $(".ui_mask").css("display", "none");
+                $(".a_btn").css("display", "block");
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="HandheldFriendly" content="true">
+  <title>{if $house.house_district}修改房产信息{else}添加新房产{/if}</title>
+  {include file="api/views/_v32/header.html"}
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/upload.v1.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/add_new_house_property.css');?>">
+  <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+</head>
+<body>
+  <!-- 点击首页的房产资料 添加新房产页 -->
+  <div class="add_new_property">
+    <div class="house_property_city">
+      <a href="#"><span>房产所在城市</span><span><i class="selected_city">请选择</i><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/arrow_right_gray.png');?>"/></span></a>
+    </div>
+    <!-- 市辖区名称+想起地址 -->
+    <form class="city_area_name">
+      <div class="first_city_area">
+        <label class="first_label">市辖区名称</label>
+        {if $districtList}
+        <select class="first_text">
+            {foreach from=$districtList item="district"}
+              {if $house.house_district eq $district.AREADESC}
+              <option value="{$district.AREADESC}" selected>{$district.AREADESC}</option>
+              {else}
+              <option value="{$district.AREADESC}">{$district.AREADESC}</option>
+              {/if}
+            {/foreach}
+        </select>
+        {/if}
+      </div>
+      <div class="first_city_area">
+        <label class="second_label">详细地址</label>
+        <input type="text" placeholder="请精确到门牌号" class="second_text" value="{if $house.house_address}{$house.house_address}{/if}">
+      </div>
+    </form>
+    <!-- 房产材料上传-->
+    <div class="p_change_bankcard material_upload">
+      <div class="bg_white mt10 user_info j_user_info">
+        <h2 class="material_upload_top">房产材料上传</h2>
+        <div class="padd15 clearfix">
+          <div class="first">
+            <div class="upload_box j_uploadbox">
+              <div class="myimg_file1 mying1 add"></div>
+              <div class="content_h5 file1" data-img="myimg_file1"></div>
+              <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/wx_house_material_phone.png');?>" class="photo_img"/>
+            </div>
+          <div class="img_text">登记信息页</div>
+        </div>
+        <div class="first">
+          <div class="upload_box j_uploadbox">
+            <div class="myimg_file2 mying2 add"></div>
+            <div class="content_h5 file2" data-img="myimg_file2"></div>
+            <img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/wx_house_material_phone.png');?>" class="photo_img"/>
+          </div>
+          <div class="img_text">附页</div>
+        </div>
+        </div>
+      </div>
+      <div class="btn">
+        <input type="submit" class="change_btn ui_btn_disabled JS_submit_change" value="保存" disabled="disabled">
+      </div>
+    </div>
+
+  </div>
+</body>
+<script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/upload.v1.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/p_change_bankcard.js');?>"></script>
+<script>
+  /* 监听屏幕的高度变化，解决input与虚拟键盘冲突 */
+  var add_new_property = $(".add_new_property"),
+      add_new_property_height = $(".add_new_property").height(),
+      second_text = $(".second_text"),
+      second_text_val = second_text.val(),/* 详细地址 */
+      house_property_city = $(".house_property_city a"),
+      selectedCity = "{$selectedCity}",/* 后端返回选中城市字段 */
+      selected_city_val,/* 定义变量记录房产所在城市城市选择val */
+      mark = 1, /* 1：编辑 2: 添加 */
+      house_address = "{$house.house_address}"/*后端返回的详细地址 */
+      token1 = "{$token}",/* 传到js的变量 */
+      page1 = "{$house.house_deed_first}",/* 传到js的变量 */
+      page2 = "{$house.house_deed_second}",/* 传到js的变量 */
+      id = "{$house.id}",/* 传到js的变量 */
+      house_deed_first_id = "{$house.house_deed_first_id}",
+      house_deed_second_id = "{$house.house_deed_second_id}"
+  /* 从房产所在城市列表页面返回时判断用户之前是否填写过详细地址、房产材料是否上传 */
+  if(P2PWAP.cache.get("_second_text_val_")){
+    second_text.val(P2PWAP.cache.get("_second_text_val_"))
+    second_text_val = second_text.val()
+  }
+  /* 房产所在城市改成配置的 */
+  if(selectedCity){
+    house_property_city.find(".selected_city").addClass("selected_city_color").html(selectedCity)
+    selected_city_val = selectedCity
+  }
+  if(!house_address){
+    mark = 2
+  }else{
+    mark = 1
+  }
+  house_property_city.click(function(){
+    $(this).attr("href","/house/CityList?token={$token}&selectedCity="+selectedCity+"&mark="+mark+"&id={$house.id}")
+  })
+
+  /* 底部提示语 */
+  _html(add_new_property[0],add_new_property_height,"0.2rem","none")
+  /* 获取window高 */
+  var window_height = $(window).height()
+ window.onresize=function(){
+   var window_height_now = $(window).height()
+   if(window_height_now < window_height){
+    $(".bottom_tips_container").css("position","static")
+   } else {
+    $(".bottom_tips_container").css("position","fixed")
+   }
+ }
+/* 虚拟键盘 */
+$(document).keydown(function(event){ 
+  if(event.keyCode == 13) {
+    event.stopPropagation()
+    event.preventDefault()
+  }
+});
+
+/* 判断用户是新增房产还是修改房产*/
+house_address ? $(".btn .change_btn").val("保存") : $(".btn .change_btn").val("保存并选择")
+</script>
+</html>

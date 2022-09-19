@@ -1,0 +1,96 @@
+<tagLib name="html" />
+<include file="Public:header" />
+
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/js/user.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<div class="main">
+    <div class="main_title">预约借款详情</div>
+    <div class="blank5"></div>
+
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            用户ID:
+            <input type="text" class="textbox" name="user_id" value="{:trim($_REQUEST['user_id'])}" style="width:150px;"/>
+
+            审核状态:
+            <select name="audit_status" id="audit_status" style="height:24px;">
+                <option value=0 <if condition="trim($_REQUEST['audit_status']) eq 0">selected="selected"</if>>全部</option>
+                <foreach name="status" item="value" key="key">
+                    <option value="{$key}" <if condition="trim($_REQUEST['audit_status']) eq $key">selected="selected"</if>>{$value}</option>
+                </foreach>
+            </select>
+
+            时间段：
+            <input type="text" class="textbox" name="time_start" id="time_start" value="{:trim($_REQUEST['time_start'])}" style="width:150px;"
+                   onfocus="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+            <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+            -
+            <input type="text" class="textbox" name="time_end" id="time_end" value="{:trim($_REQUEST['time_end'])}"  style="width:150px;"
+                   onfocus="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+            <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" />
+
+            <input type="hidden" value="LoanIntention" name="m" />
+            <input type="hidden" value="index" name="a" />
+
+            <input type="submit" class="button" value="{%SEARCH}" />
+            <input type="button" class="button" value="{%EXPORT}" onclick="export_csv();" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="20" class="topTd">&nbsp;</td>
+        </tr>
+
+        <tr class="row">
+            <th>编号</th>
+            <th>会员ID</th>
+            <th>申请金额</th>
+            <th>申请期限(月)</th>
+            <th>联系电话</th>
+            <th>申请类型</th>
+            <th>申请时间</th>
+            <th>更新时间</th>
+            <th>审核状态</th>
+            <th>操作</th>
+        </tr>
+
+        <foreach name="list" item="item">
+        <tr class="row">
+            <td>{$item.id}</td>
+            <td><a href="{:U('User/index')}&user_id={$item.user_id}">{$item.user_id}</a></td>
+            <td>{$item.loan_money}</td>
+            <td>{$item.loan_time}</td>
+            <td>{$item.phone}</td>
+            <td><if condition="$item.type neq '2'">变现通<else/><font style="color:red">职易贷</font></if></td>
+            <td>{$item.apply_time|to_date}</td>
+            <td>{$item.update_time|to_date}</td>
+            <td>{$status[$item['status']]}</td>
+            <td>
+                <a href="{:U('LoanIntention/show')}&id={$item.id}">查看详情</a> &nbsp;
+                <if condition="$item.status eq LoanIntentionAction::NOT_AUDIT">
+                    <a href="javascript:majax('audit', 'id={$item.id}&status=2');">同意</a>&nbsp;
+                    <a href="javascript:majax('audit', 'id={$item.id}&status=3');">拒绝</a>
+                </if>
+            </td>
+        </tr>
+        </foreach>
+
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+
+    <div class="page">{$page}</div>
+
+</div>
+
+<include file="Public:footer" />

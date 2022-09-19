@@ -1,0 +1,166 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+
+<div class="main">
+<div class="main_title">项目满标审核</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="id" value="{:trim($_REQUEST['id'])}" style="width:100px;" />
+        项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        借款人姓名：
+        <input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="10" />
+
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DealProject" name="m" />
+        <input type="hidden" value="audit_full" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="19" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th>
+                编号
+            </th>
+            <th>
+                项目名称
+            </th>
+            <th>
+                借款期限
+            </th>
+            <th>
+                还款方式
+            </th>
+            <th>
+                借款综合成本（年化）
+            </th>
+            <th>
+                用户类型
+            </th>
+            <th> 借款人id/
+                <a href="javascript:sortBy('user_id','1','Deal','index')" title="按照借款人   升序排列 ">
+                    姓名
+                </a>/
+                <a href="javascript:void(0)">
+                    手机
+                </a>
+            </th>
+            <th>
+                借款总额
+            </th>
+            <th>
+                已上标金额
+            </th>
+            <th>
+                差额
+            </th>
+            <th>
+                放款审批单编号
+            </th>
+            <th>
+                项目授信额度
+            </th>
+            <th>
+                固定起息日
+            </th>
+            <th>
+                业务状态
+            </th>
+            <th style="width:250px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="project">
+        <tr class="row">
+            <td>
+                &nbsp;{$project.id}
+            </td>
+            <td>
+                <a href="javascript:detail({$project.id});">
+                &nbsp;{$project.name}
+                </a>
+            </td>
+            <td>
+                &nbsp;{$project.deal.repay_period}
+            </td>
+            <td>
+                &nbsp;{$project.deal.loantype|get_loantype}
+            </td>
+            <td>
+                &nbsp;{$project.deal.rate}%
+            </td>
+            <td>
+                &nbsp;{$project.deal.user_id|getUserTypeName}
+            </td>
+            <td>
+                &nbsp;
+                {$project.user_info.id}/
+                {$project.user_info.user_name_url}/
+                {$project.user_info.user_mobile_url}
+            </td>
+            <td>
+                &nbsp;{$project.borrow_amount|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project.full_money|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project.remaining_money|format_price=false}
+            </td>
+            <td>
+                &nbsp;{$project.approve_number}
+            </td>
+            <td>
+                &nbsp;{$project.credit}
+            </td>
+            <td>
+                &nbsp;{$project.formated_fixed_value_date}
+            </td>
+            <td>
+                &nbsp;{$project.business_status|getProjectBusinessStatusNameByValue}
+            </td>
+            <td>
+                <a href="javascript:confirm_full({$project.id})">满标审核</a>
+                <a href="/m.php?m=Deal&a=deals&project_id={$project.id}">标的列表</a>&nbsp;
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />
+
+<script type="text/javascript">
+    function detail(project_id){
+        window.location.href = ROOT + '?m=DealProject&a=edit&id=' + project_id;
+    }
+
+    function confirm_full(project_id){
+        if (confirm("确定满标？")) {
+            $.post(
+                ROOT + '?m=DealProject&a=confirm_full',
+                {"project_id" : project_id},
+                function (res) {
+                    if (0 == res.code) {
+                        alert("确认成功！");
+                    } else {
+                        alert("确认失败：" + res.msg);
+                    }
+                    location.reload();
+                },
+                'json'
+            );
+        }
+    }
+</script>

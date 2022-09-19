@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>新年礼包大派送</title>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/happy_newyear/base.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/happy_newyear/m-common.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/happy_newyear/jquery.fullPage.css');?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/happy_newyear/newyear.css');?>" />
+    <script src="<?php echo $this->asset->makeUrl('v3/js/happy_newyear/jquery-1.10.2.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/happy_newyear/jquery.fullPage.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/happy_newyear/jquery.easings.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v3/js/happy_newyear/login.js');?>"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.mc_center').fullpage({
+                'verticalCentered': false,
+                'sectionsColor': ['#f1f1f1', '#f1f1f1', '#f1f1f1', '#fff'],
+                'navigation': false,
+                'resize':true,
+                'navigationPosition': 'right',
+                'continuousVertical':false,
+                afterLoad: function (anchorLink, index) {
+                    if (index == "2") {
+                        $(".p1_img03_01").removeClass("pulse");
+                        $(".p1_img03_01").removeClass("animated");
+                        $(".p1_img03_02").removeClass("fadeIn");
+                        $(".p1_img02_01").removeClass("fadeIn");
+                        $(".p1_img02_02").removeClass("pulse1");
+                        $(".p1_text01").removeClass("fadeInUp")
+                    }
+                },
+                onLeave: function (index, nextindex, direction) {
+                    if (nextindex == "5") {
+                        $(".coupon_list").addClass('a-rotateineftB');
+                    } else {
+                        $(".coupon_list").removeClass('a-rotateineftB');
+                    }
+                    // if(nextindex == "2"){
+                    //     $('.login_from').addClass('a-rotateineftB');
+                    // }else {
+                    //     $(".login_from").removeClass('a-rotateineftB');
+                    // }
+                    if (nextindex == "5" || nextindex == "2") {
+                        $(".arrow_icon").css("display","none");
+                    }else{
+                        $(".arrow_icon").css("display", "block");
+                    }
+                    if (nextindex == "1") {
+                        $(".p1_img02_01").addClass("fadeIn");
+                        $(".p1_img02_02").addClass("pulse1");
+                        $(".p1_text01").addClass("fadeInUp");
+                    }
+                }
+            });
+
+        });
+    </script>
+</head>
+<body>
+{include file="web/views/v3/happy_newyear/share_js.html"}
+<audio class="bgmusic" id="bgmusic" controls="controls" loop="loop" autoplay="autoplay" src="<?php echo $this->asset->makeUrl('v3/images/happy_newyear/Christmas.mp3');?>"></audio>
+        <div class="bgmusic_img change" onclick="playPause()"></div>
+<div class="mc_center">
+    <div class="icon_arrow"></div>
+    {if !$error}
+    <div class="section page01">
+        <div class="p1_img01"></div>
+        <div class="p1_img02">
+            <div class="p1_img02_01 animated fadeIn delay"></div>
+            <div class="p1_img02_02 pulse1 animated"></div>
+        </div>
+        <div class="p1_img03">
+            <div class="p1_img03_01 animated pulse"></div>
+            <div class="p1_img03_02 fadeIn animated"></div>
+        </div>
+        <div class="p1_text01 animated fadeInUp">寒暑更迭,网信理财与您携手走过又一载年华。<br>
+            年底啦,我们特意为颜值财商都超高的你<br>
+            准备了一份大礼哟～</div>
+        <div class="tc rule_btn"><span>活动规则</span></div>
+    </div>
+    {/if}
+    <div class="section page02">
+        <div class="login_box">
+            <div class="title">登录领礼包</div>
+            <form class="loginForm" id="loginForm" method="post" action="/user/doLogin{$querystring}">
+                <?php echo token_input(); ?>
+                <input type="hidden" name="tpl" value="happynewyear" />
+                <div class="login_from delay2">
+                    <div class="inputBox">
+                        <input type="text" class="account inputBox_ipt" name="username" id="accountInput" placeholder="请输入手机号" autoComplete="off"/>
+                    </div>
+                    <div class="inputBox">
+                        <input type="password" class="password inputBox_ipt" name="password" id="pasInput" placeholder="请输入登录密码" autoComplete="off"/>
+                    </div>
+                    {if isset($show_vcode) && $show_vcode eq '1'}
+                    <div class="form-item inputBox">
+                        <input type="text" class="code inputBox_ipt" name="captcha" id="codeInput" placeholder="请输入验证码" autoComplete="off"/>
+                        <img class="codeImg" id="codeImg" src="/verify.php?w=91&h=36&rb=0" onclick="refresh()"/>
+                    </div>
+                    {/if}
+                    <div class="formTip" id="formTip"><span>{$error}</span></div>
+                    <input type="button" class="submitBtn" id="submitBtn" value="登录" />
+                </div>
+            </form>
+            <div class="tc pt10">还没有注册？<a href="https://m.firstp2p.com/account/register" class="color_red">立即注册</a></div>
+        </div>
+    </div>
+</div>
+<div class="arrow_icon"></div>
+<div class="ui_mask"></div>
+<div class="ui_mask_wihte"></div>
+<div class="rule_con_box">
+    <div class="rule_con">
+        <h2>[活动规则]</h2>
+        <ul>
+            <li>用户进入活动页面后，可领取网信理财感恩礼包，每名用户仅可领取一次礼包；</li>
+            <li>参与活动即视为同意遵守本活动规则；</li>
+            <li>在依法合规的前提下，网信理财对本活动拥有修改、调整和终止的权利。</li>
+        </ul>
+        <div class="close_btn"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function refresh() {
+        document.getElementById("codeImg").src = "/verify.php?w=91&h=36&rb=0&rand=" + new Date().valueOf();
+    }
+    var myAudio = document.getElementById('bgmusic');
+    function playPause(){
+        if(myAudio.paused){
+            $('.bgmusic_img').addClass('change'); 
+            myAudio.play();
+            console.log('0.0');                 
+        }else{
+            $('.bgmusic_img').removeClass('change');
+            myAudio.pause(); 
+            console.log('1.0');
+        }
+    }
+    $(function () {
+        $('.shear_btn').click(function(){
+            $('.ui_mask').show();
+        });
+        $('.ui_mask').click(function(){
+            $('.ui_mask').hide();
+        });
+        $('.rule_btn').click(function(event) {
+            $('.rule_con_box').show();
+            $('.ui_mask_wihte').show();
+        });
+        $('.close_btn,.ui_mask_wihte').click(function(event) {
+            $('.rule_con_box').hide();
+            $('.ui_mask_wihte').hide();
+        });
+        var browser = {
+            versions: function() {
+                var u = navigator.userAgent,
+                    app = navigator.appVersion;
+                return { //移动终端浏览器版本信息 
+                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端 
+                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器 
+                    iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器 
+                    iPad: u.indexOf('iPad') > -1, //是否iPad 
+                };
+            }()
+        };
+        if(browser.versions.android){
+            $("#bgmusic , .bgmusic_img").remove();
+            $(".inputBox_ipt").focus(function(event) {
+                $('.page02 .login_box').css('top','25%');
+            });
+            $(".inputBox_ipt").blur(function(event) {
+                $('.page02 .login_box').css('top','50%');
+            });
+        }
+        if (browser.versions.iPhone || browser.versions.iPad || browser.versions.ios) {
+            function log(info) {
+                console.log(info);
+                // alert(info);
+            }
+            function forceSafariPlayAudio() {
+                audioEl.load(); // iOS 9   还需要额外的 load 一下, 否则直接 play 无效
+                audioEl.play(); // iOS 7/8 仅需要 play 一下
+            }
+
+            var audioEl = document.getElementById('bgmusic');
+            audioEl.addEventListener('loadstart', function() {
+                log('loadstart');
+            }, false);
+            audioEl.addEventListener('loadeddata', function() {
+                log('loadeddata');
+            }, false);
+            audioEl.addEventListener('loadedmetadata', function() {
+                log('loadedmetadata');
+            }, false);
+            audioEl.addEventListener('canplay', function() {
+                log('canplay');
+            }, false);
+            audioEl.addEventListener('play', function() {
+                log('play');
+                // 当 audio 能够播放后, 移除这个事件
+                window.removeEventListener('touchstart', forceSafariPlayAudio, false);
+            }, false);
+            audioEl.addEventListener('playing', function() {
+                log('playing');
+            }, false);
+            audioEl.addEventListener('pause', function() {
+                log('pause');
+            }, false);
+
+            // 由于 iOS Safari 限制不允许 audio autoplay, 必须用户主动交互(例如 click)后才能播放 audio,
+            // 因此我们通过一个用户交互事件来主动 play 一下 audio.
+            window.addEventListener('touchstart', forceSafariPlayAudio, false);
+            audioEl.click(function(event) {
+                /* Act on the event */
+                alert('0.0');
+            });
+
+            audioEl.src = '<?php echo $this->asset->makeUrl('v3/images/happy_newyear/Christmas.mp3');?>';
+        }
+    });
+</script>
+</body>
+</html>

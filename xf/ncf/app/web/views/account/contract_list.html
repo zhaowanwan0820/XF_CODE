@@ -1,0 +1,247 @@
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_contract.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/widget/ui/jquery-ui-1.10.3.custom.min.css');?>">
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/pact/pact.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/ui/jquery-ui-1.10.3.custom.js');?>"></script>
+<div class="user_right p_account_contract">
+    <div class="user_right_box">
+        <div class="user_title">
+            <h1 class="fl">
+                <i class="ico_huankuan"></i>我的合同列表
+            </h1>
+            <div class="ui_fg_line"></div>
+            <ul class="ui_huank_nav fl">
+                {if $is_project}
+                <li><a href="/account/project_contract">转让合同总览</a></li>
+                {else}
+                <li><a href="/account/contract">标的合同总览</a></li>
+                {/if}
+                <li class="select"><a href="javascript:void(0)">合同列表</a></li>
+            </ul>
+        </div>
+
+        <div class="pact-list">
+            <div class="pact-main">
+                <div class="pact-m-left">
+                    <div class="pact-ml-top">
+                        <p>
+                            {if $is_project eq 1}
+                            <span title='{$project.name}' class="f16">{function name="msubstr" v=$project.name m=0 n=24}</span>
+                            {else}
+                            <span title='{$deal.name}' class="f16">{function name="msubstr" v=$deal.name m=0 n=24}</span>
+                            {/if}
+                        </p>
+                        <p>
+                            {if $deal.type_id != $zxDealTypeId}
+                            <em class="no-marleft">{if $deal.isBxt eq 0 }{if $deal.deal_type eq 0 }借款{else}融资{/if}人{else}受托人{/if}：</em><span class="w200" title="{$deal.user_real_name}">{$deal.user_real_name}</span>
+                            <span><em>总额：</em>{if $is_project eq 1}{$project.borrow_amount}万{else}{$deal.borrow_amount}万{/if}</span>
+                            {else}
+                            <span><em class="no_margin_left">总额：</em>{if $is_project eq 1}{$project.borrow_amount}万{else}{$deal.borrow_amount}万{/if}</span>
+                            {/if}
+                        </p>
+                    </div>
+                    <div class="pact-ml-center">利率为{if $deal.isBxt eq 0 }{$deal.income_base_rate}%{else}{$deal.income_base_rate}%~{$deal.max_rate}%{/if}，期限为{if $deal.loantype eq 5}{$deal.repay_time}天{else}{$deal.repay_time}个月{/if}，还款方式为{$deal.loantype_name}</div>
+                </div>
+                <div class="pact-m-right">
+                    <div class="pact-mr-top pactshow-mar">
+                        {if $is_have_sign eq 1}
+                        <a href="javascript:void(0)" class="btn-base but-disabled pact-btn">已签署</a>
+                        {else}
+                        <a href="javascript:void(0)" id="onekey" data-pos="{if $type eq 1 }{$deal.project_id}{else}{$deal.id}{/if}" data-role="{$role}" data-type="{$type}" class="btn-base but-yellow pact-btn j-click-qianshu">一键签署</a>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+
+            <div class=" clearfix pactshow2">
+                {foreach from=$contract item='cont' key="contkey"}
+                <div class="jk_contract">
+                    <table>
+                        <tr>
+                            <td valign="top"><i class="ico_jilu fl"></i></td>
+                            <td width="500">
+                                <p title="{$cont.title}" class="color-black">{$cont.title}</p>
+                                <span class="con_nub mr20 pr20">编号：{$cont.number}</span>
+                                {if $cont.hasRenew eq 1}
+                                {if $is_loan eq true}
+                                <span>时间：{function name="format_date" v=$cont.create_time}</span>
+                                <p>该合同于{$cont.renewTime}发生更新<a href="{url x="index" r="account/contshow"}?id={$cont.id}&tag=download_tsa&ajax=0" class="pl20">下载旧版</a></p>
+                                {/if}
+                                {/if}
+                            </td>
+                            <td width="215">
+                                <!--{if $is_agency eq 1}-->
+                                <!--{if $cont.is_needsign eq 0}-->
+                                <!--{if $cont.cont_pass}-->
+                                <!--<em class="btn-gray">已通过</em>-->
+                                <!--{else}-->
+                                <!--&lt;!&ndash;<a class="button_cz" href="/account/contsign?cid={$cont.id}&did={$deal.id}&p={$p}">通过</a>&ndash;&gt;-->
+                                <!--{/if}-->
+                                <!--{else}-->
+                                <!--{if $cont.cont_alone_pass eq 1}-->
+                                <!--<em class="btn-gray">已通过</em>-->
+                                <!--{elseif $cont.cont_alone_pass eq 2}-->
+                                <!--<em class="btn-gray">已拒签</em>-->
+                                <!--{else}-->
+                                <!--<a class="button_cz" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}">通过</a>-->
+                                <!--<a class="button_cz" href="/account/contresign?tag=nopass&cid={$cont.id}&did={$deal.id}&p={$p}">拒绝</a>-->
+                                <!--{/if}-->
+                                <!--{/if}-->
+                                <!--{elseif $is_advisory eq 1}-->
+                                <!--{if $cont.is_needsign eq 0 }-->
+                                <!--{if $cont.cont_pass eq 2}-->
+                                <!--<em class="color-gray">&#45;&#45;</em>-->
+                                <!--{elseif $cont.cont_pass eq 1}-->
+                                <!--<em class="btn-gray">已同意</em>-->
+                                <!--{else}-->
+                                <!--<a href="/account/contsign?cid={$cont.id}&did={$deal.id}&p={$p}">-->
+                                <!--<em class="color-blue1">同意</em>-->
+                                <!--</a>-->
+                                <!--{/if}-->
+                                <!--{/if}-->
+                                <!--{if $cont.is_needsign eq 1}-->
+                                <!--{if $cont.cont_alone_pass eq 1}-->
+                                <!--<em class="btn-gray">已同意</em>-->
+                                <!--{elseif $cont.cont_alone_pass eq 2}-->
+                                <!--<em class="btn-gray">已拒签</em>-->
+                                <!--{else}-->
+                                <!--<a class="button_cz" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}"><em>同意</em></a>-->
+                                <!--<a class="button_cz" href="/account/contresign?tag=nopass&cid={$cont.id}&did={$deal.id}&p={$p}"><em>拒绝</em></a>-->
+                                <!--{/if}-->
+                                <!--{/if}-->
+                                <!--{else}-->
+                                <!--{if $is_borrower eq 1 and $cont.is_needsign eq 0 } -->
+                                <!--{if $cont.cont_pass eq 2}-->
+                                <!--<em class="color-gray">&#45;&#45;</em>-->
+                                <!--{elseif $cont.cont_pass eq 1}-->
+                                <!--<em class="btn-gray">已同意</em>-->
+                                <!--{else}-->
+                                <!--&lt;!&ndash;<a class="button_cz" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}"><em>同意</em></a>&ndash;&gt;-->
+                                <!--{/if} -->
+                                <!--{/if}-->
+                                <!--{if $cont.is_needsign eq 1}-->
+                                <!--{if $cont.cont_alone_pass eq 1}-->
+                                <!--<em class="btn-gray">已同意</em>-->
+                                <!--{elseif $cont.cont_alone_pass eq 2}-->
+                                <!--<em class="btn-gray">已拒签</em>-->
+                                <!--{else}-->
+                                <!--<a class="button_cz" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}"><em>同意</em></a>-->
+                                <!--<a class="button_cz" href="/account/contresign?tag=nopass&cid={$cont.id}&did={$deal.id}&p={$p}"><em>拒绝</em></a>-->
+                                <!--{/if}-->
+                                <!--{/if}-->
+                                <!--{/if}-->
+                            </td>
+                            <td>
+                                {if $is_loan eq true}
+                                    {if $cont.hasRenew eq 1}
+                                        <a href="javascript:clickopen({$cont.id},true,{$cont.number},{$cont.deal_id});" class="mr15 color_blue">查看</a>
+                                        <a href="{url x="index" r="account/contshow"}?id={$cont.id}&tag=download_new&ajax=0&number={$cont.number}&dealId={$cont.deal_id}" target="_blank">下载</a>
+                                    {else}
+                                        {if $is_borrower eq 1 and $cont.is_needsign eq 0 }
+                                            {if $cont.cont_pass eq 2}
+                                            <em class="color-gray">--</em>
+                                            {elseif $cont.cont_pass eq 1}
+                                                {if $isDt neq 1}
+                                                <em class="btn-gray">已同意</em>
+                                                {/if}
+                                            {else}
+                                                {if $isDt neq 1}
+                                                    <a class="button_cz" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}"><em>同意</em></a>
+                                                {/if}
+                                            {/if}
+                                        {/if}
+                                        {if $cont.is_needsign eq 1}
+                                            {if $cont.cont_alone_pass eq 1}
+                                            <em class="btn-gray">已同意</em>
+                                            {elseif $cont.cont_alone_pass eq 2}
+                                            <em class="btn-gray">已拒签</em>
+                                            {else}
+                                                {if $isDt neq 1}
+                                                    <a class="button_cz" href="/account/contresign?tag=pass&cid={$cont.id}&did={$deal.id}&p={$p}"><em>同意</em></a>
+                                                    <a class="button_cz" href="/account/contresign?tag=nopass&cid={$cont.id}&did={$deal.id}&p={$p}"><em>拒绝</em></a>
+                                                {/if}
+                                            {/if}
+                                        {/if}
+                                    {/if}
+                                {/if}
+                            </td>
+                            <td>
+                                {if $is_project eq 1}
+                                    <a href="javascript:clickopen({$cont.id},false,{$cont.number},0,{$cont.project_id},1);" class="mr15 color_blue">查看</a>
+                                    <a href="{url x="index" r="account/contshow"}?id={$cont.id}&tag=download_tsa&ajax=0&number={$cont.number}&dealId=0&projectId={$cont.project_id}&type=1" target="_blank" class="color_blue">下载</a>
+                                {else}
+                                    <a href="javascript:clickopen({$cont.id},false,{$cont.number},{$cont.deal_id});" class="mr15 color_blue">查看</a>
+                                    <a href="{url x="index" r="account/contshow"}?id={$cont.id}&tag=download_tsa&ajax=0&number={$cont.number}&dealId={$cont.deal_id}" target="_blank" class="color_blue">下载</a>
+                                {/if}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+        <div class="pages w715">
+            <i>已签署{$sign_num}份</i> {$pages}
+        </div>
+    </div>
+</div>
+<div id="pact-dialog" style="display: none"></div>
+<script>
+    function clickopen(id,shownew,number,deal_id ,project_id ,type) {
+        if(typeof deal_id == 'undefined'){
+            deal_id = 0;
+        }
+        if(typeof project_id == 'undefined'){
+            project_id = 0;
+        }
+        if(typeof type == 'undefined'){
+            type = 0;
+        }
+        if(shownew){
+            showTag = 'shownew';
+        }else{
+            showTag = 'show';
+        }
+        var url = '{url x="index" r="account/contshow"}?tag='+showTag+'&ajax=1&id=' + id +'&number='+number+'&dealId='+deal_id+'&projectId='+project_id+'&type='+type;
+        $.weeboxs.open(url, {
+            boxid : null,
+            boxclass: "contract_box",
+            contentType : 'iframe',
+            showButton : true,
+            showCancel : false,
+            showOk : false,
+            title : '合同详情',
+            width : 750,
+            height : 550,
+            type : 'wee',
+            onclose : function() {
+                null
+            }
+        });
+    }
+            function clickDTopen(number,ctype){
+
+                var url = '/account/DtContShow?tag=show&amp;ajax=1&amp;ctype='+ctype+'&amp;number=' + number;
+                $.weeboxs.open(url, {boxid:null,contentType:'iframe',showButton:true, showCancel:false, showOk:false,title:'合同详情',width:750,height:550,type:'wee',onclose:function(){null}});
+            }
+
+    $(".JS_contract_down").click(function() {
+        var dialog = $.weeboxs.open("该合同未盖时间戳，请确认是否下载该合同？", {
+            boxid : null,
+            contentType : 'text',
+            showButton : true,
+            showCancel : true,
+            showOk : true,
+            title : '提示',
+            width : 300,
+            type : 'wee',
+            onclose : function() {
+                null
+            },
+            onok : function() {
+                location.href="{url x="index" r="account/contshow"}?id={$cont.id}&tag=download&ajax=0";
+                dialog.close();
+            }
+        });
+    });
+</script>

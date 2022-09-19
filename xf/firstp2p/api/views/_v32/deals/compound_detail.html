@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html> 
+<html>
+<head>
+    <title>{$deal.title}</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-detail.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/progressbar.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/progressbar.iOS7.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="m-main">
+        <div class="p_detail">
+            <div class="inv-main">
+                <div class="inv-header">
+                    <div class="inh-title">
+                        <h2>
+                        {if $deal.deal_tag_name}
+                            <span class="ui_tips">{$deal.deal_tag_name}</span>
+                        {/if}
+                        {$deal.old_name}
+                        </h2>
+                    </div>
+                    <div class="invh-center notice_item">
+                    	<span class="invh-left">
+                            <p class="f10 color_gray">预期年化</p>
+                            {$deal.income_base_rate}<span>%起</span><span class="color_gray f10"></span>
+                        </span>
+                        <span class="invh-right">
+                            <p class="f10 color_gray">期限</p>
+                            {$deal.timelimit}
+                        </span>
+                        <span class="hkfs f12 color_gray">
+                        <p>&nbsp</p>
+                            {$deal.repayment}
+                        </span> 
+                    </div>
+                    <div class="zhd_lv color_gray">{$deal.dayRateShow}%日复利</div>
+                    <div class="invh-prog clearfix">
+                        <div class="progress-blue">
+                            <span style="width: {$deal.loan_rate}%" class="pgbar"></span>
+                        </div> 
+                    </div>
+                    <div class="invh-bottom clearfix cl color_gray">
+                        
+                    <span class="fr">
+                        剩{if $deal.deal_status eq 3}0.00{else}{$deal.need_money_detail}{/if}/{$deal.borrow_amount_format_detail}万
+                    </span>
+                    <span class="fl">
+                        {if $deal.min_loan_money < 1000}{$deal.min_loan_money}元{else}{$deal.min_loan}万{/if}起
+                    </span>
+                    </div>
+                </div>
+                <div class="title">预期收益示意图</div>
+                <div class="inv-center">
+                     <div class="invc_top">
+                        <p>投资天数：<em class="inv_day">{$deal.timeBegin}天</em>&nbsp&nbsp每万元预期收益：<em class="iny_money">{$deal.defaultProfit}元</em></p>
+                    </div>
+                    <div class="invc_bar">
+                        <div id="progressbar-1">
+                        </div>
+                    </div>
+                    <div class="invc_footer">
+                        <em class="begin_time">{$deal.timeBegin}</em>天<span><em class="end_time">{$deal.timeEnd}</em>天</span>
+                    </div>
+                </div>
+                <div class="inv-footer">
+                    <div class="invf_top">
+                        <ul class="menu">
+                        {if $deal.warrant neq 0}
+                            <li class="select"><span>融资方信息<em></em></span></li>
+                            <li><span>保障方信息<em></em></span></li>
+                            <li><span>投资记录<em></em></span></li>
+                        {else}
+                            <li class="select" style="width:50%"><span>融资方信息<em></em></span></li>
+                            <li style="width:50%"><span>投资记录<em></em></span></li>
+                        {/if}
+                        </ul>
+                        <div class="invf_write">
+                        </div>
+                    </div>
+                    <div class="invf_txt">
+                        <div class="tb0">
+                            <table>
+                                <colgroup>
+                                    <col width="25%" />
+                                    <col width="75%" />
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th>简介：</th>
+                                        <td class="tb_line">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tb_line" colspan="2" style="word-break:break-word !important">
+                                        {if $project_intro}
+                                            {$project_intro}
+                                        {elseif $company.is_company eq 1}
+                                            {if $company.company_description_html}
+                                                {$company.company_description_html}
+                                            {else}
+                                                -
+                                            {/if}
+                                        {elseif $deal.is_crowdfunding eq 1 || $company.is_company eq 0}
+                                            {if $deal_user_info.info}
+                                                {$deal_user_info.info}
+                                            {else}
+                                                -
+                                            {/if}
+                                        {else}
+                                            -
+                                        {/if}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {if $deal.warrant neq 0}
+                        <div class="tb1">
+                            <table>
+                                <colgroup>
+                                    <col width="25%" />
+                                    <col width="75%" />
+                                </colgroup>
+                                <tbody>
+                                <tr>
+                                    <th>保障方式：</th>
+                                    <td>
+                                        {if $deal.warrant eq 1 || $deal.warrant eq 2 || $deal.warrant eq 3}第三方提供担保{elseif $deal.warrant eq 4}第三方资产收购{else}无担保{/if}
+                                    </td>
+                                </tr>
+                                {if $deal.agency_info.brief}
+                                <tr>
+                                    <th colspan='2'>保障方介绍：</th>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>
+                                        {$deal.agency_info.brief}
+                                    </td>
+                                </tr>
+                                {/if}
+                            </tbody>
+                            </table>
+                        </div>
+                        {/if}
+                        <div class="tb2">
+                            {if $load_list}
+                                {foreach from=$load_list item="loan"}
+                                <div class="bid_list">
+                                    <div class="float_l">
+                                        <p>{$loan.user_deal_name}</p>
+                                        <p class="gray">{function name="to_date" v="$loan.create_time" f="Y-m-d"}</p>
+                                    </div>
+                                    <div class="float_r">{function name="format_price" v="$loan.money" b=0}元</div>
+                                </div>
+                                {/foreach}
+                                {else}
+                                <div class="tc mt20">暂无投资人</div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="inv-fbtn">
+                    <a href="#" class="ui_red_btn">立即投资</a>
+                </div> -->
+            </div>
+        </div>
+        <div class="ui_risk_tips"><em class="line"></em><span>市场有风险，投资需谨慎</span></div>
+    </div>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/gmu/touch.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/gmu/gmu.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/gmu/event.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/gmu/widget.js');?>" type="text/javascript"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v3.2/js/gmu/progressbar.js');?>" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        // 加载入口模块
+        $(function () {
+
+            //滑块
+            var $begin_time = $(".begin_time");
+            var $end_time = $(".end_time");
+            var bilv = (($end_time.html().trim() - $begin_time.html().trim()) / 100);
+            var dayRate = '{$deal.dayRate}';
+            var money = 10000; // 每万元收益计算
+            var begin_num = parseInt($begin_time.html());
+            var end_num = parseInt($end_time.html());
+            var p_value;
+            var days;
+            $('#progressbar-1').progressbar({
+                valueChange: function () {
+                    p_value = this.value();
+                    days = (p_value * bilv + begin_num).toFixed(0);
+                    if (p_value < 5) {
+                        days = begin_num;
+                    }
+                    if (p_value > 95) {
+                        days = end_num;
+                    }
+                    $('.inv_day').html(days + "天");
+                    $('.iny_money').html((money * Math.pow(dayRate, days) - money).toFixed(2) + "元");
+                }
+            });
+        });
+
+    
+    </script>
+{include file="api/views/_v32/footer.html"}

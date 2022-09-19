@@ -1,0 +1,132 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+<div class="main_title">信力规则试算</div>
+<div class="blank5"></div>
+
+<div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            第1年信宝量：
+            <input type="text" class="textbox" name="xb_year" value="{:trim($_REQUEST['xb_year'])}" />亿个
+            每天营销费用：
+            <input type="text" class="textbox" name="money_day" value="{:trim($_REQUEST['money_day'])}" /> 万元
+            <br/><br/>
+            投资网贷信力(分/每万元)：
+            <input type="text" class="textbox" name="conf_deal" value="{:trim($_REQUEST['conf_deal'])}" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            投资尊享(分/每万元)：
+            <input type="text" class="textbox" name="conf_zx" value="{:trim($_REQUEST['conf_zx'])}" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            投资智多鑫信力(分/每万元)：
+            <input type="text" class="textbox" name="conf_dt" value="{:trim($_REQUEST['conf_dt'])}" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            邀请信力：
+            <input type="text" class="textbox" name="conf_coupon" value="{:trim($_REQUEST['conf_coupon'])}" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            签到信力：
+            <input type="text" class="textbox" name="conf_login" value="{:trim($_REQUEST['conf_login'])}" />
+            <input type="hidden" value="Xinli" name="m" />
+            <input type="hidden" value="index" name="a" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            统计日期:
+            <input type="text" class="textbox" name="log_date" value="{:trim($_REQUEST['log_date'])}" />
+            <br/><br/>
+            <input type="submit" class="button" value="试算" />
+        </form>
+    </div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<table class="form conf_tab" width="200px" cellpadding=0 cellspacing=0 rel="1">
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+    <tr>
+        <td class="item_title">日年化投资额:</td>
+        <td class="item_input">{$sum_deal} 万元</td>
+    </tr>
+    <tr>
+        <td class="item_title">日邀请首投人数:</td>
+        <td class="item_input">{$sum_coupon} 人</td>
+    </tr>
+    <tr>
+        <td class="item_title">日签到人数:</td>
+        <td class="item_input">{$sum_login} 万人</td>
+    </tr>
+    <tr>
+        <td class="item_title">每日信宝发行量:</td>
+        <td class="item_input">{$xb_day} 万个</td>
+    </tr>
+    <tr>
+        <td class="item_title">总信力池:</td>
+        <td class="item_input">{$sum_xb_day} 分 | {$sum_point_function} 分 | {$activityPool} 分</td>
+    </tr>
+    <tr>
+        <td class="item_title">每分信力兑换信宝数量:</td>
+        <td class="item_input">{$one_point} 个</td>
+    </tr>
+    <tr>
+        <td class="item_title">每个信宝价值:</td>
+        <td class="item_input">{$money_xb} 元/个</td>
+    </tr>
+    <tr>
+        <td class="item_title">每分信力价值:</td>
+        <td class="item_input">{$money_point} 元/信力</td>
+    </tr>
+    <tr>
+        <td class="item_title">签到价值:</td>
+        <td class="item_input">{$money_login} 元/次</td>
+    </tr>
+</table>
+
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="main_title">分类信力汇总</div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    datasource="list_type"
+    show="source_type_str:类型
+        ,sum_point:信力
+        ,value:数据(人、万元)
+        ,rate:占比
+        "
+/>
+
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="blank5"></div>
+<div class="main_title">信力分布</div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="item"
+    datasource="list"
+    show="point_zone:信力区段(分)
+        ,point_zone_money:等值年化投资额(万元)
+        ,count_user:用户数
+        ,sum_point:信力总和
+        ,sum_point_rate:信力总和占比=信宝占比
+        ,xb:信宝总数
+        ,xb_avg:人均信宝数
+"
+/>
+
+
+<div class="blank5"></div>
+</div>
+
+<include file="Public:footer" />
+

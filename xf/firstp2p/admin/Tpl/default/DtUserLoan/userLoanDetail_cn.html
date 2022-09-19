@@ -1,0 +1,37 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+
+<div class="main">
+<div class="main_title">出借清单 <a href='{:u("DtDealLoan/index",array("project_id"=>$dealId))}' class="back_list">{%BACK_LIST}</a></div>
+<table id="dataTable" class="dataTable" cellpadding="0" cellspacing="0">
+    <tr><td colspan="20" class="topTd">&nbsp; </td></tr>
+    <tr class="row">
+        <th width="70px">出借编号</th>
+        <th>出借金额</th>
+        <th>期限</th>
+        <th>计息日</th>
+        <th>借款人</th>
+        <th>状态</th>
+    </tr>
+
+    <?php foreach($data as $k=>$v) :?>
+    <tr class="row">
+        <td><?= $v['p2pDealId']?></td>
+        <td><?= $v['totalMoney']?></td>
+        <td><?= $v['repayTime']?></td>
+        <td><?= $v['repayStartTime'] ? date('Y-m-d H:i:s',$v['repayStartTime']) : '--'?></td>
+        <td><?= $v['borrowUser']?></td>
+        <td>
+           <?php if($v['status'] == 1):?> 还款中<?php endif;?>
+           <?php if($v['status'] == 2):?> 已赎回<?php endif;?>
+           <?php if($v['status'] == 3):?> 已还款<?php endif;?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

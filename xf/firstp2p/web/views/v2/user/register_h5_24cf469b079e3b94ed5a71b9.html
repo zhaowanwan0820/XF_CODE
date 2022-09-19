@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no,email=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>登录 - 典当联盟</title>
+    <link rel="shortcut icon" type="image/x-icon" href="">
+    <link href="<?php echo $this->asset->makeUrl('v2/css/event/m-base.css');?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v2/css/event/m-common.css');?>" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v1/js/risk/frms-fingerprint-min.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/zepto.min.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/common.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/iscroll.js');?>"></script>
+    <script src="<?php echo $this->asset->makeUrl('v1/js/oauth/mobile/common.js');?>"></script>
+    <link href="<?php echo $this->asset->makeUrl('v1/css/oauth//mobile/p-user-register.css');?>" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        window['_eventRegisterAddParams'] = {"cn":"{$cn}","from_platform":"{$from_platform}"};
+    </script>
+    <style class="JS-old_style">
+        body { background: #f5f5f9; }
+        .reg_top { margin: 0 15px; color: #909ba8; }
+        .ui_title { height: 45px; text-align: center; font-size: 18px; line-height: 45px; background: #fff; position: relative; }
+            .ui_title a { color: #41474d; font-size: 14px; }
+            .ui_title .ui_back { position: absolute; left: 10px; }
+        .ui_icon_back { background: url(<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/back.png'); ?>) no-repeat; width: 9px; height: 20px; display: inline-block; background-size: 9px 17px; margin: 0 5px 0 0px; vertical-align: middle; }
+        .ui_register .reg_finish_btn[disabled=disabled] { background-color: #fc9e97; border-bottom: 2px solid #fc9e97; }
+        /*弹出层*/
+        .ui-popup-wrap { width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); text-align: center; position: fixed; top: 0px; left: 0; z-index: 200; }
+        .ui-pop-box { width: 275px; position: absolute; left: 50%; margin-left: -137px; background: #FFF; border-radius: 5px; font-size: 15px; z-index: 201; }
+        .ui-pop-box .pop-head { height: 34px; line-height: 34px; margin: 0 10px; border-bottom: 1px solid #e6e6e6; position: relative; }
+        .ui-pop-box .pop-head h1 { color: #f64172; text-align: center; }
+        .ui-pop-box .pop-head .pop_close { position: absolute; right: -10px; top: 2px; width: 30px; height: 30px; background: url(../../../images/oauth/mobile/pop_cha.png) no-repeat center center; background-size: 20px 20px; }
+        .ui-pop-box .pop-body { padding: 12px 15px 20px; }
+        .ui-pop-box .pop-body .btn-wrap { text-align: center; margin-top: 12px; }
+        .ui-pop-box .pop-btn { width: 100%; border-radius: 17px; height: 35px; line-height: 35px; display: inline-block; font-size: 15px; text-align: center; border: none; }
+        .ui-pop-box .btn-ok { background: #f64172; color: #FFF; }
+    </style>
+    {if isset($fzjs)}
+    <script type="text/javascript" src="{$fzjs}"></script>
+    {/if}
+</head>
+<body>
+    <div class="p_login_new">
+        {if !$isMicroMessengerUserAgent}
+        <div class="ui_title JS-title"><a class="ui_back" href="http://m.cnpawn.cn"><i class="ui_icon_back"></i>返回</a><span class="JS-title_name">填写注册信息</span></div>
+        {/if}
+        <div class="login_banner">
+            <img src="<?php echo $this->asset->makeUrl('v1/images/oauth/mobile/upload/re_diandang_banner2.png');?>" width="100%">
+        </div>
+        <div class="reg_top tr pt10 f14">已有账号？<a href="http://m.cnpawn.cn/Pwap/User/login ">立即登录</a></div>
+        <div id="JS-regpanel" class="ui_register">
+            <form id="register_form" name="register_form" action="/user/doRegister{$querystring}" method="POST">
+                <input id="telCode" type="hidden" name="code" value="" />
+                <input type="hidden" name="type" value="h5" />
+                <input type="hidden" name="agreement" value="1" />
+                <input type="hidden" name="from_site" value="{$from_site}" />
+                <?php echo token_input(); ?>
+                <div class="form_box">
+                    <div class="border_b">
+                        <div class="ui_tel_tips">+86</div>
+                        <input type="tel" id="mobile" name="mobile" class="ui_reg_input JS-input_mobile" placeholder="手机号码（用于接收验证码）" value="{$mobile}">
+                    </div>
+                    <div class="border_b">
+                        <input type="password" id="password" name="password" class="ui_reg_input JS-input_pwd" placeholder="登录密码（6-20位数字/字母/标点）">
+                    </div>
+                    {if $event_cn_hidden != 1}
+                    <div class="border_b">
+                        <input value="{$cn}" type="text" id="invite" name='invite' class="ui_reg_input JS-input_invite" placeholder="邀请码（选填）" />
+                    </div>
+                    {/if}
+                    <div class="border_b">
+                        <input type="tel" id="captcha" name="captcha" class="ui_reg_input JS-input_captcha" placeholder="右侧数字">
+                        <div class="yz_img"><img class="JS-verifyimg" src="" width="80"></div>
+                    </div>
+                </div>
+                <div>
+                    <input id="register_btn" type="button" class="reg_finish_btn fontHY" value="注册">
+                    <p class="tc pt10 f14 JS-regterm">同意<span class="blue">《网信理财用户协议》</span></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            var _inMcodeRequest = false;
+            // 按钮disable状态逻辑
+            function upateSubmitButton() {
+                var disabled = _inMcodeRequest || $('#mobile').val() == '' || $('#password').val() == '' || $('#captcha').val() == '';
+                if (disabled) {
+                    $('#register_btn').attr('disabled', 'disabled');
+                } else {
+                    $('#register_btn').removeAttr('disabled');
+                }
+            }
+            $('#mobile').bind("input", upateSubmitButton);
+            $('#password').bind("input", upateSubmitButton);
+            $('#captcha').bind("input", upateSubmitButton);
+            var _upateSubmitButtonCount = 10;
+            var _upateSubmitButtonTimer = setInterval(function(){
+                upateSubmitButton();
+                _upateSubmitButtonCount--;
+                if (_upateSubmitButtonCount < 0) {
+                    clearInterval(_upateSubmitButtonTimer);
+                }
+            }, 300);
+
+            // 图片验证码逻辑
+            function updateCaptchaImg() {
+                $('.yz_img img').attr('src', '/verify.php?w=40&h=20&rb=0&rand=' + new Date().valueOf());
+            }
+            $('.yz_img').click(function() {
+                updateCaptchaImg();
+            });
+            updateCaptchaImg();
+
+            // 显隐密码
+            var _pwdFlag = false;
+            function updatePassWordStyle(show) {
+                $('#password')[0].type = show ? 'text' : 'password';
+                $('#pwd_show_btn')[0].innerHTML = show ? '隐藏' : '显示';
+            }
+            $('#pwd_show_btn').bind("click", function(){
+                _pwdFlag = !_pwdFlag;
+                updatePassWordStyle(_pwdFlag);
+            });
+
+            // step1
+            $('#register_btn').click(function(event) {
+                if (_inMcodeRequest) return;
+                // 手机号
+                if(!P2PWAP.common.checkMobile($('#mobile')[0])){
+                    return;
+                }
+                // 密码
+                if(!P2PWAP.common.checkPassword($('#password')[0])){
+                    return;
+                }
+                // 验证码
+                if(!P2PWAP.common.checkCaptcha($('#captcha')[0])){
+                    return;
+                }
+                getMCode();
+                // 获取手机验证码
+                function getMCode(){
+                    _inMcodeRequest = true;
+                    upateSubmitButton();
+                    P2PWAP.util.ajax('/user/MCode', 'post', function(obj){
+                        _inMcodeRequest = false;
+                        upateSubmitButton();
+                        if (obj.code == 1){
+                            var sendingAjax;
+                            $('body').append('<div class="ui-popup-wrap"></div>');
+                            var html= '';
+                            html += '<div class="ui-pop-box reg_send_box" style="margin-top:-122px;top:50%">';
+                            html += '    <div class="pop-head">';
+                            html += '        <h1>填写短信验证码</h1>';
+                            html += '        <div class="pop_close"></div>';
+                            html += '    </div>';
+                            html += '    <div class="pop-body">';
+                            html += '        <p class="tc">已向'+ $('#mobile').val().replace(/(\d{3})\d{4}(\d{4})/, function(_0, _1, _2) {return _1 + "****" + _2 }) +'发送验证短信</p>';
+                            html += '        <div class="pop-form">';
+                            html += '            <form id="" name="" method="POST" onsubmit="return false;">';
+                            html += '                <div class="form_mid">';
+                            html += '                    <div class="ipt-list">';
+                            html += '                        <div class="txt-wrap">';
+                            html += '                            <input id="telCaptcha" class="img-yanzheng" type="text" maxlength="6" placeholder="短信验证码" name="telCaptcha">';
+                            html += '                        </div>';
+                            html += '                        <div class="resend"><input id="action-send-code" type="button" class="re-btn blue sending" value="正在获取中" disabled="disabled"/></div>';
+                            html += '                    </div>';
+                            html += '                </div>';
+                            html += '                <div class="btn-wrap">';
+                            html += '                    <input id="telCodeSendBtn" class="pop-btn btn-ok" type="button" value="完成" />';
+                            html += '                </div>';
+                            html += '            </form>';
+                            html += '        </div>';
+                            html += '    </div>';
+                            html += '</div>';
+                            $('.ui-popup-wrap').html(html);
+                            P2PWAP.ui.updateTimeLabel($('#action-send-code')[0],125);
+                            P2PWAP.ui.btnDisableType([$('#telCaptcha')[0]], $('#telCodeSendBtn')[0]);
+
+                            $('.ui-popup-wrap .pop_close').click(function(event) {
+                                if(sendingAjax) sendingAjax.abort();
+                                $('.ui-popup-wrap').remove();
+                            });
+
+                            $('#action-send-code').click(function(event) {
+                                var $this = $(this);
+                                $this.addClass('sending').attr('disabled','disabled');
+                                sendingAjax = P2PWAP.util.ajax('/user/MCode', 'post', function(obj){
+                                    if (obj.code == 1){
+                                        P2PWAP.ui.updateTimeLabel($('#action-send-code')[0],125);
+                                    } else {
+                                        P2PWAP.ui.showErrorTip(obj.message);
+                                        $this.removeClass('sending').removeAttr('disabled');
+                                    }
+                                    sendingAjax = null;
+                                }, function(msg){
+                                    P2PWAP.ui.showErrorTip(msg);
+                                    sendingAjax = null;
+                                }, {
+                                    type: '1',
+                                    isrsms: '0',
+                                    t: new Date().getTime(),
+                                    mobile: $('#mobile').val(),
+                                    token: $('#token').val(),
+                                    token_id: $('#token_id').val(),
+                                    password: $('#password').val(),
+                                    captcha: $('#captcha').val()
+                                });
+                            });
+
+                            $('#telCodeSendBtn').click(function(event) {
+                                var val = $('#telCaptcha').val();
+                                if (!/^\d{6}$/.test(val)) {
+                                    P2PWAP.ui.showErrorTip('请填写6位数字验证码');
+                                } else {
+                                    $('#telCode').val(val);
+                                    $('#register_form').submit();
+                                }
+                            });
+                        } else {
+                            P2PWAP.ui.showErrorTip(obj.message);
+                        }
+                    }, function(msg){
+                        _inMcodeRequest = false;
+                        upateSubmitButton();
+                        P2PWAP.ui.showErrorTip(msg);
+                    }, {
+                        type: '1',
+                        isrsms: '0',
+                        t: new Date().getTime(),
+                        mobile: $('#mobile').val(),
+                        token: $('#token').val(),
+                        token_id: $('#token_id').val(),
+                        password: $("#password").val(),
+                        captcha: $('#captcha').val()
+                    });
+                }
+            });
+
+             {if isset($errorMsg)}
+             P2PWAP.ui.showErrorTip('{$errorMsg}');
+             {/if}
+            });
+    </script>
+    <!--  注册协议 -->
+    <script type="text/javascript">
+        var rootDomain='{$rootDomain}';
+        {if $isMaster == 1}
+        var explain = "备案号为：京ICP证130046号，以下简称网信理财",
+            isMaster = true;
+        {else}
+        var explain = "以下简称网信理财",
+            isMaster = false;   
+        {/if}
+    </script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v2/js/event/register_terms.js');?>"></script>
+
+    <script type='text/javascript'>
+        var _ncf = {"prd": "firstp2p", "pstr": "", "pfunc": null, "pcon": "", "pck": {"channel": "channel", "fpid": "fpid"}, "trid": "", "channel": ['pubid', 'mediumid', 'adid', 'adsize'], "rfuniq": [], "rfmuti": []};
+        (function(p, h, s) {
+            var o = document.createElement(h);
+            o.src = s;
+            p.appendChild(o)
+        })(document.getElementsByTagName("HEAD")[0], "script", "<?php echo $this->asset->makeUrl('default/js/ncfpb.1.5.min.js');?>");
+    </script>
+</body>
+</html>

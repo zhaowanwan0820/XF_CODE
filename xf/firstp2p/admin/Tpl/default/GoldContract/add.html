@@ -1,0 +1,86 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript">
+
+    function check_form(){
+        var contract_title = $('#contractTitle').val();
+        var name = $('#name').val();
+
+        if(contract_title.length == 0){
+            alert('请输入模板标题');
+            return false;
+        }
+        if(name.length == 0){
+            alert('请输入模板标识');
+            return false;
+        }
+        return true;
+    }
+</script>
+<style>
+    .two-columns {border-collapse:collapse;}
+    .two-columns td {border:0;vertical-align:top}
+</style>
+<div class="main">
+    <div class="main_title">添加模板 <a href="{:u("DtContract/showTemplates")}&typeId=136&contractVersion=01.00" class="back_list">{%BACK_LIST}</a></div>
+    <div class="blank5"></div>
+    <form name="add" action="__APP__" method="post">
+        <table class="form" cellpadding=0 cellspacing=0>
+            <tr>
+                <td colspan=2 class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">合同标题:</td>
+                <td class="item_input">
+                    <input type='text' id='contractTitle' name='contractTitle' value='{$tpl.contractTitle}' size='30' />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">模板标识:</td>
+                <td class="item_input">
+                标识前缀：
+                <select name="tplIdentifierId" id="tplIdentifierId" >
+                    <foreach name="tpl_identifier_list" item="tpl_identifier">
+                        <option value="{$tpl_identifier.id}">{$tpl_identifier.name}({$tpl_identifier.title})</option>
+                    </foreach>
+                </select>
+                标识后缀：
+                    <input type='text' id='name' name='name' value='{$tpl.name}' size='30' > 
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title">{%CONTENT}:</td>
+                <td class="item_input">
+
+                    <table class="two-columns" style='width:100%;'>
+                        <tr>
+                            <td class="item_input" id='html1'>
+                                <html:editor id='content1' name="content" type="KINDEDITOR" content="{$tpl_info.content}" style="width:700px; height:450px;"/></td>
+                            <!-- td>合同模板常用变量：<br><br>{$tip_variable}</td -->
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                    <!--隐藏元素-->
+                    <input type="hidden" name="m" value="GoldContract" />
+                    <input type="hidden" name="a" value="doAdd" />
+                    <input type="hidden" name="typeId" value="{$typeId}">
+                    <input type="hidden" name="type" value="2">
+                    <input type='hidden' name='version' value='{$contractVersion}'>
+                    <input type="hidden" name='isHtml' value="1">
+                    <input type="hidden" value="true" name="save" />
+                    <input type="submit" class="button" value="{%ADD}" onclick='return check_form();'/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<include file="Public:footer" />

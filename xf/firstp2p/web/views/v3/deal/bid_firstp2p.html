@@ -1,0 +1,651 @@
+{include file="web/views/v3/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_investment_view.css');?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_deal_bid_firstp2p.css');?>" />
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/investment/p_investment_view.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/investment/discount_firstp2p.js');?>"></script>
+<link href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.1.css');?>" rel="stylesheet" type="text/css" />
+<style>
+    .pagination{margin-bottom:10px;}
+    .hiden{display:none}
+    .fz_div{margin-top:10px;}
+    .fz_div p{color:#999!important;line-height:20px!important;}
+    /*03-12 充值优化修改*/
+    .weedialog .dialog-cancel, .weedialog .dialog-cancel:hover, .weedialog .dialog-cancel:active {height:38px;}
+    .weedialog table .dialog-content {padding-bottom: 40px;padding-top:40px;}
+    .card_list_con {position: relative;padding-left:51px;text-align: left;min-height: 40px;}
+    .card_list_con i { width: 42px; height: 42px; background: url(<?php echo $this->asset->makeUrl('v3/images/account/privileges_warn.png');?>) no-repeat 0px 0px; display: inline-block; margin: 17px 20px 0 0px;position: absolute;top:-13px;left:0; }
+    .charge_btn {width:285px;height:40px;line-height:40px;text-align: center;color:#fff;background: #EE4634;margin:30px auto;display: block;border-radius: 5px;}
+    .charge_tips {color:#B5B5B5;font-size: 14px;}
+</style>
+<script>
+    window["_openSvButton_"] = "{$openSvButton}";
+    var isSvUser = '{$user_info.isSvUser}';
+    var isSvOpen = '{$isSvOpen}';
+</script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.js');?>" type="text/javascript"></script>
+<!--面包屑导航开始-->
+<section  class="crumbs">
+    <div class="w1100">
+        <a href="/">首页</a>
+        <i></i><span>出借确认</span>
+    </div>
+</section>
+<!--面包屑导航结束-->
+
+<form method="post" name="BidForm" id="BidForm">
+    <input type="hidden" id='deal_id' name="id" value="{$deal.ecid}" />
+    <input type="hidden" id='total_money' value="{$total_money}" />
+    <input type="hidden" id='is_from_wxlc' value="{$isFromWxlc}" />
+    <?php echo token_input(); ?>
+    <input type="hidden" id="discountId" name="discountId">
+    <input type="hidden" id="discountType" name="discountType">
+    <input type="hidden" id="discountGroupId" name="discountGroupId">
+    <input type="hidden" id="discountSign" name="discountSign">
+    <input type="hidden" id="discountDetail" name="discountDetail">
+    <input type="hidden" id="discountGoodsPrice" name="discountGoodsPrice">
+    <input type="hidden" id="discountGoodsType" name="discountGoodsType">
+    <input type="hidden" id="discountAvaliableCount" name="discountAvaliableCount">
+    <input type="hidden" id="coupon_id" name="coupon_id" value="{$coupon.short_alias}"/>
+    <input type="hidden" id="coupon_is_fixed" name="coupon_is_fixed" value="{$coupon.is_fixed}"/>
+    <input type="hidden"  value='{$is_from_nongdan}' id="isNongDan"/>
+    <input type="hidden"  value='{$from_site.host}' id="isFromSite"/>
+    <div class="w1100">
+        <div class="p_bid_view">
+            <section>
+                <div class="touzi_top clearfix">
+                    <div class="tztop_left w982">
+                        <div class="title_box">
+                            <h1 class="dealName">{$deal.name}</h1>
+                            <div class="tagsWrap clearfix">
+                                {if $deal.deal_tag_name != ''}
+                                <span class="icon_new" title="{$deal.deal_tag_desc}">{$deal.deal_tag_name}</span>
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="line_bot">
+                            <div class="number clearfix">
+                                <dl>
+                                    <dt class="redColor">
+                                    {if $deal.income_ext_rate eq 0}
+                                        {if $deal.isBxt eq 0}
+                                        {function name="number_format" v=$deal.income_base_rate f=2}%
+                                        {else}
+                                        {if $deal.rate_show eq $deal.max_rate }
+                                        {function name="number_format" v=$deal.income_base_rate f=2}%
+                                            {else}
+                                                {function name="number_format" v=$deal.income_base_rate f=2}%~</span>{function name="number_format" v="$deal.max_rate" f="2"}%
+                                            {/if}
+                                        {/if}
+                                    {else}
+                                    {function name="number_format" v=$deal.income_base_rate f=2}%
+                                    {/if}
+                                    {if $deal.deal_type eq 1}起{/if}
+                                    </dt>
+                                    <dd>年化借款利率</dd>
+                                </dl>
+                                <dl>
+                                    <dt class="redColor">
+                                        {if $deal.deal_type eq 0}
+                                        {if $deal.loantype eq 5}
+                                        {$deal.repay_time}天
+                                        {else}
+                                        {$deal.repay_time}个月
+                                        {/if}
+                                        {else}
+                                        {function name="plus" x=$deal.lock_period y=$deal.redemption_period}~{$deal.repay_time}天
+                                        {/if}
+                                    </dt>
+                                    <dd>
+                                        {if $deal.isBxt eq 0}{if !$is_firstp2p}融资{else}借款{/if}期限{else}投资期限{/if}
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt class="blackColor">
+                                    {if $deal.deal_type eq 0}
+                                        {$deal.loantype_name}
+                                    {else}
+                                        提前{$deal.redemption_period}天申请赎回
+                                    {/if}
+                                    </dt>
+                                    <dd>还款方式</dd>
+                                </dl>
+                                <dl>
+                                    <dt class="blackColor">{function name="number_format" v=$deal.need_money_decimal f=2}元</dt>
+                                    <dd>
+                                        剩余金额
+                                    </dd>
+                                </dl>
+                            </div>
+                            {if $project_risk.name}
+                            <div class="proj_grade">
+                                <dl>
+                                    <dt>风险评估结果：</dt>
+                                    <dd><span class="f14">风险承受能力“{$project_risk.name}”及以上</span></dd>
+                                </dl>
+                            </div>
+                            {/if}
+                        </div>
+                        <div class="formBox">
+                            <div class="formGroup clearfix">
+                                <label class="gpLabel">账户余额：</label>
+                                <div class="gpCont clearfix">
+                                    <span class="blackSpan fl pr10">{function name="number_format" v=$total_money f=2}元</span>
+                                    {if $isSvOpen}
+                                        <a href="javascript:;" class="payBtn ml10 j_ph_dealCharge" data-lock="0">充值</a>
+                                    {else}
+                                        <a id="incharge" target="_blank" href="/account/charge" class="payBtn ml10">充值</a>
+                                    {/if}
+                                </div>
+                            </div>
+                            <div class="formGroup clearfix marTop1">
+                                <label class="gpLabel linH44">{if $deal.deal_type eq 0}出借金额{else}出借金额{/if}：</label>
+                                <div class="gpCont">
+                                    <div class="inputBox fl">
+                                        <input id="J_BIDMONEY" type="text" class="bidMoneyInput fl" name="bid_money" value="{$money}"/><span class="graySpan fl linH30">元</span>
+                                    </div>
+                                    <span class="graySpan fl linH44 ml10">（{if $deal.deal_type eq 0}最低出借金额{else}最低出借金额{/if}{function name="round" v=$deal.min_loan_money f=2}元）</span>
+                                    <p id='bid_tips' class="bid_tips"></p>
+                                    {if $deal.max_loan_money neq 0}
+                                    <p class="totalLimit color-gray tip">总额限投<em>{$deal.max_loan_money}</em>元</p>
+                                    {/if}
+                                </div>
+                            </div>
+                            <!-- 网信普惠关闭投资券入口 -->
+                            {if $o2oDiscountSwitch eq 1}
+                            <div class="formGroup clearfix marTop2">
+                                <label class="gpLabel">起用优惠券：</label>
+                                <div class="gpCont">
+                                    <p class="tzqTip" id="tzq_tit">您有<span>0</span>张优惠券可用</p>
+                                    <div class="tzq_choose"  id="tzq_choose" style="display:none;">
+                                        <div class="tzq_seclect" id="tzq_seclect">
+                                            <span class="active">返现券</span><span>加息券</span>
+                                        </div>
+                                        <div class="tzq_cont" id="tzq_cont">
+                                        </div>
+                                    </div>
+                                    <script id="cer_data" type="text/html">
+                                        <% if (list.length <= 0) { %>
+                                        <% if (type == 1) { %>
+                                        <div class="zw">暂无返现券</div>
+                                        <% } else { %>
+                                        <div class="zw">暂无加息券</div>
+                                        <% } %>
+                                        <% } else { %>
+                                        <table cellspacing="0" cellpadding="0" border="0" class="tzq_table">
+                                            <colgroup>
+                                                <col width="214">
+                                                <col width="200">
+                                                <col width="230">
+                                            </colgroup>
+                                            <thead>
+                                            <tr>
+                                                <th>面值／类型</th>
+                                                <th>起用金额</th>
+                                                <th>有效期至</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <% for (var i = 0; i < list.length; i++) { %>
+                                            <tr>
+                                                <td class="pl20 tl">
+                                                    <input type="radio" name="fav" id="discount_<%= list[i].discountSign %>" class="zjq_radio" data-discount='{"discountId":"<%= list[i].discountId %>","discountType":"<%= list[i].discountType %>","discountGroupId":"<%= list[i].discountGroupId %>","discountSign":"<%= list[i].discountSign %>","discountGoodsPrice":"<%= list[i].money %>","discountDetail":"<%= list[i].discountDetail %>", "discountGoodsType": "<%= list[i].discountGoodsType %>", "discountTypeDesp": "<%= list[i].discountTypeDesp %>"}' data-price="<%= list[i].discountGoodPrice %>"><span class="fx_money"><%= list[i].money %></span><% if ( type == 1) { %>元 返现券
+                                                    <% } else { %>% 加息券<% } %>
+                                                </td>
+                                                <td>满<span class="max_money"><%= list[i].deal_money %></span>元</td>
+                                                <td><%= list[i].effective_end_time %></td>
+                                            </tr>
+                                            <% } %>
+                                            </tbody>
+                                        </table>
+                                        <div class="pagination" id="pagination"></div>
+                                        <% } %>
+                                    </script>
+                                </div>
+                            </div>
+                            {/if}
+                            <div class="formGroup clearfix marTop1">
+                                <label class="gpLabel">{if $deal.deal_type eq 0}借款利息{else}预期收益{/if}：</label>
+                                <div class="gpCont clearfix">
+                                    <span class="redSpan fl" id="earning_money">0.00元</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="button" id="J_bid_submit" class="button_confirm1" value="立即出借" data-init-val="立即出借" />
+                        <div class="protocolWrap j_protocolWrap" style="display:none;" >
+                            <span>确认出借即代表您同意</span>
+                            <span class="j_contract_link">
+
+                            </span>
+                            <span>中的内容</span>
+                        </div>
+                        <div class="tc">
+                        {if !$isSvDown}
+                        {if $isShowQuickBidAuthLink}
+                        <!--<p class="mm_service">
+                               尚未开通快捷出借服务<a class="doOpen cg_openFreePs" target="_blank" href="/payment/Transit?srv=freePaymentQuickBid">去开通></a>
+                        </p>-->
+                        {/if}
+                        {/if}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="contractPopMask" id="contractPopMask"></div>
+            <div class="contractPop" id="contractPop">
+                <div class="titleBox"><span>合同和协议</span><a href="javascript:;" class="closeA"></a></div>
+                <div class="contBox" id="contractPopContBox">
+                    <div class="articleBox" id="articleBox"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="is_risk" style="display:none;">{$needForceAssess}</div>
+<div id="backurl" style="display:none;">{$backurl}</div>
+<input id="limitMoney" type="hidden" value='{$limitMoneyData.limitMoney}'/>
+<input id="levelName" type="hidden" value='{$limitMoneyData.levelName}'/>
+<input id="remainingAssessNum" type="hidden" value='{$limitMoneyData.remainingAssessNum}'/>
+<input type="hidden" id="totalMoneyHidden" value="{function name="number_format" v=$total_money f=2}"/>
+<input type="hidden" id="bonusMoneyHidden" value="{$bonusMoney}"/>
+<input type="hidden" id="isForbidTransferHidden" value="{$isFromWxlc}"/>
+<input type="hidden" id="projectRiskHidden" value="{$user_risk_tips}"
+       data-num="{$project_risk_info.remaining_assess_num}"
+       data-assessmen="{$project_risk_info.user_risk_assessment}"
+/>
+
+<script type="text/javascript">
+ var JBidSubmit = document.getElementById('J_bid_submit');
+    var JBIDMONEY = document.getElementById('J_BIDMONEY').value;
+    var iconNew = document.getElementsByClassName('dealName')[0].innerText;
+
+    JBidSubmit.onclick = function(){
+        zhuge.track('点击同意合同和协议并出借',{
+            '产品名称':JBIDMONEY,
+            '出借金额':iconNew
+        });
+    }
+    
+    jQuery(function(){
+        function switchToNum(str) {
+            if (!isNaN(str)){
+                str=Number(str);
+            }else{
+                str=0;
+            }
+            return str;
+        }
+        //单笔限额的判断的函数
+        function singleLimit() {
+            var returnVal=true;
+            var canTest=false;//是否可以重新测试
+            var bidmoney = $("#J_BIDMONEY").val();
+            bidmoney=switchToNum($.trim(bidmoney));
+            var dataJson=function () {
+                var data={};
+                var moneyVal=$('#limitMoney').val();
+                var levelName=$('#levelName').val();
+                var num=$('#remainingAssessNum').val();
+                if (moneyVal === "" | levelName === "") {
+                    data=null;
+                }else{
+                    data.limitMoney=switchToNum(moneyVal);
+                    data.levelName=levelName;
+                    if (num !== "") {
+                        data.remainingAssessNum=num;
+                    }
+                }
+                return data;
+            }();
+            var promptStr ='';//弹层上面的html布局
+            var backurl = $("#backurl").html();
+
+            if (dataJson != null) {
+                if (dataJson.limitMoney < bidmoney) {
+                    returnVal=false;
+                    dataJson.levelName=function () {
+                        var str=dataJson.levelName;
+                        if (str.charAt(str.length-1)=="型"){
+                            str=str.slice(0,-1);
+                        }
+                        return str;
+                    }();
+                    promptStr='您的风险承受能力为 '+dataJson.levelName+' 型,<br/>单笔最高出借额度为 '+dataJson.limitMoney/10000+' 万元';
+                    if($.type(dataJson.remainingAssessNum)!='undefined'){
+                        promptStr+='<br/><span class="color-gray">本年度剩余评估'+dataJson.remainingAssessNum+'次</span>';
+                        if (dataJson.remainingAssessNum>0){
+                            canTest=true;
+                        }
+                    }else{
+                        canTest=true;
+                    }
+                    if(canTest){
+                        Firstp2p.alert({
+                            text: '<div class="f16 tc">' + promptStr + '</div>',
+                            ok: function(dialog) {
+                                dialog.close();
+                                location.href="/account/riskassessment?backurl="+encodeURIComponent(backurl);
+                            },
+                            width: 480,
+                            okBtnName: '重新参与评估',
+                            boxclass: "checkrisk"
+                        });
+                    }else{
+                        Firstp2p.alert({
+                            text: '<div class="no-okbtn f16 tc">' + promptStr + '</div>',
+                            width: 480,
+                            showButton:false,
+                            boxclass: "checkrisk"
+                        });
+                    }
+                }
+            }
+            return returnVal;
+        }
+        $("#J_bid_submit").removeAttr("disabled");
+
+        //普惠站点禁止余额划转
+        function forbidTransfer(){
+            var returnVal=true;
+            var isForbidTransfer=!$('#isForbidTransferHidden').val();
+            var bidmoney = Number($("#J_BIDMONEY").val());
+            var totalMoney=Number($('#totalMoneyHidden').val().replace(',',""));
+            var bonusMoney=Number($('#bonusMoneyHidden').val().replace(',',""));
+            if(isForbidTransfer){
+                if (bidmoney>totalMoney){
+                    returnVal=false;
+                    $.showErr("余额不足，请充值");
+                }
+            }
+            return returnVal;
+        }
+
+        //项目测评弹窗
+        function projectRisk() {
+
+            var returnVal=true;
+            var projectRiskHidden=$('#projectRiskHidden');
+            var num=0;
+            var assessmen="";
+            if (projectRiskHidden.val()==1){
+                returnVal=false;
+                num = projectRiskHidden.data('num');
+                assessmen = projectRiskHidden.data('assessmen');
+                // 点击“确认出借”后，如果个人会员出借人评级低于项目评级，弹窗提示
+                var backurl = $("#backurl").html();
+                var promptStr = '';
+                promptStr = '当前您的风险承受能力为"'+assessmen +'"，<br/>'+
+                    '与项目要求不符<br/>'+
+                    '<span class="color-gray">本年度剩余评估'+ num +'次</span>';
+                if(num > 0){
+                    // 个人会员出借风险承受能力评估”周期内有效答题次数不为0
+                    Firstp2p.alert({
+                        text: '<div class="f16 tc">' + promptStr + '</div>',
+                        ok: function(dialog) {
+                            $.weeboxs.close();
+                            location.href="/account/riskassessment?backurl="+encodeURIComponent(backurl);
+                        },
+                        width: 480,
+                        okBtnName: '重新参与评估',
+                        boxclass: "checkrisk_cn"
+                    });
+                } else {
+                    // “个人会员出借风险承受能力评估”周期内有效答题次数为0
+                    Firstp2p.alert({
+                        text: '<div class="no-okbtn f16 tc">' + promptStr + '</div>',
+                        width: 480,
+                        showButton:false,
+                        boxclass: "checkrisk_cn"
+                    });
+                }
+            }
+            return returnVal;
+        }
+
+        $("#J_bid_submit").click(function(){
+            var is_risk = $("#is_risk").html();
+            var backurl = $("#backurl").html();
+            if(is_risk==1){//需要做测评
+                $.weeboxs.open("请您先完成风险承受能力评估", {
+                    boxid : null,
+                    contentType : 'text',
+                    showButton : true,
+                    showCancel : false,
+                    showOk : true,
+                    okBtnName: '立即参与评估',
+                    title : '提示',
+                    width : 430,
+                    type : 'wee',
+                    onclose : function() {
+                        null
+                    },
+                    onok : function() {
+                        location.href="/account/riskassessment?backurl="+encodeURIComponent(backurl);
+                        $.weeboxs.close();
+                    }
+                });
+            }else{
+                //单笔限额的判断
+                if (forbidTransfer() && projectRisk() && singleLimit()){
+                    $("#BidForm").submit();
+                }
+            }
+        });
+
+
+        $("#BidForm").submit(function(){
+            var bidmoney = $("#J_BIDMONEY").val();
+            var total_money = $("#total_money").val();
+            var is_from_wxlc = $("#is_from_wxlc").val();
+            var temp_money = X.accSub(total_money , bidmoney);
+            var alert_dialog = Firstp2p.alert;
+            var re = /^\d+(\.\d{1,2})?$/;
+            var min_loan_money = {function name="round" v=$deal.min_loan_money f=2};
+            if($.trim($("#J_BIDMONEY").val())=="" || !$.checkNumber($("#J_BIDMONEY").val()) || parseFloat($("#J_BIDMONEY").val()) <= 0){
+                $.showErr(LANG.BID_MONEY_NOT_TRUE,function(){
+                    $("#J_BIDMONEY").focus();
+                });
+                return false;
+            }
+
+            if({$deal.need_money_decimal} > {$deal.min_loan_money}){
+                if(bidmoney < min_loan_money){
+                    $.showErr('最低出借金额为{function name="round" v=$deal.min_loan_money f=2}元',function(){
+                        $("#J_BIDMONEY").focus();
+                    });
+                    return false;
+                }
+            }
+            if(bidmoney > {$deal.need_money_decimal}){
+                $.showErr(LANG.BID_MONEY_NOT_TRUE,function(){
+                    $("#J_BIDMONEY").focus();
+                });
+                return false;
+            }
+
+             //网信充值优化判断
+            if(is_from_wxlc  == 1 && temp_money < 0){
+                alert_dialog({
+                    width: 360,
+                    text: '<div class="card_list_con"><div><i></i>{$p2pAccountConfig.name}可用余额不足 <br>充值'+ Math.abs(temp_money) +'元后可投资</div></div><a href="/account/chargeP2P" class="charge_btn">充值</a><div class="charge_tips">您也可以将{$wxAccountConfig.name}可用余额<a href="/account/carry" style="color:#2EA7E0;">提现</a>至银行卡， 提现到账后再充值到{$p2pAccountConfig.name}</div>',
+                    showButton : false
+                });
+                return false;
+            }
+
+            var query = $(this).serialize();
+            var postBtn=$('#J_bid_submit');
+            $.ajax({
+                url:"/deal/dobid",
+                data:query,
+                dataType:"json",
+                async:false,
+                beforeSend:function(){
+                    postBtn.addClass('ui-btn-disable').attr('disabled', 'disabled').val('正在提交中...');
+                    /* 出借失败，出借金额，勾选状态不清空
+                     $('#td_agree_btn1,#td_agree_btn2,#td_agree_btn3,#td_agree_btn4').show();
+                     $('.postSuc').hide();
+                     $('#J_BIDMONEY').val("0");
+                     */
+                },
+                success:function(result){
+
+                    if(result.status==1){
+                        window.location.href=result.jump;
+                        /* $.showErr('您可以在我的P2P里查看出借记录。',
+                         function(){
+                         window.location.href=result.jump;
+                         }
+                         ,result.info);
+                         agreed1 = false;
+                         agreed2 = false;
+                         agreed3 = false;
+                         postBtn.val('出借成功'); */
+
+                    }else if(result.status == 1003){
+                        Firstp2p.supervision.finish();
+                        if(!!result.data){
+                            window.open(result.data.url);
+                            Firstp2p.supervision.lunxun({
+                              sCallback : function(obj){
+                                  if(obj.status == 1  || obj.status == 3){
+                                      $('.dialog-mask').remove();
+                                      $('.done_Confirm').remove();
+                                      Firstp2p.supervision.resetsubmit();
+                                      clearInterval(lunxunTimer);
+                                      $.showErr(obj.msg);
+                                  }else if(obj.status == 2){
+                                      clearInterval(lunxunTimer);
+                                      window.location.href = obj.data.url;
+                                  }else if(obj.status == 0){}
+                              },
+                              url : "/deal/BidSecretCallBack",
+                              data : {
+                                orderId : result.data.orderId
+                              }
+                          });
+                        }
+                    }else if(result.status == 1001){
+                        var dialog = Firstp2p.supervision.zhuanwdp2p(result);
+                        if(result.data.direction == "wx_to_bank"){
+                            $('.transfer_hz').addClass('transferBl_top2p');
+                            $('.transfer_hz').prop({id: 'cg_hz_top2p'});
+                            $('.transfer_hz .dialog-close').wrap("<a class='cg_hz_top2p_cancel'></a>");
+                            $('.hz_less').html("{$p2pAccountConfig.name}余额不足，需进行余额划转");
+                        }else if(result.data.direction == "bank_to_wx"){
+                            $('.transfer_hz').addClass('transferBl');
+                            $('.transfer_hz').prop({id: 'cg_hz_towx'});
+                            $('.transfer_hz .dialog-close').wrap("<a class='cg_hz_towx_cancel'></a>");
+                            $('.hz_less').html("{$wxAccountConfig.name}余额不足，需进行余额划转");
+                        }
+                    }else if(result.status == 1002 || result.status == 1004){
+                        var dialog = Firstp2p.supervision.zhuanlicai(result);
+                    }else{
+                        if(typeof result.data != 'undefined' && typeof result.data.remaining_assess_num != 'undefined'){
+                            // 点击“确认出借”后，如果个人会员出借人评级低于项目评级，弹窗提示
+                            var backurl = $("#backurl").html();
+                            var promptStr = '';
+                            promptStr = result.info +'，<br/>'+
+                                        '暂不能出借此项目<br/>'+
+                                        '<span class="color-gray">本年度剩余评估'+ result.data.remaining_assess_num +'次</span>';
+                            if(result.data.remaining_assess_num > 0){
+                            // 个人会员出借风险承受能力评估”周期内有效答题次数不为0
+                                Firstp2p.alert({
+                                    text: '<div class="f16 tc">' + promptStr + '</div>',
+                                    ok: function(dialog) {
+                                        $.weeboxs.close();
+                                        location.href="/account/riskassessment?backurl="+encodeURIComponent(backurl);
+                                    },
+                                    width: 480,
+                                    okBtnName: '重新参与评估',
+                                    boxclass: "checkrisk_cn"
+                                });
+                            } else {
+                                // “个人会员出借风险承受能力评估”周期内有效答题次数为0
+                                Firstp2p.alert({
+                                    text: '<div class="no-okbtn f16 tc">' + promptStr + '</div>',
+                                    width: 480,
+                                    showButton:false,
+                                    boxclass: "checkrisk_cn"
+                                });
+                            }
+                        } else {
+                            $.showErr(result.info,null,"提示");
+                        }
+
+                        if ({$deal.type_id} == 25){
+                            postBtn.removeClass('ui-btn-disable').removeAttr('disabled').val('确认捐赠');
+                        }else{
+                            postBtn.removeClass('ui-btn-disable').removeAttr('disabled').val(postBtn.data('initVal'));
+                        }
+                    }
+                    
+                },
+                error:function(ajaxobj){
+                    if ({$deal.type_id} == 25){
+                        postBtn.removeClass('ui-btn-disable').removeAttr('disabled').val('确认捐赠');
+                    }else{
+                        postBtn.removeClass('ui-btn-disable').removeAttr('disabled').val(postBtn.data('initVal'));
+                    }
+
+                }
+            });
+            return false;
+        });
+
+        $('.j_ph_dealCharge').on('click',function() {
+            var _this = $(this),
+            lock =  _this.data('lock');
+            if(isSvUser == 1){
+                window.open("/account/chargeP2P");
+            }else{
+                if(lock == 0){
+                    _this.data('lock','1');
+                    $.ajax({
+                       url: '/deal/isDealOpenAccount?id='+$("#deal_id").val(),
+                       type: "get",
+                       dataType: "json",
+                       async: false,
+                       success: function(json) {
+                            if(json.errno == 0){
+                                if(json.data.status == 0){
+                                    Firstp2p.supervision.kaihu();
+                                    $('#cg_openP2pAccount .dialog-close').wrap("<a class='btn-base dialog-cancel'></a>");
+                                    if(typeof window["_openSvButton_"] !== 'undefined' && window["_openSvButton_"] == 1){
+                                        $('.p2pAccountDg .dialog-title').html("升级{$p2pAccountConfig.name}");
+                                        $('.p2pAccountDg .openTips').html("升级{$p2pAccountConfig.name}");
+                                    }
+                                } else {
+                                    window.open("/account/chargeP2P");
+                                }
+                            }else{
+                                Firstp2p.alert({
+                                    text : '<div class="tc">'+  json.error +'</div>',
+                                    ok : function(dialog){
+                                        dialog.close();
+                                    }
+                                });
+                                return false;
+                            }
+                        _this.data('lock','0');
+                       },
+                       error: function(){
+                            Firstp2p.alert({
+                                text : '<div class="tc">网络错误，请稍后重试！</div>',
+                                ok : function(dialog){
+                                    dialog.close();
+                                }
+                            });
+                            _this.data('lock','0');
+                       }
+                    });
+                }
+            }
+        });
+        var _blank = '{$deal.type_tag}';
+        if(_blank == "NDZND"){
+            $(".marTop2").hide();
+        }
+    });
+</script>
+{include file="web/views/v3/footer.html"}

@@ -1,0 +1,126 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<PHP>
+function get_is_paid($status){
+    if($status == 0){
+       return '未支付';
+    }else if ($status == 1){
+       return '支付成功';
+    } else if ($status == 2){
+        return '待支付';
+    } else if ($status == 3) {
+        return '支付失败';
+    }
+}
+function get_is_platform_fee_charged($status){
+    if($status == 0){
+       return l("NO");
+    }else{
+       return l("YES");
+    }
+}
+function get_bank_by_orderid($orderid){
+    return '';
+    $order=M("DealOrder")->where("id=".$orderid)->field("order_sn,payment_id,bank_id")->find();
+        if($order)
+        {
+            if($order['payment_id']==4)
+            {
+                $bank = M("bankCharge")->where("short_name='".$order["bank_id"]."'")->getField('name');
+                return (empty($bank))?$order["bank_id"]:$bank;
+            }
+            else
+            {
+                $bank = M("bankCharge")->where("value like '".$order["bank_id"]."-%'")->getField('name');
+                return (empty($bank))?$order["bank_id"]:$bank;
+            }
+        }
+        else
+        {
+            return '未知';
+        }
+}
+function get_charge_resource_name($platform, $payment_id)
+{
+    return \\core\\dao\\PaymentNoticeModel::$chargeResourceNameConfig[$payment_id][$platform];
+}
+</PHP>
+<script>
+function export_contract(){
+    var inputs = $(".search_export");
+
+    var param = '';
+    for(i=0; i<inputs.length; i++){
+        param += "&"+inputs[i].name+"="+$(inputs[i]).val();
+    }
+
+    var url= ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=export_payment"+param;
+    window.location.href = url + param;
+}
+</script>
+<div class="main">
+<div class="main_title">{$main_title}</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        <!-- {%ORDER_SN}：<input type="text" class="textbox search_export" name="order_sn" value="{:trim($_REQUEST['order_sn'])}" />
+        {%PAYMENT_NOTICE_SN}：<input type="text" class="textbox search_export" name="notice_sn" value="{:trim($_REQUEST['notice_sn'])}" /> -->
+        充值{%ORDER_SN}：<input type="text" class="textbox search_export" name="notice_sn" value="{:trim($_REQUEST['notice_sn'])}" />
+        支付时间：<input type="text" class="textbox search_export" id="pay_time_start" name="pay_time_start" value="{:trim($_REQUEST['pay_time_start'])}" style="width:150px;" onfocus="return showCalendar('pay_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_start" value="选择" onclick="return showCalendar('pay_time_start', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_start');" />
+至
+        <input type="text" class="textbox search_export" name="pay_time_end" id="pay_time_end" value="{:trim($_REQUEST['pay_time_end'])}" style="width:150px;" onfocus="return showCalendar('pay_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" style="width:150px;" />
+        <input type="button" class="button" id="btn_time_end" value="选择" onclick="return showCalendar('pay_time_end', '%Y-%m-%d %H:%M:%S', false, false, 'btn_time_end');" /><br />
+        {%USER_NAME}：<input type="text" class="textbox" name="user_name" value="{$user_name}" />
+               会员编号：<input type="text" class="textbox" name="user_num" value="{:trim($_REQUEST['user_num'])}" />
+        {%PAYMENT_METHOD}：
+        <select name="payment_id" class='search_export'>
+            <option value="0" <if condition="intval($_REQUEST['payment_id']) eq 0">selected="selected"</if>>{%ALL}</option>
+            <foreach name="payment_list" item="payment_item">
+                <option value="{$payment_item.id}" <if condition="intval($_REQUEST['payment_id']) eq $payment_item['id']">selected="selected"</if>>{$payment_item.name}</option>
+            </foreach>
+        </select>
+        充值来源:
+        <select name="charge_source_id" id="charge_source_id" class='search_export'>
+                <option value="0" <if condition="intval($_REQUEST['charge_source_id']) eq 0">selected="selected"</if>>==全部==</option>
+                <foreach name="charge_resource_list" item="name" key="id">
+                    <option value="{$id}" <if condition="intval($_REQUEST['charge_source_id']) eq $id">selected="selected"</if>>{$name}</option>
+                </foreach>
+        </select>
+        <input type="hidden" value="PaymentNotice" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick='javascript:export_contract()'/>
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="payment_notice"
+    datasource="list"
+    show="id:{%ID}|50px,notice_sn:{%PAYMENT_NOTICE_SN},create_time|to_date:{%CREATE_TIME}
+    ,pay_time|to_date:{%PAY_TIME}
+    ,is_paid|get_is_paid:支付状态
+    ,notice_sn|get_order_sn_with_link:{%ORDER_SN}
+    ,user_id|get_user_name:{%USER_NAME}
+    ,user_id|numTo32:会员编号
+    ,payment_id|get_payment_name:{%PAYMENT_METHOD}
+    ,platform|get_charge_resource_name=$payment_notice['payment_id']:充值来源
+    ,order_id|get_bank_by_orderid:银行卡
+    ,money|format_price:{%PAYMENT_MONEY}
+    ,outer_notice_sn:{%OUTER_NOTICE_SN}
+    ,memo:{%PAYMENT_MEMO}
+    ,is_platform_fee_charged|get_is_platform_fee_charged:扣除平台账户手续费
+    ,fee|format_price:手续费"
+    actionlist="del:{%DEL}" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

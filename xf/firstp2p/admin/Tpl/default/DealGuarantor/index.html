@@ -1,0 +1,27 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<div class="main">
+<div class="main_title">借款保证人管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="back_list" style='cursor:pointer;' onclick='javascript:window.history.back()'>返回</a></div>
+<div class="blank5"></div>
+<div class="button_row">
+	<!-- <input type="button" class="button" value="{%ADD}" onclick="add();" /> -->
+	<input type="button" class="button" value="{%FOREVERDEL}" onclick="foreverdel();" />
+</div>
+<div class="blank5"></div>
+<html:list 
+	id="dataTable" 
+	style="dataTable" 
+	name="item"
+	action="true"
+	checkbox="true" 
+	datasource="all" 
+	show="id:{%ID}|50px,deal_title:借款申请标题,name:姓名,id_number:身份证,mobile:手机号,email:邮件,relationship:关系,status:当前状态,create_time:添加时间" 
+	actionlist="edit:{%EDIT}, foreverdel:{%FOREVERDEL}"
+	actionwidth="160px"
+	 /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

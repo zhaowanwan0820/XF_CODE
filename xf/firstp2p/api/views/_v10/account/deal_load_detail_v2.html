@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>已投资详情 - {$deal.name}</title>
+    {include file="api/views/_v10/header_v2.html"}
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeAppUrl('v2/css/hasinvestment.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="has-main">
+        <div class="has-header">
+            <h2>
+                {$deal.old_name}</h2>
+            <div class="hash-tb">
+                <table>
+                    <colgroup>
+                        <col width="50%" />
+                        <col width="50%" />
+                    </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="money-color">
+                                        {function name="number_format" v="$deal_load.money" f="2"}元
+                                    </td>
+                                    <td class="money-color">
+                                        {$deal.repay_time}{if $deal.loantype eq 5}天{else}个月{/if}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {$deal.loantype_name}
+                                    </td>
+                                    <td class="money-color">
+                                        {$deal.rate}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        计息日： {function name="to_date" v="$deal_load.deal.repay_start_time" f="Y-m-d"}
+                                    </td>
+                                    <td>
+                                        {if $item.is_lease}融资方{else}借款人{/if}： {$deal.user_deal_name}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        应获收益： <span class="pro-color">{function name="number_format" v="$deal_load.income" f="2"}元</span>
+                                    </td>
+                                    <td>
+                                        已获收益： {function name="number_format" v="$deal_load.real_income" f="2"}元
+                                    </td>
+                                </tr>
+                            </tbody>
+                </table>
+                <div class="hasc-state">
+                    {if $deal.is_update eq 1 || $deal.deal_status eq 0 || $deal.guarantor_status != 2}<span class="state-tzz"></span><!--等待确认-->
+                    {elseif $deal.deal_status eq 2}<span class="state-mb"></span><!--满标-->
+                    {elseif $deal.deal_status eq 3}<span class="state-hkz"></span><!--流标 缺少-->
+                    {elseif $deal.deal_status eq 4}<span class="state-hkz"></span><!--还款中-->
+                    {elseif $deal.deal_status eq 5}<span class="state-yhq"></span><!--已还完-->
+                    {else}<span class="state-tzz"></span>{/if}<!--投资中-->
+                </div>
+            </div>
+        </div>
+        {if $contract_list}
+        <div class="has-center">
+
+            {foreach from=$contract_list item="contract" key="k"}
+            <div class="hasc-btn">
+                <a href="/deals/contract/?id={$contract.id}&token={$token}" class="bd_mid"><i class="icon_arrow fr"></i>{$contract.title}</a>
+            </div>
+            {/foreach}
+
+        </div>
+        {/if}
+        <div class="inv-footer">
+            <div class="invf_top">
+                <ul id="menu">
+                    <li class="select"><span>回款计划<em></em></span></li>
+                    <li><span>融资方信息<em></em></span></li>
+                    <li><span>保障方式<em></em></span></li>
+                    <li><span>投资记录<em></em></span></li>
+                </ul>
+            </div>
+            <div class="invf_txt">
+                <div id="tb0">
+                    <table class="tb_ql2">
+                        <colgroup>
+                            <col width="30%" />
+                            <col width="25%" />
+                            <col width="25%" />
+                            <col width="25%" />
+                        </colgroup>
+
+                        <tbody>
+
+                        {if $loan_repay_list}
+                            {foreach from=$loan_repay_list item="item" key="k"}
+                            <tr>
+                                <th>
+                                    {function name="to_date" v="$item.time" f="Y-m-d"}
+                                </th>
+                                <td>
+                                    {$item.money_type}
+                                </td>
+                                <td class="hk-color">
+                                    {$item.money_status}
+                                </td>
+                                <td class="je-color tr">
+                                    {$item.money}
+                                </td>
+                            </tr>
+                            {/foreach}
+                        {else}
+                            <tr>
+                            <th colspan="2">
+                                暂无回款计划
+                            </th>
+                            </tr>
+                        {/if}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="tb1">
+                    <table>
+                        <colgroup>
+                            <col width="25%" />
+                            <col width="75%" />
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>
+                                    简介：
+                                </th>
+                                <td class="tb_line">
+                        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tb_line" colspan="2">
+                                    {if $project_intro}
+                                        {$project_intro}
+                                    {elseif $company.is_company eq 1}
+                                        {if $company.company_description_html}
+                                            {$company.company_description_html}
+                                        {else}
+                                            -
+                                        {/if}
+                                    {elseif $deal.is_crowdfunding eq 1 || $company.is_company eq 0}
+                                        {if $deal_user_info.info}
+                                            {$deal_user_info.info}
+                                        {else}
+                                            -
+                                        {/if}
+                                    {else}
+                                        -
+                                    {/if}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="tb2">
+                {if $deal.is_crowdfunding eq 0}
+                    <table>
+                        <colgroup>
+                            <col width="25%" />
+                            <col width="75%" />
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>
+                                    保障方式：
+                                </th>
+                                <td>
+                                {if $deal.warrant eq 1}担保本金{elseif $deal.warrant eq 2}担保本息{else}无担保{/if}
+                                </td>
+                            </tr>
+                            {if $deal.agency_info.brief}
+                            <tr>
+                                <th colspan='2'>
+                                    担保方介绍：
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>
+                                    {$deal.agency_info.brief}
+                                </td>
+                            </tr>
+                            {/if}
+                    </table>
+                    
+                    {elseif $deal.is_crowdfunding eq 1}
+        <table>
+                        <colgroup>
+                            <col width="35%" />
+                            <col width="30%" />
+                            <col width="30%" />
+                        </colgroup>
+                <tbody>             
+                
+                    <tr>
+                    <td colspan="3">
+                          无
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+                    {/if}
+                </div>
+                <div id="tb3">
+                    <table>
+                        <colgroup>
+                           	<col width="35%" />
+                            <col width="30%" />
+                            <col width="30%" />
+                        </colgroup>
+                <tbody>
+                {if $load_list}
+                {foreach from=$load_list item="loan"}
+                <tr>
+                    <td>
+                        {$loan.user_deal_name}
+                    </td>
+                    <td class="g-money">
+                        {function name="format_price" v="$loan.money" b=0}
+                    </td>
+                    <td class="tr">
+                        {function name="to_date" v="$loan.create_time" f="Y-m-d"}
+                    </td>
+                </tr>
+                {/foreach}
+                {else}
+                <tr>
+                    <td colspan="3">
+                        暂无投资人
+                    </td>
+                </tr>
+                {/if}
+                </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="api/views/_v10/footer_v2.html"}
+</body>
+</html>

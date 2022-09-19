@@ -1,0 +1,57 @@
+{include file="web/views/header.html"}
+<div class="w1100 clearfix pt23 pb23">
+     <div class="p_account_emailset">
+        <link href="<?php echo $this->asset->makeUrl('v3/css/account_emailset.css');?>" type="text/css" rel="stylesheet">
+        <script src="<?php echo $this->asset->makeUrl('v3/js/oauth/account_email.js');?>"></script>
+        <script src="<?php echo $this->asset->makeUrl('v3/js/widget/p2p-ui-checkbox.js');?>"></script>
+        <script>
+        $(function(){
+            $(".p2p-ui-checkbox").p2pUiCheckbox();
+        });
+        </script>
+        <div class="ui-box">
+                <div class="h-title">
+                    <h2>
+            <i></i>设置邮箱
+        </h2>
+                </div>
+                <div class="pw-info">
+                    <form method="post" action="/account/addemail"  id="modify">
+                        <?php echo token_input(); ?>
+                        <ul class="clearfix">
+                            <li>
+                                <label> 邮箱：
+                                </label>
+                                <input type="text" value="" name="email" id="new_mail" class="txt"> &nbsp;&nbsp;&nbsp;<span class="error_tip tip new_mail no_tip">邮箱地址不对</span></li>
+                            <li>
+                                <label> 确认邮箱：
+                                </label>
+                                <input type="text" value="" name="re_email" id="re_new_mail" class="txt"> &nbsp;&nbsp;&nbsp;<span class="error_tip tip new_mail no_tip">邮箱与确认邮箱地址不一样</span></li>
+                        </ul>
+                        <div class="sms-subs clearfix">
+                            <dl>
+                                <dt>邮件通知：</dt>
+                                {foreach from=$email_config_list item="e_config" key=key}
+                                {foreach from=$e_config item="e_config_v" key=ek}
+                                 <dd>
+                                    <div class="p2p-ui-checkbox">
+                                    <a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-normal"></a>
+                                    <span>{$e_config_v}</span>
+                                    <input type="hidden" name="email_config[{$ek}]" value="{if (isset($user_config_email_info[$ek]))}{$user_config_email_info[$ek]}{else}{$email_default_config}{/if}" >
+                                    </div>
+                                </dd>
+                                {/foreach}
+                            {/foreach}
+
+                            </dl>
+                        </div>
+                        <div class="btn-w30">
+                            <input class="common-sprite btn-red-h46" type="submit" id="submit_button" value="提交">
+                        </div>
+                        <div class="remarks gray">( 注：为了避免打扰，请您自行订阅需要的邮件，以后可在“我的账户-会员设置-消息设置”中修改订阅 )</div>
+                    </form>
+                </div>
+            </div>
+    </div>
+</div>
+{include file="web/views/footer.html"}

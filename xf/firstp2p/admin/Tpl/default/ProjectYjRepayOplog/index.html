@@ -1,0 +1,110 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<script type="text/javascript">
+</script>
+
+<div class="main">
+    <div class="main_title">还款操作记录</div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            项目ID：<input type="text" class="textbox" name="project_id" value="{:trim($_REQUEST['project_id'])}" size="10"/>
+            操作类型:
+            <select name="operation_type">
+                <option value="0" <?php if ($_REQUEST['operation_type'] == 0) { ?>selected<?php } ?>>全部</option>
+                <option value="1" <?php if ($_REQUEST['operation_type'] == 1) { ?>selected<?php } ?>>确认充值</option>
+                <option value="2" <?php if ($_REQUEST['operation_type'] == 2) { ?>selected<?php } ?>>线下当期还款</option>
+                <option value="3" <?php if ($_REQUEST['operation_type'] == 3) { ?>selected<?php } ?>>确认代发</option>
+                <option value="4" <?php if ($_REQUEST['operation_type'] == 4) { ?>selected<?php } ?>>更改还款状态</option>
+            </select>
+            操作时间：
+            <input type="text" class="textbox" style="width:140px;" name="operation_time" id="operation_time" value="{$_REQUEST['operation_time']}" onfocus="this.blur(); return showCalendar('operation_time', '%Y-%m-%d', false, false, 'btn_operation_time');" title="操作时间" />
+            <input type="button" class="button" id="btn_operation_time" value="{%SELECT_TIME}" onclick="return showCalendar('operation_time', '%Y-%m-%d', false, false, 'btn_operation_time');" />
+            <input type="text" class="textbox" style="width:140px;" name="operation_time_end" id="operation_time_end" value="{$_REQUEST['operation_time_end']}" onfocus="this.blur(); return showCalendar('operation_time_end', '%Y-%m-%d', false, false, 'btn_operation_time');" title="操作时间" />
+            <input type="button" class="button" id="btn_operation_time_end" value="{%SELECT_TIME}" onclick="return showCalendar('operation_time_end', '%Y-%m-%d', false, false, 'btn_operation_time');" />
+
+            <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+            <input type="hidden" value="ProjectYjRepayOplog" name="m" />
+            <input type="hidden" value="index" name="a" />
+            <input type="submit" class="button" value="{%SEARCH}" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="22" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th>项目ID</th>
+            <th>操作时间</th>
+            <th width="150">项目标题</th>
+            <th>本期还款金额</th>
+            <th>本金</th>
+            <th>利息</th>
+            <th>融资咨询服务费</th>
+            <th>咨询服务费</th>
+            <th>担保费</th>
+            <th>操作类型</th>
+            <th>操作人</th>
+
+        </tr>
+        <volist name="list" id="log">
+            <tr class="row">
+                <td width="60">
+                    {$log.project_id}
+                </td>
+                <td>
+                    {$log.operation_time}
+                </td>
+                <td>
+                    {$log.project_name}
+                </td>
+                <td>
+                    {$log.repay_money}
+                </td>
+                <td>
+                    {$log.repay_principal}
+                </td>
+                <td>
+                    {$log.repay_interest}
+                </td>
+                <td>
+                    {$log.loan_fee}
+                </td>
+                <td>
+                    {$log.consult_fee}
+                </td>
+                <td>
+                    {$log.guarantee_fee}
+                </td>
+                <td>
+                    <if condition="$log.operation_type eq 1">
+                        确认充值
+                    <elseif condition="$log.operation_type eq 2" />
+                        线下当期还款
+                    <elseif condition="$log.operation_type eq 3" />
+                        确认代发
+                    <elseif condition="$log.operation_type eq 4" />
+                        更改还款状态
+                    </if>
+                </td>
+                <td>
+                    {$log.operator}
+                </td>
+            </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

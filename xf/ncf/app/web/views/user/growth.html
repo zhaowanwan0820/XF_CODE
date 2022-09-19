@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" Content="text/html; charset=utf-8;" />
+<title>我的成长轨迹</title>
+<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0;">
+<meta name = "format-detection" content="telephone = no" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v2/growth/css/base.css')?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v2/growth/css/index.css')?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v2/growth/css/jquery.fullPage.css')?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('/v2/css/event/m-common.css')?>">
+<script src="<?php echo $this->asset->makeUrl('/v2/growth/js/jquery-2.1.1.min.js')?>"></script>
+<script src="<?php echo $this->asset->makeUrl('/v2/growth/js/jquery.transit.min.js')?>"></script>
+<script src="<?php echo $this->asset->makeUrl('/v2/growth/js/jquery.fullPage.js')?>"></script>
+<script src="<?php echo $this->asset->makeUrl('/v2/growth/js/index.js')?>"></script>
+<script src="<?php echo $this->asset->makeUrl('/v2/js/event/common.js')?>"></script>
+<script text="text/javascript">
+    var _userGrowth = {$userGrowth};
+    var _isInvestor = {$isInvestor};
+    var _isApp = {$isApp};
+    var  _isHideShare = {$isHideShare};
+    //分享控制
+    var shareOpt={//分享信息json对象
+        'title':'hey！这是你的成长轨迹~',
+        'content':_userGrowth.real_name+'在网信理财的投资额超过'+_userGrowth.invest_percentage+'%小伙伴，来看看你的成长轨迹吧~',
+        'url':location.protocol+'//'+location.hostname+'/user/growth',
+        'img':'http://fp1.ncfstatic.com/attachment/201512/25/17/25497b54f732b4b5b27c3306555c20a5/index.jpg'
+    }
+    if(_isInvestor==0){
+        shareOpt.content="快去看看你在网信理财的成长轨迹吧~";
+    }
+    var sharetitle = shareOpt.title;
+    shareOpt.title = shareOpt.content;
+    shareOpt.content = sharetitle;
+</script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    var appid = '{$appid}';
+    var nonceStr = '{$nonceStr}';
+    var timeStamp = '{$timeStamp}';
+    var signature = '{$signature}';
+    wx.config({
+        appId:appid,
+        timestamp:timeStamp,
+        nonceStr:nonceStr,
+        signature:signature,
+        jsApiList:[
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'hideOptionMenu',
+            'showOptionMenu',
+            'closeWindow'
+        ],
+    });
+    wx.ready(function(){
+        wx.onMenuShareAppMessage({
+            title: shareOpt.title,
+            desc: shareOpt.content,
+            link: shareOpt.url, // 分享链接
+            imgUrl: shareOpt.img
+        });
+        wx.onMenuShareTimeline({
+            title: shareOpt.title,
+            link: shareOpt.url,
+            imgUrl: shareOpt.img
+        });
+    });
+</script>
+</head>
+<body>
+<!-- 没有轨迹 begin -->
+<div class="imgWrap noTrackBox" id="noTrackBox">
+    <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/noTrackBg.jpg')?>"/>
+    <div class="imgInner">
+        <div class="noTrackText">
+            <p>亲爱的<span>M15084665161</span></p>
+            <p>您还没有进行过投资</p>
+            <p>轨迹尚未完整</p>
+            <p>统计数据截止至2015-12-25</p>
+        </div>
+    </div>
+</div>
+<!-- 没有轨迹 end -->
+<!-- 加载效果 begin -->
+<div class="loadingPage" id="loadingPage" data-relative-path="<?php echo $this->asset->makeUrl('')?>">
+    <div class="loadBox">
+        <div class="loadImgWrap paddingPopBox">
+            <div class="paddingPopInner">
+                <img class="dot" src="<?php echo $this->asset->makeUrl('/v2/growth/images/loading_dot.png')?>">
+                <img class="wrap" src="<?php echo $this->asset->makeUrl('/v2/growth/images/loadingWrap.png')?>">
+            </div>
+            <img class="rocket" src="<?php echo $this->asset->makeUrl('/v2/growth/images/loading_rocket.png')?>">
+        </div>
+        <div class="loadText" id="loadText">0%</div>
+    </div>
+</div>
+<!-- 加载效果 end -->
+
+<!-- 加载完成 begin -->
+<div class="loadContBox" id="loadContBox">
+    <script type="text-templet" id="loadCont_templet">
+    <div class="indexPage" id="indexPage">
+        <div class="imgWrap">
+            <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/index_pageBg.jpg')?>"/>
+            <div class="imgInner">
+                <img class="index_spaceman" id="index_spaceman" src="<?php echo $this->asset->makeUrl('/v2/growth/images/index_spaceman.png')?>"/>
+                <img class="index_text" src="<?php echo $this->asset->makeUrl('/v2/growth/images/index_text.png')?>"/>
+                <img class="index_meteor index01" src="<?php echo $this->asset->makeUrl('/v2/growth/images/index_meteor.png')?>" data-delay-time="400"/>
+                <img class="index_meteor index02" src="<?php echo $this->asset->makeUrl('/v2/growth/images/index_meteor.png')?>" data-delay-time="800"/>
+                <img class="index_meteor index03" src="<?php echo $this->asset->makeUrl('/v2/growth/images/index_meteor.png')?>" data-delay-time="1200"/>
+                <a href="javascript:;" class="index_btnA" id="index_btnA"></a>
+            </div>
+        </div>
+    </div>
+    <div class="navWrap" id="navWrap">
+        <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/icon_arrow.png')?>" class="icon_arrow" id="icon_arrow"/>
+        <ul class="fullPageNav" id="navUl">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <div id="fullPage" class="fullpage">
+        <div class="section page01">
+            <div class="con">
+                <div class="textInfor">
+                    <p>我是<span class="yelColor">{{constellation}}</span>的<span class="yelColor">{{real_name}}</span></p>
+                    <p>网信理财中有<span class="yelColor">{{constellation_percent}}%</span>相同星座的小伙伴</p>
+                </div>
+                <img class="img01 runAni" id="constellation_img" src=""/>
+            </div>
+        </div>
+        <div class="section page02">
+            <div class="con">
+                <div class="textInfor">
+                    <p>我与网信理财初识</p>
+                    <p>成为了第<span class="yelColor">{{num}}个</span>用户</p>
+                </div>
+                <div class="timeLine">{{reg_time}}</div>
+                <img class="img03 bln" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img03.png')?>"/>
+                <div class="img04Box imgWrap">
+                    <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img04.png')?>"/>
+                    <div class="imgInner">
+                        <img class="img01 runAni" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img01.png')?>"/>
+                        <img class="img02 runAni" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img02.png')?>"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section page03">
+            <div class="con">
+                <div class="textInfor">
+                    <p>随着<span class="yelColor">{{fbid_money}}元</span>的第一次投资</p>
+                    <p>我在网信理财的投资生涯开始了</p>
+                </div>
+                <div class="timeLine">{{fbid_time}}</div>
+                <img class="img01 runAni" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page03_img01.png')?>"/>
+                <img class="img02 bln" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img03.png')?>"/>
+            </div>
+        </div>
+        <div class="section page04">
+            <div class="con">
+                <div class="textInfor">
+                    <p>我拿到<span class="yelColor">第一笔</span>收益</p>
+                    <p>正式掌控我的理财人生</p>
+                </div>
+                <div class="timeLine" id="freturnTime">{{freturn_time}}</div>
+                <img class="img01 bln" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img03.png')?>"/>
+                <div class="img02Box imgWrap runAni">
+                    <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/page04_img02.png')?>"/>
+                    <div class="imgInner">
+                        <img class="img03 runAni" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page04_img03.png')?>"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section page05">
+            <div class="con">
+                <div class="textInfor">
+                    <p>我邀请了<span class="yelColor">第一个</span>小伙伴</p>
+                    <p>截止2015年底我累计邀请了<span class="yelColor">{{refer_num}}个</span>好友</p>
+                    <p>从注册到投资，我们都有福利拿</p>
+                </div>
+                <div class="timeLine">{{frefer_time}}</div>
+                <img class="img01 bln" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img03.png')?>"/>
+                <img class="img02 runAni" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page05_img02.png')?>"/>
+            </div>
+        </div>
+        <div class="section page06">
+            <div class="con">
+                <div class="textInfor">
+                    <p>我捐赠了<span class="yelColor">第一笔</span>爱心善款</p>
+                    <p>截止2015年底我累计捐赠了<span class="yelColor">{{gybid_num}}笔</span></p>
+                    <p>零利息，满爱心</p>
+                </div>
+                <div class="timeLine">{{fgybid_time}}</div>
+                <img class="img01 bln" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img03.png')?>"/>
+                <div class="img03Box imgWrap">
+                    <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/page06_img03.png')?>"/>
+                    <div class="imgInner">
+                        <img class="img02" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page06_img02.png')?>"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section page07">
+            <div class="con">
+                <div class="textInfor">
+                    <p>我的累计投资额达到了<span class="yelColor">{{all_invest_money}}元</span></p>
+                    <p>获得了<span class="yelColor">{{all_return_money}}元</span>收益</p>
+                    <p>超过了全国<span class="yelColor">{{invest_percentage}}%</span>的小伙伴</p>
+                </div>
+                <div class="timeLine">截至2015-12-25</div>
+                <img class="img01 bln" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img03.png')?>"/>
+                <div class="img04Box imgWrap runAni">
+                    <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/page07_img03.png')?>"/>
+                    <div class="imgInner">
+                        <img class="img02" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page07_img02.png')?>"/>
+                        <img class="img03" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page07_img02.png')?>"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section page08">
+            <div class="con">
+                <div class="textInfor">
+                    <p>我累计使用了<span class="yelColor">{{bonus_used_money}}元</span>红包</p>
+                    <p>我发出的<span class="yelColor">{{bonus_send_count}}个</span>红包已被使用</p>
+                    <p>红包综合实力超过了<span class="yelColor">{{bonus_ability}}%</span>的小伙伴</p>
+                </div>
+                <div class="timeLine">截至2015-12-25</div>
+                <img class="img01 bln" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page02_img03.png')?>"/>
+                <div class="img04Box imgWrap runAni">
+                    <img src="<?php echo $this->asset->makeUrl('/v2/growth/images/page08_img03.png')?>"/>
+                    <div class="imginner">
+                        <img class="img02" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page08_img02.png')?>"/>
+                        <img class="img03" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page08_img04.png')?>"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section page09">
+            <div class="con" style="overflow: visible;">
+                <div class="imgWrap" style="width:38.4%;">
+                    <img style="margin-top:-54%;"  src="<?php echo $this->asset->makeUrl('/v2/growth/images/page09_img03.png')?>"/>
+                    <div class="imgInner"></div>
+                </div>
+                <img id="endImg01" class="img01 runAni" src=""/>
+                <img id="endImg02" class="img02" src=""/>
+                <div class="imgWrap img02Box">
+                    <img class="inviteImg" src="<?php echo $this->asset->makeUrl('/v2/growth/images/page09_img02.png')?>"/>
+                    <div class="imgInner">
+						<a href="javascript:;" class="inviteBtn" id="inviteBtn"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="landscape" id="landscape">
+        <div class="iphone"></div>
+        <div class="iphone_text">请将屏幕竖向浏览</div>
+    </div>
+    </script>
+</div>
+<!-- 加载完成 end -->
+</body>
+</html>

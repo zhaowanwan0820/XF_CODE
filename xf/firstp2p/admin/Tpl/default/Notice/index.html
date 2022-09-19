@@ -1,0 +1,71 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<php>
+function get_notice_status($status)
+{
+    return $status == 0 ? "无效" : "有效";
+}
+function get_notice_target($target)
+{
+    if (empty($target)) {
+        return "全体用户";
+    } else {
+        return substr($target,0,100);
+    }
+}
+function get_date($time)
+{
+    return date('Y-m-d H:i:s', $time);
+}
+$status = isset($_REQUEST['status']) ? intval($_REQUEST['status']) : 1; 
+</php>
+<div class="main">
+<div class="main_title">公告管理</div>
+<div class="blank5"></div>
+<div class="button_row">
+    <input type="button" class="button" value="{%ADD}" onclick="add();" />
+    <input type="button" class="button" value="{%DEL}" onclick="del();" />
+    <a href="/m.php?m=Notice">全部列表</a>
+</div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        状态：
+        <select name="status">
+                <option value="1" <if condition="$status eq 1">selected="selected"</if>>正常</option>
+                <option value="0" <if condition="$status eq 0">selected="selected"</if>>已删除</option>
+        </select>
+        &nbsp;&nbsp;
+        类别：
+        <select name="type">
+                <option value="0" <if condition="$_REQUEST['type'] eq 0">selected="selected"</if>>全局公告</option>
+                <option value="1" <if condition="$_REQUEST['type'] eq 1">selected="selected"</if>>指定用户</option>
+        </select>
+        <input type="hidden" value="Notice" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+    </form>
+</div>
+<div class="blank5"></div>
+<html:list
+    id="dataTable"
+    style="dataTable"
+    name="notice"
+    checkbox="true"
+    action="true"
+    datasource="list"
+    show="id:{%ID}|50px
+    ,title:公告标题
+    ,content:公告内容
+    ,url:公告URL
+    ,status|get_notice_status=$notice['status']:状态
+    ,target|get_notice_target=$notice['target']:目标人群
+    ,exclude_site:屏蔽分站
+    ,create_time|get_date:{%CREATE_TIME}"
+    actionlist="del:{%DEL}" />
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<include file="Public:footer" />

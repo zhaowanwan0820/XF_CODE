@@ -1,0 +1,131 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/user_edit.js' />
+<load href='__TMPL__Common/js/conf.js' />
+<load href='__TMPL__system.region.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<script>
+function refresh_file(id){
+	if(!id){
+		alert('非法操作！');
+		return false;
+	}
+    $.ajax({ 
+            url: ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&"+VAR_ACTION+"=refresh_file&id="+id, 
+            dataType: "json",
+            success: function(info){
+                $("#file_list").html(info);
+            }
+    });
+}
+</script>
+<div class="main">
+<div class="main_title">{%EDIT} <a href="{:u("Preset/preset_program")}" class="back_list">{%BACK_LIST}</a></div>
+<div class="blank5"></div>
+<form name="edit" action="__APP__" method="post" enctype="multipart/form-data">
+
+<div class="blank5"></div>
+<table class="form conf_tab" cellpadding=0 cellspacing=0 rel="1">
+	<tr>
+		<td colspan=2 class="topTd"></td>
+	</tr>
+	<tr>
+		<td class="item_title">项目名称:</td>
+		<td class="item_input"><input type="text" class="textbox require" name="program_name" value="{$program.program_name}" /></td>
+	</tr>
+	<tr>
+		<td class="item_title">项目别名:</td>
+		<td class="item_input"><input type="text" class="textbox require" name="program_url" value="{$program.program_url}" /></td>
+	</tr>
+    <tr>
+        <td class="item_title">页面内容:</td>
+        <td class="item_input">
+            <!-- <html:editor id="program_html" name="program_html" type="KINDEDITOR" content="{$program.program_html}" style="width:800px; height:400px;"/> -->
+            <textarea name="program_html" style="width:900px;height:500px">{$program.program_html}</textarea><br /><br />
+            <p id='file_list'>
+            <foreach name="attach" item="item">
+                                                文件 {$item.title} ：<a target='_blank' href='{$item.path}'>{$item.path}</a> <br />
+            </foreach>
+            </p>
+            <br /><a href='javascript:void(0)' onclick='refresh_file({$program.id})'>刷新</a> &nbsp; <a target='_blank' href='/m.php?m=Preset&a=file_list&id={$program.id}'>查看附件列表</a>
+        </td>
+    </tr>	
+	<tr>
+		<td class="item_title">项目描述:</td>
+		<td class="item_input"><textarea name="program_content" style="width:500px;height:100px" id="description">{$program.program_content}</textarea></td>
+	</tr>
+	<tr>
+		<td class="item_title">关闭提示语:</td>
+		<td class="item_input"><textarea name="program_desc" style="width:500px;height:100px" id="description2">{$program.program_desc}</textarea></td>
+	</tr>
+	<tr>
+        <td class="item_title">借款id:</td>
+        <td class="item_input"><input type="text" class="textbox" name="program_deals" size='50' value='{$program.program_deals}'/><small>以逗号隔开</small></td>
+    </tr>
+    <tr>
+        <td class="item_title">是否需要登录:</td>
+        <td class="item_input">
+            <label><input type="radio" class="f-radio" name="program_is_login" value='1' <if condition="$program.program_is_login eq 1">checked</if>/>需要</label>
+            <label><input type="radio" class="f-radio" name="program_is_login" value='0' <if condition="$program.program_is_login eq 0">checked</if>/>不需要</label> &nbsp;&nbsp;&nbsp;<span class='tip_span' style='font-size:13px'>是否需要登录才能看到页面</span></td>
+    </tr>
+    <tr>
+        <td class="item_title">预约地区:</td>
+        <td class="item_input">
+            <foreach name="preset_area" item="area">
+                <label><input type='checkbox' name='program_area[]' value='{$area.name}' <if condition="$area.check eq 1">checked</if>>{$area.name}&nbsp;</label>
+            </foreach>
+        </td>
+    </tr>
+	<tr>
+		<td colspan="2" class="item_title" style="text-align:center;"></td>
+	</tr>
+	<tr>
+	<tr>
+		<td class="item_title">状态:</td>
+		<td class="item_input">
+			<label><input type="radio" class="f-radio" value="0" name="program_status"  <if condition="$program['program_status'] eq 0">checked="checked"</if>>项目创建</label>
+			<label><input type="radio" class="f-radio" value="1" name="program_status"  <if condition="$program['program_status'] eq 1">checked="checked"</if>>预约开始</label>
+			<label><input type="radio" class="f-radio" value="2" name="program_status"  <if condition="$program['program_status'] eq 2">checked="checked"</if>>预约结束</label>
+			<label><input type="radio" class="f-radio" value="3" name="program_status"  <if condition="$program['program_status'] eq 3">checked="checked"</if>>项目关闭</label> 
+			 <small>项目创建状态时，前台无法访问，但是可以点击下面的按钮预览</small>
+		</td>
+	</tr>
+	<!-- <tr>
+		<td class="item_title">修改时间:</td>
+		<td class="item_input"><input type="text" readonly="readonly"  class="textbox" name="" value="{$program.program_create_time}" /></td>
+	</tr> -->
+	<tr>
+		<td colspan=2 class="bottomTd"></td>
+	</tr>
+</table>
+
+<div class="blank5"></div>
+	<table class="form" cellpadding=0 cellspacing=0>
+		<tr>
+			<td colspan=2 class="topTd"></td>
+		</tr>
+		<tr>
+			<td class="item_title"></td>
+			<td class="item_input">
+			<!--隐藏元素-->
+			<input type="hidden" name="{:conf("VAR_MODULE")}" value="Preset" />
+			<input type="hidden" name="{:conf("VAR_ACTION")}" value="edit" />
+			<!--隐藏元素-->
+			<input type="hidden" name="id" value="{$program.id}" />
+			<input type="hidden" name="submit" value="submit" />
+			<input type="submit" class="button" value="{%EDIT}" />
+			<input type="reset" class="button" value="{%RESET}" />
+			<a href="{$preview_url}huodong-index/act-{$program.program_url}-preview-1"  class="button" target="_blank">预览</a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2 class="bottomTd"></td>
+		</tr>
+	</table> 		 
+</form>
+</div>
+<include file="Public:footer" />

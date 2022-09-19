@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link href="<?php echo $this->asset->makeAppUrl('v4.72/css/speedloan/sudai.all.css');?>" rel="stylesheet" />
+    <title>借款记录</title>
+</head>
+
+<body class="jkjl_body">
+<input type="hidden" value="{$token}" id="tokenHidden"/>
+<input type="hidden" value='{$loanList}' id="loanListHidden"/>
+<ul class="loanList" id="loanList">
+    
+</ul>
+<a href="javascript:;" class="ajaxPage loadMore" id="ajaxPage" data-page="2">点击加载更多</a>
+<!-- 缺省页 begin -->
+<div class="defaultPH" id="defaultPH">
+    <img src="<?php echo $this->asset->makeAppUrl('v4.72/images/speedloan/noValidLogo.png');?>"/>
+    <p class="tipText">暂无借款记录</p>
+</div>
+<!-- 缺省页 end -->
+</body>
+<script type="text/html" id="loanItemTel">
+    <li class="loanItem">
+        <div class="title"><%= title %></div>
+        <ul class="recordList">
+            <% include('recordItemTel',{list:list}) %>
+        </ul>
+    </li>
+</script>
+<script type="text/html" id="recordItemTel">
+    <% for(var i=0;i<list.length;i++){ %>
+    <% var item=list[i] %>
+    <li class="recordItem">
+        <%=# createLink(item['loanStatus'],item['id']) %>
+            <div class="left">
+                <p><%= item['loanAmtFormat'] %></p>
+                <p><%= item['applyTimeDateFormat'] %></p>
+            </div>
+            <div class="right">
+                <%= item['loanStatusDes'] %>
+            </div>
+        </a>
+    </li>
+    <% } %>
+</script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/jquery-2.0.3.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_base.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.4/js/lib/template-native-debug.js');?>"></script>
+<script src="<?php echo $this->asset->makeAppUrl('v4.72/js/speedloan/sudai_jiekuanjilu.js');?>"></script>
+{include file="api/views/_v32/footer.html"}
+

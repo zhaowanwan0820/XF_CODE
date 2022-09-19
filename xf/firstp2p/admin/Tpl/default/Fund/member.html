@@ -1,0 +1,41 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<php>
+    function gen_link($user_id)
+    {
+        $html = "<a href='/m.php?m=User&a=edit&id=".$user_id."'>查看用户</a>";
+        return $html;
+    }
+    function get_fund_status($status)
+    {
+        if($status == 0){
+            return '未开始';
+        }elseif($status == '1'){
+            return '进行中';
+        }elseif($status == '2'){
+            return '已结束';
+        }
+    }
+</php>
+<div class="main">
+    <div class="main_title"><span>{$fund.name}({:get_fund_status($fund['status'])})</span> - 预约用户列表 (总共{:count($list)}人) <a href="{:u("Fund/index")}" class="back_list">{%BACK_LIST}</a></div>
+<html:list 
+    id="dataTable" 
+    style="dataTable" 
+    name="member" 
+    checkbox="true" 
+    datasource="list" 
+    show="id:{%ID}|50px,realname:预约姓名,user_id:预约用户ID,phone:预约手机,money:预约金额,comment:备注,create_time|to_date:创建时间,user_id|gen_link:操作" 
+    /> 
+
+<div class="blank5"></div>
+<div class="page">{$page}</div>
+</div>
+<script type="text/javascript">
+    function member(user_id){
+        console.log(user_id);
+        //location.href = ROOT+"?"+VAR_MODULE+"="+MODULE_NAME+"&User"=edit&id="+id;
+    }
+</script>
+<include file="Public:footer" />

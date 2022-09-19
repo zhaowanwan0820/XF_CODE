@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>我的信宝</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    {include file="api/views/_v48/candy/candy_header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v4.8/css/candy/mine.css?v=3');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_my_candy">
+        <!-- 头部 -->
+        <div class="top">
+            <div class="waveWrapper waveAnimation">
+                <div class="waveWrapperInner bgTop">
+                    <div class="wave waveTop" style="background-image: url('<?php echo $this->asset->makeAppUrl('v4.8/images/candy/banner.png');?>')"></div>
+                </div>
+                <div class="waveWrapperInner bgMiddle">
+                    <div class="wave waveMiddle" style="background-image: url('<?php echo $this->asset->makeAppUrl('v4.8/images/candy/lang01.png');?>')"></div>
+                </div>
+                <div class="waveWrapperInner bgBottom">
+                    <div class="wave waveBottom" style="background-image: url('<?php echo $this->asset->makeAppUrl('v4.8/images/candy/lang01.png');?>')"></div>
+                </div>
+            </div>
+            <div class="name">当前信宝</div>
+            <div class="num">{$userSummary.amount}</div>
+            {if !$isProduceDone}
+                <div class="jiesuanzhong">当日结算中</div>
+            {/if}
+            <div class="name_01 fs13" style="visibility: hidden;">约合(CNY)￥{$userSummary.candyCashValue}</div>
+        </div>
+        <!-- 内容 -->
+        {if $isBucOpen && !$showConfig.BLACK_BUC && $userSummary.bucAmount > 0}
+        <div class="virtual_assets">
+            <h2><span><a href="http://event.ncfwx.com/zt/bucwithdraw_instruction"><i class="icon_help"></i>提取说明</a></span><i class="title"></i>虚拟资产</h2>
+            <div class="cont"><div class="left">
+                <img src="<?php echo $this->asset->makeAppUrl('v4.8/images/candy/compony@3x.png');?>" width='44' height='15' class="mr10">
+                {$userSummary.bucAmount} BUC
+            </div>
+            <div class="tq_btn">
+                {if $userSummary.bucAmount eq 0}
+                <a href="javascript:void(0)" class="btn_h25_black" style="opacity: 0.2;">立即提取</a>
+                {else}
+                <a href="/candy/BucWithdraw?token={$token}" class="btn_h25_black">立即提取</a>
+                {/if}
+            </div>
+        </div>
+        </div>
+        {/if}
+
+        <div class="content">
+            <div class="tit">
+                <span>已获信宝明细</span>
+            </div>
+            <div class="list"></div>
+            <div class="btn">
+                <a href="javascript:void(0)" class="loadmore_btn">加载更多</a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            zhuge.track('进入我的信宝');
+            localStorage.clear();
+            P2PWAP.app.triggerScheme("firstp2p://api?type=rightbtn&title=");
+            if(!p2pBrowser.iosApp){
+                P2PWAP.app.triggerScheme("firstp2p://api?method=updatebacktype&param=1");
+            }
+
+            var loadmore = new WXP2P.UI.P2PLoadMore($(".list")[0], $('.loadmore_btn')[0], '/candy/log?token={$token}', 1, 'get', 10);
+            loadmore.loadNextPage();
+            loadmore.createItem = function(item) {
+                var dl = document.createElement("div");
+                var html = "";
+                html += '<div class="cont">';
+                html += '<span class="date">' + item.create_time +'<br>' + item.type + '</span>';
+                item.amount.replace(/,/g,'')
+                if(item.amount.replace(/,/g,'') > 0) {
+                    html += '<span class="num color_red">' + item.amount + '</span>';
+                } else {
+                    html += '<span class="num color_green">' + item.amount + '</span>';
+                }
+                html += '</div>';
+                dl.innerHTML = html;
+                return dl;
+            };
+        })
+        function gobackjsfunc() {
+            window.location.reload();
+        }
+    </script>
+</body>
+
+</html>

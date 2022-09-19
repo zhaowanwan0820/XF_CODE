@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>网站用户共享授权声明</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('css/m-base.css');?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeAppUrl('css/m-common.css');?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+</head>
+<body>
+   {if !($site_id eq 1) && !($site_id eq 100) }
+    <style>
+        /*用户迁移协议isScroll*/
+        .transfer_ui_mask{width:100%;height:100%;background-color:rgba(0,0,0,0.75);text-align:center;position:fixed;top:0px;left:0;z-index:998;}
+        .transfer_ui_mask .ui_max_width{height:100%;}
+        .transfer_ui_mask .ui_dialog{background:#fff;top:0;position:relative;border-radius:0;}
+        .transfer_ui_mask .ui_dialog .dialog_con{padding:0 15px;}
+        .transfer_ui_mask .ui_dialog .dialog_con .title{height:35px;line-height:35px;text-align:center;font-size:18px;color:#030303;letter-spacing:0px;padding-top:8px;border-bottom:1px solid #E8E8E8;padding-bottom:4px;}
+        .transfer_ui_mask .ui_dialog .dialog_con .dialog_text{padding:7px 0px;font-size:15px;color:#4D4F51;letter-spacing:0px;}
+        .transfer_ui_mask .ui_dialog .dialog_con .ipt_box{height:39px;border:1px solid #dbdbdb;border-radius:5px;text-align:left;margin-bottom:15px;}
+        .transfer_ui_mask .ui_dialog .dialog_con .ui_yz_input{height:39px;width:113px;border:none;border-right:1px solid #dbdbdb;border-radius:5px 0 0 5px;font-size:15px;padding-left:18px;}
+        .transfer_ui_mask .ui_dialog .dialog_con .reset_btn{width:111px;height:39px;display:inline-block;text-align:center;line-height:39px;border:none;color:#007ce3;background:#fff;border-radius:5px;font-size:15px;}
+        .transfer_ui_mask .ui_dialog .dialog_con .dis_reset{color:#999999;}
+        .transfer_ui_mask .ui_dialog .dialog_con .reg_finish_btn{height:40px;width:100%;line-height:40px;color:#fff;background:#fe4438;border:none;border-radius:5px;font-size:18px;font-weight:bold;border-bottom:2px solid #d9201c;}
+        .transfer_ui_mask .ui_dialog .dialog_con .reg_finish_btn_dis{color:#fc9e97;}
+        .transfer_ui_mask .ui_dialog .ui_dialog_close{width:30px;height:30px;background:url(../../images/event/icon_close.png) no-repeat;background-size:100%;position:absolute;right:-13px;top:-13px;}
+        .transfer_ui_mask .hd_dialog{width:100%;max-width:600px;margin:0 auto;height:100%;}
+        .transfer_ui_mask .hd_dialog .dialog_con{height:100%;display:-webkit-box;-webkit-box-orient:vertical;padding:0;}
+        .transfer_ui_mask .hd_dialog .dialog_con .dialog_text{padding-bottom:20px;border-bottom:1px solid #E6E6E6;text-align:left;line-height:20px;color:#666666;overflow-y:hidden;-webkit-box-flex:1;position:relative;}
+        .transfer_ui_mask .hd_dialog .dialog_con .transf_dialog_btn{text-align:center;font-size:16px;color:#FFFFFF;letter-spacing:0px;height:39px;background:#fe4438;border:none;border-radius:2px;border-bottom:1px solid #d9201c;margin:0 auto;line-height:39px;width:85%;}
+        .transfer_ui_mask .fz_aggree{margin:15px;}
+        .transfer_ui_mask .fz_transferPt_text_sc{display:block !important;width:100%;background-color:#f7f7f7;border:1px solid #ececec;font-size:14px;line-height:20px;text-align:left;font-family:微软雅黑;}
+        .respectUser{padding: 0 10px;padding-top: 10px;}
+        .detail{padding: 0 10px;}
+        .transfer_ui_mask .ggw_text .fz_transferPt_text{display:none;}
+        .transfer_ui_mask .fz_transferPt_text .detail{text-indent:28px;}
+        @media screen and ( min-width: 212px){/*213px显示屏样式 LG Optimus One*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 15px;line-height: 24px;}}
+        @media screen and ( min-width: 319px){/*320px显示屏样式 苹果4/4S/5C/5S黑莓Z30 */.transfer_ui_mask .fz_transferPt_text_sc{font-size: 17px;line-height: 30px;}}
+        @media screen and ( min-width: 359px){/*360px显示屏样式 索尼Z1*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 21px;line-height: 33px;}}
+        @media screen and ( min-width: 375px){/*375px显示屏样式 苹果6*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 22px;line-height: 34px;}}
+        @media screen and ( min-width: 383px){/*384px显示屏样式 黑莓Z10 谷歌 Nexus 6 LG Optimus G*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 23px;line-height: 35px;}}
+        @media screen and ( min-width: 399px){/*399px显示屏样式 三星galaxyNote*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 24px;line-height: 36px;}}
+        @media screen and ( min-width: 414px){/*414px显示屏样式 苹果6plus*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 25px;line-height: 37px;}}
+        @media screen and ( min-width: 423px){/*424px显示屏样式 LG 4X */.transfer_ui_mask .fz_transferPt_text_sc{font-size: 26px;line-height: 38px;}}
+        @media screen and ( min-width: 479px){/*480px显示屏样式 索尼MT27i Xperia sola*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 28px;line-height: 40px;}}
+        @media screen and ( min-width: 539px){/*640px显示屏样式 摩托罗拉Droid3/4/Razr Atrix 4g*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 30px;line-height: 43px;}}
+        @media screen and ( min-width: 639px){/*640px显示屏样式*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 33px;line-height: 47px;}
+        @media screen and ( min-width: 640px){/*640px以上显示屏样式*/.transfer_ui_mask .fz_transferPt_text_sc{font-size: 35px;line-height: 50px;}
+    </style>
+   {/if}
+    <section>
+        {if !($site_id eq 1) && !($site_id eq 100) }
+        <textarea id="transfer_pt" style="display:none;"><adv adv_id="用户迁移协议_2016"/></textarea>
+        {else}
+        <adv adv_id="用户迁移协议_2016"/>
+        {/if}
+    </section>
+    {if !($site_id eq 1) && !($site_id eq 100) }
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.2/js/common/zepto.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeAppUrl('v3.5/js/iscroll.js');?>"></script>
+    <script type="text/javascript">
+      P2PWAP = {};
+      P2PWAP.ui = {};
+      $(function() {
+         P2PWAP.ui.ModalHeight_ = window.innerHeight;
+         P2PWAP.ui.ModalViewEls_ = [];
+         P2PWAP.ui.addModalView = function(instance) {
+             if (!window.navigator || !/iphone.*OS 7.*/i.test(window.navigator.userAgent)) return;
+             window.scrollTo(0, 0);
+             if (P2PWAP.ui.ModalViewEls_.length == 0) {
+                 document.body.style.height = P2PWAP.ui.ModalHeight_ + "px";
+                 document.body.style.overflow = "hidden";
+             }
+             P2PWAP.ui.ModalViewEls_.push(instance);
+             instance.style.height = P2PWAP.ui.ModalHeight_ + "px";
+         };
+         P2PWAP.ui.removeModalView = function(instance) {
+             if (!window.navigator || !/iphone.*OS 7.*/i.test(window.navigator.userAgent)) return;
+             var index = P2PWAP.ui.ModalViewEls_.indexOf(instance);
+             if (index >= 0) {
+                 P2PWAP.ui.ModalViewEls_.splice(index, 1);
+             }
+             if (P2PWAP.ui.ModalViewEls_.length == 0) {
+                 document.body.style.height = "auto";
+                 document.body.style.overflow = "auto";
+             }
+         };
+         P2PWAP.ui.showNoticeDialog = function(content) {
+            var div = document.createElement('div');
+            var html = '';
+            html += '<div class="ui_max_width">';
+            html += '    <div class="ui_dialog hd_dialog">';
+            html += '        <div class="dialog_con">';
+            html += '            <div class="fz_aggree">';
+            html += '                <div class="fz_transferPt_text_sc">';
+            html += '                   <div class="respectUser">尊敬的用户：</div>';
+            html += '                   <div class="detail">';
+            html += '                       由于公司战略调整，网站升级，您需要阅读本说明的全部内容，并授权同意更新后的网站注册协议，本次更新不会影响您此前在平台投融资的所有项目及操作的各类事项，您与相关各方在平台上达成的协议全部继续有效。';
+            html += '                   </div>';
+            html += '                </div>';
+            html += '                </div>';
+            html += '            <div class="dialog_text">';
+            html += '                <div class="iscroll_inner">';
+            html += '                <div class="ggw_text">';
+            html +=                      content;
+            html += '                </div>';
+            html += '                </div>';
+            html += '            </div>';
+            html += '    </div>';
+            html += '</div>';
+            div.innerHTML = html;
+            div.className = 'transfer_ui_mask';
+             document.body.appendChild(div);
+             function dialogTopFix(){
+                 var $dialog = $(div).find('.ui_dialog');
+            }
+            $(div).find('.dialog_btn').click(function(event) {
+                     P2PWAP.ui.removeModalView(div);
+                     $(div).remove();
+                });
+            dialogTopFix();
+            $(window).resize(function(){
+                dialogTopFix();
+            });
+            P2PWAP.ui.addModalView(div);
+                var myScroll_id = new IScroll($(div).find('.dialog_text')[0],{
+                     scrollbars: true,
+                     interactiveScrollbars: true,
+                     shrinkScrollbars: 'scale',
+                     fadeScrollbars: true
+                });    
+        };
+        P2PWAP.ui.showNoticeDialog($('#transfer_pt').val());
+
+        var win_hei = $(window).height();
+        hei = win_hei - 110 ;
+        $(".fz_transferPt_text_sc").height(hei);
+     }); 
+    </script>
+    {/if}
+</body>
+</html>

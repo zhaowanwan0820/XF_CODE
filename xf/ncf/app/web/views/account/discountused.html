@@ -1,0 +1,83 @@
+<div class="p_account_certificate p_account_discountused">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/temp/weebox.1.2.css');?>">
+    <script type="text/javascript">
+      var is_firstp2p = "{$is_firstp2p}" ;
+    </script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/account/discount_used.js');?>"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/js/widget/paginate/paginate.v1.2.css');?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p_account_certificate.css');?>">
+    <div class="ui-box">
+        <div class="ui_action_title">
+            <span class="icon_line"></span>优惠券
+        </div>
+        <!-- 有投资券时 -->
+        <div class="r-cont">
+            <ul class="cer_card clearfix" id="tabs_cont"></ul>
+            <script id="cer_data" type="text/html">
+            <% if (list.length <= 0 ) { %>
+                <div id="wu_jilu"><div class="wq tc"><img src="<?php echo $this->asset->makeUrl('v3/images/account/tzq_wu.png');?>" alt="暂无优惠券"><span>暂无优惠券</span></div></div>
+            <% } else { %>
+                <% for (var i = 0; i < list.length; i++) { %>
+                    <li>
+                        <% if (list[i].status == 2) { %>
+                            <% if (list[i].type == 1) { %>
+                            <div class="img fanysy">
+                            <% } else if(list[i].type == 2) { %>
+                            <div class="img xiysy">
+                            <% }else{ %>
+                                <div class="img hjqysy">
+                            <% } %>
+                            <div class="ysy">
+                        <% } else if(list[i].status == 3) { %>
+                            <% if (list[i].type == 1) { %>
+                            <div class="img fanygq">
+                            <% } else if(list[i].type == 2) { %>
+                            <div class="img xiygq">
+                            <% }else{ %>
+                                <div class="img hjqygq">
+                            <% } %>
+                            <div class="ygq">
+                        <% } %>
+                            </div>
+                                <div class="f14 quanName" title="<%= list[i].resource %>"><%= list[i].resource %></div>
+                                <div class="money">
+                                <% if (list[i].type == 1) { %>
+                                    <span class="price"><%= list[i].pay_money %></span><span class="f24">元</span>
+                                <% } else if(list[i].type == 2){ %>
+                                    <span class="price"><%= list[i].pay_money %></span><span class="f24">%</span>
+                                <% }else{ %>
+                                    <span class="price"><%= list[i].pay_money %></span><span class="f24">克</span>
+                                <% } %>
+                                </div>
+                                <div class="yxsj">
+                                    <%= list[i].effective_start_time %> 至 <%= list[i].effective_end_time %>有效
+                                </div>
+                            </div>
+                            <div class="desc">
+                                <% if(list[i].type == 3 && list[i].deal_money){ %>
+                                <div class="clearfix"><span class="gray tit">购买克重：</span><span class="gray"><%= list[i].deal_money %></span></div>
+                                <% } %>
+
+                                <% if(list[i].type == 3 && list[i].deal_term != '满0克可用'){ %>
+                                <div class="clearfix"><span class="gray tit">购买期限：</span><span class="gray"><%= list[i].deal_term %></span></div>
+                                <% } %>
+
+                                <% if(list[i].type != 3 && list[i].deal_money != ''){ %>
+                                <div class="clearfix"><span class="gray tit">起用金额：</span><span class="gray"><%= list[i].deal_money %></span></div>
+                                <% } %>
+
+                                <% if(list[i].type != 3 && list[i].deal_term != '满0天可用'){ %>
+                                <div class="clearfix"><span class="gray tit">起用期限：</span><span class="gray"><%= list[i].deal_term %></span></div>
+                                <% } %>
+                                <div class="clearfix"><% if(list[i].note != ''){ %><span class="gray tit">使用限制：</span><% } %><span title="<%= list[i].note %>" class="span_text gray"></span></div>
+                            </div>
+                    </li>
+                <% } %>
+                <p class="j_tips gray"></p>
+            <% } %>
+            </script>
+            <div class="pagination" id="pagination_00"></div>
+        </div>
+        <!-- //有投资券时 -->
+    </div>
+</div>

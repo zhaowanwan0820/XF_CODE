@@ -1,0 +1,301 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+<load href='__TMPL__Common/js/input-click.js' />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+
+<script type="text/javascript">
+    function contract(id){
+        window.location.href = ROOT + '?m=Contract&a=index&deal_id='+id;
+    }
+
+    function edit(id, role, readonly)
+    {
+        location.href = ROOT+"?m=Deal&a=lent&id="+id+"&role="+role+"&readonly="+readonly;
+    }
+</script>
+
+<php>
+    function get_project_name($id) {
+        return $GLOBALS['db']->getOne("SELECT `name` FROM firstp2p_deal_project WHERE `id`='" . $id . "'");
+    }
+
+    function get_loan_money_type_by_project_id($id) {
+        $loanMoneyType = $GLOBALS['db']->getOne("SELECT `loan_money_type` FROM firstp2p_deal_project WHERE `id`='" . $id . "'");
+        if($loanMoneyType == 0 || $loanMoneyType == 1) {
+            $result = "实际放款";
+        } else if($loanMoneyType == 2) {
+            $result = "非实际放款";
+        } else if($loanMoneyType == 3) {
+            $result = "受托支付";
+        }
+        return $result;
+    }
+
+</php>
+<div class="main">
+    <div class="main_title"><if condition="$role eq 'b'">待审核列表<else/>待放款列表</if></div>
+<div class="blank5"></div>
+<div class="search_row">
+    <form name="search" action="__APP__" method="get">
+        编号：<input type="text" class="textbox" name="deal_id" value="{:trim($_REQUEST['deal_id'])}" style="width:100px;" />
+
+        借款标题：<input type="text" class="textbox" name="name" value="{:trim($_REQUEST['name'])}" />
+        项目名称：<input type="text" class="textbox" name="project_name" value="{:trim($_REQUEST['project_name'])}" />
+        借款人姓名：
+        <input type="text" class="textbox" name="real_name" value="{:trim($_REQUEST['real_name'])}" size="10" />
+
+        借款人用户名：
+        <input type="text" class="textbox" name="user_name" value="{:trim($_REQUEST['user_name'])}" size="10"/>
+
+        放款方式：
+        <select name="loan_money_type">
+            <option value="0" selected="selected">=请选择=</option>
+            <option value="1" <if condition="$_REQUEST['loan_money_type'] eq 1">selected</if>>实际放款</option>
+            <!--<option value="2" <if condition="$_REQUEST['loan_money_type'] eq 2">selected</if>>非实际放款</option>-->
+            <option value="3" <if condition="$_REQUEST['loan_money_type'] eq 3">selected</if>>受托支付</option>
+        </select>
+
+        担保/代偿I机构：
+        <select name="agency_id">
+            <option value="0" <if condition="$_REQUEST['agency_id'] eq 0">selected</if>>请选择</option>
+            <volist name='deal_agency_list' id='item'>
+                <option value="{$item.id}" <if condition="$_REQUEST['agency_id'] eq $item['id']">selected</if>>{$item['short_name']}</option>
+            </volist>
+        </select>
+
+        <br/>
+        满标时间：
+            <input type="text" class="textbox" style="width:140px;" name="success_time_start" id="success_time_start" value="{$_REQUEST['success_time_start']}" onfocus="this.blur(); return showCalendar('success_time_start', '%Y-%m-%d 00:00:00', false, false, 'btn_success_time_start');" title="满标时间开始" />
+            <input type="button" class="button" id="btn_success_time_start" value="{%SELECT_TIME}" onclick="return showCalendar('success_time_start', '%Y-%m-%d %H:%M:00', false, false, 'btn_success_time_start');" />
+            到
+            <input type="text" class="textbox" style="width:140px;" name="success_time_end" id="success_time_end" value="{$_REQUEST['success_time_end']}" onfocus="this.blur(); return showCalendar('success_time_end', '%Y-%m-%d 23:59:59', false, false, 'btn_success_time_end');" title="满标时间结束" />
+            <input type="button" class="button" id="btn_success_time_end" value="{%SELECT_TIME}" onclick="return showCalendar('success_time_end', '%Y-%m-%d %H:%M:59', false, false, 'btn_success_time_end');" />
+
+        <br/>
+        借款人是否签署合同：
+        <select name="sign_borrow">
+            <option value="0" <if condition="$_REQUEST['sign_borrow'] eq 0">selected</if>>全部</option>
+            <option value="1" <if condition="$_REQUEST['sign_borrow'] eq 1">selected</if>>已签</option>
+            <option value="2" <if condition="$_REQUEST['sign_borrow'] eq 2">selected</if>>未签</option>
+        </select>
+        担保方是否签署合同：
+        <select name="sign_agency">
+            <option value="0" <if condition="$_REQUEST['sign_agency'] eq 0">selected</if>>全部</option>
+            <option value="1" <if condition="$_REQUEST['sign_agency'] eq 1">selected</if>>已签</option>
+            <option value="2" <if condition="$_REQUEST['sign_agency'] eq 2">selected</if>>未签</option>
+        </select>
+        资产管理方是否签署合同：
+        <select name="sign_advisory">
+            <option value="0" <if condition="$_REQUEST['sign_advisory'] eq 0">selected</if>>全部</option>
+            <option value="1" <if condition="$_REQUEST['sign_advisory'] eq 1">selected</if>>已签</option>
+            <option value="2" <if condition="$_REQUEST['sign_advisory'] eq 2">selected</if>>未签</option>
+        </select>
+
+        <if condition="$role neq 'b'">
+        审核状态：
+        <select name="audit_status">
+            <option value="9999" <if condition="$_REQUEST['audit_status'] eq 9999">selected</if>>请选择</option>
+            <foreach name="audit_status_list" key="key" item="item">
+                <option value="{$key}" <if condition="$_REQUEST['audit_status'] eq $key">selected="selected"</if>>{$item}</option>
+            </foreach>
+        </select>
+        <else/>
+            申请人:
+            <input type="text" class="textbox" name="admin_name" value="{$_REQUEST['admin_name']}" size="10"/>
+        </if>
+        <input type="hidden" id="page_now" value="{$_GET.p}" name="p" />
+        <input type="hidden" value="DealLoan" name="m" />
+        <input type="hidden" value="index" name="a" />
+        <input type="hidden" value="{$role}" name="role" />
+        <input type="submit" class="button" value="{%SEARCH}" />
+        <input type="button" class="button" value="导出" onclick="export_csv();" />
+        <if condition="$_REQUEST['role'] eq 'b'">
+            <input type="button" class="button" value="一键放款" id="batch_submit" />
+        <else/>
+            <input type="button" class="button" value="一键提交" id="batch_submit" />
+        </if>
+
+    </form>
+</div>
+<div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0 >
+        <tr>
+            <td colspan="22" class="topTd" >&nbsp; </td>
+        </tr>
+        <tr class="row">
+            <th width="8">
+                <input type="checkbox" id="check" onclick="CheckAll('dataTable')">
+            </th>
+            <th>编号</th>
+            <th>借款标题</th>
+            <th>旧版借款标题</th>
+            <th>项目名称</th>
+            <th>借款金额</th>
+            <th>借款期限</th>
+            <th>还款方式</th>
+            <th>标的状态</th>
+            <th>满标时间</th>
+            <th>费用收取方式</th>
+            <th>放款方式</th>
+            <th>用户类型</th>
+            <th>借款人姓名</th>
+            <th>借款人用户名</th>
+            <th>担保/代偿I机构名称</th>
+            <th>借款人签署状态</th>
+            <th>担保方签署状态</th>
+            <th>资产管理方签署状态</th>
+            <if condition="$role eq b">
+            <th>申请人</th>
+            </if>
+            <th>审核状态</th>
+            <th style="width:150px">
+                操作
+            </th>
+        </tr>
+        <volist name="list" id="deal">
+        <tr class="row">
+            <td>
+                <input type="checkbox" name="key" class="key" value="{$deal.id}">
+            </td>
+            <td>
+                &nbsp;{$deal.id}
+            </td>
+            <td>
+                <a href="javascript:edit('{$deal.id}')">
+                    {$deal.name}
+                </a>
+            </td>
+            <td>
+                &nbsp;{:getOldDealNameWithPrefix($deal['id'], $deal['project_id'])}
+            </td>
+            <td>
+                &nbsp;{$deal.project_id|get_project_name}
+            </td>
+            <td>
+                &nbsp;{$deal.borrow_amount}
+            </td>
+            <td>
+                &nbsp;{$deal.repay_time}<if condition="$deal.loantype eq 5">天<else/>个月</if>
+            </td>
+            <td>
+                &nbsp;{$deal.loantype|get_loantype_cn}
+            </td>
+            <td>&nbsp;满标</td>
+            <td>
+                &nbsp;{$deal.success_time|to_date}
+            </td>
+            <td>
+                {$deal.id|get_deal_ext_fee_type}
+            </td>
+            <td>
+                &nbsp;{$deal.project_id|get_loan_money_type_by_project_id}
+            </td>
+            <td>
+                &nbsp;{$deal.showUserTypeName}
+            </td>
+            <td>
+                &nbsp;{$deal.showRealUserName}
+            </td>
+            <td>
+                &nbsp;{$deal.user_name_url}
+            </td>
+            <td>
+                &nbsp;{$deal_agency_list[$deal['agency_id']]['short_name']}
+            </td>
+            <td>
+                &nbsp;{$deal.showContractSignStatusBorrowUser}
+            </td>
+            <td>
+                &nbsp;{$deal.showContractSignStatusAgency}
+            </td>
+            <td>
+                &nbsp;{$deal.showContractSignStatusAdvisory}
+            </td>
+            <if condition="$role eq b">
+            <td>
+                <if condition="isset($audit_deal_list[$deal['id']])">
+                    &nbsp;{$audit_deal_list[$deal['id']]['submit_user_name']}
+                </if>
+            </td>
+            </if>
+            <td>
+                    <if condition="$role eq b">
+                    &nbsp;放款待审核
+                    <else/>
+                        <if condition="isset($audit_deal_list[$deal['id']])">
+                            &nbsp;{$audit_deal_list[$deal['id']]['status']}
+                        <else/>
+                            &nbsp;放款待处理
+                        </if>
+                    </if>
+            </td>
+
+            <td>
+                <if condition="$deal.is_entrust_zx neq 1">
+                <if condition="$role eq 'b'">
+                    <a href="javascript:edit('{$deal.id}','b','0')">操作放款</a>
+                <else/>
+                    <if condition="$audit_deal_list[$deal['id']]['status'] == '放款待审核'">
+                        <!--<a href="javascript:edit('{$deal.id}', 'a', '0')">审核中</a>-->
+                    <else/>
+                        <a href="javascript:edit('{$deal.id}', 'a', '0')">操作放款</a>
+                    </if>
+                </if>
+                &nbsp;
+                <a href="javascript:contract('{$deal.id}')">合同列表</a>
+                </if>
+            </td>
+        </tr>
+        </volist>
+    </table>
+
+    <div class="blank5"></div>
+    <div class="page">{$page}</div>
+</div>
+<script>
+function open_coupon_list(id) {
+    window.location.href=ROOT+'?m=CouponLog&a=index&deal_id='+id;
+}
+    $(function(){
+        $("#batch_submit").click(function(){
+            if($("input[name='key']:checked").length <=0) {
+                alert('请至少选择一个标的');
+                return false;
+            }
+
+            deal_ids = new Array;
+            $($("input[name='key']:checked").each(function(){
+                deal_ids.push($(this).val());
+            }));
+
+            var act = "{$role}";
+            url = (act == 'b') ? 'm.php?m=Deal&a=batch_qnqueue' : 'm.php?m=Deal&a=batch_submit';
+
+            $.ajax({
+                type:"POST",
+                url:url,
+                dataType:'json',
+                data:{
+                    "deal_ids":deal_ids.join(","),
+                },
+                success:function(res){
+                    if(res.status == 1){
+                        alert('提交成功' + res.succ_num +'笔；提交失败' + res.fail_num + '笔，标id为'+res.deal_ids);
+                        location.reload();
+                    }else{
+                        alert('提交失败');
+                    }
+                }
+            });
+
+        });
+    })
+</script>
+<include file="Public:footer" />
+

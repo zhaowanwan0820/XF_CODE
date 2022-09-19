@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>相关协议</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-base.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/m-common.css');?>" rel="stylesheet" />
+    <link href="<?php echo $this->asset->makeAppUrl('v4.4/css/duotou/p_dt_contract_list.css');?>" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="p_dt_contract_list">
+        <div id="contract_container"></div>
+        <script id="contract_list" type="text/html">
+            <% if(contracts.length == 0) { %>
+            <div class="empty_list"><img class="imgS" src="<?php echo $this->asset->makeAppUrl('v4.4/images/duotou/empty.png');?>"><p class="gray">这里空空如也</p></div>
+            <% } else { %>
+                <% for(var i = 0 , item = null; i < contracts.length ; i++){ %>
+                    <%= item = contracts[i] %>
+                    <dl class="ct_list bg_white">
+                        <% if(item.contractType == 0){ %>
+                        <dt>
+                            <h2>
+                                <span class="tit f17">借款合同</span>
+                                <span class="time color_gray f13 tr"><%= item.loanTime %></span>
+                            </h2>
+                            <p class="color_black mt10 f13">
+                                借款人:
+                                <%= borrowUsername %> 丨 出借人:
+                                    <%= loanUsername %>
+                            </p>
+                        </dt>
+                        <dd>
+                            <a href="/duotou/loanTansContract?type=0&ctype=0&title=查看借款合同&number=<%= item.contractNo %>&is_allow_access=1&token=<%= token %>" class="color_blue tc f15">查看详情</a>
+                        </dd>
+                        <% } else { %>
+                        <dt>
+                            <h2>
+                                <span class="tit f17">债权转让协议</span>
+                                <span class="time color_gray f13 tr"><%= item.loanTime %></span>
+                            </h2>
+                            <p class="color_black mt10 f13">
+                                转让人:
+                                <%= item.redeemUserName %> 丨 受让人:
+                                    <%= loanUsername %>
+                            </p>
+                        </dt>
+                        <dd>
+                            <a href="/duotou/loanTansContract?ctype=0&title=查看债权转让协议&number=<%= item.contractNo %>&is_allow_access=1&token=<%= token %>" class="color_blue tc f15">查看详情</a>
+                        </dd>
+                        <% } %>
+                    </dl>
+                <% } %>
+            <% } %>
+        </script>
+    </div>
+    <!--public js-->
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/zepto.min.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/base.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/common.js');?>"></script>
+    <script src="<?php echo $this->asset->makeAppUrl('js/lib/artTemplate/template-native.js');?>"></script>
+    <!-- private js -->
+    <script src="<?php echo $this->asset->makeAppUrl('v4.4/js/duotou/related_contract.js');?>"></script>
+    <script>
+    var datajson = {$dtDealInfo};
+    // console.log(datajson);
+    </script>
+</body>
+
+</html>

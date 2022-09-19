@@ -1,0 +1,43 @@
+{include file="web/views/v3/header.html"}
+{if $stay eq 0 and !$formSubmit}
+<script type="text/javascript"> 
+$(function(){   
+    Firstp2p.goPay({number: {$refresh_time},
+        $obj: $("#second"),
+        callback : function(){
+            window.location.href="{$jump}";
+        }
+    });
+});  
+</script>
+{/if}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/p-user-rnasuc.css');?>" />
+<script>  
+$(function(){
+    $("#directGo").click(function(){
+        $('#bindCardForm').submit();
+    });
+    Firstp2p.goPay();         
+});
+</script> 
+<div class="p_account_cz">
+    <span class="blank23"></span>
+    <div class="w1100">
+        <div class="ui-box">
+            <div class="suc_cont">
+            <div class="ui_suc_title">
+                <i class="ui_fail_icon mr10"></i>{$error_title}
+            </div>
+            <div class="tc f18">{$error_msg}</div>
+            <div class="f14 gray mt10 tc">
+             {if $stay eq 0}
+                {function name="sprintf" format="$tipsMessage" value1=$refresh_time value2=$jump}
+             {/if}
+             {$bindCardForm}
+         </div>
+        </div>
+        </div>
+        <span class="blank60"></span>
+    </div>
+</div>
+{include file="web/views/v3/footer.html"}

@@ -1,0 +1,58 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<load href='__TMPL__Common/js/jquery.bgiframe.js' />
+<load href='__TMPL__Common/js/jquery.weebox.js' />
+<load href='__TMPL__Common/style/weebox.css' />
+
+<div class="main">
+    <div class="main_title">
+        合同模板预览<a href='m.php?m=ContractService&a=getCategory' class="back_list">返回分类列表</a>
+    </div>
+    <div class="blank5"></div>
+    <div class="blank5"></div>
+    <div class="search_row">
+        <form name="search" action="__APP__" method="get">
+            &nbsp;取值标的编号：<input type="text" class="textbox" name="deal_id" id="deal_id" value="{:trim($_REQUEST['deal_id'])}" />
+            &nbsp;虚拟投资人编号：<input type="text" class="textbox" name="user_id"  id ="user_id" value="{:trim($_REQUEST['user_id'])}" />
+            &nbsp;虚拟投资金额：<input type="text" class="textbox" name="money" id="money"  value="{:trim($_REQUEST['money'])}" />
+            <input type="hidden" value="ContractService" name="m" />
+            <input type="hidden" value="preview" name="a" />
+            <input type="hidden" value="{:trim($_REQUEST['typeId'])}" name="typeId" />
+            <input type="hidden" value="{:trim($_REQUEST['contractVersion'])}" name="contractVersion" />
+            <input type="hidden" value="preview" name="a" />
+            <input type="submit" class="button" value="生成预览合同" />
+        </form>
+    </div>
+    <div class="blank5"></div>
+    <table id="dataTable" class="dataTable" cellpadding=0 cellspacing=0>
+        <tr>
+            <td colspan="14" class="topTd">&nbsp;</td>
+        </tr>
+        <tr class="row">
+            <th width="50px">编号</th>
+            <th>合同标题</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="tpl_list" item="item">
+            <tr class="row">
+                <td>{$item.id}</td>
+                <td>{$item.contractTitle}</td>
+                <td>
+                     <a href='javascript:void(0)' onclick="opencontract({$item.id},{$_REQUEST['deal_id']},{$_REQUEST['user_id']},{$_REQUEST['money']});">预览</a>
+                    <a href="/m.php?m=ContractService&a=download&id={$item.id}&user_id={$_REQUEST['user_id']}&deal_id={$_REQUEST['deal_id']}&money={$_REQUEST['money']}">下载</a> &nbsp;
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="20" class="bottomTd">&nbsp;</td>
+        </tr>
+    </table>
+    <div class="blank5"></div>
+</div>
+<script>
+    function opencontract(id,deal_id,user_id,money){
+        $.weeboxs.open(ROOT+'?m=ContractService&a=opencontract&id='+id+'&user_id='+user_id+'&money='+money+'&deal_id='+deal_id, {contentType:'ajax',showButton:false,title:'合同内容',width:650,height:500});
+    }
+</script>
+<include file="Public:footer" />

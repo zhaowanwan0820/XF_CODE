@@ -1,0 +1,62 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<include file="Public:header" />
+<script type="text/javascript" src="__TMPL__Common/js/calendar/calendar_lang.js" ></script>
+<load href='__TMPL__Common/js/calendar/calendar.css' />
+<load href='__TMPL__Common/js/calendar/calendar.js' />
+<div class="main">
+    <div class="main_title">补发</div>
+<!--
+   -<div class="main_title">补发 <a href="{:u("BonusJobs/index")}" class="back_list">{%BACK_LIST}</a></div>
+   -->
+<div class="blank5"></div>
+    <form method='post' id="form" name="form" action="__APP__" enctype="multipart/form-data">
+        <table cellpadding="4" cellspacing="0" border="0" class="form">
+            <tr>
+                <td colspan="2" class="topTd"></td>
+            </tr>
+            <tr>
+                <td class="item_title">券组id</td>
+                <td class="item_input">
+                    <input type="text" class="textbox require" name="couponGroupId" />
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">触发事件</td>
+                <td class="item_input">
+                <select name="triggerMode" id="trigger_mode">
+                    <option value=0 <if condition="intval($_REQUEST['triggerMode']) eq 0">selected="selected"</if>>==请选择==</option>
+                    <foreach name="actionEnum" item="trigger_mode" key="key">
+                        <option value="{$key}" <if condition="$_REQUEST['triggerMode'] eq $key">selected="selected"</if>>{$trigger_mode}</option>
+                    </foreach>
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="item_title">补发id列表</td>
+                <td class="item_input">
+                    <textarea class="textarea require" name="fixIds" id="fixIds"></textarea>
+                    <br>
+                    <span class="tip_span">用户ID-投标记录ID,用户ID-投标记录ID,...</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="item_title"></td>
+                <td class="item_input">
+                <input type="hidden" name="{:conf("VAR_MODULE")}" value="O2OResend" />
+                <input type="hidden" name="{:conf("VAR_ACTION")}" value="resend" />
+                <input type="submit" class="button" value="提交" />
+                <input type="reset" class="button" value="{%RESET}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottomTd"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript" charset="utf-8">
+
+</script>
+<include file="Public:footer" />

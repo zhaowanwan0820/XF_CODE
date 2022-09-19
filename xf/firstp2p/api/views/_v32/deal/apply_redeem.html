@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>已投资详情</title>
+    {include file="api/views/_v32/header.html"}
+    <link href="<?php echo $this->asset->makeAppUrl('v3.2/css/p-detail-hasinvestment.css');?>" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="p_deal_hasinvestment">
+            <div class="has-main pt20">
+                <div class="hash-tb">
+                        <table>
+                            <colgroup>
+                                <col width="155" />
+                                <col width="" />
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        申请赎回本息
+                                    </th>
+                                    <td>
+                                        <span class="color_red">{$data.sum}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        本金
+                                    </th>
+                                    <td>
+                                        <span class="color_gray">{$data.money}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        收益
+                                    </th>
+                                    <td>
+                                        <span class="color_gray">{$data.interest}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        到账时间
+                                    </th>
+                                    <td>
+                                        {$data.firstDay}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                <div class="pt20">
+                	<a href="redeem://api?id={$data.id}" class="ui_red_btn">确认赎回</a>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

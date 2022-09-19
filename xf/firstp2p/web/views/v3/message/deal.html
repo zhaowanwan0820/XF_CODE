@@ -1,0 +1,102 @@
+{include file="web/views/header.html"}
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/user.css');?>" />
+<link href="<?php echo $this->asset->makeUrl('v3/css/p_message.css');?>" rel="stylesheet" type="text/css">
+<div class="mauto clearfix p_message">
+	   <section>
+       		<div class="message_box mb30">
+            	<div class="mess_title">
+               		<h1 class="fl"><i></i>消息</h1>
+                    <div class="fg_line"></div>
+                    <ul class="message_nav fl">
+                        <li ><a href="/message">消息</a></li>
+                        <li class="select"><a>消息详情</a></li>
+                    </ul>
+                </div>
+                <div class="mauto">
+                    <div class="mess">
+                    	{if $list}
+                        <table>
+                            <colgroup>
+                                <col width="68">
+                                <col width="120">
+                                <col width="635">
+                            </colgroup>
+                            <tbody>
+                            {foreach from="$list" item="pm" key=key}
+                                <tr>
+                                    <td>
+                                        <div class="mess_img">
+                                            <img src="{$TMPL_NEW}/images/user/img_1.png">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h4>
+                                        		{if isset($notice_title.$pm.is_notice)}
+													{$notice_title.$pm.is_notice}
+												{else}
+													{$LANG.SYSTEM_PM}
+												{/if}
+										</h4>
+                                        <p>{function name="pass_date" v=$pm.create_time}</p>
+                                    </td>
+                                    <td>
+                                    	<div class="mess_con f12">
+                                        	{if $pm.title}<h3>{$pm.title}</h3>{/if}
+										<div class="clearfix">
+										尊敬的用户{function name="get_user_name" v=$pm.to_user_id s="0"}：<br>
+										{$pm.content}
+										</div>
+										{if $pm.is_notice eq 2}
+											<p>请登录{function name="app_conf" v="SHOP_TITLE"}“我的账户”—“信用管理”查看相关信息。</p>
+										{elseif $pm.is_notice eq 3}
+											<p>请您认真阅读该项审核的注释，提交符合认证要求的资料，重新进行该项认证。</p>
+											<div class="clearfix">您可以登录{function name="app_conf" v="SHOP_TITLE"}“我的账户”—“信用管理”查看相关信息。</div>
+											<div class="clearfix">点击 <a href="{url x="index" r="account"}">这里</a> 查看您的信用状况。</div>
+										{elseif $pm.is_notice eq 4}
+											<div class="clearfix">请登录{function name="app_conf" v="SHOP_TITLE"}“我的账户”—“信用管理”查看相关信息。</div>
+											<div class="clearfix">点击 <a href="{url x="index" r="account"}">这里</a> 查看您的信用状况。</div>
+										{elseif $pm.is_notice eq 8}
+											<div class="clearfix">请您登录{function name="app_conf" v="SHOP_TITLE"}，访问“我的账户”—“偿还借款”查看您的还款详情。</div>
+											<div class="clearfix">点击 <a href="/account/refund">这里</a>查看您的还款详情。</div>
+											<div class="clearfix">点击 <a href="/account">这里</a>查看账户总览。</div>
+										{elseif $pm.is_notice eq 9}
+											<div class="clearfix">请您登录{function name="app_conf" v="SHOP_TITLE"}，访问“我的账户”—“我的投资”查看您的投资详情。</div>
+											<div class="clearfix">点击 <a href="/account/load">这里</a>查看您的投资详情。</div>
+											<div class="clearfix">点击 <a href="/account">这里</a>查看账户总览。</div>
+										{elseif $pm.is_notice eq 10}
+											<!-- <div class="clearfix">如果您属于认证未通过流标，为了您能够成功借款，请凑齐申请借款所需要的材料。您可以点击<a href="{url x="index" r="helpcenter"}" target="_self">需要提供哪些材料？</a>来了解更多所需材料的详情。进行更多的信用认证将有助您获得更高的借款额度。</div>
+											<div class="blank20"></div>
+											<div class="clearfix">如果您属于招标到期流标，为了您能够成功借款，请适度提高借款利率，将有助您更快的获得借款。&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+											<div class="blank20"></div>
+											<div class="clearfix">点击&nbsp;<a href="{url x="index" r="borrow#aboutborrow"}">这里</a>重新发布借款。</div>
+											<div>如果您觉得收到过多站内信，可以点击&nbsp;<a href="{url x="index" r="uc_msg#setting"}">这里</a>进行设置</div> -->
+										{elseif $pm.is_notice eq 12}
+											<div class="clearfix">请您访问{function name="app_conf" v="SHOP_TITLE"}“我的账户”—“偿还借款”，按时偿还借款。</div>
+											<div class="clearfix">如果您未能按时还款，您将要支付逾期罚息，并且将对您的信用信息产生负面影响，具体详情请见电子借款协议。</div>
+											<div class="clearfix">点击 <a href="/account/refund">这里</a>偿还借款。</div>
+											<div class="clearfix">点击 <a href="{url x="index" r="uc_deal#contract" p="id=$pm.fav_id"}">这里</a>查看电子借款协议。</div>
+										{elseif $pm.is_notice eq 13}
+											<div class="clearfix">请您登录{function name="app_conf" v="SHOP_TITLE"}借款详情页面查看答复。</div>
+											<div class="clearfix">点击 <a href="deal/{$pm.fav_id}">这里</a>进行答复。</div>
+										{elseif $pm.is_notice eq 14}
+											<div class="clearfix">点击 <a href="deal/{$pm.fav_id}">这里</a>查看借款列表详情或进行投资。</div>
+										{/if}
+										<div class="clearfix">感谢您对我们的支持和关注！</div>
+											{if !$is_firstp2p}<div class="clearfix">{function name="app_conf" v="SHOP_TITLE"}</div>{/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                              {/foreach}
+                            </tbody>
+                        </table>
+                         	{else}
+						<div class="empty-box">没有记录</div>
+					{/if}
+                    </div>
+                    <div class="pages">{$pages}</div>
+
+                </div>
+            </div>
+       </section>
+</div>
+{include file="web/views/footer.html"}

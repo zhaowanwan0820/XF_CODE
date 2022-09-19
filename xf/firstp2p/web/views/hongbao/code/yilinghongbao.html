@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file='web/views/hongbao/shareLogo.html'}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <meta name="format-detection" content="telephone=no" />
+    <!--public js&css start-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-base-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo $this->asset->makeUrl('v1/css/m-common-1.css', 1);?>" rel="stylesheet" type="text/css" />
+    <!--public js&css end-->
+    <link href="<?php echo $this->asset->makeUrl('v1/css/hongbao/10hongbao.css', 1);?>" rel="stylesheet" type="text/css" />
+    <script src="<?php echo $this->asset->makeUrl('v1/js/zepto.min.js', 1);?>"></script>
+</head>
+<body>
+<div class="light_box">
+    <div class="light"></div>
+</div>
+{include file="web/views/hongbao/logo.html"}
+<!--    <a href="#" class="logo"></a>
+<a href="#" class="rule">活动规则</a>-->
+    <div class="top smile">
+        <div class="rob-tel color-white mt39">
+        <div class="money tc color-yellow">￥<span class="f52">{$bonusDetail.money}</span></div>
+        <div class="deadline tc">
+            <p class="f15 ml10" style="letter-spacing:-1px;">你已经领过红包，去投资发更多的红包！</p>
+            <p>红包已存入<span class="color-yellow">{$mobile}</span>的账户 <a href="ChangeMobile?sn={$sn}&site_id={$site_id}" class="color-blue">更改 ></a></p>
+        </div>
+        <div class="dao-btn mt5">
+            <a href="{$downloadUrl}" class="btn">{$downloadDesc}</a>
+        </div>
+        <div class="p-tips pt5">
+            <p>{$deal_500_for_888}</p>
+            <p>{$deal_500_for_888_only}</p>
+        </div>
+    </div>
+    </div>
+{include file="web/views/hongbao/js.html"}
+<script type="text/javascript">
+ $(function(){
+ function onBridgeReady() {
+        WeixinJSBridge.call('hideOptionMenu');
+    }
+
+    if (typeof WeixinJSBridge == "undefined") {
+        if (document.addEventListener) {
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        } else if (document.attachEvent) {
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    } else {
+        onBridgeReady();
+    }
+    var bHeight=document.documentElement.clientHeight-416;
+    $('body').css({'height':'416px'});
+    $('.top').css({"margin-top":(bHeight/2)+'px'})
+});
+    </script>
+</body>
+</html>

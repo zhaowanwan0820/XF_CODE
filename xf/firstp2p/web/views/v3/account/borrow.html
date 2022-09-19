@@ -1,0 +1,234 @@
+<link href="<?php echo $this->asset->makeUrl('v3/css/p_account_borrow.css');?>" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->asset->makeUrl('v3/css/weebox.css');?>">
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.bgiframe.js');?>"></script>
+<script src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.weebox.1.1.js');?>"></script>
+<div class="ui_user_right">
+    <div class="p_account_borrow">
+        <div class="box" id="suc_hidden">
+            <div class="ui_title"><i class="icon"></i>请填写基本信息</div>
+            <form id="borrow_form">
+                <div class="borrow_form">
+                    <div class="borrow_con"><span class="color_gray">{if $type neq 2}变现通邀请码{else}借款邀请码{/if}：</span><span class="f16 color_red">{$code}</span><input type="hidden" id="code" name="code" value="{$code}"></div>
+                    <div class="borrow_con"><span class="color_gray">证件信息：</span>{$realName}（{$idNo}）</div>
+                    <div class="borrow_con"><span class="color_gray">手机号码：</span>{$mobile}</div>
+                    <div class="borrow_con"><span class="color_gray">待收本金：</span>{$allAmount}</div>
+                    <div id="extinfo" otype="{$type}" max_money="{$max_money}"></div>
+                    {if $type neq 2}
+                        <div class="borrow_con"><span class="color_gray">可申请借款金额：</span>{$miniBorrowMoney}万-300万</div>
+                    {else}
+                        <div class="borrow_con clearfix">
+                            <span class="color_gray mr20 fl" style="padding-top:8px;">公司名称</span>
+                            <input type="text" id="company" name="company"  style="width:365px" class="borrow_ipt mr10 fl" placeholder="公司名称">
+                            <span class="color_gray mr20 fl" style="padding-top:8px;margin-left:12px;">职级</span>
+                            <div class="select_box JS_select_box fl" data-name="wl">
+                                <i class="icon_arrow"></i>
+                                <div class="j_select" style="width:165px"></div>
+                                <ul class="select_ul none j_selectContent" style="width:165px">
+                                    <li data-value="高级董事总经理及以上">高级董事总经理及以上</li>
+                                    <li data-value="董事总经理">董事总经理</li>
+                                    <li data-value="董事总经理以下">董事总经理以下</li>
+                                </ul>
+                            </div>
+                        </div>
+                    {/if}
+
+                    <div class="borrow_con"><span class="color_gray mr20">借款金额</span><input type="text" id="borrow_monye" name="money" class="borrow_ipt mr15" placeholder="{if $type neq 2}500000.00{else}借款金额{/if}">元
+                    <div class="error_tip">{if $type neq 2}借款金额为1000元的整数倍{else}借款金额最高为100万元{/if}<span class="arrow"></span></div>
+                    </div>
+                    <div class="borrow_con clearfix"><span class="color_gray mr20 fl pt5">借款期限</span>
+                        <div class="select_box JS_select_box fl" data-name="time">
+                            <i class="icon_arrow"></i>
+                            <div class="j_select"></div>
+                             <ul class="select_ul none j_selectContent">
+                             {if $type neq 2}
+                                <li data-value="1">1个月</li>
+                                <li data-value="2">2个月</li>
+                                <li data-value="3">3个月</li>
+                                <li data-value="4">4个月</li>
+                                <li data-value="5">5个月</li>
+                                <li data-value="6">6个月</li>
+                                <li data-value="7">7个月</li>
+                                <li data-value="8">8个月</li>
+                                <li data-value="9">9个月</li>
+                                <li data-value="10">10个月</li>
+                                <li data-value="11">11个月</li>
+                                <li data-value="12">12个月</li>
+                             {else}
+                                 <li data-value="6">6个月</li>
+                                 <li data-value="7">7个月</li>
+                                 <li data-value="8">8个月</li>
+                                 <li data-value="9">9个月</li>
+                                 <li data-value="10">10个月</li>
+                                 <li data-value="11">11个月</li>
+                                 <li data-value="12">12个月</li>
+                                 <li data-value="13">13个月</li>
+                                 <li data-value="14">14个月</li>
+                                 <li data-value="15">15个月</li>
+                                 <li data-value="16">16个月</li>
+                                 <li data-value="17">17个月</li>
+                                 <li data-value="18">18个月</li>
+                                 <li data-value="19">19个月</li>
+                                 <li data-value="20">20个月</li>
+                                 <li data-value="21">21个月</li>
+                                 <li data-value="22">22个月</li>
+                                 <li data-value="23">23个月</li>
+                                 <li data-value="24">24个月</li>
+                                 <li data-value="25">25个月</li>
+                                 <li data-value="26">26个月</li>
+                                 <li data-value="27">27个月</li>
+                                 <li data-value="28">28个月</li>
+                                 <li data-value="29">29个月</li>
+                                 <li data-value="30">30个月</li>
+                                 <li data-value="31">31个月</li>
+                                 <li data-value="32">32个月</li>
+                                 <li data-value="33">33个月</li>
+                                 <li data-value="34">34个月</li>
+                                 <li data-value="35">35个月</li>
+                                 <li data-value="36">36个月</li>
+                             {/if}
+                             </ul>
+                        </div>
+                    </div>
+                    <div class="borrow_con"><span class="color_gray mr20">联系电话</span><input type="text" id="mobile_num" name="phone" class="borrow_ipt mr10" placeholder="您的联系方式"></div>
+                    {if $type neq 2}
+                    <div class="borrow_con"><span class="color_gray mr20">联系地址</span><input type="text" id="address" class="borrow_ipt mr10 w530" name="addr" placeholder="您的常用地址"></div>
+                    {else}
+                    <div class="borrow_con"><span class="color_gray mr20">公司邮箱</span><input type="text" id="address" class="borrow_ipt mr10 w530" name="addr" placeholder="您的常用邮箱"></div>
+                    {/if}
+                    <div class="borrow_con"><span class="color_gray mr20">图形验证</span><input type="text" name="captcha" id="input-captcha" class="borrow_ipt mr15" placeholder="右侧数字"><img title="点击刷新" class="yz_code" src="/verify.php?w=50&h=36&rb=0" id="captcha" width="94" height="36"><span class="refresh ml15">换一张</span></div>
+                    <div class="borrow_con tc"><input class="common-sprite btn-red-h46" type="button" id="borrow_btn" value="提交申请"></div>
+                    <input type="hidden" name="agreement" id="agreement" value="1">
+                    {if $type neq 2}
+                    <div class="borrow_con p2p-ui-checkbox tc"><a href="javascript:void(0)" data-ui="checkbox" class="common-sprite check-select" id="check_box"></a>我已阅读并同意<span class="blue">《<a class="blue" href="/user/borrowAgreement" target="_blank">申请协议</a>》</span>
+                    </div>
+                    {/if}
+                </div>
+            </form>
+        </div>
+        {if $type neq 2}
+        <div class="box">
+            <div class="ui_title"><i class="icon"></i>产品信息</div>
+            <div class="borrow_tip">
+                <h2><em><span>变现通产品介绍</span></em></h2>
+                <p>“变现通”服务是网信平台面向借款方和投资人推出的借贷中介服务。网信作为平台方，借款方为已投资网信未到期项目应得款项作为还款来源而进行借款的用户。投资人为符合网信相关规定的合格投资人。借贷双方通过“变现通”服务可以快捷方便地达成借款交易并完成资金的借出和借入。</p>
+                <p>借贷双方通过相关借款协议约定，在还款日到期借款方授权平台将其在平台投资到期的本息额作为还款来源，划转给其对应的投资人以完成双方的借贷关系，这款产品在满足平台投资人在投资完成后的临时借款需求同时，也极大地降低了投资人的投资风险，是一款风险极低的借贷产品。</p>
+                <h2><em><span>产品要素</span></em></h2>
+                <p><em></em>借款期限：1-12个月</p>
+                <p><em></em>借款利率（年化）：7.5%-11.5%</p>
+                <p><em></em>服务费（年化）：5.5%（前期一次性扣除）</p>
+                <p><em></em>融资成本：13%~17%</p>
+                <p><em></em>变现金额：最低{$miniBorrowMoney}万</p>
+                <p><em></em>还款方式：到期支付本金收益</p>
+                <h2><em><span>变现通申请条件</span></em></h2>
+                <p>（1）借款人提供最近一个月个人征信报告;</p>
+                <p>（2）借款人无重大诉讼记录或其他行政或刑事处罚记录;</p>
+                <p>（3）借款方借款额度须不得低于人民币{$miniBorrowMoney}万元整，不高于300万（资信评级达到一定标准后可适当提高限额）;</p>
+                <p>（4）申请借款金额不高于可变现项目资产本金的88%;</p>
+                <p>（5）申请借款到期日不得早于可变现投资项目的到期日；</p>
+                <h2><em><span>操作流程</span></em></h2>
+                <p>Step1：登录账户，申请资产变现</p>
+                <p>Step2：平台审核，5个工作日内给予客户反馈审批结果</p>
+                <p>Step3：募集变现资金</p>
+                <p>Step4：线上签署合同，获取变现资金</p>
+            </div>
+        </div>
+        {/if}
+        <div class="confirm_alert" style="display:none;">
+            {if $type neq 2}
+            <adv adv_id="BXT_CONFIRM_DETAIL"/>
+            {else}
+            <adv adv_id="ZYD_CONFIRM_DETAIL"/>
+            {/if}
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $(".JS_select_box").select();
+        $('.refresh').css('cursor', 'pointer');
+
+        $('.refresh,#captcha').click(function() {
+            refresh();
+        });
+        var refresh = function() {
+            $('#captcha').attr('src',"/verify.php?w=50&h=36&rb=0" + new Date().valueOf());
+        };
+        $('#borrow_btn').bind('click',  function() {
+            var mobileRegEx=/^\d{11}$/;
+            var borrow_monye= parseInt($('#borrow_monye').val());
+            var mobile_num = $('#mobile_num').val();
+            var address = $('#address').val();
+            var code = $('#input-captcha').val();
+            var type = $('#extinfo').attr('otype');
+            var max_money = $('#extinfo').attr('max_money');
+            var company = $("#company").val();
+            if(company != undefined && company==""){
+                alert("请正确填写公司名称");
+                return;
+            }
+            if(type != 2){
+                if(!(borrow_monye>={$miniBorrowMoneyNum})||!(borrow_monye<=3000000)){
+                    alert("借款金额为{$miniBorrowMoney}万-300万");
+                    return;
+                }
+            }else{
+                if(borrow_monye<=0||borrow_monye>max_money){
+                    alert("借款金额最高为"+max_money)
+                    return;
+                }
+            }
+            if(borrow_monye%1000 != 0){
+                alert("借款金额为1000的整数");
+                return;
+            }
+            if(!mobileRegEx.test(mobile_num)){
+                alert("请填写11位正确的联系电话");
+                return;
+            }
+            if(address==""){
+                alert("请填写正确的联系地址");
+                return;
+            }
+            if(code==""){
+                alert("请填写正确的验证码");
+                return;
+            }
+            $.weeboxs.open('.confirm_alert', {
+                boxid: null,
+                contentType: 'selector',
+                showButton: true,
+                showCancel: true,
+                showOk: true,
+                title: '申请确认',
+                width: 300,
+                height: 100,
+                type: 'wee',
+                onclose: function() {
+                    null
+                },
+                onok: function() {
+                    _inrequest = true;
+                    $.ajax({
+                        type: "post",
+                        url: "/user/doLoanIntention",
+                        data: $("#borrow_form").serialize(),
+                        dataType:"json",
+                        success: function(data) {
+                            _inrequest = false;
+                            if(data.errno==0){
+                                location.href="/user/LoanIntentionSucc"
+                            }else{
+                                alert(data.errmsg);
+                            }
+                        },
+                        error: function() {
+                            _inrequest = false;
+                            alert("未知错误");
+                        }
+                    })
+                }
+            });
+        });
+    })
+</script>
+<!-- 弹窗 -->

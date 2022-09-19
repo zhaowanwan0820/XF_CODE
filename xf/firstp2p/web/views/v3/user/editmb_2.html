@@ -1,0 +1,88 @@
+{include file="web/views/v3/header.html"}
+<div class="p_account_editmb">
+    <link href="<?php echo $this->asset->makeUrl('v3/css/p_account_editmb.css');?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.css');?>" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/widget/select/select.v1.1.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/account/editmb_set.js');?>"></script>
+    <!-- 弹出框 -->
+    <link href="<?php echo $this->asset->makeUrl('v3/css/weebox.css');?>" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.bgiframe.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/temp/jquery.weebox.js');?>"></script>
+    <script type="text/javascript" src="<?php echo $this->asset->makeUrl('v3/js/common/script.js');?>"></script>
+    <span class="blank23"></span>
+    <div class="wrap clearfix">
+        <div class="ui-box">
+            <div class="h-title">
+                <h2>
+            <i></i>修改安全手机
+        </h2>
+            </div>
+            <div class="emb-mid">
+                <div class="second-tep"></div>
+                <div class="ui-form">
+                    <form action="/user/editmb" id="password-form" method="post" onsubmit="return true;">
+                    <input type="hidden" name="sp" value="3" />
+                        <ul>
+                            <li class="clearfix">
+                                <label> 图形验证码</label>
+                                <input type="text" value="" placeholder="请输入图形验证码" name="captcha" id="input-captcha" class="txt w151" data-placeholder="请输入验证码">
+                                <div class="img-Veri">
+                                        <img title="点击刷新" src="/verify.php?w=50&amp;h=36&amp;rb=0" id="captcha" width="100">
+                                    </div>
+                                    <div class="refresh" style="cursor: pointer;">换一张</div>
+                                    <span class="msg-box n-right" for="input-captcha"></span>
+                            </li>
+                            <!-- 得到焦点时添加类名ipt-focus -->
+                            <li class="clearfix" style="*z-index:2">
+                                <label>新手机号</label>
+                                <div class="select_box" data-name="country_code" id="" style="z-index:11">
+                                    <div class="j_select"></div>
+                                    <ul class="select_ul none j_selectContent">
+                                    {if isset($mobile_codes)} 
+	                                    {foreach from=$mobile_codes item=val}
+	                                       {if $val.is_show}
+	                                          <li data-value="{$val.code}" data-name="{$val.country}"><i class="icon-{$val.country}"></i>{$val.name}</li>
+	                                       {/if}
+	                                    {/foreach}
+                                    {else}
+                                       <li data-value="86" data-name="cn"><i class="icon-cn"></i>中国大陆</li>
+                                    {/if}
+                                    </ul>
+                                </div>
+                                <div class="ipt-wrap w224">
+                                    <!--<div class="areacode" id="areacode">+86</div>-->
+                                    <?php echo token_input(); ?> 
+                                    <input type="password" autocomplete="off" style="display:none;">  
+                                    <input type="text" data-only="1" data-source="11" value="{$mobile}" placeholder="手机号" name="mobile" id="mobile" class="txt-tel int_placeholder" data-placeholder="手机号" data-tips="请输入正确的手机号">
+                                </div>
+                                <span class="msg-box n-right" for="mobile"></span>
+                            </li>
+                            <!-- //得到焦点时添加类名ipt-focus -->
+                            <li class="clearfix">
+                                <label> 验证码</label>
+                                <div class="fl">
+                                <input type="text" value="" placeholder="请输入验证码" name="code" id="validNum" class="txt w131 int_placeholder" data-placeholder="请输入验证码">
+                                <input type="button" class="ml15 btn-send-blue" id="bt" value="免费获取验证码">
+                                </div>
+                               <span class="msg-box n-right" for="validNum"></span>
+                            </li>
+                        </ul>
+                        <div class="btn-w30">
+                            <input class="btn-sub" type="submit" id="step-one" value="下一步">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="blank23"></span>
+</div>
+{if $error}
+<script>
+$(function() {
+    $.showErr('{$error}');
+});
+</script>
+{/if}
+
+{include file="web/views/v3/footer.html"}

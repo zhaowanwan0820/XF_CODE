@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="HandheldFriendly" content="true">
+  <title class="title">期望借款期限</title>
+  {include file="api/views/_v32/header.html"}
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/loan_common.css');?>">
+  <link rel="stylesheet" href="<?php echo $this->asset->makeAppUrl('v4.73/css/house/net_loan.css');?>">
+  <script src="<?php echo $this->asset->makeAppUrl('v4.73/js/house/loan_common.js');?>"></script>
+</head>
+<body>
+  <!-- 期望借款期限页面1-12个月 -->
+  <ul class="expected_date_select">
+    {foreach from=$dateList item=month}
+    { if $selectedDate neq $month}
+    <li class="clearfix"><span>{$month}个月</span><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/expected_date_select.png');?>" style="display:none"/></li>
+    {else}
+    <li class="clearfix"><span>{$month}个月</span><img src="<?php echo $this->asset->makeAppUrl('v4.73/images/house/expected_date_select.png');?>" style="display:block"/></li>
+    {/if}
+    {/foreach}
+  </ul>
+  <script src="<?php echo $this->asset->makeAppUrl('v3.4/js/base.js');?>"></script>
+  <script>
+    /* 日期列表显示后，点击每一个li */
+    $(".expected_date_select li").map(function(i,v){
+      v.addEventListener("click",function(){
+        $(this).siblings().map(function(j,item){
+          $(this).children()[1].style.display = "none"
+        })
+        $(this).children()[1].style.display = "block"
+        date_number_selected = $(this).children()[0].innerHTML
+        P2PWAP.cache.set("_date_number_selected_",date_number_selected,60000)
+        window.location.href = "/house/PreApply?token={$token}&date_number="+date_number_selected+"&house_id={$house_id}&selectedCity={$selectedCity}"
+      })
+    })
+  </script>
+</body>
+</html>

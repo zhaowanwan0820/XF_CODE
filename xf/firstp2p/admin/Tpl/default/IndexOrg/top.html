@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>资产交易管理系统-管理员登录</title>
+<load href='__TMPL__Common/style/style.css' />
+<load href='__TMPL__Common/style/top.css' />
+<load href='__TMPL__Common/js/jquery.js' />
+<load href='__TMPL__Common/js/jquery.timer.js' />
+<load href='__TMPL__Common/js/top_org.js' />
+
+
+<script type="text/javascript" src="__ROOT__/static/admin/lang.js"></script>
+</head>
+
+<body>
+<div style='font-size:22px; color:#fff; width:200px; float:left; padding:6px;'>资产交易管理系统</div>
+
+<div id="tips">
+<a>欢迎，<b>{$adm_data.adm_name}</b>（管理员） | </a>
+<a href="{:u("Public/do_loginout", array("from" => "org"))}" target="_parent">{:l("LOGIN_OUT")}</a>
+</div>
+
+<div class="blank5"></div>
+<div id="orgnavs">
+<ul>
+<li><a href="{:u("IndexOrg/left")}">首页</a></li>
+<foreach name="navs" item="nav">
+<li><a href="{:u("IndexOrg/left",array("id"=>$nav['id'], "module"=>$nav['module']))}">{$nav.name}</a></li>
+</foreach>
+</ul>
+</div>
+
+<div id="deal_msg" style="display:none; color:#ccc; font-size:12px; position:absolute; right:115px; top:40px;">{%DEAL_MSG_LIST_RUNNING}</div>
+<div id="promote_msg"  style="display:none; color:#ccc; font-size:12px; position:absolute; right:15px; top:40px;">{%PROMOTE_MSG_LIST_RUNNING}</div>
+<div id="apns_msg"  style="display:none; color:#ccc; font-size:12px; position:absolute; right:15px; top:40px;">{%PROMOTE_MSG_LIST_RUNNING}</div>
+
+</body>
+</html>
